@@ -1,0 +1,33 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Client ID"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "sender": {
+      "type": "string",
+      "enum": [
+        "coach",
+        "client"
+      ],
+      "default": "coach"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "client_id",
+    "content"
+  ]
+}

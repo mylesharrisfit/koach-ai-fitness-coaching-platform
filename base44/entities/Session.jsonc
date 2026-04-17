@@ -1,0 +1,59 @@
+{
+  "name": "Session",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "description": "Session title"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string",
+      "description": "Session time"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 60
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "video_call",
+        "in_person",
+        "check_in",
+        "consultation"
+      ],
+      "default": "video_call"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "cancelled",
+        "no_show"
+      ],
+      "default": "scheduled"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "meeting_link": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_id",
+    "title",
+    "date"
+  ]
+}

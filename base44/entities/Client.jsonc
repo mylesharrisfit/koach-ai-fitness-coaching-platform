@@ -1,0 +1,79 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Client full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Client email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Profile photo URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "prospect"
+      ],
+      "default": "active"
+    },
+    "goal": {
+      "type": "string",
+      "enum": [
+        "weight_loss",
+        "muscle_gain",
+        "strength",
+        "endurance",
+        "flexibility",
+        "general_fitness"
+      ],
+      "default": "general_fitness"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "current_weight": {
+      "type": "number",
+      "description": "Current weight in lbs"
+    },
+    "target_weight": {
+      "type": "number",
+      "description": "Target weight in lbs"
+    },
+    "height": {
+      "type": "string",
+      "description": "Height"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Coach notes about client"
+    },
+    "assigned_program_id": {
+      "type": "string",
+      "description": "Current assigned workout program ID"
+    },
+    "assigned_nutrition_id": {
+      "type": "string",
+      "description": "Current assigned nutrition plan ID"
+    },
+    "monthly_rate": {
+      "type": "number",
+      "description": "Monthly coaching rate in dollars"
+    }
+  },
+  "required": [
+    "name",
+    "email"
+  ]
+}

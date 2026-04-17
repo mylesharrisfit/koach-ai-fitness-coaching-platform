@@ -1,0 +1,78 @@
+{
+  "name": "CheckIn",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Client ID"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Weight in lbs"
+    },
+    "body_fat_pct": {
+      "type": "number"
+    },
+    "measurements": {
+      "type": "object",
+      "properties": {
+        "chest": {
+          "type": "number"
+        },
+        "waist": {
+          "type": "number"
+        },
+        "hips": {
+          "type": "number"
+        },
+        "arms": {
+          "type": "number"
+        },
+        "thighs": {
+          "type": "number"
+        }
+      }
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mood": {
+      "type": "string",
+      "enum": [
+        "great",
+        "good",
+        "okay",
+        "tired",
+        "stressed"
+      ]
+    },
+    "sleep_hours": {
+      "type": "number"
+    },
+    "compliance_training": {
+      "type": "number",
+      "description": "Training compliance 0-100"
+    },
+    "compliance_nutrition": {
+      "type": "number",
+      "description": "Nutrition compliance 0-100"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_id",
+    "date"
+  ]
+}

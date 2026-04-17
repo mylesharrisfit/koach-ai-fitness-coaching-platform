@@ -1,0 +1,95 @@
+{
+  "name": "WorkoutProgram",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Program name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Program description"
+    },
+    "duration_weeks": {
+      "type": "number",
+      "description": "Program duration in weeks"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "elite"
+      ],
+      "default": "intermediate"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "strength",
+        "hypertrophy",
+        "fat_loss",
+        "athletic",
+        "mobility",
+        "custom"
+      ],
+      "default": "custom"
+    },
+    "days_per_week": {
+      "type": "number",
+      "description": "Training days per week"
+    },
+    "workouts": {
+      "type": "array",
+      "description": "List of workouts in the program",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day_name": {
+            "type": "string"
+          },
+          "day_number": {
+            "type": "number"
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "sets": {
+                  "type": "number"
+                },
+                "reps": {
+                  "type": "string"
+                },
+                "rest_seconds": {
+                  "type": "number"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "superset_group": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "is_template": {
+      "type": "boolean",
+      "default": false
+    },
+    "image_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

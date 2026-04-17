@@ -1,0 +1,80 @@
+{
+  "name": "NutritionPlan",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Plan name"
+    },
+    "description": {
+      "type": "string"
+    },
+    "calories": {
+      "type": "number",
+      "description": "Daily calorie target"
+    },
+    "protein_g": {
+      "type": "number",
+      "description": "Daily protein in grams"
+    },
+    "carbs_g": {
+      "type": "number",
+      "description": "Daily carbs in grams"
+    },
+    "fats_g": {
+      "type": "number",
+      "description": "Daily fats in grams"
+    },
+    "meals": {
+      "type": "array",
+      "description": "Meal plan",
+      "items": {
+        "type": "object",
+        "properties": {
+          "meal_name": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "foods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "food_name": {
+                  "type": "string"
+                },
+                "portion": {
+                  "type": "string"
+                },
+                "calories": {
+                  "type": "number"
+                },
+                "protein": {
+                  "type": "number"
+                },
+                "carbs": {
+                  "type": "number"
+                },
+                "fats": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "is_template": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

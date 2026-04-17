@@ -1,0 +1,98 @@
+{
+  "name": "PlanListing",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "long_description": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price in dollars"
+    },
+    "original_price": {
+      "type": "number",
+      "description": "Original price for showing discount"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "workout",
+        "nutrition",
+        "bundle",
+        "coaching"
+      ],
+      "default": "workout"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced",
+        "all_levels"
+      ],
+      "default": "all_levels"
+    },
+    "duration_weeks": {
+      "type": "number"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "program_id": {
+      "type": "string",
+      "description": "Linked workout program ID"
+    },
+    "nutrition_id": {
+      "type": "string",
+      "description": "Linked nutrition plan ID"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    },
+    "sales_count": {
+      "type": "number",
+      "default": 0
+    },
+    "rating": {
+      "type": "number"
+    },
+    "testimonials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number"
+          },
+          "avatar_url": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "title",
+    "price"
+  ]
+}
