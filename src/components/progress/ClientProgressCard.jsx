@@ -1,0 +1,100 @@
+import React, { useState } from 'react';
+import { ChevronDown, ChevronUp, Scale, TrendingUp, TrendingDown, Minus, Moon, AlertTriangle } from 'lucide-react';
+import { format, differenceInDays } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
+import ClientAnalyticsView from './ClientAnalyticsView';
+
+const moodEmojis = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
+
+function getTrend(checkIns, field) {
+  const vals = checkIns.filter(ci => ci[field] != null).map(ci => ci[field]);
+  if (vals.length < 2) return 'neutral';
+  const first = vals[vals.length - 1];
+  const last = vals[0];
+  const diff = last - first;
+  if (field === 'weight' || field === 'body_fat_pct') {
+    return diff < -0.5 ? 'down-good' : diff > 0.5 ? 'up-bad' : 'neutral';
+  }
+  return diff > 0 ? 'up-good' : diff < 0 ? 'down-bad' : 'neutral';
+}
+
+function TrendIcon({ trend }) {
+  if (trend === 'down-good' || trend === 'up-good') return <TrendingDown className="w-3.5 h-3.5 text-emerald-400" />;
+  if (trend === 'up-bad' || trend === 'down-bad') return <TrendingUp className="w-3.5 h-3.5 text-destructive" />;
+  return <Minus className="w-3.5 h-3.5 text-muted-foreground" />;
+}
+
+function detectPlateau(checkIns, field) {
+  const recent = checkIns.filter(ci => ci[field] != null).slice(0, 4);
+  if (recent.length < 3) return false;
+  const daySpan = differenceInDays(new Date(recent[0].date), new Date(recent[recent.length - 1].date));
+  if (daySpan < 10) return false;
+  const vals = recent.map(ci => ci[field]);
+  const range = Math.max(...vals) - Math.min(...vals);
+  return range < 1.5;
+}
+
+export default function ClientProgressCard({ client, checkIns }) {
+  const [expanded, setExpanded] = useState(false);
+  const latest = checkIns[0];
+  const weightTrend = getTrend(checkIns, 'weight');
+  const bfTrend = getTrend(checkIns, 'body_fat_pct');
+  const plateau = detectPlateau(checkIns, 'weight');
+
+  return (
+    <div className="bg-card border border-border rounded-2xl overflow-hidden transition-all hover:border-primary/20">
+      {/* Header row */}
+      <button
+        className="w-full flex items-center gap-4 p-5 text-left hover:bg-secondary/20 transition-all"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
+          {client.name?.[0]?.toUpperCase() || '?'}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-semibold">{client.name}</p>
+            {plateau && (
+              <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs gap-1">
+                <AlertTriangle className="w-3 h-3" /> Plateau
+              </Badge>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {checkIns.length} check-ins · Last: {latest ? format(new Date(latest.date), 'MMM d') : 'None'}
+          </p>
+        </div>
+
+        {/* Quick stats */}
+        <div className="hidden sm:flex items-center gap-4 mr-4">
+          {latest?.weight && (
+            <div className="flex items-center gap-1.5 text-sm">
+              <Scale className="w-3.5 h-3.5 text-muted-foreground" />
+              <span>{latest.weight} lbs</span>
+              <TrendIcon trend={weightTrend} />
+            </div>
+          )}
+          {latest?.body_fat_pct && (
+            <div className="flex items-center gap-1.5 text-sm">
+              <span className="text-muted-foreground text-xs">BF%</span>
+              <span>{latest.body_fat_pct}%</span>
+              <TrendIcon trend={bfTrend} />
+            </div>
+          )}
+          {latest?.mood && (
+            <span className="text-lg">{moodEmojis[latest.mood]}</span>
+          )}
+        </div>
+
+        {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
+      </button>
+
+      {/* Expanded Analytics */}
+      {expanded && (
+        <div className="border-t border-border">
+          <ClientAnalyticsView client={client} checkIns={checkIns} />
+        </div>
+      )}
+    </div>
+  );
+}
