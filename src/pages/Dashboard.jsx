@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   const { data: checkIns = [] } = useQuery({
     queryKey: ['checkins'],
-    queryFn: () => base44.entities.CheckIn.list('-date', 50),
+    queryFn: () => base44.entities.CheckIn.list('-date', 100),
   });
 
   const { data: messages = [] } = useQuery({
