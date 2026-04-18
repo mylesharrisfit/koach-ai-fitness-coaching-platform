@@ -14,11 +14,12 @@ export const TIERS = {
     gradient: 'from-slate-400 to-slate-500',
     badge: 'bg-slate-400/15 text-slate-300 border-slate-400/20',
     limits: {
-      max_clients: 5,
+      max_clients: 20,
       max_programs: 3,
       max_nutrition_plans: 3,
     },
     features: {
+      // Pages
       clients: true,
       programs: true,
       nutrition: true,
@@ -32,10 +33,17 @@ export const TIERS = {
       sales: false,
       community: false,
       client_dashboard: false,
+      // Granular feature flags
       ai_suggestions: false,
       analytics: false,
       custom_branding: false,
       api_access: false,
+      voice_video_messages: false,   // Messaging limited to text only
+      program_templates: false,      // No templates or automation in program builder
+      analytics_graphs: false,       // No analytics graphs in progress
+      ai_features: false,            // No AI features
+      adherence_scoring: false,      // No adherence scoring
+      checkin_automation: false,     // No check-in automation
     },
   },
   pro: {
@@ -71,6 +79,12 @@ export const TIERS = {
       analytics: true,
       custom_branding: false,
       api_access: false,
+      voice_video_messages: true,
+      program_templates: true,
+      analytics_graphs: true,
+      ai_features: true,
+      adherence_scoring: true,
+      checkin_automation: true,
     },
   },
   elite: {
@@ -105,6 +119,12 @@ export const TIERS = {
       analytics: true,
       custom_branding: true,
       api_access: false,
+      voice_video_messages: true,
+      program_templates: true,
+      analytics_graphs: true,
+      ai_features: true,
+      adherence_scoring: true,
+      checkin_automation: true,
     },
   },
   enterprise: {
@@ -139,6 +159,12 @@ export const TIERS = {
       analytics: true,
       custom_branding: true,
       api_access: true,
+      voice_video_messages: true,
+      program_templates: true,
+      analytics_graphs: true,
+      ai_features: true,
+      adherence_scoring: true,
+      checkin_automation: true,
     },
   },
 };
@@ -199,6 +225,42 @@ export const FEATURE_INFO = {
     name: 'AI Message Suggestions',
     description: 'Get AI-powered reply suggestions when messaging clients.',
     icon: 'Sparkles',
+    minTier: 'pro',
+  },
+  voice_video_messages: {
+    name: 'Voice & Video Messages',
+    description: 'Send voice notes and video messages to clients.',
+    icon: 'Mic',
+    minTier: 'pro',
+  },
+  program_templates: {
+    name: 'Program Templates & Automation',
+    description: 'Use pre-built templates and automate program delivery to clients.',
+    icon: 'LayoutTemplate',
+    minTier: 'pro',
+  },
+  analytics_graphs: {
+    name: 'Analytics & Charts',
+    description: 'Visual trend charts for weight, compliance, body composition, and more.',
+    icon: 'TrendingUp',
+    minTier: 'pro',
+  },
+  ai_features: {
+    name: 'AI Features',
+    description: 'AI-powered suggestions, summaries, and content generation.',
+    icon: 'Sparkles',
+    minTier: 'pro',
+  },
+  adherence_scoring: {
+    name: 'Adherence Scoring',
+    description: 'Automated adherence scores and gamification for client motivation.',
+    icon: 'Trophy',
+    minTier: 'pro',
+  },
+  checkin_automation: {
+    name: 'Check-in Automation',
+    description: 'Automate client check-in forms and reminders.',
+    icon: 'ClipboardList',
     minTier: 'pro',
   },
   custom_branding: {

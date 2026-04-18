@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Dumbbell, Clock, BarChart3, MoreHorizontal, Edit, Trash2, Copy, Users } from 'lucide-react';
+import { Plus, Dumbbell, Clock, BarChart3, MoreHorizontal, Edit, Trash2, Copy, Users, Lock } from 'lucide-react';
+import { hasFeature } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -21,7 +22,14 @@ export default function Programs() {
   const [showForm, setShowForm] = useState(false);
   const [editingProgram, setEditingProgram] = useState(null);
   const [cloningProgram, setCloningProgram] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
+
+  const canUseTemplates = hasFeature(currentUser, 'program_templates');
 
   const { data: programs = [], isLoading } = useQuery({
     queryKey: ['programs'],
@@ -101,12 +109,20 @@ export default function Programs() {
                       <DropdownMenuItem onClick={() => { setEditingProgram(program); setShowForm(true); }}>
                         <Edit className="w-4 h-4 mr-2" /> Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => duplicateProgram(program)}>
-                        <Copy className="w-4 h-4 mr-2" /> Duplicate
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setCloningProgram(program)}>
-                        <Users className="w-4 h-4 mr-2" /> Clone to Clients
-                      </DropdownMenuItem>
+                      {canUseTemplates ? (
+                        <>
+                          <DropdownMenuItem onClick={() => duplicateProgram(program)}>
+                            <Copy className="w-4 h-4 mr-2" /> Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setCloningProgram(program)}>
+                            <Users className="w-4 h-4 mr-2" /> Clone to Clients
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <DropdownMenuItem disabled className="text-muted-foreground/50 cursor-not-allowed">
+                          <Lock className="w-4 h-4 mr-2" /> Templates & Clone (Pro+)
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(program.id)}>
                         <Trash2 className="w-4 h-4 mr-2" /> Delete
                       </DropdownMenuItem>

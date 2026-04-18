@@ -3,22 +3,18 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 const TIER_ORDER = ['starter', 'pro', 'elite', 'enterprise'];
 
 const TIER_LIMITS = {
-  starter: { max_clients: 5, max_programs: 3, max_nutrition_plans: 3 },
-  pro:     { max_clients: 25, max_programs: 20, max_nutrition_plans: 20 },
-  elite:   { max_clients: 100, max_programs: -1, max_nutrition_plans: -1 },
+  starter:    { max_clients: 20, max_programs: 3, max_nutrition_plans: 3 },
+  pro:        { max_clients: 25, max_programs: 20, max_nutrition_plans: 20 },
+  elite:      { max_clients: 100, max_programs: -1, max_nutrition_plans: -1 },
   enterprise: { max_clients: -1, max_programs: -1, max_nutrition_plans: -1 },
 };
 
 const TIER_FEATURES = {
   starter:    ['clients', 'programs', 'nutrition', 'schedule', 'messages'],
-  pro:        ['clients', 'programs', 'nutrition', 'schedule', 'messages', 'progress', 'store', 'assistant', 'adherence', 'checkin_review', 'client_dashboard', 'ai_suggestions', 'analytics'],
-  elite:      ['clients', 'programs', 'nutrition', 'schedule', 'messages', 'progress', 'store', 'assistant', 'adherence', 'checkin_review', 'sales', 'community', 'client_dashboard', 'ai_suggestions', 'analytics', 'custom_branding'],
-  enterprise: ['clients', 'programs', 'nutrition', 'schedule', 'messages', 'progress', 'store', 'assistant', 'adherence', 'checkin_review', 'sales', 'community', 'client_dashboard', 'ai_suggestions', 'analytics', 'custom_branding', 'api_access'],
+  pro:        ['clients', 'programs', 'nutrition', 'schedule', 'messages', 'progress', 'store', 'assistant', 'adherence', 'checkin_review', 'client_dashboard', 'ai_suggestions', 'analytics', 'voice_video_messages', 'program_templates', 'analytics_graphs', 'ai_features', 'adherence_scoring', 'checkin_automation'],
+  elite:      ['clients', 'programs', 'nutrition', 'schedule', 'messages', 'progress', 'store', 'assistant', 'adherence', 'checkin_review', 'sales', 'community', 'client_dashboard', 'ai_suggestions', 'analytics', 'custom_branding', 'voice_video_messages', 'program_templates', 'analytics_graphs', 'ai_features', 'adherence_scoring', 'checkin_automation'],
+  enterprise: ['clients', 'programs', 'nutrition', 'schedule', 'messages', 'progress', 'store', 'assistant', 'adherence', 'checkin_review', 'sales', 'community', 'client_dashboard', 'ai_suggestions', 'analytics', 'custom_branding', 'api_access', 'voice_video_messages', 'program_templates', 'analytics_graphs', 'ai_features', 'adherence_scoring', 'checkin_automation'],
 };
-
-function meetsMinTier(userTier, minTier) {
-  return TIER_ORDER.indexOf(userTier) >= TIER_ORDER.indexOf(minTier);
-}
 
 Deno.serve(async (req) => {
   try {
@@ -100,11 +96,7 @@ Deno.serve(async (req) => {
 
     // Return full tier info
     if (action === 'get_tier_info') {
-      return Response.json({
-        tier: userTier,
-        limits,
-        features,
-      });
+      return Response.json({ tier: userTier, limits, features });
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });

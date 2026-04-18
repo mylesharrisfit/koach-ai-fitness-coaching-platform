@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Scale, TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Scale, TrendingUp, TrendingDown, Minus, AlertTriangle, Lock } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import ClientAnalyticsView from './ClientAnalyticsView';
@@ -36,7 +36,7 @@ function detectPlateau(checkIns, field) {
   return range < 1.5;
 }
 
-export default function ClientProgressCard({ client, checkIns }) {
+export default function ClientProgressCard({ client, checkIns, showGraphs = true }) {
   const [expanded, setExpanded] = useState(false);
   const latest = checkIns[0];
   const weightTrend = getTrend(checkIns, 'weight');
@@ -67,10 +67,12 @@ export default function ClientProgressCard({ client, checkIns }) {
           </p>
         </div>
 
-        {/* Adherence score */}
-        <div className="hidden sm:block mr-2">
-          <AdherenceScore score={averageAdherenceScore(checkIns)} size="sm" showLabel={false} />
-        </div>
+        {/* Adherence score — Pro+ only */}
+        {showGraphs && (
+          <div className="hidden sm:block mr-2">
+            <AdherenceScore score={averageAdherenceScore(checkIns)} size="sm" showLabel={false} />
+          </div>
+        )}
 
         {/* Quick stats */}
         <div className="hidden sm:flex items-center gap-4 mr-4">
@@ -78,17 +80,17 @@ export default function ClientProgressCard({ client, checkIns }) {
             <div className="flex items-center gap-1.5 text-sm">
               <Scale className="w-3.5 h-3.5 text-muted-foreground" />
               <span>{latest.weight} lbs</span>
-              <TrendIcon trend={weightTrend} />
+              {showGraphs && <TrendIcon trend={weightTrend} />}
             </div>
           )}
-          {latest?.body_fat_pct && (
+          {showGraphs && latest?.body_fat_pct && (
             <div className="flex items-center gap-1.5 text-sm">
               <span className="text-muted-foreground text-xs">BF%</span>
               <span>{latest.body_fat_pct}%</span>
               <TrendIcon trend={bfTrend} />
             </div>
           )}
-          {latest?.mood && (
+          {showGraphs && latest?.mood && (
             <span className="text-lg">{moodEmojis[latest.mood]}</span>
           )}
         </div>
@@ -99,7 +101,27 @@ export default function ClientProgressCard({ client, checkIns }) {
       {/* Expanded Analytics */}
       {expanded && (
         <div className="border-t border-border">
-          <ClientAnalyticsView client={client} checkIns={checkIns} />
+          {showGraphs ? (
+            <ClientAnalyticsView client={client} checkIns={checkIns} />
+          ) : (
+            <div className="p-5 space-y-3">
+              {/* Basic: show recent weight + notes only */}
+              {checkIns.slice(0, 5).map(ci => (
+                <div key={ci.id} className="flex items-start gap-3 text-sm">
+                  <span className="text-muted-foreground text-xs w-20 flex-shrink-0 pt-0.5">{format(new Date(ci.date), 'MMM d')}</span>
+                  <div className="flex-1">
+                    {ci.weight && <span className="font-medium">{ci.weight} lbs</span>}
+                    {ci.notes && <p className="text-muted-foreground text-xs mt-0.5">{ci.notes}</p>}
+                  </div>
+                </div>
+              ))}
+              {checkIns.length === 0 && <p className="text-muted-foreground text-sm">No check-ins yet.</p>}
+              <div className="flex items-center gap-2 pt-2 border-t border-border text-xs text-muted-foreground">
+                <Lock className="w-3.5 h-3.5" />
+                Analytics graphs, trends & compliance charts available on Pro+.
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

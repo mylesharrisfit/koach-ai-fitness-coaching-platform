@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,18 +11,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { format } from 'date-fns';
 import PageHeader from '../components/shared/PageHeader';
 import ClientProgressCard from '../components/progress/ClientProgressCard';
+import { hasFeature } from '@/lib/subscription';
 
 const moodEmojis = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
 export default function Progress() {
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
   const [form, setForm] = useState({
     client_id: '', client_name: '', date: format(new Date(), 'yyyy-MM-dd'),
     weight: '', body_fat_pct: '', sleep_hours: '', mood: 'good',
     compliance_training: '', compliance_nutrition: '', notes: '',
   });
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
+
+  const canViewGraphs = hasFeature(currentUser, 'analytics_graphs');
 
   const { data: checkIns = [] } = useQuery({
     queryKey: ['checkins'],
@@ -68,8 +76,8 @@ export default function Progress() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       <PageHeader
-        title="Progress Insights"
-        subtitle="AI-powered client analytics & trend tracking"
+        title="Progress Tracking"
+        subtitle={canViewGraphs ? "Client analytics & trend tracking" : "Basic progress tracking — upgrade to Pro for full analytics"}
         actions={<Button onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-2" /> Log Check-in</Button>}
       />
 
@@ -93,6 +101,7 @@ export default function Progress() {
             key={client.id}
             client={client}
             checkIns={getClientCheckIns(client.id)}
+            showGraphs={canViewGraphs}
           />
         ))}
       </div>
@@ -114,21 +123,31 @@ export default function Progress() {
             <div><Label>Date *</Label><Input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required /></div>
             <div className="grid grid-cols-2 gap-4">
               <div><Label>Weight (lbs)</Label><Input type="number" value={form.weight} onChange={e => setForm({ ...form, weight: e.target.value })} /></div>
-              <div><Label>Body Fat %</Label><Input type="number" value={form.body_fat_pct} onChange={e => setForm({ ...form, body_fat_pct: e.target.value })} /></div>
-              <div><Label>Sleep (hours)</Label><Input type="number" value={form.sleep_hours} onChange={e => setForm({ ...form, sleep_hours: e.target.value })} /></div>
-              <div>
-                <Label>Mood</Label>
-                <Select value={form.mood} onValueChange={v => setForm({ ...form, mood: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(moodEmojis).map(([k, v]) => <SelectItem key={k} value={k}>{v} {k}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div><Label>Training Compliance %</Label><Input type="number" max={100} value={form.compliance_training} onChange={e => setForm({ ...form, compliance_training: e.target.value })} /></div>
-              <div><Label>Nutrition Compliance %</Label><Input type="number" max={100} value={form.compliance_nutrition} onChange={e => setForm({ ...form, compliance_nutrition: e.target.value })} /></div>
+              {canViewGraphs && (
+                <>
+                  <div><Label>Body Fat %</Label><Input type="number" value={form.body_fat_pct} onChange={e => setForm({ ...form, body_fat_pct: e.target.value })} /></div>
+                  <div><Label>Sleep (hours)</Label><Input type="number" value={form.sleep_hours} onChange={e => setForm({ ...form, sleep_hours: e.target.value })} /></div>
+                  <div>
+                    <Label>Mood</Label>
+                    <Select value={form.mood} onValueChange={v => setForm({ ...form, mood: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(moodEmojis).map(([k, v]) => <SelectItem key={k} value={k}>{v} {k}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div><Label>Training Compliance %</Label><Input type="number" max={100} value={form.compliance_training} onChange={e => setForm({ ...form, compliance_training: e.target.value })} /></div>
+                  <div><Label>Nutrition Compliance %</Label><Input type="number" max={100} value={form.compliance_nutrition} onChange={e => setForm({ ...form, compliance_nutrition: e.target.value })} /></div>
+                </>
+              )}
             </div>
             <div><Label>Notes</Label><Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={3} /></div>
+            {!canViewGraphs && (
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border text-xs text-muted-foreground">
+                <Lock className="w-3.5 h-3.5 flex-shrink-0" />
+                Body fat %, sleep, mood, and compliance fields are available on Pro+.
+              </div>
+            )}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
               <Button type="submit">Log Check-in</Button>

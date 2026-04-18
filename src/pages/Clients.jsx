@@ -13,6 +13,7 @@ import UsageMeter from '@/components/subscription/UsageMeter';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { getLimit } from '@/lib/subscription';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
@@ -88,7 +89,15 @@ export default function Clients() {
         title="Clients"
         subtitle={`${clients.filter(c => c.status === 'active').length} active clients`}
         actions={
-          <Button onClick={() => { setEditingClient(null); setShowForm(true); }}>
+          <Button onClick={() => {
+            const limit = getLimit(currentUser, 'max_clients');
+            if (limit !== -1 && clients.length >= limit) {
+              setUpgradeOpen(true);
+              return;
+            }
+            setEditingClient(null);
+            setShowForm(true);
+          }}>
             <Plus className="w-4 h-4 mr-2" /> Add Client
           </Button>
         }
