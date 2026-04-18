@@ -1,0 +1,56 @@
+{
+  "name": "Challenge",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "steps",
+        "workouts",
+        "water",
+        "streak",
+        "custom"
+      ],
+      "default": "workouts"
+    },
+    "goal": {
+      "type": "number",
+      "description": "Target number (e.g. 50000 steps, 5 workouts)"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Client IDs"
+    },
+    "emoji": {
+      "type": "string",
+      "default": "\ud83c\udfc6"
+    }
+  },
+  "required": [
+    "title",
+    "goal",
+    "start_date",
+    "end_date"
+  ]
+}

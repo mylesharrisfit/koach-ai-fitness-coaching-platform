@@ -22,6 +22,7 @@ import Adherence from './pages/Adherence';
 import CheckInReview from './pages/CheckInReview';
 import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
+import Community from './pages/Community';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
         <Route path="/checkin-review" element={<CheckInReview />} />
         <Route path="/sales" element={<Sales />} />
         <Route path="/my-day" element={<ClientDashboard />} />
+        <Route path="/community" element={<Community />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

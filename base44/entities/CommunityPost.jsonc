@@ -1,0 +1,45 @@
+{
+  "name": "CommunityPost",
+  "type": "object",
+  "properties": {
+    "author_id": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "author_avatar": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "media_url": {
+      "type": "string"
+    },
+    "likes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of user IDs who liked"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "post",
+        "win",
+        "challenge_update",
+        "milestone"
+      ],
+      "default": "post"
+    },
+    "challenge_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "author_id",
+    "content"
+  ]
+}

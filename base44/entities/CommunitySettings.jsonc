@@ -1,0 +1,22 @@
+{
+  "name": "CommunitySettings",
+  "type": "object",
+  "properties": {
+    "feed_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "leaderboard_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "challenges_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "coach_id": {
+      "type": "string"
+    }
+  },
+  "required": []
+}
