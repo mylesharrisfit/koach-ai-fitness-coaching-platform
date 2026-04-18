@@ -1,0 +1,73 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "instagram",
+        "referral",
+        "website",
+        "tiktok",
+        "youtube",
+        "other"
+      ],
+      "default": "other"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "booked",
+        "closed",
+        "active_client"
+      ],
+      "default": "lead"
+    },
+    "offer_tier": {
+      "type": "string",
+      "enum": [
+        "one_on_one",
+        "group",
+        "low_ticket"
+      ],
+      "description": "Offer tier they're interested in"
+    },
+    "call_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "call_time": {
+      "type": "string"
+    },
+    "call_link": {
+      "type": "string"
+    },
+    "deal_value": {
+      "type": "number",
+      "description": "Potential or closed deal value in USD"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "lost_reason": {
+      "type": "string"
+    },
+    "converted_client_id": {
+      "type": "string",
+      "description": "Client ID if converted"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

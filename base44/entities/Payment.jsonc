@@ -1,0 +1,53 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount in USD"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "failed",
+        "refunded"
+      ],
+      "default": "pending"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "one_time",
+        "upsell"
+      ],
+      "default": "monthly"
+    },
+    "description": {
+      "type": "string"
+    },
+    "stripe_payment_id": {
+      "type": "string"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "client_id",
+    "amount"
+  ]
+}

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Dumbbell, Salad, Calendar, 
   MessageSquare, TrendingUp, ShoppingBag, Settings, 
-  ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList
+  ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList, DollarSign
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -18,6 +18,7 @@ const navItems = [
   { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review' },
   { icon: TrendingUp, label: 'Progress', path: '/progress' },
   { icon: Trophy, label: 'Adherence', path: '/adherence' },
+  { icon: DollarSign, label: 'Sales', path: '/sales' },
   { icon: Sparkles, label: 'AI Assistant', path: '/assistant' },
   { icon: ShoppingBag, label: 'Store', path: '/store' },
 ];

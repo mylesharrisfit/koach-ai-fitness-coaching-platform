@@ -20,6 +20,7 @@ import Settings from './pages/Settings';
 import Assistant from './pages/Assistant';
 import Adherence from './pages/Adherence';
 import CheckInReview from './pages/CheckInReview';
+import Sales from './pages/Sales';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
         <Route path="/assistant" element={<Assistant />} />
         <Route path="/adherence" element={<Adherence />} />
         <Route path="/checkin-review" element={<CheckInReview />} />
+        <Route path="/sales" element={<Sales />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
