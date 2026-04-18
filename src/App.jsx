@@ -23,6 +23,8 @@ import CheckInReview from './pages/CheckInReview';
 import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
+import Subscription from './pages/Subscription';
+import PageGuard from './components/subscription/PageGuard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -56,15 +58,16 @@ const AuthenticatedApp = () => {
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/messages" element={<Messages />} />
-        <Route path="/progress" element={<Progress />} />
-        <Route path="/store" element={<Store />} />
+        <Route path="/progress" element={<PageGuard feature="progress"><Progress /></PageGuard>} />
+        <Route path="/store" element={<PageGuard feature="store"><Store /></PageGuard>} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/assistant" element={<Assistant />} />
-        <Route path="/adherence" element={<Adherence />} />
-        <Route path="/checkin-review" element={<CheckInReview />} />
-        <Route path="/sales" element={<Sales />} />
-        <Route path="/my-day" element={<ClientDashboard />} />
-        <Route path="/community" element={<Community />} />
+        <Route path="/assistant" element={<PageGuard feature="assistant"><Assistant /></PageGuard>} />
+        <Route path="/adherence" element={<PageGuard feature="adherence"><Adherence /></PageGuard>} />
+        <Route path="/checkin-review" element={<PageGuard feature="checkin_review"><CheckInReview /></PageGuard>} />
+        <Route path="/sales" element={<PageGuard feature="sales"><Sales /></PageGuard>} />
+        <Route path="/my-day" element={<PageGuard feature="client_dashboard"><ClientDashboard /></PageGuard>} />
+        <Route path="/community" element={<PageGuard feature="community"><Community /></PageGuard>} />
+        <Route path="/subscription" element={<Subscription />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

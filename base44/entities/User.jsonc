@@ -1,0 +1,42 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ],
+      "default": "admin",
+      "description": "User role in the app"
+    },
+    "subscription_tier": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "pro",
+        "elite",
+        "enterprise"
+      ],
+      "default": "starter",
+      "description": "Subscription plan tier"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Coaching business name"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
+    },
+    "specializations": {
+      "type": "string"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit } from 'lucide-react';
@@ -9,7 +9,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHeader from '../components/shared/PageHeader';
 import ClientForm from '../components/clients/ClientForm';
+import UsageMeter from '@/components/subscription/UsageMeter';
+import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
@@ -27,7 +30,13 @@ export default function Clients() {
   const [editingClient, setEditingClient] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [currentUser, setCurrentUser] = useState(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ['clients'],
@@ -35,8 +44,17 @@ export default function Clients() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Client.create(data),
+    mutationFn: async (data) => {
+      // Backend validation
+      const res = await base44.functions.invoke('validateSubscription', { action: 'validate_create_client' });
+      if (!res.data.allowed) {
+        setUpgradeOpen(true);
+        throw new Error(res.data.error);
+      }
+      return base44.entities.Client.create(data);
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+    onError: (err) => { if (!err.message?.includes('limit')) toast.error(err.message); },
   });
 
   const updateMutation = useMutation({
@@ -75,6 +93,16 @@ export default function Clients() {
           </Button>
         }
       />
+
+      <div className="mb-6">
+        <UsageMeter
+          user={currentUser}
+          limitKey="max_clients"
+          currentCount={clients.length}
+          label="Clients"
+          onUpgrade={() => setUpgradeOpen(true)}
+        />
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
@@ -167,6 +195,13 @@ export default function Clients() {
         onOpenChange={setShowForm} 
         onSubmit={handleSubmit} 
         client={editingClient}
+      />
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        featureKey="clients"
+        user={currentUser}
       />
     </div>
   );
