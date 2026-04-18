@@ -38,12 +38,13 @@ export const TIERS = {
       analytics: false,
       custom_branding: false,
       api_access: false,
-      voice_video_messages: false,   // Messaging limited to text only
-      program_templates: false,      // No templates or automation in program builder
-      analytics_graphs: false,       // No analytics graphs in progress
-      ai_features: false,            // No AI features
-      adherence_scoring: false,      // No adherence scoring
-      checkin_automation: false,     // No check-in automation
+      voice_video_messages: false,
+      program_templates: false,
+      analytics_graphs: false,
+      ai_features: false,
+      adherence_scoring: false,
+      checkin_automation: false,
+      basic_notifications: false,
     },
   },
   pro: {
@@ -57,34 +58,37 @@ export const TIERS = {
     badge: 'bg-primary/15 text-primary border-primary/20',
     popular: true,
     limits: {
-      max_clients: 25,
-      max_programs: 20,
-      max_nutrition_plans: 20,
+      max_clients: 75,
+      max_programs: 30,
+      max_nutrition_plans: 30,
     },
     features: {
+      // Pages
       clients: true,
       programs: true,
       nutrition: true,
       schedule: true,
       messages: true,
       progress: true,
-      store: true,
-      assistant: true,
+      store: false,
+      assistant: false,        // Advanced AI locked to Elite+
       adherence: true,
       checkin_review: true,
-      sales: false,
+      sales: false,            // Sales pipeline locked to Elite+
       community: false,
       client_dashboard: true,
-      ai_suggestions: true,
+      // Granular
+      ai_suggestions: false,   // Advanced AI locked
       analytics: true,
       custom_branding: false,
       api_access: false,
       voice_video_messages: true,
       program_templates: true,
       analytics_graphs: true,
-      ai_features: true,
+      ai_features: false,      // Advanced AI locked
       adherence_scoring: true,
       checkin_automation: true,
+      basic_notifications: true,
     },
   },
   elite: {
@@ -97,8 +101,8 @@ export const TIERS = {
     gradient: 'from-accent to-emerald-400',
     badge: 'bg-accent/15 text-accent border-accent/20',
     limits: {
-      max_clients: 100,
-      max_programs: -1, // unlimited
+      max_clients: 200,
+      max_programs: -1,
       max_nutrition_plans: -1,
     },
     features: {
@@ -125,6 +129,7 @@ export const TIERS = {
       ai_features: true,
       adherence_scoring: true,
       checkin_automation: true,
+      basic_notifications: true,
     },
   },
   enterprise: {
@@ -137,7 +142,7 @@ export const TIERS = {
     gradient: 'from-chart-4 to-amber-400',
     badge: 'bg-chart-4/15 text-chart-4 border-chart-4/20',
     limits: {
-      max_clients: -1, // unlimited
+      max_clients: -1,
       max_programs: -1,
       max_nutrition_plans: -1,
     },
@@ -165,6 +170,7 @@ export const TIERS = {
       ai_features: true,
       adherence_scoring: true,
       checkin_automation: true,
+      basic_notifications: true,
     },
   },
 };
@@ -246,10 +252,22 @@ export const FEATURE_INFO = {
     minTier: 'pro',
   },
   ai_features: {
-    name: 'AI Features',
+    name: 'Advanced AI Features',
     description: 'AI-powered suggestions, summaries, and content generation.',
     icon: 'Sparkles',
-    minTier: 'pro',
+    minTier: 'elite',
+  },
+  ai_suggestions: {
+    name: 'AI Message Suggestions',
+    description: 'Get AI-powered reply suggestions when messaging clients.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  assistant: {
+    name: 'AI Coach Assistant',
+    description: 'Generate programs, meal plans, and client check-in summaries with AI.',
+    icon: 'Sparkles',
+    minTier: 'elite',
   },
   adherence_scoring: {
     name: 'Adherence Scoring',
@@ -261,6 +279,12 @@ export const FEATURE_INFO = {
     name: 'Check-in Automation',
     description: 'Automate client check-in forms and reminders.',
     icon: 'ClipboardList',
+    minTier: 'pro',
+  },
+  basic_notifications: {
+    name: 'Basic Notifications',
+    description: 'Alerts for missed workouts and low client compliance.',
+    icon: 'Bell',
     minTier: 'pro',
   },
   custom_branding: {

@@ -2,12 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { TIERS, TIER_ORDER, getUserTier, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import PageHeader from '@/components/shared/PageHeader';
-import { Check, Zap, ArrowRight, Users, Dumbbell, Salad } from 'lucide-react';
+import { Check, X, Zap, ArrowRight, Users, Dumbbell, Salad } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
+
+// Human-readable highlight features per tier (ordered for the card)
+const TIER_HIGHLIGHTS = {
+  starter: [
+    'Up to 20 clients',
+    'Client management',
+    'Programs & nutrition builder',
+    'Scheduling & calendar',
+    'Text messaging',
+  ],
+  pro: [
+    'Up to 75 clients',
+    'Weekly check-in system',
+    'Coach check-in review dashboard',
+    'Adherence scoring (training, nutrition, sleep)',
+    'Analytics graphs (weight, body fat, trends)',
+    'Program templates & duplication',
+    'Basic notifications (missed workouts, low compliance)',
+    'Voice & video messaging',
+    'Client mobile dashboard',
+  ],
+  elite: [
+    'Up to 200 clients',
+    'All Pro features',
+    'Digital store',
+    'Sales & revenue CRM pipeline',
+    'Community module',
+    'Advanced AI coach assistant',
+    'AI message suggestions',
+    'Custom branding',
+  ],
+  enterprise: [
+    'Unlimited clients',
+    'All Elite features',
+    'API access',
+    'Priority support',
+  ],
+};
 
 export default function Subscription() {
   const [user, setUser] = useState(null);
@@ -137,20 +174,25 @@ export default function Subscription() {
               </div>
 
               <div className="space-y-2 mb-6 flex-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2">Limits</p>
-                {Object.entries(tier.limits).map(([k, v]) => (
-                  <div key={k} className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Check className="w-3 h-3 text-accent flex-shrink-0" />
-                    {v === -1 ? 'Unlimited' : `Up to ${v}`} {k.replace('max_', '').replace(/_/g, ' ')}
+                {(TIER_HIGHLIGHTS[tierKey] || []).map(feature => (
+                  <div key={feature} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
                   </div>
                 ))}
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mt-4 mb-2">Features</p>
-                {Object.entries(tier.features).filter(([, v]) => v).map(([k]) => (
-                  <div key={k} className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Check className="w-3 h-3 text-accent flex-shrink-0" />
-                    <span className="capitalize">{k.replace(/_/g, ' ')}</span>
+                {/* Explicitly show what's locked on lower tiers */}
+                {tierKey === 'starter' && (
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground/40 mt-2">
+                    <X className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                    <span>Analytics, check-ins, templates, notifications</span>
                   </div>
-                ))}
+                )}
+                {tierKey === 'pro' && (
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground/40 mt-2">
+                    <X className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                    <span>Advanced AI, sales pipeline, community</span>
+                  </div>
+                )}
               </div>
 
               {user?.role === 'admin' ? (
