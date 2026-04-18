@@ -29,15 +29,15 @@ export default function Dashboard() {
   const today = format(new Date(), 'EEEE, MMMM d');
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-8 lg:p-10 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+      <div className="flex items-center gap-4 mb-10 fade-up">
+        <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center glow-sm shadow-inner-top ring-1 ring-primary/20">
           <Zap className="w-5 h-5 text-primary" />
         </div>
         <div>
           <h1 className="text-2xl font-heading font-bold tracking-tight">Coach Command Center</h1>
-          <p className="text-sm text-muted-foreground">{today}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
         </div>
       </div>
 

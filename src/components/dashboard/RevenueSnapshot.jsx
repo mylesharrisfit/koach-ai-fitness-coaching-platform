@@ -15,24 +15,25 @@ export default function RevenueSnapshot({ clients }) {
   ];
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6">
-      <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Revenue Snapshot</h2>
-      <div className="grid grid-cols-2 gap-4">
+    <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <h2 className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-5">Revenue Snapshot</h2>
+      <div className="grid grid-cols-2 gap-5">
         {stats.map(s => (
-          <div key={s.label} className="flex items-center gap-3">
-            <div className={`w-9 h-9 rounded-lg ${s.bg} flex items-center justify-center flex-shrink-0`}>
+          <div key={s.label} className="flex items-center gap-3 group">
+            <div className={`w-9 h-9 rounded-xl ${s.bg} flex items-center justify-center flex-shrink-0 transition-all group-hover:scale-110`}>
               <s.icon className={`w-4 h-4 ${s.color}`} />
             </div>
             <div>
-              <p className="text-lg font-bold font-heading leading-none">{s.value}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
+              <p className="stat-number text-xl font-bold font-heading leading-none">{s.value}</p>
+              <p className="text-[10px] text-muted-foreground/70 mt-1 uppercase tracking-wide">{s.label}</p>
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-4 pt-4 border-t border-border flex items-center gap-2">
-        <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-        <p className="text-xs text-muted-foreground">MRR up <span className="text-emerald-400 font-medium">+8%</span> vs last month</p>
+      <div className="mt-5 pt-4 border-t border-border/50 flex items-center gap-2">
+        <TrendingUp className="w-3 h-3 text-emerald-400" />
+        <p className="text-[11px] text-muted-foreground">MRR up <span className="text-emerald-400 font-semibold">+8%</span> vs last month</p>
       </div>
     </div>
   );
