@@ -1,0 +1,67 @@
+{
+  "name": "AutomationRule",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Rule name"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "condition_type": {
+      "type": "string",
+      "enum": [
+        "missed_checkin",
+        "missed_workouts",
+        "low_adherence",
+        "weight_plateau",
+        "low_nutrition",
+        "mood_low",
+        "no_progress",
+        "declining_trend"
+      ]
+    },
+    "condition_threshold": {
+      "type": "number",
+      "description": "Numeric threshold for the condition (days, percentage, etc.)"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "send_message",
+        "notify_coach",
+        "adjust_calories",
+        "flag_client",
+        "send_template"
+      ]
+    },
+    "action_message": {
+      "type": "string",
+      "description": "Message content or template text to send"
+    },
+    "action_calorie_delta": {
+      "type": "number",
+      "description": "Calorie adjustment amount (positive or negative)"
+    },
+    "trigger_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this rule has fired"
+    },
+    "last_triggered": {
+      "type": "string",
+      "format": "date",
+      "description": "Last date this rule was triggered"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "condition_type",
+    "action_type"
+  ]
+}
