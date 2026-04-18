@@ -101,11 +101,12 @@ export const TIERS = {
     gradient: 'from-accent to-emerald-400',
     badge: 'bg-accent/15 text-accent border-accent/20',
     limits: {
-      max_clients: 200,
+      max_clients: -1,      // Unlimited
       max_programs: -1,
       max_nutrition_plans: -1,
     },
     features: {
+      // Pages
       clients: true,
       programs: true,
       nutrition: true,
@@ -119,9 +120,10 @@ export const TIERS = {
       sales: true,
       community: true,
       client_dashboard: true,
+      // Granular — all Pro features
       ai_suggestions: true,
       analytics: true,
-      custom_branding: true,
+      custom_branding: true,       // White-label branding
       api_access: false,
       voice_video_messages: true,
       program_templates: true,
@@ -130,6 +132,13 @@ export const TIERS = {
       adherence_scoring: true,
       checkin_automation: true,
       basic_notifications: true,
+      // Elite-exclusive
+      ai_calorie_suggestions: true,      // AI calorie adjustment suggestions
+      ai_workout_progression: true,      // AI workout progression suggestions
+      ai_checkin_responses: true,        // Auto-generated check-in responses
+      auto_progression_rules: true,      // Auto progression rules for workouts
+      trigger_notifications: true,       // Trigger-based notifications
+      revenue_dashboard: true,           // MRR & revenue dashboard
     },
   },
   enterprise: {
@@ -171,6 +180,12 @@ export const TIERS = {
       adherence_scoring: true,
       checkin_automation: true,
       basic_notifications: true,
+      ai_calorie_suggestions: true,
+      ai_workout_progression: true,
+      ai_checkin_responses: true,
+      auto_progression_rules: true,
+      trigger_notifications: true,
+      revenue_dashboard: true,
     },
   },
 };
@@ -179,22 +194,11 @@ export const TIER_ORDER = ['starter', 'pro', 'elite', 'enterprise'];
 
 /** Feature display info for the upgrade modal */
 export const FEATURE_INFO = {
+  // Pro-tier features
   progress: {
     name: 'Progress Analytics',
     description: 'Track client body metrics, weight trends, and compliance charts over time.',
     icon: 'TrendingUp',
-    minTier: 'pro',
-  },
-  store: {
-    name: 'Digital Store',
-    description: 'Sell workout programs and nutrition plans directly to clients online.',
-    icon: 'ShoppingBag',
-    minTier: 'pro',
-  },
-  assistant: {
-    name: 'AI Coach Assistant',
-    description: 'Generate programs, meal plans, and client check-in summaries with AI.',
-    icon: 'Sparkles',
     minTier: 'pro',
   },
   adherence: {
@@ -209,28 +213,10 @@ export const FEATURE_INFO = {
     icon: 'ClipboardList',
     minTier: 'pro',
   },
-  sales: {
-    name: 'Sales & Revenue CRM',
-    description: 'Manage your pipeline, track leads, and monitor recurring revenue.',
-    icon: 'DollarSign',
-    minTier: 'elite',
-  },
-  community: {
-    name: 'Community Module',
-    description: 'Build a client community with feeds, challenges, and leaderboards.',
-    icon: 'Globe',
-    minTier: 'elite',
-  },
   client_dashboard: {
     name: 'Client Mobile Dashboard',
     description: 'Give clients a beautiful daily dashboard with rings, streaks, and logs.',
     icon: 'Smartphone',
-    minTier: 'pro',
-  },
-  ai_suggestions: {
-    name: 'AI Message Suggestions',
-    description: 'Get AI-powered reply suggestions when messaging clients.',
-    icon: 'Sparkles',
     minTier: 'pro',
   },
   voice_video_messages: {
@@ -251,24 +237,6 @@ export const FEATURE_INFO = {
     icon: 'TrendingUp',
     minTier: 'pro',
   },
-  ai_features: {
-    name: 'Advanced AI Features',
-    description: 'AI-powered suggestions, summaries, and content generation.',
-    icon: 'Sparkles',
-    minTier: 'elite',
-  },
-  ai_suggestions: {
-    name: 'AI Message Suggestions',
-    description: 'Get AI-powered reply suggestions when messaging clients.',
-    icon: 'Sparkles',
-    minTier: 'elite',
-  },
-  assistant: {
-    name: 'AI Coach Assistant',
-    description: 'Generate programs, meal plans, and client check-in summaries with AI.',
-    icon: 'Sparkles',
-    minTier: 'elite',
-  },
   adherence_scoring: {
     name: 'Adherence Scoring',
     description: 'Automated adherence scores and gamification for client motivation.',
@@ -287,23 +255,97 @@ export const FEATURE_INFO = {
     icon: 'Bell',
     minTier: 'pro',
   },
-  custom_branding: {
-    name: 'Custom Branding',
-    description: 'White-label the platform with your logo, colors, and domain.',
-    icon: 'Palette',
-    minTier: 'elite',
-  },
-  api_access: {
-    name: 'API Access',
-    description: 'Connect FitForge to your own tools and workflows via REST API.',
-    icon: 'Code',
-    minTier: 'enterprise',
-  },
   clients: {
     name: 'More Clients',
     description: 'Upgrade your plan to manage more clients and grow your business.',
     icon: 'Users',
     minTier: 'pro',
+  },
+  // Elite-tier features
+  store: {
+    name: 'Digital Store',
+    description: 'Sell workout programs and nutrition plans directly to clients online.',
+    icon: 'ShoppingBag',
+    minTier: 'elite',
+  },
+  assistant: {
+    name: 'AI Coach Assistant',
+    description: 'Full AI assistant with calorie adjustments, workout progression, and check-in responses.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  ai_features: {
+    name: 'Advanced AI Features',
+    description: 'AI-powered suggestions, summaries, and content generation.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  ai_suggestions: {
+    name: 'AI Message Suggestions',
+    description: 'Get AI-powered reply suggestions when messaging clients.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  ai_calorie_suggestions: {
+    name: 'AI Calorie Adjustments',
+    description: 'Get smart calorie and macro adjustment suggestions based on client progress.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  ai_workout_progression: {
+    name: 'AI Workout Progression',
+    description: 'Automatic workout progression suggestions based on client performance.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  ai_checkin_responses: {
+    name: 'Auto Check-in Responses',
+    description: 'AI-generated personalized responses to client weekly check-ins.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  auto_progression_rules: {
+    name: 'Auto Progression Rules',
+    description: 'Set rules to automatically progress workouts as clients hit milestones.',
+    icon: 'Zap',
+    minTier: 'elite',
+  },
+  trigger_notifications: {
+    name: 'Trigger-Based Notifications',
+    description: 'Set automated alerts based on client behavior and performance triggers.',
+    icon: 'Bell',
+    minTier: 'elite',
+  },
+  revenue_dashboard: {
+    name: 'Revenue Dashboard',
+    description: 'Monitor MRR, active clients, churn risk, and business growth metrics.',
+    icon: 'DollarSign',
+    minTier: 'elite',
+  },
+  sales: {
+    name: 'Sales Pipeline CRM',
+    description: 'Track leads from first contact through close with notes and status management.',
+    icon: 'DollarSign',
+    minTier: 'elite',
+  },
+  community: {
+    name: 'Community Module',
+    description: 'Build a client community with feeds, challenges, and leaderboards.',
+    icon: 'Globe',
+    minTier: 'elite',
+  },
+  custom_branding: {
+    name: 'White-Label Branding',
+    description: 'Customize the platform with your own logo, colors, and domain.',
+    icon: 'Palette',
+    minTier: 'elite',
+  },
+  // Enterprise-tier features
+  api_access: {
+    name: 'API Access',
+    description: 'Connect FitForge to your own tools and workflows via REST API.',
+    icon: 'Code',
+    minTier: 'enterprise',
   },
 };
 

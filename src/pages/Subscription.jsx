@@ -29,14 +29,17 @@ const TIER_HIGHLIGHTS = {
     'Client mobile dashboard',
   ],
   elite: [
-    'Up to 200 clients',
+    'Unlimited clients',
     'All Pro features',
+    'Full AI assistant (calorie, progression, check-in responses)',
+    'Auto progression rules for workouts',
+    'Trigger-based notifications',
+    'Sales pipeline (lead → booked → closed)',
+    'Revenue dashboard (MRR, active clients)',
+    'White-label branding (logo & colors)',
     'Digital store',
-    'Sales & revenue CRM pipeline',
     'Community module',
-    'Advanced AI coach assistant',
-    'AI message suggestions',
-    'Custom branding',
+    'Voice & video messaging',
   ],
   enterprise: [
     'Unlimited clients',
@@ -190,7 +193,7 @@ export default function Subscription() {
                 {tierKey === 'pro' && (
                   <div className="flex items-start gap-2 text-xs text-muted-foreground/40 mt-2">
                     <X className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                    <span>Advanced AI, sales pipeline, community</span>
+                    <span>AI assistant, sales pipeline, revenue dashboard, automation</span>
                   </div>
                 )}
               </div>

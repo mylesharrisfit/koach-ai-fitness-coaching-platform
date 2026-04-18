@@ -3,11 +3,22 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 const TIER_ORDER = ['starter', 'pro', 'elite', 'enterprise'];
 
 const TIER_LIMITS = {
-  starter:    { max_clients: 20,  max_programs: 3,  max_nutrition_plans: 3 },
-  pro:        { max_clients: 75,  max_programs: 30, max_nutrition_plans: 30 },
-  elite:      { max_clients: 200, max_programs: -1, max_nutrition_plans: -1 },
-  enterprise: { max_clients: -1,  max_programs: -1, max_nutrition_plans: -1 },
+  starter:    { max_clients: 20, max_programs: 3,  max_nutrition_plans: 3 },
+  pro:        { max_clients: 75, max_programs: 30, max_nutrition_plans: 30 },
+  elite:      { max_clients: -1, max_programs: -1, max_nutrition_plans: -1 },
+  enterprise: { max_clients: -1, max_programs: -1, max_nutrition_plans: -1 },
 };
+
+const ELITE_FEATURES = [
+  'clients', 'programs', 'nutrition', 'schedule', 'messages',
+  'progress', 'store', 'assistant', 'adherence', 'checkin_review',
+  'sales', 'community', 'client_dashboard',
+  'ai_suggestions', 'analytics', 'custom_branding', 'voice_video_messages',
+  'program_templates', 'analytics_graphs', 'ai_features',
+  'adherence_scoring', 'checkin_automation', 'basic_notifications',
+  'ai_calorie_suggestions', 'ai_workout_progression', 'ai_checkin_responses',
+  'auto_progression_rules', 'trigger_notifications', 'revenue_dashboard',
+];
 
 const TIER_FEATURES = {
   starter: [
@@ -19,22 +30,8 @@ const TIER_FEATURES = {
     'analytics', 'voice_video_messages', 'program_templates',
     'analytics_graphs', 'adherence_scoring', 'checkin_automation', 'basic_notifications',
   ],
-  elite: [
-    'clients', 'programs', 'nutrition', 'schedule', 'messages',
-    'progress', 'store', 'assistant', 'adherence', 'checkin_review',
-    'sales', 'community', 'client_dashboard',
-    'ai_suggestions', 'analytics', 'custom_branding', 'voice_video_messages',
-    'program_templates', 'analytics_graphs', 'ai_features',
-    'adherence_scoring', 'checkin_automation', 'basic_notifications',
-  ],
-  enterprise: [
-    'clients', 'programs', 'nutrition', 'schedule', 'messages',
-    'progress', 'store', 'assistant', 'adherence', 'checkin_review',
-    'sales', 'community', 'client_dashboard',
-    'ai_suggestions', 'analytics', 'custom_branding', 'api_access', 'voice_video_messages',
-    'program_templates', 'analytics_graphs', 'ai_features',
-    'adherence_scoring', 'checkin_automation', 'basic_notifications',
-  ],
+  elite: ELITE_FEATURES,
+  enterprise: [...ELITE_FEATURES, 'api_access'],
 };
 
 Deno.serve(async (req) => {
