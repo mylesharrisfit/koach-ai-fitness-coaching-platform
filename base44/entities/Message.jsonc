@@ -24,6 +24,35 @@
     "is_read": {
       "type": "boolean",
       "default": false
+    },
+    "tag": {
+      "type": "string",
+      "enum": [
+        "check_in",
+        "urgent",
+        "nutrition",
+        "training",
+        "motivation",
+        "general"
+      ],
+      "description": "Message tag/category"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "voice",
+        "video"
+      ],
+      "default": "text"
+    },
+    "media_url": {
+      "type": "string",
+      "description": "URL for voice/video media"
     }
   },
   "required": [
