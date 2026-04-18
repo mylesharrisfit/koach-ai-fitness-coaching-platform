@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
@@ -9,8 +9,18 @@ import AtRiskClients from '../components/dashboard/AtRiskClients';
 import HotLeads from '../components/dashboard/HotLeads';
 import ClientAlerts from '../components/dashboard/ClientAlerts';
 import DailyChecklist from '../components/dashboard/DailyChecklist';
+import BehaviorNudge from '@/components/subscription/BehaviorNudge';
+import { getActiveNudges } from '@/lib/upgradeNudges';
+import { useUpgradeModal } from '@/components/layout/AppLayout';
 
 export default function Dashboard() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const { openUpgradeModal } = useUpgradeModal();
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
+
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list('-created_date'),
@@ -28,6 +38,13 @@ export default function Dashboard() {
 
   const today = format(new Date(), 'EEEE, MMMM d');
 
+  const activeNudges = getActiveNudges({
+    user: currentUser,
+    clientCount: clients.filter(c => c.status === 'active').length,
+    checkInCount: checkIns.length,
+  });
+  const topNudge = activeNudges[0] || null;
+
   return (
     <div className="p-8 lg:p-10 max-w-7xl mx-auto">
       {/* Header */}
@@ -40,6 +57,11 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
         </div>
       </div>
+
+      {/* Behavior-based upgrade nudge */}
+      {topNudge && (
+        <BehaviorNudge nudge={topNudge} onUpgrade={openUpgradeModal} className="mb-6 fade-up" />
+      )}
 
       {/* Row 1: Revenue + Checklist */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">

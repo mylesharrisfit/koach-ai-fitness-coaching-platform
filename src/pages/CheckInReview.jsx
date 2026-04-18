@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, subDays } from 'date-fns';
@@ -10,6 +10,10 @@ import { cn } from '@/lib/utils';
 import PageHeader from '../components/shared/PageHeader';
 import AdherenceScore from '../components/adherence/AdherenceScore';
 import { checkInScore } from '@/lib/adherence';
+import BehaviorNudge from '@/components/subscription/BehaviorNudge';
+import { getActiveNudges } from '@/lib/upgradeNudges';
+import { useUpgradeModal } from '@/components/layout/AppLayout';
+import { hasFeature } from '@/lib/subscription';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
@@ -160,6 +164,12 @@ Write a warm, encouraging, and specific coach reply (max 80 words). Acknowledge 
 
 export default function CheckInReview() {
   const [filter, setFilter] = useState('week');
+  const [currentUser, setCurrentUser] = useState(null);
+  const { openUpgradeModal } = useUpgradeModal();
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -176,6 +186,15 @@ export default function CheckInReview() {
 
   const filtered = checkIns.filter(ci => new Date(ci.date) >= cutoff);
   const clientMap = Object.fromEntries(clients.map(c => [c.id, c]));
+
+  // Show AI nudge if user has 5+ check-ins and doesn't have the AI feature
+  const hasAI = hasFeature(currentUser, 'ai_checkin_responses');
+  const aiNudges = !hasAI ? getActiveNudges({
+    user: currentUser,
+    clientCount: clients.length,
+    checkInCount: checkIns.length,
+  }).filter(n => n.id.startsWith('checkin_ai_hint')) : [];
+  const aiNudge = aiNudges[0] || null;
 
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
@@ -196,6 +215,10 @@ export default function CheckInReview() {
           </div>
         }
       />
+
+      {aiNudge && (
+        <BehaviorNudge nudge={aiNudge} onUpgrade={openUpgradeModal} className="mb-6" />
+      )}
 
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
