@@ -9,21 +9,27 @@
     "description": {
       "type": "string"
     },
+    "tracking_mode": {
+      "type": "string",
+      "enum": [
+        "macros",
+        "habits"
+      ],
+      "default": "macros",
+      "description": "macro tracking vs habit-based mode"
+    },
     "calories": {
       "type": "number",
       "description": "Daily calorie target"
     },
     "protein_g": {
-      "type": "number",
-      "description": "Daily protein in grams"
+      "type": "number"
     },
     "carbs_g": {
-      "type": "number",
-      "description": "Daily carbs in grams"
+      "type": "number"
     },
     "fats_g": {
-      "type": "number",
-      "description": "Daily fats in grams"
+      "type": "number"
     },
     "meals": {
       "type": "array",
@@ -36,6 +42,10 @@
           },
           "time": {
             "type": "string"
+          },
+          "habit_description": {
+            "type": "string",
+            "description": "Used in habits mode"
           },
           "foods": {
             "type": "array",
@@ -59,6 +69,12 @@
                 },
                 "fats": {
                   "type": "number"
+                },
+                "swap_options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               }
             }

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Dumbbell, Clock, BarChart3, MoreHorizontal, Edit, Trash2, Copy } from 'lucide-react';
+import { Plus, Dumbbell, Clock, BarChart3, MoreHorizontal, Edit, Trash2, Copy, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import PageHeader from '../components/shared/PageHeader';
 import ProgramForm from '../components/programs/ProgramForm';
+import CloneToClientDialog from '../components/programs/CloneToClientDialog';
 import { cn } from '@/lib/utils';
 
 const difficultyColors = {
@@ -19,6 +20,7 @@ const difficultyColors = {
 export default function Programs() {
   const [showForm, setShowForm] = useState(false);
   const [editingProgram, setEditingProgram] = useState(null);
+  const [cloningProgram, setCloningProgram] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: programs = [], isLoading } = useQuery({
@@ -102,6 +104,9 @@ export default function Programs() {
                       <DropdownMenuItem onClick={() => duplicateProgram(program)}>
                         <Copy className="w-4 h-4 mr-2" /> Duplicate
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setCloningProgram(program)}>
+                        <Users className="w-4 h-4 mr-2" /> Clone to Clients
+                      </DropdownMenuItem>
                       <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(program.id)}>
                         <Trash2 className="w-4 h-4 mr-2" /> Delete
                       </DropdownMenuItem>
@@ -144,6 +149,14 @@ export default function Programs() {
         onSubmit={handleSubmit}
         program={editingProgram}
       />
+
+      {cloningProgram && (
+        <CloneToClientDialog
+          open={!!cloningProgram}
+          onOpenChange={(v) => !v && setCloningProgram(null)}
+          program={cloningProgram}
+        />
+      )}
     </div>
   );
 }
