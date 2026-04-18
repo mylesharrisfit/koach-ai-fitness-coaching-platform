@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Scale, TrendingUp, TrendingDown, Minus, Moon, AlertTriangle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Scale, TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import ClientAnalyticsView from './ClientAnalyticsView';
+import AdherenceScore from '../adherence/AdherenceScore';
+import { averageAdherenceScore } from '@/lib/adherence';
 
 const moodEmojis = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
@@ -63,6 +65,11 @@ export default function ClientProgressCard({ client, checkIns }) {
           <p className="text-xs text-muted-foreground mt-0.5">
             {checkIns.length} check-ins · Last: {latest ? format(new Date(latest.date), 'MMM d') : 'None'}
           </p>
+        </div>
+
+        {/* Adherence score */}
+        <div className="hidden sm:block mr-2">
+          <AdherenceScore score={averageAdherenceScore(checkIns)} size="sm" showLabel={false} />
         </div>
 
         {/* Quick stats */}

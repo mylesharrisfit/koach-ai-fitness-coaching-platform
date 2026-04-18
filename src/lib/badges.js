@@ -1,0 +1,58 @@
+export const BADGE_CONFIG = {
+  streak_7: {
+    label: '7-Day Streak',
+    emoji: '🔥',
+    color: 'text-orange-400',
+    bg: 'bg-orange-500/10 border-orange-500/30',
+    desc: '7 consistent check-ins',
+  },
+  streak_14: {
+    label: '14-Day Streak',
+    emoji: '⚡',
+    color: 'text-yellow-400',
+    bg: 'bg-yellow-500/10 border-yellow-500/30',
+    desc: '14 consecutive check-ins',
+  },
+  streak_30: {
+    label: '30-Day Streak',
+    emoji: '💎',
+    color: 'text-cyan-400',
+    bg: 'bg-cyan-500/10 border-cyan-500/30',
+    desc: '30-day champion',
+  },
+  perfect_week: {
+    label: 'Perfect Week',
+    emoji: '⭐',
+    color: 'text-yellow-300',
+    bg: 'bg-yellow-500/10 border-yellow-500/30',
+    desc: '4 consecutive 80%+ scores',
+  },
+  pr_hit: {
+    label: 'PR Hit',
+    emoji: '🏆',
+    color: 'text-amber-400',
+    bg: 'bg-amber-500/10 border-amber-500/30',
+    desc: 'Personal record achieved',
+  },
+  comeback: {
+    label: 'Comeback',
+    emoji: '💪',
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-500/10 border-emerald-500/30',
+    desc: 'Bounced back from a tough week',
+  },
+  consistent_month: {
+    label: 'Consistent Month',
+    emoji: '📅',
+    color: 'text-blue-400',
+    bg: 'bg-blue-500/10 border-blue-500/30',
+    desc: '30+ days of consistency',
+  },
+  goal_reached: {
+    label: 'Goal Reached',
+    emoji: '🎯',
+    color: 'text-primary',
+    bg: 'bg-primary/10 border-primary/30',
+    desc: 'Target weight/goal achieved',
+  },
+};
