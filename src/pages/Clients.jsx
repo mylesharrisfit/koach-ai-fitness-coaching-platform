@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import PageHeader from '../components/shared/PageHeader';
 import ClientForm from '../components/clients/ClientForm';
+import LifecycleBadge, { LIFECYCLE_CONFIG } from '../components/clients/LifecycleBadge';
 import UsageMeter from '@/components/subscription/UsageMeter';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
@@ -20,17 +21,15 @@ const goalLabels = {
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
 };
 
-const statusColors = {
-  active: 'bg-accent/10 text-accent border-accent/20',
-  inactive: 'bg-muted text-muted-foreground border-border',
-  prospect: 'bg-chart-4/10 text-chart-4 border-chart-4/20',
-};
+const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
 
 export default function Clients() {
   const [showForm, setShowForm] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [tagFilter, setTagFilter] = useState('');
+  const [sortBy, setSortBy] = useState('created_date');
   const [currentUser, setCurrentUser] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -46,62 +45,81 @@ export default function Clients() {
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
-      // Backend validation
       const res = await base44.functions.invoke('validateSubscription', { action: 'validate_create_client' });
-      if (!res.data.allowed) {
-        setUpgradeOpen(true);
-        throw new Error(res.data.error);
-      }
+      if (!res.data.allowed) { setUpgradeOpen(true); throw new Error(res.data.error); }
       return base44.entities.Client.create(data);
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); toast.success('Client added'); },
     onError: (err) => { if (!err.message?.includes('limit')) toast.error(err.message); },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Client.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); toast.success('Client updated'); },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Client.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); toast.success('Client deleted'); },
   });
 
-  const filteredClients = clients.filter(c => {
-    const matchesSearch = c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  // Collect all unique tags across clients
+  const allTags = useMemo(() => {
+    const set = new Set();
+    clients.forEach(c => (c.tags || []).forEach(t => set.add(t)));
+    return Array.from(set).sort();
+  }, [clients]);
+
+  // Filtered + sorted clients
+  const filteredClients = useMemo(() => {
+    let result = clients.filter(c => {
+      const matchesSearch = !search || c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || c.lifecycle_status === statusFilter;
+      const matchesTag = !tagFilter || (c.tags || []).includes(tagFilter);
+      return matchesSearch && matchesStatus && matchesTag;
+    });
+
+    result = [...result].sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name);
+      if (sortBy === 'lifecycle') return LIFECYCLE_ORDER.indexOf(a.lifecycle_status || 'lead') - LIFECYCLE_ORDER.indexOf(b.lifecycle_status || 'lead');
+      if (sortBy === 'monthly_rate') return (b.monthly_rate || 0) - (a.monthly_rate || 0);
+      // default: newest first
+      return new Date(b.created_date) - new Date(a.created_date);
+    });
+
+    return result;
+  }, [clients, search, statusFilter, tagFilter, sortBy]);
+
+  // Status counts for tabs
+  const counts = useMemo(() => {
+    const c = { all: clients.length };
+    LIFECYCLE_ORDER.forEach(s => { c[s] = clients.filter(cl => (cl.lifecycle_status || 'lead') === s).length; });
+    return c;
+  }, [clients]);
 
   const handleSubmit = (data) => {
-    if (editingClient) {
-      updateMutation.mutate({ id: editingClient.id, data });
-    } else {
-      createMutation.mutate(data);
-    }
+    if (editingClient) updateMutation.mutate({ id: editingClient.id, data });
+    else createMutation.mutate(data);
     setEditingClient(null);
+  };
+
+  const handleStatusChange = (client, newStatus) => {
+    updateMutation.mutate({ id: client.id, data: { ...client, lifecycle_status: newStatus } });
   };
 
   const clientLimit = getLimit(currentUser, 'max_clients');
   const atLimit = clientLimit !== -1 && clients.length >= clientLimit;
 
+  const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + (tagFilter ? 1 : 0);
+
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader 
+      <PageHeader
         title="Clients"
-        subtitle={
-          clientLimit === -1
-            ? `${clients.filter(c => c.status === 'active').length} active clients`
-            : `${clients.length} / ${clientLimit} clients used`
-        }
+        subtitle={`${counts.active || 0} active · ${counts.at_risk || 0} at risk · ${counts.lead || 0} leads`}
         actions={
           <Button
-            onClick={() => {
-              if (atLimit) { setUpgradeOpen(true); return; }
-              setEditingClient(null);
-              setShowForm(true);
-            }}
+            onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
             variant={atLimit ? 'outline' : 'default'}
             className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
           >
@@ -112,49 +130,83 @@ export default function Clients() {
       />
 
       <div className="mb-6 space-y-3">
-        <UsageMeter
-          user={currentUser}
-          limitKey="max_clients"
-          currentCount={clients.length}
-          label="Clients"
-          onUpgrade={() => setUpgradeOpen(true)}
-        />
+        <UsageMeter user={currentUser} limitKey="max_clients" currentCount={clients.length} label="Clients" onUpgrade={() => setUpgradeOpen(true)} />
         {atLimit && (
           <div className="flex items-center justify-between rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
-            <span className="text-destructive font-medium">
-              You've reached your {clientLimit}-client limit. Upgrade to add more.
-            </span>
-            <Button size="sm" onClick={() => setUpgradeOpen(true)}>
-              Upgrade Plan
-            </Button>
+            <span className="text-destructive font-medium">You've reached your {clientLimit}-client limit.</span>
+            <Button size="sm" onClick={() => setUpgradeOpen(true)}>Upgrade</Button>
           </div>
         )}
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      {/* Lifecycle status tabs */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {[{ key: 'all', label: 'All' }, ...LIFECYCLE_ORDER.map(s => ({ key: s, label: LIFECYCLE_CONFIG[s].label }))].map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setStatusFilter(key)}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all',
+              statusFilter === key
+                ? key === 'all' ? 'bg-primary/15 text-primary border-primary/30' : `${LIFECYCLE_CONFIG[key]?.color} border-opacity-50`
+                : 'bg-secondary/50 text-muted-foreground border-transparent hover:border-border hover:text-foreground'
+            )}
+          >
+            {label}
+            <span className={cn('text-[10px] rounded-full px-1.5 py-0', statusFilter === key ? 'bg-black/10' : 'bg-secondary')}>
+              {counts[key] || 0}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Search + filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search clients..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
+          <Input placeholder="Search by name or email..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
         </div>
-        <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="active">Active</TabsTrigger>
-            <TabsTrigger value="prospect">Prospects</TabsTrigger>
-            <TabsTrigger value="inactive">Inactive</TabsTrigger>
-          </TabsList>
-        </Tabs>
+
+        {allTags.length > 0 && (
+          <Select value={tagFilter || 'all'} onValueChange={v => setTagFilter(v === 'all' ? '' : v)}>
+            <SelectTrigger className="w-44">
+              <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+              <SelectValue placeholder="Filter by tag" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Tags</SelectItem>
+              {allTags.map(t => <SelectItem key={t} value={t}>#{t}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        )}
+
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-44">
+            <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="created_date">Newest First</SelectItem>
+            <SelectItem value="name">Name A–Z</SelectItem>
+            <SelectItem value="lifecycle">Lifecycle Stage</SelectItem>
+            <SelectItem value="monthly_rate">Highest Rate</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {activeFiltersCount > 0 && (
+          <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('all'); setTagFilter(''); }} className="text-muted-foreground hover:text-foreground gap-1.5">
+            <X className="w-3.5 h-3.5" /> Clear ({activeFiltersCount})
+          </Button>
+        )}
       </div>
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1,2,3].map(i => (
-            <div key={i} className="h-48 bg-card rounded-2xl border border-border animate-pulse" />
-          ))}
+          {[1,2,3].map(i => <div key={i} className="h-52 bg-card rounded-2xl border border-border animate-pulse" />)}
         </div>
       ) : filteredClients.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-muted-foreground">No clients found. Add your first client to get started.</p>
+          <p className="text-muted-foreground">No clients found.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -162,14 +214,12 @@ export default function Clients() {
             <div key={client.id} className="bg-card rounded-2xl border border-border p-5 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-heading font-bold">
+                  <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-heading font-bold text-base">
                     {client.name?.[0]?.toUpperCase()}
                   </div>
                   <div>
                     <p className="font-semibold text-sm">{client.name}</p>
-                    <Badge variant="outline" className={cn("text-[10px] mt-0.5", statusColors[client.status])}>
-                      {client.status}
-                    </Badge>
+                    <LifecycleBadge status={client.lifecycle_status || 'lead'} className="mt-0.5" />
                   </div>
                 </div>
                 <DropdownMenu>
@@ -178,10 +228,25 @@ export default function Clients() {
                       <MoreHorizontal className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" className="w-52">
                     <DropdownMenuItem onClick={() => { setEditingClient(client); setShowForm(true); }}>
-                      <Edit className="w-4 h-4 mr-2" /> Edit
+                      <Edit className="w-4 h-4 mr-2" /> Edit Client
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <div className="px-2 py-1 text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">Move to Stage</div>
+                    {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
+                      <DropdownMenuItem key={s} onClick={() => handleStatusChange(client, s)}>
+                        <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {
+                          'bg-chart-4': s === 'lead',
+                          'bg-accent': s === 'active',
+                          'bg-destructive': s === 'at_risk',
+                          'bg-chart-3': s === 'completed',
+                          'bg-primary': s === 'alumni',
+                        })} />
+                        {LIFECYCLE_CONFIG[s].label}
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(client.id)}>
                       <Trash2 className="w-4 h-4 mr-2" /> Delete
                     </DropdownMenuItem>
@@ -189,27 +254,40 @@ export default function Clients() {
                 </DropdownMenu>
               </div>
 
-              <div className="space-y-2 text-sm">
+              <div className="space-y-1.5 text-sm">
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Mail className="w-3.5 h-3.5" />
+                  <Mail className="w-3.5 h-3.5 flex-shrink-0" />
                   <span className="truncate">{client.email}</span>
                 </div>
                 {client.phone && (
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Phone className="w-3.5 h-3.5" />
+                    <Phone className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>{client.phone}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Target className="w-3.5 h-3.5" />
+                  <Target className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>{goalLabels[client.goal] || 'General Fitness'}</span>
                 </div>
               </div>
 
+              {/* Tags */}
+              {client.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-3">
+                  {client.tags.map(tag => (
+                    <button key={tag} onClick={() => setTagFilter(tag === tagFilter ? '' : tag)} className="group/tag">
+                      <Badge variant="secondary" className={cn('text-[10px] px-1.5 h-5 cursor-pointer hover:bg-primary/15 hover:text-primary transition-colors', tagFilter === tag && 'bg-primary/15 text-primary')}>
+                        #{tag}
+                      </Badge>
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {client.monthly_rate && (
-                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+                <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">Monthly Rate</span>
-                  <span className="font-heading font-bold text-primary">${client.monthly_rate}/mo</span>
+                  <span className="font-heading font-bold text-primary text-sm">${client.monthly_rate}/mo</span>
                 </div>
               )}
             </div>
@@ -217,19 +295,8 @@ export default function Clients() {
         </div>
       )}
 
-      <ClientForm 
-        open={showForm} 
-        onOpenChange={setShowForm} 
-        onSubmit={handleSubmit} 
-        client={editingClient}
-      />
-
-      <UpgradeModal
-        open={upgradeOpen}
-        onClose={() => setUpgradeOpen(false)}
-        featureKey="clients"
-        user={currentUser}
-      />
+      <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
+      <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
     </div>
   );
 }

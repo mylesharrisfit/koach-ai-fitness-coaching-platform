@@ -18,6 +18,18 @@
       "type": "string",
       "description": "Profile photo URL"
     },
+    "lifecycle_status": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "active",
+        "at_risk",
+        "completed",
+        "alumni"
+      ],
+      "default": "lead",
+      "description": "Client lifecycle stage"
+    },
     "status": {
       "type": "string",
       "enum": [
@@ -25,7 +37,19 @@
         "inactive",
         "prospect"
       ],
-      "default": "active"
+      "default": "active",
+      "description": "Legacy status field"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Custom coach tags for filtering and grouping"
+    },
+    "lifecycle_notes": {
+      "type": "string",
+      "description": "Notes about the client's journey and status changes"
     },
     "goal": {
       "type": "string",
