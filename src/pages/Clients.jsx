@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -83,27 +83,35 @@ export default function Clients() {
     setEditingClient(null);
   };
 
+  const clientLimit = getLimit(currentUser, 'max_clients');
+  const atLimit = clientLimit !== -1 && clients.length >= clientLimit;
+
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       <PageHeader 
         title="Clients"
-        subtitle={`${clients.filter(c => c.status === 'active').length} active clients`}
+        subtitle={
+          clientLimit === -1
+            ? `${clients.filter(c => c.status === 'active').length} active clients`
+            : `${clients.length} / ${clientLimit} clients used`
+        }
         actions={
-          <Button onClick={() => {
-            const limit = getLimit(currentUser, 'max_clients');
-            if (limit !== -1 && clients.length >= limit) {
-              setUpgradeOpen(true);
-              return;
-            }
-            setEditingClient(null);
-            setShowForm(true);
-          }}>
-            <Plus className="w-4 h-4 mr-2" /> Add Client
+          <Button
+            onClick={() => {
+              if (atLimit) { setUpgradeOpen(true); return; }
+              setEditingClient(null);
+              setShowForm(true);
+            }}
+            variant={atLimit ? 'outline' : 'default'}
+            className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
+          >
+            {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+            {atLimit ? `Limit Reached (${clients.length}/${clientLimit})` : 'Add Client'}
           </Button>
         }
       />
 
-      <div className="mb-6">
+      <div className="mb-6 space-y-3">
         <UsageMeter
           user={currentUser}
           limitKey="max_clients"
@@ -111,6 +119,16 @@ export default function Clients() {
           label="Clients"
           onUpgrade={() => setUpgradeOpen(true)}
         />
+        {atLimit && (
+          <div className="flex items-center justify-between rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
+            <span className="text-destructive font-medium">
+              You've reached your {clientLimit}-client limit. Upgrade to add more.
+            </span>
+            <Button size="sm" onClick={() => setUpgradeOpen(true)}>
+              Upgrade Plan
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
