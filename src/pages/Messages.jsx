@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Send, Search, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown, Lock } from 'lucide-react';
+import InlineUpgradePrompt from '@/components/subscription/InlineUpgradePrompt';
+import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -26,6 +28,7 @@ export default function Messages() {
   const [currentUser, setCurrentUser] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
+  const { openUpgradeModal } = useUpgradeModal();
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -224,6 +227,15 @@ export default function Messages() {
                     </div>
                   )}
                 </div>
+
+                {/* AI Suggestions — locked hint */}
+                {!canAI && (
+                 <InlineUpgradePrompt
+                   featureKey="ai_suggestions"
+                   onUpgrade={openUpgradeModal}
+                   compact
+                 />
+                )}
 
                 {/* AI Suggestions — Pro+ only */}
                 {canAI && (

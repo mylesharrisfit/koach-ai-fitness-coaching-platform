@@ -6,6 +6,7 @@ import UpgradeModal from '@/components/subscription/UpgradeModal';
 
 export const SubscriptionContext = createContext({
   user: null,
+  setUser: () => {},
   openUpgradeModal: () => {},
 });
 
@@ -21,8 +22,13 @@ export default function AppLayout() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
+  // When user upgrades inside modal, update context immediately (no reload)
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
+  };
+
   return (
-    <SubscriptionContext.Provider value={{ user, openUpgradeModal: setUpgradeFeature }}>
+    <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
       <div className="min-h-screen bg-background dark bg-noise">
         <div className="fixed inset-0 bg-gradient-mesh pointer-events-none" aria-hidden="true" />
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
@@ -35,6 +41,7 @@ export default function AppLayout() {
         onClose={() => setUpgradeFeature(null)}
         featureKey={upgradeFeature}
         user={user}
+        onUserUpdate={handleUserUpdate}
       />
     </SubscriptionContext.Provider>
   );

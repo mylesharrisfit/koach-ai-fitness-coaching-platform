@@ -9,6 +9,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import PageHeader from '../components/shared/PageHeader';
 import ProgramForm from '../components/programs/ProgramForm';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
+import InlineUpgradePrompt from '@/components/subscription/InlineUpgradePrompt';
+import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { cn } from '@/lib/utils';
 
 const difficultyColors = {
@@ -24,6 +26,7 @@ export default function Programs() {
   const [cloningProgram, setCloningProgram] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const queryClient = useQueryClient();
+  const { openUpgradeModal } = useUpgradeModal();
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -76,6 +79,14 @@ export default function Programs() {
           </Button>
         }
       />
+
+      {!canUseTemplates && (
+        <InlineUpgradePrompt
+          featureKey="program_templates"
+          onUpgrade={openUpgradeModal}
+          className="mb-6"
+        />
+      )}
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

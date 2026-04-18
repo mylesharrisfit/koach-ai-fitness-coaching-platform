@@ -7,6 +7,7 @@ import { Check, X, Zap, ArrowRight, Users, Dumbbell, Salad } from 'lucide-react'
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import UpgradeModal from '@/components/subscription/UpgradeModal';
 
 // Human-readable highlight features per tier (ordered for the card)
 const TIER_HIGHLIGHTS = {
@@ -52,6 +53,7 @@ const TIER_HIGHLIGHTS = {
 export default function Subscription() {
   const [user, setUser] = useState(null);
   const [saving, setSaving] = useState(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -72,16 +74,8 @@ export default function Subscription() {
 
   const userTier = getUserTier(user);
 
-  // Admin-only: simulate switching tiers for demo purposes
-  const handleSelectTier = async (tierKey) => {
-    if (user?.role !== 'admin') return;
-    setSaving(tierKey);
-    await base44.auth.updateMe({ subscription_tier: tierKey });
-    const updated = await base44.auth.me();
-    setUser(updated);
-    setSaving(null);
-    toast.success(`Switched to ${TIERS[tierKey].name} plan`);
-    setTimeout(() => window.location.reload(), 800);
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
   };
 
   const usages = [
@@ -146,85 +140,31 @@ export default function Subscription() {
         </div>
       </div>
 
-      {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-        {TIER_ORDER.map(tierKey => {
-          const tier = TIERS[tierKey];
-          const isCurrent = userTier.key === tierKey;
-          return (
-            <div key={tierKey} className={cn(
-              "relative glass-card rounded-2xl p-6 flex flex-col transition-all duration-300",
-              isCurrent ? "ring-2 ring-primary/40 shadow-glow-sm" : "hover:border-primary/20",
-              tier.popular && !isCurrent && "border-primary/25"
-            )}>
-              {tier.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[9px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-3 py-1 rounded-full">
-                  Most Popular
-                </div>
-              )}
-              {isCurrent && (
-                <div className="absolute -top-3 right-4 text-[9px] font-bold uppercase tracking-widest bg-accent text-accent-foreground px-3 py-1 rounded-full">
-                  Current
-                </div>
-              )}
-
-              <div className="mb-4">
-                <p className={cn("font-heading font-bold text-lg", tier.color)}>{tier.name}</p>
-                <div className="flex items-end gap-1 mt-2">
-                  <span className="stat-number text-3xl font-heading font-bold">${tier.price}</span>
-                  <span className="text-xs text-muted-foreground mb-1">/mo</span>
-                </div>
-              </div>
-
-              <div className="space-y-2 mb-6 flex-1">
-                {(TIER_HIGHLIGHTS[tierKey] || []).map(feature => (
-                  <div key={feature} className="flex items-start gap-2 text-xs text-muted-foreground">
-                    <Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-                {/* Explicitly show what's locked on lower tiers */}
-                {tierKey === 'starter' && (
-                  <div className="flex items-start gap-2 text-xs text-muted-foreground/40 mt-2">
-                    <X className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                    <span>Analytics, check-ins, templates, notifications</span>
-                  </div>
-                )}
-                {tierKey === 'pro' && (
-                  <div className="flex items-start gap-2 text-xs text-muted-foreground/40 mt-2">
-                    <X className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                    <span>AI assistant, sales pipeline, revenue dashboard, automation</span>
-                  </div>
-                )}
-              </div>
-
-              {user?.role === 'admin' ? (
-                <Button
-                  size="sm"
-                  variant={isCurrent ? "secondary" : "default"}
-                  disabled={isCurrent || saving === tierKey}
-                  onClick={() => handleSelectTier(tierKey)}
-                  className="w-full"
-                >
-                  {isCurrent ? 'Current Plan' : saving === tierKey ? 'Switching...' : (
-                    <>{`Switch to ${tier.name}`} <ArrowRight className="w-3 h-3 ml-1" /></>
-                  )}
-                </Button>
-              ) : (
-                <Button size="sm" variant={isCurrent ? "secondary" : "default"} disabled={isCurrent} className="w-full">
-                  {isCurrent ? 'Current Plan' : `Upgrade to ${tier.name}`}
-                </Button>
-              )}
+      {/* Plan overview + CTA */}
+      <div className="glass-card rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-heading font-bold text-base">Plan Features</h3>
+          <Button onClick={() => setUpgradeOpen(true)} className="gap-2">
+            <Zap className="w-4 h-4" /> Change Plan
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {(TIER_HIGHLIGHTS[userTier.key] || []).map(feature => (
+            <div key={feature} className="flex items-start gap-2 text-sm text-muted-foreground">
+              <Check className="w-3.5 h-3.5 text-accent flex-shrink-0 mt-0.5" />
+              <span>{feature}</span>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
 
-      {user?.role === 'admin' && (
-        <p className="text-center text-xs text-muted-foreground/50 mt-6">
-          Admin mode: switching tiers immediately for demo purposes.
-        </p>
-      )}
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        featureKey={null}
+        user={user}
+        onUserUpdate={handleUserUpdate}
+      />
     </div>
   );
 }
