@@ -201,7 +201,7 @@ export const AUTOMATION_TEMPLATES = [
   },
   {
     name: 'Low Adherence Coach Alert',
-    description: 'Notify yourself when a client's adherence drops below 60%',
+    description: "Notify yourself when a client's adherence drops below 60%",
     condition_type: 'low_adherence',
     condition_threshold: 60,
     action_type: 'notify_coach',
