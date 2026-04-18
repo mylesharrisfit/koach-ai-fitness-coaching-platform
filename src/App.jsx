@@ -17,6 +17,7 @@ import Messages from './pages/Messages';
 import Progress from './pages/Progress';
 import Store from './pages/Store';
 import Settings from './pages/Settings';
+import Assistant from './pages/Assistant';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/progress" element={<Progress />} />
         <Route path="/store" element={<Store />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/assistant" element={<Assistant />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
