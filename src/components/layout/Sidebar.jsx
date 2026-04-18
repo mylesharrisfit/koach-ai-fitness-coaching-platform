@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, Users, Dumbbell, Salad, Calendar, 
+  LayoutDashboard, Users, Dumbbell, Salad, Calendar, Play,
   MessageSquare, TrendingUp, ShoppingBag, Settings, 
   ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList, DollarSign, Smartphone, Globe, Lock, CreditCard
 } from 'lucide-react';
@@ -13,6 +13,7 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
   { icon: Users, label: 'Clients', path: '/clients' },
   { icon: Dumbbell, label: 'Programs', path: '/programs' },
+  { icon: Play, label: 'Exercise Library', path: '/exercises' },
   { icon: Salad, label: 'Nutrition', path: '/nutrition' },
   { icon: Calendar, label: 'Schedule', path: '/schedule' },
   { icon: MessageSquare, label: 'Messages', path: '/messages' },

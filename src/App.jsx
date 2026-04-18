@@ -24,6 +24,7 @@ import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
 import Subscription from './pages/Subscription';
+import ExerciseLibrary from './pages/ExerciseLibrary';
 import PageGuard from './components/subscription/PageGuard';
 
 const AuthenticatedApp = () => {
@@ -68,6 +69,7 @@ const AuthenticatedApp = () => {
         <Route path="/my-day" element={<PageGuard feature="client_dashboard"><ClientDashboard /></PageGuard>} />
         <Route path="/community" element={<PageGuard feature="community"><Community /></PageGuard>} />
         <Route path="/subscription" element={<Subscription />} />
+        <Route path="/exercises" element={<ExerciseLibrary />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

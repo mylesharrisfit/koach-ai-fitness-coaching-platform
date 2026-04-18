@@ -8,8 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, GripVertical, TrendingUp } from 'lucide-react';
+import { Plus, Trash2, GripVertical, TrendingUp, Play, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
+import ExercisePickerModal from '@/components/exercises/ExercisePickerModal';
 
 const defaultForm = {
   title: '', description: '', duration_weeks: 8, difficulty: 'intermediate',
@@ -18,6 +20,8 @@ const defaultForm = {
 
 export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
   const [form, setForm] = useState(defaultForm);
+  const [demoExercise, setDemoExercise] = useState(null);
+  const [pickerTarget, setPickerTarget] = useState(null); // { wIdx, eIdx }
 
   useEffect(() => {
     setForm(program ? { ...defaultForm, ...program } : defaultForm);
@@ -38,6 +42,23 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
     const workouts = [...form.workouts];
     workouts[workoutIdx].exercises.push({ name: '', sets: 3, reps: '10', rest_seconds: 60, notes: '', auto_progress: false, progress_increment: 2.5 });
     setForm({ ...form, workouts });
+  };
+
+  const selectFromLibrary = (libraryExercise) => {
+    if (!pickerTarget) return;
+    const { wIdx, eIdx } = pickerTarget;
+    const workouts = form.workouts.map((w, wi) => wi !== wIdx ? w : {
+      ...w,
+      exercises: w.exercises.map((e, ei) => ei !== eIdx ? e : {
+        ...e,
+        name: libraryExercise.name,
+        rest_seconds: libraryExercise.default_rest_seconds || e.rest_seconds,
+        _library_id: libraryExercise.id,
+        _library_exercise: libraryExercise,
+      })
+    });
+    setForm({ ...form, workouts });
+    setPickerTarget(null);
   };
 
   const updateExercise = (wIdx, eIdx, field, value) => {
@@ -82,6 +103,7 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -169,7 +191,7 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
                   {/* Exercise header */}
                   <div className="grid grid-cols-12 gap-2 mb-1 px-1">
                     <span className="col-span-1 text-[10px] text-muted-foreground"></span>
-                    <span className="col-span-3 text-[10px] text-muted-foreground">Exercise</span>
+                    <span className="col-span-3 text-[10px] text-muted-foreground">Exercise + Library</span>
                     <span className="col-span-1 text-[10px] text-muted-foreground">Sets</span>
                     <span className="col-span-2 text-[10px] text-muted-foreground">Reps</span>
                     <span className="col-span-2 text-[10px] text-muted-foreground">Rest(s)</span>
@@ -191,7 +213,19 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
                                   <div className="col-span-1 flex justify-center" {...drag.dragHandleProps}>
                                     <GripVertical className="w-3.5 h-3.5 text-muted-foreground cursor-grab" />
                                   </div>
-                                  <Input className="col-span-3 h-8 text-xs" placeholder="Exercise" value={ex.name} onChange={e => updateExercise(wIdx, eIdx, 'name', e.target.value)} />
+                                  <div className="col-span-3 flex items-center gap-1">
+                                    <Input className="h-8 text-xs flex-1" placeholder="Exercise" value={ex.name} onChange={e => updateExercise(wIdx, eIdx, 'name', e.target.value)} />
+                                    <Button type="button" variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0 text-muted-foreground hover:text-primary" title="Pick from library"
+                                      onClick={() => setPickerTarget({ wIdx, eIdx })}>
+                                      <BookOpen className="w-3 h-3" />
+                                    </Button>
+                                    {ex._library_exercise?.video_url && (
+                                      <Button type="button" variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0 text-primary" title="Watch demo"
+                                        onClick={() => setDemoExercise(ex._library_exercise)}>
+                                        <Play className="w-3 h-3" fill="currentColor" />
+                                      </Button>
+                                    )}
+                                  </div>
                                   <Input className="col-span-1 h-8 text-xs" type="number" placeholder="3" value={ex.sets} onChange={e => updateExercise(wIdx, eIdx, 'sets', Number(e.target.value))} />
                                   <Input className="col-span-2 h-8 text-xs" placeholder="10" value={ex.reps} onChange={e => updateExercise(wIdx, eIdx, 'reps', e.target.value)} />
                                   <Input className="col-span-2 h-8 text-xs" type="number" placeholder="60" value={ex.rest_seconds} onChange={e => updateExercise(wIdx, eIdx, 'rest_seconds', Number(e.target.value))} />
@@ -246,5 +280,19 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
         </form>
       </DialogContent>
     </Dialog>
+
+    <ExerciseDetailModal
+      exercise={demoExercise}
+      open={!!demoExercise}
+      onClose={() => setDemoExercise(null)}
+      onEdit={() => {}}
+    />
+
+    <ExercisePickerModal
+      open={!!pickerTarget}
+      onOpenChange={(v) => !v && setPickerTarget(null)}
+      onSelect={selectFromLibrary}
+    />
+  </>
   );
 }
