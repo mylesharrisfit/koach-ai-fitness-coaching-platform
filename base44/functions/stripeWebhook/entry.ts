@@ -45,9 +45,13 @@ async function syncSubscriptionToUser(base44, subscription) {
   };
 
   // Find user by ID and update
-  const users = await base44.asServiceRole.entities.User.filter({ id: userId });
-  for (const u of users) {
-    await base44.asServiceRole.entities.User.update(u.id, update);
+  try {
+    const u = await base44.asServiceRole.entities.User.get(userId);
+    if (u) {
+      await base44.asServiceRole.entities.User.update(u.id, update);
+    }
+  } catch (_) {
+    // User not found — skip silently
   }
 }
 
@@ -57,10 +61,16 @@ Deno.serve(async (req) => {
   const sig = req.headers.get('stripe-signature');
 
   let event;
-  if (webhookSecret && sig) {
-    event = await stripe.webhooks.constructEventAsync(body, sig, webhookSecret);
-  } else {
-    event = JSON.parse(body);
+  try {
+    if (webhookSecret && sig) {
+      event = await stripe.webhooks.constructEventAsync(body, sig, webhookSecret);
+    } else {
+      const parsed = JSON.parse(body);
+      // Support both raw event shape and wrapped {type, data} shape
+      event = parsed.data?.object ? parsed : { type: parsed.type, data: { object: parsed } };
+    }
+  } catch (err) {
+    return Response.json({ error: 'Invalid payload: ' + err.message }, { status: 400 });
   }
 
   const obj = event.data.object;
