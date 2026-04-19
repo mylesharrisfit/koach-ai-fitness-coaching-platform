@@ -26,6 +26,7 @@ import Community from './pages/Community';
 import Subscription from './pages/Subscription';
 import ExerciseLibrary from './pages/ExerciseLibrary';
 import Automations from './pages/Automations';
+import Analytics from './pages/Analytics';
 import PageGuard from './components/subscription/PageGuard';
 
 const AuthenticatedApp = () => {
@@ -72,6 +73,7 @@ const AuthenticatedApp = () => {
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/exercises" element={<ExerciseLibrary />} />
         <Route path="/automations" element={<Automations />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
