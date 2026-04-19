@@ -30,6 +30,7 @@ const navItems = [
   { icon: Bot, label: 'Automations', path: '/automations' },
   { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
   { icon: CreditCard, label: 'Subscription', path: '/subscription' },
+  { icon: Smartphone, label: 'White Label App', path: '/white-label' },
 ];
 
 export default function Sidebar({ user, onUpgrade }) {

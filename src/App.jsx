@@ -30,6 +30,7 @@ import Analytics from './pages/Analytics';
 import RevenueDashboard from './pages/RevenueDashboard';
 import Business from './pages/Business';
 import ProgramBuilder from './pages/ProgramBuilder';
+import WhiteLabel from './pages/WhiteLabel';
 import PageGuard from './components/subscription/PageGuard';
 
 const AuthenticatedApp = () => {
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
         <Route path="/revenue" element={<RevenueDashboard />} />
         <Route path="/business" element={<Business />} />
         <Route path="/program-builder" element={<ProgramBuilder />} />
+        <Route path="/white-label" element={<WhiteLabel />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
