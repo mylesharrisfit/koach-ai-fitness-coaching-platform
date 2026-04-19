@@ -28,6 +28,7 @@ import ExerciseLibrary from './pages/ExerciseLibrary';
 import Automations from './pages/Automations';
 import Analytics from './pages/Analytics';
 import RevenueDashboard from './pages/RevenueDashboard';
+import Business from './pages/Business';
 import PageGuard from './components/subscription/PageGuard';
 
 const AuthenticatedApp = () => {
@@ -76,6 +77,7 @@ const AuthenticatedApp = () => {
         <Route path="/automations" element={<Automations />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/revenue" element={<RevenueDashboard />} />
+        <Route path="/business" element={<Business />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

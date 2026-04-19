@@ -26,6 +26,7 @@ const navItems = [
   { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Landmark, label: 'Revenue', path: '/revenue' },
+  { icon: TrendingUp, label: 'Business', path: '/business', feature: 'revenue_dashboard' },
   { icon: Bot, label: 'Automations', path: '/automations' },
   { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
   { icon: CreditCard, label: 'Subscription', path: '/subscription' },
