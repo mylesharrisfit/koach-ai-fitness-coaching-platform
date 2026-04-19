@@ -10,23 +10,24 @@ export default function UsageMeter({ user, limitKey, currentCount, label, onUpgr
   if (limit === -1) return null; // Unlimited — hide meter
 
   const pct = Math.min((currentCount / limit) * 100, 100);
-  const nearLimit = pct >= 80;
-  const atLimit = currentCount >= limit;
+  const nearLimit = pct >= 70;
+  const atLimit = pct >= 90;
+
+  const barColor = pct >= 90 ? 'bg-red-500' : pct >= 70 ? 'bg-yellow-500' : 'bg-green-500';
+  const textColor = pct >= 90 ? 'text-red-500' : pct >= 70 ? 'text-yellow-500' : 'text-green-500';
+  const borderColor = pct >= 90 ? 'border-red-500/30 bg-red-500/5' : pct >= 70 ? 'border-yellow-500/30 bg-yellow-500/5' : 'border-border/50 bg-secondary/20';
 
   return (
-    <div className={cn(
-      "rounded-xl p-3 border text-xs transition-all",
-      atLimit ? "border-destructive/30 bg-destructive/5" : nearLimit ? "border-chart-4/30 bg-chart-4/5" : "border-border/50 bg-secondary/20"
-    )}>
+    <div className={cn("rounded-xl p-3 border text-xs transition-all", borderColor)}>
       <div className="flex items-center justify-between mb-2">
         <span className="font-semibold text-muted-foreground">{label || limitKey}</span>
-        <span className={cn("font-bold font-heading", atLimit ? "text-destructive" : nearLimit ? "text-chart-4" : "text-foreground")}>
+        <span className={cn("font-bold font-heading", textColor)}>
           {currentCount} / {limit}
         </span>
       </div>
       <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
         <div
-          className={cn("h-full rounded-full transition-all duration-700", atLimit ? "bg-destructive" : nearLimit ? "bg-chart-4" : "bg-primary")}
+          className={cn("h-full rounded-full transition-all duration-700", barColor)}
           style={{ width: `${pct}%` }}
         />
       </div>

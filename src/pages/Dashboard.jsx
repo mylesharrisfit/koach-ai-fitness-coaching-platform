@@ -12,6 +12,7 @@ import DailyChecklist from '../components/dashboard/DailyChecklist';
 import BehaviorNudge from '@/components/subscription/BehaviorNudge';
 import { getActiveNudges } from '@/lib/upgradeNudges';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
+import UsageSummaryCard from '@/components/dashboard/UsageSummaryCard';
 
 export default function Dashboard() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -63,10 +64,11 @@ export default function Dashboard() {
         <BehaviorNudge nudge={topNudge} onUpgrade={openUpgradeModal} className="mb-6 fade-up" />
       )}
 
-      {/* Row 1: Revenue + Checklist */}
+      {/* Row 1: Revenue + Checklist + Usage */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 flex flex-col gap-6">
           <RevenueSnapshot clients={clients} />
+          <UsageSummaryCard user={currentUser} />
         </div>
         <div className="lg:col-span-2">
           <DailyChecklist checkIns={checkIns} messages={messages} clients={clients} />
