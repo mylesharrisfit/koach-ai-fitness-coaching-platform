@@ -390,3 +390,12 @@ export function withinLimit(user, limitKey, currentCount) {
   if (limit === -1) return true;
   return currentCount < limit;
 }
+
+/**
+ * Get usage as a percentage (0–100). Returns 0 if unlimited.
+ */
+export function getUsagePercent(user, limitKey, currentCount) {
+  const limit = getLimit(user, limitKey);
+  if (limit === -1) return 0;
+  return Math.min((currentCount / limit) * 100, 100);
+}

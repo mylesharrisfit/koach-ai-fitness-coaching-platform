@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Salad, MoreHorizontal, Edit, Trash2, Flame, Beef, Wheat, Droplets, Copy, Leaf } from 'lucide-react';
+import { Plus, Salad, MoreHorizontal, Edit, Trash2, Flame, Beef, Wheat, Droplets, Copy, Leaf, Lock } from 'lucide-react';
+import { getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import PageHeader from '../components/shared/PageHeader';
 import NutritionForm from '../components/nutrition/NutritionForm';
+import LimitBanner from '@/components/subscription/LimitBanner';
+import { useUpgradeModal } from '@/components/layout/AppLayout';
 
 export default function Nutrition() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const queryClient = useQueryClient();
+  const { openUpgradeModal } = useUpgradeModal();
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
 
   const { data: plans = [], isLoading } = useQuery({
     queryKey: ['nutrition'],
@@ -38,6 +47,9 @@ export default function Nutrition() {
     createMutation.mutate({ ...rest, title: `${rest.title} (Copy)` });
   };
 
+  const nutritionLimit = getLimit(currentUser, 'max_nutrition_plans');
+  const atLimit = nutritionLimit !== -1 && plans.length >= nutritionLimit;
+
   const openCreate = () => { setEditing(null); setShowForm(true); };
   const openEdit = (plan) => { setEditing(plan); setShowForm(true); };
 
@@ -49,8 +61,18 @@ export default function Nutrition() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       <PageHeader title="Nutrition Plans" subtitle={`${plans.length} plans`}
-        actions={<Button onClick={openCreate}><Plus className="w-4 h-4 mr-2" /> Create Plan</Button>}
+        actions={
+          <Button
+            onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openCreate(); }}
+            variant={atLimit ? 'outline' : 'default'}
+            className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
+          >
+            {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+            {atLimit ? `Limit Reached (${plans.length}/${nutritionLimit})` : 'Create Plan'}
+          </Button>
+        }
       />
+      <LimitBanner limitKey="max_nutrition_plans" currentCount={plans.length} label="nutrition plans" featureKey="clients" className="mb-6" />
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

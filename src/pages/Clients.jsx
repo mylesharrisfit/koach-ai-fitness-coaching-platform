@@ -11,6 +11,7 @@ import PageHeader from '../components/shared/PageHeader';
 import ClientForm from '../components/clients/ClientForm';
 import LifecycleBadge, { LIFECYCLE_CONFIG } from '../components/clients/LifecycleBadge';
 import UsageMeter from '@/components/subscription/UsageMeter';
+import LimitBanner from '@/components/subscription/LimitBanner';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -131,12 +132,7 @@ export default function Clients() {
 
       <div className="mb-6 space-y-3">
         <UsageMeter user={currentUser} limitKey="max_clients" currentCount={clients.length} label="Clients" onUpgrade={() => setUpgradeOpen(true)} />
-        {atLimit && (
-          <div className="flex items-center justify-between rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
-            <span className="text-destructive font-medium">You've reached your {clientLimit}-client limit.</span>
-            <Button size="sm" onClick={() => setUpgradeOpen(true)}>Upgrade</Button>
-          </div>
-        )}
+        <LimitBanner limitKey="max_clients" currentCount={clients.length} label="clients" featureKey="clients" />
       </div>
 
       {/* Lifecycle status tabs */}

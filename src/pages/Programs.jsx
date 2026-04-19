@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Dumbbell, Clock, BarChart3, MoreHorizontal, Edit, Trash2, Copy, Users, Lock } from 'lucide-react';
-import { hasFeature } from '@/lib/subscription';
+import { hasFeature, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import PageHeader from '../components/shared/PageHeader';
 import ProgramForm from '../components/programs/ProgramForm';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
-import InlineUpgradePrompt from '@/components/subscription/InlineUpgradePrompt';
+import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { cn } from '@/lib/utils';
 
@@ -38,6 +38,9 @@ export default function Programs() {
     queryKey: ['programs'],
     queryFn: () => base44.entities.WorkoutProgram.list('-created_date'),
   });
+
+  const programLimit = getLimit(currentUser, 'max_programs');
+  const atLimit = programLimit !== -1 && programs.length >= programLimit;
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.WorkoutProgram.create(data),
@@ -74,19 +77,18 @@ export default function Programs() {
         title="Workout Programs"
         subtitle={`${programs.length} programs`}
         actions={
-          <Button onClick={() => { setEditingProgram(null); setShowForm(true); }}>
-            <Plus className="w-4 h-4 mr-2" /> Create Program
+          <Button
+            onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } setEditingProgram(null); setShowForm(true); }}
+            variant={atLimit ? 'outline' : 'default'}
+            className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
+          >
+            {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+            {atLimit ? `Limit Reached (${programs.length}/${programLimit})` : 'Create Program'}
           </Button>
         }
       />
 
-      {!canUseTemplates && (
-        <InlineUpgradePrompt
-          featureKey="program_templates"
-          onUpgrade={openUpgradeModal}
-          className="mb-6"
-        />
-      )}
+      <LimitBanner limitKey="max_programs" currentCount={programs.length} label="programs" featureKey="clients" className="mb-6" />
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -130,8 +132,9 @@ export default function Programs() {
                           </DropdownMenuItem>
                         </>
                       ) : (
-                        <DropdownMenuItem disabled className="text-muted-foreground/50 cursor-not-allowed">
-                          <Lock className="w-4 h-4 mr-2" /> Templates & Clone (Pro+)
+                        <DropdownMenuItem onClick={() => openUpgradeModal('program_templates')} className="text-muted-foreground gap-2">
+                          <Lock className="w-4 h-4" /> Templates & Clone
+                          <span className="ml-auto text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold">Pro+</span>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(program.id)}>
