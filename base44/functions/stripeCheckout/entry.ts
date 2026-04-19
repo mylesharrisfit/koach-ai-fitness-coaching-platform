@@ -46,11 +46,48 @@ Deno.serve(async (req) => {
     return Response.json({ url: session.url });
   }
 
+  // ── Cancel subscription (at period end) ──────────────────────────────────────
+  if (action === 'cancel') {
+    if (!user.stripe_subscription_id) {
+      return Response.json({ error: 'No active subscription to cancel' }, { status: 400 });
+    }
+    const sub = await stripe.subscriptions.retrieve(user.stripe_subscription_id);
+    if (sub.status === 'canceled') {
+      return Response.json({ error: 'Subscription already canceled' }, { status: 400 });
+    }
+    const updated = await stripe.subscriptions.update(user.stripe_subscription_id, {
+      cancel_at_period_end: true,
+    });
+    await base44.auth.updateMe({
+      subscription_cancel_at_period_end: true,
+      subscription_renewal_date: new Date(updated.current_period_end * 1000).toISOString().split('T')[0],
+    });
+    return Response.json({ canceled: true, ends_at: updated.current_period_end });
+  }
+
+  // ── Reactivate subscription (undo cancel-at-period-end) ──────────────────────
+  if (action === 'reactivate') {
+    if (!user.stripe_subscription_id) {
+      return Response.json({ error: 'No subscription to reactivate' }, { status: 400 });
+    }
+    const updated = await stripe.subscriptions.update(user.stripe_subscription_id, {
+      cancel_at_period_end: false,
+    });
+    await base44.auth.updateMe({ subscription_cancel_at_period_end: false });
+    return Response.json({ reactivated: true, status: updated.status });
+  }
+
   // ── Checkout (new subscription or upgrade) ────────────────────────────────────
   const priceId = TIER_PRICES[tier];
   if (!priceId) {
     return Response.json(
       { error: `No Stripe Price ID configured for tier "${tier}". Set STRIPE_PRICE_${tier.toUpperCase()} in secrets.` },
+      { status: 400 }
+    );
+  }
+  if (priceId.startsWith('prod_')) {
+    return Response.json(
+      { error: `STRIPE_PRICE_${tier.toUpperCase()} is set to a Product ID (prod_...) — it must be a Price ID (price_...). Go to your Stripe product → click the price → copy the "API ID" starting with price_` },
       { status: 400 }
     );
   }
