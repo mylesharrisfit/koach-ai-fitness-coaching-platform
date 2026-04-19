@@ -4,62 +4,112 @@ import Stripe from 'npm:stripe@14.21.0';
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
 
+// Reverse-map price ID → tier key (reads env vars)
+function getTierFromPriceId(priceId) {
+  const map = {
+    [Deno.env.get('STRIPE_PRICE_STARTER')]:    'starter',
+    [Deno.env.get('STRIPE_PRICE_PRO')]:         'pro',
+    [Deno.env.get('STRIPE_PRICE_ELITE')]:       'elite',
+    [Deno.env.get('STRIPE_PRICE_ENTERPRISE')]:  'enterprise',
+  };
+  return map[priceId] || null;
+}
+
+async function syncSubscriptionToUser(base44, subscription) {
+  const userId = subscription.metadata?.user_id;
+  if (!userId) return;
+
+  const priceId = subscription.items?.data?.[0]?.price?.id;
+  const tier = getTierFromPriceId(priceId) || subscription.metadata?.tier || 'starter';
+  const renewalDate = new Date(subscription.current_period_end * 1000).toISOString().split('T')[0];
+
+  // Map Stripe status → billing_status
+  let billingStatus = subscription.status; // active, past_due, canceled, trialing, unpaid, incomplete
+  let tierToSet = tier;
+
+  // On cancellation, downgrade to starter
+  if (subscription.status === 'canceled') {
+    tierToSet = 'starter';
+    billingStatus = 'canceled';
+  }
+
+  // On past_due/unpaid, keep tier but flag status
+  const update = {
+    subscription_tier: tierToSet,
+    billing_status: billingStatus,
+    stripe_subscription_id: subscription.id,
+    stripe_customer_id: subscription.customer,
+    stripe_price_id: priceId || '',
+    subscription_renewal_date: renewalDate,
+    subscription_cancel_at_period_end: subscription.cancel_at_period_end || false,
+  };
+
+  // Find user by ID and update
+  const users = await base44.asServiceRole.entities.User.filter({ id: userId });
+  for (const u of users) {
+    await base44.asServiceRole.entities.User.update(u.id, update);
+  }
+}
+
 Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
 
   let event;
-  if (webhookSecret) {
+  if (webhookSecret && sig) {
     event = await stripe.webhooks.constructEventAsync(body, sig, webhookSecret);
   } else {
     event = JSON.parse(body);
   }
 
-  const data = event.data.object;
+  const obj = event.data.object;
 
+  // ── Subscription lifecycle events ─────────────────────────────────────────
+  if ([
+    'customer.subscription.created',
+    'customer.subscription.updated',
+    'customer.subscription.deleted',
+  ].includes(event.type)) {
+    await syncSubscriptionToUser(base44, obj);
+  }
+
+  // ── Payment events ─────────────────────────────────────────────────────────
   if (event.type === 'invoice.payment_succeeded') {
-    const sub = data.subscription;
-    const clientId = data.metadata?.client_id || data.lines?.data?.[0]?.metadata?.client_id;
-    // Update matching payment records
-    const payments = await base44.asServiceRole.entities.Payment.filter({ stripe_payment_id: sub });
-    for (const p of payments) {
-      await base44.asServiceRole.entities.Payment.update(p.id, {
-        status: 'paid',
-        paid_date: new Date().toISOString().split('T')[0],
-      });
-    }
-    // Create a new payment record for renewal
-    if (payments.length > 0) {
-      const existing = payments[0];
-      const nextMonth = new Date();
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
-      await base44.asServiceRole.entities.Payment.create({
-        client_id: existing.client_id,
-        client_name: existing.client_name,
-        amount: existing.amount,
-        type: 'monthly',
-        status: 'pending',
-        description: 'Stripe Subscription (renewal)',
-        stripe_payment_id: sub,
-        due_date: nextMonth.toISOString().split('T')[0],
-      });
+    const subId = obj.subscription;
+    if (subId) {
+      const sub = await stripe.subscriptions.retrieve(subId);
+      await syncSubscriptionToUser(base44, sub);
+      // Update payment records
+      const payments = await base44.asServiceRole.entities.Payment.filter({ stripe_payment_id: subId });
+      for (const p of payments.filter(p => p.status === 'pending')) {
+        await base44.asServiceRole.entities.Payment.update(p.id, {
+          status: 'paid',
+          paid_date: new Date().toISOString().split('T')[0],
+        });
+      }
     }
   }
 
   if (event.type === 'invoice.payment_failed') {
-    const sub = data.subscription;
-    const payments = await base44.asServiceRole.entities.Payment.filter({ stripe_payment_id: sub });
-    for (const p of payments.filter(p => p.status === 'pending')) {
-      await base44.asServiceRole.entities.Payment.update(p.id, { status: 'failed' });
+    const subId = obj.subscription;
+    if (subId) {
+      const sub = await stripe.subscriptions.retrieve(subId);
+      await syncSubscriptionToUser(base44, sub);
+      // Mark pending payments as failed
+      const payments = await base44.asServiceRole.entities.Payment.filter({ stripe_payment_id: subId });
+      for (const p of payments.filter(p => p.status === 'pending')) {
+        await base44.asServiceRole.entities.Payment.update(p.id, { status: 'failed' });
+      }
     }
   }
 
-  if (event.type === 'customer.subscription.deleted') {
-    const sub = data.id;
-    const payments = await base44.asServiceRole.entities.Payment.filter({ stripe_payment_id: sub });
-    for (const p of payments.filter(p => p.status === 'pending')) {
-      await base44.asServiceRole.entities.Payment.update(p.id, { status: 'failed' });
+  // ── Checkout completed ─────────────────────────────────────────────────────
+  if (event.type === 'checkout.session.completed') {
+    const sessionSubId = obj.subscription;
+    if (sessionSubId) {
+      const sub = await stripe.subscriptions.retrieve(sessionSubId);
+      await syncSubscriptionToUser(base44, sub);
     }
   }
 

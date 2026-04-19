@@ -20,7 +20,42 @@
         "enterprise"
       ],
       "default": "starter",
-      "description": "Subscription plan tier"
+      "description": "Active subscription plan tier"
+    },
+    "billing_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "canceled",
+        "trialing",
+        "unpaid",
+        "incomplete"
+      ],
+      "default": "active",
+      "description": "Current Stripe billing status"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID (cus_...)"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID (sub_...)"
+    },
+    "stripe_price_id": {
+      "type": "string",
+      "description": "Stripe price ID currently subscribed to"
+    },
+    "subscription_renewal_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next billing/renewal date"
+    },
+    "subscription_cancel_at_period_end": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if subscription will cancel at end of period"
     },
     "business_name": {
       "type": "string",
@@ -38,5 +73,6 @@
     "specializations": {
       "type": "string"
     }
-  }
+  },
+  "required": []
 }
