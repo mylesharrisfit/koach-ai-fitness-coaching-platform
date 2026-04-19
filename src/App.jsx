@@ -29,6 +29,7 @@ import Automations from './pages/Automations';
 import Analytics from './pages/Analytics';
 import RevenueDashboard from './pages/RevenueDashboard';
 import Business from './pages/Business';
+import ProgramBuilder from './pages/ProgramBuilder';
 import PageGuard from './components/subscription/PageGuard';
 
 const AuthenticatedApp = () => {
@@ -78,6 +79,7 @@ const AuthenticatedApp = () => {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/revenue" element={<RevenueDashboard />} />
         <Route path="/business" element={<Business />} />
+        <Route path="/program-builder" element={<ProgramBuilder />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

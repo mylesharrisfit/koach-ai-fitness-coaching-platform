@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Dumbbell, Clock, BarChart3, MoreHorizontal, Edit, Trash2, Copy, Users, Lock } from 'lucide-react';
@@ -7,10 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import PageHeader from '../components/shared/PageHeader';
-import ProgramForm from '../components/programs/ProgramForm';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const difficultyColors = {
@@ -21,12 +22,11 @@ const difficultyColors = {
 };
 
 export default function Programs() {
-  const [showForm, setShowForm] = useState(false);
-  const [editingProgram, setEditingProgram] = useState(null);
   const [cloningProgram, setCloningProgram] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const queryClient = useQueryClient();
   const { openUpgradeModal } = useUpgradeModal();
+  const navigate = useNavigate();
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -62,13 +62,8 @@ export default function Programs() {
     createMutation.mutate({ ...rest, title: `${rest.title} (Copy)` });
   };
 
-  const handleSubmit = (data) => {
-    if (editingProgram) {
-      updateMutation.mutate({ id: editingProgram.id, data });
-    } else {
-      createMutation.mutate(data);
-    }
-    setEditingProgram(null);
+  const openBuilder = (program = null) => {
+    navigate('/program-builder', { state: { program } });
   };
 
   return (
@@ -78,7 +73,7 @@ export default function Programs() {
         subtitle={`${programs.length} programs`}
         actions={
           <Button
-            onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } setEditingProgram(null); setShowForm(true); }}
+            onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openBuilder(); }}
             variant={atLimit ? 'outline' : 'default'}
             className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
           >
@@ -119,7 +114,7 @@ export default function Programs() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => { setEditingProgram(program); setShowForm(true); }}>
+                      <DropdownMenuItem onClick={() => openBuilder(program)}>
                         <Edit className="w-4 h-4 mr-2" /> Edit
                       </DropdownMenuItem>
                       {canUseTemplates ? (
@@ -172,13 +167,6 @@ export default function Programs() {
           ))}
         </div>
       )}
-
-      <ProgramForm
-        open={showForm}
-        onOpenChange={setShowForm}
-        onSubmit={handleSubmit}
-        program={editingProgram}
-      />
 
       {cloningProgram && (
         <CloneToClientDialog
