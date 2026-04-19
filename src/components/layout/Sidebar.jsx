@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Dumbbell, Salad, Calendar, Play,
   MessageSquare, TrendingUp, ShoppingBag, Settings, 
-  ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList, DollarSign, Smartphone, Globe, Lock, CreditCard, Bot, BarChart3
+  ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList, DollarSign, Smartphone, Globe, Lock, CreditCard, Bot, BarChart3, Landmark
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -25,6 +25,7 @@ const navItems = [
   { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
   { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+  { icon: Landmark, label: 'Revenue', path: '/revenue' },
   { icon: Bot, label: 'Automations', path: '/automations' },
   { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
   { icon: CreditCard, label: 'Subscription', path: '/subscription' },
