@@ -1,26 +1,20 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, Dumbbell, Play, Star, Filter } from 'lucide-react';
+import { Plus, Dumbbell, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import PageHeader from '@/components/shared/PageHeader';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import ExerciseFormModal from '@/components/exercises/ExerciseFormModal';
-import { cn } from '@/lib/utils';
-
-const MUSCLE_GROUPS = ['all', 'chest', 'back', 'shoulders', 'biceps', 'triceps', 'legs', 'glutes', 'core', 'full_body', 'cardio'];
-const EQUIPMENT = ['all', 'barbell', 'dumbbell', 'cable', 'machine', 'bodyweight', 'kettlebell', 'resistance_band', 'trx'];
-const PATTERNS = ['all', 'push', 'pull', 'hinge', 'squat', 'carry', 'rotation', 'isometric', 'cardio'];
+import ExerciseFilters from '@/components/exercises/ExerciseFilters';
 
 export default function ExerciseLibrary() {
   const [search, setSearch] = useState('');
   const [muscleFilter, setMuscleFilter] = useState('all');
   const [equipmentFilter, setEquipmentFilter] = useState('all');
   const [patternFilter, setPatternFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [editingExercise, setEditingExercise] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -37,11 +31,13 @@ export default function ExerciseLibrary() {
   });
 
   const filtered = exercises.filter(ex => {
-    const matchSearch = !search || ex.name.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = !search || ex.name.toLowerCase().includes(search.toLowerCase()) ||
+      (ex.description || '').toLowerCase().includes(search.toLowerCase());
     const matchMuscle = muscleFilter === 'all' || ex.muscle_group === muscleFilter;
     const matchEquip = equipmentFilter === 'all' || ex.equipment === equipmentFilter;
     const matchPattern = patternFilter === 'all' || ex.movement_pattern === patternFilter;
-    return matchSearch && matchMuscle && matchEquip && matchPattern;
+    const matchDifficulty = difficultyFilter === 'all' || ex.difficulty === difficultyFilter;
+    return matchSearch && matchMuscle && matchEquip && matchPattern && matchDifficulty;
   });
 
   const branded = filtered.filter(e => e.is_coach_branded);
@@ -51,7 +47,7 @@ export default function ExerciseLibrary() {
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       <PageHeader
         title="Exercise Library"
-        subtitle={`${exercises.length} exercises · ${branded.length} coach-branded`}
+        subtitle={`${exercises.length} exercises · ${exercises.filter(e => e.is_coach_branded).length} coach-branded`}
         actions={
           <Button onClick={() => { setEditingExercise(null); setShowForm(true); }}>
             <Plus className="w-4 h-4 mr-2" /> Add Exercise
@@ -59,48 +55,14 @@ export default function ExerciseLibrary() {
         }
       />
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-8">
-        <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search exercises..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-        <Select value={muscleFilter} onValueChange={setMuscleFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Muscle Group" />
-          </SelectTrigger>
-          <SelectContent>
-            {MUSCLE_GROUPS.map(m => (
-              <SelectItem key={m} value={m}>{m === 'all' ? 'All Muscles' : m.replace('_', ' ')}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={equipmentFilter} onValueChange={setEquipmentFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Equipment" />
-          </SelectTrigger>
-          <SelectContent>
-            {EQUIPMENT.map(e => (
-              <SelectItem key={e} value={e}>{e === 'all' ? 'All Equipment' : e.replace('_', ' ')}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={patternFilter} onValueChange={setPatternFilter}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Movement" />
-          </SelectTrigger>
-          <SelectContent>
-            {PATTERNS.map(p => (
-              <SelectItem key={p} value={p}>{p === 'all' ? 'All Patterns' : p}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <ExerciseFilters
+        search={search} onSearch={setSearch}
+        muscleFilter={muscleFilter} onMuscle={setMuscleFilter}
+        equipmentFilter={equipmentFilter} onEquipment={setEquipmentFilter}
+        patternFilter={patternFilter} onPattern={setPatternFilter}
+        difficultyFilter={difficultyFilter} onDifficulty={setDifficultyFilter}
+        resultCount={filtered.length}
+      />
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -110,7 +72,7 @@ export default function ExerciseLibrary() {
         <div className="text-center py-20">
           <Dumbbell className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground font-medium">No exercises found</p>
-          <p className="text-sm text-muted-foreground/60 mt-1">Try adjusting filters or add your first exercise</p>
+          <p className="text-sm text-muted-foreground/60 mt-1">Try adjusting your filters or add a new exercise</p>
         </div>
       ) : (
         <div className="space-y-8">
@@ -119,6 +81,7 @@ export default function ExerciseLibrary() {
               <div className="flex items-center gap-2 mb-4">
                 <Star className="w-4 h-4 text-chart-4" />
                 <h2 className="font-heading font-semibold text-sm uppercase tracking-wider text-muted-foreground">Coach-Branded</h2>
+                <span className="text-xs text-muted-foreground/60">({branded.length})</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {branded.map(ex => (
@@ -139,6 +102,7 @@ export default function ExerciseLibrary() {
                 <div className="flex items-center gap-2 mb-4">
                   <Dumbbell className="w-4 h-4 text-muted-foreground" />
                   <h2 className="font-heading font-semibold text-sm uppercase tracking-wider text-muted-foreground">Standard Library</h2>
+                  <span className="text-xs text-muted-foreground/60">({standard.length})</span>
                 </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
