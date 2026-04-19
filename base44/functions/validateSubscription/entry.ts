@@ -50,10 +50,26 @@ Deno.serve(async (req) => {
     const limits = TIER_LIMITS[userTier] || TIER_LIMITS.starter;
     const features = TIER_FEATURES[userTier] || TIER_FEATURES.starter;
 
-    // Feature access check
+    // Feature access check (read-only, no 403)
     if (action === 'check_feature') {
       const allowed = features.includes(entity);
       return Response.json({ allowed, tier: userTier });
+    }
+
+    // Hard gate — returns 403 if feature is not in the user's tier.
+    // Call this at the top of any backend function that requires a premium feature.
+    // e.g. { action: 'guard_feature', entity: 'ai_suggestions' }
+    if (action === 'guard_feature') {
+      const allowed = features.includes(entity);
+      if (!allowed) {
+        return Response.json({
+          error: `This feature requires a higher subscription tier. Current: ${userTier}.`,
+          required_feature: entity,
+          tier: userTier,
+          upgrade_required: true,
+        }, { status: 403 });
+      }
+      return Response.json({ allowed: true, tier: userTier });
     }
 
     // Usage limit check

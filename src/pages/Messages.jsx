@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Send, Search, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown, Lock } from 'lucide-react';
-import InlineUpgradePrompt from '@/components/subscription/InlineUpgradePrompt';
+import { Send, Search, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown } from 'lucide-react';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +12,7 @@ import PinnedNotes from '../components/messages/PinnedNotes';
 import MessageTemplates from '../components/messages/MessageTemplates';
 import AISuggestions from '../components/messages/AISuggestions';
 import { TAG_COLORS } from '../components/messages/MessageTemplates';
-import { hasFeature } from '@/lib/subscription';
+import FeatureLock from '@/components/subscription/FeatureLock';
 
 const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
 
@@ -33,9 +32,6 @@ export default function Messages() {
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
   }, []);
-
-  const canVoiceVideo = hasFeature(currentUser, 'voice_video_messages');
-  const canAI = hasFeature(currentUser, 'ai_features');
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -228,17 +224,8 @@ export default function Messages() {
                   )}
                 </div>
 
-                {/* AI Suggestions — locked hint */}
-                {!canAI && (
-                 <InlineUpgradePrompt
-                   featureKey="ai_suggestions"
-                   onUpgrade={openUpgradeModal}
-                   compact
-                 />
-                )}
-
-                {/* AI Suggestions — Pro+ only */}
-                {canAI && (
+                {/* AI Suggestions — locked via FeatureLock for non-Elite tiers */}
+                <FeatureLock feature="ai_suggestions" className="rounded-lg">
                   <div className="relative">
                     <button
                       onClick={() => { setShowAI(!showAI); setShowTemplates(false); }}
@@ -257,11 +244,11 @@ export default function Messages() {
                       </div>
                     )}
                   </div>
-                )}
+                </FeatureLock>
 
-                {/* Voice + Video — Pro+ only */}
+                {/* Voice + Video — locked via FeatureLock for Starter */}
                 <div className="ml-auto flex items-center gap-1">
-                  {canVoiceVideo ? (
+                  <FeatureLock feature="voice_video_messages" className="flex items-center gap-1 rounded-lg">
                     <>
                       <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors">
                         <Mic className="w-3.5 h-3.5" /> Voice
@@ -270,11 +257,7 @@ export default function Messages() {
                         <Video className="w-3.5 h-3.5" /> Video
                       </button>
                     </>
-                  ) : (
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground/50 px-2 py-1 cursor-not-allowed" title="Voice & Video available on Pro+">
-                      <Lock className="w-3 h-3" /> Voice/Video (Pro+)
-                    </span>
-                  )}
+                  </FeatureLock>
                 </div>
               </div>
 
