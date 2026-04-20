@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { getAtRiskClients, SEVERITY_CONFIG } from '@/lib/riskEngine';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { averageAdherenceScore } from '@/lib/adherence';
+import { compositeAdherenceScore } from '@/lib/adherence';
 
 function AdherencePill({ score }) {
   if (score === null) return null;
@@ -18,7 +18,7 @@ function RiskClientRow({ entry, allCheckIns }) {
   const { client, flags, riskScore, lastCheckInDate } = entry;
   const highFlags = flags.filter(f => f.severity === 'high');
   const clientCheckIns = allCheckIns.filter(ci => ci.client_id === client.id);
-  const avgScore = averageAdherenceScore(clientCheckIns, 3);
+  const avgScore = compositeAdherenceScore(clientCheckIns);
 
   const ringColor = riskScore >= 60 ? 'border-destructive/50 bg-destructive/10 text-destructive' : riskScore >= 30 ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-border bg-secondary text-muted-foreground';
 

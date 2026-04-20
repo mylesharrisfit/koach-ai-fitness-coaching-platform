@@ -8,7 +8,8 @@ import {
   Minus, Clock, ImageIcon, MessageSquare, Moon, Zap, ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { checkInScore, averageAdherenceScore, scoreColor } from '@/lib/adherence';
+import { checkInScore, compositeAdherenceScore, scoreColor, scoreBreakdown } from '@/lib/adherence';
+import { AdherenceBreakdown } from '@/components/adherence/AdherenceScore';
 import CheckInMetrics from './CheckInMetrics';
 import CheckInResponseBox from './CheckInResponseBox';
 
@@ -22,8 +23,8 @@ function getStatus(checkIn, allClientCIs) {
   if (checkIn.sleep_hours != null && checkIn.sleep_hours < 6) flags.push('poor sleep');
   if (checkIn.mood === 'stressed' || checkIn.mood === 'tired') flags.push(`mood: ${checkIn.mood}`);
 
-  const isAtRisk = (score !== null && score < 55) || flags.length >= 2;
-  const needsAttention = flags.length > 0 || (score !== null && score < 75);
+  const isAtRisk = (score !== null && score < 60) || flags.length >= 2;
+  const needsAttention = flags.length > 0 || (score !== null && score < 80);
 
   if (isAtRisk) return { label: 'At Risk', color: 'bg-destructive/15 text-destructive border-destructive/30', border: 'border-destructive/30', flags };
   if (needsAttention) return { label: 'Needs Attention', color: 'bg-amber-500/15 text-amber-400 border-amber-500/30', border: 'border-amber-500/20', flags };
@@ -56,7 +57,8 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
   const navigate = useNavigate();
 
   const score = checkInScore(checkIn);
-  const avgScore = averageAdherenceScore(allClientCIs, 3);
+  const avgScore = compositeAdherenceScore(allClientCIs);
+  const breakdown = scoreBreakdown(allClientCIs);
   const status = getStatus(checkIn, allClientCIs);
   const hasResponse = !!checkIn.coach_notes || !!checkIn.coach_responded;
   const daysAgo = differenceInDays(new Date(), parseISO(checkIn.date));
@@ -181,6 +183,18 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
                   </a>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Adherence breakdown */}
+          {breakdown && (
+            <div className="bg-secondary/30 rounded-xl p-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-muted-foreground">Overall</span>
+                <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}%</span>
+              </div>
+              <AdherenceBreakdown breakdown={breakdown} />
             </div>
           )}
 

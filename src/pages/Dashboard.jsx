@@ -14,6 +14,7 @@ import BehaviorNudge from '@/components/subscription/BehaviorNudge';
 import { getActiveNudges } from '@/lib/upgradeNudges';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import UsageSummaryCard from '@/components/dashboard/UsageSummaryCard';
+import AdherenceOverview from '@/components/dashboard/AdherenceOverview';
 
 export default function Dashboard() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -71,6 +72,9 @@ export default function Dashboard() {
 
         {/* Revenue snapshot */}
         <RevenueSnapshot clients={clients} />
+
+        {/* Adherence Overview */}
+        <AdherenceOverview clients={clients} checkIns={checkIns} />
 
         {/* Needs Attention (full width, most critical) */}
         <NeedsAttentionWidget clients={clients} checkIns={checkIns} />

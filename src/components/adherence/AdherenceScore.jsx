@@ -2,43 +2,92 @@ import React from 'react';
 import { scoreColor, scoreBg, scoreLabel } from '@/lib/adherence';
 import { cn } from '@/lib/utils';
 
+/** Colour for SVG stroke — green 80+, yellow 60–79, red <60 */
+function strokeHsl(score) {
+  if (score === null || score === undefined) return 'hsl(var(--muted-foreground))';
+  if (score >= 80) return 'hsl(var(--accent))';
+  if (score >= 60) return 'hsl(var(--chart-4))';
+  return 'hsl(var(--destructive))';
+}
+
+/** Inline pill badge */
+export function AdherencePill({ score, showLabel = true }) {
+  const color = score === null
+    ? 'bg-secondary text-muted-foreground'
+    : score >= 80 ? 'bg-emerald-500/15 text-emerald-400'
+    : score >= 60 ? 'bg-amber-500/15 text-amber-400'
+    : 'bg-destructive/15 text-destructive';
+
+  return (
+    <span className={cn('inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full', color)}>
+      {score !== null ? `${score}%` : '–'}
+      {showLabel && score !== null && (
+        <span className="font-normal opacity-70">· {scoreLabel(score)}</span>
+      )}
+    </span>
+  );
+}
+
+/** Horizontal bar breakdown showing each component */
+export function AdherenceBreakdown({ breakdown }) {
+  if (!breakdown) return null;
+  const items = [breakdown.training, breakdown.nutrition, breakdown.sleep, breakdown.checkin];
+  return (
+    <div className="space-y-1.5">
+      {items.map(item => (
+        <div key={item.label} className="flex items-center gap-2">
+          <span className="text-[11px] text-muted-foreground w-16 flex-shrink-0">{item.label}</span>
+          <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
+            <div
+              className={cn('h-full rounded-full transition-all duration-700',
+                item.score === null ? 'w-0' :
+                item.score >= 80 ? 'bg-emerald-400' :
+                item.score >= 60 ? 'bg-amber-400' : 'bg-destructive'
+              )}
+              style={{ width: item.score !== null ? `${item.score}%` : '0%' }}
+            />
+          </div>
+          <span className={cn('text-[11px] font-bold w-7 text-right tabular-nums', scoreColor(item.score))}>
+            {item.score !== null ? `${item.score}` : '–'}
+          </span>
+          <span className="text-[10px] text-muted-foreground">{item.weight}%</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Main circular gauge */
 export default function AdherenceScore({ score, size = 'md', showLabel = true }) {
-  // Pill/badge mode for inline use in cards
+  // Pill/badge mode
   if (size === 'pill') {
-    const color = score === null ? 'bg-secondary text-muted-foreground' : score >= 75 ? 'bg-emerald-500/15 text-emerald-400' : score >= 50 ? 'bg-amber-500/15 text-amber-400' : 'bg-destructive/15 text-destructive';
-    const label = scoreLabel(score);
-    return (
-      <span className={cn('inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full', color)}>
-        {score !== null ? score : '–'}{score !== null ? '%' : ''} {showLabel && <span className="font-normal opacity-70">· {label}</span>}
-      </span>
-    );
+    return <AdherencePill score={score} showLabel={showLabel} />;
   }
 
-  const ring = score === null ? 0 : Math.round((score / 100) * 100);
   const sizes = {
-    sm: { outer: 'w-10 h-10', text: 'text-xs', label: 'text-[10px]' },
-    md: { outer: 'w-14 h-14', text: 'text-sm', label: 'text-xs' },
-    lg: { outer: 'w-20 h-20', text: 'text-xl', label: 'text-xs' },
+    sm: { outer: 'w-10 h-10', text: 'text-xs', label: 'text-[10px]', r: 17, svgSize: 40, sw: 4 },
+    md: { outer: 'w-14 h-14', text: 'text-sm', label: 'text-xs',     r: 24, svgSize: 56, sw: 4 },
+    lg: { outer: 'w-20 h-20', text: 'text-xl', label: 'text-xs',     r: 34, svgSize: 80, sw: 6 },
   };
-  const s = sizes[size];
+  const s = sizes[size] || sizes.md;
   const color = scoreColor(score);
-  const bg = scoreBg(score);
   const label = scoreLabel(score);
-
   const pct = score !== null ? score : 0;
-  const r = size === 'lg' ? 34 : size === 'md' ? 24 : 17;
-  const circ = 2 * Math.PI * r;
-  const svgSize = size === 'lg' ? 80 : size === 'md' ? 56 : 40;
+  const circ = 2 * Math.PI * s.r;
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="relative" style={{ width: svgSize, height: svgSize }}>
-        <svg width={svgSize} height={svgSize} style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx={svgSize/2} cy={svgSize/2} r={r} fill="none" stroke="currentColor" strokeWidth={size === 'lg' ? 6 : 4} className="text-secondary" />
+      <div className="relative" style={{ width: s.svgSize, height: s.svgSize }}>
+        <svg width={s.svgSize} height={s.svgSize} style={{ transform: 'rotate(-90deg)' }}>
           <circle
-            cx={svgSize/2} cy={svgSize/2} r={r} fill="none"
-            strokeWidth={size === 'lg' ? 6 : 4}
-            stroke={`hsl(var(--${score >= 80 ? 'accent' : score >= 60 ? 'chart-4' : 'destructive'}))`}
+            cx={s.svgSize / 2} cy={s.svgSize / 2} r={s.r}
+            fill="none" strokeWidth={s.sw}
+            stroke="currentColor" className="text-secondary"
+          />
+          <circle
+            cx={s.svgSize / 2} cy={s.svgSize / 2} r={s.r}
+            fill="none" strokeWidth={s.sw}
+            stroke={strokeHsl(score)}
             strokeDasharray={circ}
             strokeDashoffset={circ * (1 - pct / 100)}
             strokeLinecap="round"

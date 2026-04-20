@@ -4,8 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
-import { averageAdherenceScore } from '@/lib/adherence';
-import AdherenceScore from '@/components/adherence/AdherenceScore';
+import { compositeAdherenceScore, scoreColor, scoreLabel } from '@/lib/adherence';
+import { AdherencePill } from '@/components/adherence/AdherenceScore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -317,13 +317,21 @@ export default function Clients() {
 
               {/* Adherence score */}
               {(() => {
-                const clientCIs = allCheckIns.filter(ci => ci.client_id === client.id);
-                const score = averageAdherenceScore(clientCIs, 3);
+                const clientCIs = allCheckIns
+                  .filter(ci => ci.client_id === client.id)
+                  .sort((a, b) => new Date(b.date) - new Date(a.date));
+                const score = compositeAdherenceScore(clientCIs);
                 if (score === null) return null;
+                const barColor = score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-destructive';
                 return (
-                  <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Adherence</span>
-                    <AdherenceScore score={score} size="pill" showLabel={true} />
+                  <div className="mt-3 pt-3 border-t border-border space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">Adherence Score</span>
+                      <AdherencePill score={score} showLabel />
+                    </div>
+                    <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                      <div className={cn('h-full rounded-full transition-all duration-700', barColor)} style={{ width: `${score}%` }} />
+                    </div>
                   </div>
                 );
               })()}
