@@ -32,7 +32,7 @@ export default function BottomNav() {
 
       <nav
         className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden border-t border-sidebar-border"
-        style={{ background: 'hsl(222 32% 4%)', height: '64px', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ background: 'hsl(222 32% 4%)', height: '68px', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {PRIMARY_NAV.map((item) => {
           const isActive =
@@ -43,7 +43,7 @@ export default function BottomNav() {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex flex-col items-center justify-center flex-1 gap-1 relative transition-colors',
+                'flex flex-col items-center justify-center flex-1 gap-1.5 relative transition-colors active:scale-95 active:opacity-75',
                 isActive ? 'text-primary' : 'text-sidebar-foreground/40 active:text-sidebar-foreground'
               )}
             >
@@ -60,7 +60,7 @@ export default function BottomNav() {
         <button
           onClick={() => setMoreOpen(true)}
           className={cn(
-            'flex flex-col items-center justify-center flex-1 gap-1 relative transition-colors',
+            'flex flex-col items-center justify-center flex-1 gap-1.5 relative transition-colors active:scale-95 active:opacity-75',
             (moreOpen || isMoreActive) ? 'text-primary' : 'text-sidebar-foreground/40 active:text-sidebar-foreground'
           )}
         >

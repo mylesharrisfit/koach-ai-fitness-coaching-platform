@@ -194,6 +194,29 @@ a, button, [role="button"] {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Touch tap feedback ── */
+@media (hover: none) and (pointer: coarse) {
+  a:active, button:active, [role="button"]:active {
+    transform: scale(0.96);
+    opacity: 0.85;
+    transition-duration: 80ms;
+  }
+
+  /* Minimum touch target size */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Override for inline/icon-only buttons that need to stay compact visually
+     but still get a large tap region via padding */
+  button.touch-compact, a.touch-compact {
+    min-height: unset;
+    min-width: unset;
+    padding: 10px;
+  }
+}
+
 /* ── Sidebar accent line ── */
 .sidebar-active-dot::before {
   content: '';

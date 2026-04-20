@@ -142,7 +142,7 @@ export default function Clients() {
             key={key}
             onClick={() => setStatusFilter(key)}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all',
+              'flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold border transition-all active:scale-95',
               statusFilter === key
                 ? key === 'all' ? 'bg-primary/15 text-primary border-primary/30' : `${LIFECYCLE_CONFIG[key]?.color} border-opacity-50`
                 : 'bg-secondary/50 text-muted-foreground border-transparent hover:border-border hover:text-foreground'
