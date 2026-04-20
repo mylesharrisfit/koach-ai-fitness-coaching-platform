@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, differenceInDays, parseISO } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import {
   ChevronDown, ChevronUp, AlertTriangle, TrendingDown, TrendingUp,
-  Minus, Clock, ImageIcon, MessageSquare, Moon, Zap
+  Minus, Clock, ImageIcon, MessageSquare, Moon, Zap, ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { checkInScore, averageAdherenceScore, scoreColor, scoreBg } from '@/lib/adherence';
+import { checkInScore, averageAdherenceScore, scoreColor } from '@/lib/adherence';
 import CheckInMetrics from './CheckInMetrics';
 import CheckInResponseBox from './CheckInResponseBox';
 
@@ -52,6 +53,7 @@ function WeightDelta({ current, previous }) {
 export default function CheckInClientCard({ checkIn, client, allClientCIs = [], defaultOpen = false }) {
   const [expanded, setExpanded] = useState(defaultOpen);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const score = checkInScore(checkIn);
   const avgScore = averageAdherenceScore(allClientCIs, 3);
@@ -159,6 +161,15 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
       {/* ── Expanded detail ── */}
       {expanded && (
         <div className="border-t border-border p-4 space-y-4">
+          {/* View full detail */}
+          <button
+            onClick={() => navigate(`/checkin-detail?id=${checkIn.id}&clientId=${checkIn.client_id}`)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/20 transition-colors border border-primary/20"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            View Full Check-in Details
+          </button>
+
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
