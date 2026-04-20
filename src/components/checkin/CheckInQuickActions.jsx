@@ -38,24 +38,26 @@ function CaloriesPanel({ checkIn, client, onDone }) {
       return;
     }
     setSaving(true);
+    // Optimistic close + show result immediately
+    const optimisticLabel = delta > 0 ? `+${delta} kcal` : `${delta} kcal`;
+    onDone(optimisticLabel);
+    toast.success(`Calories ${delta > 0 ? 'increased' : 'decreased'} by ${Math.abs(delta)} kcal ✓`);
+
     const plans = await base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id });
     const plan = plans[0];
     if (plan) {
       const newCals = Math.max(1000, (plan.calories || 2000) + delta);
-      await base44.entities.NutritionPlan.update(plan.id, { calories: newCals });
-      // Notify client
-      await base44.entities.Message.create({
-        client_id: checkIn.client_id,
-        client_name: checkIn.client_name,
-        sender: 'coach',
-        content: `Your daily calorie target has been updated to ${newCals} kcal (${delta > 0 ? '+' : ''}${delta} adjustment based on your check-in).`,
-        tag: 'nutrition',
-        is_read: false,
-      });
-      toast.success(`Calories ${delta > 0 ? 'increased' : 'decreased'} to ${newCals} kcal`);
-      onDone(delta > 0 ? `+${delta} kcal` : `${delta} kcal`);
-    } else {
-      toast.error('Could not find nutrition plan');
+      Promise.all([
+        base44.entities.NutritionPlan.update(plan.id, { calories: newCals }),
+        base44.entities.Message.create({
+          client_id: checkIn.client_id,
+          client_name: checkIn.client_name,
+          sender: 'coach',
+          content: `Your daily calorie target has been updated to ${newCals} kcal (${delta > 0 ? '+' : ''}${delta} adjustment based on your check-in).`,
+          tag: 'nutrition',
+          is_read: false,
+        }),
+      ]);
     }
     setSaving(false);
   };
@@ -94,20 +96,24 @@ function CardioPanel({ checkIn, client, onDone }) {
       ? 'Your cardio has been increased — add 1 extra session or 20 min to your current sessions this week.'
       : 'Your cardio has been reduced — drop 1 session or reduce session duration by 15–20 min this week.';
 
-    const existing = checkIn.coach_notes || '';
-    await base44.entities.CheckIn.update(checkIn.id, {
-      coach_notes: existing ? existing + '\n[Cardio] ' + msg : '[Cardio] ' + msg,
-    });
-    await base44.entities.Message.create({
-      client_id: checkIn.client_id,
-      client_name: checkIn.client_name,
-      sender: 'coach',
-      content: msg,
-      tag: 'training',
-      is_read: false,
-    });
-    toast.success(`Cardio ${direction === 'up' ? 'increased' : 'reduced'}`);
+    // Optimistic
     onDone(direction === 'up' ? '+1 session' : '−1 session');
+    toast.success(`Cardio ${direction === 'up' ? 'increased' : 'reduced'} ✓`);
+
+    const existing = checkIn.coach_notes || '';
+    Promise.all([
+      base44.entities.CheckIn.update(checkIn.id, {
+        coach_notes: existing ? existing + '\n[Cardio] ' + msg : '[Cardio] ' + msg,
+      }),
+      base44.entities.Message.create({
+        client_id: checkIn.client_id,
+        client_name: checkIn.client_name,
+        sender: 'coach',
+        content: msg,
+        tag: 'training',
+        is_read: false,
+      }),
+    ]);
     setSaving(false);
   };
 
@@ -148,7 +154,7 @@ export default function CheckInQuickActions({
   const togglePanel = (name) => setOpenPanel(p => p === name ? null : name);
 
   const handleApplyAI = async () => {
-    if (aiDone) return;
+    if (aiDone || aiSaving) return;
     setAiSaving(true);
     const weights = allClientCIs.filter(c => c.weight).slice(0, 4).map(c => c.weight);
     const weightTrend = weights.length >= 2
@@ -172,9 +178,13 @@ Client notes: ${checkIn.notes || 'none'}
 Write the message directly to the client (use "you"). Do NOT use bullet points.`,
     });
 
-    // Save to check-in + send to inbox
+    // Optimistic: mark done immediately, fire-and-forget saves
+    setAiDone(true);
+    setAiSaving(false);
+    toast.success('AI feedback sent! ✨', { duration: 2500 });
+
     const existing = checkIn.coach_notes ? checkIn.coach_notes + '\n\n' : '';
-    await Promise.all([
+    Promise.all([
       base44.entities.CheckIn.update(checkIn.id, {
         coach_notes: existing + result,
         coach_responded: true,
@@ -188,10 +198,6 @@ Write the message directly to the client (use "you"). Do NOT use bullet points.`
         is_read: false,
       }),
     ]);
-
-    setAiDone(true);
-    setAiSaving(false);
-    toast.success('AI feedback sent to client inbox');
   };
 
   return (
@@ -284,18 +290,18 @@ Write the message directly to the client (use "you"). Do NOT use bullet points.`
       {/* ── Mark Reviewed ── */}
       <button
         onClick={onMarkReviewed}
-        disabled={saving || isReviewed}
+        disabled={isReviewed}
         className={cn(
-          'w-full flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-[0.97]',
+          'w-full flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all duration-300 active:scale-[0.97]',
           isReviewed
-            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 opacity-60 cursor-default'
-            : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20'
+            ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400 cursor-default scale-[1.01]'
+            : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:scale-[1.01]'
         )}
       >
         {saving
           ? <Loader2 className="w-4 h-4 animate-spin" />
           : isReviewed
-            ? <><Check className="w-4 h-4" /> Marked as Reviewed</>
+            ? <><Check className="w-4 h-4 animate-[scale-in_0.2s_ease]" /> Marked as Reviewed</>
             : <><ClipboardCheck className="w-4 h-4" /> Mark as Reviewed</>
         }
       </button>

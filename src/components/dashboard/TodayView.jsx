@@ -228,8 +228,10 @@ export default function TodayView({ clients, checkIns, messages }) {
         <div className="fade-up fade-up-delay-1">
           <SectionHeader icon={AlertTriangle} title="Clients Needing Attention" count={atRisk.length} priority={atRisk.some(e => e.riskScore >= 60) ? 'red' : 'yellow'} />
           <div className="space-y-2.5">
-            {atRisk.slice(0, 5).map(entry => (
-              <AtRiskRow key={entry.client.id} entry={entry} />
+            {atRisk.slice(0, 5).map((entry, i) => (
+              <div key={entry.client.id} className="fade-up" style={{ animationDelay: `${i * 0.06}s` }}>
+                <AtRiskRow entry={entry} />
+              </div>
             ))}
           </div>
           {atRisk.length > 5 && (
@@ -256,8 +258,10 @@ export default function TodayView({ clients, checkIns, messages }) {
             <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
           </Link>
           <div className="space-y-2.5">
-            {pendingCheckIns.slice(0, 3).map(ci => (
-              <PendingCheckInRow key={ci.id} checkIn={ci} />
+            {pendingCheckIns.slice(0, 3).map((ci, i) => (
+              <div key={ci.id} className="fade-up" style={{ animationDelay: `${i * 0.06}s` }}>
+                <PendingCheckInRow checkIn={ci} />
+              </div>
             ))}
           </div>
           {pendingCheckIns.length > 3 && (
@@ -273,8 +277,10 @@ export default function TodayView({ clients, checkIns, messages }) {
         <div className="fade-up fade-up-delay-3">
           <SectionHeader icon={MessageSquare} title="Unread Messages" count={unreadMessages.length} priority="green" />
           <div className="space-y-2.5">
-            {unreadMessages.map(m => (
-              <UnreadMessageRow key={m.id} message={m} />
+            {unreadMessages.map((m, i) => (
+              <div key={m.id} className="fade-up" style={{ animationDelay: `${i * 0.05}s` }}>
+                <UnreadMessageRow message={m} />
+              </div>
             ))}
           </div>
           <Link to="/messages" className="flex items-center justify-center gap-1.5 mt-2.5 py-2.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">

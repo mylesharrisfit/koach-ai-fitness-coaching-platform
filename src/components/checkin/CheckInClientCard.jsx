@@ -57,6 +57,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
   const [showFeedback, setShowFeedback] = useState(false);
   const [markSaving, setMarkSaving] = useState(false);
   const [marked, setMarked] = useState(false);
+  const [justCompleted, setJustCompleted] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -70,16 +71,23 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.CheckIn.update(checkIn.id, data),
+    onMutate: async (data) => {
+      // Optimistic update — invalidate after
+      await queryClient.cancelQueries({ queryKey: ['checkins-review'] });
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['checkins-review'] }),
   });
 
   const isReviewed = marked || checkIn.coach_responded || !!checkIn.coach_notes;
 
   const handleMarkReviewed = async () => {
+    if (isReviewed) return;
     setMarkSaving(true);
-    await updateMutation.mutateAsync({ coach_responded: true });
+    setMarked(true); // optimistic
+    setJustCompleted(true);
+    updateMutation.mutate({ coach_responded: true });
     setMarkSaving(false);
-    setMarked(true);
+    setTimeout(() => setJustCompleted(false), 1200);
   };
 
   const sleepColor = checkIn.sleep_hours >= 7 ? 'text-emerald-400' : checkIn.sleep_hours >= 6 ? 'text-amber-400' : 'text-destructive';
@@ -87,8 +95,9 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
   return (
     <div className={cn(
-      'bg-card border rounded-2xl overflow-hidden transition-all',
-      status.border
+      'bg-card border rounded-2xl overflow-hidden transition-all duration-300',
+      justCompleted && 'ring-2 ring-emerald-500/40 border-emerald-500/30',
+      !justCompleted && status.border
     )}>
       {/* ── Summary row (always visible) ── */}
       <button
@@ -243,12 +252,12 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Response box */}
           {showFeedback && (
-            <div className="bg-secondary/20 rounded-xl p-4 border border-border">
+            <div className="bg-secondary/20 rounded-xl p-4 border border-border fade-up">
               <CheckInResponseBox
                 checkIn={checkIn}
                 client={client}
                 allClientCIs={allClientCIs}
-                onSave={(data) => updateMutation.mutateAsync(data)}
+                onSave={(data) => updateMutation.mutate(data)}
                 saving={updateMutation.isPending}
               />
             </div>

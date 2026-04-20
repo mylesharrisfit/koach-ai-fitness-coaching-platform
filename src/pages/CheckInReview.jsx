@@ -206,14 +206,15 @@ export default function CheckInReview() {
         </div>
       ) : (
         <div className="space-y-3">
-          {visible.map(ci => (
-            <CheckInClientCard
-              key={ci.id}
-              checkIn={ci}
-              client={clientMap[ci.client_id]}
-              allClientCIs={cisByClient[ci.client_id] || []}
-              defaultOpen={filter === 'flagged' && visible.length <= 3}
-            />
+          {visible.map((ci, i) => (
+            <div key={ci.id} className="fade-up" style={{ animationDelay: `${Math.min(i * 0.04, 0.3)}s` }}>
+              <CheckInClientCard
+                checkIn={ci}
+                client={clientMap[ci.client_id]}
+                allClientCIs={cisByClient[ci.client_id] || []}
+                defaultOpen={filter === 'flagged' && visible.length <= 3}
+              />
+            </div>
           ))}
         </div>
       )}
