@@ -34,6 +34,7 @@ import WhiteLabel from './pages/WhiteLabel';
 import PageGuard from './components/subscription/PageGuard';
 import SubmitCheckIn from './pages/SubmitCheckIn';
 import CheckInDetail from './pages/CheckInDetail';
+import AtRiskClients from './pages/AtRiskClients';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -86,6 +87,7 @@ const AuthenticatedApp = () => {
         <Route path="/white-label" element={<WhiteLabel />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
+        <Route path="/at-risk" element={<AtRiskClients />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

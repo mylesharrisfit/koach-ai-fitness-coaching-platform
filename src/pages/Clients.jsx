@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { getAtRiskClients } from '@/lib/riskEngine';
 import { averageAdherenceScore } from '@/lib/adherence';
 import AdherenceScore from '@/components/adherence/AdherenceScore';
 import { Button } from '@/components/ui/button';
@@ -120,6 +122,9 @@ export default function Clients() {
 
   const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + (tagFilter ? 1 : 0);
 
+  const atRiskClients = useMemo(() => getAtRiskClients(clients, allCheckIns), [clients, allCheckIns]);
+  const highRiskCount = atRiskClients.filter(e => e.riskScore >= 60).length;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <PageHeader
@@ -140,6 +145,29 @@ export default function Clients() {
       <div className="mb-6 space-y-3">
         <UsageMeter user={currentUser} limitKey="max_clients" currentCount={clients.length} label="Clients" onUpgrade={() => setUpgradeOpen(true)} />
         <LimitBanner limitKey="max_clients" currentCount={clients.length} label="clients" featureKey="clients" />
+
+        {/* Needs Attention Banner */}
+        {atRiskClients.length > 0 && (
+          <Link to="/at-risk">
+            <div className={cn(
+              'flex items-center gap-3 px-4 py-3 rounded-xl border transition-all hover:shadow-md',
+              highRiskCount > 0 ? 'bg-destructive/8 border-destructive/30' : 'bg-amber-500/8 border-amber-500/25'
+            )}>
+              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0', highRiskCount > 0 ? 'bg-destructive/15' : 'bg-amber-500/15')}>
+                <AlertTriangle className={cn('w-4 h-4', highRiskCount > 0 ? 'text-destructive' : 'text-amber-400')} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={cn('text-sm font-bold', highRiskCount > 0 ? 'text-destructive' : 'text-amber-400')}>
+                  {atRiskClients.length} client{atRiskClients.length !== 1 ? 's' : ''} need{atRiskClients.length === 1 ? 's' : ''} attention
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {highRiskCount > 0 ? `${highRiskCount} high risk · ` : ''}{atRiskClients.length - highRiskCount} medium/low risk
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* Lifecycle status tabs */}

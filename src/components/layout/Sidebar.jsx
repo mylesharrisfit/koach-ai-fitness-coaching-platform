@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Dumbbell, Salad, Calendar, Play,
   MessageSquare, TrendingUp, ShoppingBag, Settings, 
-  ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList, DollarSign, Smartphone, Globe, Lock, CreditCard, Bot, BarChart3, Landmark
+  ChevronLeft, ChevronRight, Zap, LogOut, Sparkles, Trophy, ClipboardList, DollarSign, Smartphone, Globe, Lock, CreditCard, Bot, BarChart3, Landmark, ShieldAlert
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -18,6 +18,7 @@ const navItems = [
   { icon: Calendar, label: 'Schedule', path: '/schedule' },
   { icon: MessageSquare, label: 'Messages', path: '/messages' },
   { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
+  { icon: ShieldAlert, label: 'At-Risk Clients', path: '/at-risk' },
   { icon: TrendingUp, label: 'Progress', path: '/progress', feature: 'progress' },
   { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
   { icon: DollarSign, label: 'Sales', path: '/sales', feature: 'sales' },

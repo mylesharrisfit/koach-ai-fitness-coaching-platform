@@ -1,14 +1,24 @@
 import { differenceInDays, parseISO } from 'date-fns';
 import { checkInScore, averageAdherenceScore } from './adherence';
 
-/**
- * Risk flag definitions — each has a key, label, severity, and detection logic.
- */
+const NEGATIVE_KEYWORDS = [
+  'struggling', 'stressed', 'burnout', 'burned out', 'exhausted', 'overwhelmed',
+  'giving up', 'can\'t', 'too hard', 'not motivated', 'depressed', 'anxious',
+  'no energy', 'skipped', 'missed', 'failed', 'quit', 'tired', 'unmotivated',
+];
+
+function hasNegativeSentiment(text) {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  return NEGATIVE_KEYWORDS.some(kw => lower.includes(kw));
+}
+
 const FLAGS = [
   {
     key: 'missed_checkin',
     label: 'Missed check-in',
     severity: 'high',
+    icon: 'calendar',
     detect: ({ lastCheckIn }) => {
       if (!lastCheckIn) return { triggered: true, detail: 'No check-ins on record' };
       const days = differenceInDays(new Date(), parseISO(lastCheckIn.date));
@@ -20,9 +30,42 @@ const FLAGS = [
     key: 'low_adherence',
     label: 'Low adherence',
     severity: 'high',
+    icon: 'zap',
     detect: ({ clientCheckIns }) => {
       const avg = averageAdherenceScore(clientCheckIns, 3);
-      if (avg !== null && avg < 55) return { triggered: true, detail: `Avg adherence ${avg}%` };
+      // Threshold updated to 70% per requirements
+      if (avg !== null && avg < 70) return { triggered: true, detail: `Avg adherence ${avg}% (below 70%)` };
+      return { triggered: false };
+    },
+  },
+  {
+    key: 'low_sleep',
+    label: 'Poor sleep',
+    severity: 'high',
+    icon: 'moon',
+    detect: ({ clientCheckIns }) => {
+      const recent = clientCheckIns.slice(0, 3);
+      const lowSleep = recent.filter(ci => ci.sleep_hours != null && ci.sleep_hours < 6);
+      if (lowSleep.length >= 2) {
+        const avg = (lowSleep.reduce((s, ci) => s + ci.sleep_hours, 0) / lowSleep.length).toFixed(1);
+        return { triggered: true, detail: `Avg ${avg}h sleep in last ${recent.length} check-ins` };
+      }
+      if (recent.length > 0 && recent[0].sleep_hours != null && recent[0].sleep_hours < 5) {
+        return { triggered: true, detail: `Last check-in: only ${recent[0].sleep_hours}h sleep` };
+      }
+      return { triggered: false };
+    },
+  },
+  {
+    key: 'negative_notes',
+    label: 'Negative feedback',
+    severity: 'high',
+    icon: 'message',
+    detect: ({ lastCheckIn }) => {
+      if (!lastCheckIn) return { triggered: false };
+      if (hasNegativeSentiment(lastCheckIn.notes)) {
+        return { triggered: true, detail: 'Client notes contain signs of struggle or low motivation' };
+      }
       return { triggered: false };
     },
   },
@@ -30,12 +73,10 @@ const FLAGS = [
     key: 'missed_workouts',
     label: 'Missed workouts',
     severity: 'medium',
-    detect: ({ lastCheckIn, clientCheckIns }) => {
-      if (!lastCheckIn) return { triggered: false };
+    icon: 'dumbbell',
+    detect: ({ clientCheckIns }) => {
       const recent = clientCheckIns.slice(0, 3);
-      const lowTraining = recent.filter(
-        ci => ci.compliance_training != null && ci.compliance_training < 60
-      );
+      const lowTraining = recent.filter(ci => ci.compliance_training != null && ci.compliance_training < 60);
       if (lowTraining.length >= 2)
         return { triggered: true, detail: `Training compliance <60% in last ${recent.length} check-ins` };
       return { triggered: false };
@@ -45,6 +86,7 @@ const FLAGS = [
     key: 'low_nutrition',
     label: 'Nutrition off-track',
     severity: 'medium',
+    icon: 'utensils',
     detect: ({ clientCheckIns }) => {
       const recent = clientCheckIns.slice(0, 3);
       const low = recent.filter(ci => ci.compliance_nutrition != null && ci.compliance_nutrition < 55);
@@ -56,10 +98,10 @@ const FLAGS = [
     key: 'no_progress',
     label: 'No weight progress',
     severity: 'medium',
+    icon: 'scale',
     detect: ({ clientCheckIns, client }) => {
       const withWeight = clientCheckIns.filter(ci => ci.weight != null);
       if (withWeight.length < 3) return { triggered: false };
-      // Check last 3 check-ins for stalled weight (when goal is weight_loss)
       if (client.goal === 'weight_loss') {
         const weights = withWeight.slice(0, 4).map(ci => ci.weight);
         const range = Math.max(...weights) - Math.min(...weights);
@@ -72,11 +114,11 @@ const FLAGS = [
     key: 'declining_trend',
     label: 'Declining scores',
     severity: 'medium',
+    icon: 'trending-down',
     detect: ({ clientCheckIns }) => {
       if (clientCheckIns.length < 3) return { triggered: false };
       const scores = clientCheckIns.slice(0, 4).map(checkInScore).filter(s => s !== null);
       if (scores.length < 3) return { triggered: false };
-      // Declining if each score is lower than the previous
       let declining = 0;
       for (let i = 0; i < scores.length - 1; i++) {
         if (scores[i] < scores[i + 1]) declining++;
@@ -89,6 +131,7 @@ const FLAGS = [
     key: 'mood_low',
     label: 'Low mood reported',
     severity: 'low',
+    icon: 'frown',
     detect: ({ lastCheckIn }) => {
       if (!lastCheckIn) return { triggered: false };
       if (lastCheckIn.mood === 'stressed' || lastCheckIn.mood === 'tired')
@@ -98,17 +141,12 @@ const FLAGS = [
   },
 ];
 
-/**
- * Calculates a risk score (0–100) and list of triggered flags for a single client.
- * Returns null if client doesn't have enough data to evaluate.
- */
 export function evaluateClientRisk(client, allCheckIns) {
   const clientCheckIns = allCheckIns
     .filter(ci => ci.client_id === client.id)
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const lastCheckIn = clientCheckIns[0] || null;
-
   const ctx = { client, clientCheckIns, lastCheckIn };
 
   const triggered = [];
@@ -121,7 +159,6 @@ export function evaluateClientRisk(client, allCheckIns) {
 
   if (!triggered.length) return null;
 
-  // Risk score: high=30pts, medium=15pts, low=5pts
   const score = triggered.reduce((acc, f) => {
     return acc + (f.severity === 'high' ? 30 : f.severity === 'medium' ? 15 : 5);
   }, 0);
@@ -130,13 +167,12 @@ export function evaluateClientRisk(client, allCheckIns) {
     client,
     flags: triggered,
     riskScore: Math.min(score, 100),
+    lastCheckIn,
     lastCheckInDate: lastCheckIn?.date || null,
+    clientCheckIns,
   };
 }
 
-/**
- * Returns all at-risk clients sorted by risk score descending.
- */
 export function getAtRiskClients(clients, checkIns) {
   return clients
     .filter(c => c.lifecycle_status === 'active' || c.status === 'active')
@@ -146,7 +182,19 @@ export function getAtRiskClients(clients, checkIns) {
 }
 
 export const SEVERITY_CONFIG = {
-  high:   { color: 'text-destructive bg-destructive/10 border-destructive/20' },
-  medium: { color: 'text-chart-4 bg-chart-4/10 border-chart-4/20' },
-  low:    { color: 'text-muted-foreground bg-secondary border-border' },
+  high:   { color: 'text-destructive bg-destructive/10 border-destructive/20', dot: 'bg-destructive' },
+  medium: { color: 'text-amber-400 bg-amber-500/10 border-amber-500/20', dot: 'bg-amber-400' },
+  low:    { color: 'text-muted-foreground bg-secondary border-border', dot: 'bg-muted-foreground' },
+};
+
+export const FLAG_ICONS = {
+  calendar: '📅',
+  zap: '⚡',
+  moon: '😴',
+  message: '💬',
+  dumbbell: '🏋️',
+  utensils: '🥗',
+  scale: '⚖️',
+  'trending-down': '📉',
+  frown: '😟',
 };
