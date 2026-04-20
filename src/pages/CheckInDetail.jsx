@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { checkInScore, averageAdherenceScore, scoreColor, scoreBg } from '@/lib/adherence';
 import CheckInResponseBox from '@/components/checkin/CheckInResponseBox';
+import AIProgramSuggestions from '@/components/checkin/AIProgramSuggestions';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 const MOOD_LABEL = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
@@ -137,6 +138,12 @@ export default function CheckInDetail() {
     queryKey: ['client-checkins', clientId],
     queryFn: () => base44.entities.CheckIn.filter({ client_id: clientId }, '-date', 20),
     enabled: !!clientId,
+  });
+
+  const { data: nutritionPlan } = useQuery({
+    queryKey: ['nutrition-plan', client?.assigned_nutrition_id],
+    queryFn: () => base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id }).then(r => r[0]),
+    enabled: !!client?.assigned_nutrition_id,
   });
 
   const updateMutation = useMutation({
@@ -316,6 +323,14 @@ export default function CheckInDetail() {
             </div>
           </div>
         )}
+
+        {/* ── AI Program Suggestions ── */}
+        <AIProgramSuggestions
+          checkIn={checkIn}
+          client={client}
+          allClientCIs={allClientCIs}
+          nutritionPlan={nutritionPlan}
+        />
 
         {/* ── Client Notes ── */}
         {checkIn.notes && (
