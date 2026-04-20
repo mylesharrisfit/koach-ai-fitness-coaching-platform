@@ -222,6 +222,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             <CheckInResponseBox
               checkIn={checkIn}
               client={client}
+              allClientCIs={allClientCIs}
               onSave={(data) => updateMutation.mutateAsync(data)}
               saving={updateMutation.isPending}
             />

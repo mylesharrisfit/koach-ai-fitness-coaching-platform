@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Loader2, BookOpen, Check, ChevronDown } from 'lucide-react';
+import { Sparkles, Loader2, BookOpen, Check, ChevronDown, Send, RefreshCw, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { base44 } from '@/api/base44Client';
@@ -14,44 +14,97 @@ const TEMPLATES = [
   { label: 'Weekly Win', text: "You crushed it this week! I saw real progress in your numbers. Let's keep that energy going into next week 🙌" },
 ];
 
-export default function CheckInResponseBox({ checkIn, client, onSave, saving }) {
+function buildPrompt(client, checkIn, allClientCIs) {
+  // Weight trend analysis
+  const weights = allClientCIs
+    .filter(c => c.weight)
+    .slice(0, 4)
+    .map(c => c.weight);
+  
+  let weightTrend = 'insufficient data';
+  if (weights.length >= 2) {
+    const diff = weights[0] - weights[weights.length - 1];
+    if (Math.abs(diff) < 0.5) weightTrend = 'weight is stable';
+    else if (diff < 0) weightTrend = `weight is up ${Math.abs(diff).toFixed(1)} lbs recently`;
+    else weightTrend = `weight is down ${diff.toFixed(1)} lbs recently`;
+  }
+
+  const avgTraining = allClientCIs.length
+    ? Math.round(allClientCIs.reduce((s, c) => s + (c.compliance_training || 0), 0) / allClientCIs.length)
+    : null;
+  const avgNutrition = allClientCIs.length
+    ? Math.round(allClientCIs.reduce((s, c) => s + (c.compliance_nutrition || 0), 0) / allClientCIs.length)
+    : null;
+
+  return `You are an elite, high-ticket fitness coach writing a personal check-in response for a client.
+
+CLIENT: ${client?.name || 'this client'}
+GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
+
+THIS WEEK'S CHECK-IN:
+- Weight: ${checkIn.weight ? `${checkIn.weight} lbs` : 'not recorded'}
+- Body fat: ${checkIn.body_fat_pct ? `${checkIn.body_fat_pct}%` : 'not recorded'}
+- Sleep: ${checkIn.sleep_hours ? `${checkIn.sleep_hours} hrs/night` : 'not recorded'}
+- Energy level: ${checkIn.energy_level ? `${checkIn.energy_level}/5` : 'not recorded'}
+- Stress level: ${checkIn.stress_level ? `${checkIn.stress_level}/5` : 'not recorded'}
+- Mood: ${checkIn.mood || 'not recorded'}
+- Training compliance: ${checkIn.compliance_training != null ? `${checkIn.compliance_training}%` : 'not recorded'}
+- Nutrition compliance: ${checkIn.compliance_nutrition != null ? `${checkIn.compliance_nutrition}%` : 'not recorded'}
+- Client notes: ${checkIn.notes || 'None'}
+
+TRENDS (last ${allClientCIs.length} check-ins):
+- Weight trend: ${weightTrend}
+- Average training compliance: ${avgTraining != null ? `${avgTraining}%` : 'N/A'}
+- Average nutrition compliance: ${avgNutrition != null ? `${avgNutrition}%` : 'N/A'}
+
+INSTRUCTIONS:
+Write a short (60-90 word), direct coaching response. You are a high-ticket coach — be supportive but results-focused and no-nonsense.
+- Acknowledge 1-2 specific data points from this check-in
+- If something is off (low sleep, low compliance, stress), address it directly with empathy but keep it forward-focused
+- Give exactly ONE clear, actionable priority for next week
+- End with brief encouragement
+- Tone: warm, confident, direct. NOT generic or fluffy. First name only, no "Hi [name]" opener.
+- Do NOT use em-dashes. Do NOT use bullet points. Plain paragraph only.`;
+}
+
+export default function CheckInResponseBox({ checkIn, client, allClientCIs = [], onSave, saving }) {
   const [reply, setReply] = useState(checkIn.coach_notes || '');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiDraft, setAiDraft] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [editMode, setEditMode] = useState(!checkIn.coach_notes);
 
   const generateAI = async () => {
     setAiLoading(true);
     setAiDraft('');
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a fitness coach reviewing a weekly check-in for client "${client?.name || 'the client'}".
-Check-in data:
-- Weight: ${checkIn.weight || 'N/A'} lbs
-- Body Fat: ${checkIn.body_fat_pct || 'N/A'}%
-- Mood: ${checkIn.mood || 'N/A'}
-- Sleep: ${checkIn.sleep_hours || 'N/A'} hours
-- Training compliance: ${checkIn.compliance_training || 'N/A'}%
-- Nutrition compliance: ${checkIn.compliance_nutrition || 'N/A'}%
-- Client notes: ${checkIn.notes || 'None'}
-
-Write a warm, personal, and motivating coach response (max 80 words). Acknowledge specific numbers, praise their effort, and give one actionable tip for next week.`,
+      prompt: buildPrompt(client, checkIn, allClientCIs),
     });
     setAiDraft(result);
     setAiLoading(false);
   };
 
+  const useAIDraft = () => {
+    setReply(aiDraft);
+    setAiDraft('');
+    setEditMode(true);
+  };
+
   const handleSave = async () => {
     await onSave({ coach_notes: reply, coach_responded: true });
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setEditMode(false);
+    setTimeout(() => setSaved(false), 2500);
   };
 
   return (
     <div className="space-y-3">
+      {/* Header row */}
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Coach Response</p>
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5 items-center">
+          {/* Templates dropdown */}
           <div className="relative">
             <Button
               size="sm" variant="outline"
@@ -65,7 +118,7 @@ Write a warm, personal, and motivating coach response (max 80 words). Acknowledg
                 {TEMPLATES.map((t, i) => (
                   <button
                     key={i}
-                    onClick={() => { setReply(t.text); setShowTemplates(false); }}
+                    onClick={() => { setReply(t.text); setEditMode(true); setShowTemplates(false); }}
                     className="w-full text-left px-3 py-2 rounded-lg hover:bg-secondary transition-colors"
                   >
                     <p className="text-xs font-medium">{t.label}</p>
@@ -75,37 +128,98 @@ Write a warm, personal, and motivating coach response (max 80 words). Acknowledg
               </div>
             )}
           </div>
-          <Button size="sm" variant="outline" className="h-7 text-xs gap-1.5" onClick={generateAI} disabled={aiLoading}>
-            {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-primary" />}
-            AI Draft
+
+          {/* Generate AI button */}
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
+            onClick={generateAI}
+            disabled={aiLoading}
+          >
+            {aiLoading
+              ? <Loader2 className="w-3 h-3 animate-spin" />
+              : <Sparkles className="w-3 h-3" />
+            }
+            {aiLoading ? 'Generating...' : 'Generate Response'}
           </Button>
         </div>
       </div>
 
+      {/* AI Draft card */}
       {aiDraft && (
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-3 text-sm text-foreground">
-          <p className="text-xs text-primary font-medium mb-1.5 flex items-center gap-1"><Sparkles className="w-3 h-3" /> AI Suggestion</p>
-          {aiDraft}
-          <div className="flex gap-2 mt-2.5">
-            <Button size="sm" className="h-7 text-xs" onClick={() => { setReply(aiDraft); setAiDraft(''); }}>Use This</Button>
+        <div className="bg-primary/6 border border-primary/25 rounded-xl p-3.5 space-y-3">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <p className="text-xs font-semibold text-primary">AI-Generated Response</p>
+          </div>
+          <p className="text-sm leading-relaxed text-foreground">{aiDraft}</p>
+          <div className="flex gap-2">
+            <Button size="sm" className="h-7 text-xs gap-1.5" onClick={useAIDraft}>
+              <Pencil className="w-3 h-3" /> Edit & Send
+            </Button>
+            <Button size="sm" variant="outline" className="h-7 text-xs gap-1.5" onClick={generateAI} disabled={aiLoading}>
+              <RefreshCw className="w-3 h-3" /> Regenerate
+            </Button>
             <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setAiDraft('')}>Dismiss</Button>
           </div>
         </div>
       )}
 
-      <Textarea
-        value={reply}
-        onChange={e => setReply(e.target.value)}
-        placeholder="Write your coaching response..."
-        className="text-sm resize-none"
-        rows={3}
-      />
-      <div className="flex justify-end">
-        <Button size="sm" onClick={handleSave} disabled={saving || !reply.trim()} className="gap-1.5">
-          {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : saved ? <Check className="w-3 h-3" /> : null}
-          {saved ? 'Saved!' : 'Save Response'}
-        </Button>
-      </div>
+      {/* Edit / read view */}
+      {editMode ? (
+        <>
+          <Textarea
+            value={reply}
+            onChange={e => setReply(e.target.value)}
+            placeholder="Write your coaching response..."
+            className="text-sm resize-none"
+            rows={4}
+            autoFocus
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] text-muted-foreground">{reply.length} chars</span>
+            <div className="flex gap-2">
+              {checkIn.coach_notes && (
+                <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => { setReply(checkIn.coach_notes); setEditMode(false); }}>
+                  Cancel
+                </Button>
+              )}
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={saving || !reply.trim()}
+                className="h-8 text-xs gap-1.5"
+              >
+                {saving
+                  ? <Loader2 className="w-3 h-3 animate-spin" />
+                  : saved
+                    ? <Check className="w-3 h-3" />
+                    : <Send className="w-3 h-3" />
+                }
+                {saved ? 'Sent!' : 'Send to Client'}
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : reply ? (
+        <div className="bg-primary/5 border border-primary/20 rounded-xl p-3 group">
+          <p className="text-sm leading-relaxed text-foreground">{reply}</p>
+          <button
+            onClick={() => setEditMode(true)}
+            className="mt-2 text-[11px] text-primary/70 hover:text-primary flex items-center gap-1 transition-colors"
+          >
+            <Pencil className="w-3 h-3" /> Edit response
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setEditMode(true)}
+          className="w-full py-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground hover:border-primary/40 hover:text-foreground transition-colors"
+        >
+          + Write a response manually
+        </button>
+      )}
     </div>
   );
 }
