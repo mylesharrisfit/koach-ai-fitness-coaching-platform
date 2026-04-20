@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, TrendingDown, TrendingUp, Minus, ChevronLeft, ChevronRight,
   Moon, Zap, Brain, AlertTriangle, CheckCircle2, ClipboardCheck,
-  MessageSquare, Settings, Loader2, Check, Dumbbell, Utensils, Footprints
+  MessageSquare, Flame, Footprints, Loader2, Check, Dumbbell, Utensils
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -121,6 +121,10 @@ export default function CheckInDetail() {
   const [markSaving, setMarkSaving] = useState(false);
   const [marked, setMarked] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [calAdjSaving, setCalAdjSaving] = useState(false);
+  const [calAdjDone, setCalAdjDone] = useState(false);
+  const [cardioSaving, setCardioSaving] = useState(false);
+  const [cardioDone, setCardioDone] = useState(false);
 
   const { data: checkIn, isLoading: ciLoading } = useQuery({
     queryKey: ['checkin', checkInId],
@@ -168,6 +172,31 @@ export default function CheckInDetail() {
     await updateMutation.mutateAsync({ coach_responded: true });
     setMarkSaving(false);
     setMarked(true);
+  };
+
+  const handleAdjustCalories = async () => {
+    if (!nutritionPlan || calAdjDone) return;
+    setCalAdjSaving(true);
+    const delta = -150;
+    await base44.entities.NutritionPlan.update(nutritionPlan.id, {
+      calories: (nutritionPlan.calories || 2000) + delta,
+    });
+    queryClient.invalidateQueries({ queryKey: ['nutrition-plan', client?.assigned_nutrition_id] });
+    setCalAdjSaving(false);
+    setCalAdjDone(true);
+  };
+
+  const handleIncreaseCardio = async () => {
+    if (cardioDone) return;
+    setCardioSaving(true);
+    // Append a cardio note to coach_notes on the check-in as a record of the action
+    const existing = checkIn.coach_notes || '';
+    const note = existing
+      ? existing + '\n[Action] Cardio increased — add 1 session or +20 min/week.'
+      : '[Action] Cardio increased — add 1 session or +20 min/week.';
+    await updateMutation.mutateAsync({ coach_notes: note });
+    setCardioSaving(false);
+    setCardioDone(true);
   };
 
   if (ciLoading || !checkIn) {
@@ -363,25 +392,47 @@ export default function CheckInDetail() {
 
       {/* ── Sticky action bar ── */}
       <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-20 bg-card/90 backdrop-blur border-t border-border px-4 py-3">
-        <div className="max-w-xl mx-auto flex gap-2">
+        <div className="max-w-xl mx-auto grid grid-cols-2 gap-2">
+          {/* Send Feedback */}
           <Button
             variant="outline"
-            className="flex-1 h-12 gap-2 text-sm"
+            className="h-11 gap-2 text-sm"
             onClick={() => { setShowFeedback(v => !v); setTimeout(() => window.scrollTo({ top: 99999, behavior: 'smooth' }), 100); }}
           >
             <MessageSquare className="w-4 h-4" />
-            {showFeedback ? 'Hide' : 'Send Feedback'}
+            {showFeedback ? 'Hide Feedback' : 'Send Feedback'}
           </Button>
+
+          {/* Adjust Calories */}
           <Button
             variant="outline"
-            className="flex-1 h-12 gap-2 text-sm"
-            onClick={() => navigate(`/clients?highlight=${clientId}`)}
+            className="h-11 gap-2 text-sm"
+            onClick={handleAdjustCalories}
+            disabled={calAdjSaving || calAdjDone || !nutritionPlan}
+            title={!nutritionPlan ? 'No nutrition plan assigned' : 'Decrease calories by 150'}
           >
-            <Settings className="w-4 h-4" />
-            Adjust Plan
+            {calAdjSaving ? <Loader2 className="w-4 h-4 animate-spin" /> :
+             calAdjDone ? <Check className="w-4 h-4 text-emerald-400" /> :
+             <Flame className="w-4 h-4" />}
+            {calAdjDone ? 'Calories Adjusted' : 'Adjust Calories'}
           </Button>
+
+          {/* Increase Cardio */}
           <Button
-            className="flex-1 h-12 gap-2 text-sm"
+            variant="outline"
+            className="h-11 gap-2 text-sm"
+            onClick={handleIncreaseCardio}
+            disabled={cardioSaving || cardioDone}
+          >
+            {cardioSaving ? <Loader2 className="w-4 h-4 animate-spin" /> :
+             cardioDone ? <Check className="w-4 h-4 text-emerald-400" /> :
+             <Footprints className="w-4 h-4" />}
+            {cardioDone ? 'Cardio Updated' : 'Increase Cardio'}
+          </Button>
+
+          {/* Mark Reviewed */}
+          <Button
+            className="h-11 gap-2 text-sm"
             onClick={handleMarkReviewed}
             disabled={markSaving || isReviewed}
           >
