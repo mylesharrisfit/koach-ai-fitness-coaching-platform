@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight, CheckSquare, Square } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore, scoreColor, scoreLabel } from '@/lib/adherence';
@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
 import ClientFeedbackHistory from '../components/clients/ClientFeedbackHistory';
+import BulkActionBar from '../components/clients/BulkActionBar';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
@@ -38,7 +39,15 @@ export default function Clients() {
   const [sortBy, setSortBy] = useState('created_date');
   const [currentUser, setCurrentUser] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
   const queryClient = useQueryClient();
+
+  const toggleSelect = (id) => setSelectedIds(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+  const clearSelection = () => setSelectedIds(new Set());
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -132,14 +141,26 @@ export default function Clients() {
         title="Clients"
         subtitle={`${counts.active || 0} active · ${counts.at_risk || 0} at risk · ${counts.lead || 0} leads`}
         actions={
-          <Button
-            onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
-            variant={atLimit ? 'outline' : 'default'}
-            className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
-          >
-            {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-            {atLimit ? `Limit Reached (${clients.length}/${clientLimit})` : 'Add Client'}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => selectedIds.size > 0 ? clearSelection() : setSelectedIds(new Set(filteredClients.map(c => c.id)))}
+              className={cn('gap-1.5 text-xs', selectedIds.size > 0 && 'border-primary/40 text-primary bg-primary/10')}
+            >
+              {selectedIds.size > 0
+                ? <><X className="w-3.5 h-3.5" /> Deselect ({selectedIds.size})</>
+                : <><CheckSquare className="w-3.5 h-3.5" /> Select All</>}
+            </Button>
+            <Button
+              onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
+              variant={atLimit ? 'outline' : 'default'}
+              className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
+            >
+              {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+              {atLimit ? `Limit Reached` : 'Add Client'}
+            </Button>
+          </div>
         }
       />
 
@@ -242,13 +263,28 @@ export default function Clients() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredClients.map(client => (
-            <div key={client.id} className="bg-card rounded-2xl border border-border p-5 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group">
+          {filteredClients.map(client => {
+            const isSelected = selectedIds.has(client.id);
+            return (
+            <div
+              key={client.id}
+              className={cn('bg-card rounded-2xl border p-5 hover:shadow-lg hover:shadow-primary/5 transition-all group',
+                isSelected ? 'border-primary/50 ring-1 ring-primary/20 bg-primary/5' : 'border-border hover:border-primary/20')}
+            >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-heading font-bold text-base">
-                    {client.name?.[0]?.toUpperCase()}
-                  </div>
+                  {/* Checkbox */}
+                  <button
+                    onClick={() => toggleSelect(client.id)}
+                    className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all relative"
+                  >
+                    <div className={cn('w-11 h-11 rounded-full flex items-center justify-center text-primary font-heading font-bold text-base transition-all',
+                      isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/10')}>
+                      {isSelected
+                        ? <CheckSquare className="w-5 h-5" />
+                        : client.name?.[0]?.toUpperCase()}
+                    </div>
+                  </button>
                   <div>
                     <p className="font-semibold text-sm">{client.name}</p>
                     <LifecycleBadge status={client.lifecycle_status || 'lead'} className="mt-0.5" />
@@ -352,9 +388,17 @@ export default function Clients() {
                 return clientCIs.length > 0 ? <ClientFeedbackHistory checkIns={clientCIs} /> : null;
               })()}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
+
+      <BulkActionBar
+        selectedIds={selectedIds}
+        clients={clients}
+        allCheckIns={allCheckIns}
+        onClear={clearSelection}
+      />
 
       <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
       <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
