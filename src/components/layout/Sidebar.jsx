@@ -40,7 +40,7 @@ export default function Sidebar({ user, onUpgrade }) {
 
   return (
     <aside className={cn(
-      "fixed left-0 top-0 h-screen bg-sidebar text-sidebar-foreground border-r border-sidebar-border z-50 flex flex-col transition-all duration-300",
+      "fixed left-0 top-0 h-screen bg-sidebar text-sidebar-foreground border-r border-sidebar-border z-50 flex-col transition-all duration-300 hidden md:flex",
       collapsed ? "w-[72px]" : "w-[240px]"
     )} style={{ background: 'hsl(222 32% 4%)' }}>
       {/* Ambient glow at top */}

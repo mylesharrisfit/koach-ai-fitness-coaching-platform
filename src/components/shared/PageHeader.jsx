@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function PageHeader({ title, subtitle, actions }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10 fade-up">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-10 fade-up">
       <div>
         <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight leading-tight">{title}</h1>
         {subtitle && <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">{subtitle}</p>}

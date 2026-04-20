@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import BottomNav from './BottomNav';
 import { base44 } from '@/api/base44Client';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 
@@ -32,9 +33,10 @@ export default function AppLayout() {
       <div className="min-h-screen bg-background dark bg-noise">
         <div className="fixed inset-0 bg-gradient-mesh pointer-events-none" aria-hidden="true" />
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
-        <main className="ml-[240px] min-h-screen transition-all duration-300 relative z-10">
+        <main className="md:ml-[240px] min-h-screen transition-all duration-300 relative z-10 pb-16 md:pb-0">
           <Outlet />
         </main>
+        <BottomNav />
       </div>
       <UpgradeModal
         open={!!upgradeFeature}
