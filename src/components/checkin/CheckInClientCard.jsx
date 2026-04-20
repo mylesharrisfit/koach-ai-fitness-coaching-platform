@@ -12,6 +12,7 @@ import { checkInScore, compositeAdherenceScore, averageAdherenceScore, scoreColo
 import { AdherenceBreakdown } from '@/components/adherence/AdherenceScore';
 import CheckInMetrics from './CheckInMetrics';
 import CheckInResponseBox from './CheckInResponseBox';
+import CheckInQuickActions from './CheckInQuickActions';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
@@ -53,6 +54,9 @@ function WeightDelta({ current, previous }) {
 
 export default function CheckInClientCard({ checkIn, client, allClientCIs = [], defaultOpen = false }) {
   const [expanded, setExpanded] = useState(defaultOpen);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [markSaving, setMarkSaving] = useState(false);
+  const [marked, setMarked] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -68,6 +72,15 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     mutationFn: (data) => base44.entities.CheckIn.update(checkIn.id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['checkins-review'] }),
   });
+
+  const isReviewed = marked || checkIn.coach_responded || !!checkIn.coach_notes;
+
+  const handleMarkReviewed = async () => {
+    setMarkSaving(true);
+    await updateMutation.mutateAsync({ coach_responded: true });
+    setMarkSaving(false);
+    setMarked(true);
+  };
 
   const sleepColor = checkIn.sleep_hours >= 7 ? 'text-emerald-400' : checkIn.sleep_hours >= 6 ? 'text-amber-400' : 'text-destructive';
   const energyColor = checkIn.energy_level >= 4 ? 'text-emerald-400' : checkIn.energy_level >= 2 ? 'text-amber-400' : 'text-destructive';
@@ -217,16 +230,29 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             </div>
           )}
 
+          {/* Quick Actions */}
+          <CheckInQuickActions
+            checkIn={checkIn}
+            client={client}
+            allClientCIs={allClientCIs}
+            onSendFeedback={() => setShowFeedback(v => !v)}
+            onMarkReviewed={handleMarkReviewed}
+            isReviewed={isReviewed}
+            saving={markSaving}
+          />
+
           {/* Response box */}
-          <div className="bg-secondary/20 rounded-xl p-4 border border-border">
-            <CheckInResponseBox
-              checkIn={checkIn}
-              client={client}
-              allClientCIs={allClientCIs}
-              onSave={(data) => updateMutation.mutateAsync(data)}
-              saving={updateMutation.isPending}
-            />
-          </div>
+          {showFeedback && (
+            <div className="bg-secondary/20 rounded-xl p-4 border border-border">
+              <CheckInResponseBox
+                checkIn={checkIn}
+                client={client}
+                allClientCIs={allClientCIs}
+                onSave={(data) => updateMutation.mutateAsync(data)}
+                saving={updateMutation.isPending}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
