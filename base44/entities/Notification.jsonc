@@ -1,0 +1,44 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "recipient_id": {
+      "type": "string",
+      "description": "User email or client ID this notification is for"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "checkin_received",
+        "feedback_sent",
+        "checkin_reminder",
+        "general"
+      ],
+      "default": "general"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "link": {
+      "type": "string",
+      "description": "Optional deep link path e.g. /checkin-review"
+    },
+    "related_client_id": {
+      "type": "string"
+    },
+    "related_checkin_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "recipient_id",
+    "title"
+  ]
+}

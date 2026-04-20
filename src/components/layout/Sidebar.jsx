@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import NotificationBell from '@/components/notifications/NotificationBell';
 import { 
   LayoutDashboard, Users, Dumbbell, Salad, Calendar, Play,
   MessageSquare, TrendingUp, ShoppingBag, Settings, 
@@ -48,12 +49,15 @@ export default function Sidebar({ user, onUpgrade }) {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
 
       {/* Logo */}
-      <div className="h-16 flex items-center px-5 border-b border-sidebar-border relative z-10">
+      <div className="h-16 flex items-center px-5 border-b border-sidebar-border relative z-10 gap-3">
         <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center ring-1 ring-primary/30 shadow-glow-sm flex-shrink-0">
           <Zap className="w-4 h-4 text-primary" />
         </div>
         {!collapsed && (
-          <span className="ml-3 font-heading font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text" style={{ WebkitBackgroundClip: 'text' }}>FitForge</span>
+          <>
+            <span className="flex-1 font-heading font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text" style={{ WebkitBackgroundClip: 'text' }}>FitForge</span>
+            <NotificationBell />
+          </>
         )}
       </div>
 
