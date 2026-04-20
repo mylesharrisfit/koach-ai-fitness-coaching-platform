@@ -64,25 +64,25 @@ export default function Dashboard() {
         <BehaviorNudge nudge={topNudge} onUpgrade={openUpgradeModal} className="mb-6 fade-up" />
       )}
 
-      {/* Row 1: Revenue + Checklist + Usage */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-1 flex flex-col gap-6">
-          <RevenueSnapshot clients={clients} />
-          <UsageSummaryCard user={currentUser} />
-        </div>
-        <div className="lg:col-span-2">
-          <DailyChecklist checkIns={checkIns} messages={messages} clients={clients} />
-        </div>
-      </div>
+      <div className="flex flex-col gap-5">
+        {/* Checklist — most actionable, show first */}
+        <DailyChecklist checkIns={checkIns} messages={messages} clients={clients} />
 
-      {/* Row 2: At-Risk + Hot Leads */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <AtRiskClients clients={clients} checkIns={checkIns} />
-        <HotLeads clients={clients} />
-      </div>
+        {/* Revenue snapshot */}
+        <RevenueSnapshot clients={clients} />
 
-      {/* Row 3: AI Alerts full width */}
-      <ClientAlerts clients={clients} checkIns={checkIns} />
+        {/* At-Risk + Hot Leads — side by side on large screens */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <AtRiskClients clients={clients} checkIns={checkIns} />
+          <HotLeads clients={clients} />
+        </div>
+
+        {/* Usage meter (only shown when on limited plan) */}
+        <UsageSummaryCard user={currentUser} />
+
+        {/* AI Alerts */}
+        <ClientAlerts clients={clients} checkIns={checkIns} />
+      </div>
     </div>
   );
 }

@@ -72,7 +72,7 @@ export default function ClientAlerts({ clients, checkIns }) {
   };
 
   return (
-    <div className="bg-card border border-purple-500/30 rounded-2xl p-6">
+    <div className="bg-card border border-purple-500/30 rounded-2xl p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-purple-500/20 flex items-center justify-center">

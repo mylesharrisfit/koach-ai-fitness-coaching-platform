@@ -15,24 +15,23 @@ export default function RevenueSnapshot({ clients }) {
   ];
 
   return (
-    <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+    <div className="glass-card rounded-2xl p-5 relative overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      <h2 className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-5">Revenue Snapshot</h2>
-      <div className="grid grid-cols-2 gap-5">
+      <h2 className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest mb-4">Revenue Snapshot</h2>
+
+      {/* 2×2 on mobile, 4-col on sm+ */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {stats.map(s => (
-          <div key={s.label} className="flex items-center gap-3 group">
-            <div className={`w-9 h-9 rounded-xl ${s.bg} flex items-center justify-center flex-shrink-0 transition-all group-hover:scale-110`}>
-              <s.icon className={`w-4 h-4 ${s.color}`} />
-            </div>
-            <div>
-              <p className="stat-number text-xl font-bold font-heading leading-none">{s.value}</p>
-              <p className="text-[10px] text-muted-foreground/70 mt-1 uppercase tracking-wide">{s.label}</p>
-            </div>
+          <div key={s.label} className={`rounded-xl p-3 flex flex-col gap-2 ${s.bg}`}>
+            <s.icon className={`w-4 h-4 ${s.color}`} />
+            <p className={`stat-number text-2xl font-bold font-heading leading-none ${s.color}`}>{s.value}</p>
+            <p className="text-[10px] text-muted-foreground/80 uppercase tracking-wide leading-tight">{s.label}</p>
           </div>
         ))}
       </div>
-      <div className="mt-5 pt-4 border-t border-border/50 flex items-center gap-2">
-        <TrendingUp className="w-3 h-3 text-emerald-400" />
+
+      <div className="mt-4 pt-3 border-t border-border/50 flex items-center gap-2">
+        <TrendingUp className="w-3 h-3 text-emerald-400 flex-shrink-0" />
         <p className="text-[11px] text-muted-foreground">MRR up <span className="text-emerald-400 font-semibold">+8%</span> vs last month</p>
       </div>
     </div>

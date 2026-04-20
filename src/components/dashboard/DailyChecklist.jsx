@@ -47,7 +47,7 @@ export default function DailyChecklist({ checkIns, messages, clients }) {
   const doneCount = Object.values(checked).filter(Boolean).length;
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6">
+    <div className="bg-card border border-border rounded-2xl p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">

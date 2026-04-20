@@ -103,7 +103,7 @@ export default function AtRiskClients({ clients, checkIns }) {
   const displayed = showAll ? atRisk : atRisk.slice(0, 4);
 
   return (
-    <div className={cn('bg-card rounded-2xl p-6 border', atRisk.length > 0 ? 'border-destructive/25' : 'border-border')}>
+    <div className={cn('bg-card rounded-2xl p-4 sm:p-6 border', atRisk.length > 0 ? 'border-destructive/25' : 'border-border')}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center', atRisk.length > 0 ? 'bg-destructive/20' : 'bg-secondary')}>
