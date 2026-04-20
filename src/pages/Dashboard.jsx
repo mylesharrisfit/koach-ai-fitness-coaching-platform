@@ -47,9 +47,9 @@ export default function Dashboard() {
   const topNudge = activeNudges[0] || null;
 
   return (
-    <div className="p-8 lg:p-10 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-10 fade-up">
+      <div className="flex items-center gap-3 mb-6 md:mb-10 fade-up">
         <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center glow-sm shadow-inner-top ring-1 ring-primary/20">
           <Zap className="w-5 h-5 text-primary" />
         </div>

@@ -81,13 +81,13 @@ export default function Schedule() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <PageHeader title="Schedule" subtitle="Manage your sessions"
         actions={<Button onClick={() => openCreate(null)}><Plus className="w-4 h-4 mr-2" /> Book Session</Button>}
       />
 
       {/* Week Nav */}
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-2 mb-6 flex-wrap">
         <Button variant="outline" size="icon" onClick={() => setCurrentWeekStart(addDays(currentWeekStart, -7))}>
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -103,7 +103,7 @@ export default function Schedule() {
       </div>
 
       {/* Week Grid */}
-      <div className="grid grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
         {weekDays.map(day => {
           const isToday = isSameDay(day, new Date());
           const daySessions = sessions.filter(s => s.date === format(day, 'yyyy-MM-dd'));
