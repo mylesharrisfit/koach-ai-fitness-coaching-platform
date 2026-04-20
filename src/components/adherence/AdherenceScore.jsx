@@ -3,6 +3,17 @@ import { scoreColor, scoreBg, scoreLabel } from '@/lib/adherence';
 import { cn } from '@/lib/utils';
 
 export default function AdherenceScore({ score, size = 'md', showLabel = true }) {
+  // Pill/badge mode for inline use in cards
+  if (size === 'pill') {
+    const color = score === null ? 'bg-secondary text-muted-foreground' : score >= 75 ? 'bg-emerald-500/15 text-emerald-400' : score >= 50 ? 'bg-amber-500/15 text-amber-400' : 'bg-destructive/15 text-destructive';
+    const label = scoreLabel(score);
+    return (
+      <span className={cn('inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full', color)}>
+        {score !== null ? score : '–'}{score !== null ? '%' : ''} {showLabel && <span className="font-normal opacity-70">· {label}</span>}
+      </span>
+    );
+  }
+
   const ring = score === null ? 0 : Math.round((score / 100) * 100);
   const sizes = {
     sm: { outer: 'w-10 h-10', text: 'text-xs', label: 'text-[10px]' },

@@ -6,6 +6,7 @@ import { Zap } from 'lucide-react';
 
 import RevenueSnapshot from '../components/dashboard/RevenueSnapshot';
 import AtRiskClients from '../components/dashboard/AtRiskClients';
+import NeedsAttentionWidget from '../components/dashboard/NeedsAttentionWidget';
 import HotLeads from '../components/dashboard/HotLeads';
 import ClientAlerts from '../components/dashboard/ClientAlerts';
 import DailyChecklist from '../components/dashboard/DailyChecklist';
@@ -71,11 +72,11 @@ export default function Dashboard() {
         {/* Revenue snapshot */}
         <RevenueSnapshot clients={clients} />
 
-        {/* At-Risk + Hot Leads — side by side on large screens */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <AtRiskClients clients={clients} checkIns={checkIns} />
-          <HotLeads clients={clients} />
-        </div>
+        {/* Needs Attention (full width, most critical) */}
+        <NeedsAttentionWidget clients={clients} checkIns={checkIns} />
+
+        {/* Hot Leads */}
+        <HotLeads clients={clients} />
 
         {/* Usage meter (only shown when on limited plan) */}
         <UsageSummaryCard user={currentUser} />

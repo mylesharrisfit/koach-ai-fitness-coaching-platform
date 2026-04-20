@@ -3,13 +3,18 @@ import React from 'react';
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
 export default function CheckInMetrics({ checkIn }) {
+  const ENERGY_LABEL = { 1: 'Exhausted', 2: 'Low', 3: 'Moderate', 4: 'High', 5: 'Energized' };
+  const STRESS_LABEL = { 1: 'Calm', 2: 'Low', 3: 'Moderate', 4: 'High', 5: 'Very High' };
+
   const metrics = [
-    { label: 'Weight', value: checkIn.weight ? `${checkIn.weight} lbs` : null, icon: '⚖️' },
-    { label: 'Body Fat', value: checkIn.body_fat_pct ? `${checkIn.body_fat_pct}%` : null, icon: '📊' },
-    { label: 'Sleep', value: checkIn.sleep_hours ? `${checkIn.sleep_hours}h` : null, icon: '😴' },
-    { label: 'Mood', value: checkIn.mood ? `${MOOD_EMOJI[checkIn.mood]} ${checkIn.mood}` : null, icon: null },
-    { label: 'Training', value: checkIn.compliance_training != null ? `${checkIn.compliance_training}%` : null, icon: '💪', isCompliance: true, val: checkIn.compliance_training },
-    { label: 'Nutrition', value: checkIn.compliance_nutrition != null ? `${checkIn.compliance_nutrition}%` : null, icon: '🥗', isCompliance: true, val: checkIn.compliance_nutrition },
+    { label: 'Weight', value: checkIn.weight ? `${checkIn.weight} lbs` : null },
+    { label: 'Body Fat', value: checkIn.body_fat_pct ? `${checkIn.body_fat_pct}%` : null },
+    { label: 'Sleep', value: checkIn.sleep_hours ? `${checkIn.sleep_hours}h` : null },
+    { label: 'Mood', value: checkIn.mood ? `${MOOD_EMOJI[checkIn.mood]} ${checkIn.mood}` : null },
+    { label: 'Energy', value: checkIn.energy_level != null ? `${checkIn.energy_level}/5 ${ENERGY_LABEL[checkIn.energy_level] || ''}` : null },
+    { label: 'Stress', value: checkIn.stress_level != null ? `${checkIn.stress_level}/5 ${STRESS_LABEL[checkIn.stress_level] || ''}` : null },
+    { label: 'Training', value: checkIn.compliance_training != null ? `${checkIn.compliance_training}%` : null, isCompliance: true, val: checkIn.compliance_training },
+    { label: 'Nutrition', value: checkIn.compliance_nutrition != null ? `${checkIn.compliance_nutrition}%` : null, isCompliance: true, val: checkIn.compliance_nutrition },
   ].filter(m => m.value);
 
   if (!metrics.length) return null;

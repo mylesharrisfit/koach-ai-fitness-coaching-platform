@@ -15,7 +15,7 @@ const TEMPLATES = [
 ];
 
 export default function CheckInResponseBox({ checkIn, client, onSave, saving }) {
-  const [reply, setReply] = useState(checkIn.notes || '');
+  const [reply, setReply] = useState(checkIn.coach_notes || '');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiDraft, setAiDraft] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
@@ -42,7 +42,7 @@ Write a warm, personal, and motivating coach response (max 80 words). Acknowledg
   };
 
   const handleSave = async () => {
-    await onSave(reply);
+    await onSave({ coach_notes: reply, coach_responded: true });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, SlidersHorizontal, X } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X } from 'lucide-react';
+import { averageAdherenceScore } from '@/lib/adherence';
+import AdherenceScore from '@/components/adherence/AdherenceScore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +44,11 @@ export default function Clients() {
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list('-created_date'),
+  });
+
+  const { data: allCheckIns = [] } = useQuery({
+    queryKey: ['checkins-clients'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 200),
   });
 
   const createMutation = useMutation({
@@ -280,8 +287,21 @@ export default function Clients() {
                 </div>
               )}
 
+              {/* Adherence score */}
+              {(() => {
+                const clientCIs = allCheckIns.filter(ci => ci.client_id === client.id);
+                const score = averageAdherenceScore(clientCIs, 3);
+                if (score === null) return null;
+                return (
+                  <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Adherence</span>
+                    <AdherenceScore score={score} size="pill" showLabel={true} />
+                  </div>
+                );
+              })()}
+
               {client.monthly_rate && (
-                <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+                <div className="mt-2 flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">Monthly Rate</span>
                   <span className="font-heading font-bold text-primary text-sm">${client.monthly_rate}/mo</span>
                 </div>

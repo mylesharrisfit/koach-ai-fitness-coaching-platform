@@ -76,7 +76,7 @@ export default function CheckInReview() {
   const sorted = useMemo(() => {
     if (sort === 'flagged') return baseFiltered.filter(isFlagged).sort((a, b) => new Date(b.date) - new Date(a.date));
     if (sort === 'overdue') return baseFiltered.filter(isOverdue).sort((a, b) => new Date(a.date) - new Date(b.date));
-    if (sort === 'unresponded') return baseFiltered.filter(ci => !ci.notes).sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (sort === 'unresponded') return baseFiltered.filter(ci => !ci.coach_notes && !ci.coach_responded).sort((a, b) => new Date(b.date) - new Date(a.date));
     // newest
     return [...baseFiltered].sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [baseFiltered, sort]);
@@ -85,7 +85,7 @@ export default function CheckInReview() {
   const counts = useMemo(() => ({
     flagged: baseFiltered.filter(isFlagged).length,
     overdue: baseFiltered.filter(isOverdue).length,
-    unresponded: baseFiltered.filter(ci => !ci.notes).length,
+    unresponded: baseFiltered.filter(ci => !ci.coach_notes && !ci.coach_responded).length,
   }), [baseFiltered]);
 
   const hasAI = hasFeature(currentUser, 'ai_checkin_responses');

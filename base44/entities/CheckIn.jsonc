@@ -56,6 +56,14 @@
         "stressed"
       ]
     },
+    "energy_level": {
+      "type": "number",
+      "description": "Energy level 1\u20135"
+    },
+    "stress_level": {
+      "type": "number",
+      "description": "Stress level 1\u20135"
+    },
     "sleep_hours": {
       "type": "number"
     },
@@ -68,7 +76,16 @@
       "description": "Nutrition compliance 0-100"
     },
     "notes": {
-      "type": "string"
+      "type": "string",
+      "description": "Client notes / wins / struggles"
+    },
+    "coach_notes": {
+      "type": "string",
+      "description": "Coach private response / notes"
+    },
+    "coach_responded": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

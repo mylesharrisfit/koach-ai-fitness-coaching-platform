@@ -27,7 +27,7 @@ export default function CheckInCard({ checkIn, client, defaultOpen = false }) {
   const queryClient = useQueryClient();
   const score = checkInScore(checkIn);
   const flags = getFlags(checkIn);
-  const hasResponse = !!checkIn.notes;
+  const hasResponse = !!checkIn.coach_notes || !!checkIn.coach_responded;
   const daysAgo = differenceInDays(new Date(), parseISO(checkIn.date));
   const isOverdue = daysAgo > 14;
 
@@ -146,12 +146,20 @@ export default function CheckInCard({ checkIn, client, defaultOpen = false }) {
             </div>
           )}
 
+          {/* Coach response (read mode) */}
+          {checkIn.coach_notes && (
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-3">
+              <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1.5">Coach Response</p>
+              <p className="text-sm">{checkIn.coach_notes}</p>
+            </div>
+          )}
+
           {/* Response box */}
           <div className="bg-secondary/20 rounded-xl p-4 border border-border">
             <CheckInResponseBox
               checkIn={checkIn}
               client={client}
-              onSave={(notes) => updateMutation.mutateAsync({ notes })}
+              onSave={(data) => updateMutation.mutateAsync(data)}
               saving={updateMutation.isPending}
             />
           </div>

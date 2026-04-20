@@ -34,6 +34,7 @@ const SECTIONS = [
       { icon: Sparkles, label: 'AI Assistant', path: '/assistant', color: 'text-violet-400', bg: 'bg-violet-400/10' },
       { icon: Bot, label: 'Automations', path: '/automations', color: 'text-rose-400', bg: 'bg-rose-400/10' },
       { icon: Smartphone, label: 'Client View', path: '/my-day', color: 'text-teal-400', bg: 'bg-teal-400/10' },
+      { icon: ClipboardList, label: 'Submit Check-in', path: '/submit-checkin', color: 'text-orange-400', bg: 'bg-orange-400/10' },
       { icon: Zap, label: 'White Label', path: '/white-label', color: 'text-amber-400', bg: 'bg-amber-400/10' },
     ],
   },

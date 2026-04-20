@@ -32,6 +32,7 @@ import Business from './pages/Business';
 import ProgramBuilder from './pages/ProgramBuilder';
 import WhiteLabel from './pages/WhiteLabel';
 import PageGuard from './components/subscription/PageGuard';
+import SubmitCheckIn from './pages/SubmitCheckIn';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -82,6 +83,7 @@ const AuthenticatedApp = () => {
         <Route path="/business" element={<Business />} />
         <Route path="/program-builder" element={<ProgramBuilder />} />
         <Route path="/white-label" element={<WhiteLabel />} />
+        <Route path="/submit-checkin" element={<SubmitCheckIn />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
