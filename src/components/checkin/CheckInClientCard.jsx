@@ -8,7 +8,7 @@ import {
   Minus, Clock, ImageIcon, MessageSquare, Moon, Zap, ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { checkInScore, compositeAdherenceScore, scoreColor, scoreBreakdown } from '@/lib/adherence';
+import { checkInScore, compositeAdherenceScore, averageAdherenceScore, scoreColor, scoreBreakdown } from '@/lib/adherence';
 import { AdherenceBreakdown } from '@/components/adherence/AdherenceScore';
 import CheckInMetrics from './CheckInMetrics';
 import CheckInResponseBox from './CheckInResponseBox';
