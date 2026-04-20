@@ -20,6 +20,7 @@ import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
+import ClientFeedbackHistory from '../components/clients/ClientFeedbackHistory';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
@@ -342,6 +343,14 @@ export default function Clients() {
                   <span className="font-heading font-bold text-primary text-sm">${client.monthly_rate}/mo</span>
                 </div>
               )}
+
+              {/* Feedback history */}
+              {(() => {
+                const clientCIs = allCheckIns
+                  .filter(ci => ci.client_id === client.id)
+                  .sort((a, b) => new Date(b.date) - new Date(a.date));
+                return clientCIs.length > 0 ? <ClientFeedbackHistory checkIns={clientCIs} /> : null;
+              })()}
             </div>
           ))}
         </div>
