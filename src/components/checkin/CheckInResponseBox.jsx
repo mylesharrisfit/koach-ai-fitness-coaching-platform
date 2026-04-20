@@ -92,7 +92,21 @@ export default function CheckInResponseBox({ checkIn, client, allClientCIs = [],
   };
 
   const handleSave = async () => {
+    // Save to check-in + mark responded
     await onSave({ coach_notes: reply, coach_responded: true });
+
+    // Deliver message instantly to client's inbox
+    if (checkIn?.client_id && reply.trim()) {
+      await base44.entities.Message.create({
+        client_id: checkIn.client_id,
+        client_name: checkIn.client_name,
+        sender: 'coach',
+        content: reply.trim(),
+        tag: 'check_in',
+        is_read: false,
+      });
+    }
+
     setSaved(true);
     setEditMode(false);
     setTimeout(() => setSaved(false), 2500);

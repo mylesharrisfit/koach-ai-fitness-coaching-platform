@@ -152,7 +152,10 @@ export default function CheckInDetail() {
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.CheckIn.update(checkInId, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['checkins-review'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checkins-review'] });
+      queryClient.invalidateQueries({ queryKey: ['checkin', checkInId] });
+    },
   });
 
   const prevCI = useMemo(() => {

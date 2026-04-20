@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { subDays, differenceInDays, parseISO } from 'date-fns';
 import { ClipboardList, Search, X } from 'lucide-react';
@@ -41,6 +41,15 @@ const STAT_COLORS = {
 export default function CheckInReview() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const queryClient = useQueryClient();
+
+  // Real-time: refresh list when any check-in is updated (coach responds/reviews)
+  useEffect(() => {
+    const unsub = base44.entities.CheckIn.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['checkins-review'] });
+    });
+    return unsub;
+  }, [queryClient]);
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
