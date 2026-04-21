@@ -7,7 +7,7 @@ import {
   Flame, Footprints, Check, Loader2, Send, Moon, Zap,
   TrendingDown, TrendingUp, Minus, BookOpen, ChevronDown,
   ClipboardCheck, ChevronUp, AlertTriangle, X, Play, Wind,
-  Brain, Camera, ArrowRight
+  Brain, Camera, ArrowRight, AlertCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { compositeAdherenceScore, scoreColor } from '@/lib/adherence';
 import { evaluateClientRisk } from '@/lib/riskEngine';
 import { generateRecommendations, PRIORITY_STYLES, CATEGORY_ICONS } from '@/lib/decisionEngine';
+import { applyRecommendation, getConfirmText } from '@/lib/applyRecommendation';
 
 /* ─── Constants ─── */
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
@@ -161,63 +162,76 @@ function ComplianceBar({ label, value }) {
 
 /* ─── Inline recommendation ─── */
 function InlineRec({ rec, checkIn, client }) {
-  const [applying, setApplying] = useState(false);
-  const [applied, setApplied] = useState(false);
+  const [stage, setStage] = useState('idle'); // idle | confirm | applying | done
+  const [successMsg, setSuccessMsg] = useState('');
   const styles = PRIORITY_STYLES[rec.priority];
+  const confirmText = getConfirmText(rec);
 
-  const apply = async () => {
-    if (applied || applying) return;
-    setApplying(true);
+  const handleApplyClick = () => { if (stage === 'idle') setStage('confirm'); };
+  const handleCancel = () => setStage('idle');
+
+  const handleConfirm = async () => {
+    setStage('applying');
     try {
-      if (rec.action === 'adjust_calories') {
-        if (!client?.assigned_nutrition_id) { toast.error('No nutrition plan assigned'); setApplying(false); return; }
-        const plans = await base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id });
-        const plan = plans[0];
-        if (plan) {
-          const newCals = Math.max(1000, (plan.calories || 2000) + rec.actionData.delta);
-          await Promise.all([
-            base44.entities.NutritionPlan.update(plan.id, { calories: newCals }),
-            base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: `Calories updated to ${newCals} kcal (${rec.actionData.delta > 0 ? '+' : ''}${rec.actionData.delta}).`, tag: 'nutrition', is_read: false }),
-          ]);
-          toast.success(`Calories → ${newCals} kcal ✓`);
-        }
-      } else if (rec.action === 'adjust_cardio') {
-        const msg = rec.actionData.direction === 'up'
-          ? 'Cardio increased — add 1 extra session or +20 min this week.'
-          : 'Cardio reduced — drop 1 session or −15 min this week.';
-        await Promise.all([
-          base44.entities.CheckIn.update(checkIn.id, { coach_notes: (checkIn.coach_notes || '') + '\n[Cardio] ' + msg, coach_responded: true }),
-          base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: msg, tag: 'training', is_read: false }),
-        ]);
-        toast.success('Cardio adjusted ✓');
-      } else if (rec.action === 'message') {
-        await base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: rec.actionData.content, tag: rec.actionData.tag || 'general', is_read: false });
-        toast.success('Message sent ✓');
-      } else if (rec.action === 'maintain') {
-        await base44.entities.CheckIn.update(checkIn.id, { coach_responded: true });
-        toast.success('Marked reviewed ✓');
-      }
-      setApplied(true);
+      const msg = await applyRecommendation(rec, checkIn, client);
+      setSuccessMsg(msg);
+      setStage('done');
+      toast.success(msg);
     } catch (err) {
       toast.error(err.message);
+      setStage('idle');
     }
-    setApplying(false);
   };
 
   return (
-    <div className={cn('flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all', applied ? 'opacity-50 bg-card/30' : 'bg-card/50 hover:border-primary/20')}>
-      <div className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', styles.dot)} />
-      <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold leading-tight">{rec.title}</p>
-        <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
+    <div className={cn('rounded-xl border transition-all', stage === 'done' ? 'opacity-50 bg-card/30' : 'bg-card/50 hover:border-primary/20', stage === 'confirm' && 'border-primary/30')}>
+      {/* Main row */}
+      <div className="flex items-center gap-2.5 px-3 py-2.5">
+        <div className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', styles.dot)} />
+        <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold leading-tight">{rec.title}</p>
+          <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
+        </div>
+        {stage === 'idle' && (
+          <button onClick={handleApplyClick}
+            className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 active:scale-95 transition-all whitespace-nowrap">
+            <Zap className="w-3 h-3" />{rec.actionLabel}
+          </button>
+        )}
+        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground flex-shrink-0" />}
+        {stage === 'done' && (
+          <span className="flex-shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-400">
+            <Check className="w-3 h-3" /> Done
+          </span>
+        )}
+        {stage === 'confirm' && (
+          <div className="flex gap-1.5 flex-shrink-0">
+            <button onClick={handleConfirm}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-bold active:scale-95">
+              <Check className="w-3 h-3" /> Yes
+            </button>
+            <button onClick={handleCancel}
+              className="flex items-center justify-center w-7 h-7 rounded-lg bg-secondary border border-border text-muted-foreground active:scale-95">
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        )}
       </div>
-      <button onClick={apply} disabled={applied || applying}
-        className={cn('flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border active:scale-95 transition-all whitespace-nowrap',
-          applied ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 cursor-default'
-                  : 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20')}>
-        {applying ? <Loader2 className="w-3 h-3 animate-spin" /> : applied ? <Check className="w-3 h-3" /> : <><Zap className="w-3 h-3" />{rec.actionLabel}</>}
-      </button>
+      {/* Confirm detail */}
+      {stage === 'confirm' && (
+        <div className="px-3 pb-2.5 fade-up">
+          <div className="flex items-start gap-1.5 bg-secondary/40 rounded-lg px-2.5 py-2">
+            <AlertCircle className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
+            <p className="text-[11px] leading-snug">{confirmText}</p>
+          </div>
+          {rec.action === 'message' && rec.actionData?.content && (
+            <p className="mt-1.5 text-[10px] text-muted-foreground italic border-l-2 border-primary/30 pl-2 line-clamp-2">
+              "{rec.actionData.content}"
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
