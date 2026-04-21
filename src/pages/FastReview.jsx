@@ -6,7 +6,8 @@ import {
   ChevronLeft, ChevronRight, CheckCircle2, Sparkles, MessageSquare,
   Flame, Footprints, Check, Loader2, Send, Moon, Zap,
   TrendingDown, TrendingUp, Minus, BookOpen, ChevronDown,
-  ClipboardCheck, ChevronUp, AlertTriangle, X, Play
+  ClipboardCheck, ChevronUp, AlertTriangle, X, Play, Wind,
+  Brain, Camera, ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -15,9 +16,7 @@ import { compositeAdherenceScore, scoreColor } from '@/lib/adherence';
 import { evaluateClientRisk } from '@/lib/riskEngine';
 import { generateRecommendations, PRIORITY_STYLES, CATEGORY_ICONS } from '@/lib/decisionEngine';
 
-/* ─────────────────────────────────────────
-   Helpers
-───────────────────────────────────────── */
+/* ─── Constants ─── */
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
 const TEMPLATES = [
@@ -27,6 +26,7 @@ const TEMPLATES = [
   { label: 'Missed Check-in', text: "Hey, I noticed you missed your check-in this week. Everything okay? Let me know if anything came up — I'm here to support you!" },
 ];
 
+/* ─── Helpers ─── */
 function buildAIPrompt(client, checkIn, allCIs) {
   const weights = allCIs.filter(c => c.weight).slice(0, 4).map(c => c.weight);
   const avgT = allCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_training || 0), 0) / Math.min(allCIs.length || 1, 4);
@@ -45,18 +45,13 @@ Client notes: ${checkIn.notes || 'none'}
 Write directly to the client ("you"). No bullet points.`;
 }
 
-/* ─────────────────────────────────────────
-   Priority queue builder
-───────────────────────────────────────── */
 function buildQueue(checkIns, clients, allCheckIns) {
-  // Latest check-in per client (pending only)
   const cisByClient = {};
   for (const ci of checkIns) {
     if (!cisByClient[ci.client_id]) cisByClient[ci.client_id] = [];
     cisByClient[ci.client_id].push(ci);
   }
   const clientMap = Object.fromEntries(clients.map(c => [c.id, c]));
-
   const seen = new Set();
   const items = [];
 
@@ -64,7 +59,7 @@ function buildQueue(checkIns, clients, allCheckIns) {
     if (seen.has(ci.client_id)) continue;
     seen.add(ci.client_id);
     const daysAgo = differenceInDays(new Date(), parseISO(ci.date));
-    if (daysAgo > 21) continue; // skip very stale
+    if (daysAgo > 21) continue;
 
     const client = clientMap[ci.client_id];
     const clientCIs = cisByClient[ci.client_id] || [];
@@ -72,7 +67,6 @@ function buildQueue(checkIns, clients, allCheckIns) {
     const riskScore = riskEntry?.riskScore || 0;
     const isOverdue = daysAgo > 7;
 
-    // Tier: 0 = at-risk, 1 = overdue, 2 = pending, 3 = all reviewed
     let tier = 2;
     if (riskScore >= 40) tier = 0;
     else if (isOverdue) tier = 1;
@@ -80,7 +74,6 @@ function buildQueue(checkIns, clients, allCheckIns) {
     items.push({ ci, client, clientCIs, riskScore, riskEntry, daysAgo, tier });
   }
 
-  // Sort: tier ASC, then riskScore DESC, then date ASC (oldest first)
   items.sort((a, b) => {
     if (a.tier !== b.tier) return a.tier - b.tier;
     if (b.riskScore !== a.riskScore) return b.riskScore - a.riskScore;
@@ -90,25 +83,58 @@ function buildQueue(checkIns, clients, allCheckIns) {
   return items;
 }
 
-/* ─────────────────────────────────────────
-   Sub-components
-───────────────────────────────────────── */
-function WeightDelta({ current, previous }) {
-  if (!current) return null;
-  if (!previous) return <span className="font-bold">{current} lbs</span>;
-  const diff = (current - previous).toFixed(1);
-  const n = Number(diff);
+/* ─── WeightTrend mini chart ─── */
+function WeightTrend({ clientCIs }) {
+  const weights = clientCIs.filter(c => c.weight).slice(0, 6).reverse();
+  if (weights.length < 2) return null;
+  const vals = weights.map(c => c.weight);
+  const min = Math.min(...vals) - 2;
+  const max = Math.max(...vals) + 2;
+  const range = max - min || 1;
+  const W = 120, H = 36;
+  const pts = vals.map((v, i) => ({
+    x: (i / (vals.length - 1)) * W,
+    y: H - ((v - min) / range) * H,
+  }));
+  const path = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const latest = vals[vals.length - 1];
+  const oldest = vals[0];
+  const diff = (latest - oldest).toFixed(1);
+  const isDown = Number(diff) < 0;
+  const isUp = Number(diff) > 0;
+
   return (
-    <span className="font-bold">
-      {current} lbs{' '}
-      <span className={cn('text-xs font-bold', n < 0 ? 'text-emerald-400' : n > 0 ? 'text-destructive' : 'text-muted-foreground')}>
-        {n < 0 ? <TrendingDown className="w-3 h-3 inline" /> : n > 0 ? <TrendingUp className="w-3 h-3 inline" /> : <Minus className="w-3 h-3 inline" />}
-        {n > 0 ? '+' : ''}{diff}
-      </span>
-    </span>
+    <div className="flex items-center gap-3">
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="flex-shrink-0">
+        <path d={path} fill="none" stroke={isDown ? '#34d399' : isUp ? '#f87171' : '#6b7280'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        {pts.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={isDown ? '#34d399' : isUp ? '#f87171' : '#6b7280'} />
+        ))}
+      </svg>
+      <div>
+        <p className="text-xs font-bold tabular-nums">{latest} lbs</p>
+        <p className={cn('text-[10px] font-bold flex items-center gap-0.5', isDown ? 'text-emerald-400' : isUp ? 'text-destructive' : 'text-muted-foreground')}>
+          {isDown ? <TrendingDown className="w-3 h-3" /> : isUp ? <TrendingUp className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+          {isUp ? '+' : ''}{diff} lbs
+        </p>
+      </div>
+    </div>
   );
 }
 
+/* ─── Stat tile ─── */
+function StatTile({ icon: Icon, label, value, sub, color }) {
+  return (
+    <div className="flex flex-col items-center gap-1 bg-secondary/40 rounded-xl py-3 px-2">
+      <Icon className={cn('w-3.5 h-3.5', color || 'text-muted-foreground')} />
+      <span className={cn('text-base font-bold tabular-nums leading-none', color || 'text-foreground')}>{value ?? '–'}</span>
+      {sub && <span className="text-[9px] text-muted-foreground">{sub}</span>}
+      <span className="text-[9px] text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+/* ─── Compliance bar ─── */
 function ComplianceBar({ label, value }) {
   if (value == null) return null;
   const color = value >= 80 ? 'bg-emerald-400' : value >= 60 ? 'bg-amber-400' : 'bg-destructive';
@@ -120,155 +146,14 @@ function ComplianceBar({ label, value }) {
         <span className={cn('text-xs font-bold', textColor)}>{value}%</span>
       </div>
       <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-        <div className={cn('h-full rounded-full', color)} style={{ width: `${value}%` }} />
+        <div className={cn('h-full rounded-full transition-all duration-700', color)} style={{ width: `${value}%` }} />
       </div>
     </div>
   );
 }
 
-function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
-  const [text, setText] = useState('');
-  const [sending, setSending] = useState(false);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [showTemplates, setShowTemplates] = useState(false);
-
-  const generateAI = async () => {
-    setAiLoading(true);
-    const result = await base44.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, allCIs) });
-    setText(result);
-    setAiLoading(false);
-  };
-
-  const send = async () => {
-    if (!text.trim()) return;
-    setSending(true);
-    await Promise.all([
-      base44.entities.CheckIn.update(checkIn.id, { coach_notes: text, coach_responded: true }),
-      base44.entities.Message.create({
-        client_id: checkIn.client_id, client_name: checkIn.client_name,
-        sender: 'coach', content: text.trim(), tag: 'check_in', is_read: false,
-      }),
-    ]);
-    setSending(false);
-    toast.success('Feedback sent!');
-    onSent();
-  };
-
-  return (
-    <div className="space-y-2.5 fade-up">
-      <div className="flex items-center gap-2">
-        <div className="relative">
-          <button onClick={() => setShowTemplates(s => !s)}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border bg-card text-xs font-medium text-muted-foreground hover:text-foreground">
-            <BookOpen className="w-3 h-3" /> Templates <ChevronDown className="w-3 h-3" />
-          </button>
-          {showTemplates && (
-            <div className="absolute left-0 top-9 z-30 bg-card border border-border rounded-xl shadow-xl p-2 w-64 max-h-56 overflow-y-auto">
-              {TEMPLATES.map((t, i) => (
-                <button key={i} onClick={() => { setText(t.text); setShowTemplates(false); }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-secondary transition-colors">
-                  <p className="text-xs font-medium">{t.label}</p>
-                  <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">{t.text}</p>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        <button onClick={generateAI} disabled={aiLoading}
-          className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-primary/30 bg-primary/10 text-xs font-medium text-primary hover:bg-primary/20 disabled:opacity-60">
-          {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-          {aiLoading ? 'Generating…' : 'AI Draft'}
-        </button>
-      </div>
-      <Textarea value={text} onChange={e => setText(e.target.value)}
-        placeholder="Write your coaching response..." className="text-sm resize-none" rows={4} autoFocus />
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] text-muted-foreground">{text.length} chars</span>
-        <button onClick={send} disabled={sending || !text.trim()}
-          className="flex items-center gap-1.5 h-9 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all">
-          {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-          Send
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function CaloriesPanel({ checkIn, client, onDone }) {
-  const [saving, setSaving] = useState(false);
-  const adjust = async (delta) => {
-    if (!client?.assigned_nutrition_id) { toast.error('No nutrition plan assigned'); return; }
-    setSaving(true);
-    const plans = await base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id });
-    const plan = plans[0];
-    if (plan) {
-      const newCals = Math.max(1000, (plan.calories || 2000) + delta);
-      await Promise.all([
-        base44.entities.NutritionPlan.update(plan.id, { calories: newCals }),
-        base44.entities.Message.create({
-          client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach',
-          content: `Your daily calorie target has been updated to ${newCals} kcal (${delta > 0 ? '+' : ''}${delta} adjustment).`,
-          tag: 'nutrition', is_read: false,
-        }),
-      ]);
-      toast.success(`Calories → ${newCals} kcal`);
-      onDone(`${delta > 0 ? '+' : ''}${delta} kcal`);
-    }
-    setSaving(false);
-  };
-  return (
-    <div className="p-3 bg-orange-500/8 border border-orange-500/20 rounded-xl space-y-2 fade-up">
-      <p className="text-xs font-semibold text-orange-400">Adjust daily calories</p>
-      <div className="grid grid-cols-4 gap-2">
-        {[[-250, '−250'], [-150, '−150'], [+150, '+150'], [+250, '+250']].map(([d, l]) => (
-          <button key={d} onClick={() => adjust(d)} disabled={saving}
-            className={cn('py-2 rounded-lg text-xs font-bold border active:scale-95 transition-all',
-              d < 0 ? 'bg-destructive/10 border-destructive/20 text-destructive hover:bg-destructive/20'
-                    : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20')}>
-            {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : l}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CardioPanel({ checkIn, onDone }) {
-  const [saving, setSaving] = useState(false);
-  const adjust = async (dir) => {
-    setSaving(true);
-    const msg = dir === 'up'
-      ? 'Your cardio has been increased — add 1 extra session or 20 min to your current sessions this week.'
-      : 'Your cardio has been reduced — drop 1 session or reduce duration by 15–20 min this week.';
-    await Promise.all([
-      base44.entities.CheckIn.update(checkIn.id, { coach_notes: (checkIn.coach_notes ? checkIn.coach_notes + '\n' : '') + '[Cardio] ' + msg }),
-      base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: msg, tag: 'training', is_read: false }),
-    ]);
-    toast.success(`Cardio ${dir === 'up' ? 'increased' : 'reduced'}`);
-    onDone(dir === 'up' ? '+1 session' : '−1 session');
-    setSaving(false);
-  };
-  return (
-    <div className="p-3 bg-blue-500/8 border border-blue-500/20 rounded-xl space-y-2 fade-up">
-      <p className="text-xs font-semibold text-blue-400">Adjust cardio</p>
-      <div className="flex gap-2">
-        <button onClick={() => adjust('up')} disabled={saving}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20 active:scale-95">
-          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronUp className="w-3.5 h-3.5" /> Increase</>}
-        </button>
-        <button onClick={() => adjust('down')} disabled={saving}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-secondary border-border text-muted-foreground hover:bg-secondary/70 active:scale-95">
-          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronDown className="w-3.5 h-3.5" /> Decrease</>}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────
-   Recommendation row (inline one-click apply)
-───────────────────────────────────────── */
-function InlineRec({ rec, checkIn, client, onApplied }) {
+/* ─── Inline recommendation ─── */
+function InlineRec({ rec, checkIn, client }) {
   const [applying, setApplying] = useState(false);
   const [applied, setApplied] = useState(false);
   const styles = PRIORITY_STYLES[rec.priority];
@@ -306,7 +191,6 @@ function InlineRec({ rec, checkIn, client, onApplied }) {
         toast.success('Marked reviewed ✓');
       }
       setApplied(true);
-      onApplied?.();
     } catch (err) {
       toast.error(err.message);
     }
@@ -314,7 +198,7 @@ function InlineRec({ rec, checkIn, client, onApplied }) {
   };
 
   return (
-    <div className={cn('flex items-center gap-2.5 px-3 py-2.5 rounded-xl border bg-card/50 transition-all', applied ? 'opacity-50' : 'hover:border-primary/20')}>
+    <div className={cn('flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all', applied ? 'opacity-50 bg-card/30' : 'bg-card/50 hover:border-primary/20')}>
       <div className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', styles.dot)} />
       <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
       <div className="flex-1 min-w-0">
@@ -331,10 +215,145 @@ function InlineRec({ rec, checkIn, client, onApplied }) {
   );
 }
 
+/* ─── Feedback composer ─── */
+function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
+  const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+
+  const generateAI = async () => {
+    setAiLoading(true);
+    const result = await base44.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, allCIs) });
+    setText(result);
+    setAiLoading(false);
+  };
+
+  const send = async () => {
+    if (!text.trim()) return;
+    setSending(true);
+    await Promise.all([
+      base44.entities.CheckIn.update(checkIn.id, { coach_notes: text, coach_responded: true }),
+      base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: text.trim(), tag: 'check_in', is_read: false }),
+    ]);
+    setSending(false);
+    toast.success('Feedback sent!');
+    onSent();
+  };
+
+  return (
+    <div className="space-y-2.5 fade-up">
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="relative">
+          <button onClick={() => setShowTemplates(s => !s)}
+            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border bg-card text-xs font-medium text-muted-foreground hover:text-foreground">
+            <BookOpen className="w-3 h-3" /> Templates <ChevronDown className="w-3 h-3" />
+          </button>
+          {showTemplates && (
+            <div className="absolute left-0 top-9 z-30 bg-card border border-border rounded-xl shadow-xl p-2 w-64 max-h-56 overflow-y-auto">
+              {TEMPLATES.map((t, i) => (
+                <button key={i} onClick={() => { setText(t.text); setShowTemplates(false); }}
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-secondary transition-colors">
+                  <p className="text-xs font-medium">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">{t.text}</p>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <button onClick={generateAI} disabled={aiLoading}
+          className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-primary/30 bg-primary/10 text-xs font-medium text-primary hover:bg-primary/20 disabled:opacity-60">
+          {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+          {aiLoading ? 'Generating…' : 'AI Draft'}
+        </button>
+      </div>
+      <Textarea value={text} onChange={e => setText(e.target.value)}
+        placeholder="Write your coaching response..." className="text-sm resize-none" rows={4} autoFocus />
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] text-muted-foreground">{text.length} chars</span>
+        <button onClick={send} disabled={sending || !text.trim()}
+          className="flex items-center gap-1.5 h-9 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all">
+          {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+          Send
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Calories panel ─── */
+function CaloriesPanel({ checkIn, client, onDone }) {
+  const [saving, setSaving] = useState(false);
+  const adjust = async (delta) => {
+    if (!client?.assigned_nutrition_id) { toast.error('No nutrition plan assigned'); return; }
+    setSaving(true);
+    const plans = await base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id });
+    const plan = plans[0];
+    if (plan) {
+      const newCals = Math.max(1000, (plan.calories || 2000) + delta);
+      await Promise.all([
+        base44.entities.NutritionPlan.update(plan.id, { calories: newCals }),
+        base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: `Your daily calorie target has been updated to ${newCals} kcal (${delta > 0 ? '+' : ''}${delta} adjustment).`, tag: 'nutrition', is_read: false }),
+      ]);
+      toast.success(`Calories → ${newCals} kcal`);
+      onDone(`${delta > 0 ? '+' : ''}${delta} kcal`);
+    }
+    setSaving(false);
+  };
+  return (
+    <div className="p-3 bg-orange-500/8 border border-orange-500/20 rounded-xl space-y-2 fade-up">
+      <p className="text-xs font-semibold text-orange-400">Adjust daily calories</p>
+      <div className="grid grid-cols-4 gap-2">
+        {[[-250, '−250'], [-150, '−150'], [+150, '+150'], [+250, '+250']].map(([d, l]) => (
+          <button key={d} onClick={() => adjust(d)} disabled={saving}
+            className={cn('py-2 rounded-lg text-xs font-bold border active:scale-95 transition-all',
+              d < 0 ? 'bg-destructive/10 border-destructive/20 text-destructive hover:bg-destructive/20'
+                    : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20')}>
+            {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : l}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Cardio panel ─── */
+function CardioPanel({ checkIn, onDone }) {
+  const [saving, setSaving] = useState(false);
+  const adjust = async (dir) => {
+    setSaving(true);
+    const msg = dir === 'up'
+      ? 'Your cardio has been increased — add 1 extra session or 20 min to your current sessions this week.'
+      : 'Your cardio has been reduced — drop 1 session or reduce duration by 15–20 min this week.';
+    await Promise.all([
+      base44.entities.CheckIn.update(checkIn.id, { coach_notes: (checkIn.coach_notes ? checkIn.coach_notes + '\n' : '') + '[Cardio] ' + msg }),
+      base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: msg, tag: 'training', is_read: false }),
+    ]);
+    toast.success(`Cardio ${dir === 'up' ? 'increased' : 'reduced'}`);
+    onDone(dir === 'up' ? '+1 session' : '−1 session');
+    setSaving(false);
+  };
+  return (
+    <div className="p-3 bg-blue-500/8 border border-blue-500/20 rounded-xl space-y-2 fade-up">
+      <p className="text-xs font-semibold text-blue-400">Adjust cardio</p>
+      <div className="flex gap-2">
+        <button onClick={() => adjust('up')} disabled={saving}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20 active:scale-95">
+          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronUp className="w-3.5 h-3.5" /> Increase</>}
+        </button>
+        <button onClick={() => adjust('down')} disabled={saving}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-secondary border-border text-muted-foreground hover:bg-secondary/70 active:scale-95">
+          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronDown className="w-3.5 h-3.5" /> Decrease</>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ─────────────────────────────────────────
    Main client review card
 ───────────────────────────────────────── */
-function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient }) {
+function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
   const { ci: checkIn, client, clientCIs, riskEntry, daysAgo, tier } = item;
   const [panel, setPanel] = useState(null);
   const [calResult, setCalResult] = useState(null);
@@ -342,18 +361,19 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
   const [feedbackSent, setFeedbackSent] = useState(!!checkIn.coach_responded || !!checkIn.coach_notes);
   const [aiSending, setAiSending] = useState(false);
   const [aiDone, setAiDone] = useState(false);
+  const [photoIdx, setPhotoIdx] = useState(0);
 
-  const prevCI = clientCIs[1];
   const avgScore = compositeAdherenceScore(clientCIs);
   const recommendations = useMemo(() => generateRecommendations(checkIn, client, clientCIs), [checkIn, client, clientCIs]);
 
-  const tierLabel = tier === 0
-    ? { text: 'At Risk', color: 'bg-destructive/15 text-destructive border-destructive/30' }
+  const tierConfig = tier === 0
+    ? { text: 'At Risk', bg: 'bg-destructive/10', border: 'border-destructive/20', text_color: 'text-destructive' }
     : tier === 1
-    ? { text: 'Overdue', color: 'bg-amber-500/15 text-amber-400 border-amber-500/30' }
+    ? { text: 'Overdue', bg: 'bg-amber-500/10', border: 'border-amber-500/20', text_color: 'text-amber-400' }
     : null;
 
   const sendAI = async () => {
+    if (aiSending || aiDone || feedbackSent) return;
     setAiSending(true);
     const result = await base44.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, clientCIs) });
     await Promise.all([
@@ -363,23 +383,28 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
     setAiDone(true);
     setFeedbackSent(true);
     setAiSending(false);
-    toast.success('AI feedback sent!');
+    toast.success('AI feedback sent! ✨');
   };
+
+  const sleepColor = !checkIn.sleep_hours ? 'text-muted-foreground' : checkIn.sleep_hours >= 7 ? 'text-emerald-400' : checkIn.sleep_hours >= 6 ? 'text-amber-400' : 'text-destructive';
+  const energyColor = !checkIn.energy_level ? 'text-muted-foreground' : checkIn.energy_level >= 4 ? 'text-emerald-400' : checkIn.energy_level >= 2 ? 'text-amber-400' : 'text-destructive';
+  const stressColor = !checkIn.stress_level ? 'text-muted-foreground' : checkIn.stress_level <= 2 ? 'text-emerald-400' : checkIn.stress_level <= 3 ? 'text-amber-400' : 'text-destructive';
+  const photos = checkIn.photo_urls || [];
 
   return (
     <div className="flex flex-col gap-4">
 
       {/* ── Client header ── */}
-      <div className="flex items-start gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl flex-shrink-0">
           {(client?.name || checkIn.client_name || '?')[0]}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-heading font-bold text-lg leading-tight">{client?.name || checkIn.client_name}</p>
-            {tierLabel && (
-              <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', tierLabel.color)}>
-                {tierLabel.text}
+            <p className="font-heading font-bold text-xl leading-tight">{client?.name || checkIn.client_name}</p>
+            {tierConfig && (
+              <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', tierConfig.bg, tierConfig.border, tierConfig.text_color)}>
+                {tierConfig.text}
               </span>
             )}
             {(feedbackSent || isReviewed) && (
@@ -391,7 +416,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
           <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
             {format(parseISO(checkIn.date), 'MMM d, yyyy')}
             {daysAgo > 0 && <span className={cn(daysAgo > 7 ? 'text-destructive' : daysAgo > 3 ? 'text-amber-400' : '')}> · {daysAgo}d ago</span>}
-            {checkIn.mood && <span>{MOOD_EMOJI[checkIn.mood]}</span>}
+            {checkIn.mood && <span className="ml-0.5">{MOOD_EMOJI[checkIn.mood]}</span>}
           </p>
         </div>
       </div>
@@ -407,30 +432,52 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
         </div>
       )}
 
-      {/* ── Stats ── */}
-      <div className="grid grid-cols-4 gap-2">
-        {[
-          { label: 'Weight', value: checkIn.weight ? `${checkIn.weight}` : null, sub: 'lbs',
-            colorClass: prevCI?.weight && checkIn.weight < prevCI.weight ? 'text-emerald-400' : 'text-foreground' },
-          { label: 'Sleep', value: checkIn.sleep_hours, sub: 'hrs',
-            colorClass: !checkIn.sleep_hours ? 'text-muted-foreground' : checkIn.sleep_hours >= 7 ? 'text-emerald-400' : checkIn.sleep_hours >= 6 ? 'text-amber-400' : 'text-destructive' },
-          { label: 'Energy', value: checkIn.energy_level, sub: '/10',
-            colorClass: !checkIn.energy_level ? 'text-muted-foreground' : checkIn.energy_level >= 4 ? 'text-emerald-400' : checkIn.energy_level >= 2 ? 'text-amber-400' : 'text-destructive' },
-          { label: 'Adherence', value: avgScore, sub: '%', colorClass: scoreColor(avgScore) },
-        ].map(({ label, value, sub, colorClass }) => (
-          <div key={label} className="flex flex-col items-center gap-0.5 bg-secondary/40 rounded-xl p-2.5">
-            <span className="text-[10px] text-muted-foreground">{label}</span>
-            <span className={cn('text-sm font-bold tabular-nums', colorClass)}>{value ?? '–'}</span>
-            <span className="text-[10px] text-muted-foreground">{sub}</span>
+      {/* ── Weight trend ── */}
+      {clientCIs.filter(c => c.weight).length >= 2 && (
+        <div className="bg-secondary/30 rounded-xl px-4 py-3 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Weight Trend</p>
+            <WeightTrend clientCIs={clientCIs} />
           </div>
-        ))}
+          <div className="text-right">
+            <p className="text-[10px] text-muted-foreground">Adherence</p>
+            <p className={cn('text-2xl font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-sm font-normal">%</span></p>
+          </div>
+        </div>
+      )}
+
+      {/* ── 5 stat tiles: Sleep / Energy / Stress / Training / Nutrition ── */}
+      <div className="grid grid-cols-5 gap-2">
+        <StatTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} sub="hrs" color={sleepColor} />
+        <StatTile icon={Zap} label="Energy" value={checkIn.energy_level} sub="/10" color={energyColor} />
+        <StatTile icon={Brain} label="Stress" value={checkIn.stress_level} sub="/10" color={stressColor} />
+        <div className="col-span-2 flex flex-col justify-center bg-secondary/40 rounded-xl py-3 px-3 gap-2">
+          <ComplianceBar label="Training" value={checkIn.compliance_training} />
+          <ComplianceBar label="Nutrition" value={checkIn.compliance_nutrition} />
+        </div>
       </div>
 
-      {/* ── Compliance bars ── */}
-      <div className="space-y-2">
-        <ComplianceBar label="Training" value={checkIn.compliance_training} />
-        <ComplianceBar label="Nutrition" value={checkIn.compliance_nutrition} />
-      </div>
+      {/* ── Photos ── */}
+      {photos.length > 0 && (
+        <div>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <Camera className="w-3 h-3" /> Progress Photos ({photos.length})
+          </p>
+          <div className="relative">
+            <a href={photos[photoIdx]} target="_blank" rel="noreferrer">
+              <img src={photos[photoIdx]} alt="progress" className="w-full h-52 object-cover rounded-xl border border-border" />
+            </a>
+            {photos.length > 1 && (
+              <div className="flex gap-1.5 mt-2 justify-center">
+                {photos.map((_, i) => (
+                  <button key={i} onClick={() => setPhotoIdx(i)}
+                    className={cn('w-2 h-2 rounded-full transition-all', i === photoIdx ? 'bg-primary' : 'bg-secondary')} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Client notes ── */}
       {checkIn.notes && (
@@ -440,7 +487,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
         </div>
       )}
 
-      {/* ── Existing response ── */}
+      {/* ── Existing coach response ── */}
       {checkIn.coach_notes && (
         <div className="bg-primary/5 border border-primary/20 rounded-xl p-3">
           <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-1">Your Response</p>
@@ -451,9 +498,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
       {/* ── Recommendations ── */}
       {recommendations.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1">
-            ⚡ Recommended Actions
-          </p>
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">⚡ Suggested Actions</p>
           {recommendations.slice(0, 3).map(rec => (
             <InlineRec key={rec.id} rec={rec} checkIn={checkIn} client={client} />
           ))}
@@ -461,7 +506,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
       )}
 
       {/* ── Action buttons ── */}
-      <div className="space-y-2">
+      <div className="space-y-2 pt-1">
         <div className="grid grid-cols-2 gap-2">
           {/* AI Feedback */}
           <button onClick={sendAI} disabled={aiSending || aiDone || feedbackSent}
@@ -469,14 +514,14 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
               (aiDone || feedbackSent) ? 'bg-purple-500/10 border-purple-500/20 text-purple-400 opacity-60 cursor-default'
                 : 'bg-purple-500/10 border-purple-500/20 text-purple-400 hover:bg-purple-500/20')}>
             {aiSending ? <Loader2 className="w-4 h-4 animate-spin" /> : (aiDone || feedbackSent) ? <Check className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-            {aiDone || feedbackSent ? 'Sent' : 'AI Feedback'}
+            {aiDone || feedbackSent ? 'AI Sent' : 'AI Feedback'}
           </button>
 
-          {/* Write Feedback */}
+          {/* Write / Message */}
           <button onClick={() => setPanel(p => p === 'feedback' ? null : 'feedback')}
             className={cn('flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
               panel === 'feedback' ? 'bg-primary/20 border-primary/40 text-primary' : 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20')}>
-            <MessageSquare className="w-4 h-4" /> Write
+            <MessageSquare className="w-4 h-4" /> Message
           </button>
 
           {/* Calories */}
@@ -498,19 +543,14 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
           </button>
         </div>
 
-        {/* Inline panels */}
         {panel === 'feedback' && (
           <div className="bg-secondary/20 rounded-xl p-3.5 border border-border">
             <FeedbackComposer checkIn={checkIn} client={client} allCIs={clientCIs}
               onSent={() => { setFeedbackSent(true); setPanel(null); }} />
           </div>
         )}
-        {panel === 'calories' && (
-          <CaloriesPanel checkIn={checkIn} client={client} onDone={(r) => { setCalResult(r); setPanel(null); }} />
-        )}
-        {panel === 'cardio' && (
-          <CardioPanel checkIn={checkIn} onDone={(r) => { setCardioResult(r); setPanel(null); }} />
-        )}
+        {panel === 'calories' && <CaloriesPanel checkIn={checkIn} client={client} onDone={(r) => { setCalResult(r); setPanel(null); }} />}
+        {panel === 'cardio' && <CardioPanel checkIn={checkIn} onDone={(r) => { setCardioResult(r); setPanel(null); }} />}
 
         {/* Mark Reviewed */}
         <button onClick={onMarkReviewed} disabled={markSaving || isReviewed}
@@ -518,8 +558,8 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving, onNextClient
             isReviewed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 cursor-default opacity-80'
               : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20')}>
           {markSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : isReviewed
-            ? <><Check className="w-4 h-4" /> Reviewed — Next Client</>
-            : <><ClipboardCheck className="w-4 h-4" /> Mark Reviewed &amp; Next</>}
+            ? <><Check className="w-4 h-4" /> Reviewed</>
+            : <><ClipboardCheck className="w-4 h-4" /> Mark as Reviewed</>}
         </button>
       </div>
     </div>
@@ -545,14 +585,12 @@ export default function FastReview() {
     queryFn: () => base44.entities.CheckIn.list('-date', 200),
   });
 
-  // Build priority-ordered queue
   const queue = useMemo(() => buildQueue(checkIns, clients, checkIns), [checkIns, clients]);
 
   const total = queue.length;
   const current = queue[idx];
-  const reviewedCount = Object.keys(reviewed).length;
-  const progressPct = total > 0 ? Math.max((reviewedCount / total) * 100, idx > 0 ? (idx / total) * 100 : 0) : 0;
-
+  const reviewedCount = Object.values(reviewed).filter(Boolean).length;
+  const progressPct = total > 0 ? ((idx + (reviewed[current?.ci?.id] ? 1 : 0)) / total) * 100 : 0;
   const isReviewed = current ? (!!reviewed[current.ci.id] || current.ci.coach_responded) : false;
 
   const handleMark = async () => {
@@ -587,10 +625,10 @@ export default function FastReview() {
   );
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-5 pb-32 sm:pt-8 space-y-4">
+    <div className="max-w-xl mx-auto px-4 pt-5 pb-36 sm:pt-8 space-y-4">
 
-      {/* ── Header bar ── */}
-      <div className="space-y-2">
+      {/* ── Header ── */}
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
@@ -604,13 +642,13 @@ export default function FastReview() {
         </div>
 
         {/* Progress bar */}
-        <div className="h-2 bg-secondary rounded-full overflow-hidden">
+        <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
           <div className="h-full bg-primary rounded-full transition-all duration-500"
-            style={{ width: `${Math.max(progressPct, (idx / total) * 100, 3)}%` }} />
+            style={{ width: `${Math.max(progressPct, 3)}%` }} />
         </div>
 
-        {/* Queue summary pills */}
-        <div className="flex gap-2 flex-wrap">
+        {/* Tier pills */}
+        <div className="flex gap-2">
           {queue.filter(i => i.tier === 0).length > 0 && (
             <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
               🚨 {queue.filter(i => i.tier === 0).length} at-risk
@@ -637,28 +675,32 @@ export default function FastReview() {
             onMarkReviewed={handleMark}
             isReviewed={isReviewed}
             markSaving={markSaving}
-            onNextClient={goNext}
           />
         </div>
       )}
 
-      {/* ── Navigation ── */}
-      <div className="flex gap-3">
+      {/* ── Sticky bottom nav ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 flex gap-3 max-w-xl mx-auto">
         <button onClick={goPrev} disabled={idx === 0}
-          className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-border bg-card text-sm font-semibold text-muted-foreground disabled:opacity-30 active:scale-95 transition-all">
+          className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-border bg-card text-sm font-semibold text-muted-foreground disabled:opacity-30 active:scale-95 transition-all flex-shrink-0">
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
-        <button onClick={goNext} disabled={idx >= total - 1}
-          className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-30 active:scale-95 transition-all">
-          Next Client <ChevronRight className="w-4 h-4" />
+        <button
+          onClick={idx >= total - 1 ? undefined : goNext}
+          disabled={idx >= total - 1}
+          className={cn(
+            'flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-bold transition-all active:scale-95',
+            idx >= total - 1
+              ? 'bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 cursor-default'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-sm'
+          )}
+        >
+          {idx >= total - 1
+            ? <><CheckCircle2 className="w-4 h-4" /> All Done!</>
+            : <><ArrowRight className="w-4 h-4" /> Next Client ({idx + 2}/{total})</>
+          }
         </button>
       </div>
-
-      {idx >= total - 1 && (
-        <p className="text-center text-xs text-muted-foreground py-1">
-          Last client in queue
-        </p>
-      )}
     </div>
   );
 }
