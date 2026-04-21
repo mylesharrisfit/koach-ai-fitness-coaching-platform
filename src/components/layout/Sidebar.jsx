@@ -44,9 +44,9 @@ export default function Sidebar({ user, onUpgrade }) {
     <aside className={cn(
       "fixed left-0 top-0 h-screen bg-sidebar text-sidebar-foreground border-r border-sidebar-border z-50 flex-col transition-all duration-300 hidden md:flex",
       collapsed ? "w-[72px]" : "w-[240px]"
-    )} style={{ background: 'hsl(222 32% 4%)' }}>
-      {/* Ambient glow at top */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+    )}>
+      {/* Subtle top accent */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none" />
 
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-sidebar-border relative z-10 gap-3">
@@ -55,7 +55,7 @@ export default function Sidebar({ user, onUpgrade }) {
         </div>
         {!collapsed && (
           <>
-            <span className="flex-1 font-heading font-bold text-base tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text" style={{ WebkitBackgroundClip: 'text' }}>FitForge</span>
+            <span className="flex-1 font-heading font-bold text-base tracking-tight text-sidebar-foreground">FitForge</span>
             <NotificationBell />
           </>
         )}
@@ -87,14 +87,14 @@ export default function Sidebar({ user, onUpgrade }) {
               to={item.path}
               className={cn(
                 "relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-                isActive 
-                  ? "bg-primary/15 text-sidebar-primary-foreground shadow-glow-sm ring-1 ring-primary/25" 
+                isActive
+                  ? "bg-primary/10 text-primary font-semibold"
                   : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
-              {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" style={{ boxShadow: '0 0 8px hsl(var(--sidebar-primary) / 0.8)' }} />}
-              <item.icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", isActive && "text-primary")} />
-              {!collapsed && <span className={cn("tracking-tight", isActive && "text-sidebar-foreground")}>{item.label}</span>}
+              {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />}
+              <item.icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", isActive ? "text-primary" : "")} />
+              {!collapsed && <span className="tracking-tight">{item.label}</span>}
             </Link>
           );
         })}

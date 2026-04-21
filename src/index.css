@@ -9,41 +9,41 @@
     --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    --background: 222 28% 96%;
-    --foreground: 222 30% 8%;
+    --background: 0 0% 98%;
+    --foreground: 222 30% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222 30% 8%;
+    --card-foreground: 222 30% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 30% 8%;
-    --primary: 228 90% 58%;
+    --popover-foreground: 222 30% 10%;
+    --primary: 228 90% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 18% 92%;
-    --secondary-foreground: 222 25% 15%;
-    --muted: 220 18% 92%;
-    --muted-foreground: 220 12% 48%;
-    --accent: 162 72% 42%;
+    --secondary: 220 16% 94%;
+    --secondary-foreground: 222 25% 20%;
+    --muted: 220 16% 94%;
+    --muted-foreground: 220 10% 52%;
+    --accent: 162 72% 40%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 82% 58%;
+    --destructive: 0 82% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 18% 88%;
-    --input: 220 18% 88%;
-    --ring: 228 90% 58%;
-    --chart-1: 228 90% 58%;
-    --chart-2: 162 72% 42%;
-    --chart-3: 280 68% 58%;
-    --chart-4: 38 92% 54%;
-    --chart-5: 0 82% 58%;
+    --border: 220 16% 90%;
+    --input: 220 16% 90%;
+    --ring: 228 90% 55%;
+    --chart-1: 228 90% 55%;
+    --chart-2: 162 72% 40%;
+    --chart-3: 280 68% 55%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 0 82% 55%;
     --radius: 0.875rem;
-    --sidebar-background: 222 32% 7%;
-    --sidebar-foreground: 220 18% 82%;
-    --sidebar-primary: 228 90% 62%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 25% 25%;
+    --sidebar-primary: 228 90% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 26% 13%;
-    --sidebar-accent-foreground: 220 18% 82%;
-    --sidebar-border: 222 24% 14%;
-    --sidebar-ring: 228 90% 62%;
-    --glow-primary: 228 90% 58%;
-    --glow-accent: 162 72% 42%;
+    --sidebar-accent: 220 16% 95%;
+    --sidebar-accent-foreground: 222 25% 20%;
+    --sidebar-border: 220 16% 90%;
+    --sidebar-ring: 228 90% 55%;
+    --glow-primary: 228 90% 55%;
+    --glow-accent: 162 72% 40%;
   }
 
   .dark {
@@ -109,8 +109,8 @@
   box-shadow:
     0 1px 0 0 hsl(var(--primary) / 0.04) inset,
     0 0 0 1px hsl(var(--border) / 0.08) inset,
-    0 4px 24px -4px hsl(222 32% 3% / 0.4),
-    0 1px 4px -1px hsl(222 32% 3% / 0.2);
+    0 4px 24px -4px hsl(220 16% 60% / 0.15),
+    0 1px 4px -1px hsl(220 16% 60% / 0.1);
 }
 
 /* ── Glow effects ── */
