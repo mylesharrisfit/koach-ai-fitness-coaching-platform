@@ -107,7 +107,7 @@ export default function Messages() {
         <div className="p-4 border-b border-[#E7EAF3]">
           <h2 className="font-heading font-bold text-lg mb-3 text-[#1F2A44]">Messages</h2>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#374151]" />
             <Input placeholder="Search clients..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 h-9" />
           </div>
         </div>
@@ -130,10 +130,10 @@ export default function Messages() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="font-medium text-sm truncate">{client.name}</p>
-                    {lastMsg && <span className="text-[10px] text-muted-foreground">{format(new Date(lastMsg.created_date), 'MMM d')}</span>}
+                    {lastMsg && <span className="text-[10px] text-[#374151]">{format(new Date(lastMsg.created_date), 'MMM d')}</span>}
                   </div>
                   {lastMsg && (
-                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                    <p className="text-xs text-[#374151] truncate mt-0.5">
                       {lastMsg.tag && lastMsg.tag !== 'general' && `[${lastMsg.tag.replace('_', '-')}] `}{lastMsg.content}
                     </p>
                   )}
@@ -164,7 +164,7 @@ export default function Messages() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm truncate">{selectedClient.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{selectedClient.email}</p>
+                <p className="text-xs text-[#374151] truncate">{selectedClient.email}</p>
               </div>
             </div>
 
@@ -174,7 +174,7 @@ export default function Messages() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-6 space-y-3">
               {clientMessages.length === 0 && (
-                <p className="text-center text-muted-foreground text-sm py-8">No messages yet. Start the conversation!</p>
+                <p className="text-center text-[#374151] text-sm py-8">No messages yet. Start the conversation!</p>
               )}
               {clientMessages.map(msg => (
                 <MessageBubble key={msg.id} msg={msg} onTogglePin={handleTogglePin} />
@@ -191,7 +191,7 @@ export default function Messages() {
                   <button
                     onClick={() => setShowTagPicker(!showTagPicker)}
                     className={cn('flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium transition-colors',
-                      selectedTag !== 'general' ? TAG_COLORS[selectedTag] : 'bg-secondary text-muted-foreground border-border hover:border-primary'
+                      selectedTag !== 'general' ? TAG_COLORS[selectedTag] : 'bg-secondary text-[#374151] border-border hover:border-primary'
                     )}
                   >
                     <Tag className="w-3 h-3" />
@@ -205,7 +205,7 @@ export default function Messages() {
                           key={t}
                           onClick={() => { setSelectedTag(t); setShowTagPicker(false); }}
                           className={cn('text-[10px] px-2 py-1 rounded-full border font-medium transition-colors',
-                            t !== 'general' ? TAG_COLORS[t] : 'bg-secondary text-muted-foreground border-border',
+                            t !== 'general' ? TAG_COLORS[t] : 'bg-secondary text-[#374151] border-border',
                             selectedTag === t && 'ring-2 ring-primary'
                           )}
                         >
@@ -220,7 +220,7 @@ export default function Messages() {
                 <div className="relative">
                   <button
                     onClick={() => { setShowTemplates(!showTemplates); setShowAI(false); }}
-                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors"
+                    className="flex items-center gap-1 text-xs text-[#374151] hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors"
                   >
                     <LayoutTemplate className="w-3.5 h-3.5" /> Templates
                   </button>
@@ -239,7 +239,7 @@ export default function Messages() {
                   <div className="relative">
                     <button
                       onClick={() => { setShowAI(!showAI); setShowTemplates(false); }}
-                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary px-2 py-1 rounded-lg hover:bg-secondary transition-colors"
+                      className="flex items-center gap-1 text-xs text-[#374151] hover:text-primary px-2 py-1 rounded-lg hover:bg-secondary transition-colors"
                     >
                       <Sparkles className="w-3.5 h-3.5" /> AI Reply
                     </button>
@@ -260,10 +260,10 @@ export default function Messages() {
                 <div className="ml-auto flex items-center gap-1">
                   <FeatureLock feature="voice_video_messages" className="flex items-center gap-1 rounded-lg">
                     <>
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors">
+                      <button className="flex items-center gap-1 text-xs text-[#374151] hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors">
                         <Mic className="w-3.5 h-3.5" /> Voice
                       </button>
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors">
+                      <button className="flex items-center gap-1 text-xs text-[#374151] hover:text-foreground px-2 py-1 rounded-lg hover:bg-secondary transition-colors">
                         <Video className="w-3.5 h-3.5" /> Video
                       </button>
                     </>

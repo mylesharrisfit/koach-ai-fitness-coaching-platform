@@ -27,7 +27,7 @@ export default function MessageBubble({ msg, onTogglePin }) {
               isCoach ? 'order-first' : 'order-last'
             )}
           >
-            <Pin className={cn('w-3 h-3', msg.is_pinned ? 'text-amber-400 fill-amber-400' : 'text-[#6B7280]')} />
+            <Pin className={cn('w-3 h-3', msg.is_pinned ? 'text-amber-400 fill-amber-400' : 'text-[#374151]')} />
           </button>
 
           <div className={cn(
