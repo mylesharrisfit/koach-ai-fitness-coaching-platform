@@ -23,16 +23,16 @@ export default function MessageBubble({ msg, onTogglePin }) {
           <button
             onClick={() => onTogglePin(msg)}
             className={cn(
-              'opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-secondary',
+              'opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-[#F6F7FB]',
               isCoach ? 'order-first' : 'order-last'
             )}
           >
-            <Pin className={cn('w-3 h-3', msg.is_pinned ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground')} />
+            <Pin className={cn('w-3 h-3', msg.is_pinned ? 'text-amber-400 fill-amber-400' : 'text-[#6B7280]')} />
           </button>
 
           <div className={cn(
             'rounded-2xl px-4 py-3 text-sm',
-            isCoach ? 'bg-primary text-primary-foreground rounded-br-md' : 'bg-card border border-border rounded-bl-md',
+            isCoach ? 'bg-primary text-white rounded-br-md' : 'bg-white border border-[#E7EAF3] text-[#1F2A44] rounded-bl-md shadow-sm',
             msg.is_pinned && 'ring-2 ring-amber-400/50'
           )}>
             {/* Media indicators */}

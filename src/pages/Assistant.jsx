@@ -28,12 +28,12 @@ export default function Assistant() {
         </div>
         <div>
           <h1 className="text-xl font-heading font-bold tracking-tight">AI Coach Assistant</h1>
-          <p className="text-xs text-muted-foreground">Powered by intelligent fitness analysis</p>
+          <p className="text-xs text-[#6B7280]">Powered by intelligent fitness analysis</p>
         </div>
       </div>
 
       {/* Main panel */}
-      <div className="flex-1 min-h-0 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
+      <div className="flex-1 min-h-0 bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden flex flex-col shadow-sm">
         {/* Client context selector */}
         <ClientSelector
           clients={clients}

@@ -43,7 +43,7 @@ function PostCard({ post, currentUserId }) {
   const badge = POST_TYPE_BADGE[post.type];
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 space-y-3 shadow-sm">
       {/* Author */}
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">
@@ -54,7 +54,7 @@ function PostCard({ post, currentUserId }) {
             <p className="font-semibold text-sm">{post.author_name}</p>
             {badge && <span className={cn("text-[10px] px-2 py-0.5 rounded-full border font-medium", badge.class)}>{badge.label}</span>}
           </div>
-          <p className="text-[11px] text-muted-foreground">{formatDistanceToNow(new Date(post.created_date || Date.now()), { addSuffix: true })}</p>
+          <p className="text-[11px] text-[#6B7280]">{formatDistanceToNow(new Date(post.created_date || Date.now()), { addSuffix: true })}</p>
         </div>
       </div>
       {/* Content */}
@@ -65,25 +65,25 @@ function PostCard({ post, currentUserId }) {
           <Heart className={cn("w-4 h-4", liked && "fill-red-400")} />
           {(post.likes || []).length || ''}
         </button>
-        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1F2A44] transition-colors">
           <MessageCircle className="w-4 h-4" />
           {comments.length > 0 ? comments.length : 'Reply'}
         </button>
       </div>
       {/* Comments */}
       {showComments && (
-        <div className="space-y-2 pt-2 border-t border-border/50">
+        <div className="space-y-2 pt-2 border-t border-[#E7EAF3]">
           {comments.map(c => (
             <div key={c.id} className="flex items-start gap-2">
-              <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs font-bold flex-shrink-0">{c.author_name?.[0]?.toUpperCase()}</div>
-              <div className="flex-1 bg-secondary/30 rounded-xl px-3 py-1.5">
+              <div className="w-6 h-6 rounded-full bg-[#EEF4FF] text-primary flex items-center justify-center text-xs font-bold flex-shrink-0">{c.author_name?.[0]?.toUpperCase()}</div>
+              <div className="flex-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-1.5">
                 <p className="text-xs font-semibold">{c.author_name}</p>
                 <p className="text-xs">{c.content}</p>
               </div>
             </div>
           ))}
           <div className="flex gap-2">
-            <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment..." onKeyDown={e => e.key === 'Enter' && commentMutation.mutate()} className="flex-1 text-xs bg-secondary/30 border border-border rounded-xl px-3 py-1.5 outline-none focus:border-primary transition-colors" />
+            <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment..." onKeyDown={e => e.key === 'Enter' && commentMutation.mutate()} className="flex-1 text-xs bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-1.5 outline-none focus:border-primary transition-colors text-[#1F2A44]" />
             <button onClick={() => commentMutation.mutate()} disabled={!comment.trim()} className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors disabled:opacity-40">
               <Send className="w-3.5 h-3.5" />
             </button>
@@ -118,22 +118,22 @@ export default function CommunityFeed({ currentUser }) {
   return (
     <div className="space-y-4">
       {/* Compose */}
-      <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
+      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3 shadow-sm">
         <div className="flex gap-2 mb-2">
           {[{ key: 'post', label: '💬 Post' }, { key: 'win', label: '🏆 Win' }, { key: 'milestone', label: '⭐ Milestone' }].map(t => (
-            <button key={t.key} onClick={() => setPostType(t.key)} className={cn("text-xs px-3 py-1 rounded-full border transition-all", postType === t.key ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40")}>
+            <button key={t.key} onClick={() => setPostType(t.key)} className={cn("text-xs px-3 py-1 rounded-full border transition-all", postType === t.key ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] text-[#6B7280] hover:border-primary/40")}>
               {t.label}
             </button>
           ))}
         </div>
-        <textarea value={newPost} onChange={e => setNewPost(e.target.value)} placeholder={postType === 'win' ? "Share a win with the community! 🎉" : postType === 'milestone' ? "Celebrate a milestone..." : "What's on your mind?"} rows={2} className="w-full text-sm bg-secondary/20 border border-border rounded-xl px-3 py-2 outline-none focus:border-primary resize-none transition-colors placeholder:text-muted-foreground/60" />
+        <textarea value={newPost} onChange={e => setNewPost(e.target.value)} placeholder={postType === 'win' ? "Share a win with the community! 🎉" : postType === 'milestone' ? "Celebrate a milestone..." : "What's on your mind?"} rows={2} className="w-full text-sm bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-2 outline-none focus:border-primary resize-none transition-colors placeholder:text-[#6B7280]/60 text-[#1F2A44]" />
         <div className="flex justify-end">
           <Button size="sm" disabled={!newPost.trim()} onClick={() => createPost.mutate()} className="h-8 text-xs">Post</Button>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-8 text-muted-foreground text-sm">Loading feed...</div>
+        <div className="text-center py-8 text-[#6B7280] text-sm">Loading feed...</div>
       ) : posts.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <Zap className="w-10 h-10 mx-auto mb-3 opacity-20" />

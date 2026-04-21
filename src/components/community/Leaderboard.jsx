@@ -38,16 +38,16 @@ export default function Leaderboard({ clients }) {
   const board = BOARDS.find(b => b.key === active);
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5">
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <Trophy className="w-5 h-5 text-amber-400" />
         <h3 className="font-heading font-semibold">Leaderboard</h3>
       </div>
 
       {/* Tab selector */}
-      <div className="flex gap-1.5 mb-5 bg-secondary/30 rounded-xl p-1">
+      <div className="flex gap-1.5 mb-5 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-1">
         {BOARDS.map(b => (
-          <button key={b.key} onClick={() => setActive(b.key)} className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all", active === b.key ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground")}>
+          <button key={b.key} onClick={() => setActive(b.key)} className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all", active === b.key ? "bg-white shadow-sm text-[#1F2A44]" : "text-[#6B7280] hover:text-[#1F2A44]")}>
             <b.icon className={cn("w-3.5 h-3.5", active === b.key && b.color)} />
             {b.label}
           </button>
@@ -55,7 +55,7 @@ export default function Leaderboard({ clients }) {
       </div>
 
       {ranked.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground text-sm">
+        <div className="text-center py-8 text-[#6B7280] text-sm">
           <p>No data logged yet this week.</p>
           <p className="text-xs mt-1">Encourage clients to log daily!</p>
         </div>
@@ -64,9 +64,9 @@ export default function Leaderboard({ clients }) {
           {ranked.map((client, idx) => (
             <div key={client.id} className={cn(
               "flex items-center gap-3 p-3 rounded-xl transition-all",
-              idx === 0 ? "bg-amber-500/10 border border-amber-500/20" : "bg-secondary/20"
+              idx === 0 ? "bg-amber-50 border border-amber-100" : "bg-[#F6F7FB]"
             )}>
-              <span className="text-lg w-6 text-center">{idx < 3 ? MEDALS[idx] : <span className="text-xs text-muted-foreground">{idx + 1}</span>}</span>
+              <span className="text-lg w-6 text-center">{idx < 3 ? MEDALS[idx] : <span className="text-xs text-[#6B7280]">{idx + 1}</span>}</span>
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
                 {client.name?.[0]?.toUpperCase()}
               </div>

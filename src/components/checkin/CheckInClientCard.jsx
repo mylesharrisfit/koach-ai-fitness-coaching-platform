@@ -30,9 +30,9 @@ function getStatus(checkIn, allClientCIs) {
   const isAtRisk = (score !== null && score < 60) || flags.length >= 2;
   const needsAttention = flags.length > 0 || (score !== null && score < 80);
 
-  if (isAtRisk) return { label: 'At Risk', color: 'bg-destructive/15 text-destructive border-destructive/30', border: 'border-destructive/30', flags };
-  if (needsAttention) return { label: 'Needs Attention', color: 'bg-amber-500/15 text-amber-400 border-amber-500/30', border: 'border-amber-500/20', flags };
-  return { label: 'Good', color: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30', border: 'border-border', flags };
+  if (isAtRisk) return { label: 'At Risk', color: 'bg-red-50 text-red-500 border-red-100', border: 'border-red-100', flags };
+  if (needsAttention) return { label: 'Needs Attention', color: 'bg-amber-50 text-amber-600 border-amber-100', border: 'border-amber-100', flags };
+  return { label: 'Good', color: 'bg-emerald-50 text-emerald-600 border-emerald-100', border: 'border-[#E7EAF3]', flags };
 }
 
 function WeightDelta({ current, previous }) {
@@ -93,18 +93,18 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     setTimeout(() => setJustCompleted(false), 1200);
   };
 
-  const sleepColor = checkIn.sleep_hours >= 7 ? 'text-emerald-400' : checkIn.sleep_hours >= 6 ? 'text-amber-400' : 'text-destructive';
-  const energyColor = checkIn.energy_level >= 4 ? 'text-emerald-400' : checkIn.energy_level >= 2 ? 'text-amber-400' : 'text-destructive';
+  const sleepColor = checkIn.sleep_hours >= 7 ? 'text-emerald-600' : checkIn.sleep_hours >= 6 ? 'text-amber-600' : 'text-red-500';
+  const energyColor = checkIn.energy_level >= 4 ? 'text-emerald-600' : checkIn.energy_level >= 2 ? 'text-amber-600' : 'text-red-500';
 
   return (
     <div className={cn(
-      'bg-card border rounded-2xl overflow-hidden transition-all duration-300',
+      'bg-white border rounded-2xl overflow-hidden transition-all duration-300 shadow-sm',
       justCompleted && 'ring-2 ring-emerald-500/40 border-emerald-500/30',
       !justCompleted && status.border
     )}>
       {/* ── Summary row (always visible) ── */}
       <button
-        className="w-full p-4 hover:bg-secondary/20 active:bg-secondary/40 transition-colors text-left"
+        className="w-full p-4 hover:bg-[#F6F7FB] active:bg-[#F6F7FB] transition-colors text-left"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex items-start gap-3">
@@ -129,7 +129,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             </div>
 
             {/* Date */}
-            <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
+            <p className="text-xs text-[#6B7280] mb-3 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {format(parseISO(checkIn.date), 'MMM d')}
               {daysAgo > 0 && <span className={cn(daysAgo > 14 ? 'text-amber-400' : '')}> · {daysAgo}d ago</span>}
@@ -140,26 +140,26 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             </p>
 
             {/* Key metrics row */}
-            <div className="grid grid-cols-4 gap-2 bg-secondary/30 rounded-xl p-2.5">
+            <div className="grid grid-cols-4 gap-2 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-2.5">
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] text-muted-foreground">Weight</span>
+                <span className="text-[10px] text-[#6B7280]">Weight</span>
                 <WeightDelta current={checkIn.weight} previous={prevCI?.weight} />
                 <span className="text-[10px] text-muted-foreground">lbs</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <Moon className="w-3.5 h-3.5 text-muted-foreground" />
+                <Moon className="w-3.5 h-3.5 text-[#6B7280]" />
                 <span className={cn('text-sm font-bold tabular-nums', sleepColor)}>{checkIn.sleep_hours ?? '–'}</span>
-                <span className="text-[10px] text-muted-foreground">hrs sleep</span>
+                <span className="text-[10px] text-[#6B7280]">hrs sleep</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <Zap className="w-3.5 h-3.5 text-muted-foreground" />
+                <Zap className="w-3.5 h-3.5 text-[#6B7280]" />
                 <span className={cn('text-sm font-bold tabular-nums', energyColor)}>{checkIn.energy_level ?? '–'}<span className="text-[10px] font-normal">/10</span></span>
-                <span className="text-[10px] text-muted-foreground">energy</span>
+                <span className="text-[10px] text-[#6B7280]">energy</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] text-muted-foreground">Adherence</span>
+                <span className="text-[10px] text-[#6B7280]">Adherence</span>
                 <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-[10px] font-normal">%</span></span>
-                <span className="text-[10px] text-muted-foreground">avg</span>
+                <span className="text-[10px] text-[#6B7280]">avg</span>
               </div>
             </div>
 
@@ -197,7 +197,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
       {/* ── Expanded detail ── */}
       {expanded && (
-        <div className="border-t border-border p-4 space-y-4">
+        <div className="border-t border-[#E7EAF3] p-4 space-y-4">
           {/* View full detail */}
           <button
             onClick={() => navigate(`/checkin-detail?id=${checkIn.id}&clientId=${checkIn.client_id}`)}
@@ -210,11 +210,11 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Progress Photos</p>
+              <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Progress Photos</p>
               <div className="flex gap-2 flex-wrap">
                 {checkIn.photo_urls.map((url, i) => (
                   <a key={i} href={url} target="_blank" rel="noreferrer">
-                    <img src={url} alt="progress" className="w-24 h-24 object-cover rounded-xl border border-border hover:scale-105 transition-transform" />
+                    <img src={url} alt="progress" className="w-24 h-24 object-cover rounded-xl border border-[#E7EAF3] hover:scale-105 transition-transform" />
                   </a>
                 ))}
               </div>
@@ -223,10 +223,10 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Adherence breakdown */}
           {breakdown && (
-            <div className="bg-secondary/30 rounded-xl p-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
+            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+              <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-muted-foreground">Overall</span>
+                <span className="text-xs text-[#6B7280]">Overall</span>
                 <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}%</span>
               </div>
               <AdherenceBreakdown breakdown={breakdown} />
@@ -238,8 +238,8 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Client notes */}
           {checkIn.notes && (
-            <div className="bg-secondary/30 rounded-xl p-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Client Notes</p>
+            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+              <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
@@ -254,7 +254,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* ── ⚡ Top Recommendation (prominent) ── */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-2 flex items-center gap-1.5">
               <span>⚡</span> Coach Recommendation
             </p>
             <TopRecommendationBadge checkIn={checkIn} client={client} allClientCIs={allClientCIs} />
@@ -286,7 +286,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Response box */}
           {showFeedback && (
-            <div className="bg-secondary/20 rounded-xl p-4 border border-border fade-up">
+            <div className="bg-[#F6F7FB] rounded-xl p-4 border border-[#E7EAF3] fade-up">
               <CheckInResponseBox
                 checkIn={checkIn}
                 client={client}

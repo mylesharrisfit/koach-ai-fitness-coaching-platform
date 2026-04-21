@@ -4,8 +4,8 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-card border border-border rounded-xl px-4 py-3 shadow-lg">
-      <p className="text-xs text-muted-foreground mb-1">{label}</p>
+    <div className="bg-white border border-[#E7EAF3] rounded-xl px-4 py-3 shadow-lg">
+      <p className="text-xs text-[#6B7280] mb-1">{label}</p>
       <p className="text-base font-bold text-emerald-400">${payload[0].value.toLocaleString()}</p>
     </div>
   );
@@ -13,8 +13,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function StripeRevenueChart({ data }) {
   return (
-    <div className="bg-card border border-border rounded-2xl p-5">
-      <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-5">Revenue — Last 6 Months</h3>
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
+      <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-5">Revenue — Last 6 Months</h3>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
           <defs>

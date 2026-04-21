@@ -13,12 +13,12 @@ import { toast } from 'sonner';
 import StripeUpgradeModal from '@/components/subscription/StripeUpgradeModal';
 
 const BILLING_STATUS_CONFIG = {
-  active:     { label: 'Active',      cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
-  trialing:   { label: 'Trial',       cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20',          icon: Clock },
-  past_due:   { label: 'Past Due',    cls: 'bg-amber-500/10 text-amber-400 border-amber-500/20',       icon: AlertTriangle },
-  unpaid:     { label: 'Unpaid',      cls: 'bg-destructive/10 text-destructive border-destructive/20', icon: XCircle },
-  incomplete: { label: 'Incomplete',  cls: 'bg-amber-500/10 text-amber-400 border-amber-500/20',       icon: Clock },
-  canceled:   { label: 'Canceled',    cls: 'bg-muted text-muted-foreground border-border',             icon: XCircle },
+  active:     { label: 'Active',      cls: 'bg-emerald-50 text-emerald-600 border-emerald-100',   icon: CheckCircle2 },
+  trialing:   { label: 'Trial',       cls: 'bg-blue-50 text-blue-600 border-blue-100',            icon: Clock },
+  past_due:   { label: 'Past Due',    cls: 'bg-amber-50 text-amber-600 border-amber-100',         icon: AlertTriangle },
+  unpaid:     { label: 'Unpaid',      cls: 'bg-red-50 text-red-500 border-red-100',               icon: XCircle },
+  incomplete: { label: 'Incomplete',  cls: 'bg-amber-50 text-amber-600 border-amber-100',         icon: Clock },
+  canceled:   { label: 'Canceled',    cls: 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3]',       icon: XCircle },
 };
 
 const TIER_HIGHLIGHTS = {
@@ -110,11 +110,11 @@ export default function Subscription() {
 
       {/* Past Due / Payment Issue Banner */}
       {isPastDue && (
-        <div className="mb-6 flex items-start gap-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4">
-          <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="mb-6 flex items-start gap-4 bg-amber-50 border border-amber-100 rounded-2xl p-4">
+          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-amber-300">Payment Issue — Action Required</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm font-semibold text-amber-700">Payment Issue — Action Required</p>
+            <p className="text-xs text-[#6B7280] mt-0.5">
               Your last payment failed. Update your billing details to restore full access.
             </p>
           </div>
@@ -126,11 +126,11 @@ export default function Subscription() {
 
       {/* Canceling Soon Banner */}
       {cancelAtEnd && !isCanceled && (
-        <div className="mb-6 flex items-start gap-4 bg-secondary border border-border rounded-2xl p-4">
-          <Clock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+        <div className="mb-6 flex items-start gap-4 bg-[#F6F7FB] border border-[#E7EAF3] rounded-2xl p-4">
+          <Clock className="w-5 h-5 text-[#6B7280] flex-shrink-0 mt-0.5" />
           <div className="flex-1">
-            <p className="text-sm font-semibold">Subscription Ending</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm font-semibold text-[#1F2A44]">Subscription Ending</p>
+            <p className="text-xs text-[#6B7280] mt-0.5">
               Your {userTier.name} plan will end on {renewalDate || 'the renewal date'}. You'll be downgraded to Starter after that.
             </p>
           </div>
@@ -139,22 +139,21 @@ export default function Subscription() {
       )}
 
       {/* Current Plan Card */}
-      <div className="glass-card rounded-2xl p-6 mb-6 relative overflow-hidden">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-6 mb-6 relative overflow-hidden shadow-sm">
         <div className="flex items-start justify-between flex-wrap gap-4 mb-6">
           <div className="flex items-center gap-4">
             <div className={cn('w-13 h-13 w-12 h-12 rounded-xl flex items-center justify-center ring-1', userTier.bgColor, userTier.borderColor)}>
               <Zap className={cn('w-6 h-6', userTier.color)} />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mb-0.5">Current Plan</p>
-              <h2 className="text-2xl font-heading font-bold">{userTier.name}</h2>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] mb-0.5">Current Plan</p>
+              <h2 className="text-2xl font-heading font-bold text-[#1F2A44]">{userTier.name}</h2>
               <div className="flex items-center gap-2 mt-1.5">
                 <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border', billingCfg.cls)}>
                   <BillingIcon className="w-3 h-3" />{billingCfg.label}
                 </span>
                 {renewalDate && (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-[#6B7280]">
                     <Calendar className="w-3 h-3" />
                     {cancelAtEnd ? 'Ends' : 'Renews'} {renewalDate}
                   </span>
@@ -165,10 +164,10 @@ export default function Subscription() {
           <div className="flex flex-col items-end gap-2">
             <div className="flex items-end gap-1">
               <span className="text-3xl font-heading font-bold stat-number">${userTier.price}</span>
-              <span className="text-muted-foreground text-sm mb-0.5">/mo</span>
+              <span className="text-[#6B7280] text-sm mb-0.5">/mo</span>
             </div>
             {user?.stripe_price_id && (
-              <span className="text-[10px] text-muted-foreground/60 font-mono">{user.stripe_price_id.slice(0, 24)}…</span>
+              <span className="text-[10px] text-[#6B7280]/60 font-mono">{user.stripe_price_id.slice(0, 24)}…</span>
             )}
           </div>
         </div>
@@ -181,19 +180,19 @@ export default function Subscription() {
             const atLimit = limit !== -1 && current >= limit;
             const nearLimit = limit !== -1 && pct >= 80;
             return (
-              <div key={key} className="bg-secondary/30 rounded-xl p-4 border border-border/50">
+              <div key={key} className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Icon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs font-semibold text-muted-foreground">{label}</span>
+                  <Icon className="w-4 h-4 text-[#6B7280]" />
+                  <span className="text-xs font-semibold text-[#6B7280]">{label}</span>
                 </div>
                 <div className="flex items-end justify-between mb-2">
                   <span className={cn('stat-number text-2xl font-heading font-bold', atLimit && 'text-destructive', nearLimit && !atLimit && 'text-chart-4')}>
                     {current}
                   </span>
-                  <span className="text-xs text-muted-foreground">{limit === -1 ? '∞ unlimited' : `/ ${limit}`}</span>
+                  <span className="text-xs text-[#6B7280]">{limit === -1 ? '∞ unlimited' : `/ ${limit}`}</span>
                 </div>
                 {limit !== -1 && (
-                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-[#E7EAF3] overflow-hidden">
                     <div className={cn('h-full rounded-full transition-all duration-700', atLimit ? 'bg-destructive' : nearLimit ? 'bg-chart-4' : 'bg-primary')} style={{ width: `${pct}%` }} />
                   </div>
                 )}
@@ -204,16 +203,16 @@ export default function Subscription() {
       </div>
 
       {/* Plan Features + Upgrade CTA */}
-      <div className="glass-card rounded-2xl p-6 mb-6">
+      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-6 mb-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-heading font-bold text-base">What's included in {userTier.name}</h3>
+          <h3 className="font-heading font-bold text-base text-[#1F2A44]">What's included in {userTier.name}</h3>
           <Button onClick={() => setUpgradeOpen(true)} className="gap-2">
             <Zap className="w-4 h-4" /> Upgrade Plan
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {(TIER_HIGHLIGHTS[userTier.key] || []).map(f => (
-            <div key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div key={f} className="flex items-center gap-2 text-sm text-[#6B7280]">
               <Check className="w-3.5 h-3.5 text-accent flex-shrink-0" />{f}
             </div>
           ))}
@@ -222,14 +221,14 @@ export default function Subscription() {
 
       {/* Stripe Billing Info */}
       {user?.stripe_customer_id && (
-        <div className="bg-card border border-border rounded-2xl p-5 flex items-center justify-between gap-4">
+        <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 flex items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-[#EEF4FF] flex items-center justify-center">
               <CreditCard className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-semibold">Billing managed by Stripe</p>
-              <p className="text-xs text-muted-foreground">Update payment method, download invoices, or cancel</p>
+              <p className="text-sm font-semibold text-[#1F2A44]">Billing managed by Stripe</p>
+              <p className="text-xs text-[#6B7280]">Update payment method, download invoices, or cancel</p>
             </div>
           </div>
           <Button variant="outline" size="sm" onClick={handleOpenPortal} disabled={openingPortal}>

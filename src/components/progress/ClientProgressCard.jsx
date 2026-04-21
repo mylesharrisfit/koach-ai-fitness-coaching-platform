@@ -44,10 +44,10 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
   const plateau = detectPlateau(checkIns, 'weight');
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden transition-all hover:border-primary/20">
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden transition-all hover:border-blue-200 shadow-sm">
       {/* Header row */}
       <button
-        className="w-full flex items-center gap-4 p-5 text-left hover:bg-secondary/20 transition-all"
+        className="w-full flex items-center gap-4 p-5 text-left hover:bg-[#F6F7FB] transition-all"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
@@ -62,7 +62,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
               </Badge>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-[#6B7280] mt-0.5">
             {checkIns.length} check-ins · Last: {latest ? format(new Date(latest.date), 'MMM d') : 'None'}
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
           )}
           {showGraphs && latest?.body_fat_pct && (
             <div className="flex items-center gap-1.5 text-sm">
-              <span className="text-muted-foreground text-xs">BF%</span>
+              <span className="text-[#6B7280] text-xs">BF%</span>
               <span>{latest.body_fat_pct}%</span>
               <TrendIcon trend={bfTrend} />
             </div>
@@ -100,7 +100,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
 
       {/* Expanded Analytics */}
       {expanded && (
-        <div className="border-t border-border">
+        <div className="border-t border-[#E7EAF3]">
           {showGraphs ? (
             <ClientAnalyticsView client={client} checkIns={checkIns} />
           ) : (
@@ -108,15 +108,15 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
               {/* Basic: show recent weight + notes only */}
               {checkIns.slice(0, 5).map(ci => (
                 <div key={ci.id} className="flex items-start gap-3 text-sm">
-                  <span className="text-muted-foreground text-xs w-20 flex-shrink-0 pt-0.5">{format(new Date(ci.date), 'MMM d')}</span>
+                  <span className="text-[#6B7280] text-xs w-20 flex-shrink-0 pt-0.5">{format(new Date(ci.date), 'MMM d')}</span>
                   <div className="flex-1">
                     {ci.weight && <span className="font-medium">{ci.weight} lbs</span>}
-                    {ci.notes && <p className="text-muted-foreground text-xs mt-0.5">{ci.notes}</p>}
+                    {ci.notes && <p className="text-[#6B7280] text-xs mt-0.5">{ci.notes}</p>}
                   </div>
                 </div>
               ))}
-              {checkIns.length === 0 && <p className="text-muted-foreground text-sm">No check-ins yet.</p>}
-              <div className="flex items-center gap-2 pt-2 border-t border-border text-xs text-muted-foreground">
+              {checkIns.length === 0 && <p className="text-[#6B7280] text-sm">No check-ins yet.</p>}
+              <div className="flex items-center gap-2 pt-2 border-t border-[#E7EAF3] text-xs text-[#6B7280]">
                 <Lock className="w-3.5 h-3.5" />
                 Analytics graphs, trends & compliance charts available on Pro+.
               </div>

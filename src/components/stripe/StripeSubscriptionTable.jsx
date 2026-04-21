@@ -7,11 +7,11 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const STATUS_CONFIG = {
-  active:   { label: 'Active',    cls: 'bg-emerald-500/10 text-emerald-400', icon: CheckCircle2 },
-  past_due: { label: 'Past Due',  cls: 'bg-amber-500/10 text-amber-400',     icon: Clock },
-  canceled: { label: 'Canceled',  cls: 'bg-muted text-muted-foreground',      icon: Ban },
-  trialing: { label: 'Trialing',  cls: 'bg-blue-500/10 text-blue-400',        icon: Clock },
-  unpaid:   { label: 'Unpaid',    cls: 'bg-destructive/10 text-destructive',  icon: XCircle },
+  active:   { label: 'Active',    cls: 'bg-emerald-50 text-emerald-600 border border-emerald-100', icon: CheckCircle2 },
+  past_due: { label: 'Past Due',  cls: 'bg-amber-50 text-amber-600 border border-amber-100',       icon: Clock },
+  canceled: { label: 'Canceled',  cls: 'bg-[#F6F7FB] text-[#6B7280] border border-[#E7EAF3]',     icon: Ban },
+  trialing: { label: 'Trialing',  cls: 'bg-blue-50 text-blue-600 border border-blue-100',          icon: Clock },
+  unpaid:   { label: 'Unpaid',    cls: 'bg-red-50 text-red-500 border border-red-100',             icon: XCircle },
 };
 
 export default function StripeSubscriptionTable({ subscriptions, clients, onRefresh }) {
@@ -35,22 +35,22 @@ export default function StripeSubscriptionTable({ subscriptions, clients, onRefr
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-border">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Stripe Subscriptions</h3>
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden shadow-sm">
+      <div className="px-6 py-4 border-b border-[#E7EAF3]">
+        <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-widest">Stripe Subscriptions</h3>
       </div>
       {subscriptions.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-10">No subscriptions found. Create your first one above.</p>
+        <p className="text-sm text-[#6B7280] text-center py-10">No subscriptions found. Create your first one above.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left">
-                <th className="px-6 py-3 text-xs text-muted-foreground font-medium">Client</th>
-                <th className="px-6 py-3 text-xs text-muted-foreground font-medium">Amount</th>
-                <th className="px-6 py-3 text-xs text-muted-foreground font-medium">Status</th>
-                <th className="px-6 py-3 text-xs text-muted-foreground font-medium">Next Payment</th>
-                <th className="px-6 py-3 text-xs text-muted-foreground font-medium"></th>
+              <tr className="border-b border-[#E7EAF3] text-left bg-[#F6F7FB]">
+                <th className="px-6 py-3 text-xs text-[#6B7280] font-semibold">Client</th>
+                <th className="px-6 py-3 text-xs text-[#6B7280] font-semibold">Amount</th>
+                <th className="px-6 py-3 text-xs text-[#6B7280] font-semibold">Status</th>
+                <th className="px-6 py-3 text-xs text-[#6B7280] font-semibold">Next Payment</th>
+                <th className="px-6 py-3 text-xs text-[#6B7280] font-semibold"></th>
               </tr>
             </thead>
             <tbody>
@@ -61,7 +61,7 @@ export default function StripeSubscriptionTable({ subscriptions, clients, onRefr
                   ? new Date(sub.current_period_end * 1000).toLocaleDateString()
                   : '—';
                 return (
-                  <tr key={sub.id} className="border-b border-border/50 hover:bg-secondary/20 transition-colors">
+                  <tr key={sub.id} className="border-b border-[#E7EAF3] hover:bg-[#F6F7FB] transition-colors">
                     <td className="px-6 py-3.5 font-medium">{getClientName(sub)}</td>
                     <td className="px-6 py-3.5">${(sub.amount || 0).toLocaleString()}/{sub.interval || 'mo'}</td>
                     <td className="px-6 py-3.5">
@@ -69,7 +69,7 @@ export default function StripeSubscriptionTable({ subscriptions, clients, onRefr
                         <Icon className="w-3 h-3" />{cfg.label}
                       </span>
                     </td>
-                    <td className="px-6 py-3.5 text-muted-foreground">{nextDate}</td>
+                    <td className="px-6 py-3.5 text-[#6B7280]">{nextDate}</td>
                     <td className="px-6 py-3.5">
                       {sub.status === 'active' && (
                         <Button

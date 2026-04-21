@@ -54,8 +54,8 @@ const ACTIONS = [
 
 export default function QuickActions({ onAction, selectedClient }) {
   return (
-    <div className="p-4 border-b border-border">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Quick Actions</p>
+    <div className="p-4 border-b border-[#E7EAF3]">
+      <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-3">Quick Actions</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {ACTIONS.map(action => {
           const Icon = action.icon;

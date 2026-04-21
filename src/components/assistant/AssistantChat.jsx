@@ -83,7 +83,7 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
             <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
               <Bot className="w-4 h-4 text-primary" />
             </div>
-            <div className="bg-card border border-border rounded-2xl px-4 py-3">
+            <div className="bg-white border border-[#E7EAF3] rounded-2xl px-4 py-3">
               <div className="flex gap-1 items-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
                 <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -96,7 +96,7 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-border bg-card">
+      <div className="p-4 border-t border-[#E7EAF3] bg-white">
         <div className="flex gap-2">
           <Input
             value={input}
@@ -127,7 +127,7 @@ function MessageBubble({ message }) {
       </div>
       <div className={cn(
         'max-w-[85%] rounded-2xl px-4 py-3 text-sm',
-        isUser ? 'bg-primary text-primary-foreground' : 'bg-card border border-border'
+        isUser ? 'bg-primary text-white' : 'bg-white border border-[#E7EAF3] text-[#1F2A44]'
       )}>
         {isUser ? (
           <p className="leading-relaxed">{message.content}</p>
@@ -141,7 +141,7 @@ function MessageBubble({ message }) {
               li: ({ children }) => <li className="my-0">{children}</li>,
               strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
               h3: ({ children }) => <h3 className="text-sm font-semibold mt-3 mb-1">{children}</h3>,
-              code: ({ children }) => <code className="px-1 py-0.5 rounded bg-secondary text-xs">{children}</code>,
+              code: ({ children }) => <code className="px-1 py-0.5 rounded bg-[#F6F7FB] text-xs">{children}</code>,
             }}
           >
             {message.content}

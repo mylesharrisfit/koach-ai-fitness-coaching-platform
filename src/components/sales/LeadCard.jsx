@@ -7,10 +7,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 const STAGE_LABELS = { lead: 'Lead', booked: 'Booked', closed: 'Closed', active_client: 'Active' };
 const STAGE_COLORS = {
-  lead: 'bg-purple-500/10 text-purple-400 border-purple-400/20',
-  booked: 'bg-amber-500/10 text-amber-400 border-amber-400/20',
-  closed: 'bg-emerald-500/10 text-emerald-400 border-emerald-400/20',
-  active_client: 'bg-primary/10 text-primary border-primary/20',
+  lead: 'bg-violet-50 text-violet-600 border-violet-100',
+  booked: 'bg-amber-50 text-amber-600 border-amber-100',
+  closed: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+  active_client: 'bg-[#EEF4FF] text-primary border-blue-100',
 };
 const TIER_LABELS = { one_on_one: '1:1 Coaching', group: 'Group', low_ticket: 'Low Ticket' };
 const SOURCE_LABELS = { instagram: 'Instagram', referral: 'Referral', website: 'Website', tiktok: 'TikTok', youtube: 'YouTube', other: 'Other' };
@@ -21,7 +21,7 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
   const nextLabel = { lead: 'Mark Booked', booked: 'Mark Closed', closed: 'Convert to Client' };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/20 hover:shadow-md transition-all group">
+    <div className="bg-white border border-[#E7EAF3] rounded-xl p-4 hover:border-blue-200 hover:shadow-md transition-all group shadow-sm">
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
@@ -29,7 +29,7 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
           </div>
           <div>
             <p className="font-semibold text-sm">{lead.name}</p>
-            {lead.email && <p className="text-xs text-muted-foreground">{lead.email}</p>}
+            {lead.email && <p className="text-xs text-[#6B7280]">{lead.email}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
           <Badge variant="outline" className="text-[10px]">{TIER_LABELS[lead.offer_tier]}</Badge>
         )}
         {lead.source && (
-          <Badge variant="outline" className="text-[10px] text-muted-foreground">{SOURCE_LABELS[lead.source]}</Badge>
+          <Badge variant="outline" className="text-[10px] text-[#6B7280]">{SOURCE_LABELS[lead.source]}</Badge>
         )}
         {lead.deal_value > 0 && (
           <Badge variant="outline" className="text-[10px] text-emerald-400 border-emerald-400/30">
@@ -63,14 +63,14 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
       </div>
 
       {(lead.call_date || lead.phone) && (
-        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
+        <div className="flex items-center gap-3 text-xs text-[#6B7280] mb-3">
           {lead.call_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{lead.call_date} {lead.call_time || ''}</span>}
           {lead.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</span>}
         </div>
       )}
 
       {lead.notes && (
-        <p className="text-xs text-muted-foreground bg-secondary/50 rounded-lg px-3 py-2 mb-3 line-clamp-2">{lead.notes}</p>
+        <p className="text-xs text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg px-3 py-2 mb-3 line-clamp-2">{lead.notes}</p>
       )}
 
       {lead.call_link && lead.stage === 'booked' && (

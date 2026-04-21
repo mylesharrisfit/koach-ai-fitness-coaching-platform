@@ -11,7 +11,7 @@ function MetricBar({ label, value, icon: Icon, color }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-[#6B7280]">
           <Icon className={cn('w-3.5 h-3.5', color)} />
           <span>{label}</span>
         </div>
@@ -49,7 +49,7 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
   return (
     <div className={cn(
       'rounded-xl border p-4 space-y-4',
-      isAlert ? 'bg-destructive/5 border-destructive/30' : 'bg-card border-border'
+      isAlert ? 'bg-red-50 border-red-100' : 'bg-white border-[#E7EAF3]'
     )}>
       {/* Top row: score + streak + trend */}
       <div className="flex items-center gap-4">
@@ -62,10 +62,10 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
               <span className="text-xs text-destructive font-medium bg-destructive/10 px-2 py-0.5 rounded-full">⚠ Alert</span>
             )}
           </div>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-3 text-xs text-[#6B7280]">
             <div className="flex items-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-orange-400" />
-              <span className="font-medium text-foreground">{streak}</span> check-in streak
+              <Flame className="w-3.5 h-3.5 text-orange-500" />
+              <span className="font-medium text-[#1F2A44]">{streak}</span> check-in streak
             </div>
           </div>
         </div>
@@ -79,15 +79,15 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
           {latest.sleep_hours != null && (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Moon className="w-3.5 h-3.5 text-chart-3" />
+                <div className="flex items-center gap-1.5 text-[#6B7280]">
+                  <Moon className="w-3.5 h-3.5 text-violet-400" />
                   <span>Sleep</span>
                 </div>
                 <span className="font-medium">{latest.sleep_hours}h</span>
               </div>
-              <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                <div
-                  className={cn('h-full rounded-full', latest.sleep_hours >= 7 ? 'bg-emerald-500' : latest.sleep_hours >= 6 ? 'bg-amber-500' : 'bg-destructive')}
+              <div className="h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">
+              <div
+                className={cn('h-full rounded-full', latest.sleep_hours >= 7 ? 'bg-emerald-500' : latest.sleep_hours >= 6 ? 'bg-amber-400' : 'bg-red-400')}
                   style={{ width: `${Math.min(100, (latest.sleep_hours / 9) * 100)}%` }}
                 />
               </div>
@@ -99,7 +99,7 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
       {/* Badges */}
       {allBadgeKeys.length > 0 && (
         <div>
-          <p className="text-xs text-muted-foreground mb-2 font-medium">Earned Badges</p>
+          <p className="text-xs text-[#6B7280] mb-2 font-medium">Earned Badges</p>
           <BadgeRow earnedKeys={allBadgeKeys} />
         </div>
       )}
