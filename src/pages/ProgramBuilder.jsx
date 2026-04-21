@@ -67,7 +67,7 @@ function ExercisePickerModal({ open, onOpenChange, onSelect }) {
         </DialogHeader>
         <div className="flex gap-2 mb-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#374151]" />
             <Input placeholder="Search exercises..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-9" />
           </div>
           <Select value={muscleFilter} onValueChange={setMuscleFilter}>
@@ -81,7 +81,7 @@ function ExercisePickerModal({ open, onOpenChange, onSelect }) {
         </div>
         <div className="flex-1 overflow-y-auto space-y-0.5">
           {filtered.length === 0 ? (
-            <div className="text-center py-10"><Dumbbell className="w-8 h-8 text-muted-foreground mx-auto mb-2" /><p className="text-sm text-muted-foreground">No exercises found</p></div>
+            <div className="text-center py-10"><Dumbbell className="w-8 h-8 text-[#374151] mx-auto mb-2" /><p className="text-sm text-[#374151]">No exercises found</p></div>
           ) : filtered.map(ex => (
             <div
               key={ex.id}
@@ -90,7 +90,7 @@ function ExercisePickerModal({ open, onOpenChange, onSelect }) {
             >
               <div className="w-9 h-9 rounded-lg bg-secondary/80 flex items-center justify-center flex-shrink-0 overflow-hidden">
                 {ex.thumbnail_url ? <img src={ex.thumbnail_url} alt={ex.name} className="w-full h-full object-cover rounded-lg" /> :
-                 ex.video_url ? <Play className="w-4 h-4 text-primary" /> : <Dumbbell className="w-4 h-4 text-muted-foreground" />}
+                 ex.video_url ? <Play className="w-4 h-4 text-primary" /> : <Dumbbell className="w-4 h-4 text-[#374151]" />}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
@@ -252,7 +252,7 @@ export default function ProgramBuilder() {
         {/* Left sidebar — day list + settings */}
         <div className="w-56 flex-shrink-0 border-r border-border bg-card/40 flex flex-col overflow-hidden">
           <div className="p-4 border-b border-border">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Training Days</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#374151] mb-3">Training Days</p>
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="days" type="DAY">
                 {(provided) => (
@@ -270,9 +270,9 @@ export default function ProgramBuilder() {
                             )}
                             onClick={() => setActiveDay(idx)}
                           >
-                            <div {...drag.dragHandleProps}><GripVertical className="w-3 h-3 text-muted-foreground" /></div>
+                            <div {...drag.dragHandleProps}><GripVertical className="w-3 h-3 text-[#374151]" /></div>
                             <span className="text-sm font-medium flex-1 truncate">{wk.day_name}</span>
-                            <span className="text-[10px] text-muted-foreground">{wk.exercises.filter(e => e.name).length}</span>
+                            <span className="text-[10px] text-[#374151]">{wk.exercises.filter(e => e.name).length}</span>
                           </div>
                         )}
                       </Draggable>
@@ -282,37 +282,37 @@ export default function ProgramBuilder() {
                 )}
               </Droppable>
             </DragDropContext>
-            <Button variant="ghost" size="sm" className="w-full mt-2 text-xs text-muted-foreground hover:text-primary" onClick={addWorkout}>
+            <Button variant="ghost" size="sm" className="w-full mt-2 text-xs text-[#374151] hover:text-primary" onClick={addWorkout}>
               <Plus className="w-3.5 h-3.5 mr-1" /> Add Day
             </Button>
           </div>
 
           <div className="p-4 space-y-3 overflow-y-auto flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Program Settings</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#374151]">Program Settings</p>
             <div>
-              <Label className="text-xs text-muted-foreground">Duration (weeks)</Label>
+              <Label className="text-xs text-[#374151]">Duration (weeks)</Label>
               <Input type="number" value={meta.duration_weeks} onChange={e => setMeta(m => ({ ...m, duration_weeks: e.target.value }))} className="h-8 text-sm mt-1" />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Difficulty</Label>
+              <Label className="text-xs text-[#374151]">Difficulty</Label>
               <Select value={meta.difficulty} onValueChange={v => setMeta(m => ({ ...m, difficulty: v }))}>
                 <SelectTrigger className="h-8 text-sm mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>{['beginner','intermediate','advanced','elite'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Category</Label>
+              <Label className="text-xs text-[#374151]">Category</Label>
               <Select value={meta.category} onValueChange={v => setMeta(m => ({ ...m, category: v }))}>
                 <SelectTrigger className="h-8 text-sm mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>{['strength','hypertrophy','fat_loss','athletic','mobility','custom'].map(c => <SelectItem key={c} value={c}>{c.replace('_',' ')}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Description</Label>
+              <Label className="text-xs text-[#374151]">Description</Label>
               <Textarea value={meta.description || ''} onChange={e => setMeta(m => ({ ...m, description: e.target.value }))} rows={3} className="text-sm mt-1 resize-none" />
             </div>
             <div className="flex items-center justify-between">
-              <Label className="text-xs text-muted-foreground">Template</Label>
+              <Label className="text-xs text-[#374151]">Template</Label>
               <Switch checked={!!meta.is_template} onCheckedChange={v => setMeta(m => ({ ...m, is_template: v }))} className="scale-75" />
             </div>
           </div>
@@ -327,7 +327,7 @@ export default function ProgramBuilder() {
               </div>
               <div>
                 <h3 className="font-heading font-bold text-lg">Start Building</h3>
-                <p className="text-muted-foreground text-sm mt-1">Add your first training day to begin</p>
+                <p className="text-[#374151] text-sm mt-1">Add your first training day to begin</p>
               </div>
               <Button onClick={addWorkout}><Plus className="w-4 h-4 mr-2" /> Add Training Day</Button>
             </div>
@@ -356,11 +356,11 @@ export default function ProgramBuilder() {
                   {/* Column headers */}
                   <div className="grid grid-cols-12 gap-2 mb-2 px-2">
                     <div className="col-span-1" />
-                    <div className="col-span-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Exercise</div>
-                    <div className="col-span-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">Sets</div>
-                    <div className="col-span-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Reps</div>
-                    <div className="col-span-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Rest (s)</div>
-                    <div className="col-span-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">
+                    <div className="col-span-4 text-[10px] font-bold uppercase tracking-wider text-[#374151]">Exercise</div>
+                    <div className="col-span-1 text-[10px] font-bold uppercase tracking-wider text-[#374151] text-center">Sets</div>
+                    <div className="col-span-2 text-[10px] font-bold uppercase tracking-wider text-[#374151]">Reps</div>
+                    <div className="col-span-2 text-[10px] font-bold uppercase tracking-wider text-[#374151]">Rest (s)</div>
+                    <div className="col-span-1 text-[10px] font-bold uppercase tracking-wider text-[#374151] text-center">
                       <Zap className="w-3 h-3 inline" title="Intensity params" />
                     </div>
                     <div className="col-span-1" />
@@ -387,11 +387,11 @@ export default function ProgramBuilder() {
                                   >
                                     <div className="grid grid-cols-12 gap-2 items-center p-2">
                                       <div className="col-span-1 flex justify-center" {...drag.dragHandleProps}>
-                                        <GripVertical className="w-3.5 h-3.5 text-muted-foreground cursor-grab" />
+                                        <GripVertical className="w-3.5 h-3.5 text-[#374151] cursor-grab" />
                                       </div>
                                       <div className="col-span-4 flex items-center gap-1">
                                         <Input className="h-8 text-sm flex-1" placeholder="Exercise name" value={ex.name} onChange={e => updateExercise(activeDay, eIdx, 'name', e.target.value)} />
-                                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary flex-shrink-0" onClick={() => setPickerTarget({ wIdx: activeDay, eIdx })}>
+                                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-[#374151] hover:text-primary flex-shrink-0" onClick={() => setPickerTarget({ wIdx: activeDay, eIdx })}>
                                           <BookOpen className="w-3 h-3" />
                                         </Button>
                                         {ex._library_exercise?.video_url && (
@@ -406,7 +406,7 @@ export default function ProgramBuilder() {
                                       <button type="button" className="col-span-1 flex justify-center" onClick={() => toggleExpand(activeDay, eIdx)} title="Intensity params">
                                         {hasIntensity
                                           ? <Zap className="w-3.5 h-3.5 text-chart-4" fill="currentColor" />
-                                          : <ChevronRight className={cn("w-3.5 h-3.5 text-muted-foreground transition-transform", expanded && "rotate-90")} />}
+                                          : <ChevronRight className={cn("w-3.5 h-3.5 text-[#374151] transition-transform", expanded && "rotate-90")} />}
                                       </button>
                                       <Button type="button" variant="ghost" size="icon" className="col-span-1 h-8 w-8 text-destructive" onClick={() => removeExercise(activeDay, eIdx)}>
                                         <Trash2 className="w-3 h-3" />
@@ -417,32 +417,32 @@ export default function ProgramBuilder() {
                                     {expanded && (
                                       <div className="border-t border-border bg-secondary/20 px-4 py-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
                                         <div>
-                                          <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">RPE (1-10)</Label>
+                                          <Label className="text-[10px] text-[#374151] uppercase tracking-wider">RPE (1-10)</Label>
                                           <Input className="h-7 text-sm mt-1" placeholder="e.g. 8" value={ex.rpe || ''} onChange={e => updateExercise(activeDay, eIdx, 'rpe', e.target.value)} />
                                         </div>
                                         <div>
-                                          <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Load (% 1RM)</Label>
+                                          <Label className="text-[10px] text-[#374151] uppercase tracking-wider">Load (% 1RM)</Label>
                                           <Input className="h-7 text-sm mt-1" placeholder="e.g. 75" value={ex.load_pct || ''} onChange={e => updateExercise(activeDay, eIdx, 'load_pct', e.target.value)} />
                                         </div>
                                         <div>
-                                          <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Tempo</Label>
+                                          <Label className="text-[10px] text-[#374151] uppercase tracking-wider">Tempo</Label>
                                           <Input className="h-7 text-sm mt-1 font-mono" placeholder="3-1-2-0" value={ex.tempo || ''} onChange={e => updateExercise(activeDay, eIdx, 'tempo', e.target.value)} />
                                         </div>
                                         <div>
-                                          <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Superset</Label>
+                                          <Label className="text-[10px] text-[#374151] uppercase tracking-wider">Superset</Label>
                                           <Input className="h-7 text-sm mt-1" placeholder="A, B..." value={ex.superset_group || ''} onChange={e => updateExercise(activeDay, eIdx, 'superset_group', e.target.value)} />
                                         </div>
                                         <div className="col-span-2 sm:col-span-4">
-                                          <Label className="text-[10px] text-muted-foreground uppercase tracking-wider">Coaching Notes</Label>
+                                          <Label className="text-[10px] text-[#374151] uppercase tracking-wider">Coaching Notes</Label>
                                           <Input className="h-7 text-sm mt-1" placeholder="Form cues, modifications..." value={ex.notes || ''} onChange={e => updateExercise(activeDay, eIdx, 'notes', e.target.value)} />
                                         </div>
                                         <div className="col-span-2 sm:col-span-4 flex items-center gap-3">
                                           <Switch checked={!!ex.auto_progress} onCheckedChange={v => updateExercise(activeDay, eIdx, 'auto_progress', v)} className="scale-75" />
-                                          <span className="text-xs text-muted-foreground flex items-center gap-1"><TrendingUp className="w-3 h-3 text-accent" /> Auto-progress</span>
+                                          <span className="text-xs text-[#374151] flex items-center gap-1"><TrendingUp className="w-3 h-3 text-accent" /> Auto-progress</span>
                                           {ex.auto_progress && (
                                             <div className="flex items-center gap-1.5">
                                               <Input className="h-7 text-xs w-16" type="number" step="0.5" value={ex.progress_increment} onChange={e => updateExercise(activeDay, eIdx, 'progress_increment', Number(e.target.value))} />
-                                              <span className="text-xs text-muted-foreground">kg/wk</span>
+                                              <span className="text-xs text-[#374151]">kg/wk</span>
                                             </div>
                                           )}
                                         </div>

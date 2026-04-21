@@ -141,7 +141,7 @@ export default function Clients() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-heading font-bold text-[#1F2A44]">Clients</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">
+          <p className="text-sm text-[#374151] mt-0.5">
             {counts.active || 0} active · {counts.at_risk || 0} at risk · {counts.lead || 0} leads
           </p>
         </div>
@@ -179,7 +179,7 @@ export default function Clients() {
                 {atRiskClients.length} client{atRiskClients.length !== 1 ? 's' : ''} need attention
                 {highRiskCount > 0 && <span className="font-normal text-red-400 ml-1">· {highRiskCount} high risk</span>}
               </p>
-              <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-[#374151] flex-shrink-0" />
             </div>
           </Link>
         )}
@@ -195,11 +195,11 @@ export default function Clients() {
               'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
               statusFilter === key
                 ? 'bg-[#EEF4FF] text-primary border-blue-200'
-                : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:text-[#1F2A44] hover:border-[#C9CEE0]'
+                : 'bg-white text-[#374151] border-[#E7EAF3] hover:text-[#1F2A44] hover:border-[#C9CEE0]'
             )}
           >
             {label}
-            <span className={cn('text-[10px] rounded-full px-1.5 tabular-nums', statusFilter === key ? 'bg-blue-100 text-primary' : 'bg-[#F6F7FB] text-[#6B7280]')}>
+            <span className={cn('text-[10px] rounded-full px-1.5 tabular-nums', statusFilter === key ? 'bg-blue-100 text-primary' : 'bg-[#F6F7FB] text-[#374151]')}>
               {counts[key] || 0}
             </span>
           </button>
@@ -209,7 +209,7 @@ export default function Clients() {
       {/* ── Search + filters ── */}
       <div className="flex flex-col sm:flex-row gap-2 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#374151]" />
           <Input placeholder="Search clients…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white border-[#E7EAF3]" />
         </div>
 
@@ -238,7 +238,7 @@ export default function Clients() {
         </Select>
 
         {activeFiltersCount > 0 && (
-          <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('all'); setTagFilter(''); }} className="text-[#6B7280] hover:text-[#1F2A44] gap-1">
+          <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('all'); setTagFilter(''); }} className="text-[#374151] hover:text-[#1F2A44] gap-1">
             <X className="w-3.5 h-3.5" /> Clear
           </Button>
         )}
@@ -250,8 +250,8 @@ export default function Clients() {
         </div>
       ) : filteredClients.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-2xl border border-[#E7EAF3] shadow-sm">
-          <p className="text-[#6B7280] font-medium">No clients found.</p>
-          <p className="text-sm text-[#6B7280]/70 mt-1">Try adjusting your filters.</p>
+          <p className="text-[#374151] font-medium">No clients found.</p>
+          <p className="text-sm text-[#374151]/70 mt-1">Try adjusting your filters.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -291,7 +291,7 @@ export default function Clients() {
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB]">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 text-[#374151] hover:text-[#1F2A44] hover:bg-[#F6F7FB]">
                           <MoreHorizontal className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
@@ -300,7 +300,7 @@ export default function Clients() {
                           <Edit className="w-4 h-4 mr-2" /> Edit Client
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <div className="px-2 py-1 text-[10px] text-[#6B7280] font-semibold uppercase tracking-wide">Move to Stage</div>
+                        <div className="px-2 py-1 text-[10px] text-[#374151] font-semibold uppercase tracking-wide">Move to Stage</div>
                         {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
                           <DropdownMenuItem key={s} onClick={() => handleStatusChange(client, s)}>
                             <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {
@@ -322,7 +322,7 @@ export default function Clients() {
                   </div>
 
                   {/* ── Contact info ── */}
-                  <div className="space-y-1.5 text-xs text-[#6B7280]">
+                  <div className="space-y-1.5 text-xs text-[#374151]">
                     <div className="flex items-center gap-2">
                       <Mail className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">{client.email}</span>
@@ -348,7 +348,7 @@ export default function Clients() {
                             'text-[10px] font-medium px-2 py-0.5 rounded-lg border transition-colors',
                             tagFilter === tag
                               ? 'bg-[#EEF4FF] text-primary border-blue-200'
-                              : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:border-blue-200 hover:text-primary'
+                              : 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3] hover:border-blue-200 hover:text-primary'
                           )}>#{tag}</span>
                         </button>
                       ))}
@@ -359,7 +359,7 @@ export default function Clients() {
                   {score !== null && (
                     <div className="mt-4 pt-3.5 border-t border-[#E7EAF3]">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-[#6B7280]">Adherence</span>
+                        <span className="text-xs text-[#374151]">Adherence</span>
                         <AdherencePill score={score} showLabel />
                       </div>
                       <div className="h-1.5 bg-[#F6F7FB] rounded-full overflow-hidden">
@@ -371,8 +371,8 @@ export default function Clients() {
                   {/* ── Rate ── */}
                   {client.monthly_rate && (
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E7EAF3]">
-                      <span className="text-xs text-[#6B7280]">Monthly Rate</span>
-                      <span className="text-sm font-bold text-[#1F2A44]">${client.monthly_rate}<span className="text-[#6B7280] font-normal">/mo</span></span>
+                      <span className="text-xs text-[#374151]">Monthly Rate</span>
+                      <span className="text-sm font-bold text-[#1F2A44]">${client.monthly_rate}<span className="text-[#374151] font-normal">/mo</span></span>
                     </div>
                   )}
 

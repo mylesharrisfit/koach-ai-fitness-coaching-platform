@@ -93,12 +93,12 @@ export default function ClientDashboard() {
               <GreetIcon className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{greeting}</p>
+              <p className="text-xs text-[#374151]">{greeting}</p>
               <p className="font-heading font-bold text-sm leading-tight">{user?.full_name?.split(' ')[0] || 'Athlete'}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="text-xs text-muted-foreground">{format(new Date(), 'EEE, MMM d')}</div>
+            <div className="text-xs text-[#374151]">{format(new Date(), 'EEE, MMM d')}</div>
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowSettings(!showSettings)}>
               <Settings className="w-4 h-4" />
             </Button>
@@ -110,7 +110,7 @@ export default function ClientDashboard() {
         {/* Daily progress summary */}
         <div className="text-center py-2">
           <p className="text-3xl font-heading font-bold">{completedToday}/{totalGoals}</p>
-          <p className="text-xs text-muted-foreground mt-1">daily goals complete</p>
+          <p className="text-xs text-[#374151] mt-1">daily goals complete</p>
           <div className="flex justify-center gap-1.5 mt-3">
             {[...Array(totalGoals)].map((_, i) => (
               <div key={i} className={`h-1.5 flex-1 max-w-[40px] rounded-full transition-all ${i < completedToday ? 'bg-primary' : 'bg-secondary'}`} />
@@ -124,7 +124,7 @@ export default function ClientDashboard() {
         {/* Activity Rings */}
         <div className="bg-card border border-border rounded-2xl overflow-hidden">
           <div className="px-5 pt-4 pb-0">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Today's Activity</p>
+            <p className="text-xs font-semibold text-[#374151] uppercase tracking-wider">Today's Activity</p>
           </div>
           <DailyRings log={log} />
         </div>
@@ -150,7 +150,7 @@ export default function ClientDashboard() {
         {showSettings && (
           <div>
             <NotificationSettings />
-            <Button variant="ghost" size="sm" className="w-full mt-2 text-xs text-muted-foreground" onClick={() => setShowSettings(false)}>
+            <Button variant="ghost" size="sm" className="w-full mt-2 text-xs text-[#374151]" onClick={() => setShowSettings(false)}>
               Done
             </Button>
           </div>
@@ -159,7 +159,7 @@ export default function ClientDashboard() {
         {!showSettings && (
           <button
             onClick={() => setShowSettings(true)}
-            className="w-full flex items-center justify-center gap-2 py-3 text-xs text-muted-foreground hover:text-foreground border border-dashed border-border rounded-2xl hover:border-border/80 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 text-xs text-[#374151] hover:text-foreground border border-dashed border-border rounded-2xl hover:border-border/80 transition-colors"
           >
             <Settings className="w-3.5 h-3.5" /> Manage reminders & notifications
           </button>

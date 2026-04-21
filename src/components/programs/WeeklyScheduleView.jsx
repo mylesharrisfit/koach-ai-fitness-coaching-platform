@@ -77,14 +77,14 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
           ].map(stat => (
             <div key={stat.label} className="bg-secondary/40 rounded-xl p-3 text-center">
               <p className="text-lg font-heading font-bold">{stat.value}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{stat.label}</p>
+              <p className="text-[10px] text-[#374151] uppercase tracking-wider mt-0.5">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Weekly grid */}
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Week Structure</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#374151] mb-3">Week Structure</p>
           <div className="grid grid-cols-7 gap-2">
             {DAYS_OF_WEEK.map((day, idx) => {
               const workout = workoutsPerWeek[idx] || null;
@@ -94,23 +94,23 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
                   workout ? "bg-card border-border" : "bg-secondary/20 border-dashed border-border/40"
                 )}>
                   <p className={cn("text-[10px] font-bold uppercase tracking-wider mb-2",
-                    workout ? "text-muted-foreground" : "text-muted-foreground/40"
+                    workout ? "text-[#374151]" : "text-[#374151]/40"
                   )}>{day}</p>
                   {workout ? (
                     <div>
                       <p className="text-xs font-semibold truncate">{workout.day_name}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{workout.exercises.filter(e => e.name).length} exercises</p>
+                      <p className="text-[10px] text-[#374151] mt-0.5">{workout.exercises.filter(e => e.name).length} exercises</p>
                       <div className="mt-2 space-y-0.5">
                         {getMuscleGroupSummary(workout.exercises).map(([group, count]) => (
                           <div key={group} className="flex items-center gap-1">
                             <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: MUSCLE_GROUP_COLORS[group] || '#888' }} />
-                            <span className="text-[9px] text-muted-foreground truncate">{group.replace('_', ' ')}</span>
+                            <span className="text-[9px] text-[#374151] truncate">{group.replace('_', ' ')}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <p className="text-[10px] text-muted-foreground/40 text-center mt-4">Rest</p>
+                    <p className="text-[10px] text-[#374151]/40 text-center mt-4">Rest</p>
                   )}
                 </div>
               );
@@ -120,7 +120,7 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
 
         {/* Day-by-day breakdown */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">Day-by-Day Breakdown</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#374151] mb-3">Day-by-Day Breakdown</p>
           <div className="space-y-3">
             {workouts.map((workout, idx) => (
               <div key={idx} className="bg-card border border-border rounded-xl overflow-hidden">
@@ -131,7 +131,7 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
                   <div className="flex-1">
                     <p className="text-sm font-semibold">{workout.day_name}</p>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-3 text-xs text-[#374151]">
                     <span className="flex items-center gap-1"><Dumbbell className="w-3 h-3" />{workout.exercises.filter(e => e.name).length} exercises</span>
                     <span className="flex items-center gap-1"><BarChart3 className="w-3 h-3" />{workout.exercises.reduce((s, e) => s + (Number(e.sets) || 0), 0)} sets</span>
                   </div>
@@ -143,11 +143,11 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
                         <span className="text-[10px] font-bold text-chart-3 w-4 text-center">{ex.superset_group}</span>
                       )}
                       <p className="text-sm flex-1">{ex.name}</p>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-3 text-xs text-[#374151]">
                         <span>{ex.sets} × {ex.reps}</span>
                         {ex.rpe && <span className="text-chart-4">RPE {ex.rpe}</span>}
                         {ex.load_pct && <span className="text-accent">{ex.load_pct}% 1RM</span>}
-                        {ex.tempo && <span className="text-muted-foreground font-mono">{ex.tempo}</span>}
+                        {ex.tempo && <span className="text-[#374151] font-mono">{ex.tempo}</span>}
                         <span className="flex items-center gap-0.5"><Clock className="w-3 h-3" />{ex.rest_seconds}s</span>
                       </div>
                     </div>

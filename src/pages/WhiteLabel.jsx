@@ -86,8 +86,8 @@ export default function WhiteLabel() {
           <Check className="w-8 h-8 text-accent" />
         </div>
         <h2 className="text-2xl font-heading font-bold mb-3">Application Received!</h2>
-        <p className="text-muted-foreground mb-2">We'll reach out to <strong>{formData.email}</strong> within 24 hours to get your branded app set up.</p>
-        <p className="text-muted-foreground text-sm">Selected plan: <span className="text-primary font-semibold">{PLANS.find(p => p.id === selectedPlan)?.name}</span></p>
+        <p className="text-[#374151] mb-2">We'll reach out to <strong>{formData.email}</strong> within 24 hours to get your branded app set up.</p>
+        <p className="text-[#374151] text-sm">Selected plan: <span className="text-primary font-semibold">{PLANS.find(p => p.id === selectedPlan)?.name}</span></p>
         <Button className="mt-8" onClick={() => setSubmitted(false)} variant="outline">Start Over</Button>
       </div>
     );
@@ -109,7 +109,7 @@ export default function WhiteLabel() {
             </div>
             <div>
               <p className="font-semibold text-sm font-heading">{perk.title}</p>
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{perk.desc}</p>
+              <p className="text-xs text-[#374151] mt-1 leading-relaxed">{perk.desc}</p>
             </div>
           </div>
         ))}
@@ -141,10 +141,10 @@ export default function WhiteLabel() {
               </div>
             )}
             <p className="font-heading font-bold text-lg mb-1">{plan.name}</p>
-            <p className="text-muted-foreground text-xs mb-4">{plan.description}</p>
+            <p className="text-[#374151] text-xs mb-4">{plan.description}</p>
             <div className="flex items-end gap-1 mb-5">
               <span className="text-3xl font-heading font-bold">${plan.price}</span>
-              <span className="text-muted-foreground text-sm mb-1">{plan.period}</span>
+              <span className="text-[#374151] text-sm mb-1">{plan.period}</span>
             </div>
             <ul className="space-y-2">
               {plan.features.map((f) => (
@@ -166,7 +166,7 @@ export default function WhiteLabel() {
           </div>
           <div>
             <h3 className="font-heading font-bold text-lg">Brand Setup</h3>
-            <p className="text-muted-foreground text-sm">Tell us about your brand and we'll get you set up</p>
+            <p className="text-[#374151] text-sm">Tell us about your brand and we'll get you set up</p>
           </div>
         </div>
 
@@ -228,7 +228,7 @@ export default function WhiteLabel() {
               </p>
             )}
             {selectedPlan && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-[#374151]">
                 Selected: <span className="text-primary font-semibold">{PLANS.find(p => p.id === selectedPlan)?.name}</span> — ${PLANS.find(p => p.id === selectedPlan)?.price}/mo
               </p>
             )}

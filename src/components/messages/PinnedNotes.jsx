@@ -16,8 +16,8 @@ export default function PinnedNotes({ messages, onUnpin }) {
           <div key={m.id} className="flex items-start justify-between gap-2 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-1.5">
             <p className="text-xs text-foreground line-clamp-1 flex-1">{m.content}</p>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[10px] text-muted-foreground">{format(new Date(m.created_date), 'MMM d')}</span>
-              <button onClick={() => onUnpin(m)}><X className="w-3 h-3 text-muted-foreground hover:text-destructive" /></button>
+              <span className="text-[10px] text-[#374151]">{format(new Date(m.created_date), 'MMM d')}</span>
+              <button onClick={() => onUnpin(m)}><X className="w-3 h-3 text-[#374151] hover:text-destructive" /></button>
             </div>
           </div>
         ))}

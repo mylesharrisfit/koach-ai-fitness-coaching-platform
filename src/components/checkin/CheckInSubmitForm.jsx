@@ -38,7 +38,7 @@ function Slider({ label, emoji, value, onChange, min = 1, max = 10, step = 1, lo
         style={{ touchAction: 'none' }}
       />
       {(lowLabel || highLabel) && (
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <div className="flex justify-between text-xs text-[#374151]">
           <span>{lowLabel}</span>
           <span>{highLabel}</span>
         </div>
@@ -51,7 +51,7 @@ function Slider({ label, emoji, value, onChange, min = 1, max = 10, step = 1, lo
 function PhotoSlot({ label, url, onUpload, onRemove, uploading }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <p className="text-xs font-medium text-muted-foreground text-center">{label}</p>
+      <p className="text-xs font-medium text-[#374151] text-center">{label}</p>
       <label className={cn(
         'relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed cursor-pointer transition-all aspect-[3/4]',
         uploading ? 'border-primary/50 bg-primary/5' :
@@ -74,8 +74,8 @@ function PhotoSlot({ label, url, onUpload, onRemove, uploading }) {
           </>
         ) : (
           <div className="flex flex-col items-center gap-2 py-4 px-2">
-            <Upload className="w-7 h-7 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground text-center">Tap to add</span>
+            <Upload className="w-7 h-7 text-[#374151]" />
+            <span className="text-xs text-[#374151] text-center">Tap to add</span>
           </div>
         )}
       </label>
@@ -102,7 +102,7 @@ function CheckRow({ checked, onChange, label, sublabel }) {
       </div>
       <div>
         <p className="text-base font-semibold leading-tight">{label}</p>
-        {sublabel && <p className="text-sm text-muted-foreground mt-0.5">{sublabel}</p>}
+        {sublabel && <p className="text-sm text-[#374151] mt-0.5">{sublabel}</p>}
       </div>
     </button>
   );
@@ -165,7 +165,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
         </div>
         <div>
           <h2 className="text-2xl font-heading font-bold">You're all set!</h2>
-          <p className="text-muted-foreground text-sm mt-2 max-w-xs">Your coach has been notified and will review your check-in shortly. Keep up the great work 💪</p>
+          <p className="text-[#374151] text-sm mt-2 max-w-xs">Your coach has been notified and will review your check-in shortly. Keep up the great work 💪</p>
         </div>
       </div>
     );
@@ -193,7 +193,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
       <div className="mb-6">
         <p className="text-2xl">{currentStep.emoji}</p>
         <h2 className="text-xl font-heading font-bold mt-1">{currentStep.title}</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">Step {step + 1} of {STEPS.length}</p>
+        <p className="text-sm text-[#374151] mt-0.5">Step {step + 1} of {STEPS.length}</p>
       </div>
 
       {/* ── Step content ── */}
@@ -211,16 +211,16 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
               className="h-20 text-3xl font-bold text-center tracking-tight rounded-2xl"
               autoFocus
             />
-            <p className="text-center text-sm text-muted-foreground">Weight in lbs (optional)</p>
+            <p className="text-center text-sm text-[#374151]">Weight in lbs (optional)</p>
             {lastWeight && (
               <div className="flex items-center justify-center gap-2 text-sm bg-secondary/40 rounded-xl p-3">
-                <span className="text-muted-foreground">Last week: <span className="font-semibold text-foreground">{lastWeight} lbs</span></span>
+                <span className="text-[#374151]">Last week: <span className="font-semibold text-foreground">{lastWeight} lbs</span></span>
                 {weightDiff !== null && (
                   <span className={cn(
                     'flex items-center gap-1 font-bold px-2 py-0.5 rounded-full text-xs',
                     Number(weightDiff) < 0 ? 'bg-accent/15 text-accent' :
                     Number(weightDiff) > 0 ? 'bg-destructive/15 text-destructive' :
-                    'bg-muted text-muted-foreground'
+                    'bg-muted text-[#374151]'
                   )}>
                     {Number(weightDiff) < 0 ? <TrendingDown className="w-3.5 h-3.5" /> :
                      Number(weightDiff) > 0 ? <TrendingUp className="w-3.5 h-3.5" /> :
@@ -270,7 +270,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
                 />
               ))}
             </div>
-            <p className="text-xs text-muted-foreground text-center">Photos are private — only visible to your coach</p>
+            <p className="text-xs text-[#374151] text-center">Photos are private — only visible to your coach</p>
           </div>
         )}
 

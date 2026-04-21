@@ -28,7 +28,7 @@ export default function Assistant() {
         </div>
         <div>
           <h1 className="text-xl font-heading font-bold tracking-tight">AI Coach Assistant</h1>
-          <p className="text-xs text-[#6B7280]">Powered by intelligent fitness analysis</p>
+          <p className="text-xs text-[#374151]">Powered by intelligent fitness analysis</p>
         </div>
       </div>
 

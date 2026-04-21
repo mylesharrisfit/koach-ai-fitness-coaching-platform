@@ -32,7 +32,7 @@ export default function AISuggestions({ clientName, recentMessages, onSelect, on
           <Sparkles className="w-4 h-4 text-primary" />
           <p className="text-sm font-semibold">AI Reply Suggestions</p>
         </div>
-        <button onClick={onClose}><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>
+        <button onClick={onClose}><X className="w-4 h-4 text-[#374151] hover:text-foreground" /></button>
       </div>
       {!fetched ? (
         <Button size="sm" className="w-full" onClick={generate} disabled={loading}>

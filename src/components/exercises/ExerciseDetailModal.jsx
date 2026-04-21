@@ -47,8 +47,8 @@ function VideoPlayer({ url, thumbnailUrl, name }) {
     return (
       <div className="w-full aspect-video bg-secondary/50 rounded-xl flex items-center justify-center">
         <div className="text-center">
-          <Play className="w-10 h-10 text-muted-foreground/40 mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground/60">No demo video added</p>
+          <Play className="w-10 h-10 text-[#374151]/40 mx-auto mb-2" />
+          <p className="text-sm text-[#374151]/60">No demo video added</p>
         </div>
       </div>
     );
@@ -101,7 +101,7 @@ function VideoPlayer({ url, thumbnailUrl, name }) {
 export default function ExerciseDetailModal({ exercise, open, onClose, onEdit }) {
   if (!exercise) return null;
 
-  const muscleColor = MUSCLE_COLORS[exercise.muscle_group] || 'text-muted-foreground bg-secondary';
+  const muscleColor = MUSCLE_COLORS[exercise.muscle_group] || 'text-[#374151] bg-secondary';
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -124,7 +124,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               </div>
               <h2 className="text-xl font-heading font-bold">{exercise.name}</h2>
               {exercise.description && (
-                <p className="text-sm text-muted-foreground mt-1">{exercise.description}</p>
+                <p className="text-sm text-[#374151] mt-1">{exercise.description}</p>
               )}
             </div>
             <Button variant="outline" size="sm" onClick={onEdit} className="flex-shrink-0">
@@ -153,7 +153,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {/* Secondary muscles */}
           {exercise.secondary_muscles?.length > 0 && (
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 font-semibold">Also Works</p>
+              <p className="text-xs text-[#374151] uppercase tracking-wider mb-2 font-semibold">Also Works</p>
               <div className="flex flex-wrap gap-1.5">
                 {exercise.secondary_muscles.map(m => (
                   <Badge key={m} variant="secondary" className="text-xs">{m}</Badge>
@@ -168,20 +168,20 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               <div className="bg-secondary/50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Timer className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Tempo</span>
+                  <span className="text-xs text-[#374151] uppercase tracking-wider font-semibold">Tempo</span>
                 </div>
                 <p className="font-heading font-bold text-lg">{exercise.tempo}</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">ecc–pause–con–pause</p>
+                <p className="text-[10px] text-[#374151] mt-0.5">ecc–pause–con–pause</p>
               </div>
             )}
             {exercise.default_rest_seconds && (
               <div className="bg-secondary/50 rounded-xl p-3">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Clock className="w-3.5 h-3.5 text-accent" />
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Rest Time</span>
+                  <span className="text-xs text-[#374151] uppercase tracking-wider font-semibold">Rest Time</span>
                 </div>
                 <p className="font-heading font-bold text-lg">{exercise.default_rest_seconds}s</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">between sets</p>
+                <p className="text-[10px] text-[#374151] mt-0.5">between sets</p>
               </div>
             )}
           </div>
@@ -228,7 +228,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {exercise.notes && (
             <div className="p-3 bg-primary/5 border border-primary/15 rounded-xl">
               <p className="text-xs text-primary font-semibold uppercase tracking-wider mb-1">Coach Notes</p>
-              <p className="text-sm text-muted-foreground">{exercise.notes}</p>
+              <p className="text-sm text-[#374151]">{exercise.notes}</p>
             </div>
           )}
         </div>

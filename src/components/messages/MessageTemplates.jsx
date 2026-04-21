@@ -18,7 +18,7 @@ const TAG_COLORS = {
   nutrition: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
   training: 'bg-primary/10 text-primary border-primary/30',
   urgent: 'bg-destructive/10 text-destructive border-destructive/30',
-  general: 'bg-secondary text-muted-foreground border-border',
+  general: 'bg-secondary text-[#374151] border-border',
 };
 
 export default function MessageTemplates({ onSelect, onClose }) {
@@ -26,7 +26,7 @@ export default function MessageTemplates({ onSelect, onClose }) {
     <div className="bg-card border border-border rounded-xl shadow-xl p-4 w-80">
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-semibold">Message Templates</p>
-        <button onClick={onClose}><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>
+        <button onClick={onClose}><X className="w-4 h-4 text-[#374151] hover:text-foreground" /></button>
       </div>
       <div className="space-y-2 max-h-72 overflow-y-auto">
         {TEMPLATES.map((t, i) => (
@@ -41,7 +41,7 @@ export default function MessageTemplates({ onSelect, onClose }) {
               </span>
               <span className="text-xs font-medium group-hover:text-primary transition-colors">{t.label}</span>
             </div>
-            <p className="text-[11px] text-muted-foreground line-clamp-2">{t.text}</p>
+            <p className="text-[11px] text-[#374151] line-clamp-2">{t.text}</p>
           </button>
         ))}
       </div>

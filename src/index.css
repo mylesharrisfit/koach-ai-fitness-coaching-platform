@@ -21,7 +21,7 @@
     --secondary: 220 20% 95%;
     --secondary-foreground: 220 14% 36%;
     --muted: 220 20% 95%;
-    --muted-foreground: 220 14% 28%;  /* ~#3A4459 — clearly readable dark grey */
+    --muted-foreground: 220 14% 25%;  /* ~#333D52 — near-black, clearly readable */
     --accent: 142 72% 40%;           /* #22C55E */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;        /* #EF4444 */
