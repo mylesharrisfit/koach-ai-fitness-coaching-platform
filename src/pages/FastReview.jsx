@@ -45,7 +45,7 @@ Client notes: ${checkIn.notes || 'none'}
 Write directly to the client ("you"). No bullet points.`;
 }
 
-function buildQueue(checkIns, clients, allCheckIns) {
+function buildQueue(checkIns, clients) {
   const cisByClient = {};
   for (const ci of checkIns) {
     if (!cisByClient[ci.client_id]) cisByClient[ci.client_id] = [];
@@ -58,15 +58,18 @@ function buildQueue(checkIns, clients, allCheckIns) {
   for (const ci of checkIns) {
     if (seen.has(ci.client_id)) continue;
     seen.add(ci.client_id);
+    // Skip already-responded
+    if (ci.coach_responded || ci.coach_notes) continue;
     const daysAgo = differenceInDays(new Date(), parseISO(ci.date));
     if (daysAgo > 21) continue;
 
     const client = clientMap[ci.client_id];
     const clientCIs = cisByClient[ci.client_id] || [];
-    const riskEntry = client ? evaluateClientRisk(client, allCheckIns) : null;
+    const riskEntry = client ? evaluateClientRisk(client, checkIns) : null;
     const riskScore = riskEntry?.riskScore || 0;
     const isOverdue = daysAgo > 7;
 
+    // Tier 0 = at-risk, Tier 1 = overdue, Tier 2 = newest (recent first)
     let tier = 2;
     if (riskScore >= 40) tier = 0;
     else if (isOverdue) tier = 1;
@@ -76,8 +79,12 @@ function buildQueue(checkIns, clients, allCheckIns) {
 
   items.sort((a, b) => {
     if (a.tier !== b.tier) return a.tier - b.tier;
-    if (b.riskScore !== a.riskScore) return b.riskScore - a.riskScore;
-    return new Date(a.ci.date) - new Date(b.ci.date);
+    // Within at-risk: highest risk score first
+    if (a.tier === 0) return b.riskScore - a.riskScore;
+    // Within overdue: oldest first (most overdue = most urgent)
+    if (a.tier === 1) return new Date(a.ci.date) - new Date(b.ci.date);
+    // Within newest (tier 2): newest first
+    return new Date(b.ci.date) - new Date(a.ci.date);
   });
 
   return items;
@@ -571,7 +578,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
 ───────────────────────────────────────── */
 export default function FastReview() {
   const [idx, setIdx] = useState(0);
-  const [reviewed, setReviewed] = useState({});
+  const [reviewed, setReviewed] = useState({}); // ciId -> true for this session
   const [markSaving, setMarkSaving] = useState(false);
   const queryClient = useQueryClient();
 
@@ -585,26 +592,37 @@ export default function FastReview() {
     queryFn: () => base44.entities.CheckIn.list('-date', 200),
   });
 
-  const queue = useMemo(() => buildQueue(checkIns, clients, checkIns), [checkIns, clients]);
+  // Full sorted queue (unreviewed only — excludes already responded from DB)
+  const queue = useMemo(() => buildQueue(checkIns, clients), [checkIns, clients]);
 
-  const total = queue.length;
-  const current = queue[idx];
-  const reviewedCount = Object.values(reviewed).filter(Boolean).length;
-  const progressPct = total > 0 ? ((idx + (reviewed[current?.ci?.id] ? 1 : 0)) / total) * 100 : 0;
-  const isReviewed = current ? (!!reviewed[current.ci.id] || current.ci.coach_responded) : false;
+  // Active queue = items not yet reviewed this session
+  const activeQueue = useMemo(
+    () => queue.filter(item => !reviewed[item.ci.id]),
+    [queue, reviewed]
+  );
+
+  const total = queue.length; // original total for progress
+  const completedCount = Object.values(reviewed).filter(Boolean).length;
+  const progressPct = total > 0 ? (completedCount / total) * 100 : 0;
+
+  // Clamp idx to activeQueue bounds
+  const safeIdx = Math.min(idx, Math.max(0, activeQueue.length - 1));
+  const current = activeQueue[safeIdx];
+  const isReviewed = false; // items in activeQueue are always unreviewed
 
   const handleMark = async () => {
     if (!current) return;
     setMarkSaving(true);
     await base44.entities.CheckIn.update(current.ci.id, { coach_responded: true });
+    // Mark reviewed — removes from activeQueue, keeps idx pointing at next item naturally
     setReviewed(r => ({ ...r, [current.ci.id]: true }));
     queryClient.invalidateQueries({ queryKey: ['checkins-fast'] });
     setMarkSaving(false);
-    if (idx < total - 1) setIdx(i => i + 1);
+    // Don't advance idx — the item drops out of activeQueue, next item slides in at same idx
   };
 
-  const goNext = () => { if (idx < total - 1) setIdx(i => i + 1); };
-  const goPrev = () => { if (idx > 0) setIdx(i => i - 1); };
+  const goNext = () => { if (safeIdx < activeQueue.length - 1) setIdx(i => i + 1); };
+  const goPrev = () => { if (safeIdx > 0) setIdx(i => i - 1); };
 
   if (isLoading) return (
     <div className="flex justify-center items-center min-h-screen">
@@ -612,14 +630,16 @@ export default function FastReview() {
     </div>
   );
 
-  if (total === 0) return (
+  if (activeQueue.length === 0) return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4 p-6">
       <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
         <CheckCircle2 className="w-8 h-8 text-emerald-400" />
       </div>
       <div className="text-center">
         <p className="text-xl font-bold">All caught up! 🎉</p>
-        <p className="text-sm text-muted-foreground mt-1">No pending check-ins — great work today</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {completedCount > 0 ? `Reviewed ${completedCount} client${completedCount !== 1 ? 's' : ''} today` : 'No pending check-ins — great work!'}
+        </p>
       </div>
     </div>
   );
@@ -636,9 +656,14 @@ export default function FastReview() {
             </div>
             <h1 className="text-lg font-heading font-bold">Run My Day</h1>
           </div>
-          <span className="text-sm font-semibold text-muted-foreground tabular-nums">
-            {idx + 1} <span className="opacity-40">/</span> {total}
-          </span>
+          <div className="text-right">
+            <span className="text-sm font-semibold text-muted-foreground tabular-nums">
+              {safeIdx + 1} <span className="opacity-40">/</span> {activeQueue.length}
+            </span>
+            {completedCount > 0 && (
+              <p className="text-[10px] text-emerald-400 font-semibold">✓ {completedCount} done</p>
+            )}
+          </div>
         </div>
 
         {/* Progress bar */}
@@ -647,21 +672,21 @@ export default function FastReview() {
             style={{ width: `${Math.max(progressPct, 3)}%` }} />
         </div>
 
-        {/* Tier pills */}
-        <div className="flex gap-2">
-          {queue.filter(i => i.tier === 0).length > 0 && (
+        {/* Tier pills — show remaining counts from activeQueue */}
+        <div className="flex gap-2 flex-wrap">
+          {activeQueue.filter(i => i.tier === 0).length > 0 && (
             <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
-              🚨 {queue.filter(i => i.tier === 0).length} at-risk
+              🚨 {activeQueue.filter(i => i.tier === 0).length} at-risk
             </span>
           )}
-          {queue.filter(i => i.tier === 1).length > 0 && (
+          {activeQueue.filter(i => i.tier === 1).length > 0 && (
             <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              ⏰ {queue.filter(i => i.tier === 1).length} overdue
+              ⏰ {activeQueue.filter(i => i.tier === 1).length} overdue
             </span>
           )}
-          {queue.filter(i => i.tier === 2).length > 0 && (
+          {activeQueue.filter(i => i.tier === 2).length > 0 && (
             <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-secondary text-muted-foreground border border-border">
-              📋 {queue.filter(i => i.tier === 2).length} pending
+              📋 {activeQueue.filter(i => i.tier === 2).length} pending
             </span>
           )}
         </div>
@@ -673,7 +698,7 @@ export default function FastReview() {
           <ClientCard
             item={current}
             onMarkReviewed={handleMark}
-            isReviewed={isReviewed}
+            isReviewed={false}
             markSaving={markSaving}
           />
         </div>
@@ -681,23 +706,23 @@ export default function FastReview() {
 
       {/* ── Sticky bottom nav ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 flex gap-3 max-w-xl mx-auto">
-        <button onClick={goPrev} disabled={idx === 0}
+        <button onClick={goPrev} disabled={safeIdx === 0}
           className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-border bg-card text-sm font-semibold text-muted-foreground disabled:opacity-30 active:scale-95 transition-all flex-shrink-0">
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
         <button
-          onClick={idx >= total - 1 ? undefined : goNext}
-          disabled={idx >= total - 1}
+          onClick={safeIdx >= activeQueue.length - 1 ? undefined : goNext}
+          disabled={safeIdx >= activeQueue.length - 1}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-bold transition-all active:scale-95',
-            idx >= total - 1
+            safeIdx >= activeQueue.length - 1
               ? 'bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 cursor-default'
               : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-sm'
           )}
         >
-          {idx >= total - 1
+          {safeIdx >= activeQueue.length - 1
             ? <><CheckCircle2 className="w-4 h-4" /> All Done!</>
-            : <><ArrowRight className="w-4 h-4" /> Next Client ({idx + 2}/{total})</>
+            : <><ArrowRight className="w-4 h-4" /> Next ({safeIdx + 2}/{activeQueue.length})</>
           }
         </button>
       </div>
