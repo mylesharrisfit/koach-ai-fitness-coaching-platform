@@ -48,7 +48,7 @@ export default function Analytics() {
         title="Coach Analytics"
         subtitle="Track retention, adherence, and client progress trends over time"
         actions={
-          <div className="flex items-center gap-2 text-xs text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] px-3 py-1.5 rounded-lg">
+          <div className="flex items-center gap-2 text-xs text-[#374151] bg-[#F6F7FB] border border-[#E7EAF3] px-3 py-1.5 rounded-lg">
             <BarChart3 className="w-3.5 h-3.5" />
             Last 6 months
           </div>
@@ -145,7 +145,7 @@ export default function Analytics() {
         <div className="mt-8 bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden shadow-sm fade-up fade-up-delay-3">
           <div className="px-5 py-4 border-b border-[#E7EAF3]">
             <p className="text-sm font-semibold text-[#1F2A44]">Client Breakdown</p>
-            <p className="text-xs text-[#6B7280] mt-0.5">Lifecycle status distribution</p>
+            <p className="text-xs text-[#374151] mt-0.5">Lifecycle status distribution</p>
           </div>
           <div className="p-5">
             {['active', 'at_risk', 'lead', 'completed', 'alumni'].map(status => {
@@ -164,7 +164,7 @@ export default function Analytics() {
               if (count === 0) return null;
               return (
                 <div key={status} className="flex items-center gap-3 mb-3 last:mb-0">
-                  <span className="text-xs text-[#6B7280] w-20 shrink-0">{labels[status]}</span>
+                  <span className="text-xs text-[#374151] w-20 shrink-0">{labels[status]}</span>
                   <div className="flex-1 bg-[#E7EAF3] rounded-full h-2 overflow-hidden">
                     <div
                       className={`h-full rounded-full ${colors[status]}`}

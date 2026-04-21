@@ -46,7 +46,7 @@ function VideoThumbnail({ url, thumbnailUrl, name }) {
       <div className="w-10 h-10 rounded-full bg-[#EEF4FF] flex items-center justify-center">
         <Play className="w-4 h-4 text-primary ml-0.5" />
       </div>
-      <span className="text-xs text-[#6B7280]">{url ? 'Video' : 'No demo'}</span>
+      <span className="text-xs text-[#374151]">{url ? 'Video' : 'No demo'}</span>
     </div>
   );
 }
@@ -91,7 +91,7 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
           <div className="flex-1 min-w-0">
             <h3 className={cn("font-heading font-semibold leading-tight truncate text-[#1F2A44]", compact ? "text-sm" : "text-base")}>{exercise.name}</h3>
             {exercise.description && !compact && (
-            <p className="text-xs text-[#6B7280] mt-1 line-clamp-2">{exercise.description}</p>
+            <p className="text-xs text-[#374151] mt-1 line-clamp-2">{exercise.description}</p>
             )}
           </div>
           {compact && exercise.video_url && (

@@ -88,7 +88,7 @@ export default function Adherence() {
                 </div>
                 <p className="text-xs font-medium text-[#1F2A44] text-center leading-tight">{client.name}</p>
                 <AdherenceScore score={score} size="sm" showLabel={false} />
-                <p className="text-[10px] text-[#6B7280]">🔥 {streak}</p>
+                <p className="text-[10px] text-[#374151]">🔥 {streak}</p>
               </div>
             ))}
         </div>
@@ -104,7 +104,7 @@ export default function Adherence() {
               </div>
               <div>
                 <p className="font-semibold text-sm text-[#1F2A44]">{client.name}</p>
-                <p className="text-xs text-[#6B7280] capitalize">{client.goal?.replace('_', ' ')}</p>
+                <p className="text-xs text-[#374151] capitalize">{client.goal?.replace('_', ' ')}</p>
               </div>
             </div>
             <AdherencePanel

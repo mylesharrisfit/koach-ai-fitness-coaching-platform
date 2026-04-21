@@ -18,13 +18,13 @@ const PRIORITY = {
 };
 
 /* ─── Section header ─── */
-function SectionHeader({ icon: Icon, title, count, color = 'text-[#6B7280]' }) {
+function SectionHeader({ icon: Icon, title, count, color = 'text-[#374151]' }) {
   return (
     <div className="flex items-center gap-2 mb-3">
       <Icon className={cn('w-4 h-4', color)} />
       <h2 className="text-sm font-semibold text-[#1F2A44] flex-1">{title}</h2>
       {count > 0 && (
-        <span className="text-xs font-semibold text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] px-2 py-0.5 rounded-full">
+        <span className="text-xs font-semibold text-[#374151] bg-[#F6F7FB] border border-[#E7EAF3] px-2 py-0.5 rounded-full">
           {count}
         </span>
       )}
@@ -47,7 +47,7 @@ function AtRiskRow({ entry }) {
         <div className={cn('w-2 h-2 rounded-full mt-1.5 flex-shrink-0', cfg.dot)} />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-[#1F2A44]">{client.name}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-1">
+          <p className="text-xs text-[#374151] mt-0.5 line-clamp-1">
             {flags[0]?.detail || flags[0]?.label}
             {lastCI !== null && <span className="ml-2">{lastCI}d ago</span>}
           </p>
@@ -94,12 +94,12 @@ function PendingCheckInRow({ checkIn }) {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-[#1F2A44]">{checkIn.client_name}</p>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-[#6B7280]">{format(parseISO(checkIn.date), 'MMM d')}</span>
+            <span className="text-xs text-[#374151]">{format(parseISO(checkIn.date), 'MMM d')}</span>
             {daysAgo > 0 && (
               <span className={cn('text-xs font-medium', cfg.text)}>{daysAgo}d ago</span>
             )}
             {checkIn.weight && (
-              <span className="text-xs text-[#6B7280]">{checkIn.weight} lbs</span>
+              <span className="text-xs text-[#374151]">{checkIn.weight} lbs</span>
             )}
           </div>
         </div>
@@ -148,9 +148,9 @@ function UnreadMessageRow({ message }) {
               </span>
             )}
           </div>
-          <p className="text-xs text-[#6B7280] line-clamp-2">{message.content}</p>
+          <p className="text-xs text-[#374151] line-clamp-2">{message.content}</p>
         </div>
-        <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0 mt-0.5" />
+        <ArrowRight className="w-4 h-4 text-[#374151] flex-shrink-0 mt-0.5" />
       </div>
     </button>
   );
@@ -165,7 +165,7 @@ function AllClear() {
       </div>
       <div>
         <p className="text-base font-semibold text-[#1F2A44]">All clear!</p>
-        <p className="text-sm text-[#6B7280] mt-0.5">No pending actions for today</p>
+        <p className="text-sm text-[#374151] mt-0.5">No pending actions for today</p>
       </div>
     </div>
   );
@@ -209,7 +209,7 @@ export default function TodayView({ clients, checkIns, messages }) {
       {/* ── Header ── */}
       <div className="fade-up mb-2">
         <h1 className="text-2xl font-heading font-bold text-[#1F2A44]">Good morning 👋</h1>
-        <p className="text-sm text-[#6B7280] mt-0.5">{format(new Date(), 'EEEE, MMMM d')}</p>
+        <p className="text-sm text-[#374151] mt-0.5">{format(new Date(), 'EEEE, MMMM d')}</p>
       </div>
 
       {/* ── Run My Day ── */}
@@ -240,7 +240,7 @@ export default function TodayView({ clients, checkIns, messages }) {
             ))}
           </div>
           {atRisk.length > 5 && (
-            <Link to="/checkin-review" className="flex items-center justify-center gap-1.5 mt-3 py-2 text-xs font-semibold text-[#6B7280] hover:text-primary transition-colors">
+            <Link to="/checkin-review" className="flex items-center justify-center gap-1.5 mt-3 py-2 text-xs font-semibold text-[#374151] hover:text-primary transition-colors">
               +{atRisk.length - 5} more <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}
@@ -265,7 +265,7 @@ export default function TodayView({ clients, checkIns, messages }) {
             ))}
           </div>
           {pendingCheckIns.length > 3 && (
-            <Link to="/fast-review" className="flex items-center justify-center gap-1.5 mt-3 py-2 text-xs font-semibold text-[#6B7280] hover:text-primary transition-colors">
+            <Link to="/fast-review" className="flex items-center justify-center gap-1.5 mt-3 py-2 text-xs font-semibold text-[#374151] hover:text-primary transition-colors">
               +{pendingCheckIns.length - 3} more <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}
@@ -281,7 +281,7 @@ export default function TodayView({ clients, checkIns, messages }) {
               <UnreadMessageRow key={m.id} message={m} />
             ))}
           </div>
-          <Link to="/messages" className="flex items-center justify-center gap-1.5 mt-3 py-2 text-xs font-semibold text-[#6B7280] hover:text-primary transition-colors">
+          <Link to="/messages" className="flex items-center justify-center gap-1.5 mt-3 py-2 text-xs font-semibold text-[#374151] hover:text-primary transition-colors">
             Open inbox <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </Card>

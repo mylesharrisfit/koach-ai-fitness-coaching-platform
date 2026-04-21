@@ -11,8 +11,8 @@ export default function AnalyticsTrendCard({ title, subtitle, data, unit, color,
     <div className={cn('bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm', className)}>
       <div className="flex items-start justify-between mb-1">
         <div>
-          <p className="text-xs font-semibold tracking-wider uppercase text-[#6B7280]">{title}</p>
-          {subtitle && <p className="text-xs text-[#6B7280] mt-0.5">{subtitle}</p>}
+          <p className="text-xs font-semibold tracking-wider uppercase text-[#374151]">{title}</p>
+          {subtitle && <p className="text-xs text-[#374151] mt-0.5">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-2">
           {badge && (
@@ -23,7 +23,7 @@ export default function AnalyticsTrendCard({ title, subtitle, data, unit, color,
           {delta != null && (
             <span className={cn(
               'text-xs font-semibold px-2 py-0.5 rounded-full',
-              delta > 0 ? 'bg-emerald-50 text-emerald-600' : delta < 0 ? 'bg-red-50 text-red-500' : 'bg-[#F6F7FB] text-[#6B7280]'
+              delta > 0 ? 'bg-emerald-50 text-emerald-600' : delta < 0 ? 'bg-red-50 text-red-500' : 'bg-[#F6F7FB] text-[#374151]'
             )}>
               {delta > 0 ? '+' : ''}{typeof formatter === 'function' ? formatter(delta) : `${Math.round(delta * 10) / 10}${unit || ''}`}
             </span>

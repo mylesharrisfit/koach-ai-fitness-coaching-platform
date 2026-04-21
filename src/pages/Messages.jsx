@@ -287,7 +287,7 @@ export default function Messages() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-[#6B7280] gap-3">
+          <div className="flex-1 flex flex-col items-center justify-center text-[#374151] gap-3">
             <div className="w-16 h-16 rounded-2xl bg-[#EEF4FF] flex items-center justify-center">
               <Send className="w-7 h-7 text-primary" />
             </div>

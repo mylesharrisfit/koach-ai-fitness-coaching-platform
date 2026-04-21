@@ -29,7 +29,7 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
           </div>
           <div>
             <p className="font-semibold text-sm">{lead.name}</p>
-            {lead.email && <p className="text-xs text-[#6B7280]">{lead.email}</p>}
+            {lead.email && <p className="text-xs text-[#374151]">{lead.email}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
           <Badge variant="outline" className="text-[10px]">{TIER_LABELS[lead.offer_tier]}</Badge>
         )}
         {lead.source && (
-          <Badge variant="outline" className="text-[10px] text-[#6B7280]">{SOURCE_LABELS[lead.source]}</Badge>
+          <Badge variant="outline" className="text-[10px] text-[#374151]">{SOURCE_LABELS[lead.source]}</Badge>
         )}
         {lead.deal_value > 0 && (
           <Badge variant="outline" className="text-[10px] text-emerald-400 border-emerald-400/30">
@@ -63,14 +63,14 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
       </div>
 
       {(lead.call_date || lead.phone) && (
-        <div className="flex items-center gap-3 text-xs text-[#6B7280] mb-3">
+        <div className="flex items-center gap-3 text-xs text-[#374151] mb-3">
           {lead.call_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{lead.call_date} {lead.call_time || ''}</span>}
           {lead.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{lead.phone}</span>}
         </div>
       )}
 
       {lead.notes && (
-        <p className="text-xs text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg px-3 py-2 mb-3 line-clamp-2">{lead.notes}</p>
+        <p className="text-xs text-[#374151] bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg px-3 py-2 mb-3 line-clamp-2">{lead.notes}</p>
       )}
 
       {lead.call_link && lead.stage === 'booked' && (

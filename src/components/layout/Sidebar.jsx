@@ -74,7 +74,7 @@ export default function Sidebar({ user, onUpgrade }) {
               onClick={() => onUpgrade?.(item.feature)}
               className={cn(
                 "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium w-full text-left transition-colors",
-                "text-[#6B7280]/50 hover:text-[#6B7280] hover:bg-[#F6F7FB]"
+                "text-[#374151]/50 hover:text-[#374151] hover:bg-[#F6F7FB]"
               )}
             >
               <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -93,7 +93,7 @@ export default function Sidebar({ user, onUpgrade }) {
                 "relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors",
                 isActive
                   ? "bg-[#EEF4FF] text-primary font-semibold"
-                  : "text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB]"
+                  : "text-[#374151] hover:text-[#1F2A44] hover:bg-[#F6F7FB]"
               )}
             >
               {isActive && (
@@ -120,21 +120,21 @@ export default function Sidebar({ user, onUpgrade }) {
         )}
         <Link
           to="/settings"
-          className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB] transition-colors"
+          className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-[#374151] hover:text-[#1F2A44] hover:bg-[#F6F7FB] transition-colors"
         >
           <Settings className="w-4 h-4 flex-shrink-0" />
           {!collapsed && <span>Settings</span>}
         </Link>
         <button
           onClick={() => base44.auth.logout()}
-          className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-destructive hover:bg-[#FEF2F2] transition-colors w-full"
+          className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-[#374151] hover:text-destructive hover:bg-[#FEF2F2] transition-colors w-full"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
           {!collapsed && <span>Logout</span>}
         </button>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center w-full py-2 rounded-xl text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB] transition-colors"
+          className="flex items-center justify-center w-full py-2 rounded-xl text-[#374151] hover:text-[#1F2A44] hover:bg-[#F6F7FB] transition-colors"
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>

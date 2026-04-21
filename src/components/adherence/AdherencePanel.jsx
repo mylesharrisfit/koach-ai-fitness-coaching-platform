@@ -11,7 +11,7 @@ function MetricBar({ label, value, icon: Icon, color }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 text-[#6B7280]">
+        <div className="flex items-center gap-1.5 text-[#374151]">
           <Icon className={cn('w-3.5 h-3.5', color)} />
           <span>{label}</span>
         </div>
@@ -62,7 +62,7 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
               <span className="text-xs text-destructive font-medium bg-destructive/10 px-2 py-0.5 rounded-full">⚠ Alert</span>
             )}
           </div>
-          <div className="flex items-center gap-3 text-xs text-[#6B7280]">
+          <div className="flex items-center gap-3 text-xs text-[#374151]">
             <div className="flex items-center gap-1">
               <Flame className="w-3.5 h-3.5 text-orange-500" />
               <span className="font-medium text-[#1F2A44]">{streak}</span> check-in streak
@@ -79,7 +79,7 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
           {latest.sleep_hours != null && (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 text-[#6B7280]">
+                <div className="flex items-center gap-1.5 text-[#374151]">
                   <Moon className="w-3.5 h-3.5 text-violet-400" />
                   <span>Sleep</span>
                 </div>
@@ -99,7 +99,7 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
       {/* Badges */}
       {allBadgeKeys.length > 0 && (
         <div>
-          <p className="text-xs text-[#6B7280] mb-2 font-medium">Earned Badges</p>
+          <p className="text-xs text-[#374151] mb-2 font-medium">Earned Badges</p>
           <BadgeRow earnedKeys={allBadgeKeys} />
         </div>
       )}

@@ -94,8 +94,8 @@ export default function Store() {
         </div>
       ) : listings.length === 0 ? (
         <div className="text-center py-16">
-          <ShoppingBag className="w-12 h-12 text-[#6B7280] mx-auto mb-4" />
-          <p className="text-[#6B7280]">No listings yet. Create your first plan to sell.</p>
+          <ShoppingBag className="w-12 h-12 text-[#374151] mx-auto mb-4" />
+          <p className="text-[#374151]">No listings yet. Create your first plan to sell.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -125,12 +125,12 @@ export default function Store() {
               </div>
               <div className="p-5">
                 <h3 className="font-heading font-bold text-lg text-[#1F2A44]">{listing.title}</h3>
-                {listing.description && <p className="text-sm text-[#6B7280] mt-1 line-clamp-2">{listing.description}</p>}
+                {listing.description && <p className="text-sm text-[#374151] mt-1 line-clamp-2">{listing.description}</p>}
                 
                 {listing.features?.length > 0 && (
                   <div className="mt-3 space-y-1">
                     {listing.features.slice(0, 3).map((f, i) => (
-                      <p key={i} className="text-xs text-[#6B7280] flex items-center gap-1.5">
+                      <p key={i} className="text-xs text-[#374151] flex items-center gap-1.5">
                         <span className="w-1 h-1 rounded-full bg-primary" /> {f}
                       </p>
                     ))}
@@ -141,7 +141,7 @@ export default function Store() {
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-heading font-bold text-primary">${listing.price}</span>
                     {listing.original_price && listing.original_price > listing.price && (
-                      <span className="text-sm text-[#6B7280] line-through">${listing.original_price}</span>
+                      <span className="text-sm text-[#374151] line-through">${listing.original_price}</span>
                     )}
                   </div>
                   {listing.rating && (
@@ -152,7 +152,7 @@ export default function Store() {
                   )}
                 </div>
                 {listing.sales_count > 0 && (
-                  <p className="text-xs text-[#6B7280] mt-2">{listing.sales_count} sales</p>
+                  <p className="text-xs text-[#374151] mt-2">{listing.sales_count} sales</p>
                 )}
               </div>
             </div>

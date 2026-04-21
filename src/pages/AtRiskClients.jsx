@@ -18,7 +18,7 @@ import PageHeader from '@/components/shared/PageHeader';
 function ringColor(score) {
   if (score >= 60) return 'border-red-300 bg-red-50 text-red-500';
   if (score >= 30) return 'border-amber-300 bg-amber-50 text-amber-600';
-  return 'border-[#E7EAF3] bg-[#F6F7FB] text-[#6B7280]';
+  return 'border-[#E7EAF3] bg-[#F6F7FB] text-[#374151]';
 }
 
 /* ── Individual client risk card ── */
@@ -33,7 +33,7 @@ function RiskCard({ entry }) {
   const level = riskScore >= 60 ? 'High Risk' : riskScore >= 30 ? 'Medium Risk' : 'Low Risk';
   const levelColor = riskScore >= 60 ? 'text-red-500 bg-red-50 border-red-100'
     : riskScore >= 30 ? 'text-amber-600 bg-amber-50 border-amber-100'
-    : 'text-[#6B7280] bg-[#F6F7FB] border-[#E7EAF3]';
+    : 'text-[#374151] bg-[#F6F7FB] border-[#E7EAF3]';
 
   return (
     <div className={cn(
@@ -60,7 +60,7 @@ function RiskCard({ entry }) {
               </span>
             </div>
             {/* Primary reason */}
-            <p className="text-xs text-[#6B7280] truncate">
+            <p className="text-xs text-[#374151] truncate">
               <span className="mr-1">{FLAG_ICONS[topFlag.icon] || '⚠️'}</span>
               {topFlag.detail || topFlag.label}
             </p>
@@ -70,7 +70,7 @@ function RiskCard({ entry }) {
                 {flags.map(f => (
                   <div key={f.key} className={cn('w-1.5 h-1.5 rounded-full', SEVERITY_CONFIG[f.severity].dot)} />
                 ))}
-                <span className="text-[10px] text-[#6B7280] ml-1">{flags.length} flags</span>
+                <span className="text-[10px] text-[#374151] ml-1">{flags.length} flags</span>
               </div>
             )}
           </div>
@@ -89,7 +89,7 @@ function RiskCard({ entry }) {
         <div className="border-t border-[#E7EAF3] p-4 space-y-4">
           {/* All flags */}
           <div>
-            <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Detected Issues</p>
+            <p className="text-[10px] font-semibold text-[#374151] uppercase tracking-wide mb-2">Detected Issues</p>
             <div className="space-y-2">
               {flags.map(f => (
                 <div key={f.key} className={cn('flex items-start gap-2.5 px-3 py-2.5 rounded-xl border', SEVERITY_CONFIG[f.severity].color)}>
@@ -102,7 +102,7 @@ function RiskCard({ entry }) {
                     'ml-auto text-[9px] font-bold uppercase px-1.5 py-0.5 rounded flex-shrink-0',
                     f.severity === 'high' ? 'bg-red-50 text-red-500' :
                     f.severity === 'medium' ? 'bg-amber-50 text-amber-600' :
-                    'bg-[#F6F7FB] text-[#6B7280]'
+                    'bg-[#F6F7FB] text-[#374151]'
                   )}>
                     {f.severity}
                   </span>
@@ -113,7 +113,7 @@ function RiskCard({ entry }) {
 
           {/* Last check-in info */}
           {lastCheckInDate && (
-            <div className="flex items-center justify-between text-xs text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-2">
+            <div className="flex items-center justify-between text-xs text-[#374151] bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-2">
               <span>Last check-in</span>
               <span className="font-medium text-[#1F2A44]">
                 {formatDistanceToNow(parseISO(lastCheckInDate), { addSuffix: true })}
@@ -214,7 +214,7 @@ export default function AtRiskClients() {
             )}
           >
             <p className={cn('text-2xl font-bold font-heading', color)}>{counts[key]}</p>
-            <p className="text-[11px] text-[#6B7280] mt-0.5">{label}</p>
+            <p className="text-[11px] text-[#374151] mt-0.5">{label}</p>
           </button>
         ))}
       </div>
@@ -227,7 +227,7 @@ export default function AtRiskClients() {
             onClick={() => setSeverityFilter(key)}
             className={cn(
               'flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all capitalize',
-              severityFilter === key ? 'bg-primary text-primary-foreground' : 'bg-white border border-[#E7EAF3] text-[#6B7280] hover:text-[#1F2A44]'
+              severityFilter === key ? 'bg-primary text-primary-foreground' : 'bg-white border border-[#E7EAF3] text-[#374151] hover:text-[#1F2A44]'
             )}
           >
             {key === 'all' ? 'All' : `${key} risk`}

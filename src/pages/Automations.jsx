@@ -110,11 +110,11 @@ export default function Automations() {
         {[
           { label: 'Total Rules', value: rules.length, color: 'text-[#1F2A44]' },
           { label: 'Active', value: activeCount, color: 'text-emerald-600' },
-          { label: 'Triggered Now', value: triggeredCount, color: triggeredCount > 0 ? 'text-red-500' : 'text-[#6B7280]' },
+          { label: 'Triggered Now', value: triggeredCount, color: triggeredCount > 0 ? 'text-red-500' : 'text-[#374151]' },
         ].map(s => (
           <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-xl p-3 text-center shadow-sm">
             <p className={cn('text-2xl font-bold font-heading', s.color)}>{s.value}</p>
-            <p className="text-xs text-[#6B7280] mt-0.5">{s.label}</p>
+            <p className="text-xs text-[#374151] mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
@@ -127,7 +127,7 @@ export default function Automations() {
             onClick={() => setTab(t.key)}
             className={cn(
               'text-xs px-4 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5',
-              tab === t.key ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#6B7280] hover:text-[#1F2A44]'
+              tab === t.key ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#374151] hover:text-[#1F2A44]'
             )}
           >
             {t.key === 'results' && triggeredCount > 0 && (
@@ -145,7 +145,7 @@ export default function Automations() {
       {tab === 'rules' && (
         <div className="space-y-3">
           {rules.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 gap-4 text-[#6B7280]">
+            <div className="flex flex-col items-center justify-center py-16 gap-4 text-[#374151]">
               <Zap className="w-12 h-12 opacity-20" />
               <div className="text-center">
                 <p className="text-sm font-medium text-[#1F2A44]">No rules yet</p>
@@ -187,7 +187,7 @@ export default function Automations() {
       {/* Live Results Tab */}
       {tab === 'results' && (
         <div className="space-y-4">
-          <p className="text-xs text-[#6B7280]">
+          <p className="text-xs text-[#374151]">
             {results.length > 0
               ? `${results.length} trigger${results.length > 1 ? 's' : ''} found across ${clients.length} clients`
               : 'Rules are evaluated in real-time against all active clients.'}

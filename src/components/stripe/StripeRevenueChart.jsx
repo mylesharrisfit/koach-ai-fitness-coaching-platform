@@ -5,7 +5,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white border border-[#E7EAF3] rounded-xl px-4 py-3 shadow-lg">
-      <p className="text-xs text-[#6B7280] mb-1">{label}</p>
+      <p className="text-xs text-[#374151] mb-1">{label}</p>
       <p className="text-base font-bold text-emerald-400">${payload[0].value.toLocaleString()}</p>
     </div>
   );
@@ -14,7 +14,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function StripeRevenueChart({ data }) {
   return (
     <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
-      <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-5">Revenue — Last 6 Months</h3>
+      <h3 className="text-xs font-bold text-[#374151] uppercase tracking-widest mb-5">Revenue — Last 6 Months</h3>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
           <defs>

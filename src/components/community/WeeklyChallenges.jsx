@@ -41,11 +41,11 @@ function ChallengeCard({ challenge, isCoach, onToggle, onDelete }) {
             {daysLeft >= 0 ? `${daysLeft}d left` : 'Ended'}
           </span>
         ) : (
-          <span className="text-xs px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#6B7280]">Inactive</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151]">Inactive</span>
         )}
       </div>
-      {challenge.description && <p className="text-xs text-[#6B7280]">{challenge.description}</p>}
-      <div className="flex items-center gap-4 text-xs text-[#6B7280]">
+      {challenge.description && <p className="text-xs text-[#374151]">{challenge.description}</p>}
+      <div className="flex items-center gap-4 text-xs text-[#374151]">
         <span className="flex items-center gap-1"><Target className="w-3 h-3" /> Goal: {challenge.goal?.toLocaleString()} {cfg.unit}</span>
         <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> Ends {format(parseISO(challenge.end_date), 'MMM d')}</span>
       </div>
@@ -99,7 +99,7 @@ export default function WeeklyChallenges({ isCoach }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[#6B7280] uppercase font-semibold tracking-wider">Active Challenges</p>
+        <p className="text-xs text-[#374151] uppercase font-semibold tracking-wider">Active Challenges</p>
         {isCoach && (
           <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setShowForm(true)}>
             <Plus className="w-3 h-3 mr-1" /> New Challenge
@@ -108,7 +108,7 @@ export default function WeeklyChallenges({ isCoach }) {
       </div>
 
       {active.length === 0 ? (
-        <div className="text-center py-10 text-[#6B7280] border border-dashed border-[#E7EAF3] rounded-2xl bg-[#F6F7FB]">
+        <div className="text-center py-10 text-[#374151] border border-dashed border-[#E7EAF3] rounded-2xl bg-[#F6F7FB]">
           <Target className="w-8 h-8 mx-auto mb-2 opacity-20" />
           <p className="text-sm">No active challenges.</p>
           {isCoach && <p className="text-xs mt-1">Create one to motivate your community!</p>}
@@ -121,7 +121,7 @@ export default function WeeklyChallenges({ isCoach }) {
 
       {past.length > 0 && (
         <>
-          <p className="text-xs text-[#6B7280] uppercase font-semibold tracking-wider mt-4">Past Challenges</p>
+          <p className="text-xs text-[#374151] uppercase font-semibold tracking-wider mt-4">Past Challenges</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {past.map(c => <ChallengeCard key={c.id} challenge={c} isCoach={isCoach} onToggle={(ch) => updateMutation.mutate({ id: ch.id, data: { is_active: !ch.is_active } })} onDelete={(id) => deleteMutation.mutate(id)} />)}
           </div>

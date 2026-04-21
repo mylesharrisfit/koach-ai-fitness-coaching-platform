@@ -118,7 +118,7 @@ export default function Nutrition() {
                     </DropdownMenu>
                   </div>
 
-                  {plan.description && <p className="text-sm text-[#6B7280] mb-4 line-clamp-2">{plan.description}</p>}
+                  {plan.description && <p className="text-sm text-[#374151] mb-4 line-clamp-2">{plan.description}</p>}
 
                   {isHabits ? (
                     <div className="space-y-1.5">
@@ -137,28 +137,28 @@ export default function Nutrition() {
                       <div className="text-center p-2 rounded-lg bg-orange-50 border border-orange-100">
                         <Flame className="w-4 h-4 text-orange-500 mx-auto" />
                         <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.calories || 0}</p>
-                        <p className="text-[10px] text-[#6B7280]">cal</p>
+                        <p className="text-[10px] text-[#374151]">cal</p>
                       </div>
                       <div className="text-center p-2 rounded-lg bg-red-50 border border-red-100">
                         <Beef className="w-4 h-4 text-red-500 mx-auto" />
                         <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.protein_g || 0}g</p>
-                        <p className="text-[10px] text-[#6B7280]">protein</p>
+                        <p className="text-[10px] text-[#374151]">protein</p>
                       </div>
                       <div className="text-center p-2 rounded-lg bg-amber-50 border border-amber-100">
                         <Wheat className="w-4 h-4 text-amber-500 mx-auto" />
                         <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.carbs_g || 0}g</p>
-                        <p className="text-[10px] text-[#6B7280]">carbs</p>
+                        <p className="text-[10px] text-[#374151]">carbs</p>
                       </div>
                       <div className="text-center p-2 rounded-lg bg-[#EEF4FF] border border-blue-100">
                         <Droplets className="w-4 h-4 text-primary mx-auto" />
                         <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.fats_g || 0}g</p>
-                        <p className="text-[10px] text-[#6B7280]">fats</p>
+                        <p className="text-[10px] text-[#374151]">fats</p>
                       </div>
                     </div>
                   )}
 
                   {(plan.meals || []).length > 0 && !isHabits && (
-                    <p className="text-xs text-[#6B7280] mt-3 border-t border-[#E7EAF3] pt-2">{plan.meals.length} meals configured</p>
+                    <p className="text-xs text-[#374151] mt-3 border-t border-[#E7EAF3] pt-2">{plan.meals.length} meals configured</p>
                   )}
                 </div>
               </div>

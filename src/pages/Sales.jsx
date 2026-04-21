@@ -89,7 +89,7 @@ export default function Sales() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all ${
-                    activeTab === tab ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#6B7280] hover:text-[#1F2A44]'
+                    activeTab === tab ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#374151] hover:text-[#1F2A44]'
                   }`}
                 >
                   {tab}
@@ -117,7 +117,7 @@ export default function Sales() {
             </div>
             <div>
               <p className="text-xl font-heading font-bold leading-none text-[#1F2A44]">{s.value}</p>
-              <p className="text-xs text-[#6B7280] mt-1">{s.label}</p>
+              <p className="text-xs text-[#374151] mt-1">{s.label}</p>
             </div>
           </div>
         ))}

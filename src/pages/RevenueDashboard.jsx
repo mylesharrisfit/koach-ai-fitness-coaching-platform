@@ -55,16 +55,16 @@ export default function RevenueDashboard() {
               <StripeRevenueChart data={dashData?.monthly_revenue || []} />
             </div>
             <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
-              <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-4">Payment Health</h3>
+              <h3 className="text-xs font-bold text-[#374151] uppercase tracking-widest mb-4">Payment Health</h3>
               <div className="space-y-3">
                 {[
                   { label: 'Active Subscriptions', value: dashData?.active_subscriptions || 0, color: 'text-emerald-600', bg: 'bg-emerald-50' },
                   { label: 'Past Due', value: dashData?.past_due || 0, color: 'text-amber-600', bg: 'bg-amber-50' },
-                  { label: 'Canceled', value: dashData?.canceled || 0, color: 'text-[#6B7280]', bg: 'bg-[#F6F7FB]' },
+                  { label: 'Canceled', value: dashData?.canceled || 0, color: 'text-[#374151]', bg: 'bg-[#F6F7FB]' },
                   { label: 'Failed Charges', value: dashData?.failed_charges || 0, color: 'text-red-500', bg: 'bg-red-50' },
                 ].map(item => (
                   <div key={item.label} className={`flex items-center justify-between p-3 rounded-xl border border-[#E7EAF3] ${item.bg}`}>
-                    <span className="text-sm text-[#6B7280]">{item.label}</span>
+                    <span className="text-sm text-[#374151]">{item.label}</span>
                     <span className={`text-sm font-bold ${item.color}`}>{item.value}</span>
                   </div>
                 ))}

@@ -62,7 +62,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
               </Badge>
             )}
           </div>
-          <p className="text-xs text-[#6B7280] mt-0.5">
+          <p className="text-xs text-[#374151] mt-0.5">
             {checkIns.length} check-ins · Last: {latest ? format(new Date(latest.date), 'MMM d') : 'None'}
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
           )}
           {showGraphs && latest?.body_fat_pct && (
             <div className="flex items-center gap-1.5 text-sm">
-              <span className="text-[#6B7280] text-xs">BF%</span>
+              <span className="text-[#374151] text-xs">BF%</span>
               <span>{latest.body_fat_pct}%</span>
               <TrendIcon trend={bfTrend} />
             </div>
@@ -108,15 +108,15 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
               {/* Basic: show recent weight + notes only */}
               {checkIns.slice(0, 5).map(ci => (
                 <div key={ci.id} className="flex items-start gap-3 text-sm">
-                  <span className="text-[#6B7280] text-xs w-20 flex-shrink-0 pt-0.5">{format(new Date(ci.date), 'MMM d')}</span>
+                  <span className="text-[#374151] text-xs w-20 flex-shrink-0 pt-0.5">{format(new Date(ci.date), 'MMM d')}</span>
                   <div className="flex-1">
                     {ci.weight && <span className="font-medium">{ci.weight} lbs</span>}
-                    {ci.notes && <p className="text-[#6B7280] text-xs mt-0.5">{ci.notes}</p>}
+                    {ci.notes && <p className="text-[#374151] text-xs mt-0.5">{ci.notes}</p>}
                   </div>
                 </div>
               ))}
-              {checkIns.length === 0 && <p className="text-[#6B7280] text-sm">No check-ins yet.</p>}
-              <div className="flex items-center gap-2 pt-2 border-t border-[#E7EAF3] text-xs text-[#6B7280]">
+              {checkIns.length === 0 && <p className="text-[#374151] text-sm">No check-ins yet.</p>}
+              <div className="flex items-center gap-2 pt-2 border-t border-[#E7EAF3] text-xs text-[#374151]">
                 <Lock className="w-3.5 h-3.5" />
                 Analytics graphs, trends & compliance charts available on Pro+.
               </div>

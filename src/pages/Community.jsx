@@ -61,7 +61,7 @@ export default function Community() {
             onClick={() => setShowCoachSettings(!showCoachSettings)}
             className={cn(
               "flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all",
-              showCoachSettings ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] hover:border-primary/40 text-[#6B7280]"
+              showCoachSettings ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] hover:border-primary/40 text-[#374151]"
             )}
           >
             <Settings2 className="w-4 h-4" />
@@ -77,7 +77,7 @@ export default function Community() {
       )}
 
       {enabledTabs.length === 0 ? (
-        <div className="text-center py-20 text-[#6B7280]">
+        <div className="text-center py-20 text-[#374151]">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
           <p className="font-semibold text-[#1F2A44]">Community features are disabled</p>
           {isCoach && <p className="text-sm mt-1">Click "Manage Features" to enable them.</p>}
@@ -93,7 +93,7 @@ export default function Community() {
                   onClick={() => setActiveTab(tab.key)}
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                    activeTab === tab.key ? "bg-white shadow-sm text-[#1F2A44]" : "text-[#6B7280] hover:text-[#1F2A44]"
+                    activeTab === tab.key ? "bg-white shadow-sm text-[#1F2A44]" : "text-[#374151] hover:text-[#1F2A44]"
                   )}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function Community() {
                   {settings.leaderboard_enabled !== false && <Leaderboard clients={clients} />}
                   {settings.challenges_enabled !== false && (
                     <div>
-                      <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-3">Active Challenges</p>
+                      <p className="text-xs font-semibold text-[#374151] uppercase tracking-wider mb-3">Active Challenges</p>
                       <WeeklyChallenges isCoach={isCoach} compact />
                     </div>
                   )}

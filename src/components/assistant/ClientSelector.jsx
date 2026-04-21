@@ -5,7 +5,7 @@ import { Users } from 'lucide-react';
 export default function ClientSelector({ clients, selectedClient, onSelect }) {
   return (
     <div className="flex items-center gap-3 p-4 border-b border-[#E7EAF3]">
-      <Users className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+      <Users className="w-4 h-4 text-[#374151] flex-shrink-0" />
       <div className="flex-1">
         <Select
           value={selectedClient?.id || 'all'}

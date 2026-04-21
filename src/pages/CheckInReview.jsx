@@ -121,7 +121,7 @@ export default function CheckInReview() {
       {/* Header */}
       <div className="mb-6 fade-up">
         <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-[#1F2A44]">Check-in Dashboard</h1>
-        <p className="text-sm text-[#6B7280] mt-1">
+        <p className="text-sm text-[#374151] mt-1">
           {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
           {counts.pending > 0 && ` · ${counts.pending} need${counts.pending === 1 ? 's' : ''} response`}
         </p>
@@ -138,10 +138,10 @@ export default function CheckInReview() {
               filter === k ? 'border-primary ring-1 ring-primary/30' : 'border-[#E7EAF3]'
             )}
           >
-            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? STAT_COLORS[k] : 'text-[#6B7280]')}>
+            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? STAT_COLORS[k] : 'text-[#374151]')}>
             {counts[k]}
             </p>
-            <p className="text-[11px] text-[#6B7280] mt-0.5 capitalize">{k}</p>
+            <p className="text-[11px] text-[#374151] mt-0.5 capitalize">{k}</p>
           </button>
         ))}
       </div>
@@ -157,7 +157,7 @@ export default function CheckInReview() {
                 'flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all',
                 filter === f.key
                   ? 'bg-primary text-primary-foreground'
-                  : 'bg-white border border-[#E7EAF3] text-[#6B7280] hover:text-[#1F2A44]'
+                  : 'bg-white border border-[#E7EAF3] text-[#374151] hover:text-[#1F2A44]'
               )}
             >
               {f.label}

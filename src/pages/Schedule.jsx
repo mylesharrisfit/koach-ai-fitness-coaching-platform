@@ -18,7 +18,7 @@ const typeIcons = { video_call: Video, in_person: MapPin, check_in: ClipboardChe
 const statusColors = {
   scheduled: 'bg-[#EEF4FF] text-primary',
   completed: 'bg-emerald-50 text-emerald-600',
-  cancelled: 'bg-[#F6F7FB] text-[#6B7280]',
+  cancelled: 'bg-[#F6F7FB] text-[#374151]',
   no_show: 'bg-red-50 text-red-500',
 };
 
@@ -114,7 +114,7 @@ export default function Schedule() {
             )}>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-xs text-[#6B7280]">{format(day, 'EEE')}</p>
+                  <p className="text-xs text-[#374151]">{format(day, 'EEE')}</p>
                   <p className={cn("text-lg font-heading font-bold text-[#1F2A44]", isToday && "text-primary")}>{format(day, 'd')}</p>
                 </div>
                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => openCreate(day)}>
@@ -130,8 +130,8 @@ export default function Schedule() {
                         <Icon className="w-3 h-3 text-primary flex-shrink-0" />
                         <p className="text-xs font-medium text-[#1F2A44] truncate">{session.title}</p>
                       </div>
-                      {session.time && <p className="text-[10px] text-[#6B7280] mt-0.5 ml-4.5">{session.time}</p>}
-                      <p className="text-[10px] text-[#6B7280] truncate ml-4.5">{session.client_name}</p>
+                      {session.time && <p className="text-[10px] text-[#374151] mt-0.5 ml-4.5">{session.time}</p>}
+                      <p className="text-[10px] text-[#374151] truncate ml-4.5">{session.client_name}</p>
                     </div>
                   );
                 })}

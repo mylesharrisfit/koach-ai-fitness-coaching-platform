@@ -134,10 +134,10 @@ function WeightTrend({ clientCIs }) {
 function StatTile({ icon: Icon, label, value, sub, color }) {
   return (
     <div className="flex flex-col items-center gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl py-3 px-2">
-      <Icon className={cn('w-3.5 h-3.5', color || 'text-[#6B7280]')} />
+      <Icon className={cn('w-3.5 h-3.5', color || 'text-[#374151]')} />
       <span className={cn('text-base font-bold tabular-nums leading-none', color || 'text-[#1F2A44]')}>{value ?? '–'}</span>
-      {sub && <span className="text-[9px] text-[#6B7280]">{sub}</span>}
-      <span className="text-[9px] text-[#6B7280]">{label}</span>
+      {sub && <span className="text-[9px] text-[#374151]">{sub}</span>}
+      <span className="text-[9px] text-[#374151]">{label}</span>
     </div>
   );
 }
@@ -150,7 +150,7 @@ function ComplianceBar({ label, value }) {
   return (
     <div>
       <div className="flex justify-between mb-1">
-        <span className="text-xs text-[#6B7280]">{label}</span>
+        <span className="text-xs text-[#374151]">{label}</span>
         <span className={cn('text-xs font-bold', textColor)}>{value}%</span>
       </div>
       <div className="h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">
@@ -191,7 +191,7 @@ function InlineRec({ rec, checkIn, client }) {
         <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-[#1F2A44] leading-tight">{rec.title}</p>
-          <p className="text-[11px] text-[#6B7280] leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
+          <p className="text-[11px] text-[#374151] leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
         </div>
         {stage === 'idle' && (
           <button onClick={handleApplyClick}
@@ -199,7 +199,7 @@ function InlineRec({ rec, checkIn, client }) {
             <Zap className="w-3 h-3" />{rec.actionLabel}
           </button>
         )}
-        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-[#6B7280] flex-shrink-0" />}
+        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-[#374151] flex-shrink-0" />}
         {stage === 'done' && (
           <span className="flex-shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-600">
             <Check className="w-3 h-3" /> Done
@@ -212,7 +212,7 @@ function InlineRec({ rec, checkIn, client }) {
               <Check className="w-3 h-3" /> Yes
             </button>
             <button onClick={handleCancel}
-              className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] text-[#6B7280] active:scale-95">
+              className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] active:scale-95">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -226,7 +226,7 @@ function InlineRec({ rec, checkIn, client }) {
             <p className="text-[11px] text-[#1F2A44] leading-snug">{confirmText}</p>
           </div>
           {rec.action === 'message' && rec.actionData?.content && (
-            <p className="mt-1.5 text-[10px] text-[#6B7280] italic border-l-2 border-blue-200 pl-2 line-clamp-2">
+            <p className="mt-1.5 text-[10px] text-[#374151] italic border-l-2 border-blue-200 pl-2 line-clamp-2">
               "{rec.actionData.content}"
             </p>
           )}
@@ -267,7 +267,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative">
           <button onClick={() => setShowTemplates(s => !s)}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-[#E7EAF3] bg-white text-xs font-medium text-[#6B7280] hover:text-[#1F2A44]">
+            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-[#E7EAF3] bg-white text-xs font-medium text-[#374151] hover:text-[#1F2A44]">
             <BookOpen className="w-3 h-3" /> Templates <ChevronDown className="w-3 h-3" />
           </button>
           {showTemplates && (
@@ -276,7 +276,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
                 <button key={i} onClick={() => { setText(t.text); setShowTemplates(false); }}
                   className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F6F7FB] transition-colors">
                   <p className="text-xs font-medium text-[#1F2A44]">{t.label}</p>
-                  <p className="text-[11px] text-[#6B7280] line-clamp-1 mt-0.5">{t.text}</p>
+                  <p className="text-[11px] text-[#374151] line-clamp-1 mt-0.5">{t.text}</p>
                 </button>
               ))}
             </div>
@@ -291,7 +291,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
       <Textarea value={text} onChange={e => setText(e.target.value)}
         placeholder="Write your coaching response..." className="text-sm resize-none bg-white border-[#E7EAF3]" rows={4} autoFocus />
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-[#6B7280]">{text.length} chars</span>
+        <span className="text-[11px] text-[#374151]">{text.length} chars</span>
         <button onClick={send} disabled={sending || !text.trim()}
           className="flex items-center gap-1.5 h-9 px-4 rounded-xl bg-primary text-white text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all">
           {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
@@ -363,7 +363,7 @@ function CardioPanel({ checkIn, onDone }) {
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronUp className="w-3.5 h-3.5" /> Increase</>}
         </button>
         <button onClick={() => adjust('down')} disabled={saving}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-white border-[#E7EAF3] text-[#6B7280] hover:bg-[#F6F7FB] active:scale-95">
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-white border-[#E7EAF3] text-[#374151] hover:bg-[#F6F7FB] active:scale-95">
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronDown className="w-3.5 h-3.5" /> Decrease</>}
         </button>
       </div>
@@ -407,9 +407,9 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
     toast.success('AI feedback sent! ✨');
   };
 
-  const sleepColor = !checkIn.sleep_hours ? 'text-[#6B7280]' : checkIn.sleep_hours >= 7 ? 'text-emerald-600' : checkIn.sleep_hours >= 6 ? 'text-amber-600' : 'text-red-500';
-  const energyColor = !checkIn.energy_level ? 'text-[#6B7280]' : checkIn.energy_level >= 4 ? 'text-emerald-600' : checkIn.energy_level >= 2 ? 'text-amber-600' : 'text-red-500';
-  const stressColor = !checkIn.stress_level ? 'text-[#6B7280]' : checkIn.stress_level <= 2 ? 'text-emerald-600' : checkIn.stress_level <= 3 ? 'text-amber-600' : 'text-red-500';
+  const sleepColor = !checkIn.sleep_hours ? 'text-[#374151]' : checkIn.sleep_hours >= 7 ? 'text-emerald-600' : checkIn.sleep_hours >= 6 ? 'text-amber-600' : 'text-red-500';
+  const energyColor = !checkIn.energy_level ? 'text-[#374151]' : checkIn.energy_level >= 4 ? 'text-emerald-600' : checkIn.energy_level >= 2 ? 'text-amber-600' : 'text-red-500';
+  const stressColor = !checkIn.stress_level ? 'text-[#374151]' : checkIn.stress_level <= 2 ? 'text-emerald-600' : checkIn.stress_level <= 3 ? 'text-amber-600' : 'text-red-500';
   const photos = checkIn.photo_urls || [];
 
   return (
@@ -434,7 +434,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
               </span>
             )}
           </div>
-          <p className="text-xs text-[#6B7280] mt-0.5 flex items-center gap-1.5">
+          <p className="text-xs text-[#374151] mt-0.5 flex items-center gap-1.5">
             {format(parseISO(checkIn.date), 'MMM d, yyyy')}
             {daysAgo > 0 && <span className={cn(daysAgo > 7 ? 'text-red-500' : daysAgo > 3 ? 'text-amber-600' : '')}> · {daysAgo}d ago</span>}
             {checkIn.mood && <span className="ml-0.5">{MOOD_EMOJI[checkIn.mood]}</span>}
@@ -457,12 +457,12 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
       {clientCIs.filter(c => c.weight).length >= 2 && (
         <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-4 py-3 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-1">Weight Trend</p>
+            <p className="text-[10px] font-semibold text-[#374151] uppercase tracking-wide mb-1">Weight Trend</p>
             <WeightTrend clientCIs={clientCIs} />
           </div>
           <div className="text-right">
-            <p className="text-[10px] text-[#6B7280]">Adherence</p>
-            <p className={cn('text-2xl font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-sm font-normal text-[#6B7280]">%</span></p>
+            <p className="text-[10px] text-[#374151]">Adherence</p>
+            <p className={cn('text-2xl font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-sm font-normal text-[#374151]">%</span></p>
           </div>
         </div>
       )}
@@ -481,7 +481,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
       {/* ── Photos ── */}
       {photos.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2 flex items-center gap-1.5">
+          <p className="text-[10px] font-semibold text-[#374151] uppercase tracking-wide mb-2 flex items-center gap-1.5">
             <Camera className="w-3 h-3" /> Progress Photos ({photos.length})
           </p>
           <div className="relative">
@@ -503,7 +503,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
       {/* ── Client notes ── */}
       {checkIn.notes && (
         <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
-          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-1">Client Notes</p>
+          <p className="text-[10px] font-semibold text-[#374151] uppercase tracking-wide mb-1">Client Notes</p>
           <p className="text-sm text-[#1F2A44] leading-relaxed">{checkIn.notes}</p>
         </div>
       )}
@@ -519,7 +519,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
       {/* ── Recommendations ── */}
       {recommendations.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">⚡ Suggested Actions</p>
+          <p className="text-[10px] font-semibold text-[#374151] uppercase tracking-wide">⚡ Suggested Actions</p>
           {recommendations.slice(0, 3).map(rec => (
             <InlineRec key={rec.id} rec={rec} checkIn={checkIn} client={client} />
           ))}
@@ -659,7 +659,7 @@ export default function FastReview() {
       </div>
       <div className="text-center">
         <p className="text-xl font-bold text-[#1F2A44]">All caught up! 🎉</p>
-        <p className="text-sm text-[#6B7280] mt-1">
+        <p className="text-sm text-[#374151] mt-1">
           {completedCount > 0 ? `Reviewed ${completedCount} client${completedCount !== 1 ? 's' : ''} today` : 'No pending check-ins — great work!'}
         </p>
       </div>
@@ -676,7 +676,7 @@ export default function FastReview() {
             <h1 className="text-lg font-heading font-bold text-[#1F2A44]">Review Queue</h1>
           </div>
           <div className="text-right">
-            <span className="text-sm font-semibold text-[#6B7280] tabular-nums">
+            <span className="text-sm font-semibold text-[#374151] tabular-nums">
               {safeIdx + 1} / {activeQueue.length}
             </span>
             {completedCount > 0 && (
@@ -704,7 +704,7 @@ export default function FastReview() {
             </span>
           )}
           {activeQueue.filter(i => i.tier === 2).length > 0 && (
-            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[#F6F7FB] text-[#6B7280] border border-[#E7EAF3]">
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[#F6F7FB] text-[#374151] border border-[#E7EAF3]">
               📋 {activeQueue.filter(i => i.tier === 2).length} pending
             </span>
           )}
@@ -726,7 +726,7 @@ export default function FastReview() {
       {/* ── Sticky bottom nav ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#E7EAF3] px-4 py-3 flex gap-3 max-w-xl mx-auto">
         <button onClick={goPrev} disabled={safeIdx === 0}
-          className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-[#E7EAF3] bg-white text-sm font-semibold text-[#6B7280] disabled:opacity-30 active:scale-95 transition-all flex-shrink-0">
+          className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-[#E7EAF3] bg-white text-sm font-semibold text-[#374151] disabled:opacity-30 active:scale-95 transition-all flex-shrink-0">
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
         <button

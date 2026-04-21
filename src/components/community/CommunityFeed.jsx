@@ -54,7 +54,7 @@ function PostCard({ post, currentUserId }) {
             <p className="font-semibold text-sm">{post.author_name}</p>
             {badge && <span className={cn("text-[10px] px-2 py-0.5 rounded-full border font-medium", badge.class)}>{badge.label}</span>}
           </div>
-          <p className="text-[11px] text-[#6B7280]">{formatDistanceToNow(new Date(post.created_date || Date.now()), { addSuffix: true })}</p>
+          <p className="text-[11px] text-[#374151]">{formatDistanceToNow(new Date(post.created_date || Date.now()), { addSuffix: true })}</p>
         </div>
       </div>
       {/* Content */}
@@ -65,7 +65,7 @@ function PostCard({ post, currentUserId }) {
           <Heart className={cn("w-4 h-4", liked && "fill-red-400")} />
           {(post.likes || []).length || ''}
         </button>
-        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1F2A44] transition-colors">
+        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs text-[#374151] hover:text-[#1F2A44] transition-colors">
           <MessageCircle className="w-4 h-4" />
           {comments.length > 0 ? comments.length : 'Reply'}
         </button>
@@ -121,19 +121,19 @@ export default function CommunityFeed({ currentUser }) {
       <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3 shadow-sm">
         <div className="flex gap-2 mb-2">
           {[{ key: 'post', label: '💬 Post' }, { key: 'win', label: '🏆 Win' }, { key: 'milestone', label: '⭐ Milestone' }].map(t => (
-            <button key={t.key} onClick={() => setPostType(t.key)} className={cn("text-xs px-3 py-1 rounded-full border transition-all", postType === t.key ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] text-[#6B7280] hover:border-primary/40")}>
+            <button key={t.key} onClick={() => setPostType(t.key)} className={cn("text-xs px-3 py-1 rounded-full border transition-all", postType === t.key ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] text-[#374151] hover:border-primary/40")}>
               {t.label}
             </button>
           ))}
         </div>
-        <textarea value={newPost} onChange={e => setNewPost(e.target.value)} placeholder={postType === 'win' ? "Share a win with the community! 🎉" : postType === 'milestone' ? "Celebrate a milestone..." : "What's on your mind?"} rows={2} className="w-full text-sm bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-2 outline-none focus:border-primary resize-none transition-colors placeholder:text-[#6B7280]/60 text-[#1F2A44]" />
+        <textarea value={newPost} onChange={e => setNewPost(e.target.value)} placeholder={postType === 'win' ? "Share a win with the community! 🎉" : postType === 'milestone' ? "Celebrate a milestone..." : "What's on your mind?"} rows={2} className="w-full text-sm bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-2 outline-none focus:border-primary resize-none transition-colors placeholder:text-[#374151]/60 text-[#1F2A44]" />
         <div className="flex justify-end">
           <Button size="sm" disabled={!newPost.trim()} onClick={() => createPost.mutate()} className="h-8 text-xs">Post</Button>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-8 text-[#6B7280] text-sm">Loading feed...</div>
+        <div className="text-center py-8 text-[#374151] text-sm">Loading feed...</div>
       ) : posts.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <Zap className="w-10 h-10 mx-auto mb-3 opacity-20" />
