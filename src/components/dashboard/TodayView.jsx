@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore, scoreColor } from '@/lib/adherence';
 import RecommendationsWidget from './RecommendationsWidget';
+import RunMyDayBanner from './RunMyDayBanner';
 
 /* ─── Priority config ─── */
 const PRIORITY = {
@@ -214,12 +215,16 @@ export default function TodayView({ clients, checkIns, messages }) {
       {/* ── Header ── */}
       <div className="fade-up">
         <h1 className="text-2xl font-heading font-bold tracking-tight">Today</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          {format(new Date(), 'EEEE, MMMM d')}
-          {totalActions > 0
-            ? ` · ${totalActions} action${totalActions !== 1 ? 's' : ''} pending`
-            : ' · all caught up'}
-        </p>
+        <p className="text-sm text-muted-foreground mt-0.5">{format(new Date(), 'EEEE, MMMM d')}</p>
+      </div>
+
+      {/* ── Run My Day Banner ── */}
+      <div className="fade-up fade-up-delay-1">
+        <RunMyDayBanner
+          atRiskCount={atRisk.length}
+          pendingCheckIns={pendingCheckIns.length}
+          unreadMessages={unreadMessages.length}
+        />
       </div>
 
       {/* ── ⚡ Recommendations ── */}
