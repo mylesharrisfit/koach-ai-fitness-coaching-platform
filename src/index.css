@@ -9,7 +9,7 @@
     --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    --background: 0 0% 98%;
+    --background: 220 20% 97%;
     --foreground: 222 30% 10%;
     --card: 0 0% 100%;
     --card-foreground: 222 30% 10%;
@@ -17,16 +17,16 @@
     --popover-foreground: 222 30% 10%;
     --primary: 228 90% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 16% 94%;
+    --secondary: 220 16% 93%;
     --secondary-foreground: 222 25% 20%;
-    --muted: 220 16% 94%;
-    --muted-foreground: 220 10% 52%;
+    --muted: 220 16% 93%;
+    --muted-foreground: 220 10% 48%;
     --accent: 162 72% 40%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 82% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 16% 90%;
-    --input: 220 16% 90%;
+    --border: 220 16% 88%;
+    --input: 220 16% 88%;
     --ring: 228 90% 55%;
     --chart-1: 228 90% 55%;
     --chart-2: 162 72% 40%;
@@ -40,7 +40,7 @@
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 16% 95%;
     --sidebar-accent-foreground: 222 25% 20%;
-    --sidebar-border: 220 16% 90%;
+    --sidebar-border: 220 16% 88%;
     --sidebar-ring: 228 90% 55%;
     --glow-primary: 228 90% 55%;
     --glow-accent: 162 72% 40%;
@@ -100,28 +100,22 @@
   }
 }
 
-/* ── Luxury glass card ── */
+/* ── Light glass card ── */
 .glass-card {
-  background: hsl(var(--card) / 0.7);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid hsl(var(--border) / 0.6);
-  box-shadow:
-    0 1px 0 0 hsl(var(--primary) / 0.04) inset,
-    0 0 0 1px hsl(var(--border) / 0.08) inset,
-    0 4px 24px -4px hsl(220 16% 60% / 0.15),
-    0 1px 4px -1px hsl(220 16% 60% / 0.1);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 1px 4px -1px hsl(220 16% 60% / 0.12), 0 4px 16px -4px hsl(220 16% 60% / 0.08);
 }
 
-/* ── Glow effects ── */
+/* ── Glow effects (light-theme toned down) ── */
 .glow-primary {
-  box-shadow: 0 0 20px -4px hsl(var(--glow-primary) / 0.5), 0 0 40px -8px hsl(var(--glow-primary) / 0.25);
+  box-shadow: 0 0 16px -4px hsl(var(--glow-primary) / 0.25), 0 0 32px -8px hsl(var(--glow-primary) / 0.12);
 }
 .glow-accent {
-  box-shadow: 0 0 20px -4px hsl(var(--glow-accent) / 0.5), 0 0 40px -8px hsl(var(--glow-accent) / 0.25);
+  box-shadow: 0 0 16px -4px hsl(var(--glow-accent) / 0.25), 0 0 32px -8px hsl(var(--glow-accent) / 0.12);
 }
 .glow-sm {
-  box-shadow: 0 0 12px -2px hsl(var(--glow-primary) / 0.35);
+  box-shadow: 0 0 10px -2px hsl(var(--glow-primary) / 0.2);
 }
 
 /* ── Premium card hover ── */
@@ -132,8 +126,8 @@
   transform: translateY(-2px);
   border-color: hsl(var(--primary) / 0.25);
   box-shadow:
-    0 8px 32px -8px hsl(var(--glow-primary) / 0.2),
-    0 2px 8px -2px hsl(222 32% 3% / 0.3);
+    0 8px 24px -8px hsl(var(--glow-primary) / 0.15),
+    0 2px 8px -2px hsl(220 16% 60% / 0.12);
 }
 
 /* ── Animated progress bar ── */
@@ -167,18 +161,8 @@
   background-clip: text;
 }
 
-/* ── Ambient background noise (luxury texture) ── */
-.bg-noise::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 200px 200px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
-}
+/* bg-noise intentionally removed for light theme */
+.bg-noise::before { display: none; }
 
 /* ── Stat number ── */
 .stat-number {

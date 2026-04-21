@@ -96,10 +96,10 @@ module.exports = {
         'gradient-mesh': 'radial-gradient(at 40% 20%, hsl(var(--primary) / 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(var(--accent) / 0.06) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(var(--primary) / 0.05) 0px, transparent 50%)',
       },
       boxShadow: {
-        'glow-sm': '0 0 12px -2px hsl(var(--glow-primary) / 0.35)',
-        'glow-md': '0 0 20px -4px hsl(var(--glow-primary) / 0.45), 0 0 40px -8px hsl(var(--glow-primary) / 0.2)',
-        'card-luxury': '0 4px 24px -4px hsl(222 32% 3% / 0.35), 0 1px 4px -1px hsl(222 32% 3% / 0.2)',
-        'card-hover': '0 8px 32px -8px hsl(var(--glow-primary) / 0.25), 0 2px 8px -2px hsl(222 32% 3% / 0.3)',
+        'glow-sm': '0 0 10px -2px hsl(var(--glow-primary) / 0.2)',
+        'glow-md': '0 0 16px -4px hsl(var(--glow-primary) / 0.25), 0 0 32px -8px hsl(var(--glow-primary) / 0.12)',
+        'card-luxury': '0 4px 16px -4px hsl(220 16% 60% / 0.12), 0 1px 4px -1px hsl(220 16% 60% / 0.08)',
+        'card-hover': '0 8px 24px -8px hsl(var(--glow-primary) / 0.15), 0 2px 8px -2px hsl(220 16% 60% / 0.12)',
         'inner-top': 'inset 0 1px 0 0 hsl(0 0% 100% / 0.06)',
       },
     }
