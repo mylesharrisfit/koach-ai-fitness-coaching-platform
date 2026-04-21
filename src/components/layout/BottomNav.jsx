@@ -47,7 +47,7 @@ export default function BottomNav() {
               )}
             </div>
             {notifications.length === 0 ? (
-              <div className="py-12 text-center text-[#6B7280] text-sm">No notifications yet</div>
+              <div className="py-12 text-center text-[#374151] text-sm">No notifications yet</div>
             ) : (
               notifications.map(n => (
                 <div
@@ -60,7 +60,7 @@ export default function BottomNav() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className={cn('text-sm leading-tight text-[#1F2A44]', !n.is_read ? 'font-semibold' : 'font-normal opacity-70')}>{n.title}</p>
-                    {n.body && <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-2">{n.body}</p>}
+                    {n.body && <p className="text-xs text-[#374151] mt-0.5 line-clamp-2">{n.body}</p>}
                   </div>
                   {!n.is_read && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />}
                 </div>
@@ -84,7 +84,7 @@ export default function BottomNav() {
               to={item.path}
               className={cn(
                 'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
-                isActive ? 'text-primary' : 'text-[#6B7280]'
+                isActive ? 'text-primary' : 'text-[#374151]'
               )}
             >
               <item.icon className="w-5 h-5" />
@@ -98,7 +98,7 @@ export default function BottomNav() {
           onClick={() => setBellOpen(o => !o)}
           className={cn(
             'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
-            bellOpen ? 'text-primary' : 'text-[#6B7280]'
+            bellOpen ? 'text-primary' : 'text-[#374151]'
           )}
         >
           <div className="relative">
@@ -117,7 +117,7 @@ export default function BottomNav() {
           onClick={() => setMoreOpen(true)}
           className={cn(
             'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
-            (moreOpen || isMoreActive) ? 'text-primary' : 'text-[#6B7280]'
+            (moreOpen || isMoreActive) ? 'text-primary' : 'text-[#374151]'
           )}
         >
           <MoreHorizontal className="w-5 h-5" />

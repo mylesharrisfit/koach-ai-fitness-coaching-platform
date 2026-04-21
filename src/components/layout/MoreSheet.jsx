@@ -55,7 +55,7 @@ export default function MoreSheet({ open, onClose }) {
       {/* Backdrop */}
       <div
         className={cn(
-          'fixed inset-0 z-50 bg-black/70 backdrop-blur-sm md:hidden transition-opacity duration-300',
+          'fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:hidden transition-opacity duration-300',
           open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
         onClick={onClose}
@@ -67,21 +67,21 @@ export default function MoreSheet({ open, onClose }) {
           'fixed left-0 right-0 bottom-0 z-50 md:hidden flex flex-col transition-transform duration-300 ease-out rounded-t-3xl overflow-hidden',
           open ? 'translate-y-0' : 'translate-y-full'
         )}
-        style={{ background: 'hsl(222 28% 7%)', maxHeight: '88dvh' }}
+        style={{ background: '#FFFFFF', maxHeight: '88dvh' }}
       >
         {/* Handle bar */}
         <div className="flex-shrink-0 flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full bg-sidebar-foreground/20" />
+          <div className="w-10 h-1 rounded-full bg-[#E7EAF3]" />
         </div>
 
         {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-sidebar-border">
-          <h2 className="font-heading font-bold text-base text-sidebar-foreground">Menu</h2>
+        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-[#E7EAF3]">
+          <h2 className="font-heading font-bold text-base text-[#1F2A44]">Menu</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-sidebar-accent hover:bg-sidebar-accent/70 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F6F7FB] hover:bg-[#ECEEF5] transition-colors"
           >
-            <X className="w-4 h-4 text-sidebar-foreground/70" />
+            <X className="w-4 h-4 text-[#374151]" />
           </button>
         </div>
 
@@ -89,7 +89,7 @@ export default function MoreSheet({ open, onClose }) {
         <div className="overflow-y-auto flex-1 px-4 py-4 space-y-6 pb-8">
           {SECTIONS.map((section) => (
             <div key={section.title}>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40 mb-2 px-1">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-[#9CA3AF] mb-2 px-1">
                 {section.title}
               </p>
               <div className="space-y-1">
@@ -105,7 +105,7 @@ export default function MoreSheet({ open, onClose }) {
                         'flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all',
                         isActive
                           ? 'bg-primary/10 ring-1 ring-primary/20'
-                          : 'hover:bg-sidebar-accent active:scale-[0.98]'
+                          : 'hover:bg-[#F6F7FB] active:scale-[0.98]'
                       )}
                     >
                       <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0', item.bg)}>
@@ -113,7 +113,7 @@ export default function MoreSheet({ open, onClose }) {
                       </div>
                       <span className={cn(
                         'font-medium text-sm flex-1',
-                        isActive ? 'text-primary' : 'text-sidebar-foreground/80'
+                        isActive ? 'text-primary' : 'text-[#1F2A44]'
                       )}>
                         {item.label}
                       </span>
