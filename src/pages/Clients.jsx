@@ -137,94 +137,86 @@ export default function Clients() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader
-        title="Clients"
-        subtitle={`${counts.active || 0} active · ${counts.at_risk || 0} at risk · ${counts.lead || 0} leads`}
-        actions={
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => selectedIds.size > 0 ? clearSelection() : setSelectedIds(new Set(filteredClients.map(c => c.id)))}
-              className={cn('gap-1.5 text-xs', selectedIds.size > 0 && 'border-primary/40 text-primary bg-primary/10')}
-            >
-              {selectedIds.size > 0
-                ? <><X className="w-3.5 h-3.5" /> Deselect ({selectedIds.size})</>
-                : <><CheckSquare className="w-3.5 h-3.5" /> Select All</>}
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-heading font-bold text-[#1F2A44]">Clients</h1>
+          <p className="text-sm text-[#6B7280] mt-0.5">
+            {counts.active || 0} active · {counts.at_risk || 0} at risk · {counts.lead || 0} leads
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {selectedIds.size > 0 && (
+            <Button variant="secondary" size="sm" onClick={clearSelection} className="gap-1.5 text-xs">
+              <X className="w-3.5 h-3.5" /> {selectedIds.size} selected
             </Button>
-            <Button
-              onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
-              variant={atLimit ? 'outline' : 'default'}
-              className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
-            >
-              {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-              {atLimit ? `Limit Reached` : 'Add Client'}
-            </Button>
-          </div>
-        }
-      />
+          )}
+          <Button
+            onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
+            variant={atLimit ? 'outline' : 'default'}
+            className={atLimit ? 'border-red-200 text-red-500 hover:bg-red-50' : ''}
+          >
+            {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {atLimit ? 'Limit Reached' : 'Add Client'}
+          </Button>
+        </div>
+      </div>
 
-      <div className="mb-6 space-y-3">
+      <div className="mb-5 space-y-3">
         <UsageMeter user={currentUser} limitKey="max_clients" currentCount={clients.length} label="Clients" onUpgrade={() => setUpgradeOpen(true)} />
         <LimitBanner limitKey="max_clients" currentCount={clients.length} label="clients" featureKey="clients" />
 
-        {/* Needs Attention Banner */}
         {atRiskClients.length > 0 && (
           <Link to="/at-risk">
             <div className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-xl border transition-all hover:shadow-md',
-              highRiskCount > 0 ? 'bg-destructive/8 border-destructive/30' : 'bg-amber-500/8 border-amber-500/25'
+              'flex items-center gap-3 px-4 py-3.5 rounded-xl border transition-all hover:shadow-sm',
+              highRiskCount > 0
+                ? 'bg-red-50 border-red-100'
+                : 'bg-amber-50 border-amber-100'
             )}>
-              <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0', highRiskCount > 0 ? 'bg-destructive/15' : 'bg-amber-500/15')}>
-                <AlertTriangle className={cn('w-4 h-4', highRiskCount > 0 ? 'text-destructive' : 'text-amber-400')} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={cn('text-sm font-bold', highRiskCount > 0 ? 'text-destructive' : 'text-amber-400')}>
-                  {atRiskClients.length} client{atRiskClients.length !== 1 ? 's' : ''} need{atRiskClients.length === 1 ? 's' : ''} attention
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {highRiskCount > 0 ? `${highRiskCount} high risk · ` : ''}{atRiskClients.length - highRiskCount} medium/low risk
-                </p>
-              </div>
-              <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <AlertTriangle className={cn('w-4 h-4 flex-shrink-0', highRiskCount > 0 ? 'text-red-500' : 'text-amber-500')} />
+              <p className={cn('text-sm font-semibold flex-1', highRiskCount > 0 ? 'text-red-600' : 'text-amber-600')}>
+                {atRiskClients.length} client{atRiskClients.length !== 1 ? 's' : ''} need attention
+                {highRiskCount > 0 && <span className="font-normal text-red-400 ml-1">· {highRiskCount} high risk</span>}
+              </p>
+              <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
             </div>
           </Link>
         )}
       </div>
 
-      {/* Lifecycle status tabs */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      {/* ── Lifecycle tabs ── */}
+      <div className="flex flex-wrap gap-1.5 mb-4">
         {[{ key: 'all', label: 'All' }, ...LIFECYCLE_ORDER.map(s => ({ key: s, label: LIFECYCLE_CONFIG[s].label }))].map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setStatusFilter(key)}
             className={cn(
-              'flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold border transition-all active:scale-95',
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
               statusFilter === key
-                ? key === 'all' ? 'bg-primary/15 text-primary border-primary/30' : `${LIFECYCLE_CONFIG[key]?.color} border-opacity-50`
-                : 'bg-secondary/50 text-muted-foreground border-transparent hover:border-border hover:text-foreground'
+                ? 'bg-[#EEF4FF] text-primary border-blue-200'
+                : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:text-[#1F2A44] hover:border-[#C9CEE0]'
             )}
           >
             {label}
-            <span className={cn('text-[10px] rounded-full px-1.5 py-0', statusFilter === key ? 'bg-black/10' : 'bg-secondary')}>
+            <span className={cn('text-[10px] rounded-full px-1.5 tabular-nums', statusFilter === key ? 'bg-blue-100 text-primary' : 'bg-[#F6F7FB] text-[#6B7280]')}>
               {counts[key] || 0}
             </span>
           </button>
         ))}
       </div>
 
-      {/* Search + filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      {/* ── Search + filters ── */}
+      <div className="flex flex-col sm:flex-row gap-2 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search by name or email..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+          <Input placeholder="Search clients…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white border-[#E7EAF3]" />
         </div>
 
         {allTags.length > 0 && (
           <Select value={tagFilter || 'all'} onValueChange={v => setTagFilter(v === 'all' ? '' : v)}>
-            <SelectTrigger className="w-44">
-              <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
-              <SelectValue placeholder="Filter by tag" />
+            <SelectTrigger className="w-40 bg-white border-[#E7EAF3]">
+              <SelectValue placeholder="Tag" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Tags</SelectItem>
@@ -234,160 +226,160 @@ export default function Clients() {
         )}
 
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-44">
-            <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+          <SelectTrigger className="w-40 bg-white border-[#E7EAF3]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="created_date">Newest First</SelectItem>
+            <SelectItem value="created_date">Newest</SelectItem>
             <SelectItem value="name">Name A–Z</SelectItem>
-            <SelectItem value="lifecycle">Lifecycle Stage</SelectItem>
-            <SelectItem value="monthly_rate">Highest Rate</SelectItem>
+            <SelectItem value="lifecycle">Stage</SelectItem>
+            <SelectItem value="monthly_rate">Rate</SelectItem>
           </SelectContent>
         </Select>
 
         {activeFiltersCount > 0 && (
-          <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('all'); setTagFilter(''); }} className="text-muted-foreground hover:text-foreground gap-1.5">
-            <X className="w-3.5 h-3.5" /> Clear ({activeFiltersCount})
+          <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('all'); setTagFilter(''); }} className="text-[#6B7280] hover:text-[#1F2A44] gap-1">
+            <X className="w-3.5 h-3.5" /> Clear
           </Button>
         )}
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1,2,3].map(i => <div key={i} className="h-52 bg-card rounded-2xl border border-border animate-pulse" />)}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1,2,3].map(i => <div key={i} className="h-52 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse shadow-sm" />)}
         </div>
       ) : filteredClients.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-muted-foreground">No clients found.</p>
+        <div className="text-center py-16 bg-white rounded-2xl border border-[#E7EAF3] shadow-sm">
+          <p className="text-[#6B7280] font-medium">No clients found.</p>
+          <p className="text-sm text-[#6B7280]/70 mt-1">Try adjusting your filters.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredClients.map(client => {
             const isSelected = selectedIds.has(client.id);
+            const clientCIs = allCheckIns
+              .filter(ci => ci.client_id === client.id)
+              .sort((a, b) => new Date(b.date) - new Date(a.date));
+            const score = compositeAdherenceScore(clientCIs);
+            const barColor = score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-red-400';
+
             return (
-            <div
-              key={client.id}
-              className={cn('bg-card rounded-2xl border p-5 hover:shadow-lg hover:shadow-primary/5 transition-all group',
-                isSelected ? 'border-primary/50 ring-1 ring-primary/20 bg-primary/5' : 'border-border hover:border-primary/20')}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  {/* Checkbox */}
-                  <button
-                    onClick={() => toggleSelect(client.id)}
-                    className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all relative"
-                  >
-                    <div className={cn('w-11 h-11 rounded-full flex items-center justify-center text-primary font-heading font-bold text-base transition-all',
-                      isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/10')}>
-                      {isSelected
-                        ? <CheckSquare className="w-5 h-5" />
-                        : client.name?.[0]?.toUpperCase()}
-                    </div>
-                  </button>
-                  <div>
-                    <p className="font-semibold text-sm">{client.name}</p>
-                    <LifecycleBadge status={client.lifecycle_status || 'lead'} className="mt-0.5" />
-                  </div>
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem onClick={() => { setEditingClient(client); setShowForm(true); }}>
-                      <Edit className="w-4 h-4 mr-2" /> Edit Client
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <div className="px-2 py-1 text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">Move to Stage</div>
-                    {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
-                      <DropdownMenuItem key={s} onClick={() => handleStatusChange(client, s)}>
-                        <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {
-                          'bg-chart-4': s === 'lead',
-                          'bg-accent': s === 'active',
-                          'bg-destructive': s === 'at_risk',
-                          'bg-chart-3': s === 'completed',
-                          'bg-primary': s === 'alumni',
-                        })} />
-                        {LIFECYCLE_CONFIG[s].label}
-                      </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(client.id)}>
-                      <Trash2 className="w-4 h-4 mr-2" /> Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-              <div className="space-y-1.5 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="truncate">{client.email}</span>
-                </div>
-                {client.phone && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Phone className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span>{client.phone}</span>
-                  </div>
+              <div
+                key={client.id}
+                className={cn(
+                  'bg-white rounded-2xl border shadow-sm transition-all group',
+                  isSelected ? 'border-blue-300 ring-2 ring-blue-100' : 'border-[#E7EAF3] hover:border-blue-200 hover:shadow-md'
                 )}
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Target className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>{goalLabels[client.goal] || 'General Fitness'}</span>
-                </div>
-              </div>
-
-              {/* Tags */}
-              {client.tags?.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-3">
-                  {client.tags.map(tag => (
-                    <button key={tag} onClick={() => setTagFilter(tag === tagFilter ? '' : tag)} className="group/tag">
-                      <Badge variant="secondary" className={cn('text-[10px] px-1.5 h-5 cursor-pointer hover:bg-primary/15 hover:text-primary transition-colors', tagFilter === tag && 'bg-primary/15 text-primary')}>
-                        #{tag}
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Adherence score */}
-              {(() => {
-                const clientCIs = allCheckIns
-                  .filter(ci => ci.client_id === client.id)
-                  .sort((a, b) => new Date(b.date) - new Date(a.date));
-                const score = compositeAdherenceScore(clientCIs);
-                if (score === null) return null;
-                const barColor = score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-destructive';
-                return (
-                  <div className="mt-3 pt-3 border-t border-border space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">Adherence Score</span>
-                      <AdherencePill score={score} showLabel />
+              >
+                <div className="p-5">
+                  {/* ── Card header ── */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => toggleSelect(client.id)}
+                        className={cn(
+                          'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-bold text-sm transition-all',
+                          isSelected ? 'bg-primary text-white' : 'bg-[#EEF4FF] text-primary'
+                        )}
+                      >
+                        {isSelected ? <CheckSquare className="w-4 h-4" /> : client.name?.[0]?.toUpperCase()}
+                      </button>
+                      <div>
+                        <p className="font-semibold text-[#1F2A44] text-sm leading-tight">{client.name}</p>
+                        <LifecycleBadge status={client.lifecycle_status || 'lead'} className="mt-1" />
+                      </div>
                     </div>
-                    <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                      <div className={cn('h-full rounded-full transition-all duration-700', barColor)} style={{ width: `${score}%` }} />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB]">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem onClick={() => { setEditingClient(client); setShowForm(true); }}>
+                          <Edit className="w-4 h-4 mr-2" /> Edit Client
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <div className="px-2 py-1 text-[10px] text-[#6B7280] font-semibold uppercase tracking-wide">Move to Stage</div>
+                        {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
+                          <DropdownMenuItem key={s} onClick={() => handleStatusChange(client, s)}>
+                            <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {
+                              'bg-amber-400': s === 'lead',
+                              'bg-emerald-400': s === 'active',
+                              'bg-red-400': s === 'at_risk',
+                              'bg-blue-400': s === 'completed',
+                              'bg-purple-400': s === 'alumni',
+                            })} />
+                            {LIFECYCLE_CONFIG[s].label}
+                          </DropdownMenuItem>
+                        ))}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-red-500" onClick={() => deleteMutation.mutate(client.id)}>
+                          <Trash2 className="w-4 h-4 mr-2" /> Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  {/* ── Contact info ── */}
+                  <div className="space-y-1.5 text-xs text-[#6B7280]">
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="truncate">{client.email}</span>
+                    </div>
+                    {client.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>{client.phone}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Target className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span>{goalLabels[client.goal] || 'General Fitness'}</span>
                     </div>
                   </div>
-                );
-              })()}
 
-              {client.monthly_rate && (
-                <div className="mt-2 flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">Monthly Rate</span>
-                  <span className="font-heading font-bold text-primary text-sm">${client.monthly_rate}/mo</span>
+                  {/* ── Tags ── */}
+                  {client.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {client.tags.map(tag => (
+                        <button key={tag} onClick={() => setTagFilter(tag === tagFilter ? '' : tag)}>
+                          <span className={cn(
+                            'text-[10px] font-medium px-2 py-0.5 rounded-lg border transition-colors',
+                            tagFilter === tag
+                              ? 'bg-[#EEF4FF] text-primary border-blue-200'
+                              : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:border-blue-200 hover:text-primary'
+                          )}>#{tag}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* ── Adherence ── */}
+                  {score !== null && (
+                    <div className="mt-4 pt-3.5 border-t border-[#E7EAF3]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-[#6B7280]">Adherence</span>
+                        <AdherencePill score={score} showLabel />
+                      </div>
+                      <div className="h-1.5 bg-[#F6F7FB] rounded-full overflow-hidden">
+                        <div className={cn('h-full rounded-full transition-all duration-700', barColor)} style={{ width: `${score}%` }} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ── Rate ── */}
+                  {client.monthly_rate && (
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E7EAF3]">
+                      <span className="text-xs text-[#6B7280]">Monthly Rate</span>
+                      <span className="text-sm font-bold text-[#1F2A44]">${client.monthly_rate}<span className="text-[#6B7280] font-normal">/mo</span></span>
+                    </div>
+                  )}
+
+                  {/* ── Feedback history ── */}
+                  {clientCIs.length > 0 && <ClientFeedbackHistory checkIns={clientCIs} />}
                 </div>
-              )}
-
-              {/* Feedback history */}
-              {(() => {
-                const clientCIs = allCheckIns
-                  .filter(ci => ci.client_id === client.id)
-                  .sort((a, b) => new Date(b.date) - new Date(a.date));
-                return clientCIs.length > 0 ? <ClientFeedbackHistory checkIns={clientCIs} /> : null;
-              })()}
-            </div>
+              </div>
             );
           })}
         </div>
