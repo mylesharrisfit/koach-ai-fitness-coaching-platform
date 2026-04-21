@@ -11,9 +11,9 @@
 
     /* ── FitForge SaaS Light Theme ── */
     --background: 228 43% 97%;       /* #F6F7FB */
-    --foreground: 222 47% 19%;       /* #1F2A44 */
+    --foreground: 222 0% 100%;       /* #1F2A44 */
     --card: 0 0% 100%;               /* #FFFFFF */
-    --card-foreground: 222 47% 19%;
+    --card-foreground: 222 0% 100%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 19%;
     --primary: 217 91% 60%;          /* #3B82F6 */
