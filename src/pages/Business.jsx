@@ -97,9 +97,9 @@ function BusinessPage() {
           label="Monthly Recurring Revenue"
           value={`$${mrr.toLocaleString()}`}
           sub={`$${mrrAtRisk.toLocaleString()} at risk`}
-          subColor={mrrAtRisk > 0 ? 'text-amber-400' : 'text-emerald-400'}
-          iconColor="text-emerald-400"
-          iconBg="bg-emerald-400/10"
+          subColor={mrrAtRisk > 0 ? 'text-amber-600' : 'text-emerald-600'}
+          iconColor="text-emerald-600"
+          iconBg="bg-emerald-50"
         />
         <BusinessMetricCard
           icon={Users}
@@ -108,25 +108,25 @@ function BusinessPage() {
           sub={`${newClientsThisMonth} new this month`}
           subColor="text-primary"
           iconColor="text-primary"
-          iconBg="bg-primary/10"
+          iconBg="bg-[#EEF4FF]"
         />
         <BusinessMetricCard
           icon={AlertTriangle}
           label="Churn Risk"
           value={churnRiskClients.length}
           sub={churnRiskClients.length > 0 ? 'clients need attention' : 'All clients engaged'}
-          subColor={churnRiskClients.length > 0 ? 'text-amber-400' : 'text-emerald-400'}
-          iconColor="text-amber-400"
-          iconBg="bg-amber-400/10"
+          subColor={churnRiskClients.length > 0 ? 'text-amber-600' : 'text-emerald-600'}
+          iconColor="text-amber-600"
+          iconBg="bg-amber-50"
         />
         <BusinessMetricCard
           icon={TrendingUp}
           label="Avg. Client LTV"
           value={avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—'}
           sub="lifetime value estimate"
-          subColor="text-muted-foreground"
-          iconColor="text-chart-3"
-          iconBg="bg-chart-3/10"
+          subColor="text-[#6B7280]"
+          iconColor="text-violet-500"
+          iconBg="bg-violet-50"
         />
       </div>
 

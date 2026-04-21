@@ -48,7 +48,7 @@ export default function Analytics() {
         title="Coach Analytics"
         subtitle="Track retention, adherence, and client progress trends over time"
         actions={
-          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary px-3 py-1.5 rounded-lg">
+          <div className="flex items-center gap-2 text-xs text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] px-3 py-1.5 rounded-lg">
             <BarChart3 className="w-3.5 h-3.5" />
             Last 6 months
           </div>
@@ -142,21 +142,21 @@ export default function Analytics() {
 
       {/* Client breakdown table */}
       {clients.length > 0 && (
-        <div className="mt-8 glass-card rounded-2xl overflow-hidden fade-up fade-up-delay-3">
-          <div className="px-5 py-4 border-b border-border">
-            <p className="text-sm font-semibold">Client Breakdown</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Lifecycle status distribution</p>
+        <div className="mt-8 bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden shadow-sm fade-up fade-up-delay-3">
+          <div className="px-5 py-4 border-b border-[#E7EAF3]">
+            <p className="text-sm font-semibold text-[#1F2A44]">Client Breakdown</p>
+            <p className="text-xs text-[#6B7280] mt-0.5">Lifecycle status distribution</p>
           </div>
           <div className="p-5">
             {['active', 'at_risk', 'lead', 'completed', 'alumni'].map(status => {
               const count = clients.filter(c => c.lifecycle_status === status).length;
               const pct = clients.length ? Math.round((count / clients.length) * 100) : 0;
               const colors = {
-                active: 'bg-accent',
-                at_risk: 'bg-destructive',
+                active: 'bg-emerald-400',
+                at_risk: 'bg-red-400',
                 lead: 'bg-primary',
-                completed: 'bg-chart-3',
-                alumni: 'bg-muted-foreground',
+                completed: 'bg-violet-400',
+                alumni: 'bg-[#6B7280]',
               };
               const labels = {
                 active: 'Active', at_risk: 'At Risk', lead: 'Lead', completed: 'Completed', alumni: 'Alumni'
@@ -164,14 +164,14 @@ export default function Analytics() {
               if (count === 0) return null;
               return (
                 <div key={status} className="flex items-center gap-3 mb-3 last:mb-0">
-                  <span className="text-xs text-muted-foreground w-20 shrink-0">{labels[status]}</span>
-                  <div className="flex-1 bg-secondary rounded-full h-2 overflow-hidden">
+                  <span className="text-xs text-[#6B7280] w-20 shrink-0">{labels[status]}</span>
+                  <div className="flex-1 bg-[#E7EAF3] rounded-full h-2 overflow-hidden">
                     <div
                       className={`h-full rounded-full ${colors[status]}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-xs font-semibold w-14 text-right">{count} ({pct}%)</span>
+                  <span className="text-xs font-semibold text-[#1F2A44] w-14 text-right">{count} ({pct}%)</span>
                 </div>
               );
             })}

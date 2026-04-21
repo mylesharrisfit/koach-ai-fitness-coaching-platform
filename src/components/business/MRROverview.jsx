@@ -35,34 +35,34 @@ export default function MRROverview({ clients, payments }) {
   const growth = prevMRR > 0 ? (((currentMRR - prevMRR) / prevMRR) * 100).toFixed(1) : null;
 
   return (
-    <div className="glass-card rounded-2xl p-6">
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">MRR Trend</h3>
+        <h3 className="text-xs font-semibold text-[#6B7280] uppercase tracking-widest">MRR Trend</h3>
         <div className="flex items-center gap-1.5 text-xs font-semibold">
           {growth !== null && (
-            <span className={growth >= 0 ? 'text-emerald-400' : 'text-destructive'}>
-              {growth >= 0 ? '▲' : '▼'} {Math.abs(growth)}% MoM
+            <span className={Number(growth) >= 0 ? 'text-emerald-600' : 'text-red-500'}>
+              {Number(growth) >= 0 ? '▲' : '▼'} {Math.abs(growth)}% MoM
             </span>
           )}
         </div>
       </div>
-      <p className="stat-number text-3xl font-bold mb-5">${currentMRR.toLocaleString()}</p>
+      <p className="stat-number text-3xl font-bold text-[#1F2A44] mb-5">${currentMRR.toLocaleString()}</p>
       <ResponsiveContainer width="100%" height={160}>
         <AreaChart data={mrrData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="mrrGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="hsl(162 72% 42%)" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="hsl(162 72% 42%)" stopOpacity={0} />
+              <stop offset="5%" stopColor="#22C55E" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-          <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E7EAF3" vertical={false} />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: '#6B7280' }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
           <Tooltip
-            contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '10px', fontSize: 12 }}
+            contentStyle={{ background: '#FFFFFF', border: '1px solid #E7EAF3', borderRadius: '10px', fontSize: 12 }}
             formatter={(value) => [`$${value.toLocaleString()}`, 'MRR']}
           />
-          <Area type="monotone" dataKey="mrr" stroke="hsl(162 72% 42%)" strokeWidth={2} fill="url(#mrrGrad)" dot={{ fill: 'hsl(162 72% 42%)', r: 3 }} />
+          <Area type="monotone" dataKey="mrr" stroke="#22C55E" strokeWidth={2} fill="url(#mrrGrad)" dot={{ fill: '#22C55E', r: 3 }} />
         </AreaChart>
       </ResponsiveContainer>
     </div>
