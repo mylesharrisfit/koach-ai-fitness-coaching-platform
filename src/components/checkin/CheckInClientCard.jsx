@@ -13,6 +13,8 @@ import { AdherenceBreakdown } from '@/components/adherence/AdherenceScore';
 import CheckInMetrics from './CheckInMetrics';
 import CheckInResponseBox from './CheckInResponseBox';
 import CheckInQuickActions from './CheckInQuickActions';
+import RecommendationCard from './RecommendationCard';
+import { generateRecommendations } from '@/lib/decisionEngine';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
@@ -238,6 +240,27 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
               <p className="text-sm leading-relaxed">{checkIn.coach_notes}</p>
             </div>
           )}
+
+          {/* ── AI Recommendations ── */}
+          {(() => {
+            const recs = generateRecommendations(checkIn, client, allClientCIs);
+            if (!recs.length) return null;
+            return (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+                  <span className="w-4 h-4 text-sm">⚡</span> Recommended Actions
+                </p>
+                {recs.slice(0, 3).map(rec => (
+                  <RecommendationCard
+                    key={rec.id}
+                    recommendation={rec}
+                    checkIn={checkIn}
+                    client={client}
+                  />
+                ))}
+              </div>
+            );
+          })()}
 
           {/* Quick Actions */}
           <CheckInQuickActions

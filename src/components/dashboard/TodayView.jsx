@@ -8,6 +8,7 @@ import {
 import { cn } from '@/lib/utils';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore, scoreColor } from '@/lib/adherence';
+import RecommendationsWidget from './RecommendationsWidget';
 
 /* ─── Priority config ─── */
 const PRIORITY = {
@@ -220,6 +221,13 @@ export default function TodayView({ clients, checkIns, messages }) {
             : ' · all caught up'}
         </p>
       </div>
+
+      {/* ── ⚡ Recommendations ── */}
+      {checkIns.length > 0 && clients.length > 0 && (
+        <div className="fade-up fade-up-delay-1">
+          <RecommendationsWidget clients={clients} checkIns={checkIns} />
+        </div>
+      )}
 
       {totalActions === 0 && <AllClear />}
 
