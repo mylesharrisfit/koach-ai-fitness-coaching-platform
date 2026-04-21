@@ -103,6 +103,12 @@ export const ACTION_META = {
     description: 'Mark client lifecycle status as at_risk',
     needsMessage: false,
   },
+  suggest_adjustment: {
+    label: 'Suggest Plan Adjustment',
+    icon: '💡',
+    description: 'Notify coach to review and adjust the client\'s plan',
+    needsMessage: true,
+  },
 };
 
 /**
