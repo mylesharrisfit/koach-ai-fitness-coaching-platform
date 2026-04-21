@@ -54,17 +54,17 @@ export default function RevenueDashboard() {
             <div className="lg:col-span-2">
               <StripeRevenueChart data={dashData?.monthly_revenue || []} />
             </div>
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Payment Health</h3>
+            <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
+              <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-4">Payment Health</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Active Subscriptions', value: dashData?.active_subscriptions || 0, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-                  { label: 'Past Due', value: dashData?.past_due || 0, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-                  { label: 'Canceled', value: dashData?.canceled || 0, color: 'text-muted-foreground', bg: 'bg-muted/30' },
-                  { label: 'Failed Charges', value: dashData?.failed_charges || 0, color: 'text-destructive', bg: 'bg-destructive/10' },
+                  { label: 'Active Subscriptions', value: dashData?.active_subscriptions || 0, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                  { label: 'Past Due', value: dashData?.past_due || 0, color: 'text-amber-600', bg: 'bg-amber-50' },
+                  { label: 'Canceled', value: dashData?.canceled || 0, color: 'text-[#6B7280]', bg: 'bg-[#F6F7FB]' },
+                  { label: 'Failed Charges', value: dashData?.failed_charges || 0, color: 'text-red-500', bg: 'bg-red-50' },
                 ].map(item => (
-                  <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-secondary/30">
-                    <span className="text-sm text-muted-foreground">{item.label}</span>
+                  <div key={item.label} className={`flex items-center justify-between p-3 rounded-xl border border-[#E7EAF3] ${item.bg}`}>
+                    <span className="text-sm text-[#6B7280]">{item.label}</span>
                     <span className={`text-sm font-bold ${item.color}`}>{item.value}</span>
                   </div>
                 ))}

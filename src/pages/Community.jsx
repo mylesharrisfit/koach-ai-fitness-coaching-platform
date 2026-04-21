@@ -61,7 +61,7 @@ export default function Community() {
             onClick={() => setShowCoachSettings(!showCoachSettings)}
             className={cn(
               "flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all",
-              showCoachSettings ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-primary/40"
+              showCoachSettings ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] hover:border-primary/40 text-[#6B7280]"
             )}
           >
             <Settings2 className="w-4 h-4" />
@@ -77,23 +77,23 @@ export default function Community() {
       )}
 
       {enabledTabs.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">
+        <div className="text-center py-20 text-[#6B7280]">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
-          <p className="font-semibold">Community features are disabled</p>
+          <p className="font-semibold text-[#1F2A44]">Community features are disabled</p>
           {isCoach && <p className="text-sm mt-1">Click "Manage Features" to enable them.</p>}
         </div>
       ) : (
         <>
           {/* Tabs */}
           {enabledTabs.length > 1 && (
-            <div className="flex gap-1 bg-secondary/30 rounded-xl p-1 mb-6 w-fit">
+            <div className="flex gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-1 mb-6 w-fit">
               {enabledTabs.map(tab => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                    activeTab === tab.key ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"
+                    activeTab === tab.key ? "bg-white shadow-sm text-[#1F2A44]" : "text-[#6B7280] hover:text-[#1F2A44]"
                   )}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function Community() {
                   {settings.leaderboard_enabled !== false && <Leaderboard clients={clients} />}
                   {settings.challenges_enabled !== false && (
                     <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Active Challenges</p>
+                      <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-3">Active Challenges</p>
                       <WeeklyChallenges isCoach={isCoach} compact />
                     </div>
                   )}

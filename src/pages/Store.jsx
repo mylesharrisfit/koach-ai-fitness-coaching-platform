@@ -76,10 +76,10 @@ export default function Store() {
   };
 
   const categoryColors = {
-    workout: 'bg-primary/10 text-primary',
-    nutrition: 'bg-accent/10 text-accent',
-    bundle: 'bg-chart-3/10 text-chart-3',
-    coaching: 'bg-chart-4/10 text-chart-4',
+    workout: 'bg-[#EEF4FF] text-primary',
+    nutrition: 'bg-emerald-50 text-emerald-600',
+    bundle: 'bg-violet-50 text-violet-600',
+    coaching: 'bg-amber-50 text-amber-600',
   };
 
   return (
@@ -90,30 +90,30 @@ export default function Store() {
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1,2,3].map(i => <div key={i} className="h-80 bg-card rounded-2xl border animate-pulse" />)}
+          {[1,2,3].map(i => <div key={i} className="h-80 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse shadow-sm" />)}
         </div>
       ) : listings.length === 0 ? (
         <div className="text-center py-16">
-          <ShoppingBag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">No listings yet. Create your first plan to sell.</p>
+          <ShoppingBag className="w-12 h-12 text-[#6B7280] mx-auto mb-4" />
+          <p className="text-[#6B7280]">No listings yet. Create your first plan to sell.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map(listing => (
-            <div key={listing.id} className="bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all group">
-              <div className="h-40 bg-gradient-to-br from-primary/20 via-accent/10 to-chart-3/10 relative">
+            <div key={listing.id} className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden hover:shadow-md hover:border-blue-200 transition-all group shadow-sm">
+              <div className="h-40 bg-[#F6F7FB] relative">
                 {listing.image_url && <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />}
                 <div className="absolute top-3 left-3 flex gap-2">
                   <Badge className={cn("text-xs", categoryColors[listing.category])}>
                     {listing.category}
                   </Badge>
                   {!listing.is_published && (
-                    <Badge variant="outline" className="bg-card/80 text-xs"><EyeOff className="w-3 h-3 mr-1" /> Draft</Badge>
+                    <Badge variant="outline" className="bg-white/90 text-xs"><EyeOff className="w-3 h-3 mr-1" /> Draft</Badge>
                   )}
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="absolute top-3 right-3 h-8 w-8 bg-card/80 opacity-0 group-hover:opacity-100">
+                    <Button variant="ghost" size="icon" className="absolute top-3 right-3 h-8 w-8 bg-white/90 opacity-0 group-hover:opacity-100">
                       <MoreHorizontal className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -124,24 +124,24 @@ export default function Store() {
                 </DropdownMenu>
               </div>
               <div className="p-5">
-                <h3 className="font-heading font-bold text-lg">{listing.title}</h3>
-                {listing.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{listing.description}</p>}
+                <h3 className="font-heading font-bold text-lg text-[#1F2A44]">{listing.title}</h3>
+                {listing.description && <p className="text-sm text-[#6B7280] mt-1 line-clamp-2">{listing.description}</p>}
                 
                 {listing.features?.length > 0 && (
                   <div className="mt-3 space-y-1">
                     {listing.features.slice(0, 3).map((f, i) => (
-                      <p key={i} className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <p key={i} className="text-xs text-[#6B7280] flex items-center gap-1.5">
                         <span className="w-1 h-1 rounded-full bg-primary" /> {f}
                       </p>
                     ))}
                   </div>
                 )}
 
-                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+                <div className="mt-4 pt-4 border-t border-[#E7EAF3] flex items-center justify-between">
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-heading font-bold text-primary">${listing.price}</span>
                     {listing.original_price && listing.original_price > listing.price && (
-                      <span className="text-sm text-muted-foreground line-through">${listing.original_price}</span>
+                      <span className="text-sm text-[#6B7280] line-through">${listing.original_price}</span>
                     )}
                   </div>
                   {listing.rating && (
@@ -152,7 +152,7 @@ export default function Store() {
                   )}
                 </div>
                 {listing.sales_count > 0 && (
-                  <p className="text-xs text-muted-foreground mt-2">{listing.sales_count} sales</p>
+                  <p className="text-xs text-[#6B7280] mt-2">{listing.sales_count} sales</p>
                 )}
               </div>
             </div>

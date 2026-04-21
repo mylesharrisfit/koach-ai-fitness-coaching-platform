@@ -108,26 +108,26 @@ export default function Automations() {
       {/* Stats bar */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { label: 'Total Rules', value: rules.length, color: 'text-foreground' },
-          { label: 'Active', value: activeCount, color: 'text-accent' },
-          { label: 'Triggered Now', value: triggeredCount, color: triggeredCount > 0 ? 'text-destructive' : 'text-muted-foreground' },
+          { label: 'Total Rules', value: rules.length, color: 'text-[#1F2A44]' },
+          { label: 'Active', value: activeCount, color: 'text-emerald-600' },
+          { label: 'Triggered Now', value: triggeredCount, color: triggeredCount > 0 ? 'text-red-500' : 'text-[#6B7280]' },
         ].map(s => (
-          <div key={s.label} className="bg-card border border-border rounded-xl p-3 text-center">
+          <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-xl p-3 text-center shadow-sm">
             <p className={cn('text-2xl font-bold font-heading', s.color)}>{s.value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
+            <p className="text-xs text-[#6B7280] mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-secondary rounded-lg p-1 mb-6 w-fit">
+      <div className="flex gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg p-1 mb-6 w-fit">
         {TABS.map(t => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={cn(
               'text-xs px-4 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5',
-              tab === t.key ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+              tab === t.key ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#6B7280] hover:text-[#1F2A44]'
             )}
           >
             {t.key === 'results' && triggeredCount > 0 && (
@@ -145,10 +145,10 @@ export default function Automations() {
       {tab === 'rules' && (
         <div className="space-y-3">
           {rules.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 gap-4 text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-16 gap-4 text-[#6B7280]">
               <Zap className="w-12 h-12 opacity-20" />
               <div className="text-center">
-                <p className="text-sm font-medium">No rules yet</p>
+                <p className="text-sm font-medium text-[#1F2A44]">No rules yet</p>
                 <p className="text-xs mt-1">Create a rule or pick a template to get started</p>
               </div>
               <div className="flex gap-2">
@@ -187,7 +187,7 @@ export default function Automations() {
       {/* Live Results Tab */}
       {tab === 'results' && (
         <div className="space-y-4">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-[#6B7280]">
             {results.length > 0
               ? `${results.length} trigger${results.length > 1 ? 's' : ''} found across ${clients.length} clients`
               : 'Rules are evaluated in real-time against all active clients.'}

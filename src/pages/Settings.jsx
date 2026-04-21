@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import PageHeader from '../components/shared/PageHeader';
 import { User, Building, Globe } from 'lucide-react';
@@ -39,11 +38,11 @@ export default function Settings() {
       <PageHeader title="Settings" subtitle="Manage your coaching profile" />
 
       <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-heading flex items-center gap-2"><Building className="w-5 h-5" /> Business Profile</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="bg-white border border-[#E7EAF3] rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-[#E7EAF3]">
+            <p className="text-sm font-semibold text-[#1F2A44] flex items-center gap-2"><Building className="w-4 h-4 text-primary" /> Business Profile</p>
+          </div>
+          <div className="p-5 space-y-4">
             <div>
               <Label>Business Name</Label>
               <Input value={profile.business_name} onChange={e => setProfile({...profile, business_name: e.target.value})} placeholder="Your coaching brand" />
@@ -56,14 +55,14 @@ export default function Settings() {
               <Label>Specializations</Label>
               <Input value={profile.specializations} onChange={e => setProfile({...profile, specializations: e.target.value})} placeholder="e.g., Bodybuilding, Weight Loss, Athletic Performance" />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-heading flex items-center gap-2"><Globe className="w-5 h-5" /> Social & Web</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="bg-white border border-[#E7EAF3] rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-[#E7EAF3]">
+            <p className="text-sm font-semibold text-[#1F2A44] flex items-center gap-2"><Globe className="w-4 h-4 text-primary" /> Social & Web</p>
+          </div>
+          <div className="p-5 space-y-4">
             <div>
               <Label>Website</Label>
               <Input value={profile.website} onChange={e => setProfile({...profile, website: e.target.value})} placeholder="https://..." />
@@ -72,8 +71,8 @@ export default function Settings() {
               <Label>Instagram</Label>
               <Input value={profile.instagram} onChange={e => setProfile({...profile, instagram: e.target.value})} placeholder="@yourhandle" />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={saving}>{saving ? 'Saving...' : 'Save Settings'}</Button>
