@@ -42,11 +42,11 @@ function VideoThumbnail({ url, thumbnailUrl, name }) {
   }
 
   return (
-    <div className="w-full h-full bg-secondary/60 flex flex-col items-center justify-center gap-2">
-      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+    <div className="w-full h-full bg-[#F6F7FB] flex flex-col items-center justify-center gap-2">
+      <div className="w-10 h-10 rounded-full bg-[#EEF4FF] flex items-center justify-center">
         <Play className="w-4 h-4 text-primary ml-0.5" />
       </div>
-      <span className="text-xs text-muted-foreground">{url ? 'Video' : 'No demo'}</span>
+      <span className="text-xs text-[#6B7280]">{url ? 'Video' : 'No demo'}</span>
     </div>
   );
 }
@@ -57,13 +57,13 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
   return (
     <div
       className={cn(
-        "group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer",
+        "group bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden hover:border-primary/20 hover:shadow-md transition-all cursor-pointer shadow-sm",
         compact && "flex gap-3 p-3 items-center"
       )}
       onClick={onView}
     >
       {!compact && (
-        <div className="relative h-44 bg-secondary/40 overflow-hidden">
+        <div className="relative h-44 bg-[#F6F7FB] overflow-hidden">
           <VideoThumbnail url={exercise.video_url} thumbnailUrl={exercise.thumbnail_url} name={exercise.name} />
           {exercise.is_coach_branded && (
             <div className="absolute top-2 left-2 flex items-center gap-1 bg-chart-4/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
@@ -89,9 +89,9 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
       <div className={cn("p-4", compact && "p-0 flex-1")}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h3 className={cn("font-heading font-semibold leading-tight truncate", compact ? "text-sm" : "text-base")}>{exercise.name}</h3>
+            <h3 className={cn("font-heading font-semibold leading-tight truncate text-[#1F2A44]", compact ? "text-sm" : "text-base")}>{exercise.name}</h3>
             {exercise.description && !compact && (
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{exercise.description}</p>
+            <p className="text-xs text-[#6B7280] mt-1 line-clamp-2">{exercise.description}</p>
             )}
           </div>
           {compact && exercise.video_url && (

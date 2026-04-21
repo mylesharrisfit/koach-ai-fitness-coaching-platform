@@ -83,13 +83,13 @@ export default function Sales() {
         subtitle="Track leads, calls, payments and upsell opportunities"
         actions={
           <div className="flex items-center gap-3">
-            <div className="flex bg-secondary rounded-lg p-1">
+            <div className="flex bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg p-1">
               {['pipeline', 'payments'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all ${
-                    activeTab === tab ? 'bg-card shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+                    activeTab === tab ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#6B7280] hover:text-[#1F2A44]'
                   }`}
                 >
                   {tab}
@@ -106,18 +106,18 @@ export default function Sales() {
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Total Leads', value: leads.length, icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
-          { label: 'Pipeline Value', value: `$${pipelineValue.toLocaleString()}`, icon: TrendingUp, color: 'text-purple-400', bg: 'bg-purple-400/10' },
-          { label: 'Closed Revenue', value: `$${closedValue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-          { label: 'Close Rate', value: `${conversionRate}%`, icon: Target, color: 'text-amber-400', bg: 'bg-amber-400/10' },
+          { label: 'Total Leads', value: leads.length, icon: Users, color: 'text-primary', bg: 'bg-[#EEF4FF]' },
+          { label: 'Pipeline Value', value: `$${pipelineValue.toLocaleString()}`, icon: TrendingUp, color: 'text-violet-500', bg: 'bg-violet-50' },
+          { label: 'Closed Revenue', value: `$${closedValue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Close Rate', value: `${conversionRate}%`, icon: Target, color: 'text-amber-600', bg: 'bg-amber-50' },
         ].map(s => (
-          <div key={s.label} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
+          <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-xl p-4 flex items-center gap-3 shadow-sm">
             <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center flex-shrink-0`}>
               <s.icon className={`w-5 h-5 ${s.color}`} />
             </div>
             <div>
-              <p className="text-xl font-heading font-bold leading-none">{s.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+              <p className="text-xl font-heading font-bold leading-none text-[#1F2A44]">{s.value}</p>
+              <p className="text-xs text-[#6B7280] mt-1">{s.label}</p>
             </div>
           </div>
         ))}

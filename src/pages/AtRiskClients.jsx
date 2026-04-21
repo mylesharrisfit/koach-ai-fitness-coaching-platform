@@ -16,9 +16,9 @@ import PageHeader from '@/components/shared/PageHeader';
 
 /* ── Risk score ring colour ── */
 function ringColor(score) {
-  if (score >= 60) return 'border-destructive/60 bg-destructive/10 text-destructive';
-  if (score >= 30) return 'border-amber-500/60 bg-amber-500/10 text-amber-400';
-  return 'border-border bg-secondary text-muted-foreground';
+  if (score >= 60) return 'border-red-300 bg-red-50 text-red-500';
+  if (score >= 30) return 'border-amber-300 bg-amber-50 text-amber-600';
+  return 'border-[#E7EAF3] bg-[#F6F7FB] text-[#6B7280]';
 }
 
 /* ── Individual client risk card ── */
@@ -31,18 +31,18 @@ function RiskCard({ entry }) {
   const highFlags = flags.filter(f => f.severity === 'high');
   const topFlag = flags[0];
   const level = riskScore >= 60 ? 'High Risk' : riskScore >= 30 ? 'Medium Risk' : 'Low Risk';
-  const levelColor = riskScore >= 60 ? 'text-destructive bg-destructive/10 border-destructive/25'
-    : riskScore >= 30 ? 'text-amber-400 bg-amber-500/10 border-amber-500/25'
-    : 'text-muted-foreground bg-secondary border-border';
+  const levelColor = riskScore >= 60 ? 'text-red-500 bg-red-50 border-red-100'
+    : riskScore >= 30 ? 'text-amber-600 bg-amber-50 border-amber-100'
+    : 'text-[#6B7280] bg-[#F6F7FB] border-[#E7EAF3]';
 
   return (
     <div className={cn(
-      'bg-card border rounded-2xl overflow-hidden transition-all',
+      'bg-white border rounded-2xl overflow-hidden transition-all shadow-sm',
       highFlags.length > 0 ? 'border-destructive/30' : riskScore >= 30 ? 'border-amber-500/20' : 'border-border'
     )}>
       {/* Summary row */}
       <button
-        className="w-full p-4 text-left hover:bg-secondary/20 active:bg-secondary/40 transition-colors"
+        className="w-full p-4 text-left hover:bg-[#F6F7FB] active:bg-[#F6F7FB] transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ function RiskCard({ entry }) {
               </span>
             </div>
             {/* Primary reason */}
-            <p className="text-xs text-muted-foreground truncate">
+            <p className="text-xs text-[#6B7280] truncate">
               <span className="mr-1">{FLAG_ICONS[topFlag.icon] || '⚠️'}</span>
               {topFlag.detail || topFlag.label}
             </p>
@@ -70,7 +70,7 @@ function RiskCard({ entry }) {
                 {flags.map(f => (
                   <div key={f.key} className={cn('w-1.5 h-1.5 rounded-full', SEVERITY_CONFIG[f.severity].dot)} />
                 ))}
-                <span className="text-[10px] text-muted-foreground ml-1">{flags.length} flags</span>
+                <span className="text-[10px] text-[#6B7280] ml-1">{flags.length} flags</span>
               </div>
             )}
           </div>
@@ -86,10 +86,10 @@ function RiskCard({ entry }) {
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="border-t border-border p-4 space-y-4">
+        <div className="border-t border-[#E7EAF3] p-4 space-y-4">
           {/* All flags */}
           <div>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Detected Issues</p>
+            <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Detected Issues</p>
             <div className="space-y-2">
               {flags.map(f => (
                 <div key={f.key} className={cn('flex items-start gap-2.5 px-3 py-2.5 rounded-xl border', SEVERITY_CONFIG[f.severity].color)}>
@@ -100,9 +100,9 @@ function RiskCard({ entry }) {
                   </div>
                   <span className={cn(
                     'ml-auto text-[9px] font-bold uppercase px-1.5 py-0.5 rounded flex-shrink-0',
-                    f.severity === 'high' ? 'bg-destructive/20 text-destructive' :
-                    f.severity === 'medium' ? 'bg-amber-500/20 text-amber-400' :
-                    'bg-secondary text-muted-foreground'
+                    f.severity === 'high' ? 'bg-red-50 text-red-500' :
+                    f.severity === 'medium' ? 'bg-amber-50 text-amber-600' :
+                    'bg-[#F6F7FB] text-[#6B7280]'
                   )}>
                     {f.severity}
                   </span>
@@ -113,9 +113,9 @@ function RiskCard({ entry }) {
 
           {/* Last check-in info */}
           {lastCheckInDate && (
-            <div className="flex items-center justify-between text-xs text-muted-foreground bg-secondary/30 rounded-xl px-3 py-2">
+            <div className="flex items-center justify-between text-xs text-[#6B7280] bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-3 py-2">
               <span>Last check-in</span>
-              <span className="font-medium text-foreground">
+              <span className="font-medium text-[#1F2A44]">
                 {formatDistanceToNow(parseISO(lastCheckInDate), { addSuffix: true })}
               </span>
             </div>
@@ -209,12 +209,12 @@ export default function AtRiskClients() {
             key={key}
             onClick={() => setSeverityFilter(severityFilter === key ? 'all' : key)}
             className={cn(
-              'bg-card border rounded-xl p-3 text-center transition-all active:scale-[0.97]',
-              severityFilter === key ? 'border-primary ring-1 ring-primary/30' : 'border-border'
+              'bg-white border rounded-xl p-3 text-center transition-all active:scale-[0.97] shadow-sm',
+              severityFilter === key ? 'border-primary ring-1 ring-primary/30' : 'border-[#E7EAF3]'
             )}
           >
             <p className={cn('text-2xl font-bold font-heading', color)}>{counts[key]}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{label}</p>
+            <p className="text-[11px] text-[#6B7280] mt-0.5">{label}</p>
           </button>
         ))}
       </div>
@@ -227,7 +227,7 @@ export default function AtRiskClients() {
             onClick={() => setSeverityFilter(key)}
             className={cn(
               'flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all capitalize',
-              severityFilter === key ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:text-foreground'
+              severityFilter === key ? 'bg-primary text-primary-foreground' : 'bg-white border border-[#E7EAF3] text-[#6B7280] hover:text-[#1F2A44]'
             )}
           >
             {key === 'all' ? 'All' : `${key} risk`}
@@ -279,7 +279,7 @@ export default function AtRiskClients() {
       )}
 
       {/* Link to check-in dashboard */}
-      <div className="mt-6 pt-5 border-t border-border">
+      <div className="mt-6 pt-5 border-t border-[#E7EAF3]">
         <Link to="/checkin-review">
           <Button variant="outline" className="w-full gap-2">
             <ClipboardList className="w-4 h-4" />

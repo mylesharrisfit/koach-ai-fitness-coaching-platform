@@ -103,9 +103,9 @@ export default function Messages() {
   return (
     <div className="h-[calc(100dvh-64px)] md:h-screen flex overflow-hidden">
       {/* Sidebar — hidden on mobile when chat is open */}
-      <div className={`${mobileView === 'chat' ? 'hidden' : 'flex'} md:flex w-full md:w-72 border-r border-border bg-card flex-col flex-shrink-0`}>
-        <div className="p-4 border-b border-border">
-          <h2 className="font-heading font-bold text-lg mb-3">Messages</h2>
+      <div className={`${mobileView === 'chat' ? 'hidden' : 'flex'} md:flex w-full md:w-72 border-r border-[#E7EAF3] bg-white flex-col flex-shrink-0`}>
+        <div className="p-4 border-b border-[#E7EAF3]">
+          <h2 className="font-heading font-bold text-lg mb-3 text-[#1F2A44]">Messages</h2>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Search clients..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 h-9" />
@@ -120,8 +120,8 @@ export default function Messages() {
                 key={client.id}
                 onClick={() => handleSelectClient(client.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-4 text-left hover:bg-secondary/50 transition-all border-b border-border/50",
-                  selectedClientId === client.id && "bg-secondary"
+                  "w-full flex items-center gap-3 p-4 text-left hover:bg-[#F6F7FB] transition-all border-b border-[#E7EAF3]",
+                  selectedClientId === client.id && "bg-[#F6F7FB]"
                 )}
               >
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
@@ -150,11 +150,11 @@ export default function Messages() {
       </div>
 
       {/* Chat Area */}
-      <div className={`${mobileView === 'list' ? 'hidden' : 'flex'} md:flex flex-1 flex-col min-w-0 relative`}>
+      <div className={`${mobileView === 'list' ? 'hidden' : 'flex'} md:flex flex-1 flex-col min-w-0 relative bg-[#F6F7FB]`}>
         {selectedClient ? (
           <>
             {/* Header */}
-            <div className="h-14 md:h-16 border-b border-border flex items-center px-4 md:px-6 bg-card flex-shrink-0 gap-3">
+            <div className="h-14 md:h-16 border-b border-[#E7EAF3] flex items-center px-4 md:px-6 bg-white flex-shrink-0 gap-3">
               {/* Back button on mobile */}
               <button onClick={() => setMobileView('list')} className="md:hidden -ml-1 p-1.5 rounded-lg hover:bg-secondary transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -183,7 +183,7 @@ export default function Messages() {
             </div>
 
             {/* Composer */}
-            <div className="border-t border-border bg-card p-4 flex-shrink-0">
+            <div className="border-t border-[#E7EAF3] bg-white p-4 flex-shrink-0">
               {/* Tag + toolbar row */}
               <div className="flex items-center gap-2 mb-2">
                 {/* Tag picker */}
@@ -287,8 +287,8 @@ export default function Messages() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground gap-3">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center text-[#6B7280] gap-3">
+            <div className="w-16 h-16 rounded-2xl bg-[#EEF4FF] flex items-center justify-center">
               <Send className="w-7 h-7 text-primary" />
             </div>
             <p className="text-sm">Select a client to start messaging</p>

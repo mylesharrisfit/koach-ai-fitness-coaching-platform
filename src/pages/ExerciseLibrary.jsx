@@ -66,7 +66,7 @@ export default function ExerciseLibrary() {
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="h-64 bg-card rounded-2xl border border-border animate-pulse" />)}
+          {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="h-64 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse" />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
@@ -80,8 +80,8 @@ export default function ExerciseLibrary() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Star className="w-4 h-4 text-chart-4" />
-                <h2 className="font-heading font-semibold text-sm uppercase tracking-wider text-muted-foreground">Coach-Branded</h2>
-                <span className="text-xs text-muted-foreground/60">({branded.length})</span>
+                <h2 className="font-heading font-semibold text-sm uppercase tracking-wider text-[#1F2A44]">Coach-Branded</h2>
+                <span className="text-xs text-[#6B7280]">({branded.length})</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {branded.map(ex => (
@@ -101,8 +101,8 @@ export default function ExerciseLibrary() {
               {branded.length > 0 && (
                 <div className="flex items-center gap-2 mb-4">
                   <Dumbbell className="w-4 h-4 text-muted-foreground" />
-                  <h2 className="font-heading font-semibold text-sm uppercase tracking-wider text-muted-foreground">Standard Library</h2>
-                  <span className="text-xs text-muted-foreground/60">({standard.length})</span>
+                  <h2 className="font-heading font-semibold text-sm uppercase tracking-wider text-[#1F2A44]">Standard Library</h2>
+                  <span className="text-xs text-[#6B7280]">({standard.length})</span>
                 </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

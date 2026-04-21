@@ -73,22 +73,22 @@ export default function Adherence() {
       )}
 
       {/* Leaderboard strip */}
-      <div className="bg-card border border-border rounded-2xl p-5 mb-6">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Adherence Leaderboard</p>
+      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 mb-6 shadow-sm">
+        <p className="text-xs font-semibold text-[#1F2A44] uppercase tracking-wider mb-4">Adherence Leaderboard</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {activeClients
             .map(c => ({ client: c, score: averageAdherenceScore(getCheckIns(c.id)), streak: calculateStreak(getCheckIns(c.id)) }))
             .filter(x => x.score !== null)
             .sort((a, b) => b.score - a.score)
             .map(({ client, score, streak }, i) => (
-              <div key={client.id} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-secondary/30">
-                {i === 0 && <span className="text-xs text-amber-400 font-semibold">👑 Top</span>}
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+              <div key={client.id} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3]">
+                {i === 0 && <span className="text-xs text-amber-600 font-semibold">👑 Top</span>}
+                <div className="w-8 h-8 rounded-full bg-[#EEF4FF] flex items-center justify-center text-primary font-bold text-sm">
                   {client.name?.[0]}
                 </div>
-                <p className="text-xs font-medium text-center leading-tight">{client.name}</p>
+                <p className="text-xs font-medium text-[#1F2A44] text-center leading-tight">{client.name}</p>
                 <AdherenceScore score={score} size="sm" showLabel={false} />
-                <p className="text-[10px] text-muted-foreground">🔥 {streak}</p>
+                <p className="text-[10px] text-[#6B7280]">🔥 {streak}</p>
               </div>
             ))}
         </div>
@@ -97,14 +97,14 @@ export default function Adherence() {
       {/* Per-client panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {activeClients.map(client => (
-          <div key={client.id} className="bg-card border border-border rounded-2xl p-5">
+          <div key={client.id} className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+              <div className="w-9 h-9 rounded-full bg-[#EEF4FF] flex items-center justify-center text-primary font-bold">
                 {client.name?.[0]}
               </div>
               <div>
-                <p className="font-semibold text-sm">{client.name}</p>
-                <p className="text-xs text-muted-foreground capitalize">{client.goal?.replace('_', ' ')}</p>
+                <p className="font-semibold text-sm text-[#1F2A44]">{client.name}</p>
+                <p className="text-xs text-[#6B7280] capitalize">{client.goal?.replace('_', ' ')}</p>
               </div>
             </div>
             <AdherencePanel

@@ -120,8 +120,8 @@ export default function CheckInReview() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
       {/* Header */}
       <div className="mb-6 fade-up">
-        <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight">Check-in Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-[#1F2A44]">Check-in Dashboard</h1>
+        <p className="text-sm text-[#6B7280] mt-1">
           {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
           {counts.pending > 0 && ` · ${counts.pending} need${counts.pending === 1 ? 's' : ''} response`}
         </p>
@@ -134,14 +134,14 @@ export default function CheckInReview() {
             key={k}
             onClick={() => setFilter(filter === k ? 'all' : k)}
             className={cn(
-              'bg-card border rounded-xl p-3 text-center transition-all active:scale-[0.97]',
-              filter === k ? 'border-primary ring-1 ring-primary/30' : 'border-border'
+              'bg-white border rounded-xl p-3 text-center transition-all active:scale-[0.97] shadow-sm',
+              filter === k ? 'border-primary ring-1 ring-primary/30' : 'border-[#E7EAF3]'
             )}
           >
-            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? STAT_COLORS[k] : 'text-muted-foreground')}>
-              {counts[k]}
+            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? STAT_COLORS[k] : 'text-[#6B7280]')}>
+            {counts[k]}
             </p>
-            <p className="text-[11px] text-muted-foreground mt-0.5 capitalize">{k}</p>
+            <p className="text-[11px] text-[#6B7280] mt-0.5 capitalize">{k}</p>
           </button>
         ))}
       </div>
@@ -157,7 +157,7 @@ export default function CheckInReview() {
                 'flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all',
                 filter === f.key
                   ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-muted-foreground hover:text-foreground'
+                  : 'bg-white border border-[#E7EAF3] text-[#6B7280] hover:text-[#1F2A44]'
               )}
             >
               {f.label}

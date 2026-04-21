@@ -16,10 +16,10 @@ import { cn } from '@/lib/utils';
 
 const typeIcons = { video_call: Video, in_person: MapPin, check_in: ClipboardCheck, consultation: Phone };
 const statusColors = {
-  scheduled: 'bg-primary/10 text-primary',
-  completed: 'bg-accent/10 text-accent',
-  cancelled: 'bg-muted text-muted-foreground',
-  no_show: 'bg-destructive/10 text-destructive',
+  scheduled: 'bg-[#EEF4FF] text-primary',
+  completed: 'bg-emerald-50 text-emerald-600',
+  cancelled: 'bg-[#F6F7FB] text-[#6B7280]',
+  no_show: 'bg-red-50 text-red-500',
 };
 
 export default function Schedule() {
@@ -109,13 +109,13 @@ export default function Schedule() {
           const daySessions = sessions.filter(s => s.date === format(day, 'yyyy-MM-dd'));
           return (
             <div key={day.toISOString()} className={cn(
-              "bg-card rounded-2xl border p-4 min-h-[200px] transition-all",
-              isToday ? "border-primary/40 shadow-lg shadow-primary/5" : "border-border"
+              "bg-white rounded-2xl border p-4 min-h-[200px] transition-all shadow-sm",
+              isToday ? "border-primary/40" : "border-[#E7EAF3]"
             )}>
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">{format(day, 'EEE')}</p>
-                  <p className={cn("text-lg font-heading font-bold", isToday && "text-primary")}>{format(day, 'd')}</p>
+                  <p className="text-xs text-[#6B7280]">{format(day, 'EEE')}</p>
+                  <p className={cn("text-lg font-heading font-bold text-[#1F2A44]", isToday && "text-primary")}>{format(day, 'd')}</p>
                 </div>
                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => openCreate(day)}>
                   <Plus className="w-3 h-3" />
@@ -125,13 +125,13 @@ export default function Schedule() {
                 {daySessions.map(session => {
                   const Icon = typeIcons[session.type] || Video;
                   return (
-                    <div key={session.id} className="p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-all cursor-pointer group/session" onClick={() => openEdit(session)}>
+                    <div key={session.id} className="p-2 rounded-lg bg-[#F6F7FB] hover:bg-[#EEF4FF] border border-[#E7EAF3] transition-all cursor-pointer group/session" onClick={() => openEdit(session)}>
                       <div className="flex items-center gap-1.5">
                         <Icon className="w-3 h-3 text-primary flex-shrink-0" />
-                        <p className="text-xs font-medium truncate">{session.title}</p>
+                        <p className="text-xs font-medium text-[#1F2A44] truncate">{session.title}</p>
                       </div>
-                      {session.time && <p className="text-[10px] text-muted-foreground mt-0.5 ml-4.5">{session.time}</p>}
-                      <p className="text-[10px] text-muted-foreground truncate ml-4.5">{session.client_name}</p>
+                      {session.time && <p className="text-[10px] text-[#6B7280] mt-0.5 ml-4.5">{session.time}</p>}
+                      <p className="text-[10px] text-[#6B7280] truncate ml-4.5">{session.client_name}</p>
                     </div>
                   );
                 })}
