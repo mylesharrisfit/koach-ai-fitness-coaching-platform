@@ -1,22 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Play, AlertTriangle, ClipboardList, MessageSquare, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Play, AlertTriangle, ClipboardList, MessageSquare, CheckCircle2, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-function StatPill({ icon: Icon, count, label, color, urgent }) {
+function StatPill({ icon: Icon, count, label, colorClass, urgent }) {
+  const hasIssue = urgent && count > 0;
   return (
     <div className={cn(
-      'flex items-center gap-2 px-3 py-2.5 rounded-xl border flex-1 min-w-0',
-      urgent && count > 0
-        ? color.bg + ' ' + color.border
-        : 'bg-secondary/40 border-border'
+      'flex items-center gap-2.5 px-3 py-3 rounded-xl border flex-1',
+      hasIssue ? colorClass : 'bg-[#F6F7FB] border-[#E7EAF3]'
     )}>
-      <Icon className={cn('w-4 h-4 flex-shrink-0', urgent && count > 0 ? color.icon : 'text-muted-foreground')} />
-      <div className="min-w-0">
-        <p className={cn('text-lg font-bold font-heading leading-none tabular-nums', urgent && count > 0 ? color.icon : count === 0 ? 'text-emerald-400' : 'text-foreground')}>
+      <Icon className={cn('w-4 h-4 flex-shrink-0', hasIssue ? '' : 'text-[#6B7280]')} />
+      <div>
+        <p className={cn('text-lg font-bold font-heading leading-none tabular-nums', !hasIssue && count === 0 && 'text-emerald-500')}>
           {count}
         </p>
-        <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 truncate">{label}</p>
+        <p className="text-[10px] text-[#6B7280] mt-0.5">{label}</p>
       </div>
     </div>
   );
@@ -25,46 +24,34 @@ function StatPill({ icon: Icon, count, label, color, urgent }) {
 export default function RunMyDayBanner({ atRiskCount, pendingCheckIns, unreadMessages }) {
   const totalUrgent = atRiskCount + pendingCheckIns;
   const allClear = totalUrgent === 0 && unreadMessages === 0;
-
-  const urgencyLevel = atRiskCount > 0 ? 'red' : pendingCheckIns > 0 ? 'yellow' : 'green';
-
-  const COLORS = {
-    red:    { bg: 'bg-destructive/10',  border: 'border-destructive/30',  icon: 'text-destructive',  cta: 'from-destructive/80 to-destructive' },
-    yellow: { bg: 'bg-amber-500/10',    border: 'border-amber-500/30',    icon: 'text-amber-400',    cta: 'from-amber-500/80 to-amber-500' },
-    green:  { bg: 'bg-emerald-500/10',  border: 'border-emerald-500/30',  icon: 'text-emerald-400',  cta: 'from-emerald-500/80 to-emerald-500' },
-  };
-
-  const colors = COLORS[urgencyLevel];
+  const total = totalUrgent + unreadMessages;
 
   return (
-    <div className={cn(
-      'rounded-2xl border p-4 space-y-4',
-      urgencyLevel === 'red' ? 'bg-destructive/5 border-destructive/20'
-        : urgencyLevel === 'yellow' ? 'bg-amber-500/5 border-amber-500/20'
-        : 'bg-emerald-500/5 border-emerald-500/20'
-    )}>
+    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 shadow-sm space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-2.5">
-        <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0', colors.bg, colors.border, 'border')}>
+      <div className="flex items-center gap-3">
+        <div className={cn(
+          'w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
+          allClear ? 'bg-emerald-50' : 'bg-primary/10'
+        )}>
           {allClear
-            ? <CheckCircle2 className="w-4.5 h-4.5 text-emerald-400" />
-            : <Play className={cn('w-4 h-4 fill-current', colors.icon)} />
+            ? <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+            : <Play className="w-5 h-5 text-primary fill-primary" />
           }
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-heading font-bold text-base leading-tight">Run My Day</p>
-          <p className="text-xs text-muted-foreground leading-tight mt-0.5">
+        <div className="flex-1">
+          <p className="font-heading font-bold text-[15px] text-[#1F2A44]">Run My Day</p>
+          <p className="text-xs text-[#6B7280] mt-0.5">
             {allClear
               ? 'All caught up — great work! 🎉'
-              : `${totalUrgent + unreadMessages} item${totalUrgent + unreadMessages !== 1 ? 's' : ''} need your attention`
+              : `${total} item${total !== 1 ? 's' : ''} need your attention`
             }
           </p>
         </div>
-        {/* Urgency dot */}
         {!allClear && (
           <div className={cn(
-            'w-2.5 h-2.5 rounded-full animate-pulse flex-shrink-0',
-            urgencyLevel === 'red' ? 'bg-destructive' : urgencyLevel === 'yellow' ? 'bg-amber-400' : 'bg-emerald-400'
+            'w-2 h-2 rounded-full animate-pulse flex-shrink-0',
+            atRiskCount > 0 ? 'bg-red-400' : pendingCheckIns > 0 ? 'bg-amber-400' : 'bg-primary'
           )} />
         )}
       </div>
@@ -75,21 +62,21 @@ export default function RunMyDayBanner({ atRiskCount, pendingCheckIns, unreadMes
           icon={AlertTriangle}
           count={atRiskCount}
           label="At-risk"
-          color={{ bg: 'bg-destructive/10', border: 'border-destructive/30', icon: 'text-destructive' }}
+          colorClass="bg-red-50 border-red-100 text-red-500"
           urgent
         />
         <StatPill
           icon={ClipboardList}
           count={pendingCheckIns}
           label="Check-ins"
-          color={{ bg: 'bg-amber-500/10', border: 'border-amber-500/30', icon: 'text-amber-400' }}
+          colorClass="bg-amber-50 border-amber-100 text-amber-500"
           urgent
         />
         <StatPill
           icon={MessageSquare}
           count={unreadMessages}
           label="Messages"
-          color={{ bg: 'bg-primary/10', border: 'border-primary/20', icon: 'text-primary' }}
+          colorClass="bg-blue-50 border-blue-100 text-primary"
           urgent={false}
         />
       </div>
@@ -98,22 +85,16 @@ export default function RunMyDayBanner({ atRiskCount, pendingCheckIns, unreadMes
       {!allClear ? (
         <Link
           to="/fast-review"
-          className={cn(
-            'flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]',
-            'bg-gradient-to-r shadow-sm',
-            urgencyLevel === 'red' ? 'from-destructive/90 to-destructive hover:from-destructive hover:to-destructive/90'
-              : urgencyLevel === 'yellow' ? 'from-amber-500/90 to-amber-500 hover:from-amber-500 hover:to-amber-400'
-              : 'from-primary/90 to-primary hover:from-primary hover:to-primary/90'
-          )}
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
         >
           <Play className="w-4 h-4 fill-white" />
           Start Coaching Day
-          <ChevronRight className="w-4 h-4 ml-auto" />
+          <ArrowRight className="w-4 h-4 ml-auto" />
         </Link>
       ) : (
         <Link
           to="/fast-review"
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/15 transition-all active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors"
         >
           <CheckCircle2 className="w-4 h-4" />
           Review Queue

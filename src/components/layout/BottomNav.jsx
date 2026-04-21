@@ -13,7 +13,7 @@ const MORE_PATHS = [
 ];
 
 const PRIMARY_NAV = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+  { icon: LayoutDashboard, label: 'Home', path: '/' },
   { icon: Users, label: 'Clients', path: '/clients' },
   { icon: Dumbbell, label: 'Programs', path: '/programs' },
   { icon: MessageSquare, label: 'Messages', path: '/messages' },
@@ -36,10 +36,10 @@ export default function BottomNav() {
       {/* Mobile notification drawer */}
       {bellOpen && (
         <>
-          <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setBellOpen(false)} />
-          <div className="fixed bottom-[68px] left-0 right-0 z-50 bg-card border-t border-border rounded-t-2xl max-h-[60vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border sticky top-0 bg-card z-10">
-              <span className="text-sm font-bold">Notifications</span>
+          <div className="fixed inset-0 z-50 bg-black/20" onClick={() => setBellOpen(false)} />
+          <div className="fixed bottom-[68px] left-0 right-0 z-50 bg-white border border-[#E7EAF3] border-b-0 rounded-t-2xl max-h-[60vh] overflow-y-auto shadow-lg">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E7EAF3] sticky top-0 bg-white z-10">
+              <span className="text-sm font-bold text-[#1F2A44]">Notifications</span>
               {unreadCount > 0 && (
                 <button onClick={markAllRead} className="text-[11px] text-primary font-semibold">
                   Mark all read
@@ -47,20 +47,20 @@ export default function BottomNav() {
               )}
             </div>
             {notifications.length === 0 ? (
-              <div className="py-12 text-center text-muted-foreground text-sm">No notifications yet</div>
+              <div className="py-12 text-center text-[#6B7280] text-sm">No notifications yet</div>
             ) : (
               notifications.map(n => (
                 <div
                   key={n.id}
                   onClick={() => { markRead(n.id); setBellOpen(false); }}
-                  className={cn('flex items-start gap-3 px-4 py-3 border-b border-border/50 last:border-0', !n.is_read && 'bg-primary/5')}
+                  className={cn('flex items-start gap-3 px-4 py-3 border-b border-[#E7EAF3]/60 last:border-0 cursor-pointer', !n.is_read && 'bg-primary/5')}
                 >
                   <span className="text-lg mt-0.5">
                     {{ checkin_received: '📋', feedback_sent: '💬', checkin_reminder: '⏰', general: '🔔' }[n.type] || '🔔'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className={cn('text-sm leading-tight', !n.is_read ? 'font-semibold' : 'text-muted-foreground')}>{n.title}</p>
-                    {n.body && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.body}</p>}
+                    <p className={cn('text-sm leading-tight text-[#1F2A44]', !n.is_read ? 'font-semibold' : 'font-normal opacity-70')}>{n.title}</p>
+                    {n.body && <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-2">{n.body}</p>}
                   </div>
                   {!n.is_read && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />}
                 </div>
@@ -70,10 +70,9 @@ export default function BottomNav() {
         </>
       )}
 
-
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden border-t border-sidebar-border"
-        style={{ background: 'hsl(222 32% 4%)', height: '68px', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden bg-white border-t border-[#E7EAF3]"
+        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {PRIMARY_NAV.map((item) => {
           const isActive =
@@ -84,15 +83,12 @@ export default function BottomNav() {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex flex-col items-center justify-center flex-1 gap-1.5 relative transition-colors active:scale-95 active:opacity-75',
-                isActive ? 'text-primary' : 'text-sidebar-foreground/40 active:text-sidebar-foreground'
+                'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
+                isActive ? 'text-primary' : 'text-[#6B7280]'
               )}
             >
-              {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
-              )}
-              <item.icon className={cn('w-5 h-5', isActive && 'drop-shadow-[0_0_8px_hsl(var(--sidebar-primary)/0.9)]')} />
-              <span className="text-[10px] font-medium tracking-tight">{item.label}</span>
+              <item.icon className="w-5 h-5" />
+              <span className={cn('text-[10px] font-medium', isActive && 'font-semibold')}>{item.label}</span>
             </Link>
           );
         })}
@@ -101,8 +97,8 @@ export default function BottomNav() {
         <button
           onClick={() => setBellOpen(o => !o)}
           className={cn(
-            'flex flex-col items-center justify-center flex-1 gap-1.5 relative transition-colors active:scale-95 active:opacity-75',
-            bellOpen ? 'text-primary' : 'text-sidebar-foreground/40 active:text-sidebar-foreground'
+            'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
+            bellOpen ? 'text-primary' : 'text-[#6B7280]'
           )}
         >
           <div className="relative">
@@ -113,22 +109,19 @@ export default function BottomNav() {
               </span>
             )}
           </div>
-          <span className="text-[10px] font-medium tracking-tight">Alerts</span>
+          <span className="text-[10px] font-medium">Alerts</span>
         </button>
 
         {/* More */}
         <button
           onClick={() => setMoreOpen(true)}
           className={cn(
-            'flex flex-col items-center justify-center flex-1 gap-1.5 relative transition-colors active:scale-95 active:opacity-75',
-            (moreOpen || isMoreActive) ? 'text-primary' : 'text-sidebar-foreground/40 active:text-sidebar-foreground'
+            'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
+            (moreOpen || isMoreActive) ? 'text-primary' : 'text-[#6B7280]'
           )}
         >
-          {(moreOpen || isMoreActive) && (
-            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
-          )}
-          <MoreHorizontal className={cn('w-5 h-5', (moreOpen || isMoreActive) && 'drop-shadow-[0_0_8px_hsl(var(--sidebar-primary)/0.9)]')} />
-          <span className="text-[10px] font-medium tracking-tight">More</span>
+          <MoreHorizontal className="w-5 h-5" />
+          <span className="text-[10px] font-medium">More</span>
         </button>
       </nav>
     </>
