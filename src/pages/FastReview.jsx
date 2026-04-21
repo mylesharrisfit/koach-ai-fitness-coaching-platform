@@ -625,7 +625,7 @@ export default function FastReview() {
   );
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-5 pb-36 sm:pt-8 space-y-4">
+    <div className="max-w-xl mx-auto px-4 pt-4 pb-36 space-y-4">
 
       {/* ── Header ── */}
       <div className="space-y-3">

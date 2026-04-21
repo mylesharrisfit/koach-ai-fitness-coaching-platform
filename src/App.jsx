@@ -36,6 +36,7 @@ import SubmitCheckIn from './pages/SubmitCheckIn';
 import CheckInDetail from './pages/CheckInDetail';
 import AtRiskClients from './pages/AtRiskClients';
 import FastReview from './pages/FastReview';
+import FocusLayout from './components/layout/FocusLayout';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -89,6 +90,8 @@ const AuthenticatedApp = () => {
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
         <Route path="/at-risk" element={<AtRiskClients />} />
+      </Route>
+      <Route element={<FocusLayout />}>
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
