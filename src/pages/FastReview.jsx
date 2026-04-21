@@ -133,11 +133,11 @@ function WeightTrend({ clientCIs }) {
 /* ─── Stat tile ─── */
 function StatTile({ icon: Icon, label, value, sub, color }) {
   return (
-    <div className="flex flex-col items-center gap-1 bg-secondary/40 rounded-xl py-3 px-2">
-      <Icon className={cn('w-3.5 h-3.5', color || 'text-muted-foreground')} />
-      <span className={cn('text-base font-bold tabular-nums leading-none', color || 'text-foreground')}>{value ?? '–'}</span>
-      {sub && <span className="text-[9px] text-muted-foreground">{sub}</span>}
-      <span className="text-[9px] text-muted-foreground">{label}</span>
+    <div className="flex flex-col items-center gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl py-3 px-2">
+      <Icon className={cn('w-3.5 h-3.5', color || 'text-[#6B7280]')} />
+      <span className={cn('text-base font-bold tabular-nums leading-none', color || 'text-[#1F2A44]')}>{value ?? '–'}</span>
+      {sub && <span className="text-[9px] text-[#6B7280]">{sub}</span>}
+      <span className="text-[9px] text-[#6B7280]">{label}</span>
     </div>
   );
 }
@@ -145,15 +145,15 @@ function StatTile({ icon: Icon, label, value, sub, color }) {
 /* ─── Compliance bar ─── */
 function ComplianceBar({ label, value }) {
   if (value == null) return null;
-  const color = value >= 80 ? 'bg-emerald-400' : value >= 60 ? 'bg-amber-400' : 'bg-destructive';
-  const textColor = value >= 80 ? 'text-emerald-400' : value >= 60 ? 'text-amber-400' : 'text-destructive';
+  const color = value >= 80 ? 'bg-emerald-400' : value >= 60 ? 'bg-amber-400' : 'bg-red-400';
+  const textColor = value >= 80 ? 'text-emerald-600' : value >= 60 ? 'text-amber-600' : 'text-red-500';
   return (
     <div>
       <div className="flex justify-between mb-1">
-        <span className="text-xs text-muted-foreground">{label}</span>
+        <span className="text-xs text-[#6B7280]">{label}</span>
         <span className={cn('text-xs font-bold', textColor)}>{value}%</span>
       </div>
-      <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+      <div className="h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">
         <div className={cn('h-full rounded-full transition-all duration-700', color)} style={{ width: `${value}%` }} />
       </div>
     </div>
@@ -184,35 +184,35 @@ function InlineRec({ rec, checkIn, client }) {
   };
 
   return (
-    <div className={cn('rounded-xl border transition-all', stage === 'done' ? 'opacity-50 bg-card/30' : 'bg-card/50 hover:border-primary/20', stage === 'confirm' && 'border-primary/30')}>
+    <div className={cn('rounded-xl border transition-all', stage === 'done' ? 'opacity-50 bg-[#F6F7FB] border-[#E7EAF3]' : 'bg-white border-[#E7EAF3] hover:border-blue-200', stage === 'confirm' && 'border-blue-200')}>
       {/* Main row */}
       <div className="flex items-center gap-2.5 px-3 py-2.5">
         <div className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', styles.dot)} />
         <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold leading-tight">{rec.title}</p>
-          <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
+          <p className="text-xs font-semibold text-[#1F2A44] leading-tight">{rec.title}</p>
+          <p className="text-[11px] text-[#6B7280] leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
         </div>
         {stage === 'idle' && (
           <button onClick={handleApplyClick}
-            className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 active:scale-95 transition-all whitespace-nowrap">
+            className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border bg-[#EEF4FF] border-blue-200 text-primary hover:bg-blue-100 active:scale-95 transition-all whitespace-nowrap">
             <Zap className="w-3 h-3" />{rec.actionLabel}
           </button>
         )}
-        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground flex-shrink-0" />}
+        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-[#6B7280] flex-shrink-0" />}
         {stage === 'done' && (
-          <span className="flex-shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-400">
+          <span className="flex-shrink-0 flex items-center gap-1 text-[11px] font-bold text-emerald-600">
             <Check className="w-3 h-3" /> Done
           </span>
         )}
         {stage === 'confirm' && (
           <div className="flex gap-1.5 flex-shrink-0">
             <button onClick={handleConfirm}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-bold active:scale-95">
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold active:scale-95">
               <Check className="w-3 h-3" /> Yes
             </button>
             <button onClick={handleCancel}
-              className="flex items-center justify-center w-7 h-7 rounded-lg bg-secondary border border-border text-muted-foreground active:scale-95">
+              className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] text-[#6B7280] active:scale-95">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -221,12 +221,12 @@ function InlineRec({ rec, checkIn, client }) {
       {/* Confirm detail */}
       {stage === 'confirm' && (
         <div className="px-3 pb-2.5 fade-up">
-          <div className="flex items-start gap-1.5 bg-secondary/40 rounded-lg px-2.5 py-2">
+          <div className="flex items-start gap-1.5 bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg px-2.5 py-2">
             <AlertCircle className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-            <p className="text-[11px] leading-snug">{confirmText}</p>
+            <p className="text-[11px] text-[#1F2A44] leading-snug">{confirmText}</p>
           </div>
           {rec.action === 'message' && rec.actionData?.content && (
-            <p className="mt-1.5 text-[10px] text-muted-foreground italic border-l-2 border-primary/30 pl-2 line-clamp-2">
+            <p className="mt-1.5 text-[10px] text-[#6B7280] italic border-l-2 border-blue-200 pl-2 line-clamp-2">
               "{rec.actionData.content}"
             </p>
           )}
@@ -267,33 +267,33 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative">
           <button onClick={() => setShowTemplates(s => !s)}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border bg-card text-xs font-medium text-muted-foreground hover:text-foreground">
+            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-[#E7EAF3] bg-white text-xs font-medium text-[#6B7280] hover:text-[#1F2A44]">
             <BookOpen className="w-3 h-3" /> Templates <ChevronDown className="w-3 h-3" />
           </button>
           {showTemplates && (
-            <div className="absolute left-0 top-9 z-30 bg-card border border-border rounded-xl shadow-xl p-2 w-64 max-h-56 overflow-y-auto">
+            <div className="absolute left-0 top-9 z-30 bg-white border border-[#E7EAF3] rounded-xl shadow-lg p-2 w-64 max-h-56 overflow-y-auto">
               {TEMPLATES.map((t, i) => (
                 <button key={i} onClick={() => { setText(t.text); setShowTemplates(false); }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-secondary transition-colors">
-                  <p className="text-xs font-medium">{t.label}</p>
-                  <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">{t.text}</p>
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[#F6F7FB] transition-colors">
+                  <p className="text-xs font-medium text-[#1F2A44]">{t.label}</p>
+                  <p className="text-[11px] text-[#6B7280] line-clamp-1 mt-0.5">{t.text}</p>
                 </button>
               ))}
             </div>
           )}
         </div>
         <button onClick={generateAI} disabled={aiLoading}
-          className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-primary/30 bg-primary/10 text-xs font-medium text-primary hover:bg-primary/20 disabled:opacity-60">
+          className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-blue-200 bg-[#EEF4FF] text-xs font-medium text-primary hover:bg-blue-100 disabled:opacity-60">
           {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
           {aiLoading ? 'Generating…' : 'AI Draft'}
         </button>
       </div>
       <Textarea value={text} onChange={e => setText(e.target.value)}
-        placeholder="Write your coaching response..." className="text-sm resize-none" rows={4} autoFocus />
+        placeholder="Write your coaching response..." className="text-sm resize-none bg-white border-[#E7EAF3]" rows={4} autoFocus />
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-muted-foreground">{text.length} chars</span>
+        <span className="text-[11px] text-[#6B7280]">{text.length} chars</span>
         <button onClick={send} disabled={sending || !text.trim()}
-          className="flex items-center gap-1.5 h-9 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all">
+          className="flex items-center gap-1.5 h-9 px-4 rounded-xl bg-primary text-white text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all">
           {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
           Send
         </button>
@@ -322,14 +322,14 @@ function CaloriesPanel({ checkIn, client, onDone }) {
     setSaving(false);
   };
   return (
-    <div className="p-3 bg-orange-500/8 border border-orange-500/20 rounded-xl space-y-2 fade-up">
-      <p className="text-xs font-semibold text-orange-400">Adjust daily calories</p>
+    <div className="p-3 bg-orange-50 border border-orange-100 rounded-xl space-y-2 fade-up">
+      <p className="text-xs font-semibold text-orange-600">Adjust daily calories</p>
       <div className="grid grid-cols-4 gap-2">
         {[[-250, '−250'], [-150, '−150'], [+150, '+150'], [+250, '+250']].map(([d, l]) => (
           <button key={d} onClick={() => adjust(d)} disabled={saving}
             className={cn('py-2 rounded-lg text-xs font-bold border active:scale-95 transition-all',
-              d < 0 ? 'bg-destructive/10 border-destructive/20 text-destructive hover:bg-destructive/20'
-                    : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20')}>
+              d < 0 ? 'bg-red-50 border-red-100 text-red-500 hover:bg-red-100'
+                    : 'bg-emerald-50 border-emerald-100 text-emerald-600 hover:bg-emerald-100')}>
             {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : l}
           </button>
         ))}
@@ -355,15 +355,15 @@ function CardioPanel({ checkIn, onDone }) {
     setSaving(false);
   };
   return (
-    <div className="p-3 bg-blue-500/8 border border-blue-500/20 rounded-xl space-y-2 fade-up">
-      <p className="text-xs font-semibold text-blue-400">Adjust cardio</p>
+    <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl space-y-2 fade-up">
+      <p className="text-xs font-semibold text-blue-600">Adjust cardio</p>
       <div className="flex gap-2">
         <button onClick={() => adjust('up')} disabled={saving}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20 active:scale-95">
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-white border-blue-200 text-blue-600 hover:bg-blue-50 active:scale-95">
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronUp className="w-3.5 h-3.5" /> Increase</>}
         </button>
         <button onClick={() => adjust('down')} disabled={saving}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-secondary border-border text-muted-foreground hover:bg-secondary/70 active:scale-95">
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold border bg-white border-[#E7EAF3] text-[#6B7280] hover:bg-[#F6F7FB] active:scale-95">
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ChevronDown className="w-3.5 h-3.5" /> Decrease</>}
         </button>
       </div>
@@ -388,9 +388,9 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
   const recommendations = useMemo(() => generateRecommendations(checkIn, client, clientCIs), [checkIn, client, clientCIs]);
 
   const tierConfig = tier === 0
-    ? { text: 'At Risk', bg: 'bg-destructive/10', border: 'border-destructive/20', text_color: 'text-destructive' }
+    ? { text: 'At Risk', bg: 'bg-red-50', border: 'border-red-100', text_color: 'text-red-500' }
     : tier === 1
-    ? { text: 'Overdue', bg: 'bg-amber-500/10', border: 'border-amber-500/20', text_color: 'text-amber-400' }
+    ? { text: 'Overdue', bg: 'bg-amber-50', border: 'border-amber-100', text_color: 'text-amber-600' }
     : null;
 
   const sendAI = async () => {
@@ -407,9 +407,9 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
     toast.success('AI feedback sent! ✨');
   };
 
-  const sleepColor = !checkIn.sleep_hours ? 'text-muted-foreground' : checkIn.sleep_hours >= 7 ? 'text-emerald-400' : checkIn.sleep_hours >= 6 ? 'text-amber-400' : 'text-destructive';
-  const energyColor = !checkIn.energy_level ? 'text-muted-foreground' : checkIn.energy_level >= 4 ? 'text-emerald-400' : checkIn.energy_level >= 2 ? 'text-amber-400' : 'text-destructive';
-  const stressColor = !checkIn.stress_level ? 'text-muted-foreground' : checkIn.stress_level <= 2 ? 'text-emerald-400' : checkIn.stress_level <= 3 ? 'text-amber-400' : 'text-destructive';
+  const sleepColor = !checkIn.sleep_hours ? 'text-[#6B7280]' : checkIn.sleep_hours >= 7 ? 'text-emerald-600' : checkIn.sleep_hours >= 6 ? 'text-amber-600' : 'text-red-500';
+  const energyColor = !checkIn.energy_level ? 'text-[#6B7280]' : checkIn.energy_level >= 4 ? 'text-emerald-600' : checkIn.energy_level >= 2 ? 'text-amber-600' : 'text-red-500';
+  const stressColor = !checkIn.stress_level ? 'text-[#6B7280]' : checkIn.stress_level <= 2 ? 'text-emerald-600' : checkIn.stress_level <= 3 ? 'text-amber-600' : 'text-red-500';
   const photos = checkIn.photo_urls || [];
 
   return (
@@ -417,26 +417,26 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
 
       {/* ── Client header ── */}
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl flex-shrink-0">
+        <div className="w-12 h-12 rounded-2xl bg-[#EEF4FF] flex items-center justify-center text-primary font-bold text-xl flex-shrink-0">
           {(client?.name || checkIn.client_name || '?')[0]}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-heading font-bold text-xl leading-tight">{client?.name || checkIn.client_name}</p>
+            <p className="font-heading font-bold text-xl text-[#1F2A44] leading-tight">{client?.name || checkIn.client_name}</p>
             {tierConfig && (
               <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', tierConfig.bg, tierConfig.border, tierConfig.text_color)}>
                 {tierConfig.text}
               </span>
             )}
             {(feedbackSent || isReviewed) && (
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                 <Check className="w-2.5 h-2.5" /> Reviewed
               </span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
+          <p className="text-xs text-[#6B7280] mt-0.5 flex items-center gap-1.5">
             {format(parseISO(checkIn.date), 'MMM d, yyyy')}
-            {daysAgo > 0 && <span className={cn(daysAgo > 7 ? 'text-destructive' : daysAgo > 3 ? 'text-amber-400' : '')}> · {daysAgo}d ago</span>}
+            {daysAgo > 0 && <span className={cn(daysAgo > 7 ? 'text-red-500' : daysAgo > 3 ? 'text-amber-600' : '')}> · {daysAgo}d ago</span>}
             {checkIn.mood && <span className="ml-0.5">{MOOD_EMOJI[checkIn.mood]}</span>}
           </p>
         </div>
@@ -446,7 +446,7 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
       {riskEntry?.flags?.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {riskEntry.flags.slice(0, 4).map(f => (
-            <span key={f.key} className="flex items-center gap-1 text-[10px] font-medium text-destructive bg-destructive/8 border border-destructive/20 px-2 py-0.5 rounded-full">
+            <span key={f.key} className="flex items-center gap-1 text-[10px] font-medium text-red-500 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
               <AlertTriangle className="w-2.5 h-2.5" />{f.label}
             </span>
           ))}
@@ -455,24 +455,24 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
 
       {/* ── Weight trend ── */}
       {clientCIs.filter(c => c.weight).length >= 2 && (
-        <div className="bg-secondary/30 rounded-xl px-4 py-3 flex items-center justify-between">
+        <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-4 py-3 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Weight Trend</p>
+            <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-1">Weight Trend</p>
             <WeightTrend clientCIs={clientCIs} />
           </div>
           <div className="text-right">
-            <p className="text-[10px] text-muted-foreground">Adherence</p>
-            <p className={cn('text-2xl font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-sm font-normal">%</span></p>
+            <p className="text-[10px] text-[#6B7280]">Adherence</p>
+            <p className={cn('text-2xl font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-sm font-normal text-[#6B7280]">%</span></p>
           </div>
         </div>
       )}
 
-      {/* ── 5 stat tiles: Sleep / Energy / Stress / Training / Nutrition ── */}
+      {/* ── 5 stat tiles ── */}
       <div className="grid grid-cols-5 gap-2">
         <StatTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} sub="hrs" color={sleepColor} />
         <StatTile icon={Zap} label="Energy" value={checkIn.energy_level} sub="/10" color={energyColor} />
         <StatTile icon={Brain} label="Stress" value={checkIn.stress_level} sub="/10" color={stressColor} />
-        <div className="col-span-2 flex flex-col justify-center bg-secondary/40 rounded-xl py-3 px-3 gap-2">
+        <div className="col-span-2 flex flex-col justify-center bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl py-3 px-3 gap-2">
           <ComplianceBar label="Training" value={checkIn.compliance_training} />
           <ComplianceBar label="Nutrition" value={checkIn.compliance_nutrition} />
         </div>
@@ -481,18 +481,18 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
       {/* ── Photos ── */}
       {photos.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2 flex items-center gap-1.5">
             <Camera className="w-3 h-3" /> Progress Photos ({photos.length})
           </p>
           <div className="relative">
             <a href={photos[photoIdx]} target="_blank" rel="noreferrer">
-              <img src={photos[photoIdx]} alt="progress" className="w-full h-52 object-cover rounded-xl border border-border" />
+              <img src={photos[photoIdx]} alt="progress" className="w-full h-52 object-cover rounded-xl border border-[#E7EAF3]" />
             </a>
             {photos.length > 1 && (
               <div className="flex gap-1.5 mt-2 justify-center">
                 {photos.map((_, i) => (
                   <button key={i} onClick={() => setPhotoIdx(i)}
-                    className={cn('w-2 h-2 rounded-full transition-all', i === photoIdx ? 'bg-primary' : 'bg-secondary')} />
+                    className={cn('w-2 h-2 rounded-full transition-all', i === photoIdx ? 'bg-primary' : 'bg-[#E7EAF3]')} />
                 ))}
               </div>
             )}
@@ -502,24 +502,24 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
 
       {/* ── Client notes ── */}
       {checkIn.notes && (
-        <div className="bg-secondary/30 rounded-xl p-3">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Client Notes</p>
-          <p className="text-sm leading-relaxed">{checkIn.notes}</p>
+        <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-1">Client Notes</p>
+          <p className="text-sm text-[#1F2A44] leading-relaxed">{checkIn.notes}</p>
         </div>
       )}
 
       {/* ── Existing coach response ── */}
       {checkIn.coach_notes && (
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-3">
+        <div className="bg-[#EEF4FF] border border-blue-100 rounded-xl p-3">
           <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-1">Your Response</p>
-          <p className="text-sm leading-relaxed">{checkIn.coach_notes}</p>
+          <p className="text-sm text-[#1F2A44] leading-relaxed">{checkIn.coach_notes}</p>
         </div>
       )}
 
       {/* ── Recommendations ── */}
       {recommendations.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">⚡ Suggested Actions</p>
+          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">⚡ Suggested Actions</p>
           {recommendations.slice(0, 3).map(rec => (
             <InlineRec key={rec.id} rec={rec} checkIn={checkIn} client={client} />
           ))}
@@ -532,40 +532,47 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
           {/* AI Feedback */}
           <button onClick={sendAI} disabled={aiSending || aiDone || feedbackSent}
             className={cn('flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
-              (aiDone || feedbackSent) ? 'bg-purple-500/10 border-purple-500/20 text-purple-400 opacity-60 cursor-default'
-                : 'bg-purple-500/10 border-purple-500/20 text-purple-400 hover:bg-purple-500/20')}>
+              (aiDone || feedbackSent)
+                ? 'bg-purple-50 border-purple-100 text-purple-500 opacity-60 cursor-default'
+                : 'bg-purple-50 border-purple-100 text-purple-600 hover:bg-purple-100')}>
             {aiSending ? <Loader2 className="w-4 h-4 animate-spin" /> : (aiDone || feedbackSent) ? <Check className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
             {aiDone || feedbackSent ? 'AI Sent' : 'AI Feedback'}
           </button>
 
-          {/* Write / Message */}
+          {/* Message */}
           <button onClick={() => setPanel(p => p === 'feedback' ? null : 'feedback')}
             className={cn('flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
-              panel === 'feedback' ? 'bg-primary/20 border-primary/40 text-primary' : 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20')}>
+              panel === 'feedback'
+                ? 'bg-[#EEF4FF] border-blue-200 text-primary'
+                : 'bg-white border-[#E7EAF3] text-primary hover:bg-[#EEF4FF] hover:border-blue-200')}>
             <MessageSquare className="w-4 h-4" /> Message
           </button>
 
           {/* Calories */}
           <button onClick={() => setPanel(p => p === 'calories' ? null : 'calories')} disabled={!!calResult}
             className={cn('flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
-              calResult ? 'bg-orange-500/10 border-orange-500/20 text-orange-400 opacity-60 cursor-default'
-                : panel === 'calories' ? 'bg-orange-500/15 border-orange-500/30 text-orange-400'
-                : 'bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20')}>
+              calResult
+                ? 'bg-orange-50 border-orange-100 text-orange-500 opacity-60 cursor-default'
+                : panel === 'calories'
+                ? 'bg-orange-100 border-orange-200 text-orange-600'
+                : 'bg-orange-50 border-orange-100 text-orange-600 hover:bg-orange-100')}>
             <Flame className="w-4 h-4" /> {calResult ? `Cal ${calResult}` : 'Calories'}
           </button>
 
           {/* Cardio */}
           <button onClick={() => setPanel(p => p === 'cardio' ? null : 'cardio')} disabled={!!cardioResult}
             className={cn('flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
-              cardioResult ? 'bg-blue-500/10 border-blue-500/20 text-blue-400 opacity-60 cursor-default'
-                : panel === 'cardio' ? 'bg-blue-500/15 border-blue-500/30 text-blue-400'
-                : 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20')}>
+              cardioResult
+                ? 'bg-blue-50 border-blue-100 text-blue-500 opacity-60 cursor-default'
+                : panel === 'cardio'
+                ? 'bg-blue-100 border-blue-200 text-blue-600'
+                : 'bg-blue-50 border-blue-100 text-blue-600 hover:bg-blue-100')}>
             <Footprints className="w-4 h-4" /> {cardioResult ? `Cardio ${cardioResult}` : 'Cardio'}
           </button>
         </div>
 
         {panel === 'feedback' && (
-          <div className="bg-secondary/20 rounded-xl p-3.5 border border-border">
+          <div className="bg-[#F6F7FB] rounded-xl p-3.5 border border-[#E7EAF3]">
             <FeedbackComposer checkIn={checkIn} client={client} allCIs={clientCIs}
               onSent={() => { setFeedbackSent(true); setPanel(null); }} />
           </div>
@@ -576,8 +583,9 @@ function ClientCard({ item, onMarkReviewed, isReviewed, markSaving }) {
         {/* Mark Reviewed */}
         <button onClick={onMarkReviewed} disabled={markSaving || isReviewed}
           className={cn('w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border text-sm font-semibold transition-all active:scale-95',
-            isReviewed ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 cursor-default opacity-80'
-              : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20')}>
+            isReviewed
+              ? 'bg-emerald-50 border-emerald-100 text-emerald-600 cursor-default opacity-80'
+              : 'bg-emerald-50 border-emerald-100 text-emerald-600 hover:bg-emerald-100')}>
           {markSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : isReviewed
             ? <><Check className="w-4 h-4" /> Reviewed</>
             : <><ClipboardCheck className="w-4 h-4" /> Mark as Reviewed</>}
@@ -646,12 +654,12 @@ export default function FastReview() {
 
   if (activeQueue.length === 0) return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4 p-6">
-      <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-        <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+      <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+        <CheckCircle2 className="w-8 h-8 text-emerald-500" />
       </div>
       <div className="text-center">
-        <p className="text-xl font-bold">All caught up! 🎉</p>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xl font-bold text-[#1F2A44]">All caught up! 🎉</p>
+        <p className="text-sm text-[#6B7280] mt-1">
           {completedCount > 0 ? `Reviewed ${completedCount} client${completedCount !== 1 ? 's' : ''} today` : 'No pending check-ins — great work!'}
         </p>
       </div>
@@ -665,41 +673,38 @@ export default function FastReview() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
-              <Play className="w-3.5 h-3.5 text-primary fill-primary" />
-            </div>
-            <h1 className="text-lg font-heading font-bold">Run My Day</h1>
+            <h1 className="text-lg font-heading font-bold text-[#1F2A44]">Review Queue</h1>
           </div>
           <div className="text-right">
-            <span className="text-sm font-semibold text-muted-foreground tabular-nums">
-              {safeIdx + 1} <span className="opacity-40">/</span> {activeQueue.length}
+            <span className="text-sm font-semibold text-[#6B7280] tabular-nums">
+              {safeIdx + 1} / {activeQueue.length}
             </span>
             {completedCount > 0 && (
-              <p className="text-[10px] text-emerald-400 font-semibold">✓ {completedCount} done</p>
+              <p className="text-[10px] text-emerald-600 font-semibold">✓ {completedCount} done</p>
             )}
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+        <div className="h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">
           <div className="h-full bg-primary rounded-full transition-all duration-500"
             style={{ width: `${Math.max(progressPct, 3)}%` }} />
         </div>
 
-        {/* Tier pills — show remaining counts from activeQueue */}
+        {/* Tier pills */}
         <div className="flex gap-2 flex-wrap">
           {activeQueue.filter(i => i.tier === 0).length > 0 && (
-            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-red-50 text-red-500 border border-red-100">
               🚨 {activeQueue.filter(i => i.tier === 0).length} at-risk
             </span>
           )}
           {activeQueue.filter(i => i.tier === 1).length > 0 && (
-            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-100">
               ⏰ {activeQueue.filter(i => i.tier === 1).length} overdue
             </span>
           )}
           {activeQueue.filter(i => i.tier === 2).length > 0 && (
-            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-secondary text-muted-foreground border border-border">
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[#F6F7FB] text-[#6B7280] border border-[#E7EAF3]">
               📋 {activeQueue.filter(i => i.tier === 2).length} pending
             </span>
           )}
@@ -708,7 +713,7 @@ export default function FastReview() {
 
       {/* ── Client card ── */}
       {current && (
-        <div key={current.ci.id} className="bg-card border border-border rounded-2xl p-4 sm:p-5 fade-up">
+        <div key={current.ci.id} className="bg-white border border-[#E7EAF3] rounded-2xl p-4 sm:p-5 shadow-sm fade-up">
           <ClientCard
             item={current}
             onMarkReviewed={handleMark}
@@ -719,9 +724,9 @@ export default function FastReview() {
       )}
 
       {/* ── Sticky bottom nav ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 flex gap-3 max-w-xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#E7EAF3] px-4 py-3 flex gap-3 max-w-xl mx-auto">
         <button onClick={goPrev} disabled={safeIdx === 0}
-          className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-border bg-card text-sm font-semibold text-muted-foreground disabled:opacity-30 active:scale-95 transition-all flex-shrink-0">
+          className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-[#E7EAF3] bg-white text-sm font-semibold text-[#6B7280] disabled:opacity-30 active:scale-95 transition-all flex-shrink-0">
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
         <button
@@ -730,8 +735,8 @@ export default function FastReview() {
           className={cn(
             'flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-bold transition-all active:scale-95',
             safeIdx >= activeQueue.length - 1
-              ? 'bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 cursor-default'
-              : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-sm'
+              ? 'bg-emerald-50 border border-emerald-100 text-emerald-600 cursor-default'
+              : 'bg-primary text-white hover:bg-primary/90'
           )}
         >
           {safeIdx >= activeQueue.length - 1

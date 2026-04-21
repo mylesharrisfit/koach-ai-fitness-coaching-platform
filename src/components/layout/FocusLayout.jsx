@@ -15,27 +15,25 @@ export default function FocusLayout() {
 
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
-      <div className="min-h-screen bg-background dark bg-noise">
-        <div className="fixed inset-0 bg-gradient-mesh pointer-events-none" aria-hidden="true" />
-
+      <div className="min-h-screen bg-[#F6F7FB]">
         {/* Minimal top bar */}
-        <header className="fixed top-0 left-0 right-0 z-50 h-12 flex items-center justify-between px-4 bg-background/90 backdrop-blur-sm border-b border-border/50">
+        <header className="fixed top-0 left-0 right-0 z-50 h-12 flex items-center justify-between px-4 bg-white border-b border-[#E7EAF3]">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-md bg-primary/20 flex items-center justify-center">
-              <span className="text-[10px]">▶</span>
+            <div className="w-6 h-6 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-[10px] text-white">▶</span>
             </div>
-            <span className="text-sm font-bold font-heading text-foreground">Run My Day</span>
+            <span className="text-sm font-bold font-heading text-[#1F2A44]">Run My Day</span>
           </div>
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg hover:bg-secondary/60 active:scale-95"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] hover:text-[#1F2A44] transition-colors px-3 py-1.5 rounded-lg hover:bg-[#F6F7FB]"
           >
             <X className="w-3.5 h-3.5" /> Exit
           </Link>
         </header>
 
         {/* Page content pushed below header */}
-        <main className="pt-12 min-h-screen relative z-10">
+        <main className="pt-12 min-h-screen">
           <Outlet />
         </main>
       </div>
