@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight, CheckSquare, Square } from 'lucide-react';
+import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight, CheckSquare, Square, Plug, ChevronDown, ChevronUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore, scoreColor, scoreLabel } from '@/lib/adherence';
@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
 import ClientFeedbackHistory from '../components/clients/ClientFeedbackHistory';
 import BulkActionBar from '../components/clients/BulkActionBar';
+import ClientConnectedApps from '../components/integrations/ClientConnectedApps';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
@@ -40,6 +41,7 @@ export default function Clients() {
   const [currentUser, setCurrentUser] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
+  const [expandedApps, setExpandedApps] = useState(null);
   const queryClient = useQueryClient();
 
   const toggleSelect = (id) => setSelectedIds(prev => {
@@ -378,6 +380,27 @@ export default function Clients() {
 
                   {/* ── Feedback history ── */}
                   {clientCIs.length > 0 && <ClientFeedbackHistory checkIns={clientCIs} />}
+
+                  {/* ── Connected Apps toggle ── */}
+                  <div className="mt-3 pt-3 border-t border-[#E7EAF3]">
+                    <button
+                      onClick={() => setExpandedApps(expandedApps === client.id ? null : client.id)}
+                      className="w-full flex items-center justify-between gap-2 group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Plug className="w-3.5 h-3.5 text-[#374151]" />
+                        <span className="text-xs font-semibold text-[#374151]">Connected Apps</span>
+                      </div>
+                      {expandedApps === client.id
+                        ? <ChevronUp className="w-3.5 h-3.5 text-[#374151]" />
+                        : <ChevronDown className="w-3.5 h-3.5 text-[#374151]" />}
+                    </button>
+                    {expandedApps === client.id && (
+                      <div className="mt-3">
+                        <ClientConnectedApps clientId={client.id} />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             );
