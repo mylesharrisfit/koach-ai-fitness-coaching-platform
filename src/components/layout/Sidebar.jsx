@@ -5,11 +5,13 @@ import {
   LayoutDashboard, Users, Dumbbell, Calendar,
   MessageSquare, TrendingUp, Zap, LogOut, Settings,
   BarChart3, Bot, ChevronLeft, ChevronRight, Lock,
-  Play, CreditCard, Activity
+  Play, CreditCard, Activity, Salad, ClipboardList,
+  Trophy, ShieldAlert, DollarSign, Landmark, ShoppingBag,
+  Globe, Sparkles, Smartphone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
-import { hasFeature, getUserTier } from '@/lib/subscription';
+import { hasFeature } from '@/lib/subscription';
 
 const NAV_GROUPS = [
   {
@@ -24,21 +26,45 @@ const NAV_GROUPS = [
     items: [
       { icon: Users, label: 'Clients', path: '/clients' },
       { icon: Dumbbell, label: 'Programs', path: '/programs' },
-      { icon: Calendar, label: 'Calendar', path: '/schedule' },
+      { icon: Salad, label: 'Nutrition', path: '/nutrition' },
+      { icon: ClipboardList, label: 'Exercise Library', path: '/exercises' },
+      { icon: Calendar, label: 'Schedule', path: '/schedule' },
       { icon: MessageSquare, label: 'Messages', path: '/messages' },
     ],
   },
   {
-    label: 'Insights',
+    label: 'Clients',
     items: [
+      { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
+      { icon: ShieldAlert, label: 'At-Risk', path: '/at-risk' },
       { icon: TrendingUp, label: 'Progress', path: '/progress', feature: 'progress' },
-      { icon: Activity, label: 'Automation', path: '/automations' },
-      { icon: BarChart3, label: 'Business', path: '/business', feature: 'revenue_dashboard' },
+      { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
+    ],
+  },
+  {
+    label: 'Business',
+    items: [
+      { icon: DollarSign, label: 'Sales', path: '/sales', feature: 'sales' },
+      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+      { icon: Landmark, label: 'Revenue', path: '/revenue' },
+      { icon: Activity, label: 'Business', path: '/business', feature: 'revenue_dashboard' },
+      { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { icon: Bot, label: 'Automations', path: '/automations' },
+      { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
+      { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
+      { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
+      { icon: Zap, label: 'White Label', path: '/white-label' },
     ],
   },
 ];
 
 const BOTTOM_ITEMS = [
+  { icon: CreditCard, label: 'Subscription', path: '/subscription' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
@@ -86,7 +112,6 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
 
 export default function Sidebar({ user, onUpgrade }) {
   const [collapsed, setCollapsed] = useState(false);
-  const tier = getUserTier(user);
 
   return (
     <aside className={cn(
@@ -129,20 +154,6 @@ export default function Sidebar({ user, onUpgrade }) {
 
       {/* Bottom */}
       <div className="p-2.5 border-t border-[#E7EAF3] space-y-0.5">
-        {/* Tier badge */}
-        {!collapsed && (
-          <Link
-            to="/subscription"
-            className={cn(
-              'flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold mb-2 transition-colors hover:opacity-80',
-              tier.badge
-            )}
-          >
-            <CreditCard className="w-3 h-3 flex-shrink-0" />
-            <span className="flex-1">{tier.name} Plan</span>
-          </Link>
-        )}
-
         {BOTTOM_ITEMS.map(item => (
           <Link
             key={item.path}
