@@ -16,7 +16,7 @@ import Schedule from './pages/Schedule';
 import Messages from './pages/Messages';
 import Progress from './pages/Progress';
 import Store from './pages/Store';
-import Settings from './pages/Settings.jsx';
+import Settings from './pages/Settings';
 import Assistant from './pages/Assistant';
 import Adherence from './pages/Adherence';
 import CheckInReview from './pages/CheckInReview';
