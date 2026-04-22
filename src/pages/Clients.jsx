@@ -66,12 +66,19 @@ export default function Clients() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async ({ data, sendInvite }) => {
       const res = await base44.functions.invoke('validateSubscription', { action: 'validate_create_client' });
       if (!res.data.allowed) { setUpgradeOpen(true); throw new Error(res.data.error); }
-      return base44.entities.Client.create(data);
+      const client = await base44.entities.Client.create(data);
+      if (sendInvite && data.email) {
+        await base44.functions.invoke('sendClientInvite', { clientName: data.name, clientEmail: data.email });
+      }
+      return client;
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); toast.success('Client added'); },
+    onSuccess: (_, { sendInvite }) => {
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+      toast.success(sendInvite ? 'Client added & invite sent!' : 'Client added');
+    },
     onError: (err) => { if (!err.message?.includes('limit')) toast.error(err.message); },
   });
 
@@ -119,9 +126,9 @@ export default function Clients() {
     return c;
   }, [clients]);
 
-  const handleSubmit = (data) => {
+  const handleSubmit = (data, sendInvite) => {
     if (editingClient) updateMutation.mutate({ id: editingClient.id, data });
-    else createMutation.mutate(data);
+    else createMutation.mutate({ data, sendInvite });
     setEditingClient(null);
   };
 

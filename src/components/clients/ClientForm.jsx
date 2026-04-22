@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import TagInput from './TagInput';
+import { Mail } from 'lucide-react';
 
 const goals = [
   { value: 'weight_loss', label: 'Weight Loss' },
@@ -33,9 +34,11 @@ const defaultForm = {
 
 export default function ClientForm({ open, onOpenChange, onSubmit, client }) {
   const [form, setForm] = useState(defaultForm);
+  const [sendInvite, setSendInvite] = useState(true);
 
   useEffect(() => {
     setForm(client ? { ...defaultForm, ...client, tags: client.tags || [] } : defaultForm);
+    setSendInvite(!client); // default ON for new clients only
   }, [client, open]);
 
   const handleSubmit = (e) => {
@@ -45,7 +48,7 @@ export default function ClientForm({ open, onOpenChange, onSubmit, client }) {
       current_weight: form.current_weight ? Number(form.current_weight) : undefined,
       target_weight: form.target_weight ? Number(form.target_weight) : undefined,
       monthly_rate: form.monthly_rate ? Number(form.monthly_rate) : undefined,
-    });
+    }, sendInvite);
     onOpenChange(false);
   };
 
@@ -126,9 +129,28 @@ export default function ClientForm({ open, onOpenChange, onSubmit, client }) {
             <Textarea value={form.lifecycle_notes || ''} onChange={e => set('lifecycle_notes', e.target.value)} rows={2} placeholder="Notes about this client's progress and status changes..." />
           </div>
 
+          {/* Invite toggle — only shown when adding a new client */}
+          {!client && (
+            <div
+              onClick={() => setSendInvite(v => !v)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${sendInvite ? 'bg-blue-50 border-blue-200' : 'bg-[#F6F7FB] border-[#E7EAF3]'}`}
+            >
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${sendInvite ? 'bg-primary/10' : 'bg-[#E7EAF3]'}`}>
+                <Mail className={`w-4 h-4 ${sendInvite ? 'text-primary' : 'text-[#9CA3AF]'}`} />
+              </div>
+              <div className="flex-1">
+                <p className={`text-sm font-semibold ${sendInvite ? 'text-[#1F2A44]' : 'text-[#6B7280]'}`}>Send invite email</p>
+                <p className="text-xs text-[#6B7280]">Client receives a welcome email to set up their profile</p>
+              </div>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${sendInvite ? 'bg-primary border-primary' : 'bg-white border-[#D1D5DB]'}`}>
+                {sendInvite && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit">{client ? 'Update' : 'Add Client'}</Button>
+            <Button type="submit">{client ? 'Update' : sendInvite ? 'Add & Invite Client' : 'Add Client'}</Button>
           </div>
         </form>
       </DialogContent>
