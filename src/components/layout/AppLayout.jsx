@@ -23,16 +23,12 @@ export default function AppLayout() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  // When user upgrades inside modal, update context immediately (no reload)
-  const handleUserUpdate = (updatedUser) => {
-    setUser(updatedUser);
-  };
-
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
       <div className="min-h-screen bg-[#F6F7FB]">
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
-        <main className="md:ml-[240px] min-h-screen transition-all duration-300 relative z-10 pb-16 md:pb-0 bg-[#F6F7FB]">
+        {/* Offset matches sidebar width; collapses to 64px when collapsed but we use md:ml-[220px] base */}
+        <main className="md:ml-[220px] min-h-screen pb-16 md:pb-0 bg-[#F6F7FB]">
           <Outlet />
         </main>
         <BottomNav />
@@ -42,7 +38,7 @@ export default function AppLayout() {
         onClose={() => setUpgradeFeature(null)}
         featureKey={upgradeFeature}
         user={user}
-        onUserUpdate={handleUserUpdate}
+        onUserUpdate={setUser}
       />
     </SubscriptionContext.Provider>
   );
