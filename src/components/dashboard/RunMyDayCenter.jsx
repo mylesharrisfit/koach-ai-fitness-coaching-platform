@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { differenceInDays, parseISO, subWeeks, format } from 'date-fns';
 import {
   MessageSquare, ClipboardList, TrendingUp, Dumbbell,
@@ -236,7 +236,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages }) {
               badge={`${ci?.compliance_training ?? 0}%`}
               badgeColor="bg-red-50 text-red-600 border-red-100"
               actions={<>
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate('/messages')} />
+                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}`)} />
                 <ActionBtn icon={ClipboardList} label="Review" onClick={() => navigate(`/checkin-detail?id=${ci?.id}&clientId=${client.id}`)} primary />
               </>}
             />
@@ -263,8 +263,8 @@ export default function RunMyDayCenter({ clients, checkIns, messages }) {
               badge={daysAgo !== null ? `${daysAgo}d` : 'Never'}
               badgeColor={daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'}
               actions={<>
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate('/messages')} />
-                <ActionBtn icon={Sparkles} label="Nudge" onClick={() => navigate('/messages')} primary />
+                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}`)} />
+                <ActionBtn icon={Sparkles} label="Nudge" onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just checking in — haven't heard from you in a while. How's everything going? 💪")}`)} primary />
               </>}
             />
           );
@@ -288,7 +288,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages }) {
               badge={`${riskScore}%`}
               badgeColor={riskScore >= 60 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-orange-50 text-orange-600 border-orange-100'}
               actions={<>
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate('/messages')} />
+                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}`)} />
                 <ActionBtn icon={Target} label="Adjust" onClick={() => navigate(`/client-profile?id=${client.id}`)} primary />
               </>}
             />
@@ -316,7 +316,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages }) {
               badgeColor="bg-emerald-50 text-emerald-700 border-emerald-100"
               actions={<>
                 <ActionBtn icon={UserCheck} label="Assign" onClick={() => navigate(`/client-profile?id=${client.id}`)} primary />
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate('/messages')} />
+                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Great work lately! I'd like to progress your program — check the updates when you get a chance 🚀")}`)} />
               </>}
             />
           );

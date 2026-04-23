@@ -11,20 +11,26 @@ import MessageBubble from '../components/messages/MessageBubble';
 import PinnedNotes from '../components/messages/PinnedNotes';
 import MessageTemplates from '../components/messages/MessageTemplates';
 import AISuggestions from '../components/messages/AISuggestions';
+import QuickReplies from '../components/messages/QuickReplies';
 import { TAG_COLORS } from '../components/messages/MessageTemplates';
 import FeatureLock from '@/components/subscription/FeatureLock';
 
 const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
 
 export default function Messages() {
-  const [selectedClientId, setSelectedClientId] = useState(null);
-  const [mobileView, setMobileView] = useState('list'); // 'list' | 'chat'
-  const [newMessage, setNewMessage] = useState('');
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramClientId = urlParams.get('clientId');
+  const paramMessage  = urlParams.get('message');
+
+  const [selectedClientId, setSelectedClientId] = useState(paramClientId || null);
+  const [mobileView, setMobileView] = useState(paramClientId ? 'chat' : 'list');
+  const [newMessage, setNewMessage] = useState(paramMessage ? decodeURIComponent(paramMessage) : '');
   const [search, setSearch] = useState('');
   const [selectedTag, setSelectedTag] = useState('general');
   const [showTemplates, setShowTemplates] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [showTagPicker, setShowTagPicker] = useState(false);
+  const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
@@ -89,6 +95,7 @@ export default function Messages() {
     });
     setNewMessage('');
     setSelectedTag('general');
+    setShowQuickReplies(true);
   };
 
   const handleTogglePin = (msg) => {
@@ -271,14 +278,22 @@ export default function Messages() {
                 </div>
               </div>
 
+              {/* Quick reply chips */}
+              {showQuickReplies && (
+                <div className="border-t border-[#F0F2F8] -mx-4 px-4 mb-2">
+                  <QuickReplies onSelect={(text) => { setNewMessage(text); setShowQuickReplies(false); }} />
+                </div>
+              )}
+
               {/* Input row */}
               <div className="flex gap-2">
                 <Input
                   value={newMessage}
-                  onChange={e => setNewMessage(e.target.value)}
+                  onChange={e => { setNewMessage(e.target.value); if (e.target.value) setShowQuickReplies(false); }}
                   placeholder="Type a message..."
                   className="flex-1"
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                  onFocus={() => !newMessage && setShowQuickReplies(true)}
                 />
                 <Button onClick={handleSend} disabled={!newMessage.trim()}>
                   <Send className="w-4 h-4" />
