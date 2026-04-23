@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Search, X, AlertTriangle, ArrowRight, Lock } from 'lucide-react';
+import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore } from '@/lib/adherence';
@@ -178,6 +179,9 @@ export default function Clients() {
           </Link>
         )}
       </div>
+
+      {/* ── Intelligence Bar ── */}
+      <IntelligenceBar clients={clients} checkIns={allCheckIns} />
 
       {/* ── Filters ── */}
       <div className="px-5 pt-3 pb-3 flex-shrink-0 space-y-2">

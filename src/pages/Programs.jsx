@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
+import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { useNavigate } from 'react-router-dom';
@@ -233,6 +234,16 @@ export default function Programs() {
     queryFn: () => base44.entities.WorkoutProgram.list('-created_date'),
   });
 
+  const { data: allClients = [] } = useQuery({
+    queryKey: ['clients'],
+    queryFn: () => base44.entities.Client.list(),
+  });
+
+  const { data: allCheckIns = [] } = useQuery({
+    queryKey: ['checkins-prog'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 200),
+  });
+
   const programLimit = getLimit(currentUser, 'max_programs');
   const atLimit = programLimit !== -1 && programs.length >= programLimit;
 
@@ -279,6 +290,14 @@ export default function Programs() {
       </div>
 
       <LimitBanner limitKey="max_programs" currentCount={programs.length} label="programs" featureKey="clients" />
+
+      {/* ── Intelligence Bar ── */}
+      {allClients.length > 0 && (
+        <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+          <IntelligenceBar clients={allClients} checkIns={allCheckIns} />
+          <div className="mt-4" />
+        </div>
+      )}
 
       {/* ── Suggested to assign today ── */}
       {!isLoading && suggested.length > 0 && (
