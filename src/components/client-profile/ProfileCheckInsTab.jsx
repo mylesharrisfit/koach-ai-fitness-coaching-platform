@@ -1,69 +1,125 @@
 import React, { useState } from 'react';
-import { ClipboardCheck, ChevronDown, ChevronUp } from 'lucide-react';
+import { ClipboardCheck, ChevronDown, ChevronUp, CheckCircle2, Flag, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { base44 } from '@/api/base44Client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const moodEmoji = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😤' };
 
-const Pill = ({ label, value, color = 'bg-[#F6F7FB] text-[#374151]' }) => (
-  value !== undefined && value !== null ? (
-    <div className={`flex flex-col items-center rounded-xl px-3 py-2 flex-1 ${color}`}>
-      <span className="text-sm font-bold tabular-nums">{value}</span>
-      <span className="text-[10px] text-[#9CA3AF] mt-0.5">{label}</span>
-    </div>
-  ) : null
-);
+const STATUS_CONFIG = {
+  pending:  { label: 'Pending',  icon: Clock,         class: 'bg-amber-50 border-amber-100 text-amber-600' },
+  reviewed: { label: 'Reviewed', icon: CheckCircle2,  class: 'bg-emerald-50 border-emerald-100 text-emerald-600' },
+  flagged:  { label: 'Flagged',  icon: Flag,          class: 'bg-red-50 border-red-100 text-red-500' },
+};
 
-function CheckInCard({ ci }) {
+function StatusBadge({ status, onChange }) {
+  const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
+  const Icon = cfg.icon;
+  return (
+    <select
+      value={status || 'pending'}
+      onChange={e => onChange(e.target.value)}
+      onClick={e => e.stopPropagation()}
+      className={cn(
+        'text-[10px] font-bold border rounded-lg px-2 py-1 cursor-pointer appearance-none text-center',
+        cfg.class
+      )}
+    >
+      <option value="pending">Pending</option>
+      <option value="reviewed">Reviewed</option>
+      <option value="flagged">Flagged</option>
+    </select>
+  );
+}
+
+function CheckInCard({ ci, clientId }) {
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  const updateStatus = useMutation({
+    mutationFn: (status) => base44.entities.CheckIn.update(ci.id, { review_status: status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checkins', clientId] });
+      toast.success('Status updated');
+    },
+  });
+
+  const status = ci.review_status || 'pending';
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden">
+    <div className={cn(
+      'bg-white rounded-2xl border overflow-hidden transition-all',
+      status === 'flagged' ? 'border-red-200' : status === 'reviewed' ? 'border-emerald-100' : 'border-[#E7EAF3]'
+    )}>
+      {/* Header row */}
       <button
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#F8F9FD] transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-[#F8F9FD] transition-colors text-left"
         onClick={() => setOpen(v => !v)}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#EEF4FF] flex items-center justify-center text-sm">
-            {moodEmoji[ci.mood] || '📋'}
-          </div>
-          <div className="text-left">
-            <p className="text-sm font-semibold text-[#1F2A44]">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
-            <p className="text-xs text-[#9CA3AF]">
-              {ci.weight ? `${ci.weight} lbs` : ''}
-              {ci.weight && (ci.compliance_training != null) ? ' · ' : ''}
-              {ci.compliance_training != null ? `${ci.compliance_training}% training` : ''}
-            </p>
-          </div>
+        <div className="w-9 h-9 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center text-base flex-shrink-0">
+          {moodEmoji[ci.mood] || '📋'}
         </div>
-        <div className="flex items-center gap-2">
-          {ci.coach_responded && (
-            <span className="text-[10px] bg-emerald-100 text-emerald-700 rounded-md px-1.5 py-0.5 font-medium">Responded</span>
-          )}
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-[#1F2A44]">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
+          <p className="text-xs text-[#9CA3AF]">
+            {[ci.weight && `${ci.weight} lbs`, ci.compliance_training != null && `${ci.compliance_training}% training`]
+              .filter(Boolean).join(' · ') || 'No metrics'}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
+          <StatusBadge status={status} onChange={(val) => updateStatus.mutate(val)} />
+        </div>
+        <div className="ml-1 flex-shrink-0">
           {open ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
         </div>
       </button>
 
+      {/* Expanded detail */}
       {open && (
-        <div className="px-4 pb-4 space-y-3 border-t border-[#F0F2F8]">
-          <div className="flex gap-2 pt-3">
-            <Pill label="Weight" value={ci.weight ? `${ci.weight} lbs` : null} />
-            <Pill label="Sleep" value={ci.sleep_hours ? `${ci.sleep_hours}h` : null} />
-            <Pill label="Energy" value={ci.energy_level ? `${ci.energy_level}/5` : null} />
+        <div className="border-t border-[#F0F2F8] px-4 pb-4 pt-3 space-y-3">
+          {/* Metrics grid */}
+          <div className="grid grid-cols-3 gap-2">
+            {ci.weight && (
+              <div className="bg-[#F6F7FB] rounded-xl p-2.5 text-center">
+                <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{ci.weight}</p>
+                <p className="text-[9px] text-[#9CA3AF]">lbs</p>
+              </div>
+            )}
+            {ci.sleep_hours && (
+              <div className="bg-[#F6F7FB] rounded-xl p-2.5 text-center">
+                <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{ci.sleep_hours}h</p>
+                <p className="text-[9px] text-[#9CA3AF]">sleep</p>
+              </div>
+            )}
+            {ci.energy_level && (
+              <div className="bg-[#F6F7FB] rounded-xl p-2.5 text-center">
+                <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{ci.energy_level}/10</p>
+                <p className="text-[9px] text-[#9CA3AF]">energy</p>
+              </div>
+            )}
           </div>
 
+          {/* Compliance bars */}
           {(ci.compliance_training != null || ci.compliance_nutrition != null) && (
-            <div className="flex gap-2">
+            <div className="space-y-2">
               {ci.compliance_training != null && (
-                <div className="flex-1 bg-blue-50 rounded-xl p-3 text-center">
-                  <p className="text-sm font-bold text-blue-700">{ci.compliance_training}%</p>
-                  <p className="text-[10px] text-[#9CA3AF]">Training</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-[#9CA3AF] w-16 flex-shrink-0">Training</span>
+                  <div className="flex-1 h-1.5 bg-[#F0F2F8] rounded-full overflow-hidden">
+                    <div className="bg-primary h-full rounded-full" style={{ width: `${ci.compliance_training}%` }} />
+                  </div>
+                  <span className="text-[10px] font-bold text-primary w-8 text-right">{ci.compliance_training}%</span>
                 </div>
               )}
               {ci.compliance_nutrition != null && (
-                <div className="flex-1 bg-emerald-50 rounded-xl p-3 text-center">
-                  <p className="text-sm font-bold text-emerald-700">{ci.compliance_nutrition}%</p>
-                  <p className="text-[10px] text-[#9CA3AF]">Nutrition</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-[#9CA3AF] w-16 flex-shrink-0">Nutrition</span>
+                  <div className="flex-1 h-1.5 bg-[#F0F2F8] rounded-full overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${ci.compliance_nutrition}%` }} />
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-600 w-8 text-right">{ci.compliance_nutrition}%</span>
                 </div>
               )}
             </div>
@@ -71,14 +127,28 @@ function CheckInCard({ ci }) {
 
           {ci.notes && (
             <div>
-              <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold tracking-wide mb-1">Client Notes</p>
+              <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-1.5">Client Notes</p>
               <p className="text-sm text-[#374151] leading-relaxed">{ci.notes}</p>
             </div>
           )}
+
           {ci.coach_notes && (
-            <div className="bg-blue-50 rounded-xl p-3">
-              <p className="text-[10px] text-primary uppercase font-semibold tracking-wide mb-1">Coach Response</p>
+            <div className="bg-[#EEF4FF] rounded-xl p-3">
+              <p className="text-[10px] font-bold text-primary uppercase tracking-wide mb-1">Coach Response</p>
               <p className="text-sm text-[#374151] leading-relaxed">{ci.coach_notes}</p>
+            </div>
+          )}
+
+          {ci.photo_urls?.length > 0 && (
+            <div>
+              <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-1.5">Photos</p>
+              <div className="grid grid-cols-3 gap-2">
+                {ci.photo_urls.map((url, i) => (
+                  <a key={i} href={url} target="_blank" rel="noreferrer">
+                    <img src={url} alt="progress" className="w-full aspect-square object-cover rounded-xl hover:opacity-90 transition-opacity" />
+                  </a>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -88,19 +158,61 @@ function CheckInCard({ ci }) {
 }
 
 export default function ProfileCheckInsTab({ client, checkIns }) {
+  const [filter, setFilter] = useState('all');
+
+  const filtered = checkIns.filter(ci => {
+    if (filter === 'all') return true;
+    return (ci.review_status || 'pending') === filter;
+  });
+
+  const counts = {
+    pending: checkIns.filter(ci => !ci.review_status || ci.review_status === 'pending').length,
+    reviewed: checkIns.filter(ci => ci.review_status === 'reviewed').length,
+    flagged: checkIns.filter(ci => ci.review_status === 'flagged').length,
+  };
+
   if (checkIns.length === 0) return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] flex flex-col items-center justify-center py-12 text-center px-6">
+    <div className="bg-white rounded-2xl border border-[#E7EAF3] flex flex-col items-center justify-center py-14 text-center px-6">
       <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center mb-3">
         <ClipboardCheck className="w-5 h-5 text-[#9CA3AF]" />
       </div>
       <p className="text-sm font-semibold text-[#374151]">No check-ins yet</p>
-      <p className="text-xs text-[#9CA3AF] mt-1">Check-ins submitted by the client will appear here</p>
+      <p className="text-xs text-[#9CA3AF] mt-1">Client check-ins will appear here once submitted</p>
     </div>
   );
 
   return (
     <div className="space-y-3">
-      {checkIns.map(ci => <CheckInCard key={ci.id} ci={ci} />)}
+      {/* Filter pills */}
+      <div className="flex gap-1.5 flex-wrap">
+        {[
+          { key: 'all', label: `All (${checkIns.length})` },
+          { key: 'pending', label: `Pending (${counts.pending})` },
+          { key: 'reviewed', label: `Reviewed (${counts.reviewed})` },
+          { key: 'flagged', label: `Flagged (${counts.flagged})` },
+        ].map(f => (
+          <button
+            key={f.key}
+            onClick={() => setFilter(f.key)}
+            className={cn(
+              'text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors',
+              filter === f.key
+                ? 'bg-primary text-white border-transparent'
+                : 'bg-white text-[#374151] border-[#E7EAF3] hover:bg-[#F6F7FB]'
+            )}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {filtered.map(ci => (
+        <CheckInCard key={ci.id} ci={ci} clientId={client.id} />
+      ))}
+
+      {filtered.length === 0 && (
+        <div className="text-center py-10 text-xs text-[#9CA3AF]">No check-ins for this filter</div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,20 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Dumbbell, Calendar, ChevronRight } from 'lucide-react';
+import { Dumbbell, Calendar, ChevronRight, Layers, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
+
+const DIFFICULTY_STYLES = {
+  beginner:     'bg-emerald-50 text-emerald-700 border-emerald-100',
+  intermediate: 'bg-blue-50 text-blue-700 border-blue-100',
+  advanced:     'bg-orange-50 text-orange-700 border-orange-100',
+  elite:        'bg-red-50 text-red-700 border-red-100',
+};
 
 export default function ProfileProgramsTab({ client }) {
+  const navigate = useNavigate();
   const { data: programs = [], isLoading } = useQuery({
     queryKey: ['workout-programs'],
     queryFn: () => base44.entities.WorkoutProgram.list(),
@@ -11,67 +22,102 @@ export default function ProfileProgramsTab({ client }) {
 
   const assigned = programs.find(p => p.id === client.assigned_program_id);
 
-  const difficultyColor = {
-    beginner: 'bg-emerald-100 text-emerald-700',
-    intermediate: 'bg-blue-100 text-blue-700',
-    advanced: 'bg-orange-100 text-orange-700',
-    elite: 'bg-red-100 text-red-700',
-  };
+  if (isLoading) return (
+    <div className="space-y-3">
+      {[1, 2].map(i => <div key={i} className="h-24 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse" />)}
+    </div>
+  );
 
-  if (isLoading) return <div className="h-32 bg-white rounded-2xl animate-pulse" />;
+  if (!assigned) return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center mb-4">
+        <Dumbbell className="w-7 h-7 text-[#9CA3AF]" />
+      </div>
+      <p className="text-sm font-semibold text-[#1F2A44] mb-1">No program assigned</p>
+      <p className="text-xs text-[#9CA3AF] mb-5">Assign a training program to get started</p>
+      <Button size="sm" variant="outline" onClick={() => navigate('/programs')} className="gap-1.5">
+        <Dumbbell className="w-3.5 h-3.5" /> Browse Programs
+      </Button>
+    </div>
+  );
 
   return (
     <div className="space-y-4">
-      {assigned ? (
-        <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-              <Dumbbell className="w-4 h-4 text-primary" />
-            </div>
-            <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">Assigned Program</h3>
+      {/* Program header card */}
+      <div className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden">
+        <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-[#F6F7FB]">
+          <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+            <Dumbbell className="w-3.5 h-3.5 text-primary" />
           </div>
-          <h4 className="text-base font-bold text-[#1F2A44] mb-1">{assigned.title}</h4>
-          {assigned.description && <p className="text-sm text-[#6B7280] mb-3">{assigned.description}</p>}
-          <div className="flex flex-wrap gap-2">
+          <h3 className="text-xs font-bold text-[#374151] uppercase tracking-wider">Assigned Program</h3>
+        </div>
+
+        <div className="p-4">
+          {assigned.image_url && (
+            <div className="w-full h-32 rounded-xl overflow-hidden mb-4 border border-[#E7EAF3]">
+              <img src={assigned.image_url} alt={assigned.title} className="w-full h-full object-cover" />
+            </div>
+          )}
+
+          <h2 className="text-base font-bold text-[#1F2A44] mb-1">{assigned.title}</h2>
+          {assigned.description && (
+            <p className="text-sm text-[#6B7280] mb-3 leading-relaxed">{assigned.description}</p>
+          )}
+
+          <div className="flex flex-wrap gap-1.5 mb-4">
             {assigned.difficulty && (
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-lg ${difficultyColor[assigned.difficulty] || 'bg-gray-100 text-gray-600'}`}>
+              <span className={cn('text-[11px] font-semibold px-2.5 py-1 rounded-lg border capitalize', DIFFICULTY_STYLES[assigned.difficulty] || 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3]')}>
                 {assigned.difficulty}
               </span>
             )}
             {assigned.duration_weeks && (
-              <span className="text-xs font-medium px-2 py-0.5 rounded-lg bg-[#F6F7FB] text-[#374151]">
-                {assigned.duration_weeks} weeks
+              <span className="text-[11px] font-medium px-2.5 py-1 rounded-lg border bg-[#F6F7FB] text-[#374151] border-[#E7EAF3] flex items-center gap-1">
+                <Clock className="w-3 h-3" /> {assigned.duration_weeks} weeks
               </span>
             )}
             {assigned.days_per_week && (
-              <span className="text-xs font-medium px-2 py-0.5 rounded-lg bg-[#F6F7FB] text-[#374151]">
-                {assigned.days_per_week}x/week
+              <span className="text-[11px] font-medium px-2.5 py-1 rounded-lg border bg-[#F6F7FB] text-[#374151] border-[#E7EAF3] flex items-center gap-1">
+                <Calendar className="w-3 h-3" /> {assigned.days_per_week}×/week
+              </span>
+            )}
+            {assigned.category && (
+              <span className="text-[11px] font-medium px-2.5 py-1 rounded-lg border bg-[#F6F7FB] text-[#374151] border-[#E7EAF3] capitalize">
+                {assigned.category.replace('_', ' ')}
               </span>
             )}
           </div>
 
-          {assigned.workouts?.length > 0 && (
-            <div className="mt-4 space-y-2">
-              <p className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide">Schedule</p>
-              {assigned.workouts.map((w, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 border-b border-[#F6F7FB] last:border-0">
-                  <div className="w-6 h-6 rounded-full bg-[#EEF4FF] text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                    {w.day_number || i + 1}
-                  </div>
-                  <span className="text-sm text-[#374151] flex-1">{w.day_name || `Day ${i + 1}`}</span>
-                  <span className="text-xs text-[#9CA3AF]">{w.exercises?.length || 0} exercises</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="bg-white rounded-2xl border border-[#E7EAF3] flex flex-col items-center justify-center py-12 text-center px-6">
-          <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center mb-3">
-            <Dumbbell className="w-5 h-5 text-[#9CA3AF]" />
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={() => navigate('/programs')} className="flex-1 gap-1.5 text-xs">
+              <Layers className="w-3.5 h-3.5" /> Change Program
+            </Button>
           </div>
-          <p className="text-sm font-semibold text-[#374151]">No program assigned</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">Assign a program to this client from the Programs page</p>
+        </div>
+      </div>
+
+      {/* Workout schedule */}
+      {assigned.workouts?.length > 0 && (
+        <div className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden">
+          <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-[#F6F7FB]">
+            <div className="w-7 h-7 rounded-lg bg-[#F6F7FB] flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-3.5 h-3.5 text-[#6B7280]" />
+            </div>
+            <h3 className="text-xs font-bold text-[#374151] uppercase tracking-wider">Weekly Split</h3>
+          </div>
+          <div className="divide-y divide-[#F6F7FB]">
+            {assigned.workouts.map((w, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-3">
+                <div className="w-7 h-7 rounded-lg bg-[#EEF4FF] text-primary text-[11px] font-bold flex items-center justify-center flex-shrink-0">
+                  {w.day_number || i + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-[#1F2A44]">{w.day_name || `Day ${i + 1}`}</p>
+                  <p className="text-xs text-[#9CA3AF]">{w.exercises?.length || 0} exercises</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB]" />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

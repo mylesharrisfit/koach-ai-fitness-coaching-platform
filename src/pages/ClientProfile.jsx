@@ -2,16 +2,20 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Scale, TrendingUp, Activity, Calendar, Target, Phone, Mail } from 'lucide-react';
+import {
+  ArrowLeft, Edit, MessageSquare, Dumbbell, ClipboardCheck,
+  Scale, Activity, Footprints, Calendar, Mail, Phone,
+  TrendingUp, TrendingDown, Minus, AlertTriangle, CheckCircle2,
+  ChevronRight, MoreHorizontal
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import LifecycleBadge from '@/components/clients/LifecycleBadge';
 import ClientForm from '@/components/clients/ClientForm';
 import { toast } from 'sonner';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, differenceInDays } from 'date-fns';
 
-// Tab content components
 import ProfileOverviewTab from '@/components/client-profile/ProfileOverviewTab';
 import ProfileProgramsTab from '@/components/client-profile/ProfileProgramsTab';
 import ProfileNutritionTab from '@/components/client-profile/ProfileNutritionTab';
@@ -21,19 +25,30 @@ import ProfileMessagesTab from '@/components/client-profile/ProfileMessagesTab';
 import ProfileConnectedAppsTab from '@/components/client-profile/ProfileConnectedAppsTab';
 
 const TABS = [
-  { key: 'overview',       label: 'Overview' },
-  { key: 'programs',       label: 'Programs' },
-  { key: 'nutrition',      label: 'Nutrition' },
-  { key: 'checkins',       label: 'Check-ins' },
-  { key: 'progress',       label: 'Progress' },
-  { key: 'messages',       label: 'Messages' },
-  { key: 'connected_apps', label: 'Apps' },
+  { key: 'overview',       label: 'Overview',   short: 'Overview' },
+  { key: 'programs',       label: 'Programs',   short: 'Programs' },
+  { key: 'nutrition',      label: 'Nutrition',  short: 'Nutrition' },
+  { key: 'checkins',       label: 'Check-ins',  short: 'Check-ins' },
+  { key: 'progress',       label: 'Progress',   short: 'Progress' },
+  { key: 'messages',       label: 'Messages',   short: 'Messages' },
+  { key: 'connected_apps', label: 'Apps',       short: 'Apps' },
 ];
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
-  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
+  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness',
 };
+
+function StatCard({ label, value, sub, color = 'text-[#1F2A44]', icon: Icon, iconColor }) {
+  return (
+    <div className="flex-1 min-w-0 flex flex-col items-center justify-center bg-[#F6F7FB] rounded-2xl p-3 gap-0.5 text-center">
+      {Icon && <Icon className={cn('w-3.5 h-3.5 mb-1', iconColor || 'text-[#9CA3AF]')} />}
+      <span className={cn('text-[15px] font-bold tabular-nums leading-tight', color)}>{value ?? '—'}</span>
+      <span className="text-[10px] text-[#9CA3AF] font-medium leading-tight mt-0.5">{label}</span>
+      {sub && <span className="text-[9px] text-[#C4C9D4]">{sub}</span>}
+    </div>
+  );
+}
 
 export default function ClientProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -64,7 +79,7 @@ export default function ClientProfile() {
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.Client.update(clientId, data),
-    onSuccess: (_, data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['client', clientId] });
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast.success('Client updated');
@@ -73,6 +88,18 @@ export default function ClientProfile() {
 
   const score = useMemo(() => compositeAdherenceScore(checkIns), [checkIns]);
   const lastCI = checkIns[0];
+
+  const daysSinceCI = lastCI ? differenceInDays(new Date(), new Date(lastCI.date)) : null;
+  const isOverdue = daysSinceCI !== null && daysSinceCI > 7;
+
+  const pendingCheckins = checkIns.filter(ci => ci.review_status === 'pending' || !ci.review_status).length;
+  const flaggedCheckins = checkIns.filter(ci => ci.review_status === 'flagged').length;
+
+  // Weight delta
+  const sorted = [...checkIns].filter(ci => ci.weight).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const firstWeight = sorted[0]?.weight;
+  const latestWeight = sorted[sorted.length - 1]?.weight;
+  const weightDelta = firstWeight && latestWeight ? +(latestWeight - firstWeight).toFixed(1) : null;
 
   if (isLoading) return (
     <div className="flex items-center justify-center min-h-screen bg-[#F6F7FB]">
@@ -91,96 +118,193 @@ export default function ClientProfile() {
 
   const initials = client.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
   const scoreColor = score === null ? 'text-[#9CA3AF]' : score >= 80 ? 'text-emerald-600' : score >= 60 ? 'text-amber-500' : 'text-red-500';
-
-  const handleEditSubmit = (data) => {
-    updateMutation.mutate(data);
-    setShowEdit(false);
-  };
+  const scoreIconColor = score === null ? 'text-[#9CA3AF]' : score >= 80 ? 'text-emerald-500' : score >= 60 ? 'text-amber-500' : 'text-red-500';
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex flex-col">
-      {/* ── Top bar ── */}
-      <div className="bg-white border-b border-[#F0F2F8] px-4 sm:px-6 py-3 flex items-center gap-3 sticky top-0 z-20">
-        <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={() => navigate('/clients')}>
-          <ArrowLeft className="w-4 h-4 text-[#374151]" />
-        </Button>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-sm font-bold text-[#1F2A44] truncate">{client.name}</h1>
-          <p className="text-xs text-[#9CA3AF] truncate">{client.email}</p>
+
+      {/* ── Sticky top bar ── */}
+      <div className="bg-white border-b border-[#E7EAF3] px-4 sm:px-6 py-3 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
+        <button
+          onClick={() => navigate('/clients')}
+          className="flex items-center gap-1.5 text-[#6B7280] hover:text-[#1F2A44] transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm font-medium hidden sm:inline">Clients</span>
+        </button>
+        <span className="text-[#D1D5DB] hidden sm:inline">/</span>
+        <span className="text-sm font-semibold text-[#1F2A44] truncate flex-1">{client.name}</span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {(pendingCheckins > 0 || flaggedCheckins > 0) && (
+            <span className="hidden sm:flex items-center gap-1 text-[10px] font-bold bg-amber-50 border border-amber-100 text-amber-600 px-2 py-1 rounded-full">
+              <AlertTriangle className="w-3 h-3" />
+              {pendingCheckins + flaggedCheckins} need review
+            </span>
+          )}
+          <Button size="sm" variant="ghost" onClick={() => setShowEdit(true)} className="gap-1.5 text-[#6B7280]">
+            <Edit className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline text-xs">Edit</span>
+          </Button>
         </div>
-        <Button size="sm" variant="outline" onClick={() => setShowEdit(true)}>
-          <Edit className="w-4 h-4" /> Edit
-        </Button>
       </div>
 
-      {/* ── Profile hero ── */}
-      <div className="bg-white border-b border-[#F0F2F8] px-4 sm:px-6 py-5">
-        <div className="flex items-center gap-4 mb-5">
-          <div className="w-14 h-14 rounded-full bg-[#EEF4FF] text-primary flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden">
-            {client.avatar_url
-              ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
-              : initials}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-base font-bold text-[#1F2A44]">{client.name}</h2>
-              <LifecycleBadge status={client.lifecycle_status || 'lead'} />
+      {/* ── Hero header ── */}
+      <div className="bg-white border-b border-[#E7EAF3]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+
+          {/* Avatar + Info row */}
+          <div className="flex items-start gap-4 mb-5">
+            <div className="relative flex-shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#EEF4FF] to-[#DBEAFE] text-primary flex items-center justify-center font-bold text-2xl overflow-hidden border border-[#E7EAF3] shadow-sm">
+                {client.avatar_url
+                  ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
+                  : initials}
+              </div>
+              {/* Online dot */}
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full" title="Active client" />
             </div>
-            <p className="text-xs text-[#6B7280] mt-0.5">{goalLabels[client.goal] || 'General Fitness'}</p>
-            {client.start_date && (
-              <p className="text-xs text-[#9CA3AF]">Started {format(new Date(client.start_date), 'MMM d, yyyy')}</p>
-            )}
-          </div>
-        </div>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          <div className="flex flex-col items-center bg-[#F6F7FB] rounded-xl p-3">
-            <span className={cn('text-lg font-bold tabular-nums', scoreColor)}>{score !== null ? `${score}%` : '—'}</span>
-            <span className="text-[10px] text-[#9CA3AF] mt-0.5">Adherence</span>
+            <div className="flex-1 min-w-0 pt-1">
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-[#1F2A44] leading-tight">{client.name}</h1>
+                <LifecycleBadge status={client.lifecycle_status || 'lead'} />
+              </div>
+              <p className="text-sm text-[#6B7280] mb-1">{goalLabels[client.goal] || 'General Fitness'}</p>
+              <div className="flex items-center gap-3 flex-wrap">
+                {client.email && (
+                  <a href={`mailto:${client.email}`} className="flex items-center gap-1 text-xs text-[#9CA3AF] hover:text-primary transition-colors">
+                    <Mail className="w-3 h-3" /> {client.email}
+                  </a>
+                )}
+                {client.phone && (
+                  <a href={`tel:${client.phone}`} className="flex items-center gap-1 text-xs text-[#9CA3AF] hover:text-primary transition-colors">
+                    <Phone className="w-3 h-3" /> {client.phone}
+                  </a>
+                )}
+                {client.start_date && (
+                  <span className="flex items-center gap-1 text-xs text-[#9CA3AF]">
+                    <Calendar className="w-3 h-3" /> Since {format(new Date(client.start_date), 'MMM yyyy')}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col items-center bg-[#F6F7FB] rounded-xl p-3">
-            <span className="text-lg font-bold text-[#1F2A44] tabular-nums">{checkIns.length}</span>
-            <span className="text-[10px] text-[#9CA3AF] mt-0.5">Check-ins</span>
+
+          {/* Quick stats row */}
+          <div className="flex gap-2 mb-5 overflow-x-auto pb-1 -mx-1 px-1">
+            <StatCard
+              label="Adherence"
+              value={score !== null ? `${score}%` : '—'}
+              color={scoreColor}
+              icon={Activity}
+              iconColor={scoreIconColor}
+            />
+            <StatCard
+              label="Weight"
+              value={latestWeight ? `${latestWeight}` : '—'}
+              sub={weightDelta !== null ? `${weightDelta > 0 ? '+' : ''}${weightDelta} lbs total` : undefined}
+              icon={Scale}
+            />
+            <StatCard
+              label="Check-ins"
+              value={checkIns.length}
+              sub={pendingCheckins > 0 ? `${pendingCheckins} pending` : undefined}
+              color={pendingCheckins > 0 ? 'text-amber-600' : 'text-[#1F2A44]'}
+              icon={ClipboardCheck}
+            />
+            <StatCard
+              label="Last Check-in"
+              value={lastCI ? formatDistanceToNow(new Date(lastCI.date), { addSuffix: false }) : 'Never'}
+              sub={lastCI ? 'ago' : undefined}
+              color={isOverdue ? 'text-red-500' : 'text-[#1F2A44]'}
+              icon={Calendar}
+              iconColor={isOverdue ? 'text-red-400' : 'text-[#9CA3AF]'}
+            />
           </div>
-          <div className="flex flex-col items-center bg-[#F6F7FB] rounded-xl p-3">
-            <span className="text-lg font-bold text-[#1F2A44] tabular-nums">
-              {client.current_weight ? `${client.current_weight}` : '—'}
-            </span>
-            <span className="text-[10px] text-[#9CA3AF] mt-0.5">Weight (lbs)</span>
-          </div>
-          <div className="hidden sm:flex flex-col items-center bg-[#F6F7FB] rounded-xl p-3">
-            <span className="text-lg font-bold text-[#1F2A44] tabular-nums">
-              {lastCI ? formatDistanceToNow(new Date(lastCI.date), { addSuffix: false }) : 'Never'}
-            </span>
-            <span className="text-[10px] text-[#9CA3AF] mt-0.5">Last Check-in</span>
+
+          {/* Alert banner if overdue */}
+          {isOverdue && (
+            <div className="flex items-center gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2.5 mb-4">
+              <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+              <p className="text-xs font-medium text-amber-700 flex-1">No check-in for {daysSinceCI} days — consider reaching out</p>
+              <button
+                onClick={() => setActiveTab('messages')}
+                className="text-xs font-semibold text-amber-600 hover:text-amber-700 flex items-center gap-0.5 flex-shrink-0"
+              >
+                Message <ChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+
+          {/* Quick action buttons */}
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              size="sm"
+              onClick={() => setActiveTab('messages')}
+              className="gap-1.5 bg-primary text-white h-9 px-4 text-xs font-semibold"
+            >
+              <MessageSquare className="w-3.5 h-3.5" /> Message
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setActiveTab('programs')}
+              className="gap-1.5 h-9 px-4 text-xs font-semibold border-[#E7EAF3] text-[#374151]"
+            >
+              <Dumbbell className="w-3.5 h-3.5" /> Assign Program
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setActiveTab('checkins')}
+              className="gap-1.5 h-9 px-4 text-xs font-semibold border-[#E7EAF3] text-[#374151]"
+            >
+              <ClipboardCheck className="w-3.5 h-3.5" />
+              Review Check-in
+              {pendingCheckins > 0 && (
+                <span className="ml-0.5 min-w-[18px] text-center text-[10px] bg-amber-500 text-white rounded-full px-1.5">
+                  {pendingCheckins}
+                </span>
+              )}
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* ── Tabs ── */}
-      <div className="bg-white border-b border-[#F0F2F8] sticky top-[57px] z-10 overflow-x-auto">
-        <div className="flex px-4 sm:px-6 min-w-max">
-          {TABS.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={cn(
-                'px-3 py-3 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap',
-                activeTab === tab.key
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-[#6B7280] hover:text-[#1F2A44]'
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
+      {/* ── Tab bar ── */}
+      <div className="bg-white border-b border-[#E7EAF3] sticky top-[57px] z-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 overflow-x-auto">
+          <div className="flex min-w-max">
+            {TABS.map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={cn(
+                  'relative px-3 sm:px-4 py-3.5 text-xs sm:text-[13px] font-semibold border-b-2 transition-colors whitespace-nowrap',
+                  activeTab === tab.key
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-[#6B7280] hover:text-[#374151]'
+                )}
+              >
+                {tab.label}
+                {/* Notification dots */}
+                {tab.key === 'checkins' && pendingCheckins > 0 && (
+                  <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 text-[9px] font-bold bg-amber-500 text-white rounded-full px-1">
+                    {pendingCheckins}
+                  </span>
+                )}
+                {tab.key === 'messages' && messages.filter(m => !m.is_read && m.sender === 'client').length > 0 && (
+                  <span className="ml-1.5 inline-block w-2 h-2 bg-red-500 rounded-full align-top mt-0.5" />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* ── Tab content ── */}
-      <div className="flex-1 px-4 sm:px-6 py-5 max-w-3xl w-full mx-auto">
-        {activeTab === 'overview'       && <ProfileOverviewTab client={client} checkIns={checkIns} />}
+      <div className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-5">
+        {activeTab === 'overview'       && <ProfileOverviewTab client={client} checkIns={checkIns} score={score} />}
         {activeTab === 'programs'       && <ProfileProgramsTab client={client} />}
         {activeTab === 'nutrition'      && <ProfileNutritionTab client={client} />}
         {activeTab === 'checkins'       && <ProfileCheckInsTab client={client} checkIns={checkIns} />}
@@ -192,7 +316,7 @@ export default function ClientProfile() {
       <ClientForm
         open={showEdit}
         onOpenChange={setShowEdit}
-        onSubmit={(data) => handleEditSubmit(data)}
+        onSubmit={(data) => { updateMutation.mutate(data); setShowEdit(false); }}
         client={client}
       />
     </div>
