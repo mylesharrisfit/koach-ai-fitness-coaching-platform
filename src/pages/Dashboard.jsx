@@ -1,10 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import TodayView from '@/components/dashboard/TodayView';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  // Redirect new coaches (no clients yet + onboarding not complete) to onboarding
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      if (user && !user.onboarding_complete) {
+        navigate('/onboarding');
+      }
+    }).catch(() => {});
+  }, [navigate]);
 
   // Real-time subscriptions — invalidate on any change
   useEffect(() => {

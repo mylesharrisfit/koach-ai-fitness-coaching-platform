@@ -38,6 +38,7 @@ import AtRiskClients from './pages/AtRiskClients';
 import FastReview from './pages/FastReview';
 import ClientProfile from './pages/ClientProfile';
 import FocusLayout from './components/layout/FocusLayout';
+import Onboarding from './pages/Onboarding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -96,6 +97,7 @@ const AuthenticatedApp = () => {
       <Route element={<FocusLayout />}>
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
