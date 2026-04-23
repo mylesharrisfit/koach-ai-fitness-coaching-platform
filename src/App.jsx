@@ -39,6 +39,7 @@ import FastReview from './pages/FastReview';
 import ClientProfile from './pages/ClientProfile';
 import FocusLayout from './components/layout/FocusLayout';
 import Onboarding from './pages/Onboarding';
+import CoachingTemplates from './pages/CoachingTemplates';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -89,6 +90,7 @@ const AuthenticatedApp = () => {
         <Route path="/business" element={<Business />} />
         <Route path="/program-builder" element={<ProgramBuilder />} />
         <Route path="/white-label" element={<WhiteLabel />} />
+        <Route path="/coaching-templates" element={<CoachingTemplates />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
         <Route path="/at-risk" element={<AtRiskClients />} />

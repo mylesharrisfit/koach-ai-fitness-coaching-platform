@@ -7,7 +7,7 @@ import {
   BarChart3, Bot, ChevronLeft, ChevronRight, Lock,
   Play, CreditCard, Activity, Salad, ClipboardList,
   Trophy, ShieldAlert, DollarSign, Landmark, ShoppingBag,
-  Globe, Sparkles, Smartphone
+  Globe, Sparkles, Smartphone, LayoutTemplate
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -55,6 +55,7 @@ const NAV_GROUPS = [
     label: 'Tools',
     items: [
       { icon: Bot, label: 'Automations', path: '/automations' },
+      { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
       { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
       { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
       { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
