@@ -7,8 +7,7 @@ import {
 } from 'lucide-react';
 import { hasFeature, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
@@ -41,9 +40,9 @@ function estSessionMins(program) {
   return Math.round(avgExercises * 5 + (program.workouts[0]?.exercises?.reduce((s, e) => s + (e.sets || 3) * ((e.rest_seconds || 60) / 60 + 1), 0) || 30));
 }
 
-/* ── Assign to Client Modal ── */
+/* ── Assign to Client Modal — 1-click ── */
 function AssignModal({ program, onClose }) {
-  const [selected, setSelected] = useState('');
+  const [assigning, setAssigning] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: clients = [] } = useQuery({
@@ -52,39 +51,51 @@ function AssignModal({ program, onClose }) {
   });
 
   const assignMutation = useMutation({
-    mutationFn: () => base44.entities.Client.update(selected, { assigned_program_id: program.id }),
-    onSuccess: () => {
+    mutationFn: (clientId) => base44.entities.Client.update(clientId, { assigned_program_id: program.id }),
+    onSuccess: (_, clientId) => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      toast.success('Program assigned!');
+      const name = clients.find(c => c.id === clientId)?.name || 'Client';
+      toast.success(`Assigned to ${name}`);
       onClose();
     },
   });
 
+  const handlePick = (clientId) => {
+    setAssigning(clientId);
+    assignMutation.mutate(clientId);
+  };
+
   return (
     <Dialog open onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-sm rounded-2xl p-0 overflow-hidden">
-        <div className="px-5 pt-5 pb-4 border-b border-[#E7EAF3]">
-          <DialogTitle className="text-base font-bold text-[#1F2A44]">Assign to Client</DialogTitle>
-          <p className="text-xs text-[#6B7280] mt-0.5 truncate">"{program.title}"</p>
+      <DialogContent className="max-w-xs p-0 overflow-hidden rounded-xl">
+        <div className="px-4 pt-4 pb-3 border-b border-border">
+          <DialogTitle className="text-sm font-semibold">Assign to client</DialogTitle>
+          <p className="text-xs text-muted-foreground mt-0.5 truncate">"{program.title}"</p>
         </div>
-        <div className="p-4 space-y-3">
-          <Select value={selected} onValueChange={setSelected}>
-            <SelectTrigger className="border-[#E7EAF3] bg-[#F6F7FB]">
-              <SelectValue placeholder="Select a client..." />
-            </SelectTrigger>
-            <SelectContent>
-              {clients.map(c => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1 text-xs border-[#E7EAF3]" onClick={onClose}>Cancel</Button>
-            <Button className="flex-1 text-xs" disabled={!selected || assignMutation.isPending}
-              onClick={() => assignMutation.mutate()}>
-              {assignMutation.isPending ? 'Assigning...' : 'Assign'}
-            </Button>
-          </div>
+        <div className="p-2 max-h-64 overflow-y-auto">
+          {clients.length === 0 ? (
+            <p className="text-xs text-muted-foreground text-center py-6">No clients found</p>
+          ) : (
+            clients.map(c => (
+              <button
+                key={c.id}
+                onClick={() => handlePick(c.id)}
+                disabled={assignMutation.isPending}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg hover:bg-secondary text-left transition-colors disabled:opacity-50"
+              >
+                <div className="w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
+                  {c.name?.[0]?.toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
+                  {c.goal && <p className="text-[11px] text-muted-foreground capitalize">{c.goal.replace(/_/g, ' ')}</p>}
+                </div>
+                {assigning === c.id && assignMutation.isPending && (
+                  <div className="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                )}
+              </button>
+            ))
+          )}
         </div>
       </DialogContent>
     </Dialog>
