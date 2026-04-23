@@ -3,9 +3,19 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Sparkles, RefreshCw, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Loader2, Sparkles, RefreshCw, Trash2, ChevronDown, ChevronUp, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+
+// ── Tag config ─────────────────────────────────────────
+const MEAL_TAGS = [
+  { key: 'simple',       label: 'Simple',       color: 'bg-slate-100 text-slate-600 border-slate-200' },
+  { key: 'high_protein', label: 'High Protein',  color: 'bg-red-50 text-red-600 border-red-100' },
+  { key: 'high_volume',  label: 'High Volume',   color: 'bg-amber-50 text-amber-600 border-amber-100' },
+  { key: 'quick_prep',   label: 'Quick Prep',    color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+];
+
+const TAG_MAP = Object.fromEntries(MEAL_TAGS.map(t => [t.key, t]));
 
 function distributeToMeals(count) {
   const order = ['Breakfast', 'Lunch', 'Dinner', 'Pre-Workout', 'Post-Workout', 'Snack'];
@@ -23,7 +33,6 @@ function MacroBar({ p, c, f }) {
   );
 }
 
-// A single meal option tab — shows its food list
 function OptionFoods({ foods }) {
   return (
     <div className="divide-y divide-border">
@@ -45,11 +54,11 @@ function OptionFoods({ foods }) {
   );
 }
 
-// One meal card — with option tabs
-function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
+function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
   const [expanded, setExpanded] = useState(true);
   const [activeOption, setActiveOption] = useState(0);
   const [regenLoading, setRegenLoading] = useState(false);
+  const [tagsOpen, setTagsOpen] = useState(false);
 
   const options = meal.options || [];
   const current = options[activeOption] || {};
@@ -57,6 +66,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
   const totalP = (current.foods || []).reduce((s, f) => s + (f.protein || 0), 0);
   const totalC = (current.foods || []).reduce((s, f) => s + (f.carbs || 0), 0);
   const totalF = (current.foods || []).reduce((s, f) => s + (f.fats || 0), 0);
+  const mealTags = meal.tags || [];
 
   const handleRegen = async () => {
     setRegenLoading(true);
@@ -73,9 +83,18 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-sm text-foreground">{meal.meal_name}</span>
             <span className="text-xs text-muted-foreground">{meal.time}</span>
+            {/* Tag badges */}
+            {mealTags.map(tk => {
+              const t = TAG_MAP[tk];
+              return t ? (
+                <span key={tk} className={cn('text-[10px] px-1.5 py-0.5 rounded-full border font-medium', t.color)}>
+                  {t.label}
+                </span>
+              ) : null;
+            })}
           </div>
           <div className="flex items-center gap-3 text-[11px] mt-0.5">
             <span className="font-medium text-foreground">{totalCals} cal</span>
@@ -86,11 +105,19 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
           <MacroBar p={totalP} c={totalC} f={totalF} />
         </div>
         <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+          {/* Tag toggle button */}
+          <button
+            onClick={() => setTagsOpen(o => !o)}
+            className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors',
+              tagsOpen ? 'bg-primary/10 text-primary' : 'hover:bg-secondary text-muted-foreground hover:text-foreground')}
+            title="Tag this meal"
+          >
+            <Tag className="w-3.5 h-3.5" />
+          </button>
           <button
             onClick={handleRegen}
             disabled={regenLoading}
             className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors"
-            title="Regenerate this meal"
           >
             {regenLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
           </button>
@@ -100,6 +127,28 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
           {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </div>
       </div>
+
+      {/* Tag picker (inline, minimal) */}
+      {tagsOpen && (
+        <div className="px-4 py-2 border-t border-border bg-secondary/20 flex items-center gap-1.5 flex-wrap">
+          <span className="text-[11px] text-muted-foreground mr-1">Tags:</span>
+          {MEAL_TAGS.map(t => {
+            const active = mealTags.includes(t.key);
+            return (
+              <button
+                key={t.key}
+                onClick={() => onTagToggle(mIdx, t.key)}
+                className={cn(
+                  'text-[11px] px-2 py-0.5 rounded-full border font-medium transition-all',
+                  active ? t.color : 'bg-white text-muted-foreground border-border hover:border-primary/30'
+                )}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Options + Foods */}
       {expanded && (
@@ -117,7 +166,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
                   className={cn(
                     'flex flex-col items-start px-3 py-2 rounded-lg border text-left transition-all flex-1',
                     isActive
-                      ? 'bg-primary/5 border-primary/30 text-foreground'
+                      ? 'bg-primary/5 border-primary/30'
                       : 'border-border text-muted-foreground hover:border-primary/20 hover:bg-secondary/50'
                   )}
                 >
@@ -125,13 +174,11 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal }) {
                     Option {oIdx + 1}
                   </span>
                   <span className="text-[11px] font-medium text-foreground">{optCals} cal · {optP}g P</span>
-                  <span className="text-[10px] text-muted-foreground truncate w-full">{opt.label || opt.foods?.[0]?.food_name || ''}</span>
+                  <span className="text-[10px] text-muted-foreground truncate w-full">{opt.label || ''}</span>
                 </button>
               );
             })}
           </div>
-
-          {/* Active option foods */}
           <div className="mt-3">
             <OptionFoods foods={current.foods} />
           </div>
@@ -182,17 +229,27 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
     options_count: 2,
   });
   const [meals, setMeals] = useState(initialMeals || []);
+  const [activeFilter, setActiveFilter] = useState(null); // null = show all
   const hasGenerated = meals.length > 0;
 
   const syncUp = (updated) => {
     setMeals(updated);
-    // Flatten to first option's foods for entity compatibility
     onMealsChange(updated.map(m => ({
       meal_name: m.meal_name,
       time: m.time,
+      tags: m.tags || [],
       foods: (m.options?.[0]?.foods || []),
       options: m.options,
     })));
+  };
+
+  const handleTagToggle = (mIdx, tagKey) => {
+    const updated = meals.map((m, i) => {
+      if (i !== mIdx) return m;
+      const tags = m.tags || [];
+      return { ...m, tags: tags.includes(tagKey) ? tags.filter(t => t !== tagKey) : [...tags, tagKey] };
+    });
+    syncUp(updated);
   };
 
   const generateMeals = async () => {
@@ -225,13 +282,11 @@ Return JSON with a "meals" array.`;
       prompt,
       response_json_schema: {
         type: 'object',
-        properties: {
-          meals: { type: 'array', items: MEAL_SCHEMA },
-        },
+        properties: { meals: { type: 'array', items: MEAL_SCHEMA } },
       },
     });
 
-    const generated = result?.meals || [];
+    const generated = (result?.meals || []).map(m => ({ ...m, tags: [] }));
     syncUp(generated);
     setGenerating(false);
     toast.success('Meal plan generated!');
@@ -251,13 +306,16 @@ Return a single meal JSON object.`;
     });
 
     if (result?.meal_name) {
-      syncUp(meals.map((m, i) => i === mIdx ? result : m));
+      syncUp(meals.map((m, i) => i === mIdx ? { ...result, tags: m.tags || [] } : m));
     }
   };
 
   const removeMeal = (mIdx) => syncUp(meals.filter((_, i) => i !== mIdx));
 
-  // Totals from first option of each meal
+  const filteredMeals = activeFilter
+    ? meals.filter(m => (m.tags || []).includes(activeFilter))
+    : meals;
+
   const totalCals = meals.reduce((s, m) => s + (m.options?.[0]?.foods || m.foods || []).reduce((fs, f) => fs + (f.calories || 0), 0), 0);
   const totalP = meals.reduce((s, m) => s + (m.options?.[0]?.foods || m.foods || []).reduce((fs, f) => fs + (f.protein || 0), 0), 0);
   const totalC = meals.reduce((s, m) => s + (m.options?.[0]?.foods || m.foods || []).reduce((fs, f) => fs + (f.carbs || 0), 0), 0);
@@ -315,35 +373,69 @@ Return a single meal JSON object.`;
         </Button>
       </div>
 
-      {/* Totals */}
       {hasGenerated && (
-        <div className="flex flex-wrap items-center gap-3 px-1 text-xs">
-          <span className="text-muted-foreground">Plan totals (Option 1):</span>
-          <span className="font-semibold text-foreground">{totalCals} kcal</span>
-          {params.calories && (
-            <span className={cn('font-medium', Math.abs(totalCals - Number(params.calories)) < 80 ? 'text-emerald-600' : 'text-amber-500')}>
-              {totalCals > Number(params.calories) ? '+' : ''}{totalCals - Number(params.calories)} vs target
-            </span>
-          )}
-          <span className="text-red-500">{totalP}g P</span>
-          <span className="text-amber-500">{totalC}g C</span>
-          <span className="text-blue-500">{totalF}g F</span>
-        </div>
-      )}
+        <>
+          {/* Totals + Filter bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              <span className="text-muted-foreground">Totals:</span>
+              <span className="font-semibold text-foreground">{totalCals} kcal</span>
+              {params.calories && (
+                <span className={cn('font-medium', Math.abs(totalCals - Number(params.calories)) < 80 ? 'text-emerald-600' : 'text-amber-500')}>
+                  {totalCals > Number(params.calories) ? '+' : ''}{totalCals - Number(params.calories)} vs target
+                </span>
+              )}
+              <span className="text-red-500">{totalP}g P</span>
+              <span className="text-amber-500">{totalC}g C</span>
+              <span className="text-blue-500">{totalF}g F</span>
+            </div>
 
-      {/* Meal cards */}
-      {hasGenerated && (
-        <div className="space-y-3">
-          {meals.map((meal, mIdx) => (
-            <MealCard
-              key={mIdx}
-              meal={meal}
-              mIdx={mIdx}
-              onRemove={removeMeal}
-              onRegenerateMeal={regenerateMeal}
-            />
-          ))}
-        </div>
+            {/* Filter toggles */}
+            <div className="flex items-center gap-1 flex-wrap">
+              <span className="text-[11px] text-muted-foreground mr-0.5">Filter:</span>
+              <button
+                onClick={() => setActiveFilter(null)}
+                className={cn('text-[11px] px-2 py-0.5 rounded-full border font-medium transition-all',
+                  activeFilter === null ? 'bg-foreground text-background border-foreground' : 'bg-white text-muted-foreground border-border hover:border-foreground/30'
+                )}
+              >
+                All
+              </button>
+              {MEAL_TAGS.map(t => (
+                <button
+                  key={t.key}
+                  onClick={() => setActiveFilter(activeFilter === t.key ? null : t.key)}
+                  className={cn('text-[11px] px-2 py-0.5 rounded-full border font-medium transition-all',
+                    activeFilter === t.key ? t.color : 'bg-white text-muted-foreground border-border hover:border-primary/30'
+                  )}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Meal cards */}
+          <div className="space-y-3">
+            {filteredMeals.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-6">No meals tagged with "{TAG_MAP[activeFilter]?.label}". Tag meals using the <Tag className="inline w-3 h-3" /> icon.</p>
+            ) : (
+              filteredMeals.map((meal, visIdx) => {
+                const realIdx = meals.indexOf(meal);
+                return (
+                  <MealCard
+                    key={realIdx}
+                    meal={meal}
+                    mIdx={realIdx}
+                    onRemove={removeMeal}
+                    onRegenerateMeal={regenerateMeal}
+                    onTagToggle={handleTagToggle}
+                  />
+                );
+              })
+            )}
+          </div>
+        </>
       )}
     </div>
   );
