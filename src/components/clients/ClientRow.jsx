@@ -1,5 +1,6 @@
 import React from 'react';
 import { MoreHorizontal, Edit, Trash2, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import LifecycleBadge, { LIFECYCLE_CONFIG } from './LifecycleBadge';

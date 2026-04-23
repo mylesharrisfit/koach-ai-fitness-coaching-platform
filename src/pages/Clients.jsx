@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Search, X, AlertTriangle, ArrowRight, Lock } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ClientForm from '../components/clients/ClientForm';
 import ClientRow from '../components/clients/ClientRow';
-import ClientProfileDrawer from '../components/clients/ClientProfileDrawer';
+
 import LifecycleBadge, { LIFECYCLE_CONFIG } from '../components/clients/LifecycleBadge';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
@@ -21,9 +21,9 @@ import { getLimit } from '@/lib/subscription';
 const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
 
 export default function Clients() {
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
-  const [selectedClient, setSelectedClient] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [tagFilter, setTagFilter] = useState('');
@@ -84,7 +84,6 @@ export default function Clients() {
     mutationFn: (id) => base44.entities.Client.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      setSelectedClient(null);
       toast.success('Client deleted');
     },
   });
@@ -125,8 +124,6 @@ export default function Clients() {
   const handleSubmit = (data, sendInvite) => {
     if (editingClient) {
       updateMutation.mutate({ id: editingClient.id, data });
-      // refresh selected client if it's the one being edited
-      if (selectedClient?.id === editingClient.id) setSelectedClient({ ...selectedClient, ...data });
     } else {
       createMutation.mutate({ data, sendInvite });
     }
@@ -291,7 +288,7 @@ export default function Clients() {
                 client={client}
                 score={score}
                 lastCheckIn={cis[0]}
-                onView={() => setSelectedClient(client)}
+                onView={() => navigate(`/client-profile?id=${client.id}`)}
                 onEdit={() => openEdit(client)}
                 onDelete={() => deleteMutation.mutate(client.id)}
                 onStatusChange={(s) => updateMutation.mutate({ id: client.id, data: { ...client, lifecycle_status: s } })}
@@ -300,16 +297,6 @@ export default function Clients() {
           })
         )}
       </div>
-
-      {/* ── Profile Drawer ── */}
-      {selectedClient && (
-        <ClientProfileDrawer
-          client={selectedClient}
-          checkIns={checkInMap[selectedClient.id] || []}
-          onClose={() => setSelectedClient(null)}
-          onEdit={() => openEdit(selectedClient)}
-        />
-      )}
 
       <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
       <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
