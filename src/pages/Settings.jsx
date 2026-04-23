@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { User, Plug, Bell, Shield } from 'lucide-react';
+import { User, Plug, Bell, Shield, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CoachIntegrations from '../components/integrations/CoachIntegrations';
+import DefaultAssignmentSettings from '../components/settings/DefaultAssignmentSettings';
 
 const TABS = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'integrations', label: 'Integrations', icon: Plug },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'security', label: 'Security', icon: Shield },
+  { id: 'auto-assign', label: 'Auto-Assign', icon: Zap },
 ];
 
 function ProfileTab() {
@@ -80,6 +82,15 @@ export default function Settings() {
       )}
       {activeTab === 'notifications' && <NotificationsTab />}
       {activeTab === 'security' && <SecurityTab />}
+      {activeTab === 'auto-assign' && (
+        <div>
+          <div className="mb-5">
+            <h2 className="text-base font-semibold text-[#1F2A44]">Auto-Assignment Defaults</h2>
+            <p className="text-sm text-[#374151] mt-0.5">These are automatically applied whenever a new client is added</p>
+          </div>
+          <DefaultAssignmentSettings />
+        </div>
+      )}
     </div>
   );
 }

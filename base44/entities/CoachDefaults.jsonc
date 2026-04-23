@@ -1,0 +1,38 @@
+{
+  "name": "CoachDefaults",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string",
+      "description": "Coach user email"
+    },
+    "default_program_id": {
+      "type": "string",
+      "description": "Default workout program ID to assign to new clients"
+    },
+    "default_nutrition_id": {
+      "type": "string",
+      "description": "Default nutrition plan ID to assign to new clients"
+    },
+    "send_welcome_message": {
+      "type": "boolean",
+      "default": true,
+      "description": "Send welcome message to new clients"
+    },
+    "welcome_message": {
+      "type": "string",
+      "description": "Welcome message content"
+    },
+    "checkin_frequency": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "biweekly",
+        "monthly"
+      ],
+      "default": "weekly",
+      "description": "Default check-in reminder frequency"
+    }
+  },
+  "required": []
+}
