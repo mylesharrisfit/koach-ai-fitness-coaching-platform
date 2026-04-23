@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2, Sparkles, RefreshCw, Trash2, ChevronDown, ChevronUp, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import WorkoutMealPanel from './WorkoutMealPanel';
 
 // ── Tag config ─────────────────────────────────────────
 const MEAL_TAGS = [
@@ -229,7 +230,8 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
     options_count: 2,
   });
   const [meals, setMeals] = useState(initialMeals || []);
-  const [activeFilter, setActiveFilter] = useState(null); // null = show all
+  const [activeFilter, setActiveFilter] = useState(null);
+  const [workoutMeals, setWorkoutMeals] = useState({});
   const hasGenerated = meals.length > 0;
 
   const syncUp = (updated) => {
@@ -414,6 +416,9 @@ Return a single meal JSON object.`;
               ))}
             </div>
           </div>
+
+          {/* Workout meals */}
+          <WorkoutMealPanel value={workoutMeals} onChange={setWorkoutMeals} />
 
           {/* Meal cards */}
           <div className="space-y-3">
