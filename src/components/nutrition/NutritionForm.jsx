@@ -6,7 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronUp, X, Sparkles, PenLine } from 'lucide-react';
+import SmartNutritionGenerator from './SmartNutritionGenerator';
+import { cn } from '@/lib/utils';
 
 const MEAL_TEMPLATES = [
   { meal_name: 'Breakfast', time: '7:00 AM', foods: [{ food_name: 'Oats', portion: '1 cup', calories: 300, protein: 10, carbs: 54, fats: 5, swap_options: ['Greek yogurt bowl', 'Protein pancakes'] }] },
@@ -29,6 +31,7 @@ const defaultForm = { title: '', description: '', tracking_mode: 'macros', calor
 export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
   const [form, setForm] = useState(defaultForm);
   const [expandedMeal, setExpandedMeal] = useState(null);
+  const [mealTab, setMealTab] = useState('smart'); // 'smart' | 'manual'
 
   useEffect(() => {
     if (plan) {
@@ -163,6 +166,39 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
 
           {/* Meals */}
           <div>
+            {/* Tab switcher — only in macro mode */}
+            {!isHabits && (
+              <div className="flex gap-1 bg-secondary/50 rounded-lg p-1 mb-3 w-fit">
+                <button
+                  type="button"
+                  onClick={() => setMealTab('smart')}
+                  className={cn('flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md font-medium transition-colors',
+                    mealTab === 'smart' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}
+                >
+                  <Sparkles className="w-3 h-3" /> Smart Generate
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMealTab('manual')}
+                  className={cn('flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md font-medium transition-colors',
+                    mealTab === 'manual' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}
+                >
+                  <PenLine className="w-3 h-3" /> Manual
+                </button>
+              </div>
+            )}
+
+            {/* Smart generator */}
+            {!isHabits && mealTab === 'smart' && (
+              <SmartNutritionGenerator
+                initialMeals={form.meals}
+                targets={{ calories: form.calories, protein_g: form.protein_g, carbs_g: form.carbs_g, fats_g: form.fats_g }}
+                onMealsChange={(meals) => setForm(f => ({ ...f, meals }))}
+              />
+            )}
+
+            {/* Manual mode heading + buttons */}
+            {(isHabits || mealTab === 'manual') && (
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-heading font-semibold text-sm">{isHabits ? 'Habit Guidelines' : 'Meals'}</h3>
               <div className="flex gap-2">
@@ -189,7 +225,9 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
               </div>
             </div>
 
-            <div className="space-y-3">
+            )} {/* closes manual heading div */}
+
+            {(isHabits || mealTab === 'manual') && <div className="space-y-3">
               {(form.meals || []).map((meal, mIdx) => (
                 <div key={mIdx} className="border border-border rounded-xl overflow-hidden bg-card">
                   <div
@@ -267,7 +305,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
                   )}
                 </div>
               ))}
-            </div>
+            </div>}
           </div>
 
           <div>
