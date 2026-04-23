@@ -18,7 +18,7 @@ const NAV_GROUPS = [
     label: null,
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-      { icon: Play, label: 'Run My Day', path: '/checkin-review', feature: 'checkin_review' },
+      { icon: Play, label: 'Run My Day', path: '/fast-review' },
     ],
   },
   {
