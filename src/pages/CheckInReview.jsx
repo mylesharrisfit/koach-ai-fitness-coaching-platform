@@ -9,7 +9,11 @@ import CheckInClientCard from '../components/checkin/CheckInClientCard';
 import { Input } from '@/components/ui/input';
 
 /* ── helpers ── */
+function getReviewStatus(ci) {
+  return ci.review_status || (ci.coach_responded ? 'reviewed' : 'pending');
+}
 function isFlagged(ci) {
+  if (getReviewStatus(ci) === 'flagged') return true;
   const s = checkInScore(ci);
   if (s !== null && s < 55) return true;
   if (ci.compliance_training != null && ci.compliance_training < 60) return true;
@@ -22,20 +26,24 @@ function isOverdue(ci) {
   return differenceInDays(new Date(), parseISO(ci.date)) > 14;
 }
 function isPending(ci) {
-  return !ci.coach_notes && !ci.coach_responded;
+  return getReviewStatus(ci) === 'pending';
+}
+function isReviewed(ci) {
+  return getReviewStatus(ci) === 'reviewed';
 }
 
 const FILTERS = [
-  { key: 'all',       label: 'All' },
-  { key: 'pending',   label: 'Pending' },
-  { key: 'flagged',   label: 'Flagged' },
-  { key: 'overdue',   label: 'Overdue' },
+  { key: 'all',      label: 'All' },
+  { key: 'pending',  label: 'Pending' },
+  { key: 'flagged',  label: 'Flagged' },
+  { key: 'reviewed', label: 'Reviewed' },
+  { key: 'overdue',  label: 'Overdue' },
 ];
 
 const STAT_COLORS = {
-  pending: 'text-primary',
-  flagged: 'text-destructive',
-  overdue: 'text-amber-400',
+  pending:  'text-amber-500',
+  flagged:  'text-destructive',
+  reviewed: 'text-emerald-600',
 };
 
 export default function CheckInReview() {
@@ -97,9 +105,10 @@ export default function CheckInReview() {
       });
     }
 
-    if (filter === 'pending') list = list.filter(isPending);
-    if (filter === 'flagged') list = list.filter(isFlagged);
-    if (filter === 'overdue') list = list.filter(isOverdue);
+    if (filter === 'pending')  list = list.filter(isPending);
+    if (filter === 'flagged')  list = list.filter(isFlagged);
+    if (filter === 'reviewed') list = list.filter(isReviewed);
+    if (filter === 'overdue')  list = list.filter(isOverdue);
 
     // Sort: at-risk first, then by date desc
     return [...list].sort((a, b) => {
@@ -111,9 +120,9 @@ export default function CheckInReview() {
   }, [latestPerClient, filter, search, clientMap]);
 
   const counts = useMemo(() => ({
-    pending: latestPerClient.filter(isPending).length,
-    flagged: latestPerClient.filter(isFlagged).length,
-    overdue: latestPerClient.filter(isOverdue).length,
+    pending:  latestPerClient.filter(isPending).length,
+    flagged:  latestPerClient.filter(isFlagged).length,
+    reviewed: latestPerClient.filter(isReviewed).length,
   }), [latestPerClient]);
 
   return (
@@ -123,13 +132,13 @@ export default function CheckInReview() {
         <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-[#1F2A44]">Check-in Dashboard</h1>
         <p className="text-sm text-[#374151] mt-1">
           {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
-          {counts.pending > 0 && ` · ${counts.pending} need${counts.pending === 1 ? 's' : ''} response`}
+          {counts.pending > 0 && ` · ${counts.pending} awaiting review`}
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-5 fade-up fade-up-delay-1">
-        {(['pending', 'flagged', 'overdue']).map(k => (
+        {(['pending', 'flagged', 'reviewed']).map(k => (
           <button
             key={k}
             onClick={() => setFilter(filter === k ? 'all' : k)}

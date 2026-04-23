@@ -13,6 +13,16 @@
       "type": "string",
       "format": "date"
     },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "flagged"
+      ],
+      "default": "pending",
+      "description": "Coach review status"
+    },
     "weight": {
       "type": "number",
       "description": "Weight in lbs"
@@ -58,11 +68,11 @@
     },
     "energy_level": {
       "type": "number",
-      "description": "Energy level 1\u20135"
+      "description": "Energy level 1\u201310"
     },
     "stress_level": {
       "type": "number",
-      "description": "Stress level 1\u20135"
+      "description": "Stress level 1\u201310"
     },
     "sleep_hours": {
       "type": "number"

@@ -15,6 +15,7 @@ import CheckInResponseBox from './CheckInResponseBox';
 import CheckInQuickActions from './CheckInQuickActions';
 import TopRecommendationBadge from './TopRecommendationBadge';
 import RecommendationCard from './RecommendationCard';
+import CheckInStatusBadge from './CheckInStatusBadge';
 import { generateRecommendations } from '@/lib/decisionEngine';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
@@ -88,7 +89,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     setMarkSaving(true);
     setMarked(true); // optimistic
     setJustCompleted(true);
-    updateMutation.mutate({ coach_responded: true });
+    updateMutation.mutate({ coach_responded: true, review_status: 'reviewed' });
     setMarkSaving(false);
     setTimeout(() => setJustCompleted(false), 1200);
   };
@@ -118,12 +119,10 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             {/* Name + badges */}
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <span className="font-bold text-sm">{client?.name || checkIn.client_name}</span>
-              <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', status.color)}>
-                {status.label}
-              </span>
-              {!hasResponse && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                  Respond
+              <CheckInStatusBadge checkIn={checkIn} compact />
+              {status.label !== 'Good' && (
+                <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', status.color)}>
+                  {status.label}
                 </span>
               )}
             </div>

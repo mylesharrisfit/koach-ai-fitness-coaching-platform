@@ -142,6 +142,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
       client_id: clientId,
       client_name: clientName,
       date: format(new Date(), 'yyyy-MM-dd'),
+      review_status: 'pending',
       weight: weight ? Number(weight) : undefined,
       sleep_hours: sleep,
       energy_level: energy,
