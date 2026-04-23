@@ -20,6 +20,14 @@ const STEPS = [
   { id: 'notes',      emoji: '📝',  title: 'Notes for Your Coach' },
 ];
 
+const MOODS = [
+  { key: 'great',    emoji: '😄', label: 'Great' },
+  { key: 'good',     emoji: '🙂', label: 'Good' },
+  { key: 'okay',     emoji: '😐', label: 'Okay' },
+  { key: 'tired',    emoji: '😴', label: 'Tired' },
+  { key: 'stressed', emoji: '😰', label: 'Stressed' },
+];
+
 /* ── Reusable Slider ── */
 function Slider({ label, emoji, value, onChange, min = 1, max = 10, step = 1, lowLabel, highLabel }) {
   return (
@@ -119,8 +127,9 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
   const [sleep, setSleep] = useState(7);
   const [energy, setEnergy] = useState(7);
   const [stress, setStress] = useState(3);
-  const [workoutsCompleted, setWorkoutsCompleted] = useState(false);
-  const [nutritionOnTrack, setNutritionOnTrack] = useState(false);
+  const [mood, setMood] = useState('');
+  const [trainingCompliance, setTrainingCompliance] = useState(70);
+  const [nutritionCompliance, setNutritionCompliance] = useState(70);
   const [notes, setNotes] = useState('');
 
   const lastWeight = lastCheckIn?.weight ?? null;
@@ -147,8 +156,9 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
       sleep_hours: sleep,
       energy_level: energy,
       stress_level: stress,
-      compliance_training: workoutsCompleted ? 100 : 50,
-      compliance_nutrition: nutritionOnTrack ? 100 : 50,
+      mood: mood || undefined,
+      compliance_training: trainingCompliance,
+      compliance_nutrition: nutritionCompliance,
       notes: notes || undefined,
       photo_urls: photoUrls.length ? photoUrls : undefined,
     });
@@ -237,6 +247,28 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
         {/* Feeling */}
         {currentStep.id === 'feeling' && (
           <div className="space-y-8">
+            {/* Mood picker */}
+            <div className="space-y-3">
+              <p className="text-base font-semibold">Overall mood this week?</p>
+              <div className="grid grid-cols-5 gap-2">
+                {MOODS.map(m => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => setMood(m.key)}
+                    className={cn(
+                      'flex flex-col items-center gap-1.5 py-3 rounded-2xl border-2 transition-all active:scale-[0.96]',
+                      mood === m.key
+                        ? 'border-primary bg-primary/8 shadow-sm'
+                        : 'border-border bg-secondary/30'
+                    )}
+                  >
+                    <span className="text-2xl">{m.emoji}</span>
+                    <span className="text-[10px] font-semibold text-muted-foreground">{m.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
             <Slider emoji="😴" label="Sleep" value={sleep} onChange={setSleep}
               min={1} max={12} step={0.5} lowLabel="1 hr" highLabel="12 hrs" />
             <Slider emoji="⚡" label="Energy" value={energy} onChange={setEnergy}
@@ -248,11 +280,53 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
 
         {/* Compliance */}
         {currentStep.id === 'compliance' && (
-          <div className="space-y-3">
-            <CheckRow checked={workoutsCompleted} onChange={setWorkoutsCompleted}
-              label="Completed all workouts" sublabel="Hit every planned training session" />
-            <CheckRow checked={nutritionOnTrack} onChange={setNutritionOnTrack}
-              label="Nutrition was on track" sublabel="Stuck to the plan most of the week" />
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <Slider
+                emoji="🏋️"
+                label="Training compliance"
+                value={trainingCompliance}
+                onChange={setTrainingCompliance}
+                min={0} max={100} step={5}
+                lowLabel="0% — skipped all"
+                highLabel="100% — perfect"
+              />
+              <div className="flex justify-center gap-2 flex-wrap">
+                {[0,25,50,75,100].map(v => (
+                  <button key={v} type="button"
+                    onClick={() => setTrainingCompliance(v)}
+                    className={cn(
+                      'px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
+                      trainingCompliance === v ? 'bg-primary text-white border-primary' : 'border-border text-muted-foreground'
+                    )}>
+                    {v}%
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-4">
+              <Slider
+                emoji="🥗"
+                label="Nutrition compliance"
+                value={nutritionCompliance}
+                onChange={setNutritionCompliance}
+                min={0} max={100} step={5}
+                lowLabel="0% — off track"
+                highLabel="100% — nailed it"
+              />
+              <div className="flex justify-center gap-2 flex-wrap">
+                {[0,25,50,75,100].map(v => (
+                  <button key={v} type="button"
+                    onClick={() => setNutritionCompliance(v)}
+                    className={cn(
+                      'px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
+                      nutritionCompliance === v ? 'bg-primary text-white border-primary' : 'border-border text-muted-foreground'
+                    )}>
+                    {v}%
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

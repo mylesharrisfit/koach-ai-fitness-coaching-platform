@@ -201,10 +201,10 @@ export default function RunMyDayCenter({ clients, checkIns, messages }) {
   }, [checkIns]);
 
   const sections = [
-    { id: 'workout', count: missedWorkouts.length, shortLabel: 'Missed WO', activeBg: 'bg-red-500/20 border-red-400/30', activeColor: 'text-red-300' },
+    { id: 'pending', count: pendingCheckIns.length, shortLabel: 'Reviews', activeBg: 'bg-blue-500/20 border-blue-400/30', activeColor: 'text-blue-300' },
     { id: 'checkin', count: missedCheckIns.length, shortLabel: 'No Check-In', activeBg: 'bg-amber-500/20 border-amber-400/30', activeColor: 'text-amber-300' },
+    { id: 'workout', count: missedWorkouts.length, shortLabel: 'Missed WO', activeBg: 'bg-red-500/20 border-red-400/30', activeColor: 'text-red-300' },
     { id: 'risk',    count: atRisk.length, shortLabel: 'At Risk', activeBg: 'bg-orange-500/20 border-orange-400/30', activeColor: 'text-orange-300' },
-    { id: 'prog',    count: readyForProgression.length, shortLabel: 'Ready↑', activeBg: 'bg-emerald-500/20 border-emerald-400/30', activeColor: 'text-emerald-300' },
   ];
 
   const SECTION_COLORS = {

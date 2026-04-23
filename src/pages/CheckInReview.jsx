@@ -1,12 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { subDays, differenceInDays, parseISO } from 'date-fns';
-import { ClipboardList, Search, X } from 'lucide-react';
+import { differenceInDays, parseISO, format } from 'date-fns';
+import { ClipboardList, Search, X, AlertCircle, MessageSquare, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkInScore, averageAdherenceScore } from '@/lib/adherence';
 import CheckInClientCard from '../components/checkin/CheckInClientCard';
 import { Input } from '@/components/ui/input';
+import { useNavigate } from 'react-router-dom';
 
 /* ── helpers ── */
 function getReviewStatus(ci) {
@@ -38,18 +39,21 @@ const FILTERS = [
   { key: 'flagged',  label: 'Flagged' },
   { key: 'reviewed', label: 'Reviewed' },
   { key: 'overdue',  label: 'Overdue' },
+  { key: 'missed',   label: 'Missed' },
 ];
 
 const STAT_COLORS = {
   pending:  'text-amber-500',
   flagged:  'text-destructive',
   reviewed: 'text-emerald-600',
+  missed:   'text-orange-500',
 };
 
 export default function CheckInReview() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Real-time: refresh list when any check-in is updated (coach responds/reviews)
   useEffect(() => {
@@ -119,11 +123,28 @@ export default function CheckInReview() {
     });
   }, [latestPerClient, filter, search, clientMap]);
 
+  /* Missed check-ins: active clients with no check-in in 7+ days */
+  const missedClients = useMemo(() => {
+    const activeClients = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active');
+    return activeClients.filter(client => {
+      const clientCIs = checkIns.filter(ci => ci.client_id === client.id);
+      if (!clientCIs.length) return true;
+      const latest = clientCIs.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+      return differenceInDays(new Date(), parseISO(latest.date)) >= 7;
+    }).map(client => {
+      const clientCIs = checkIns.filter(ci => ci.client_id === client.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const lastCI = clientCIs[0];
+      const daysAgo = lastCI ? differenceInDays(new Date(), parseISO(lastCI.date)) : null;
+      return { client, lastCI, daysAgo };
+    }).sort((a, b) => (b.daysAgo ?? 999) - (a.daysAgo ?? 999));
+  }, [clients, checkIns]);
+
   const counts = useMemo(() => ({
     pending:  latestPerClient.filter(isPending).length,
     flagged:  latestPerClient.filter(isFlagged).length,
     reviewed: latestPerClient.filter(isReviewed).length,
-  }), [latestPerClient]);
+    missed:   missedClients.length,
+  }), [latestPerClient, missedClients]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
@@ -137,8 +158,8 @@ export default function CheckInReview() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-5 fade-up fade-up-delay-1">
-        {(['pending', 'flagged', 'reviewed']).map(k => (
+      <div className="grid grid-cols-4 gap-2 mb-5 fade-up fade-up-delay-1">
+        {(['pending', 'flagged', 'reviewed', 'missed']).map(k => (
           <button
             key={k}
             onClick={() => setFilter(filter === k ? 'all' : k)}
@@ -147,8 +168,8 @@ export default function CheckInReview() {
               filter === k ? 'border-primary ring-1 ring-primary/30' : 'border-[#E7EAF3]'
             )}
           >
-            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? STAT_COLORS[k] : 'text-[#374151]')}>
-            {counts[k]}
+            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? (STAT_COLORS[k] || 'text-amber-500') : 'text-[#374151]')}>
+              {counts[k]}
             </p>
             <p className="text-[11px] text-[#374151] mt-0.5 capitalize">{k}</p>
           </button>
@@ -203,6 +224,61 @@ export default function CheckInReview() {
         <div className="flex justify-center py-20">
           <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
         </div>
+      ) : filter === 'missed' ? (
+        /* ── Missed check-ins panel ── */
+        missedClients.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
+            <ClipboardList className="w-12 h-12 opacity-30" />
+            <p className="text-sm font-medium">All active clients checked in this week 🎉</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground mb-3">
+              {missedClients.length} active client{missedClients.length !== 1 ? 's' : ''} haven't checked in this week
+            </p>
+            {missedClients.map(({ client, lastCI, daysAgo }, i) => (
+              <div
+                key={client.id}
+                className="bg-white border border-[#E7EAF3] rounded-2xl p-4 flex items-center gap-3 shadow-sm fade-up"
+                style={{ animationDelay: `${i * 0.04}s` }}
+              >
+                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-sm flex-shrink-0">
+                  {client.name?.[0]?.toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm truncate">{client.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {daysAgo !== null
+                      ? `Last check-in ${daysAgo}d ago · ${lastCI ? format(parseISO(lastCI.date), 'MMM d') : ''}`
+                      : 'No check-ins yet'}
+                  </p>
+                </div>
+                <span className={cn(
+                  'text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0',
+                  daysAgo === null || daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'
+                )}>
+                  {daysAgo !== null ? `${daysAgo}d` : 'Never'}
+                </span>
+                <div className="flex gap-1.5 shrink-0">
+                  <button
+                    onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in when you get a chance 📋")}`)}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors"
+                  >
+                    <Send className="w-3 h-3" />
+                    Remind
+                  </button>
+                  <button
+                    onClick={() => navigate(`/messages?clientId=${client.id}`)}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] hover:bg-[#ECEEF4] transition-colors"
+                  >
+                    <MessageSquare className="w-3 h-3" />
+                    Chat
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
       ) : visible.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
           <ClipboardList className="w-12 h-12 opacity-30" />
