@@ -1,55 +1,36 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, MoreHorizontal, Mail, Phone, Target, Trash2, Edit, Lock, Tag, ArrowUpDown, X, AlertTriangle, ArrowRight, CheckSquare, Square, Plug, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
-import { compositeAdherenceScore, scoreColor, scoreLabel } from '@/lib/adherence';
-import { AdherencePill } from '@/components/adherence/AdherenceScore';
+import { compositeAdherenceScore } from '@/lib/adherence';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import PageHeader from '../components/shared/PageHeader';
 import ClientForm from '../components/clients/ClientForm';
+import ClientRow from '../components/clients/ClientRow';
+import ClientProfileDrawer from '../components/clients/ClientProfileDrawer';
 import LifecycleBadge, { LIFECYCLE_CONFIG } from '../components/clients/LifecycleBadge';
-import UsageMeter from '@/components/subscription/UsageMeter';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
-import ClientFeedbackHistory from '../components/clients/ClientFeedbackHistory';
-import BulkActionBar from '../components/clients/BulkActionBar';
-import ClientConnectedApps from '../components/integrations/ClientConnectedApps';
-
-const goalLabels = {
-  weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
-  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
-};
 
 const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
 
 export default function Clients() {
   const [showForm, setShowForm] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [tagFilter, setTagFilter] = useState('');
   const [sortBy, setSortBy] = useState('created_date');
   const [currentUser, setCurrentUser] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
-  const [selectedIds, setSelectedIds] = useState(new Set());
-  const [expandedApps, setExpandedApps] = useState(null);
   const queryClient = useQueryClient();
-
-  const toggleSelect = (id) => setSelectedIds(prev => {
-    const next = new Set(prev);
-    next.has(id) ? next.delete(id) : next.add(id);
-    return next;
-  });
-  const clearSelection = () => setSelectedIds(new Set());
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
@@ -64,6 +45,18 @@ export default function Clients() {
     queryKey: ['checkins-clients'],
     queryFn: () => base44.entities.CheckIn.list('-date', 200),
   });
+
+  // Pre-compute per-client check-in map
+  const checkInMap = useMemo(() => {
+    const map = {};
+    allCheckIns.forEach(ci => {
+      if (!map[ci.client_id]) map[ci.client_id] = [];
+      map[ci.client_id].push(ci);
+    });
+    // sort each by date desc
+    Object.keys(map).forEach(k => map[k].sort((a, b) => new Date(b.date) - new Date(a.date)));
+    return map;
+  }, [allCheckIns]);
 
   const createMutation = useMutation({
     mutationFn: async ({ data, sendInvite }) => {
@@ -89,37 +82,40 @@ export default function Clients() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Client.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); toast.success('Client deleted'); },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+      setSelectedClient(null);
+      toast.success('Client deleted');
+    },
   });
 
-  // Collect all unique tags across clients
   const allTags = useMemo(() => {
     const set = new Set();
     clients.forEach(c => (c.tags || []).forEach(t => set.add(t)));
     return Array.from(set).sort();
   }, [clients]);
 
-  // Filtered + sorted clients
   const filteredClients = useMemo(() => {
     let result = clients.filter(c => {
-      const matchesSearch = !search || c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase());
+      const q = search.toLowerCase();
+      const matchesSearch = !search || c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q);
       const matchesStatus = statusFilter === 'all' || c.lifecycle_status === statusFilter;
       const matchesTag = !tagFilter || (c.tags || []).includes(tagFilter);
       return matchesSearch && matchesStatus && matchesTag;
     });
-
     result = [...result].sort((a, b) => {
       if (sortBy === 'name') return a.name.localeCompare(b.name);
       if (sortBy === 'lifecycle') return LIFECYCLE_ORDER.indexOf(a.lifecycle_status || 'lead') - LIFECYCLE_ORDER.indexOf(b.lifecycle_status || 'lead');
-      if (sortBy === 'monthly_rate') return (b.monthly_rate || 0) - (a.monthly_rate || 0);
-      // default: newest first
+      if (sortBy === 'adherence') {
+        const sa = compositeAdherenceScore(checkInMap[a.id] || []) ?? -1;
+        const sb = compositeAdherenceScore(checkInMap[b.id] || []) ?? -1;
+        return sb - sa;
+      }
       return new Date(b.created_date) - new Date(a.created_date);
     });
-
     return result;
-  }, [clients, search, statusFilter, tagFilter, sortBy]);
+  }, [clients, search, statusFilter, tagFilter, sortBy, checkInMap]);
 
-  // Status counts for tabs
   const counts = useMemo(() => {
     const c = { all: clients.length };
     LIFECYCLE_ORDER.forEach(s => { c[s] = clients.filter(cl => (cl.lifecycle_status || 'lead') === s).length; });
@@ -127,300 +123,193 @@ export default function Clients() {
   }, [clients]);
 
   const handleSubmit = (data, sendInvite) => {
-    if (editingClient) updateMutation.mutate({ id: editingClient.id, data });
-    else createMutation.mutate({ data, sendInvite });
+    if (editingClient) {
+      updateMutation.mutate({ id: editingClient.id, data });
+      // refresh selected client if it's the one being edited
+      if (selectedClient?.id === editingClient.id) setSelectedClient({ ...selectedClient, ...data });
+    } else {
+      createMutation.mutate({ data, sendInvite });
+    }
     setEditingClient(null);
   };
 
-  const handleStatusChange = (client, newStatus) => {
-    updateMutation.mutate({ id: client.id, data: { ...client, lifecycle_status: newStatus } });
+  const openEdit = (client) => {
+    setEditingClient(client);
+    setShowForm(true);
   };
 
   const clientLimit = getLimit(currentUser, 'max_clients');
   const atLimit = clientLimit !== -1 && clients.length >= clientLimit;
 
-  const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + (tagFilter ? 1 : 0);
-
   const atRiskClients = useMemo(() => getAtRiskClients(clients, allCheckIns), [clients, allCheckIns]);
   const highRiskCount = atRiskClients.filter(e => e.riskScore >= 60).length;
 
+  const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + (tagFilter ? 1 : 0);
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col h-full">
+      {/* ── Top bar ── */}
+      <div className="px-5 py-4 bg-white border-b border-[#F0F2F8] flex items-center justify-between gap-3 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-[#1F2A44]">Clients</h1>
-          <p className="text-sm text-[#374151] mt-0.5">
-            {counts.active || 0} active · {counts.at_risk || 0} at risk · {counts.lead || 0} leads
-          </p>
+          <h1 className="text-lg font-heading font-bold text-[#1F2A44] leading-tight">Clients</h1>
+          <p className="text-xs text-[#6B7280]">{counts.active || 0} active · {counts.at_risk || 0} at-risk · {counts.lead || 0} leads</p>
         </div>
-        <div className="flex items-center gap-2">
-          {selectedIds.size > 0 && (
-            <Button variant="secondary" size="sm" onClick={clearSelection} className="gap-1.5 text-xs">
-              <X className="w-3.5 h-3.5" /> {selectedIds.size} selected
-            </Button>
-          )}
-          <Button
-            onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
-            variant={atLimit ? 'outline' : 'default'}
-            className={atLimit ? 'border-red-200 text-red-500 hover:bg-red-50' : ''}
-          >
-            {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-            {atLimit ? 'Limit Reached' : 'Add Client'}
-          </Button>
-        </div>
+        <Button
+          size="sm"
+          onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
+          variant={atLimit ? 'outline' : 'default'}
+          className={atLimit ? 'border-red-200 text-red-500 hover:bg-red-50' : ''}
+        >
+          {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {atLimit ? 'Limit Reached' : 'Add Client'}
+        </Button>
       </div>
 
-      <div className="mb-5 space-y-3">
-        <UsageMeter user={currentUser} limitKey="max_clients" currentCount={clients.length} label="Clients" onUpgrade={() => setUpgradeOpen(true)} />
+      {/* ── Alerts ── */}
+      <div className="px-5 pt-3 flex-shrink-0 space-y-2">
         <LimitBanner limitKey="max_clients" currentCount={clients.length} label="clients" featureKey="clients" />
-
         {atRiskClients.length > 0 && (
           <Link to="/at-risk">
             <div className={cn(
-              'flex items-center gap-3 px-4 py-3.5 rounded-xl border transition-all hover:shadow-sm',
-              highRiskCount > 0
-                ? 'bg-red-50 border-red-100'
-                : 'bg-amber-50 border-amber-100'
+              'flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all hover:shadow-sm',
+              highRiskCount > 0 ? 'bg-red-50 border-red-100 text-red-600' : 'bg-amber-50 border-amber-100 text-amber-600'
             )}>
-              <AlertTriangle className={cn('w-4 h-4 flex-shrink-0', highRiskCount > 0 ? 'text-red-500' : 'text-amber-500')} />
-              <p className={cn('text-sm font-semibold flex-1', highRiskCount > 0 ? 'text-red-600' : 'text-amber-600')}>
-                {atRiskClients.length} client{atRiskClients.length !== 1 ? 's' : ''} need attention
-                {highRiskCount > 0 && <span className="font-normal text-red-400 ml-1">· {highRiskCount} high risk</span>}
-              </p>
-              <ArrowRight className="w-4 h-4 text-[#374151] flex-shrink-0" />
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+              <span className="flex-1">{atRiskClients.length} clients need attention{highRiskCount > 0 && <span className="font-normal opacity-70 ml-1">· {highRiskCount} high risk</span>}</span>
+              <ArrowRight className="w-4 h-4 opacity-60" />
             </div>
           </Link>
         )}
       </div>
 
-      {/* ── Lifecycle tabs ── */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {[{ key: 'all', label: 'All' }, ...LIFECYCLE_ORDER.map(s => ({ key: s, label: LIFECYCLE_CONFIG[s].label }))].map(({ key, label }) => (
-          <button
-            key={key}
-            onClick={() => setStatusFilter(key)}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
-              statusFilter === key
-                ? 'bg-[#EEF4FF] text-primary border-blue-200'
-                : 'bg-white text-[#374151] border-[#E7EAF3] hover:text-[#1F2A44] hover:border-[#C9CEE0]'
-            )}
-          >
-            {label}
-            <span className={cn('text-[10px] rounded-full px-1.5 tabular-nums', statusFilter === key ? 'bg-blue-100 text-primary' : 'bg-[#F6F7FB] text-[#374151]')}>
-              {counts[key] || 0}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* ── Search + filters ── */}
-      <div className="flex flex-col sm:flex-row gap-2 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#374151]" />
-          <Input placeholder="Search clients…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white border-[#E7EAF3]" />
+      {/* ── Filters ── */}
+      <div className="px-5 pt-3 pb-3 flex-shrink-0 space-y-2">
+        {/* Lifecycle tabs */}
+        <div className="flex flex-wrap gap-1">
+          {[{ key: 'all', label: 'All' }, ...LIFECYCLE_ORDER.map(s => ({ key: s, label: LIFECYCLE_CONFIG[s].label }))].map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setStatusFilter(key)}
+              className={cn(
+                'flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all',
+                statusFilter === key
+                  ? 'bg-[#EEF4FF] text-primary border-blue-200'
+                  : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:text-[#1F2A44]'
+              )}
+            >
+              {label}
+              <span className={cn('text-[10px] rounded-md px-1 tabular-nums', statusFilter === key ? 'bg-blue-100 text-primary' : 'bg-[#F6F7FB] text-[#9CA3AF]')}>
+                {counts[key] || 0}
+              </span>
+            </button>
+          ))}
         </div>
 
-        {allTags.length > 0 && (
-          <Select value={tagFilter || 'all'} onValueChange={v => setTagFilter(v === 'all' ? '' : v)}>
-            <SelectTrigger className="w-40 bg-white border-[#E7EAF3]">
-              <SelectValue placeholder="Tag" />
+        {/* Search + tag + sort */}
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+            <Input
+              placeholder="Search by name or email…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-8 h-8 text-sm bg-[#F6F7FB] border-[#E7EAF3]"
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2">
+                <X className="w-3.5 h-3.5 text-[#9CA3AF]" />
+              </button>
+            )}
+          </div>
+
+          {allTags.length > 0 && (
+            <Select value={tagFilter || 'all'} onValueChange={v => setTagFilter(v === 'all' ? '' : v)}>
+              <SelectTrigger className="w-32 h-8 text-xs bg-[#F6F7FB] border-[#E7EAF3]">
+                <SelectValue placeholder="Tag" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Tags</SelectItem>
+                {allTags.map(t => <SelectItem key={t} value={t}>#{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-32 h-8 text-xs bg-[#F6F7FB] border-[#E7EAF3]">
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Tags</SelectItem>
-              {allTags.map(t => <SelectItem key={t} value={t}>#{t}</SelectItem>)}
+              <SelectItem value="created_date">Newest</SelectItem>
+              <SelectItem value="name">Name A–Z</SelectItem>
+              <SelectItem value="lifecycle">Stage</SelectItem>
+              <SelectItem value="adherence">Adherence</SelectItem>
             </SelectContent>
           </Select>
-        )}
 
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-40 bg-white border-[#E7EAF3]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="created_date">Newest</SelectItem>
-            <SelectItem value="name">Name A–Z</SelectItem>
-            <SelectItem value="lifecycle">Stage</SelectItem>
-            <SelectItem value="monthly_rate">Rate</SelectItem>
-          </SelectContent>
-        </Select>
+          {activeFiltersCount > 0 && (
+            <Button variant="ghost" size="sm" className="h-8 px-2 text-xs text-[#374151]"
+              onClick={() => { setStatusFilter('all'); setTagFilter(''); }}>
+              <X className="w-3 h-3 mr-1" /> Clear
+            </Button>
+          )}
+        </div>
+      </div>
 
-        {activeFiltersCount > 0 && (
-          <Button variant="ghost" size="sm" onClick={() => { setStatusFilter('all'); setTagFilter(''); }} className="text-[#374151] hover:text-[#1F2A44] gap-1">
-            <X className="w-3.5 h-3.5" /> Clear
-          </Button>
+      {/* ── Column headers ── */}
+      <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-[#F6F7FB] border-b border-[#F0F2F8] text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] flex-shrink-0">
+        <div className="w-9 flex-shrink-0" />
+        <div className="flex-1">Client</div>
+        <div className="hidden sm:block w-24">Status</div>
+        <div className="hidden md:block w-20 text-right">Adherence</div>
+        <div className="hidden lg:block w-24 text-right">Last Check-in</div>
+        <div className="w-20" />
+      </div>
+
+      {/* ── Client list ── */}
+      <div className="flex-1 overflow-y-auto bg-white">
+        {isLoading ? (
+          <div className="p-5 space-y-2">
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="h-14 bg-[#F6F7FB] rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : filteredClients.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center px-6">
+            <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center mb-3">
+              <Search className="w-5 h-5 text-[#9CA3AF]" />
+            </div>
+            <p className="text-sm font-semibold text-[#374151]">No clients found</p>
+            <p className="text-xs text-[#9CA3AF] mt-1">Try adjusting your search or filters</p>
+          </div>
+        ) : (
+          filteredClients.map(client => {
+            const cis = checkInMap[client.id] || [];
+            const score = compositeAdherenceScore(cis);
+            return (
+              <ClientRow
+                key={client.id}
+                client={client}
+                score={score}
+                lastCheckIn={cis[0]}
+                onView={() => setSelectedClient(client)}
+                onEdit={() => openEdit(client)}
+                onDelete={() => deleteMutation.mutate(client.id)}
+                onStatusChange={(s) => updateMutation.mutate({ id: client.id, data: { ...client, lifecycle_status: s } })}
+              />
+            );
+          })
         )}
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1,2,3].map(i => <div key={i} className="h-52 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse shadow-sm" />)}
-        </div>
-      ) : filteredClients.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-[#E7EAF3] shadow-sm">
-          <p className="text-[#374151] font-medium">No clients found.</p>
-          <p className="text-sm text-[#374151]/70 mt-1">Try adjusting your filters.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredClients.map(client => {
-            const isSelected = selectedIds.has(client.id);
-            const clientCIs = allCheckIns
-              .filter(ci => ci.client_id === client.id)
-              .sort((a, b) => new Date(b.date) - new Date(a.date));
-            const score = compositeAdherenceScore(clientCIs);
-            const barColor = score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-red-400';
-
-            return (
-              <div
-                key={client.id}
-                className={cn(
-                  'bg-white rounded-2xl border shadow-sm transition-all group',
-                  isSelected ? 'border-blue-300 ring-2 ring-blue-100' : 'border-[#E7EAF3] hover:border-blue-200 hover:shadow-md'
-                )}
-              >
-                <div className="p-5">
-                  {/* ── Card header ── */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => toggleSelect(client.id)}
-                        className={cn(
-                          'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-bold text-sm transition-all',
-                          isSelected ? 'bg-primary text-white' : 'bg-[#EEF4FF] text-primary'
-                        )}
-                      >
-                        {isSelected ? <CheckSquare className="w-4 h-4" /> : client.name?.[0]?.toUpperCase()}
-                      </button>
-                      <div>
-                        <p className="font-semibold text-[#1F2A44] text-sm leading-tight">{client.name}</p>
-                        <LifecycleBadge status={client.lifecycle_status || 'lead'} className="mt-1" />
-                      </div>
-                    </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100 md:opacity-0 md:group-hover:opacity-100 text-[#374151] hover:text-[#1F2A44] hover:bg-[#F6F7FB]">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem onClick={() => { setEditingClient(client); setShowForm(true); }}>
-                          <Edit className="w-4 h-4 mr-2" /> Edit Client
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <div className="px-2 py-1 text-[10px] text-[#374151] font-semibold uppercase tracking-wide">Move to Stage</div>
-                        {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
-                          <DropdownMenuItem key={s} onClick={() => handleStatusChange(client, s)}>
-                            <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {
-                              'bg-amber-400': s === 'lead',
-                              'bg-emerald-400': s === 'active',
-                              'bg-red-400': s === 'at_risk',
-                              'bg-blue-400': s === 'completed',
-                              'bg-purple-400': s === 'alumni',
-                            })} />
-                            {LIFECYCLE_CONFIG[s].label}
-                          </DropdownMenuItem>
-                        ))}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-500" onClick={() => deleteMutation.mutate(client.id)}>
-                          <Trash2 className="w-4 h-4 mr-2" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-
-                  {/* ── Contact info ── */}
-                  <div className="space-y-1.5 text-xs text-[#374151]">
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span className="truncate">{client.email}</span>
-                    </div>
-                    {client.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span>{client.phone}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <Target className="w-3.5 h-3.5 flex-shrink-0" />
-                      <span>{goalLabels[client.goal] || 'General Fitness'}</span>
-                    </div>
-                  </div>
-
-                  {/* ── Tags ── */}
-                  {client.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {client.tags.map(tag => (
-                        <button key={tag} onClick={() => setTagFilter(tag === tagFilter ? '' : tag)}>
-                          <span className={cn(
-                            'text-[10px] font-medium px-2 py-0.5 rounded-lg border transition-colors',
-                            tagFilter === tag
-                              ? 'bg-[#EEF4FF] text-primary border-blue-200'
-                              : 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3] hover:border-blue-200 hover:text-primary'
-                          )}>#{tag}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* ── Adherence ── */}
-                  {score !== null && (
-                    <div className="mt-4 pt-3.5 border-t border-[#E7EAF3]">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-[#374151]">Adherence</span>
-                        <AdherencePill score={score} showLabel />
-                      </div>
-                      <div className="h-1.5 bg-[#F6F7FB] rounded-full overflow-hidden">
-                        <div className={cn('h-full rounded-full transition-all duration-700', barColor)} style={{ width: `${score}%` }} />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ── Rate ── */}
-                  {client.monthly_rate && (
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E7EAF3]">
-                      <span className="text-xs text-[#374151]">Monthly Rate</span>
-                      <span className="text-sm font-bold text-[#1F2A44]">${client.monthly_rate}<span className="text-[#374151] font-normal">/mo</span></span>
-                    </div>
-                  )}
-
-                  {/* ── Feedback history ── */}
-                  {clientCIs.length > 0 && <ClientFeedbackHistory checkIns={clientCIs} />}
-
-                  {/* ── Connected Apps toggle ── */}
-                  <div className="mt-3 pt-3 border-t border-[#E7EAF3]">
-                    <button
-                      onClick={() => setExpandedApps(expandedApps === client.id ? null : client.id)}
-                      className="w-full flex items-center justify-between gap-2 group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Plug className="w-3.5 h-3.5 text-[#374151]" />
-                        <span className="text-xs font-semibold text-[#374151]">Connected Apps</span>
-                      </div>
-                      {expandedApps === client.id
-                        ? <ChevronUp className="w-3.5 h-3.5 text-[#374151]" />
-                        : <ChevronDown className="w-3.5 h-3.5 text-[#374151]" />}
-                    </button>
-                    {expandedApps === client.id && (
-                      <div className="mt-3">
-                        <ClientConnectedApps clientId={client.id} />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* ── Profile Drawer ── */}
+      {selectedClient && (
+        <ClientProfileDrawer
+          client={selectedClient}
+          checkIns={checkInMap[selectedClient.id] || []}
+          onClose={() => setSelectedClient(null)}
+          onEdit={() => openEdit(selectedClient)}
+        />
       )}
-
-      <BulkActionBar
-        selectedIds={selectedIds}
-        clients={clients}
-        allCheckIns={allCheckIns}
-        onClear={clearSelection}
-      />
 
       <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
       <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
