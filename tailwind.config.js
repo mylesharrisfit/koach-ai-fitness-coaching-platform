@@ -106,9 +106,9 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
   safelist: [
-    'glass-card', 'glow-primary', 'glow-accent', 'glow-sm', 'card-hover', 
+    'glass-card', 'glow-primary', 'glow-accent', 'glow-sm', 'card-hover',
     'progress-animated', 'gradient-text', 'stat-number', 'fade-up',
     'fade-up-delay-1', 'fade-up-delay-2', 'fade-up-delay-3', 'fade-up-delay-4',
-    'bg-noise', 'badge-glow', 'sidebar-active-dot',
+    'bg-noise', 'badge-glow', 'sidebar-active-dot', 'section-bg',
   ],
 }

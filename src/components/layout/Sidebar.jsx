@@ -80,13 +80,13 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
     return (
       <button
         onClick={() => onUpgrade?.(item.feature)}
-        className="relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium w-full text-left text-[#9CA3AF] hover:bg-[#F6F7FB] hover:text-[#6B7280] transition-colors"
+        className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium w-full text-left text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
       >
-        <item.icon className="w-[18px] h-[18px] flex-shrink-0" />
+        <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
         {!collapsed && (
           <>
             <span className="flex-1">{item.label}</span>
-            <Lock className="w-3 h-3 opacity-40" />
+            <Lock className="w-3 h-3 opacity-30" />
           </>
         )}
       </button>
@@ -97,16 +97,16 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
     <Link
       to={item.path}
       className={cn(
-        'relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors',
+        'relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
         isActive
-          ? 'bg-primary/8 text-primary font-semibold'
-          : 'text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB]'
+          ? 'bg-primary/10 text-primary'
+          : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
       )}
     >
       {isActive && (
         <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full" />
       )}
-      <item.icon className={cn('w-[18px] h-[18px] flex-shrink-0', isActive && 'text-primary')} />
+      <item.icon className={cn('w-[17px] h-[17px] flex-shrink-0', isActive ? 'text-primary' : '')} />
       {!collapsed && <span>{item.label}</span>}
     </Link>
   );
@@ -117,31 +117,31 @@ export default function Sidebar({ user, onUpgrade }) {
 
   return (
     <aside className={cn(
-      'fixed left-0 top-0 h-screen bg-white border-r border-[#E7EAF3] z-50 flex-col transition-all duration-200 hidden md:flex',
-      collapsed ? 'w-[64px]' : 'w-[220px]'
+      'fixed left-0 top-0 h-screen bg-sidebar border-r border-border z-50 flex-col transition-all duration-200 hidden md:flex',
+      collapsed ? 'w-[60px]' : 'w-[216px]'
     )}>
       {/* Logo */}
       <div className={cn(
-        'h-[60px] flex items-center border-b border-[#E7EAF3] flex-shrink-0',
+        'h-[56px] flex items-center border-b border-border flex-shrink-0',
         collapsed ? 'px-4 justify-center' : 'px-4 gap-3'
       )}>
-        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-          <Zap className="w-[15px] h-[15px] text-white" />
+        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+          <Zap className="w-[13px] h-[13px] text-white" />
         </div>
         {!collapsed && (
           <>
-            <span className="flex-1 font-heading font-bold text-[15px] text-[#1F2A44] tracking-tight">FitForge</span>
+            <span className="flex-1 font-heading font-bold text-[14px] text-foreground tracking-tight">FitForge</span>
             <NotificationBell />
           </>
         )}
       </div>
 
       {/* Nav Groups */}
-      <nav className="flex-1 py-3 px-2.5 overflow-y-auto space-y-4">
+      <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4">
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] px-3 mb-1.5">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-3 mb-1">
                 {group.label}
               </p>
             )}
@@ -155,30 +155,29 @@ export default function Sidebar({ user, onUpgrade }) {
       </nav>
 
       {/* Bottom */}
-      <div className="p-2.5 border-t border-[#E7EAF3] space-y-0.5">
+      <div className="p-2 border-t border-border space-y-0.5">
         {BOTTOM_ITEMS.map(item => (
           <Link
             key={item.path}
             to={item.path}
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-[#1F2A44] hover:bg-[#F6F7FB] transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
-            <item.icon className="w-[18px] h-[18px] flex-shrink-0" />
+            <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
             {!collapsed && <span>{item.label}</span>}
           </Link>
         ))}
 
         <button
           onClick={() => base44.auth.logout()}
-          className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-[#6B7280] hover:text-destructive hover:bg-red-50 transition-colors w-full"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full"
         >
-          <LogOut className="w-[18px] h-[18px] flex-shrink-0" />
+          <LogOut className="w-[17px] h-[17px] flex-shrink-0" />
           {!collapsed && <span>Logout</span>}
         </button>
 
-        {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="flex items-center justify-center w-full py-2 rounded-xl text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F6F7FB] transition-colors mt-1"
+          className="flex items-center justify-center w-full py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors mt-1"
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

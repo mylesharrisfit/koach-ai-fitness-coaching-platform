@@ -25,10 +25,9 @@ export default function AppLayout() {
 
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
-      <div className="min-h-screen bg-[#F6F7FB]">
+      <div className="min-h-screen bg-background">
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
-        {/* Offset matches sidebar width; collapses to 64px when collapsed but we use md:ml-[220px] base */}
-        <main className="md:ml-[220px] min-h-screen pb-16 md:pb-0 bg-[#F6F7FB]">
+        <main className="md:ml-[216px] min-h-screen pb-16 md:pb-0 bg-background">
           <Outlet />
         </main>
         <BottomNav />

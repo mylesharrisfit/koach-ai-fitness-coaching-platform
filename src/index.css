@@ -9,76 +9,43 @@
     --font-heading: 'Inter', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    /* ── Clean SaaS Light Theme ── */
-    --background: 0 0% 97%;          /* #F7F7F7 */
-    --foreground: 220 20% 12%;       /* #1A1F2E */
-    --card: 0 0% 100%;               /* #FFFFFF */
-    --card-foreground: 220 20% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
-    --primary: 217 85% 52%;          /* #2563EB */
+    /* ── Premium Dark SaaS Theme ── */
+    --background: 220 23% 7%;        /* #0B0F14 */
+    --foreground: 210 20% 98%;       /* #F9FAFB */
+    --card: 222 26% 10%;             /* #111827 */
+    --card-foreground: 210 20% 98%;  /* #F9FAFB */
+    --popover: 222 26% 10%;          /* #111827 */
+    --popover-foreground: 210 20% 98%;
+    --primary: 217 91% 60%;          /* #3B82F6 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 94%;           /* #F0F0F0 */
-    --secondary-foreground: 220 10% 35%;
-    --muted: 0 0% 94%;
-    --muted-foreground: 220 8% 46%;
-    --accent: 142 65% 40%;           /* #22A55A */
+    --secondary: 220 20% 14%;        /* #1F2937 area */
+    --secondary-foreground: 215 14% 62%; /* #9CA3AF */
+    --muted: 220 18% 12%;
+    --muted-foreground: 218 11% 45%; /* #6B7280 */
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 78% 56%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 88%;              /* #E0E0E0 */
-    --input: 0 0% 88%;
-    --ring: 217 85% 52%;
-    --chart-1: 217 85% 52%;
-    --chart-2: 142 65% 40%;
-    --chart-3: 280 60% 55%;
-    --chart-4: 38 90% 50%;
-    --chart-5: 0 78% 56%;
-    --radius: 0.75rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 10% 30%;
-    --sidebar-primary: 217 85% 52%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 100% 96%;
-    --sidebar-accent-foreground: 217 85% 40%;
-    --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 217 85% 52%;
-  }
-
-  .dark {
-    --background: 220 14% 9%;
-    --foreground: 0 0% 93%;
-    --card: 220 12% 12%;
-    --card-foreground: 0 0% 93%;
-    --popover: 220 12% 12%;
-    --popover-foreground: 0 0% 93%;
-    --primary: 217 85% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 12% 18%;
-    --secondary-foreground: 0 0% 80%;
-    --muted: 220 12% 18%;
-    --muted-foreground: 220 8% 55%;
-    --accent: 142 65% 46%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 52%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 12% 20%;
-    --input: 220 12% 20%;
-    --ring: 217 85% 60%;
-    --chart-1: 217 85% 60%;
-    --chart-2: 142 65% 46%;
-    --chart-3: 280 60% 62%;
+    --border: 220 17% 16%;           /* #1F2937 */
+    --input: 220 17% 16%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 162 63% 41%;
+    --chart-3: 280 60% 60%;
     --chart-4: 38 90% 55%;
     --chart-5: 0 72% 55%;
-    --sidebar-background: 220 14% 7%;
-    --sidebar-foreground: 0 0% 80%;
-    --sidebar-primary: 217 85% 60%;
+    --radius: 0.75rem;
+    --sidebar-background: 221 27% 8%;  /* #0F1720 */
+    --sidebar-foreground: 215 14% 62%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 14%;
-    --sidebar-accent-foreground: 0 0% 80%;
-    --sidebar-border: 220 12% 16%;
-    --sidebar-ring: 217 85% 60%;
+    --sidebar-accent: 220 20% 14%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 220 17% 16%;
+    --sidebar-ring: 217 91% 60%;
   }
+
+  /* No separate .dark block — app is dark-only */
 }
 
 @layer base {
@@ -94,28 +61,37 @@
   }
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
   }
 }
 
-/* ── Clean card ── */
+/* ── Card ── */
 .glass-card {
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+  box-shadow: none;
 }
 
-/* ── No glows ── */
+/* ── No glows / gradients ── */
 .glow-primary { box-shadow: none; }
 .glow-accent  { box-shadow: none; }
 .glow-sm      { box-shadow: none; }
+.badge-glow   { box-shadow: none; }
+.bg-noise::before { display: none; }
 
 /* ── Card hover ── */
 .card-hover {
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 .card-hover:hover {
-  border-color: hsl(var(--primary) / 0.3);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
+  border-color: hsl(var(--border) / 0.6);
+}
+
+/* ── Gradient text — flat colour only ── */
+.gradient-text {
+  color: hsl(var(--primary));
+  background: none;
+  -webkit-text-fill-color: unset;
 }
 
 /* ── Animated progress bar ── */
@@ -127,15 +103,6 @@
   animation: progress-fill 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* ── Gradient text — kept minimal ── */
-.gradient-text {
-  color: hsl(var(--primary));
-  background: none;
-  -webkit-text-fill-color: unset;
-}
-
-.bg-noise::before { display: none; }
-
 /* ── Stat number ── */
 .stat-number {
   font-family: var(--font-heading);
@@ -145,7 +112,7 @@
 
 /* ── Transitions ── */
 a, button, [role="button"] {
-  transition-property: color, background-color, border-color, box-shadow, opacity;
+  transition-property: color, background-color, border-color, opacity;
   transition-duration: 120ms;
   transition-timing-function: ease;
 }
@@ -180,12 +147,9 @@ a, button, [role="button"] {
   border-radius: 0 2px 2px 0;
 }
 
-/* ── Badge ── */
-.badge-glow { box-shadow: none; }
-
 /* ── Input focus ── */
 input:focus-visible, textarea:focus-visible {
-  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.12);
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.25);
   outline: none;
 }
 
@@ -197,7 +161,7 @@ input:focus-visible, textarea:focus-visible {
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(0 0% 75%);
+  background: hsl(220 17% 24%);
 }
 
 /* ── Fade-in ── */
@@ -210,3 +174,8 @@ input:focus-visible, textarea:focus-visible {
 .fade-up-delay-2 { animation-delay: 0.1s; }
 .fade-up-delay-3 { animation-delay: 0.15s; }
 .fade-up-delay-4 { animation-delay: 0.2s; }
+
+/* ── Section background ── */
+.section-bg {
+  background: hsl(221 27% 8%); /* #0F1720 */
+}
