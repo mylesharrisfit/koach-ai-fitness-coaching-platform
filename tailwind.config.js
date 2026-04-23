@@ -92,15 +92,15 @@ module.exports = {
         'float': 'float 3s ease-in-out infinite',
       },
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-mesh': 'radial-gradient(at 40% 20%, hsl(var(--primary) / 0.08) 0px, transparent 50%), radial-gradient(at 80% 0%, hsl(var(--accent) / 0.06) 0px, transparent 50%), radial-gradient(at 0% 50%, hsl(var(--primary) / 0.05) 0px, transparent 50%)',
+        'gradient-radial': 'none',
+        'gradient-mesh': 'none',
       },
       boxShadow: {
         'glow-sm': 'none',
         'glow-md': 'none',
-        'card': '0 1px 3px 0 rgb(0 0 0 / 0.04), 0 4px 12px -2px rgb(0 0 0 / 0.05)',
-        'card-hover': '0 4px 16px -4px rgb(0 0 0 / 0.08)',
-        'inner-top': 'inset 0 1px 0 0 rgb(255 255 255 / 0.5)',
+        'card': '0 1px 3px rgb(0 0 0 / 0.05)',
+        'card-hover': '0 2px 8px rgb(0 0 0 / 0.06)',
+        'inner-top': 'none',
       },
     }
   },
