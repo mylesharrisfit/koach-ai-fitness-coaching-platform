@@ -40,6 +40,8 @@ import ClientProfile from './pages/ClientProfile';
 import FocusLayout from './components/layout/FocusLayout';
 import Onboarding from './pages/Onboarding';
 import CoachingTemplates from './pages/CoachingTemplates';
+import ClientOnboarding from './pages/ClientOnboarding';
+import OnboardingManager from './pages/OnboardingManager';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -91,6 +93,7 @@ const AuthenticatedApp = () => {
         <Route path="/program-builder" element={<ProgramBuilder />} />
         <Route path="/white-label" element={<WhiteLabel />} />
         <Route path="/coaching-templates" element={<CoachingTemplates />} />
+        <Route path="/onboarding-manager" element={<OnboardingManager />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
         <Route path="/at-risk" element={<AtRiskClients />} />
@@ -100,6 +103,7 @@ const AuthenticatedApp = () => {
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
