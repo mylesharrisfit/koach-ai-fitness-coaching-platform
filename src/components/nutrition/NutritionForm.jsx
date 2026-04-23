@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, ChevronDown, ChevronUp, X, Sparkles, PenLine } from 'lucide-react';
 import SmartNutritionGenerator from './SmartNutritionGenerator';
+import SupplementPanel from './SupplementPanel';
 import { cn } from '@/lib/utils';
 
 const MEAL_TEMPLATES = [
@@ -26,7 +27,7 @@ const HABIT_TEMPLATES = [
   'Eat slowly and stop when 80% full',
 ];
 
-const defaultForm = { title: '', description: '', tracking_mode: 'macros', calories: '', protein_g: '', carbs_g: '', fats_g: '', notes: '', meals: [] };
+const defaultForm = { title: '', description: '', tracking_mode: 'macros', calories: '', protein_g: '', carbs_g: '', fats_g: '', notes: '', meals: [], supplements: [] };
 
 export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
   const [form, setForm] = useState(defaultForm);
@@ -307,6 +308,12 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
               ))}
             </div>}
           </div>
+
+          {/* Supplements & Vitamins */}
+          <SupplementPanel
+            value={form.supplements || []}
+            onChange={supplements => setForm(f => ({ ...f, supplements }))}
+          />
 
           <div>
             <Label>Notes</Label>

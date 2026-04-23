@@ -15,12 +15,10 @@
         "macros",
         "habits"
       ],
-      "default": "macros",
-      "description": "macro tracking vs habit-based mode"
+      "default": "macros"
     },
     "calories": {
-      "type": "number",
-      "description": "Daily calorie target"
+      "type": "number"
     },
     "protein_g": {
       "type": "number"
@@ -33,7 +31,6 @@
     },
     "meals": {
       "type": "array",
-      "description": "Meal plan",
       "items": {
         "type": "object",
         "properties": {
@@ -44,8 +41,7 @@
             "type": "string"
           },
           "habit_description": {
-            "type": "string",
-            "description": "Used in habits mode"
+            "type": "string"
           },
           "foods": {
             "type": "array",
@@ -78,6 +74,35 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "supplements": {
+      "type": "array",
+      "description": "Assigned supplements, vitamins, and minerals",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "supplement",
+              "vitamin",
+              "mineral"
+            ]
+          },
+          "dosage": {
+            "type": "string"
+          },
+          "timing": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
           }
         }
       }
