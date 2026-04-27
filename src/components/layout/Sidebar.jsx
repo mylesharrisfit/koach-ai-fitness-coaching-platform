@@ -7,7 +7,7 @@ import {
   BarChart3, Bot, ChevronLeft, ChevronRight, Lock,
   Play, CreditCard, Activity, Salad, ClipboardList,
   Trophy, ShieldAlert, DollarSign, Landmark, ShoppingBag,
-  Globe, Sparkles, Smartphone, LayoutTemplate, UserPlus
+  Globe, Sparkles, Smartphone, LayoutTemplate, UserPlus, PackageOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -60,6 +60,7 @@ const NAV_GROUPS = [
       { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
       { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
       { icon: UserPlus, label: 'Onboarding', path: '/onboarding-manager' },
+      { icon: PackageOpen, label: 'Migration', path: '/migration' },
       { icon: Zap, label: 'White Label', path: '/white-label' },
     ],
   },
