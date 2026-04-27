@@ -43,6 +43,7 @@ import CoachingTemplates from './pages/CoachingTemplates';
 import ClientOnboarding from './pages/ClientOnboarding';
 import OnboardingManager from './pages/OnboardingManager';
 import Migration from './pages/Migration';
+import FoodLibrary from './pages/FoodLibrary';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -96,6 +97,7 @@ const AuthenticatedApp = () => {
         <Route path="/coaching-templates" element={<CoachingTemplates />} />
         <Route path="/onboarding-manager" element={<OnboardingManager />} />
         <Route path="/migration" element={<Migration />} />
+        <Route path="/food-library" element={<FoodLibrary />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
         <Route path="/at-risk" element={<AtRiskClients />} />

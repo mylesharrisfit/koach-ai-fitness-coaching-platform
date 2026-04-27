@@ -6,9 +6,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, ChevronDown, ChevronUp, X, Sparkles, PenLine } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronUp, X, Sparkles, PenLine, BookOpen } from 'lucide-react';
 import SmartNutritionGenerator from './SmartNutritionGenerator';
 import SupplementPanel from './SupplementPanel';
+import FoodPickerModal from './FoodPickerModal';
 import { cn } from '@/lib/utils';
 
 const MEAL_TEMPLATES = [
@@ -33,6 +34,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
   const [form, setForm] = useState(defaultForm);
   const [expandedMeal, setExpandedMeal] = useState(null);
   const [mealTab, setMealTab] = useState('smart'); // 'smart' | 'manual'
+  const [foodPickerMealIdx, setFoodPickerMealIdx] = useState(null);
 
   useEffect(() => {
     if (plan) {
@@ -297,9 +299,14 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
                               </div>
                             </div>
                           ))}
-                          <Button type="button" variant="ghost" size="sm" className="text-primary text-xs" onClick={() => addFood(mIdx)}>
-                            <Plus className="w-3 h-3 mr-1" /> Add Food
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button type="button" variant="ghost" size="sm" className="text-primary text-xs" onClick={() => addFood(mIdx)}>
+                              <Plus className="w-3 h-3 mr-1" /> Add Blank
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" className="text-xs h-7" onClick={() => setFoodPickerMealIdx(mIdx)}>
+                              <BookOpen className="w-3 h-3 mr-1" /> Food Library
+                            </Button>
+                          </div>
                         </>
                       )}
                     </div>
@@ -310,6 +317,21 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
           </div>
 
           {/* Supplements & Vitamins */}
+          {/* Food picker modal */}
+          <FoodPickerModal
+            open={foodPickerMealIdx !== null}
+            onOpenChange={(o) => { if (!o) setFoodPickerMealIdx(null); }}
+            onSelect={(food) => {
+              setForm(f => ({
+                ...f,
+                meals: f.meals.map((m, i) => i !== foodPickerMealIdx ? m : {
+                  ...m, foods: [...(m.foods || []), food]
+                })
+              }));
+              setFoodPickerMealIdx(null);
+            }}
+          />
+
           <SupplementPanel
             value={form.supplements || []}
             onChange={supplements => setForm(f => ({ ...f, supplements }))}

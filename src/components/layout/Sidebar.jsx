@@ -28,6 +28,7 @@ const NAV_GROUPS = [
       { icon: Dumbbell, label: 'Programs', path: '/programs' },
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
       { icon: ClipboardList, label: 'Exercise Library', path: '/exercises' },
+      { icon: Salad, label: 'Food Library', path: '/food-library' },
       { icon: Calendar, label: 'Schedule', path: '/schedule' },
       { icon: MessageSquare, label: 'Messages', path: '/messages' },
     ],

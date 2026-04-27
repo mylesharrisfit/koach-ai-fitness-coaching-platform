@@ -1,0 +1,93 @@
+{
+  "name": "FoodItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Food name"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Brand or source"
+    },
+    "serving_size": {
+      "type": "string",
+      "description": "e.g. 100g, 1 cup, 1 oz"
+    },
+    "serving_weight_g": {
+      "type": "number",
+      "description": "Serving size in grams"
+    },
+    "calories": {
+      "type": "number"
+    },
+    "protein_g": {
+      "type": "number"
+    },
+    "carbs_g": {
+      "type": "number"
+    },
+    "fats_g": {
+      "type": "number"
+    },
+    "fiber_g": {
+      "type": "number"
+    },
+    "sugar_g": {
+      "type": "number"
+    },
+    "sodium_mg": {
+      "type": "number"
+    },
+    "micronutrients": {
+      "type": "object",
+      "description": "Key micronutrients",
+      "properties": {
+        "vitamin_c_mg": {
+          "type": "number"
+        },
+        "iron_mg": {
+          "type": "number"
+        },
+        "calcium_mg": {
+          "type": "number"
+        },
+        "potassium_mg": {
+          "type": "number"
+        },
+        "vitamin_d_iu": {
+          "type": "number"
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "usda",
+        "custom",
+        "favorite"
+      ],
+      "default": "custom",
+      "description": "Where this food came from"
+    },
+    "usda_fdc_id": {
+      "type": "string",
+      "description": "USDA FoodData Central ID"
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "default": false
+    },
+    "category": {
+      "type": "string",
+      "description": "Food category e.g. Dairy, Grains"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "calories"
+  ]
+}
