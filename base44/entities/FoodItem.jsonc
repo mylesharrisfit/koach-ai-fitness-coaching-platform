@@ -82,6 +82,28 @@
       "type": "string",
       "description": "Food category e.g. Dairy, Grains"
     },
+    "coach_approved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Coach has approved this food for clients"
+    },
+    "coach_hidden": {
+      "type": "boolean",
+      "default": false,
+      "description": "Coach has hidden this food from clients"
+    },
+    "approved_category": {
+      "type": "string",
+      "enum": [
+        "proteins",
+        "carbs",
+        "fats",
+        "fruits",
+        "vegetables",
+        "supplements"
+      ],
+      "description": "Coach-assigned food category for client-facing organization"
+    },
     "notes": {
       "type": "string"
     }

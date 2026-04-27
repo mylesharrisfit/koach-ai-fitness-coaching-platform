@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Search, Star, Plus, Loader2, Utensils, ChevronDown, ChevronUp, Trash2, Edit } from 'lucide-react';
+import { Search, Star, Plus, Loader2, Utensils, ChevronDown, ChevronUp, Trash2, Edit, CheckCircle2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import FoodSearchResults from '@/components/nutrition/FoodSearchResults';
 import CustomFoodForm from '@/components/nutrition/CustomFoodForm';
+import ApprovedFoodsTab from '@/components/nutrition/ApprovedFoodsTab';
 
 const TABS = [
   { id: 'search', label: '🔍 Search Foods' },
+  { id: 'approved', label: '✅ Approved Foods' },
   { id: 'favorites', label: '⭐ My Favorites' },
   { id: 'custom', label: '🧑‍🍳 Custom Foods' },
 ];
@@ -85,6 +87,11 @@ export default function FoodLibrary() {
           </button>
         ))}
       </div>
+
+      {/* Approved Foods tab */}
+      {tab === 'approved' && (
+        <ApprovedFoodsTab foods={savedFoods} />
+      )}
 
       {/* Search tab */}
       {tab === 'search' && (

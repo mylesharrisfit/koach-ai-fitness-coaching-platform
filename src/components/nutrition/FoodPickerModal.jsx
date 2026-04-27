@@ -2,12 +2,26 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Star, Search } from 'lucide-react';
+import { CheckCircle2, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import FoodSearchResults from './FoodSearchResults';
 
+const CATEGORIES = [
+  { id: 'proteins', label: '🥩 Proteins' },
+  { id: 'carbs', label: '🍞 Carbs' },
+  { id: 'fats', label: '🥑 Fats' },
+  { id: 'fruits', label: '🍎 Fruits' },
+  { id: 'vegetables', label: '🥦 Vegetables' },
+  { id: 'supplements', label: '💊 Supplements' },
+];
+
+function MacroPill({ label, value, color }) {
+  if (!value) return null;
+  return <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded-full', color)}>{label}: {value}</span>;
+}
+
 export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
-  const [tab, setTab] = useState('search');
+  const [tab, setTab] = useState('approved');
 
   const { data: savedFoods = [] } = useQuery({
     queryKey: ['food-items'],
@@ -15,10 +29,16 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
     enabled: open,
   });
 
-  const favorites = savedFoods.filter(f => f.is_favorite || f.source === 'custom');
+  // Only show approved, non-hidden foods to clients
+  const approvedFoods = savedFoods.filter(f => f.coach_approved && !f.coach_hidden);
+
+  const byCategory = CATEGORIES.reduce((acc, cat) => {
+    acc[cat.id] = approvedFoods.filter(f => f.approved_category === cat.id);
+    return acc;
+  }, {});
+  const uncategorized = approvedFoods.filter(f => !f.approved_category);
 
   const handleSelect = (food) => {
-    // Map food item fields to the meal food format
     onSelect({
       food_name: food.name,
       portion: food.serving_size || '100g',
@@ -31,6 +51,22 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
     onOpenChange(false);
   };
 
+  const FoodButton = ({ food }) => (
+    <button
+      onClick={() => handleSelect(food)}
+      className="w-full text-left bg-white border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:bg-primary/5 transition-all"
+    >
+      <p className="text-sm font-semibold text-foreground">{food.name}</p>
+      <div className="flex gap-1 mt-1 flex-wrap">
+        <MacroPill label="Cal" value={food.calories} color="bg-orange-50 text-orange-600" />
+        <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-blue-50 text-blue-600" />
+        <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-amber-50 text-amber-600" />
+        <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-rose-50 text-rose-600" />
+        {food.serving_size && <span className="text-[10px] text-muted-foreground">per {food.serving_size}</span>}
+      </div>
+    </button>
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
@@ -41,58 +77,63 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
         {/* Tabs */}
         <div className="flex gap-1 bg-secondary/40 rounded-lg p-1 shrink-0">
           <button
+            onClick={() => setTab('approved')}
+            className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-semibold transition-all',
+              tab === 'approved' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-green-500" /> Coach Approved ({approvedFoods.length})
+          </button>
+          <button
             onClick={() => setTab('search')}
             className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-semibold transition-all',
               tab === 'search' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <Search className="w-3.5 h-3.5" /> USDA Search
-          </button>
-          <button
-            onClick={() => setTab('favorites')}
-            className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-semibold transition-all',
-              tab === 'favorites' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            <Star className="w-3.5 h-3.5" /> Saved ({favorites.length})
+            <Search className="w-3.5 h-3.5" /> All Foods
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {tab === 'search' && (
-            <FoodSearchResults selectMode onSelect={handleSelect} isSaved={() => false} onSave={() => {}} />
-          )}
-
-          {tab === 'favorites' && (
-            <div className="space-y-2">
-              {favorites.length === 0 ? (
-                <div className="text-center py-10 text-muted-foreground">
-                  <Star className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                  <p className="text-sm">No saved foods yet</p>
-                  <p className="text-xs mt-1">Search and star foods in the Food Library</p>
+          {/* Approved tab — organized by category */}
+          {tab === 'approved' && (
+            <div>
+              {approvedFoods.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <CheckCircle2 className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm font-medium">No approved foods yet</p>
+                  <p className="text-xs mt-1">Your coach hasn't approved any foods yet.<br />Use "All Foods" to search manually.</p>
                 </div>
-              ) : favorites.map((food, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSelect(food)}
-                  className="w-full text-left bg-white border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:bg-primary/5 transition-all"
-                >
-                  <div className="flex items-center gap-2">
-                    {food.is_favorite && <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 shrink-0" />}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground truncate">{food.name}</p>
-                      <div className="flex gap-1 mt-0.5 flex-wrap">
-                        {food.calories > 0 && <span className="text-[10px] text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full">Cal: {food.calories}</span>}
-                        {food.protein_g > 0 && <span className="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">P: {food.protein_g}g</span>}
-                        {food.carbs_g > 0 && <span className="text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">C: {food.carbs_g}g</span>}
-                        {food.fats_g > 0 && <span className="text-[10px] text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-full">F: {food.fats_g}g</span>}
-                        {food.serving_size && <span className="text-[10px] text-muted-foreground">per {food.serving_size}</span>}
+              ) : (
+                <div className="space-y-5">
+                  {CATEGORIES.map(cat => {
+                    const items = byCategory[cat.id];
+                    if (!items.length) return null;
+                    return (
+                      <div key={cat.id}>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{cat.label}</p>
+                        <div className="space-y-1.5">
+                          {items.map(food => <FoodButton key={food.id} food={food} />)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {uncategorized.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Other</p>
+                      <div className="space-y-1.5">
+                        {uncategorized.map(food => <FoodButton key={food.id} food={food} />)}
                       </div>
                     </div>
-                  </div>
-                </button>
-              ))}
+                  )}
+                </div>
+              )}
             </div>
+          )}
+
+          {/* All foods search */}
+          {tab === 'search' && (
+            <FoodSearchResults selectMode onSelect={handleSelect} isSaved={() => false} onSave={() => {}} />
           )}
         </div>
       </DialogContent>
