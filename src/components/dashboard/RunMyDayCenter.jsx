@@ -1,97 +1,113 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { differenceInDays, parseISO, subWeeks, format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import { differenceInDays, parseISO, format } from 'date-fns';
 import {
-  MessageSquare, ClipboardList, TrendingUp, Dumbbell,
-  AlertTriangle, CheckCircle2, Sparkles, ArrowRight,
-  ChevronDown, ChevronUp, Zap, Target, UserCheck
+  MessageSquare, Dumbbell, ClipboardList, TrendingUp,
+  AlertTriangle, CheckCircle2, Zap, ChevronDown, ChevronUp,
+  Send, UserCheck, RefreshCw, CreditCard, Eye, ArrowUpRight,
+  Flame, Star, X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getAtRiskClients } from '@/lib/riskEngine';
-import { compositeAdherenceScore, averageAdherenceScore } from '@/lib/adherence';
+import { compositeAdherenceScore } from '@/lib/adherence';
 
-/* ──────────────────────────────────────────
-   Command Bar — top summary row
-────────────────────────────────────────── */
-function CommandBar({ sections }) {
-  const totalActions = sections.reduce((sum, s) => sum + s.count, 0);
-  const allClear = totalActions === 0;
+/* ─── urgency levels ──────────────────────────────── */
+const URGENCY = { critical: 0, high: 1, medium: 2, low: 3 };
 
+/* ─── Section colors ──────────────────────────────── */
+const COLORS = {
+  checkin:  { dot: 'bg-amber-500',   badge: 'bg-amber-50 text-amber-700 border-amber-200',  ring: 'ring-amber-100',  icon: 'text-amber-500 bg-amber-50',   label: 'No Check-In' },
+  workout:  { dot: 'bg-red-500',     badge: 'bg-red-50 text-red-700 border-red-200',        ring: 'ring-red-100',    icon: 'text-red-500 bg-red-50',       label: 'Missed WO'   },
+  adherence:{ dot: 'bg-orange-500',  badge: 'bg-orange-50 text-orange-700 border-orange-200', ring: 'ring-orange-100', icon: 'text-orange-500 bg-orange-50', label: 'Adherence'  },
+  payment:  { dot: 'bg-rose-600',    badge: 'bg-rose-50 text-rose-700 border-rose-200',     ring: 'ring-rose-100',   icon: 'text-rose-600 bg-rose-50',     label: 'Payment'     },
+  review:   { dot: 'bg-blue-500',    badge: 'bg-blue-50 text-blue-700 border-blue-200',     ring: 'ring-blue-100',   icon: 'text-blue-500 bg-blue-50',     label: 'Reviews'     },
+  prog:     { dot: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', ring: 'ring-emerald-100', icon: 'text-emerald-600 bg-emerald-50', label: 'Progression' },
+};
+
+/* ─── Quick action pill ───────────────────────────── */
+function Pill({ icon: Icon, label, onClick, variant = 'ghost' }) {
+  return (
+    <button
+      onClick={e => { e.stopPropagation(); onClick(); }}
+      className={cn(
+        'inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all shrink-0',
+        variant === 'primary'
+          ? 'bg-primary text-white hover:bg-primary/90 shadow-sm'
+          : 'bg-white border border-border text-foreground hover:bg-secondary/60'
+      )}
+    >
+      <Icon className="w-3 h-3 shrink-0" />
+      <span>{label}</span>
+    </button>
+  );
+}
+
+/* ─── Urgency dot ─────────────────────────────────── */
+function UrgencyDot({ level }) {
+  if (level === 'critical') return <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />;
+  if (level === 'high')     return <span className="w-2 h-2 rounded-full bg-orange-400 shrink-0" />;
+  return null;
+}
+
+/* ─── Action card ─────────────────────────────────── */
+function ActionCard({ avatar, name, subtitle, badge, badgeClass, urgency, actions, colorKey }) {
+  const color = COLORS[colorKey];
   return (
     <div className={cn(
-      'rounded-2xl border p-4',
-      allClear ? 'bg-emerald-50 border-emerald-100' : 'bg-[#1F2A44] border-transparent'
+      'group flex items-start gap-3 px-4 py-3.5 hover:bg-slate-50/70 transition-colors',
     )}>
-      <div className="flex items-center gap-3 mb-4">
-        <div className={cn(
-          'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
-          allClear ? 'bg-emerald-100' : 'bg-white/10'
-        )}>
-          {allClear
-            ? <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-            : <Zap className="w-5 h-5 text-white" />
-          }
-        </div>
-        <div className="flex-1">
-          <p className={cn('font-heading font-bold text-[15px]', allClear ? 'text-emerald-800' : 'text-white')}>
-            {allClear ? 'All clear — great work! 🎉' : 'Run My Day'}
-          </p>
-          <p className={cn('text-xs mt-0.5', allClear ? 'text-emerald-600' : 'text-white/60')}>
-            {allClear ? 'No actions needed today' : `${totalActions} action${totalActions !== 1 ? 's' : ''} need your attention`}
-          </p>
-        </div>
-        {!allClear && (
-          <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse shrink-0" />
+      {/* Avatar */}
+      <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm font-bold relative mt-0.5', color.icon)}>
+        {name?.[0]?.toUpperCase()}
+        {urgency === 'critical' && (
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse" />
         )}
       </div>
 
-      {!allClear && (
-        <div className="grid grid-cols-4 gap-2">
-          {sections.map(s => (
-            <div
-              key={s.id}
-              className={cn(
-                'rounded-xl px-2 py-2.5 text-center border',
-                s.count > 0 ? s.activeBg : 'bg-white/5 border-white/10'
-              )}
-            >
-              <p className={cn('text-xl font-bold tabular-nums leading-none', s.count > 0 ? s.activeColor : 'text-white/30')}>
-                {s.count}
-              </p>
-              <p className="text-[10px] mt-1 text-white/50 leading-tight">{s.shortLabel}</p>
-            </div>
-          ))}
+      {/* Body */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm font-semibold text-foreground truncate max-w-[120px]">{name}</span>
+          {badge && (
+            <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0', badgeClass || color.badge)}>
+              {badge}
+            </span>
+          )}
         </div>
-      )}
+        <p className="text-xs text-muted-foreground mt-0.5 truncate leading-relaxed">{subtitle}</p>
+        {/* Actions */}
+        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+          {actions}
+        </div>
+      </div>
     </div>
   );
 }
 
-/* ──────────────────────────────────────────
-   Section wrapper with collapse
-────────────────────────────────────────── */
-function Section({ icon: Icon, title, count, colorClass, children, defaultOpen = true }) {
+/* ─── Section ─────────────────────────────────────── */
+function Section({ colorKey, icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
+  const color = COLORS[colorKey];
   if (count === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden shadow-sm">
+    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-[#F8F9FC] transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
       >
-        <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center shrink-0', colorClass.iconBg)}>
-          <Icon className={cn('w-3.5 h-3.5', colorClass.iconColor)} />
+        <div className={cn('w-6 h-6 rounded-md flex items-center justify-center shrink-0', color.icon)}>
+          <Icon className="w-3.5 h-3.5" />
         </div>
-        <span className="text-sm font-semibold text-[#1F2A44] flex-1 text-left">{title}</span>
-        <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', colorClass.badge)}>
+        <span className="text-sm font-semibold text-foreground flex-1 text-left">{title}</span>
+        <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full border shrink-0', color.badge)}>
           {count}
         </span>
-        {open ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+        {open ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />}
       </button>
 
       {open && (
-        <div className="border-t border-[#F0F2F8] divide-y divide-[#F0F2F8]">
+        <div className="border-t border-border divide-y divide-border/60">
           {children}
         </div>
       )}
@@ -99,253 +115,363 @@ function Section({ icon: Icon, title, count, colorClass, children, defaultOpen =
   );
 }
 
-/* ──────────────────────────────────────────
-   Quick action button
-────────────────────────────────────────── */
-function ActionBtn({ icon: Icon, label, onClick, primary }) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
-        primary
-          ? 'bg-primary text-white hover:bg-primary/90'
-          : 'bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] hover:bg-[#ECEEF4]'
-      )}
-    >
-      <Icon className="w-3 h-3" />
-      {label}
-    </button>
-  );
-}
+/* ─── Command bar ─────────────────────────────────── */
+function CommandBar({ items }) {
+  const critical = items.filter(i => i.urgency === 'critical').length;
+  const high = items.filter(i => i.urgency === 'high').length;
+  const total = items.length;
+  const allClear = total === 0;
 
-/* ──────────────────────────────────────────
-   Client row base
-────────────────────────────────────────── */
-function ClientRow({ name, subtitle, badge, badgeColor, actions }) {
-  return (
-    <div className="flex items-center gap-3 px-4 py-3">
-      <div className="w-8 h-8 rounded-xl bg-[#EEF4FF] flex items-center justify-center shrink-0 text-sm font-bold text-primary">
-        {name?.[0]?.toUpperCase()}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-[#1F2A44] truncate">{name}</p>
-          {badge && (
-            <span className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded-md border shrink-0', badgeColor)}>
-              {badge}
-            </span>
-          )}
+  if (allClear) {
+    return (
+      <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-4 flex items-center gap-3">
+        <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
         </div>
-        <p className="text-xs text-[#9CA3AF] mt-0.5 truncate">{subtitle}</p>
+        <div>
+          <p className="text-sm font-bold text-emerald-800">All clear — great work! 🎉</p>
+          <p className="text-xs text-emerald-600 mt-0.5">No actions needed today</p>
+        </div>
       </div>
-      <div className="flex items-center gap-1.5 shrink-0">
-        {actions}
+    );
+  }
+
+  return (
+    <div className="rounded-xl border bg-[#1A2035] px-4 py-4">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+          <Zap className="w-5 h-5 text-white" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-bold text-white">Run My Day</p>
+          <p className="text-xs text-white/50 mt-0.5">{total} client{total !== 1 ? 's' : ''} need attention</p>
+        </div>
+        {critical > 0 && (
+          <div className="flex items-center gap-1.5 bg-red-500/20 border border-red-400/30 rounded-full px-2.5 py-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+            <span className="text-xs font-bold text-red-300">{critical} critical</span>
+          </div>
+        )}
+      </div>
+
+      {/* Stat pills */}
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          { label: 'Critical', count: critical, color: 'text-red-300', bg: critical > 0 ? 'bg-red-500/20 border-red-400/20' : 'bg-white/5 border-white/10' },
+          { label: 'High', count: high, color: 'text-orange-300', bg: high > 0 ? 'bg-orange-500/20 border-orange-400/20' : 'bg-white/5 border-white/10' },
+          { label: 'Total', count: total, color: 'text-white', bg: 'bg-white/10 border-white/10' },
+        ].map(s => (
+          <div key={s.label} className={cn('rounded-lg border px-2 py-2 text-center', s.bg)}>
+            <p className={cn('text-lg font-bold tabular-nums leading-none', s.color)}>{s.count}</p>
+            <p className="text-[10px] mt-1 text-white/40">{s.label}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ──────────────────────────────────────────
+/* ──────────────────────────────────────────────────────
    Main export
-────────────────────────────────────────── */
-export default function RunMyDayCenter({ clients, checkIns, messages }) {
+────────────────────────────────────────────────────── */
+export default function RunMyDayCenter({ clients, checkIns, messages, payments = [] }) {
   const navigate = useNavigate();
 
-  /* ── Missed workouts: last check-in had training compliance < 50% ── */
-  const missedWorkouts = useMemo(() => {
-    return clients.filter(client => {
-      const clientCIs = checkIns
-        .filter(ci => ci.client_id === client.id)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-      const latest = clientCIs[0];
-      if (!latest) return false;
-      const daysAgo = differenceInDays(new Date(), parseISO(latest.date));
-      return daysAgo <= 14 && latest.compliance_training != null && latest.compliance_training < 50;
-    }).slice(0, 6);
-  }, [clients, checkIns]);
+  const go = (path) => navigate(path);
+  const msgClient = (id, msg) =>
+    navigate(`/messages?clientId=${id}${msg ? `&message=${encodeURIComponent(msg)}` : ''}`);
 
-  /* ── Missed check-ins: active clients with no check-in in 10+ days ── */
+  /* ── 1. Missed check-ins ──────────────────────────── */
   const missedCheckIns = useMemo(() => {
-    const activeClients = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active');
-    return activeClients.filter(client => {
-      const clientCIs = checkIns.filter(ci => ci.client_id === client.id);
-      if (!clientCIs.length) return true;
-      const latest = clientCIs.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-      return differenceInDays(new Date(), parseISO(latest.date)) >= 10;
-    }).slice(0, 6);
+    const active = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active');
+    return active
+      .map(client => {
+        const cis = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+        const latest = cis[0];
+        const daysAgo = latest ? differenceInDays(new Date(), parseISO(latest.date)) : 999;
+        if (daysAgo < 10) return null;
+        return { client, daysAgo, urgency: daysAgo >= 21 ? 'critical' : 'high' };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.daysAgo - a.daysAgo)
+      .slice(0, 8);
   }, [clients, checkIns]);
 
-  /* ── At risk: from riskEngine ── */
-  const atRisk = useMemo(() => getAtRiskClients(clients, checkIns).slice(0, 6), [clients, checkIns]);
-
-  /* ── Ready for progression: consistent high adherence (avg ≥80) ── */
-  const readyForProgression = useMemo(() => {
-    return clients.filter(client => {
-      const clientCIs = checkIns
-        .filter(ci => ci.client_id === client.id)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-      if (clientCIs.length < 3) return false;
-      const score = compositeAdherenceScore(clientCIs);
-      return score !== null && score >= 80;
-    }).slice(0, 6);
+  /* ── 2. Missed workouts ───────────────────────────── */
+  const missedWorkouts = useMemo(() => {
+    return clients
+      .map(client => {
+        const cis = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+        const latest = cis[0];
+        if (!latest) return null;
+        const daysAgo = differenceInDays(new Date(), parseISO(latest.date));
+        if (daysAgo > 14) return null;
+        if (latest.compliance_training == null || latest.compliance_training >= 60) return null;
+        return { client, ci: latest, pct: latest.compliance_training, urgency: latest.compliance_training < 30 ? 'critical' : 'high' };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.pct - b.pct)
+      .slice(0, 8);
   }, [clients, checkIns]);
 
-  /* ── Pending check-ins (unreviewed) ── */
-  const pendingCheckIns = useMemo(() => {
+  /* ── 3. Low adherence ─────────────────────────────── */
+  const lowAdherence = useMemo(() => {
+    return clients
+      .map(client => {
+        const cis = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+        if (cis.length < 2) return null;
+        const score = compositeAdherenceScore(cis);
+        if (score === null || score >= 65) return null;
+        // Exclude if already in missedWorkouts (avoid double listing)
+        const alreadyMissed = missedWorkouts.some(m => m.client.id === client.id);
+        if (alreadyMissed) return null;
+        return { client, score, urgency: score < 40 ? 'critical' : 'high' };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 6);
+  }, [clients, checkIns, missedWorkouts]);
+
+  /* ── 4. Payment issues ────────────────────────────── */
+  const paymentIssues = useMemo(() => {
+    const overdue = payments.filter(p => p.status === 'failed' || p.status === 'pending');
+    return overdue
+      .map(p => {
+        const client = clients.find(c => c.id === p.client_id);
+        if (!client) return null;
+        return { client, payment: p, urgency: p.status === 'failed' ? 'critical' : 'high' };
+      })
+      .filter(Boolean)
+      .slice(0, 6);
+  }, [payments, clients]);
+
+  /* ── 5. Pending reviews ───────────────────────────── */
+  const pendingReviews = useMemo(() => {
     return checkIns
       .filter(ci => !ci.coach_responded && !ci.coach_notes)
       .filter(ci => differenceInDays(new Date(), parseISO(ci.date)) <= 14)
       .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .slice(0, 5);
+      .map(ci => {
+        const daysAgo = differenceInDays(new Date(), parseISO(ci.date));
+        return { ci, daysAgo, urgency: daysAgo > 5 ? 'high' : 'medium' };
+      })
+      .slice(0, 8);
   }, [checkIns]);
 
-  const sections = [
-    { id: 'pending', count: pendingCheckIns.length, shortLabel: 'Reviews', activeBg: 'bg-blue-500/20 border-blue-400/30', activeColor: 'text-blue-300' },
-    { id: 'checkin', count: missedCheckIns.length, shortLabel: 'No Check-In', activeBg: 'bg-amber-500/20 border-amber-400/30', activeColor: 'text-amber-300' },
-    { id: 'workout', count: missedWorkouts.length, shortLabel: 'Missed WO', activeBg: 'bg-red-500/20 border-red-400/30', activeColor: 'text-red-300' },
-    { id: 'risk',    count: atRisk.length, shortLabel: 'At Risk', activeBg: 'bg-orange-500/20 border-orange-400/30', activeColor: 'text-orange-300' },
-  ];
+  /* ── 6. Ready for progression ─────────────────────── */
+  const readyForProgression = useMemo(() => {
+    return clients
+      .map(client => {
+        const cis = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+        if (cis.length < 3) return null;
+        const score = compositeAdherenceScore(cis);
+        if (score === null || score < 80) return null;
+        return { client, score, urgency: 'low' };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+  }, [clients, checkIns]);
 
-  const SECTION_COLORS = {
-    workout: { iconBg: 'bg-red-50', iconColor: 'text-red-500', badge: 'bg-red-50 text-red-600 border-red-100' },
-    checkin: { iconBg: 'bg-amber-50', iconColor: 'text-amber-500', badge: 'bg-amber-50 text-amber-600 border-amber-100' },
-    risk:    { iconBg: 'bg-orange-50', iconColor: 'text-orange-500', badge: 'bg-orange-50 text-orange-600 border-orange-100' },
-    prog:    { iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600', badge: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-    pending: { iconBg: 'bg-blue-50', iconColor: 'text-primary', badge: 'bg-blue-50 text-primary border-blue-100' },
-  };
+  /* ── All items (for command bar) ─────────────────── */
+  const allItems = useMemo(() => [
+    ...missedCheckIns,
+    ...missedWorkouts,
+    ...lowAdherence,
+    ...paymentIssues,
+    ...pendingReviews,
+    ...readyForProgression,
+  ], [missedCheckIns, missedWorkouts, lowAdherence, paymentIssues, pendingReviews, readyForProgression]);
 
   return (
-    <div className="space-y-3">
-      <CommandBar sections={sections} />
+    <div className="space-y-2.5">
+      <CommandBar items={allItems} />
 
-      {/* Missed Workouts */}
-      <Section
-        icon={Dumbbell}
-        title="Missed Workouts"
-        count={missedWorkouts.length}
-        colorClass={SECTION_COLORS.workout}
-      >
-        {missedWorkouts.map(client => {
-          const ci = checkIns.filter(c => c.client_id === client.id).sort((a,b) => new Date(b.date)-new Date(a.date))[0];
-          return (
-            <ClientRow
-              key={client.id}
-              name={client.name}
-              subtitle={`${ci?.compliance_training ?? 0}% training · ${differenceInDays(new Date(), parseISO(ci?.date || new Date().toISOString()))}d ago`}
-              badge={`${ci?.compliance_training ?? 0}%`}
-              badgeColor="bg-red-50 text-red-600 border-red-100"
-              actions={<>
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}`)} />
-                <ActionBtn icon={ClipboardList} label="Review" onClick={() => navigate(`/checkin-detail?id=${ci?.id}&clientId=${client.id}`)} primary />
-              </>}
-            />
-          );
-        })}
+      {/* ── Missed Check-ins ─────────────────────────── */}
+      <Section colorKey="checkin" icon={ClipboardList} title="Missed Check-ins" count={missedCheckIns.length}>
+        {missedCheckIns.map(({ client, daysAgo, urgency }) => (
+          <ActionCard
+            key={client.id}
+            colorKey="checkin"
+            name={client.name}
+            subtitle={daysAgo === 999 ? 'No check-ins on record' : `Last check-in ${daysAgo} days ago`}
+            badge={daysAgo === 999 ? 'Never' : `${daysAgo}d`}
+            urgency={urgency}
+            actions={<>
+              <Pill
+                icon={Send}
+                label="Nudge"
+                variant="primary"
+                onClick={() => msgClient(client.id, "Hey! Just checking in — haven't heard from you in a while. How's everything going? 💪")}
+              />
+              <Pill
+                icon={MessageSquare}
+                label="Message"
+                onClick={() => msgClient(client.id)}
+              />
+              <Pill
+                icon={Eye}
+                label="Profile"
+                onClick={() => go(`/client-profile?id=${client.id}`)}
+              />
+            </>}
+          />
+        ))}
       </Section>
 
-      {/* Missed Check-ins */}
-      <Section
-        icon={ClipboardList}
-        title="Missed Check-ins"
-        count={missedCheckIns.length}
-        colorClass={SECTION_COLORS.checkin}
-      >
-        {missedCheckIns.map(client => {
-          const clientCIs = checkIns.filter(c => c.client_id === client.id).sort((a,b) => new Date(b.date)-new Date(a.date));
-          const lastCI = clientCIs[0];
-          const daysAgo = lastCI ? differenceInDays(new Date(), parseISO(lastCI.date)) : null;
-          return (
-            <ClientRow
-              key={client.id}
-              name={client.name}
-              subtitle={daysAgo !== null ? `Last check-in ${daysAgo}d ago` : 'No check-ins yet'}
-              badge={daysAgo !== null ? `${daysAgo}d` : 'Never'}
-              badgeColor={daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'}
-              actions={<>
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}`)} />
-                <ActionBtn icon={Sparkles} label="Nudge" onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just checking in — haven't heard from you in a while. How's everything going? 💪")}`)} primary />
-              </>}
-            />
-          );
-        })}
+      {/* ── Missed Workouts ──────────────────────────── */}
+      <Section colorKey="workout" icon={Dumbbell} title="Missed Workouts" count={missedWorkouts.length}>
+        {missedWorkouts.map(({ client, ci, pct, urgency }) => (
+          <ActionCard
+            key={client.id}
+            colorKey="workout"
+            name={client.name}
+            subtitle={`${pct}% training compliance · ${differenceInDays(new Date(), parseISO(ci.date))}d ago`}
+            badge={`${pct}%`}
+            urgency={urgency}
+            actions={<>
+              <Pill
+                icon={ClipboardList}
+                label="Review"
+                variant="primary"
+                onClick={() => go(`/checkin-detail?id=${ci.id}&clientId=${client.id}`)}
+              />
+              <Pill
+                icon={Dumbbell}
+                label="Assign Workout"
+                onClick={() => go(`/client-profile?id=${client.id}&tab=programs`)}
+              />
+              <Pill
+                icon={MessageSquare}
+                label="Message"
+                onClick={() => msgClient(client.id, "Hey, noticed your training compliance was low this week — anything I can help adjust? 💪")}
+              />
+            </>}
+          />
+        ))}
       </Section>
 
-      {/* At Risk */}
-      <Section
-        icon={AlertTriangle}
-        title="At Risk"
-        count={atRisk.length}
-        colorClass={SECTION_COLORS.risk}
-      >
-        {atRisk.map(({ client, flags, riskScore }) => {
-          const topFlag = flags[0];
-          return (
-            <ClientRow
-              key={client.id}
-              name={client.name}
-              subtitle={topFlag?.detail || topFlag?.label || 'Multiple risk factors'}
-              badge={`${riskScore}%`}
-              badgeColor={riskScore >= 60 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-orange-50 text-orange-600 border-orange-100'}
-              actions={<>
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}`)} />
-                <ActionBtn icon={Target} label="Adjust" onClick={() => navigate(`/client-profile?id=${client.id}`)} primary />
-              </>}
-            />
-          );
-        })}
+      {/* ── Low Adherence ────────────────────────────── */}
+      <Section colorKey="adherence" icon={AlertTriangle} title="Low Adherence" count={lowAdherence.length}>
+        {lowAdherence.map(({ client, score, urgency }) => (
+          <ActionCard
+            key={client.id}
+            colorKey="adherence"
+            name={client.name}
+            subtitle={`${score}% composite adherence (below 65%)`}
+            badge={`${score}%`}
+            urgency={urgency}
+            actions={<>
+              <Pill
+                icon={RefreshCw}
+                label="Adjust Plan"
+                variant="primary"
+                onClick={() => go(`/client-profile?id=${client.id}&tab=programs`)}
+              />
+              <Pill
+                icon={MessageSquare}
+                label="Check In"
+                onClick={() => msgClient(client.id, "Hey, I want to make sure your plan is working for you — let's chat about any adjustments 🙌")}
+              />
+              <Pill
+                icon={Eye}
+                label="Profile"
+                onClick={() => go(`/client-profile?id=${client.id}`)}
+              />
+            </>}
+          />
+        ))}
       </Section>
 
-      {/* Ready for Progression */}
-      <Section
-        icon={TrendingUp}
-        title="Ready for Progression"
-        count={readyForProgression.length}
-        colorClass={SECTION_COLORS.prog}
-        defaultOpen={false}
-      >
-        {readyForProgression.map(client => {
-          const clientCIs = checkIns.filter(c => c.client_id === client.id).sort((a,b) => new Date(b.date)-new Date(a.date));
-          const score = compositeAdherenceScore(clientCIs);
-          return (
-            <ClientRow
-              key={client.id}
-              name={client.name}
-              subtitle={`${score}% adherence — consistent performance`}
-              badge={`${score}%`}
-              badgeColor="bg-emerald-50 text-emerald-700 border-emerald-100"
-              actions={<>
-                <ActionBtn icon={UserCheck} label="Assign" onClick={() => navigate(`/client-profile?id=${client.id}`)} primary />
-                <ActionBtn icon={MessageSquare} label="Message" onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Great work lately! I'd like to progress your program — check the updates when you get a chance 🚀")}`)} />
-              </>}
-            />
-          );
-        })}
+      {/* ── Payment Issues ───────────────────────────── */}
+      <Section colorKey="payment" icon={CreditCard} title="Payment Issues" count={paymentIssues.length}>
+        {paymentIssues.map(({ client, payment, urgency }) => (
+          <ActionCard
+            key={payment.id}
+            colorKey="payment"
+            name={client.name}
+            subtitle={`$${payment.amount} · ${payment.status === 'failed' ? 'Payment failed' : 'Payment overdue'}${payment.due_date ? ` · Due ${format(parseISO(payment.due_date), 'MMM d')}` : ''}`}
+            badge={payment.status === 'failed' ? 'Failed' : 'Overdue'}
+            urgency={urgency}
+            actions={<>
+              <Pill
+                icon={MessageSquare}
+                label="Message"
+                variant="primary"
+                onClick={() => msgClient(client.id, "Hi! Just a quick note about your upcoming payment — let me know if you have any questions 🙏")}
+              />
+              <Pill
+                icon={Eye}
+                label="View"
+                onClick={() => go(`/revenue`)}
+              />
+            </>}
+          />
+        ))}
       </Section>
 
-      {/* Pending Check-in Reviews */}
-      <Section
-        icon={Sparkles}
-        title="Pending Reviews"
-        count={pendingCheckIns.length}
-        colorClass={SECTION_COLORS.pending}
-      >
-        {pendingCheckIns.map(ci => {
-          const daysAgo = differenceInDays(new Date(), parseISO(ci.date));
-          return (
-            <ClientRow
-              key={ci.id}
-              name={ci.client_name}
-              subtitle={`Submitted ${format(parseISO(ci.date), 'MMM d')} · ${daysAgo}d ago${ci.weight ? ` · ${ci.weight} lbs` : ''}`}
-              badge={daysAgo > 5 ? 'Overdue' : 'New'}
-              badgeColor={daysAgo > 5 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-blue-50 text-primary border-blue-100'}
-              actions={<>
-                <ActionBtn icon={Sparkles} label="AI Review" onClick={() => navigate(`/checkin-detail?id=${ci.id}&clientId=${ci.client_id}`)} primary />
-                <ActionBtn icon={ArrowRight} label="Queue" onClick={() => navigate('/fast-review')} />
-              </>}
-            />
-          );
-        })}
+      {/* ── Pending Reviews ──────────────────────────── */}
+      <Section colorKey="review" icon={Zap} title="Pending Reviews" count={pendingReviews.length}>
+        {pendingReviews.map(({ ci, daysAgo, urgency }) => (
+          <ActionCard
+            key={ci.id}
+            colorKey="review"
+            name={ci.client_name}
+            subtitle={`Submitted ${format(parseISO(ci.date), 'MMM d')} · ${daysAgo}d ago${ci.weight ? ` · ${ci.weight} lbs` : ''}${ci.mood ? ` · mood: ${ci.mood}` : ''}`}
+            badge={daysAgo > 5 ? 'Overdue' : 'New'}
+            urgency={urgency}
+            actions={<>
+              <Pill
+                icon={Zap}
+                label="AI Review"
+                variant="primary"
+                onClick={() => go(`/checkin-detail?id=${ci.id}&clientId=${ci.client_id}`)}
+              />
+              <Pill
+                icon={ArrowUpRight}
+                label="Queue"
+                onClick={() => go('/fast-review')}
+              />
+              <Pill
+                icon={MessageSquare}
+                label="Message"
+                onClick={() => msgClient(ci.client_id)}
+              />
+            </>}
+          />
+        ))}
+      </Section>
+
+      {/* ── Ready for Progression ────────────────────── */}
+      <Section colorKey="prog" icon={TrendingUp} title="Ready for Progression" count={readyForProgression.length} defaultOpen={false}>
+        {readyForProgression.map(({ client, score }) => (
+          <ActionCard
+            key={client.id}
+            colorKey="prog"
+            name={client.name}
+            subtitle={`${score}% adherence — crushing it consistently`}
+            badge={`${score}%`}
+            urgency="low"
+            actions={<>
+              <Pill
+                icon={Dumbbell}
+                label="Assign Workout"
+                variant="primary"
+                onClick={() => go(`/client-profile?id=${client.id}&tab=programs`)}
+              />
+              <Pill
+                icon={UserCheck}
+                label="Progress Plan"
+                onClick={() => go(`/client-profile?id=${client.id}`)}
+              />
+              <Pill
+                icon={MessageSquare}
+                label="Celebrate"
+                onClick={() => msgClient(client.id, "Great work lately! You're crushing it — I'm bumping up your program to match your progress 🚀")}
+              />
+            </>}
+          />
+        ))}
       </Section>
     </div>
   );

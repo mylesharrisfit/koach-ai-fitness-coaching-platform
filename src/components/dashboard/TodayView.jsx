@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import RunMyDayCenter from './RunMyDayCenter';
 import RecommendationsWidget from './RecommendationsWidget';
 
-export default function TodayView({ clients, checkIns, messages }) {
+export default function TodayView({ clients, checkIns, messages, payments = [] }) {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
@@ -17,7 +17,7 @@ export default function TodayView({ clients, checkIns, messages }) {
 
       {/* Command center */}
       <div className="fade-up fade-up-delay-1">
-        <RunMyDayCenter clients={clients} checkIns={checkIns} messages={messages} />
+        <RunMyDayCenter clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
       </div>
 
       {/* Recommendations */}

@@ -47,5 +47,12 @@ export default function Dashboard() {
     queryFn: () => base44.entities.Message.filter({ is_read: false }, '-created_date', 30),
   });
 
-  return <TodayView clients={clients} checkIns={checkIns} messages={messages} />;
+  const { data: payments = [] } = useQuery({
+    queryKey: ['payments-dashboard'],
+    queryFn: () => base44.entities.Payment.filter({ status: 'pending' }, '-created_date', 50).then(pending =>
+      base44.entities.Payment.filter({ status: 'failed' }, '-created_date', 50).then(failed => [...pending, ...failed])
+    ),
+  });
+
+  return <TodayView clients={clients} checkIns={checkIns} messages={messages} payments={payments} />;
 }
