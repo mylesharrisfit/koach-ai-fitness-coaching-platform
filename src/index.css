@@ -9,25 +9,25 @@
     --font-heading: 'Inter', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    /* ── Premium Dark SaaS Theme ── */
-    --background: 220 23% 7%;        /* #0B0F14 */
-    --foreground: 210 20% 98%;       /* #F9FAFB */
-    --card: 222 26% 10%;             /* #111827 */
-    --card-foreground: 210 20% 98%;  /* #F9FAFB */
-    --popover: 222 26% 10%;          /* #111827 */
-    --popover-foreground: 210 20% 98%;
-    --primary: 217 91% 60%;          /* #3B82F6 */
+    /* ── Light Theme ── */
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 14%;        /* #1F2937 area */
-    --secondary-foreground: 215 14% 62%; /* #9CA3AF */
-    --muted: 220 18% 12%;
-    --muted-foreground: 218 11% 45%; /* #6B7280 */
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 17% 16%;           /* #1F2937 */
-    --input: 220 17% 16%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
     --ring: 217 91% 60%;
     --chart-1: 217 91% 60%;
     --chart-2: 162 63% 41%;
@@ -35,17 +35,15 @@
     --chart-4: 38 90% 55%;
     --chart-5: 0 72% 55%;
     --radius: 0.75rem;
-    --sidebar-background: 221 27% 8%;  /* #0F1720 */
-    --sidebar-foreground: 215 14% 62%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 16% 47%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 14%;
-    --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 220 17% 16%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
     --sidebar-ring: 217 91% 60%;
   }
-
-  /* No separate .dark block — app is dark-only */
 }
 
 @layer base {
@@ -67,31 +65,33 @@
 
 /* ── Card ── */
 .glass-card {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 24px -8px rgba(0,0,0,0.08);
 }
 
-/* ── No glows / gradients ── */
-.glow-primary { box-shadow: none; }
-.glow-accent  { box-shadow: none; }
-.glow-sm      { box-shadow: none; }
-.badge-glow   { box-shadow: none; }
-.bg-noise::before { display: none; }
+/* ── Glow effects ── */
+.glow-primary { box-shadow: 0 0 20px -4px hsl(var(--primary) / 0.3); }
+.glow-accent  { box-shadow: 0 0 20px -4px hsl(var(--accent) / 0.3); }
+.glow-sm      { box-shadow: 0 0 12px -4px hsl(var(--primary) / 0.2); }
+.badge-glow   { box-shadow: 0 0 8px -2px hsl(var(--primary) / 0.4); }
 
 /* ── Card hover ── */
 .card-hover {
-  transition: border-color 0.15s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .card-hover:hover {
-  border-color: hsl(var(--border) / 0.6);
+  box-shadow: 0 8px 32px -8px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
 }
 
-/* ── Gradient text — flat colour only ── */
+/* ── Gradient text ── */
 .gradient-text {
-  color: hsl(var(--primary));
-  background: none;
-  -webkit-text-fill-color: unset;
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--chart-3)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ── Animated progress bar ── */
@@ -177,5 +177,5 @@ input:focus-visible, textarea:focus-visible {
 
 /* ── Section background ── */
 .section-bg {
-  background: hsl(221 27% 8%); /* #0F1720 */
+  background: hsl(210 40% 98%);
 }
