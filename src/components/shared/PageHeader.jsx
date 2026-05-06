@@ -1,13 +1,16 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
-export default function PageHeader({ title, subtitle, actions }) {
+export default function PageHeader({ title, subtitle, action, className }) {
   return (
-    <div className="flex flex-col gap-3 mb-6 md:mb-8 fade-up sm:flex-row sm:items-center sm:justify-between">
+    <div className={cn('flex items-start justify-between mb-8', className)}>
       <div>
-        <h1 className="text-xl sm:text-2xl font-heading font-bold tracking-tight leading-tight text-foreground">{title}</h1>
-        {subtitle && <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{subtitle}</p>}
+        <h1 className="text-2xl font-heading font-bold text-white tracking-tight">{title}</h1>
+        {subtitle && (
+          <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+        )}
       </div>
-      {actions && <div className="flex items-center gap-3 w-full sm:w-auto [&>*]:flex-1 sm:[&>*]:flex-none">{actions}</div>}
+      {action && <div className="flex-shrink-0 ml-4">{action}</div>}
     </div>
   );
 }

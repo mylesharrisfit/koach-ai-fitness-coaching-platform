@@ -39,10 +39,11 @@ export default function BottomNav() {
       {/* Mobile notification tray */}
       {bellOpen && (
         <>
-          <div className="fixed inset-0 z-50 bg-black/20" onClick={() => setBellOpen(false)} />
-          <div className="fixed bottom-[60px] left-0 right-0 z-50 bg-card border border-border border-b-0 rounded-t-2xl max-h-[60vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border sticky top-0 bg-card">
-              <span className="text-sm font-bold text-foreground">Notifications</span>
+          <div className="fixed inset-0 z-50 bg-black/60" onClick={() => setBellOpen(false)} />
+          <div className="fixed bottom-[60px] left-0 right-0 z-50 border border-white/[0.06] border-b-0 rounded-t-2xl max-h-[60vh] overflow-y-auto"
+            style={{ background: '#111111' }}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0" style={{ background: '#111111' }}>
+              <span className="text-sm font-bold text-white">Notifications</span>
               {unreadCount > 0 && (
                 <button onClick={markAllRead} className="text-[11px] text-primary font-semibold">
                   Mark all read
@@ -55,16 +56,19 @@ export default function BottomNav() {
               <div
                 key={n.id}
                 onClick={() => { markRead(n.id); setBellOpen(false); }}
-                className={cn('flex items-start gap-3 px-4 py-3 border-b border-border/60 last:border-0 cursor-pointer', !n.is_read && 'bg-primary/5')}
+                className={cn(
+                  'flex items-start gap-3 px-5 py-4 border-b border-white/[0.04] last:border-0 cursor-pointer transition-colors hover:bg-white/[0.03]',
+                  !n.is_read && 'bg-primary/5'
+                )}
               >
                 <span className="text-lg mt-0.5">
                   {{ checkin_received: '📋', feedback_sent: '💬', checkin_reminder: '⏰', general: '🔔' }[n.type] || '🔔'}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className={cn('text-sm text-foreground', !n.is_read ? 'font-semibold' : 'font-normal opacity-60')}>{n.title}</p>
+                  <p className={cn('text-sm text-white', !n.is_read ? 'font-semibold' : 'font-normal opacity-50')}>{n.title}</p>
                   {n.body && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.body}</p>}
                 </div>
-                {!n.is_read && <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />}
+                {!n.is_read && <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0 shadow-[0_0_6px_rgba(59,130,246,0.8)]" />}
               </div>
             ))}
           </div>
@@ -72,8 +76,8 @@ export default function BottomNav() {
       )}
 
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden bg-sidebar border-t border-border"
-        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden border-t border-white/[0.06]"
+        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)', background: '#0A0A0A' }}
       >
         {PRIMARY_NAV.map(item => {
           const isActive =
@@ -84,11 +88,11 @@ export default function BottomNav() {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex flex-col items-center justify-center flex-1 gap-1 transition-colors',
+                'flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-150',
                 isActive ? 'text-primary' : 'text-muted-foreground'
               )}
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className={cn('w-[18px] h-[18px]', isActive && 'drop-shadow-[0_0_6px_rgba(59,130,246,0.8)]')} />
               <span className={cn('text-[10px]', isActive ? 'font-semibold text-primary' : 'font-medium')}>{item.label}</span>
             </Link>
           );
@@ -97,12 +101,12 @@ export default function BottomNav() {
         {/* Notifications */}
         <button
           onClick={() => setBellOpen(o => !o)}
-          className={cn('flex flex-col items-center justify-center flex-1 gap-1', bellOpen ? 'text-primary' : 'text-muted-foreground')}
+          className={cn('flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-150', bellOpen ? 'text-primary' : 'text-muted-foreground')}
         >
           <div className="relative">
-            <Bell className="w-5 h-5" />
+            <Bell className="w-[18px] h-[18px]" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 bg-destructive text-white text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">
+              <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 bg-destructive text-white text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
@@ -113,9 +117,9 @@ export default function BottomNav() {
         {/* More */}
         <button
           onClick={() => setMoreOpen(true)}
-          className={cn('flex flex-col items-center justify-center flex-1 gap-1', (moreOpen || isMoreActive) ? 'text-primary' : 'text-muted-foreground')}
+          className={cn('flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-150', (moreOpen || isMoreActive) ? 'text-primary' : 'text-muted-foreground')}
         >
-          <MoreHorizontal className="w-5 h-5" />
+          <MoreHorizontal className="w-[18px] h-[18px]" />
           <span className="text-[10px] font-medium">More</span>
         </button>
       </nav>
