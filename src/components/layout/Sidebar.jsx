@@ -82,16 +82,13 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
     return (
       <button
         onClick={() => onUpgrade?.(item.feature)}
-        className={cn(
-          'relative flex items-center gap-3 px-3 py-[9px] rounded-xl text-[13px] font-medium w-full text-left transition-all duration-150',
-          'text-muted-foreground hover:text-foreground/50 hover:bg-white/[0.03]'
-        )}
+        className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium w-full text-left text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
       >
-        <item.icon className="w-[16px] h-[16px] flex-shrink-0 opacity-40" />
+        <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
         {!collapsed && (
           <>
-            <span className="flex-1 opacity-40">{item.label}</span>
-            <Lock className="w-3 h-3 opacity-20" />
+            <span className="flex-1">{item.label}</span>
+            <Lock className="w-3 h-3 opacity-30" />
           </>
         )}
       </button>
@@ -102,22 +99,17 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
     <Link
       to={item.path}
       className={cn(
-        'relative flex items-center gap-3 px-3 py-[9px] rounded-xl text-[13px] font-medium transition-all duration-150',
+        'relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
         isActive
-          ? 'bg-primary/10 text-primary sidebar-active-dot'
-          : 'text-muted-foreground hover:text-white hover:bg-white/[0.04]'
+          ? 'bg-primary/10 text-primary'
+          : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
       )}
     >
-      <item.icon className={cn(
-        'w-[16px] h-[16px] flex-shrink-0',
-        isActive ? 'text-primary' : ''
-      )} />
-      {!collapsed && (
-        <span className={isActive ? 'font-semibold' : ''}>{item.label}</span>
+      {isActive && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full" />
       )}
-      {isActive && !collapsed && (
-        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
-      )}
+      <item.icon className={cn('w-[17px] h-[17px] flex-shrink-0', isActive ? 'text-primary' : '')} />
+      {!collapsed && <span>{item.label}</span>}
     </Link>
   );
 }
@@ -127,34 +119,31 @@ export default function Sidebar({ user, onUpgrade }) {
 
   return (
     <aside className={cn(
-      'fixed left-0 top-0 h-screen z-50 flex-col transition-all duration-200 hidden md:flex',
-      'border-r border-white/[0.04]',
-      collapsed ? 'w-[60px]' : 'w-[220px]'
-    )}
-    style={{ background: '#0A0A0A' }}
-    >
+      'fixed left-0 top-0 h-screen bg-sidebar border-r border-border z-50 flex-col transition-all duration-200 hidden md:flex',
+      collapsed ? 'w-[60px]' : 'w-[216px]'
+    )}>
       {/* Logo */}
       <div className={cn(
-        'h-[60px] flex items-center border-b border-white/[0.04] flex-shrink-0',
-        collapsed ? 'px-4 justify-center' : 'px-5 gap-3'
+        'h-[56px] flex items-center border-b border-border flex-shrink-0',
+        collapsed ? 'px-4 justify-center' : 'px-4 gap-3'
       )}>
-        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0 shadow-[0_0_16px_rgba(59,130,246,0.4)]">
+        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
           <Zap className="w-[13px] h-[13px] text-white" />
         </div>
         {!collapsed && (
           <>
-            <span className="flex-1 font-heading font-bold text-[14px] text-white tracking-tight">FitForge</span>
+            <span className="flex-1 font-heading font-bold text-[14px] text-foreground tracking-tight">FitForge</span>
             <NotificationBell />
           </>
         )}
       </div>
 
       {/* Nav Groups */}
-      <nav className="flex-1 py-4 px-2.5 overflow-y-auto space-y-5">
+      <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4">
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
-              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/20 px-3 mb-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-3 mb-1">
                 {group.label}
               </p>
             )}
@@ -168,29 +157,29 @@ export default function Sidebar({ user, onUpgrade }) {
       </nav>
 
       {/* Bottom */}
-      <div className="px-2.5 pb-4 pt-2 border-t border-white/[0.04] space-y-0.5">
+      <div className="p-2 border-t border-border space-y-0.5">
         {BOTTOM_ITEMS.map(item => (
           <Link
             key={item.path}
             to={item.path}
-            className="flex items-center gap-3 px-3 py-[9px] rounded-xl text-[13px] font-medium text-muted-foreground hover:text-white hover:bg-white/[0.04] transition-all"
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
-            <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
+            <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
             {!collapsed && <span>{item.label}</span>}
           </Link>
         ))}
 
         <button
           onClick={() => base44.auth.logout()}
-          className="flex items-center gap-3 px-3 py-[9px] rounded-xl text-[13px] font-medium text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-all w-full"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full"
         >
-          <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
+          <LogOut className="w-[17px] h-[17px] flex-shrink-0" />
           {!collapsed && <span>Logout</span>}
         </button>
 
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="flex items-center justify-center w-full py-2 rounded-xl text-muted-foreground hover:text-white hover:bg-white/[0.04] transition-all mt-1"
+          className="flex items-center justify-center w-full py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors mt-1"
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
