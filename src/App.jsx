@@ -44,6 +44,7 @@ import ClientOnboarding from './pages/ClientOnboarding';
 import OnboardingManager from './pages/OnboardingManager';
 import Migration from './pages/Migration';
 import FoodLibrary from './pages/FoodLibrary';
+import PremiumOnboarding from './pages/PremiumOnboarding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -107,6 +108,7 @@ const AuthenticatedApp = () => {
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/start" element={<PremiumOnboarding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
