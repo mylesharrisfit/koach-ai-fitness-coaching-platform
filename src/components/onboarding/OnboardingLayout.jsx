@@ -26,13 +26,19 @@ export default function OnboardingLayout({
 }) {
   return (
     <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.05]"
+          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(60px)' }} />
+      </div>
+
       {/* Back button */}
       {onBack && (
-        <div className="flex-shrink-0 pt-safe px-4 pt-4">
+        <div className="flex-shrink-0 pt-5 px-5 relative z-10">
           <button
             onClick={onBack}
             className="flex items-center gap-1.5 text-sm font-medium transition-colors"
-            style={{ color: '#7A7A7A' }}
+            style={{ color: '#555' }}
           >
             <ChevronLeft className="w-4 h-4" />
             Back
@@ -41,7 +47,7 @@ export default function OnboardingLayout({
       )}
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-6 pb-32 pt-8 flex flex-col max-w-lg mx-auto w-full">
+      <div className="flex-1 overflow-y-auto px-6 pb-36 pt-6 flex flex-col max-w-lg mx-auto w-full relative z-10">
         <motion.div
           className="flex flex-col gap-8 w-full"
           variants={stagger.container}
@@ -51,15 +57,18 @@ export default function OnboardingLayout({
           {/* Header */}
           <motion.div variants={stagger.item} className="space-y-2">
             {eyebrow && (
-              <p className="text-xs uppercase tracking-[0.2em] font-semibold" style={{ color: '#3B82F6' }}>
+              <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#3B82F6' }}>
                 {eyebrow}
               </p>
             )}
-            <h2 className="text-3xl font-bold text-white leading-tight" style={{ letterSpacing: '-0.02em' }}>
+            <h2
+              className="font-bold text-white leading-tight"
+              style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', letterSpacing: '-0.025em' }}
+            >
               {headline}
             </h2>
             {subtext && (
-              <p className="text-sm leading-relaxed" style={{ color: '#7A7A7A' }}>
+              <p className="text-sm leading-relaxed mt-1" style={{ color: '#7A7A7A' }}>
                 {subtext}
               </p>
             )}
@@ -75,22 +84,23 @@ export default function OnboardingLayout({
       {/* Sticky bottom CTA */}
       {!hideNext && (
         <div
-          className="fixed bottom-0 left-0 right-0 px-6 pb-8 pt-4 flex flex-col gap-3"
+          className="fixed bottom-0 left-0 right-0 px-6 pt-4 flex flex-col gap-3 z-20"
           style={{
-            background: 'linear-gradient(to top, #0A0A0A 60%, transparent)',
             paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
+            background: 'linear-gradient(to top, #0A0A0A 65%, transparent)',
           }}
         >
           <div className="max-w-lg mx-auto w-full">
             <motion.button
               onClick={onNext}
               disabled={nextDisabled}
-              whileHover={!nextDisabled ? { scale: 1.02, boxShadow: '0 0 30px rgba(59,130,246,0.35)' } : {}}
+              whileHover={!nextDisabled ? { scale: 1.02, boxShadow: '0 0 35px rgba(59,130,246,0.4)' } : {}}
               whileTap={!nextDisabled ? { scale: 0.98 } : {}}
-              className="w-full py-4 rounded-2xl text-white font-semibold text-base transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-full py-4 rounded-2xl text-white font-semibold text-base transition-all"
               style={{
-                background: nextDisabled ? '#222' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-                boxShadow: nextDisabled ? 'none' : '0 0 20px rgba(59,130,246,0.2)',
+                background: nextDisabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+                boxShadow: nextDisabled ? 'none' : '0 0 24px rgba(59,130,246,0.25)',
+                color: nextDisabled ? '#555' : '#fff',
               }}
             >
               {nextLabel}

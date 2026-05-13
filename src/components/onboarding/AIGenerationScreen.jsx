@@ -2,68 +2,77 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CLIENT_ITEMS = [
-  { label: 'Training Plan', icon: '🏋️', delay: 0 },
-  { label: 'Nutrition Plan', icon: '🥗', delay: 0.6 },
-  { label: 'Hydration Goals', icon: '💧', delay: 1.2 },
-  { label: 'Recovery Targets', icon: '⚡', delay: 1.8 },
-  { label: 'Habit System', icon: '🔄', delay: 2.4 },
+  { label: 'Analyzing your profile',   icon: '🧠', delay: 0 },
+  { label: 'Building training plan',   icon: '🏋️', delay: 0.7 },
+  { label: 'Designing nutrition plan', icon: '🥗', delay: 1.4 },
+  { label: 'Setting recovery targets', icon: '⚡', delay: 2.1 },
+  { label: 'Calibrating habit system', icon: '🔄', delay: 2.8 },
 ];
 
 const COACH_ITEMS = [
-  { label: 'Client Dashboard', icon: '👥', delay: 0 },
-  { label: 'Check-in System', icon: '📋', delay: 0.6 },
-  { label: 'Automation Rules', icon: '⚡', delay: 1.2 },
-  { label: 'Nutrition Templates', icon: '🥗', delay: 1.8 },
-  { label: 'Revenue Overview', icon: '📈', delay: 2.4 },
+  { label: 'Setting up client dashboard',  icon: '👥', delay: 0 },
+  { label: 'Building check-in system',     icon: '📋', delay: 0.7 },
+  { label: 'Configuring automations',      icon: '⚡', delay: 1.4 },
+  { label: 'Creating nutrition templates', icon: '🥗', delay: 2.1 },
+  { label: 'Activating AI coaching tools', icon: '🤖', delay: 2.8 },
 ];
 
-function GenerationCard({ item, onComplete }) {
-  const [status, setStatus] = useState('waiting'); // waiting | loading | done
+function GenerationCard({ item }) {
+  const [status, setStatus] = useState('waiting');
 
   useEffect(() => {
     const t1 = setTimeout(() => setStatus('loading'), item.delay * 1000);
-    const t2 = setTimeout(() => { setStatus('done'); onComplete?.(); }, (item.delay + 0.9) * 1000);
+    const t2 = setTimeout(() => setStatus('done'), (item.delay + 0.8) * 1000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: status === 'waiting' ? 0.2 : 1, x: 0 }}
-      transition={{ delay: item.delay * 0.8, duration: 0.4 }}
-      className="flex items-center gap-4 p-4 rounded-2xl transition-all duration-300"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: status === 'waiting' ? 0.22 : 1, y: 0 }}
+      transition={{ delay: item.delay * 0.6, duration: 0.4 }}
+      className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500"
       style={{
-        background: status === 'done' ? 'rgba(34,197,94,0.06)' : status === 'loading' ? 'rgba(59,130,246,0.06)' : '#161616',
-        border: status === 'done' ? '1px solid rgba(34,197,94,0.2)' : status === 'loading' ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.06)',
+        background: status === 'done'
+          ? 'rgba(34,197,94,0.06)'
+          : status === 'loading'
+          ? 'rgba(59,130,246,0.07)'
+          : 'rgba(255,255,255,0.03)',
+        border: status === 'done'
+          ? '1.5px solid rgba(34,197,94,0.25)'
+          : status === 'loading'
+          ? '1.5px solid rgba(59,130,246,0.25)'
+          : '1.5px solid rgba(255,255,255,0.06)',
       }}
     >
-      <div className="text-2xl">{item.icon}</div>
+      <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
         <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#3A3A3A' : '#fff' }}>
           {item.label}
         </p>
-        <p className="text-xs mt-0.5" style={{ color: '#7A7A7A' }}>
-          {status === 'done' ? 'Ready' : status === 'loading' ? 'Building...' : 'Waiting'}
+        <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'rgba(34,197,94,0.8)' : '#5A5A5A' }}>
+          {status === 'done' ? 'Complete' : status === 'loading' ? 'Processing...' : 'Queued'}
         </p>
       </div>
-      <div className="w-6 h-6 flex items-center justify-center">
+      <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
         {status === 'loading' && (
           <motion.div
             className="w-4 h-4 rounded-full border-2"
             style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
             animate={{ rotate: 360 }}
-            transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
           />
         )}
         {status === 'done' && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 300 }}
             className="w-5 h-5 rounded-full flex items-center justify-center"
             style={{ background: '#22C55E' }}
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </motion.div>
         )}
@@ -75,39 +84,47 @@ function GenerationCard({ item, onComplete }) {
 export default function AIGenerationScreen({ onNext, role = 'client' }) {
   const items = role === 'coach' ? COACH_ITEMS : CLIENT_ITEMS;
   const [doneCount, setDoneCount] = useState(0);
-  const lastDelay = items[items.length - 1].delay;
+  const totalDuration = (items[items.length - 1].delay + 0.8) * 1000;
+
+  useEffect(() => {
+    items.forEach((item) => {
+      const t = setTimeout(() => setDoneCount(c => c + 1), (item.delay + 0.8) * 1000);
+      return () => clearTimeout(t);
+    });
+  }, []);
+
   const allDone = doneCount >= items.length;
 
   useEffect(() => {
     if (allDone) {
-      const t = setTimeout(onNext, 1200);
+      const t = setTimeout(onNext, 1400);
       return () => clearTimeout(t);
     }
   }, [allDone]);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: '#0A0A0A' }}>
-      {/* Glow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* Pulsing glow */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <motion.div
-          className="w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)', filter: 'blur(40px)' }}
+          className="w-[700px] h-[700px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.09) 0%, transparent 65%)', filter: 'blur(60px)' }}
           animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
+          transition={{ duration: 4, repeat: Infinity }}
         />
       </div>
 
       <div className="relative z-10 w-full max-w-md space-y-8">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-2"
+          className="text-center space-y-3"
         >
-          <p className="text-xs uppercase tracking-[0.2em] font-semibold" style={{ color: '#3B82F6' }}>
+          <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#3B82F6' }}>
             KOACH AI Engine
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
-            KOACH AI is preparing your plan.
+            Building your system…
           </h2>
           <p className="text-sm" style={{ color: '#7A7A7A' }}>
             Personalizing everything based on your profile
@@ -120,29 +137,31 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
             className="h-full rounded-full"
             style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
             initial={{ width: '0%' }}
-            animate={{ width: allDone ? '100%' : `${(doneCount / items.length) * 90}%` }}
-            transition={{ duration: 0.5 }}
+            animate={{ width: allDone ? '100%' : `${(doneCount / items.length) * 92}%` }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
           />
         </div>
 
         {/* Cards */}
         <div className="space-y-2.5">
           {items.map((item, i) => (
-            <GenerationCard key={i} item={item} onComplete={() => setDoneCount(c => c + 1)} />
+            <GenerationCard key={i} item={item} />
           ))}
         </div>
 
-        {allDone && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center"
-          >
-            <p className="text-sm font-semibold" style={{ color: '#22C55E' }}>
-              ✓ Welcome to KOACH AI — your system is ready
-            </p>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {allDone && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className="text-center py-2"
+            >
+              <p className="text-sm font-semibold" style={{ color: '#22C55E' }}>
+                ✓ Your system is ready
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

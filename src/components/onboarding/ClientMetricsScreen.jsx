@@ -1,100 +1,94 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import OnboardingLayout from './OnboardingLayout';
-import { ChipSelect } from './SelectionCard';
 
-const ACTIVITY = [
-  { id: 'sedentary', label: '🪑 Sedentary' },
-  { id: 'light', label: '🚶 Lightly Active' },
-  { id: 'moderate', label: '🏃 Moderately Active' },
-  { id: 'very', label: '⚡ Very Active' },
-  { id: 'athlete', label: '🏅 Athlete' },
-];
-
-function MetricInput({ label, value, onChange, placeholder, unit, type = 'number' }) {
+function MetricBox({ label, value, onChange, unit, placeholder }) {
   return (
-    <div className="space-y-1.5">
-      <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#7A7A7A' }}>
-        {label}
-      </label>
-      <div className="relative">
-        <input
-          type={type}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          placeholder={placeholder}
-          className="w-full px-4 py-3.5 rounded-xl text-white text-base font-medium placeholder-opacity-30 focus:outline-none transition-all"
-          style={{
-            background: '#161616',
-            border: '1px solid rgba(255,255,255,0.06)',
-            color: '#fff',
-          }}
-          onFocus={e => { e.target.style.border = '1px solid rgba(59,130,246,0.45)'; }}
-          onBlur={e => { e.target.style.border = '1px solid rgba(255,255,255,0.06)'; }}
-        />
-        {unit && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: '#7A7A7A' }}>
-            {unit}
-          </span>
-        )}
-      </div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center gap-2 flex-1 p-5 rounded-2xl"
+      style={{ background: 'rgba(255,255,255,0.03)', border: '1.5px solid rgba(255,255,255,0.07)' }}
+    >
+      <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#5A5A5A' }}>{label}</p>
+      <input
+        type="number"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full text-center text-3xl font-bold text-white bg-transparent border-0 focus:outline-none placeholder-white/15"
+        style={{ minWidth: 0 }}
+        onFocus={e => { e.target.closest('div').style.border = '1.5px solid rgba(59,130,246,0.45)'; }}
+        onBlur={e => { e.target.closest('div').style.border = '1.5px solid rgba(255,255,255,0.07)'; }}
+      />
+      {unit && <p className="text-xs" style={{ color: '#5A5A5A' }}>{unit}</p>}
+    </motion.div>
   );
 }
+
+const ACTIVITY = [
+  { id: 'sedentary',  label: '🪑 Sedentary' },
+  { id: 'light',      label: '🚶 Light' },
+  { id: 'moderate',   label: '🏃 Moderate' },
+  { id: 'very',       label: '⚡ Very Active' },
+  { id: 'athlete',    label: '🏅 Athlete' },
+];
 
 export default function ClientMetricsScreen({ onNext, onBack, data }) {
   const [form, setForm] = useState({
     age: data.age || '',
     height: data.height || '',
-    weight: data.weight || '',
+    weight: data.weight || data.current_weight || '',
     goal_weight: data.goal_weight || '',
     activity_level: data.activity_level || '',
-    body_fat: data.body_fat || '',
-    injuries: data.injuries || '',
   });
-
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-
   const isValid = form.age && form.height && form.weight;
 
   return (
     <OnboardingLayout
-      eyebrow="Body Metrics"
+      eyebrow="Body Stats"
       headline="Tell us about yourself."
-      subtext="Used to calculate your targets and build your personal plan."
+      subtext="Used to calculate your personalized targets."
       onBack={onBack}
-      onNext={() => onNext(form)}
+      onNext={() => onNext({ ...form, current_weight: form.weight })}
       nextDisabled={!isValid}
     >
       <div className="space-y-8">
-        <div className="grid grid-cols-2 gap-3">
-          <MetricInput label="Age" value={form.age} onChange={v => set('age', v)} placeholder="25" unit="yrs" />
-          <MetricInput label="Height" value={form.height} onChange={v => set('height', v)} placeholder="5ft 10in" unit="in" type="text" />
-          <MetricInput label="Current Weight" value={form.weight} onChange={v => set('weight', v)} placeholder="185" unit="lbs" />
-          <MetricInput label="Goal Weight" value={form.goal_weight} onChange={v => set('goal_weight', v)} placeholder="175" unit="lbs" />
+        {/* Core metrics */}
+        <div className="flex gap-3">
+          <MetricBox label="Age" value={form.age} onChange={v => set('age', v)} unit="years" placeholder="25" />
+          <MetricBox label="Weight" value={form.weight} onChange={v => set('weight', v)} unit="lbs" placeholder="175" />
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#5A5A5A' }}>Height</p>
+          <input
+            type="text"
+            value={form.height}
+            onChange={e => set('height', e.target.value)}
+            placeholder={`5'10"`}
+            className="w-full px-5 py-4 rounded-2xl text-white text-lg font-semibold bg-transparent focus:outline-none transition-all text-center placeholder-white/15"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1.5px solid rgba(255,255,255,0.07)' }}
+            onFocus={e => { e.target.style.border = '1.5px solid rgba(59,130,246,0.45)'; }}
+            onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; }}
+          />
         </div>
 
         <div className="space-y-3">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#7A7A7A' }}>Activity Level</label>
+          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Current activity level</p>
           <div className="flex flex-wrap gap-2">
             {ACTIVITY.map(a => (
-              <ChipSelect
-                key={a.id}
-                label={a.label}
-                selected={form.activity_level === a.id}
+              <motion.button key={a.id} whileTap={{ scale: 0.95 }}
                 onClick={() => set('activity_level', a.id)}
-              />
+                className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  background: form.activity_level === a.id ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
+                  border: form.activity_level === a.id ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                  color: form.activity_level === a.id ? '#fff' : '#7A7A7A',
+                  boxShadow: form.activity_level === a.id ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
+                }}>{a.label}</motion.button>
             ))}
-          </div>
-        </div>
-
-        {/* Optional fields */}
-        <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#3A3A3A' }}>Optional</p>
-          <div className="grid grid-cols-2 gap-3">
-            <MetricInput label="Body Fat %" value={form.body_fat} onChange={v => set('body_fat', v)} placeholder="18" unit="%" />
-            <div className="col-span-2">
-              <MetricInput label="Injuries / Limitations" value={form.injuries} onChange={v => set('injuries', v)} placeholder="None" unit="" type="text" />
-            </div>
           </div>
         </div>
       </div>
