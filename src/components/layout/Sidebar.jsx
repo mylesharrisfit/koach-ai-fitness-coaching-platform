@@ -137,10 +137,12 @@ export default function Sidebar({ user, onUpgrade }) {
         collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
       )} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-[13px]"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', color: '#fff' }}
+          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 12px rgba(59,130,246,0.4)' }}
         >
-          K
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M4 3L4 13M4 8L10 3M4 8L10 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
         {!collapsed && (
           <>

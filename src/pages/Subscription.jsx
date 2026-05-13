@@ -92,7 +92,7 @@ export default function Subscription() {
     <div className="p-8 lg:p-10 max-w-5xl mx-auto">
       <PageHeader
         title="Subscription"
-        subtitle="Manage your FitForge plan and billing"
+        subtitle="Manage your KOACH AI plan and billing"
         actions={
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={refreshUser}>

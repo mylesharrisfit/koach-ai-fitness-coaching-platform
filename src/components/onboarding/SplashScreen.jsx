@@ -31,12 +31,11 @@ export default function SplashScreen({ onDone }) {
           className="w-16 h-16 rounded-2xl flex items-center justify-center mb-2"
           style={{
             background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-            boxShadow: '0 0 40px rgba(59,130,246,0.35)',
+            boxShadow: '0 0 50px rgba(59,130,246,0.4), 0 0 100px rgba(59,130,246,0.15)',
           }}
         >
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="white" strokeWidth="1.5" fill="none" />
-            <path d="M16 4V28M4 10L28 22M28 10L4 22" stroke="white" strokeWidth="1" opacity="0.4" />
+          <svg width="36" height="36" viewBox="0 0 16 16" fill="none">
+            <path d="M4 3L4 13M4 8L10 3M4 8L10 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </motion.div>
 

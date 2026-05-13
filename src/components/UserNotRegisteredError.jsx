@@ -6,10 +6,12 @@ const UserNotRegisteredError = () => {
       <div className="max-w-md w-full p-8 rounded-2xl" style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="text-center">
           <div
-            className="inline-flex items-center justify-center w-12 h-12 mb-6 rounded-xl font-bold text-xl"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', color: '#fff' }}
+            className="inline-flex items-center justify-center w-12 h-12 mb-6 rounded-xl"
+            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 24px rgba(59,130,246,0.35)' }}
           >
-            K
+            <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+              <path d="M4 3L4 13M4 8L10 3M4 8L10 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
           <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-2" style={{ color: '#3B82F6' }}>KOACH AI</p>
           <h1 className="text-2xl font-bold text-white mb-3" style={{ letterSpacing: '-0.02em' }}>Access Restricted</h1>
