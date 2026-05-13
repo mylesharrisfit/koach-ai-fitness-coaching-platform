@@ -29,19 +29,19 @@ export default function WelcomeScreen({ onNext }) {
       >
         <motion.div variants={stagger.item} className="space-y-4">
           <p className="text-xs uppercase tracking-[0.25em]" style={{ color: '#3B82F6' }}>
-            Welcome to KOACH AI
+            KOACH AI — For Coaches
           </p>
           <h1 className="text-5xl font-bold text-white leading-tight" style={{ letterSpacing: '-0.03em' }}>
-            Let KOACH AI<br />build your system.
+            The AI Coaching<br />Operating System.
           </h1>
           <p className="text-base" style={{ color: '#7A7A7A' }}>
-            Training. Nutrition. Recovery. Performance.
+            Built for modern fitness coaches who want to scale without burning out.
           </p>
         </motion.div>
 
         {/* Feature pills */}
         <motion.div variants={stagger.item} className="flex flex-wrap justify-center gap-2">
-          {['AI-Powered', 'Personalized', 'Elite-Grade', 'Science-Backed'].map(tag => (
+          {['Manage Clients', 'AI-Powered', 'Automate Everything', 'Scale Your Business'].map(tag => (
             <span
               key={tag}
               className="px-3 py-1 rounded-full text-xs font-medium"
@@ -60,12 +60,12 @@ export default function WelcomeScreen({ onNext }) {
           className="w-full max-w-xs flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-semibold text-base transition-all"
           style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 20px rgba(59,130,246,0.25)' }}
         >
-          Get Started
+          Start Coaching
           <ChevronRight className="w-5 h-5" />
         </motion.button>
 
         <motion.p variants={stagger.item} className="text-xs" style={{ color: '#3A3A3A' }}>
-          Takes less than 3 minutes
+          Takes less than 3 minutes · For coaches only
         </motion.p>
       </motion.div>
     </div>
