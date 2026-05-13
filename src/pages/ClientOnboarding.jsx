@@ -194,7 +194,9 @@ function ScreenHeader({ eyebrow, headline, subtext }) {
 
 /* ─── SCREENS ─── */
 
-function WelcomeStep({ onNext }) {
+function WelcomeStep({ onNext, coachId }) {
+  const coachName = coachId ? decodeURIComponent(coachId).split('@')[0] : null;
+
   return (
     <Screen>
       <div className="flex-1 flex flex-col items-center justify-center px-6 gap-10 relative z-10">
@@ -210,10 +212,22 @@ function WelcomeStep({ onNext }) {
           <motion.div variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
             className="space-y-3">
             <p className="text-xs uppercase tracking-[0.25em] font-bold" style={{ color: '#3B82F6' }}>KOACH AI</p>
-            <h1 className="text-white font-bold leading-tight"
-              style={{ fontSize: 'clamp(2rem, 7vw, 3.5rem)', letterSpacing: '-0.03em' }}>
-              Let KOACH AI<br />build your system.
-            </h1>
+            {coachName ? (
+              <>
+                <p className="text-sm font-semibold" style={{ color: '#5A8AF5' }}>
+                  Coach {coachName} invited you
+                </p>
+                <h1 className="text-white font-bold leading-tight"
+                  style={{ fontSize: 'clamp(2rem, 7vw, 3.5rem)', letterSpacing: '-0.03em' }}>
+                  Your coaching<br />system awaits.
+                </h1>
+              </>
+            ) : (
+              <h1 className="text-white font-bold leading-tight"
+                style={{ fontSize: 'clamp(2rem, 7vw, 3.5rem)', letterSpacing: '-0.03em' }}>
+                Let KOACH AI<br />build your system.
+              </h1>
+            )}
             <p style={{ color: '#7A7A7A' }}>Training. Nutrition. Recovery. Performance.</p>
           </motion.div>
 
@@ -765,7 +779,7 @@ export default function ClientOnboarding() {
 
   const renderStep = () => {
     switch (step) {
-      case 'welcome': return <WelcomeStep onNext={next} />;
+      case 'welcome': return <WelcomeStep onNext={next} coachId={COACH_ID} />;
       case 'name': return <NameStep data={data} set={set} onNext={next} onBack={back} />;
       case 'email': return <EmailStep data={data} set={set} onNext={next} onBack={back} />;
       case 'metrics': return <MetricsStep data={data} set={set} onNext={next} onBack={back} />;

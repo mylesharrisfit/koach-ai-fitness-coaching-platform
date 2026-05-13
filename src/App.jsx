@@ -45,6 +45,7 @@ import OnboardingManager from './pages/OnboardingManager';
 import Migration from './pages/Migration';
 import FoodLibrary from './pages/FoodLibrary';
 import PremiumOnboarding from './pages/PremiumOnboarding';
+import ClientPortal from './pages/ClientPortal';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -71,6 +72,8 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
+      {/* ── CLIENT PORTAL (role=client) ── */}
+      <Route path="/portal/*" element={<ClientPortal />} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/clients" element={<Clients />} />

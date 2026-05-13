@@ -1,9 +1,10 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 import { base44 } from '@/api/base44Client';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
+import { isClientRole } from '@/lib/useRoleGuard';
 
 export const SubscriptionContext = createContext({
   user: null,
@@ -22,6 +23,11 @@ export default function AppLayout() {
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
+
+  // Clients must use the portal, never the coach app
+  if (user && isClientRole(user)) {
+    return <Navigate to="/portal" replace />;
+  }
 
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
