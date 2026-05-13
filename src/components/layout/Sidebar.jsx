@@ -6,7 +6,9 @@ import {
   Dumbbell, Salad, ClipboardList, TrendingUp,
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
-  Lock, DollarSign, UserPlus, Zap
+  Lock, DollarSign, UserPlus, Zap, Trophy, ShoppingBag,
+  Globe, Smartphone, Activity, Apple, FileText,
+  Shield, Palette, BookOpen, LayoutTemplate, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -29,6 +31,10 @@ const NAV_GROUPS = [
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
       { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
       { icon: TrendingUp, label: 'Progress', path: '/progress', feature: 'progress' },
+      { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
+      { icon: Shield, label: 'At-Risk', path: '/at-risk' },
+      { icon: Activity, label: 'Exercises', path: '/exercises' },
+      { icon: Apple, label: 'Food Library', path: '/food-library' },
     ],
   },
   {
@@ -44,7 +50,18 @@ const NAV_GROUPS = [
     items: [
       { icon: DollarSign, label: 'Payments', path: '/revenue' },
       { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },
-      { icon: Zap, label: 'More', path: '/business', feature: 'revenue_dashboard' },
+      { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
+      { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
+      { icon: BarChart3, label: 'Business', path: '/business' },
+    ],
+  },
+  {
+    label: 'TOOLS',
+    items: [
+      { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
+      { icon: BookOpen, label: 'Onboarding', path: '/onboarding-manager' },
+      { icon: Palette, label: 'White Label', path: '/white-label' },
+      { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
     ],
   },
 ];
@@ -137,7 +154,7 @@ export default function Sidebar({ user, onUpgrade }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-4 px-2 overflow-y-auto space-y-5">
+      <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4">
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
