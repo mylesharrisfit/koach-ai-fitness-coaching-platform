@@ -25,11 +25,10 @@ export default function AppLayout() {
 
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
-      <div className="min-h-screen" style={{ background: '#111111' }}>
+      <div className="min-h-screen bg-background">
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
         <main
-          className="md:ml-[210px] min-h-screen pb-16 md:pb-0 transition-all duration-200"
-          style={{ background: '#111111', minHeight: '100vh' }}
+          className="md:ml-[210px] min-h-screen pb-16 md:pb-0 transition-all duration-200 bg-background"
         >
           <Outlet />
         </main>

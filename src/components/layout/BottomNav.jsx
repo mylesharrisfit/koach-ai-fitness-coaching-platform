@@ -42,13 +42,13 @@ export default function BottomNav() {
           <div className="fixed inset-0 z-50 bg-black/60" onClick={() => setBellOpen(false)} />
           <div
             className="fixed bottom-[60px] left-0 right-0 z-50 rounded-t-2xl max-h-[60vh] overflow-y-auto"
-            style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ background: '#fff', border: '1px solid #E5E7EB' }}
           >
             <div
-              className="flex items-center justify-between px-4 py-3 sticky top-0"
-              style={{ background: '#161616', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+              className="flex items-center justify-between px-4 py-3 sticky top-0 bg-white"
+              style={{ borderBottom: '1px solid #F3F4F6' }}
             >
-              <span className="text-sm font-bold text-white">Notifications</span>
+              <span className="text-sm font-bold text-gray-900">Notifications</span>
               {unreadCount > 0 && (
                 <button onClick={markAllRead} className="text-[11px] font-semibold" style={{ color: '#3B82F6' }}>
                   Mark all read
@@ -56,20 +56,20 @@ export default function BottomNav() {
               )}
             </div>
             {notifications.length === 0 ? (
-              <div className="py-12 text-center text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>No notifications yet</div>
+              <div className="py-12 text-center text-sm text-gray-400">No notifications yet</div>
             ) : notifications.map(n => (
               <div
                 key={n.id}
                 onClick={() => { markRead(n.id); setBellOpen(false); }}
                 className="flex items-start gap-3 px-4 py-3 cursor-pointer"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', background: !n.is_read ? 'rgba(59,130,246,0.04)' : 'transparent' }}
+                style={{ borderBottom: '1px solid #F9FAFB', background: !n.is_read ? '#EFF6FF' : 'transparent' }}
               >
                 <span className="text-lg mt-0.5">
                   {{ checkin_received: '📋', feedback_sent: '💬', checkin_reminder: '⏰', general: '🔔' }[n.type] || '🔔'}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white" style={{ fontWeight: !n.is_read ? 600 : 400, opacity: n.is_read ? 0.5 : 1 }}>{n.title}</p>
-                  {n.body && <p className="text-xs mt-0.5 line-clamp-2" style={{ color: 'rgba(255,255,255,0.35)' }}>{n.body}</p>}
+                  <p className="text-sm text-gray-900" style={{ fontWeight: !n.is_read ? 600 : 400, opacity: n.is_read ? 0.6 : 1 }}>{n.title}</p>
+                  {n.body && <p className="text-xs mt-0.5 line-clamp-2 text-gray-500">{n.body}</p>}
                 </div>
                 {!n.is_read && <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: '#3B82F6' }} />}
               </div>
@@ -80,7 +80,7 @@ export default function BottomNav() {
 
       <nav
         className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden"
-        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)', background: '#0D0D0D', borderTop: '1px solid rgba(255,255,255,0.05)' }}
+        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)', background: '#fff', borderTop: '1px solid #E5E7EB' }}
       >
         {PRIMARY_NAV.map(item => {
           const isActive =
@@ -91,7 +91,7 @@ export default function BottomNav() {
               key={item.path}
               to={item.path}
               className="flex flex-col items-center justify-center flex-1 gap-1 transition-colors"
-              style={{ color: isActive ? '#3B82F6' : 'rgba(255,255,255,0.3)' }}
+              style={{ color: isActive ? '#3B82F6' : '#9CA3AF' }}
             >
               <item.icon className="w-5 h-5" />
               <span className="text-[10px] font-medium">{item.label}</span>
@@ -103,7 +103,7 @@ export default function BottomNav() {
         <button
           onClick={() => setBellOpen(o => !o)}
           className="flex flex-col items-center justify-center flex-1 gap-1"
-          style={{ color: bellOpen ? '#3B82F6' : 'rgba(255,255,255,0.3)' }}
+          style={{ color: bellOpen ? '#3B82F6' : '#9CA3AF' }}
         >
           <div className="relative">
             <Bell className="w-5 h-5" />
@@ -120,7 +120,7 @@ export default function BottomNav() {
         <button
           onClick={() => setMoreOpen(true)}
           className="flex flex-col items-center justify-center flex-1 gap-1"
-          style={{ color: (moreOpen || isMoreActive) ? '#3B82F6' : 'rgba(255,255,255,0.3)' }}
+          style={{ color: (moreOpen || isMoreActive) ? '#3B82F6' : '#9CA3AF' }}
         >
           <MoreHorizontal className="w-5 h-5" />
           <span className="text-[10px] font-medium">More</span>

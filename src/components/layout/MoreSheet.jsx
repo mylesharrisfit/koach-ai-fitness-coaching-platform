@@ -62,20 +62,19 @@ export default function MoreSheet({ open, onClose }) {
           'fixed left-0 right-0 bottom-0 z-50 md:hidden flex flex-col transition-transform duration-300 ease-out rounded-t-2xl overflow-hidden',
           open ? 'translate-y-0' : 'translate-y-full'
         )}
-        style={{ background: '#161616', maxHeight: '88dvh', border: '1px solid rgba(255,255,255,0.06)', borderBottom: 'none' }}
+        style={{ background: '#fff', maxHeight: '88dvh', border: '1px solid #E5E7EB', borderBottom: 'none' }}
       >
         {/* Handle */}
         <div className="flex-shrink-0 flex justify-center pt-3 pb-1">
-          <div className="w-8 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }} />
+          <div className="w-8 h-1 rounded-full bg-gray-200" />
         </div>
 
         {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <h2 className="font-bold text-base text-white">Menu</h2>
+        <div className="flex-shrink-0 flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid #F3F4F6' }}>
+          <h2 className="font-bold text-base text-gray-900">Menu</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-            style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)' }}
+            className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors bg-gray-100 hover:bg-gray-200 text-gray-500"
           >
             <X className="w-4 h-4" />
           </button>
@@ -85,7 +84,7 @@ export default function MoreSheet({ open, onClose }) {
         <div className="overflow-y-auto flex-1 px-4 py-4 space-y-6 pb-8">
           {SECTIONS.map((section) => (
             <div key={section.title}>
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2 px-1" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2 px-1 text-gray-400">
                 {section.title}
               </p>
               <div className="space-y-0.5">
@@ -99,13 +98,13 @@ export default function MoreSheet({ open, onClose }) {
                       onClick={onClose}
                       className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all"
                       style={{
-                        background: isActive ? 'rgba(59,130,246,0.1)' : 'transparent',
-                        color: isActive ? '#fff' : 'rgba(255,255,255,0.55)',
+                        background: isActive ? '#EFF6FF' : 'transparent',
+                        color: isActive ? '#1D4ED8' : '#374151',
                       }}
                     >
                       <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
                       <span className="text-sm font-medium flex-1">{item.label}</span>
-                      {isActive && <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#3B82F6' }} />}
+                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
                     </Link>
                   );
                 })}

@@ -3,27 +3,19 @@ import { Users, TrendingUp, ClipboardList, DollarSign } from 'lucide-react';
 import { differenceInDays, parseISO } from 'date-fns';
 import { compositeAdherenceScore } from '@/lib/adherence';
 
-function KPICard({ icon: Icon, label, value, sub, color = '#3B82F6', trend }) {
+function KPICard({ icon: Icon, label, value, sub, color = '#3B82F6', bg = '#EFF6FF' }) {
   return (
-    <div
-      className="rounded-xl p-4 flex flex-col gap-3 transition-all hover:scale-[1.01]"
-      style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)' }}
-    >
+    <div className="bg-white rounded-xl p-4 flex flex-col gap-3 transition-all hover:shadow-md"
+      style={{ border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
       <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}14` }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: bg }}>
           <Icon className="w-4 h-4" style={{ color }} />
         </div>
-        {trend != null && (
-          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: trend >= 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', color: trend >= 0 ? '#22C55E' : '#EF4444' }}>
-            {trend >= 0 ? '+' : ''}{trend}%
-          </span>
-        )}
       </div>
       <div>
-        <p className="text-2xl font-bold text-white leading-none" style={{ letterSpacing: '-0.02em' }}>{value}</p>
-        <p className="text-[11px] mt-1.5 font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>{label}</p>
-        {sub && <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.2)' }}>{sub}</p>}
+        <p className="text-2xl font-bold text-gray-900 leading-none" style={{ letterSpacing: '-0.02em' }}>{value}</p>
+        <p className="text-xs font-semibold mt-1.5 text-gray-500">{label}</p>
+        {sub && <p className="text-[10px] mt-0.5 text-gray-400">{sub}</p>}
       </div>
     </div>
   );
@@ -54,34 +46,43 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
 
   const monthRevenue = useMemo(() => {
     const now = new Date();
-    return payments
+    return (payments || [])
       .filter(p => p.status === 'paid' && new Date(p.created_date).getMonth() === now.getMonth())
       .reduce((sum, p) => sum + (p.amount || 0), 0);
   }, [payments]);
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      <KPICard icon={Users} label="Active Clients" value={active} color="#3B82F6" />
+      <KPICard
+        icon={Users}
+        label="Active Clients"
+        value={active}
+        color="#3B82F6"
+        bg="#EFF6FF"
+      />
       <KPICard
         icon={TrendingUp}
         label="Avg Adherence"
         value={avgAdherence != null ? `${avgAdherence}%` : '—'}
-        color="#22C55E"
         sub="composite score"
+        color="#16A34A"
+        bg="#F0FDF4"
       />
       <KPICard
         icon={ClipboardList}
         label="Pending Reviews"
         value={pendingReviews}
-        color="#F59E0B"
         sub="check-ins"
+        color="#D97706"
+        bg="#FFFBEB"
       />
       <KPICard
         icon={DollarSign}
         label="Revenue"
         value={monthRevenue > 0 ? `$${monthRevenue.toLocaleString()}` : '$—'}
-        color="#A78BFA"
         sub="this month"
+        color="#7C3AED"
+        bg="#F5F3FF"
       />
     </div>
   );
