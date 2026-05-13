@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import OnboardingLayout from './OnboardingLayout';
-import { SelectionCard } from './SelectionCard';
-import { Users } from 'lucide-react';
 
 const OPTIONS = [
-  { id: '1-10', label: '1–10 clients', description: 'Just getting started or running a boutique coaching practice.' },
-  { id: '10-25', label: '10–25 clients', description: 'Growing steadily. Efficiency is becoming critical.' },
-  { id: '25-50', label: '25–50 clients', description: 'Scaling your business. Systems need to be airtight.' },
-  { id: '50+', label: '50+ clients', description: 'High-volume operation. You need elite-grade automation.' },
+  { id: '1-10',   label: '1–10',   sub: 'Boutique coaching practice',      tag: 'Getting Started' },
+  { id: '10-25',  label: '10–25',  sub: 'Growing steadily, need systems',  tag: 'Growing' },
+  { id: '25-50',  label: '25–50',  sub: 'Scaling fast, automation critical', tag: 'Scaling' },
+  { id: '50-100', label: '50–100', sub: 'High-volume, need elite tools',    tag: 'High Volume' },
+  { id: '100+',   label: '100+',   sub: 'Enterprise-level coaching ops',    tag: 'Enterprise' },
 ];
 
 export default function CoachClientsScreen({ onNext, onBack, data }) {
@@ -15,23 +15,57 @@ export default function CoachClientsScreen({ onNext, onBack, data }) {
 
   return (
     <OnboardingLayout
-      eyebrow="Your Business"
+      eyebrow="Business Size"
       headline="How many clients do you currently coach?"
+      subtext="We'll tailor your system's capacity and automation level accordingly."
       onBack={onBack}
       onNext={() => onNext({ client_count: selected })}
       nextDisabled={!selected}
     >
       <div className="space-y-2.5">
-        {OPTIONS.map(o => (
-          <SelectionCard
-            key={o.id}
-            icon={Users}
-            label={o.label}
-            description={o.description}
-            selected={selected === o.id}
-            onClick={() => setSelected(o.id)}
-          />
-        ))}
+        {OPTIONS.map((o, i) => {
+          const isSelected = selected === o.id;
+          return (
+            <motion.button
+              key={o.id}
+              onClick={() => setSelected(o.id)}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              whileTap={{ scale: 0.985 }}
+              className="w-full flex items-center gap-5 px-5 py-4 rounded-2xl text-left transition-all"
+              style={{
+                background: isSelected ? 'rgba(59,130,246,0.09)' : '#111',
+                border: isSelected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
+                boxShadow: isSelected ? '0 0 24px rgba(59,130,246,0.12)' : 'none',
+              }}
+            >
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg"
+                style={{
+                  background: isSelected ? 'rgba(59,130,246,0.18)' : 'rgba(255,255,255,0.04)',
+                  color: isSelected ? '#3B82F6' : '#555',
+                }}
+              >
+                {o.label}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold" style={{ color: isSelected ? '#fff' : '#B3B3B3' }}>
+                  {o.sub}
+                </p>
+              </div>
+              <span
+                className="text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
+                style={{
+                  background: isSelected ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.04)',
+                  color: isSelected ? '#3B82F6' : '#444',
+                }}
+              >
+                {o.tag}
+              </span>
+            </motion.button>
+          );
+        })}
       </div>
     </OnboardingLayout>
   );

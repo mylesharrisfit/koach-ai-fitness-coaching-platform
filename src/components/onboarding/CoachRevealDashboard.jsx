@@ -1,51 +1,59 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Users, TrendingUp, AlertTriangle, ChevronRight, BarChart3, Zap } from 'lucide-react';
+import { Users, TrendingUp, BarChart3, Zap, ArrowRight, CheckCircle2, Link2, CreditCard, Upload, Settings } from 'lucide-react';
 
-const stagger = { container: { animate: { transition: { staggerChildren: 0.07 } } }, item: { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.32, 0.72, 0, 1] } } } };
+const stagger = {
+  container: { animate: { transition: { staggerChildren: 0.07 } } },
+  item: { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.32, 0.72, 0, 1] } } },
+};
 
-function DarkCard({ children, className = '', glow = false }) {
+function Card({ children, glow = false, className = '' }) {
   return (
-    <div className={`rounded-2xl p-4 ${className}`} style={{ background: '#161616', border: glow ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.06)' }}>
+    <div className={`rounded-2xl p-4 ${className}`} style={{
+      background: '#111',
+      border: glow ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.06)',
+      boxShadow: glow ? '0 0 28px rgba(59,130,246,0.07)' : 'none',
+    }}>
       {children}
     </div>
   );
 }
 
-function StatPill({ label, value, color }) {
-  return (
-    <div className="text-center p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}>
-      <p className="text-2xl font-bold" style={{ color: color || '#fff' }}>{value}</p>
-      <p className="text-[10px] mt-0.5 uppercase tracking-widest font-semibold" style={{ color: '#7A7A7A' }}>{label}</p>
-    </div>
-  );
-}
+const CHECKLIST = [
+  { icon: Users,        label: 'Add your first client',        path: '/clients',            done: false },
+  { icon: Zap,          label: 'Build a workout program',      path: '/program-builder',     done: false },
+  { icon: Link2,        label: 'Generate client intake link',  path: '/onboarding-manager',  done: false },
+  { icon: CreditCard,   label: 'Connect payments',             path: '/revenue',             done: false },
+  { icon: Upload,       label: 'Upload your brand logo',       path: '/settings',            done: false },
+  { icon: Settings,     label: 'Create an automation',         path: '/automations',         done: false },
+];
 
-const ALERTS = [
-  { icon: '⚠️', text: 'Client adherence dropped 15% this week.', color: '#F59E0B', urgency: 'high' },
-  { icon: '📉', text: 'Weight stalled for 9 days — adjust calories.', color: '#EF4444', urgency: 'critical' },
-  { icon: '💤', text: 'Recovery score decreasing for 2 clients.', color: '#8B5CF6', urgency: 'medium' },
-  { icon: '🚨', text: '1 client at cancellation risk.', color: '#EF4444', urgency: 'critical' },
+const INSIGHTS = [
+  { icon: '🚀', text: 'Your AI check-in system is ready to process client submissions.' },
+  { icon: '📊', text: 'Analytics will populate as you add clients and data.' },
+  { icon: '⚡', text: 'Set up your first automation to save 5+ hours per week.' },
 ];
 
 export default function CoachRevealDashboard({ data }) {
+  const firstName = data?.business_name?.split(' ')[0] || 'Coach';
+
   return (
     <div className="w-full h-full overflow-y-auto" style={{ background: '#0A0A0A' }}>
+      {/* Cinematic header glow */}
+      <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at 50% -20%, rgba(59,130,246,0.12) 0%, transparent 70%)' }} />
+
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="px-5 pt-12 pb-4"
-      >
-        <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-1" style={{ color: '#3B82F6' }}>
-          KOACH AI — Live
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="relative px-5 pt-14 pb-6">
+        <p className="text-[11px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: '#3B82F6' }}>
+          System Live · KOACH AI
         </p>
-        <h1 className="text-2xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
-          Coach Dashboard
+        <h1 className="text-2xl font-bold text-white mb-1" style={{ letterSpacing: '-0.025em' }}>
+          Welcome, {firstName}. 👋
         </h1>
-        <p className="text-sm mt-0.5" style={{ color: '#7A7A7A' }}>
-          {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+        <p className="text-sm" style={{ color: '#6B6B6B' }}>
+          Your coaching OS is ready. Let's get you set up.
         </p>
       </motion.div>
 
@@ -53,128 +61,121 @@ export default function CoachRevealDashboard({ data }) {
         variants={stagger.container}
         initial="initial"
         animate="animate"
-        className="px-5 space-y-3 pb-28"
+        className="relative px-5 space-y-3 pb-32"
       >
-        {/* Stats overview */}
+        {/* KPI strip */}
         <motion.div variants={stagger.item}>
-          <DarkCard glow>
-            <p className="text-xs uppercase tracking-widest font-semibold mb-3" style={{ color: '#7A7A7A' }}>Overview</p>
+          <Card glow>
+            <p className="text-[10px] uppercase tracking-widest font-bold mb-3" style={{ color: '#555' }}>Dashboard Overview</p>
             <div className="grid grid-cols-3 gap-2">
-              <StatPill label="Clients" value="0" color="#3B82F6" />
-              <StatPill label="Adherence" value="—" color="#22C55E" />
-              <StatPill label="Check-ins" value="0" color="#F59E0B" />
+              {[
+                { label: 'Clients', value: '0', color: '#3B82F6' },
+                { label: 'Adherence', value: '—', color: '#22C55E' },
+                { label: 'Revenue', value: '$0', color: '#F59E0B' },
+              ].map(s => (
+                <div key={s.label} className="text-center py-3 rounded-xl"
+                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  <p className="text-xl font-bold" style={{ color: s.color }}>{s.value}</p>
+                  <p className="text-[10px] mt-0.5 uppercase tracking-widest font-semibold" style={{ color: '#555' }}>{s.label}</p>
+                </div>
+              ))}
             </div>
-          </DarkCard>
+          </Card>
         </motion.div>
 
-        {/* AI Alerts */}
+        {/* Setup checklist */}
         <motion.div variants={stagger.item}>
-          <DarkCard>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-bold text-white">AI Alerts</p>
-              <span
-                className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444' }}
-              >
-                {ALERTS.length} active
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm font-bold text-white">Setup Checklist</p>
+                <p className="text-xs mt-0.5" style={{ color: '#555' }}>Complete these to unlock your full system</p>
+              </div>
+              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+                style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6' }}>
+                0 / {CHECKLIST.length}
               </span>
             </div>
-            <div className="space-y-2.5">
-              {ALERTS.map((alert, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  className="flex items-start gap-3 p-3 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}
-                >
-                  <span className="text-base mt-0.5">{alert.icon}</span>
-                  <p className="text-xs leading-relaxed" style={{ color: '#B3B3B3' }}>{alert.text}</p>
-                  <div
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5"
-                    style={{ background: alert.color }}
-                  />
+            <div className="space-y-1.5">
+              {CHECKLIST.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.08 }}
+                  >
+                    <Link to={item.path}>
+                      <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all hover:bg-white/[0.03]"
+                        style={{ border: '1px solid rgba(255,255,255,0.04)' }}>
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ background: 'rgba(59,130,246,0.1)' }}>
+                          <Icon className="w-3.5 h-3.5" style={{ color: '#3B82F6' }} />
+                        </div>
+                        <p className="text-sm flex-1" style={{ color: '#C3C3C3' }}>{item.label}</p>
+                        <ArrowRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#333' }} />
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* AI Insights */}
+        <motion.div variants={stagger.item}>
+          <Card>
+            <p className="text-sm font-bold text-white mb-3">AI Insights</p>
+            <div className="space-y-2">
+              {INSIGHTS.map((ins, i) => (
+                <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 + i * 0.1 }}
+                  className="flex items-start gap-3 px-3 py-3 rounded-xl"
+                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  <span className="text-base mt-0.5">{ins.icon}</span>
+                  <p className="text-xs leading-relaxed" style={{ color: '#9A9A9A' }}>{ins.text}</p>
                 </motion.div>
               ))}
             </div>
-          </DarkCard>
-        </motion.div>
-
-        {/* Pending check-ins */}
-        <motion.div variants={stagger.item}>
-          <DarkCard>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.12)' }}>
-                <BarChart3 className="w-4 h-4" style={{ color: '#3B82F6' }} />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-white">Check-ins</p>
-                <p className="text-xs" style={{ color: '#7A7A7A' }}>0 pending review</p>
-              </div>
-            </div>
-            <div className="text-center py-6" style={{ color: '#3A3A3A' }}>
-              <p className="text-sm">No check-ins yet</p>
-              <p className="text-xs mt-1">Invite clients to get started</p>
-            </div>
-          </DarkCard>
-        </motion.div>
-
-        {/* Revenue snapshot */}
-        <motion.div variants={stagger.item}>
-          <DarkCard>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-bold text-white">Revenue</p>
-              <TrendingUp className="w-4 h-4" style={{ color: '#22C55E' }} />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-2xl font-bold text-white">$0</p>
-                <p className="text-xs" style={{ color: '#7A7A7A' }}>This month</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-white">0</p>
-                <p className="text-xs" style={{ color: '#7A7A7A' }}>Active clients</p>
-              </div>
-            </div>
-          </DarkCard>
+          </Card>
         </motion.div>
 
         {/* Quick actions */}
         <motion.div variants={stagger.item}>
-          <DarkCard>
-            <p className="text-xs uppercase tracking-widest font-semibold mb-3" style={{ color: '#7A7A7A' }}>Quick Actions</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { icon: Users, label: 'Add Client', path: '/clients' },
-                { icon: Zap, label: 'Create Program', path: '/programs' },
-                { icon: BarChart3, label: 'View Analytics', path: '/analytics' },
-                { icon: TrendingUp, label: 'Revenue', path: '/revenue' },
-              ].map((a, i) => (
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { icon: Users, label: 'Add Client', path: '/clients' },
+              { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+              { icon: Zap, label: 'Automations', path: '/automations' },
+              { icon: TrendingUp, label: 'Revenue', path: '/revenue' },
+            ].map((a, i) => {
+              const Icon = a.icon;
+              return (
                 <Link key={i} to={a.path}>
-                  <button
-                    className="w-full flex items-center gap-2.5 p-3 rounded-xl text-sm font-medium transition-all hover:opacity-80"
-                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: '#B3B3B3' }}
-                  >
-                    <a.icon className="w-4 h-4 flex-shrink-0" style={{ color: '#3B82F6' }} />
-                    {a.label}
+                  <button className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl transition-all hover:bg-white/[0.04]"
+                    style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', color: '#B3B3B3' }}>
+                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                    <span className="text-sm font-medium">{a.label}</span>
                   </button>
                 </Link>
-              ))}
-            </div>
-          </DarkCard>
+              );
+            })}
+          </div>
         </motion.div>
 
-        {/* CTA to main app */}
+        {/* Enter dashboard CTA */}
         <motion.div variants={stagger.item}>
           <Link to="/">
-            <button
-              className="w-full py-4 rounded-2xl text-white font-semibold text-base flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 20px rgba(59,130,246,0.2)' }}
+            <motion.button
+              whileHover={{ scale: 1.02, boxShadow: '0 0 36px rgba(59,130,246,0.4)' }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
+              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 24px rgba(59,130,246,0.25)' }}
             >
               Enter Full Dashboard
-              <ChevronRight className="w-4 h-4" />
-            </button>
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
           </Link>
         </motion.div>
       </motion.div>

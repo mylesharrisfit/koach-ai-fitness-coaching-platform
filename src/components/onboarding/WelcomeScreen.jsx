@@ -1,72 +1,93 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ArrowRight, Zap, Users, TrendingUp } from 'lucide-react';
+import KoachLogo from '@/components/brand/KoachLogo';
 
-const stagger = {
-  container: { animate: { transition: { staggerChildren: 0.1 } } },
-  item: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.32, 0.72, 0, 1] } },
-  },
-};
+const features = [
+  { icon: Users, label: 'Client Management' },
+  { icon: Zap, label: 'AI Automations' },
+  { icon: TrendingUp, label: 'Business Analytics' },
+];
 
 export default function WelcomeScreen({ onNext }) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: '#0A0A0A' }}>
-      {/* Glow */}
-      <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden">
-        <div
-          className="w-[600px] h-[400px] opacity-[0.07]"
-          style={{ background: 'radial-gradient(ellipse, #3B82F6 0%, transparent 70%)', filter: 'blur(40px)', transform: 'translateY(30%)' }}
-        />
+    <div className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden" style={{ background: '#0A0A0A' }}>
+      {/* Cinematic ambient */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-[0.12]"
+          style={{ background: 'radial-gradient(ellipse, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[300px] opacity-[0.05]"
+          style={{ background: 'radial-gradient(ellipse, #6366F1 0%, transparent 65%)', filter: 'blur(60px)' }} />
       </div>
 
       <motion.div
-        className="relative z-10 w-full max-w-md text-center flex flex-col items-center gap-8"
-        variants={stagger.container}
-        initial="initial"
-        animate="animate"
+        className="relative z-10 w-full max-w-sm flex flex-col items-center gap-10 text-center"
+        initial="hidden"
+        animate="show"
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
       >
-        <motion.div variants={stagger.item} className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.25em]" style={{ color: '#3B82F6' }}>
-            KOACH AI — For Coaches
-          </p>
-          <h1 className="text-5xl font-bold text-white leading-tight" style={{ letterSpacing: '-0.03em' }}>
-            The AI Coaching<br />Operating System.
-          </h1>
-          <p className="text-base" style={{ color: '#7A7A7A' }}>
-            Built for modern fitness coaches who want to scale without burning out.
-          </p>
-        </motion.div>
-
-        {/* Feature pills */}
-        <motion.div variants={stagger.item} className="flex flex-wrap justify-center gap-2">
-          {['Manage Clients', 'AI-Powered', 'Automate Everything', 'Scale Your Business'].map(tag => (
-            <span
-              key={tag}
-              className="px-3 py-1 rounded-full text-xs font-medium"
-              style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6', border: '1px solid rgba(59,130,246,0.2)' }}
-            >
-              {tag}
-            </span>
-          ))}
-        </motion.div>
-
-        <motion.button
-          variants={stagger.item}
-          onClick={onNext}
-          whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(59,130,246,0.4)' }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full max-w-xs flex items-center justify-center gap-2 py-4 rounded-2xl text-white font-semibold text-base transition-all"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 20px rgba(59,130,246,0.25)' }}
+        {/* Logo */}
+        <motion.div
+          variants={{ hidden: { opacity: 0, scale: 0.7 }, show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } } }}
         >
-          Start Coaching
-          <ChevronRight className="w-5 h-5" />
-        </motion.button>
+          <KoachLogo size={72} rounded="rounded-2xl" glow bg />
+        </motion.div>
 
-        <motion.p variants={stagger.item} className="text-xs" style={{ color: '#3A3A3A' }}>
-          Takes less than 3 minutes · For coaches only
-        </motion.p>
+        {/* Headline */}
+        <motion.div
+          variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.65 } } }}
+          className="space-y-4"
+        >
+          <p className="text-[11px] uppercase tracking-[0.3em] font-bold" style={{ color: '#3B82F6' }}>
+            KOACH AI · Coaching OS
+          </p>
+          <h1 className="font-bold text-white leading-[1.05]"
+            style={{ fontSize: 'clamp(2.4rem, 9vw, 3.8rem)', letterSpacing: '-0.035em' }}>
+            Build your<br />coaching system.
+          </h1>
+          <p className="text-base leading-relaxed" style={{ color: '#6B6B6B' }}>
+            The AI operating system built for modern fitness coaches. Automate clients, nutrition, programming, and revenue — in one platform.
+          </p>
+        </motion.div>
+
+        {/* Feature row */}
+        <motion.div
+          variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+          className="flex items-center justify-center gap-6"
+        >
+          {features.map((feat) => {
+            const FeatIcon = feat.icon;
+            return (
+            <div key={feat.label} className="flex flex-col items-center gap-1.5">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                <FeatIcon className="w-4 h-4" style={{ color: '#3B82F6' }} />
+              </div>
+              <span className="text-[10px] font-semibold" style={{ color: '#555' }}>{feat.label}</span>
+            </div>
+            );
+          })}
+        </motion.div>
+
+        {/* CTA */}
+        <motion.div
+          variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
+          className="w-full space-y-3"
+        >
+          <motion.button
+            onClick={onNext}
+            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.5)' }}
+            whileTap={{ scale: 0.97 }}
+            className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
+            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+          >
+            Start Free Trial
+            <ArrowRight className="w-5 h-5" />
+          </motion.button>
+          <p className="text-xs" style={{ color: '#3A3A3A' }}>
+            No credit card required · 30-day free trial · Setup in 5 minutes
+          </p>
+        </motion.div>
       </motion.div>
     </div>
   );
