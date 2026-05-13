@@ -8,11 +8,14 @@ export default function Dashboard() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // Redirect new coaches (no clients yet + onboarding not complete) to onboarding
+  // Redirect new coaches to onboarding — but NOT if they just completed the premium onboarding flow
   useEffect(() => {
+    const justFinishedOnboarding = localStorage.getItem('koach_onboarding_complete') === '1';
+    if (justFinishedOnboarding) return; // already done — stay on dashboard
+
     base44.auth.me().then(user => {
       if (user && !user.onboarding_complete) {
-        navigate('/onboarding');
+        navigate('/start');
       }
     }).catch(() => {});
   }, [navigate]);
