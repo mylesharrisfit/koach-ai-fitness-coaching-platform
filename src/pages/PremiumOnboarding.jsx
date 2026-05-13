@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// PremiumOnboarding — coach-only onboarding flow that ends with navigate('/') into the real platform
 import { motion, AnimatePresence } from 'framer-motion';
 import SplashScreen from '@/components/onboarding/SplashScreen';
 import WelcomeScreen from '@/components/onboarding/WelcomeScreen';
@@ -9,7 +10,7 @@ import CoachBottleneckScreen from '@/components/onboarding/CoachBottleneckScreen
 import CoachSoftwareScreen from '@/components/onboarding/CoachSoftwareScreen';
 import CoachPricingScreen from '@/components/onboarding/CoachPricingScreen';
 import CoachGenerationScreen from '@/components/onboarding/CoachGenerationScreen';
-import CoachRevealDashboard from '@/components/onboarding/CoachRevealDashboard';
+import { useNavigate } from 'react-router-dom';
 
 // Ordered coach-only flow
 const FLOW = [
@@ -22,12 +23,12 @@ const FLOW = [
   'coach_software',
   'coach_pricing',
   'coach_generation',
-  'dashboard',
 ];
 
-const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_pricing', 'coach_generation', 'dashboard']);
+const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_pricing', 'coach_generation']);
 
 export default function PremiumOnboarding() {
+  const navigate = useNavigate();
   const [step, setStep] = useState('splash');
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState({});
@@ -35,10 +36,16 @@ export default function PremiumOnboarding() {
   const idx = FLOW.indexOf(step);
 
   const next = (newData = {}) => {
+    const merged = { ...data, ...newData };
+    setData(merged);
     if (idx < FLOW.length - 1) {
       setDirection(1);
-      setData(d => ({ ...d, ...newData }));
       setStep(FLOW[idx + 1]);
+    } else {
+      // Onboarding complete — mark in localStorage and go straight to the real platform
+      localStorage.setItem('koach_onboarding_complete', '1');
+      localStorage.setItem('koach_onboarding_data', JSON.stringify(merged));
+      navigate('/', { replace: true });
     }
   };
 
@@ -75,7 +82,6 @@ export default function PremiumOnboarding() {
       case 'coach_software':   return <CoachSoftwareScreen {...props} />;
       case 'coach_pricing':    return <CoachPricingScreen {...props} />;
       case 'coach_generation': return <CoachGenerationScreen onNext={next} />;
-      case 'dashboard':        return <CoachRevealDashboard data={data} />;
       default: return null;
     }
   };

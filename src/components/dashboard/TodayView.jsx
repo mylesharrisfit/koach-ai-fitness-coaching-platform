@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Link2, Copy, Check, ExternalLink, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import RunMyDayCenter from './RunMyDayCenter';
 import RecommendationsWidget from './RecommendationsWidget';
 import DashboardKPIs from './DashboardKPIs';
+import FirstTimeBanner from './FirstTimeBanner';
 
 function OnboardingLinkBanner() {
   const [copied, setCopied] = useState(false);
@@ -51,6 +53,16 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const activeCount = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active').length;
 
+  const [showBanner, setShowBanner] = useState(() => {
+    return localStorage.getItem('koach_onboarding_complete') === '1' &&
+           localStorage.getItem('koach_banner_dismissed') !== '1';
+  });
+
+  const dismissBanner = () => {
+    localStorage.setItem('koach_banner_dismissed', '1');
+    setShowBanner(false);
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-5 py-8 sm:px-8 space-y-7 pb-24">
 
@@ -73,6 +85,11 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
           Add Client
         </button>
       </div>
+
+      {/* ── First-Time Welcome Banner ───────────────── */}
+      <AnimatePresence>
+        {showBanner && <FirstTimeBanner onDismiss={dismissBanner} />}
+      </AnimatePresence>
 
       {/* ── KPI Strip ──────────────────────────────── */}
       <DashboardKPIs clients={clients} checkIns={checkIns} payments={payments} />
