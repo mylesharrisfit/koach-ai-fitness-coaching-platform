@@ -24,10 +24,11 @@ export default function CoachGenerationScreen({ onNext }) {
   const doRedirect = () => {
     setAllDone(true);
     setExiting(true);
-    // Give the "OS is live" message 900ms then call onNext
+    // Give the "OS is live" message 900ms, then navigate into the real dashboard
     const t = setTimeout(() => {
       localStorage.setItem('koach_onboarding_complete', '1');
-      onNext();
+      // Use window.location for a hard navigation so auth session & layout fully reinitialize
+      window.location.replace('/');
     }, 900);
     timers.current.push(t);
   };

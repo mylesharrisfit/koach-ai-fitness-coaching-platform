@@ -10,6 +10,7 @@ import CoachBottleneckScreen from '@/components/onboarding/CoachBottleneckScreen
 import CoachSoftwareScreen from '@/components/onboarding/CoachSoftwareScreen';
 import CoachPricingScreen from '@/components/onboarding/CoachPricingScreen';
 import CoachGenerationScreen from '@/components/onboarding/CoachGenerationScreen';
+import CoachAccountScreen from '@/components/onboarding/CoachAccountScreen';
 import { useNavigate } from 'react-router-dom';
 
 // Ordered coach-only flow
@@ -22,10 +23,11 @@ const FLOW = [
   'coach_bottleneck',
   'coach_software',
   'coach_pricing',
+  'coach_account',
   'coach_generation',
 ];
 
-const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_pricing', 'coach_generation']);
+const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_pricing', 'coach_account', 'coach_generation']);
 
 export default function PremiumOnboarding() {
   const navigate = useNavigate();
@@ -81,6 +83,7 @@ export default function PremiumOnboarding() {
       case 'coach_bottleneck': return <CoachBottleneckScreen {...props} />;
       case 'coach_software':   return <CoachSoftwareScreen {...props} />;
       case 'coach_pricing':    return <CoachPricingScreen {...props} />;
+      case 'coach_account':    return <CoachAccountScreen {...props} />;
       case 'coach_generation': return <CoachGenerationScreen onNext={next} />;
       default: return null;
     }
