@@ -137,11 +137,16 @@ export default function Sidebar({ user, onUpgrade }) {
         collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
       )} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 12px rgba(59,130,246,0.4)' }}
+          className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ background: 'linear-gradient(145deg, #3B82F6 0%, #1D4ED8 100%)', boxShadow: '0 0 16px rgba(59,130,246,0.5), 0 2px 8px rgba(0,0,0,0.4)' }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M4 3L4 13M4 8L10 3M4 8L10 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            {/* Vertical stem */}
+            <line x1="5" y1="3" x2="5" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+            {/* Upper diagonal */}
+            <line x1="5" y1="10" x2="15" y2="3" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+            {/* Lower diagonal */}
+            <line x1="5" y1="10" x2="15" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
           </svg>
         </div>
         {!collapsed && (

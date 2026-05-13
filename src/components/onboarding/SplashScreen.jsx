@@ -28,14 +28,16 @@ export default function SplashScreen({ onDone }) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="w-16 h-16 rounded-2xl flex items-center justify-center mb-2"
+          className="w-20 h-20 rounded-3xl flex items-center justify-center mb-2"
           style={{
-            background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-            boxShadow: '0 0 50px rgba(59,130,246,0.4), 0 0 100px rgba(59,130,246,0.15)',
+            background: 'linear-gradient(145deg, #3B82F6 0%, #1D4ED8 100%)',
+            boxShadow: '0 0 60px rgba(59,130,246,0.5), 0 0 120px rgba(59,130,246,0.15), 0 4px 24px rgba(0,0,0,0.5)',
           }}
         >
-          <svg width="36" height="36" viewBox="0 0 16 16" fill="none">
-            <path d="M4 3L4 13M4 8L10 3M4 8L10 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="44" height="44" viewBox="0 0 20 20" fill="none">
+            <line x1="5" y1="3" x2="5" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+            <line x1="5" y1="10" x2="15" y2="3" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+            <line x1="5" y1="10" x2="15" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
           </svg>
         </motion.div>
 

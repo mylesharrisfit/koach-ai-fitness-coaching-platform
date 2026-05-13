@@ -6,11 +6,13 @@ const UserNotRegisteredError = () => {
       <div className="max-w-md w-full p-8 rounded-2xl" style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="text-center">
           <div
-            className="inline-flex items-center justify-center w-12 h-12 mb-6 rounded-xl"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 24px rgba(59,130,246,0.35)' }}
+            className="inline-flex items-center justify-center w-14 h-14 mb-6 rounded-2xl"
+            style={{ background: 'linear-gradient(145deg, #3B82F6 0%, #1D4ED8 100%)', boxShadow: '0 0 30px rgba(59,130,246,0.4), 0 4px 16px rgba(0,0,0,0.4)' }}
           >
-            <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
-              <path d="M4 3L4 13M4 8L10 3M4 8L10 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="28" height="28" viewBox="0 0 20 20" fill="none">
+              <line x1="5" y1="3" x2="5" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+              <line x1="5" y1="10" x2="15" y2="3" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+              <line x1="5" y1="10" x2="15" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
             </svg>
           </div>
           <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-2" style={{ color: '#3B82F6' }}>KOACH AI</p>

@@ -29,9 +29,13 @@ export default function PageNotFound() {
       <div className="relative z-10 max-w-md w-full text-center space-y-8">
         {/* Logo mark */}
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', color: '#fff', boxShadow: '0 0 30px rgba(59,130,246,0.3)' }}>
-            K
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
+            style={{ background: 'linear-gradient(145deg, #3B82F6 0%, #1D4ED8 100%)', boxShadow: '0 0 30px rgba(59,130,246,0.4), 0 4px 16px rgba(0,0,0,0.4)' }}>
+            <svg width="28" height="28" viewBox="0 0 20 20" fill="none">
+              <line x1="5" y1="3" x2="5" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+              <line x1="5" y1="10" x2="15" y2="3" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+              <line x1="5" y1="10" x2="15" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+            </svg>
           </div>
           <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: '#3B82F6' }}>KOACH AI</p>
         </div>
