@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import {
-  LayoutDashboard, Users, Dumbbell, Calendar,
-  MessageSquare, TrendingUp, Zap, LogOut, Settings,
-  BarChart3, Bot, ChevronLeft, ChevronRight, Lock,
-  Play, CreditCard, Activity, Salad, ClipboardList,
-  Trophy, ShieldAlert, DollarSign, Landmark, ShoppingBag,
-  Globe, Sparkles, Smartphone, LayoutTemplate, UserPlus, PackageOpen
+  LayoutDashboard, Users, MessageSquare, Calendar,
+  Dumbbell, Salad, ClipboardList, TrendingUp,
+  Sparkles, Bot, BarChart3,
+  CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
+  Lock, DollarSign, UserPlus, Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -15,54 +14,37 @@ import { hasFeature } from '@/lib/subscription';
 
 const NAV_GROUPS = [
   {
-    label: null,
+    label: 'MAIN',
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-      { icon: Play, label: 'Run My Day', path: '/fast-review' },
+      { icon: Users, label: 'Clients', path: '/clients' },
+      { icon: MessageSquare, label: 'Messages', path: '/messages' },
+      { icon: Calendar, label: 'Calendar', path: '/schedule' },
     ],
   },
   {
-    label: 'Coaching',
+    label: 'COACHING',
     items: [
-      { icon: Users, label: 'Clients', path: '/clients' },
       { icon: Dumbbell, label: 'Programs', path: '/programs' },
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
-      { icon: ClipboardList, label: 'Exercise Library', path: '/exercises' },
-      { icon: Salad, label: 'Food Library', path: '/food-library' },
-      { icon: Calendar, label: 'Schedule', path: '/schedule' },
-      { icon: MessageSquare, label: 'Messages', path: '/messages' },
-    ],
-  },
-  {
-    label: 'Clients',
-    items: [
       { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
-      { icon: ShieldAlert, label: 'At-Risk', path: '/at-risk' },
       { icon: TrendingUp, label: 'Progress', path: '/progress', feature: 'progress' },
-      { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
     ],
   },
   {
-    label: 'Business',
+    label: 'AI TOOLS',
     items: [
-      { icon: DollarSign, label: 'Sales', path: '/sales', feature: 'sales' },
-      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-      { icon: Landmark, label: 'Revenue', path: '/revenue' },
-      { icon: Activity, label: 'Business', path: '/business', feature: 'revenue_dashboard' },
-      { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
-    ],
-  },
-  {
-    label: 'Tools',
-    items: [
-      { icon: Bot, label: 'Automations', path: '/automations' },
-      { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
       { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
-      { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
-      { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
-      { icon: UserPlus, label: 'Onboarding', path: '/onboarding-manager' },
-      { icon: PackageOpen, label: 'Migration', path: '/migration' },
-      { icon: Zap, label: 'White Label', path: '/white-label' },
+      { icon: Bot, label: 'Automations', path: '/automations' },
+      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+    ],
+  },
+  {
+    label: 'BUSINESS',
+    items: [
+      { icon: DollarSign, label: 'Payments', path: '/revenue' },
+      { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },
+      { icon: Zap, label: 'More', path: '/business', feature: 'revenue_dashboard' },
     ],
   },
 ];
@@ -82,12 +64,14 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
     return (
       <button
         onClick={() => onUpgrade?.(item.feature)}
-        className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium w-full text-left text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+        className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors"
+        style={{ color: 'rgba(255,255,255,0.2)' }}
+        title={collapsed ? item.label : undefined}
       >
-        <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
+        <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
         {!collapsed && (
           <>
-            <span className="flex-1">{item.label}</span>
+            <span className="flex-1 text-[13px]">{item.label}</span>
             <Lock className="w-3 h-3 opacity-30" />
           </>
         )}
@@ -98,17 +82,22 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
   return (
     <Link
       to={item.path}
+      title={collapsed ? item.label : undefined}
       className={cn(
-        'relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+        'relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150',
         isActive
-          ? 'bg-primary/10 text-primary'
-          : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+          ? 'text-white'
+          : 'hover:text-white'
       )}
+      style={{
+        color: isActive ? '#fff' : 'rgba(255,255,255,0.38)',
+        background: isActive ? 'rgba(59,130,246,0.12)' : 'transparent',
+      }}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: '#3B82F6' }} />
       )}
-      <item.icon className={cn('w-[17px] h-[17px] flex-shrink-0', isActive ? 'text-primary' : '')} />
+      <item.icon className={cn('w-[16px] h-[16px] flex-shrink-0 transition-colors')} />
       {!collapsed && <span>{item.label}</span>}
     </Link>
   );
@@ -118,38 +107,41 @@ export default function Sidebar({ user, onUpgrade }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className={cn(
-      'fixed left-0 top-0 h-screen bg-sidebar border-r border-border z-50 flex-col transition-all duration-200 hidden md:flex',
-      collapsed ? 'w-[60px]' : 'w-[216px]'
-    )}>
+    <aside
+      className={cn(
+        'fixed left-0 top-0 h-screen z-50 flex-col transition-all duration-200 hidden md:flex',
+        collapsed ? 'w-[56px]' : 'w-[210px]'
+      )}
+      style={{ background: '#0D0D0D', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+    >
       {/* Logo */}
       <div className={cn(
-        'h-[56px] flex items-center border-b border-border flex-shrink-0',
-        collapsed ? 'px-4 justify-center' : 'px-4 gap-3'
-      )}>
+        'h-[56px] flex items-center flex-shrink-0',
+        collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
+      )} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div
           className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-[13px]"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', color: '#fff', letterSpacing: '-0.01em' }}
+          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', color: '#fff' }}
         >
           K
         </div>
         {!collapsed && (
           <>
             <div className="flex-1 min-w-0">
-              <span className="block font-heading font-bold text-[13px] text-foreground tracking-tight leading-none">KOACH AI</span>
-              <span className="block text-[9px] tracking-[0.12em] uppercase" style={{ color: '#5A5A5A' }}>Coaching OS</span>
+              <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
+              <span className="block text-[9px] tracking-[0.12em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>Coaching OS</span>
             </div>
             <NotificationBell />
           </>
         )}
       </div>
 
-      {/* Nav Groups */}
-      <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4">
+      {/* Nav */}
+      <nav className="flex-1 py-4 px-2 overflow-y-auto space-y-5">
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground px-3 mb-1">
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
                 {group.label}
               </p>
             )}
@@ -163,29 +155,42 @@ export default function Sidebar({ user, onUpgrade }) {
       </nav>
 
       {/* Bottom */}
-      <div className="p-2 border-t border-border space-y-0.5">
-        {BOTTOM_ITEMS.map(item => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-          >
-            <item.icon className="w-[17px] h-[17px] flex-shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
-          </Link>
-        ))}
+      <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        {BOTTOM_ITEMS.map(item => {
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              title={collapsed ? item.label : undefined}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all"
+              style={{ color: 'rgba(255,255,255,0.35)' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
+            >
+              <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
+            </Link>
+          );
+        })}
 
         <button
           onClick={() => base44.auth.logout()}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full"
+          title={collapsed ? 'Logout' : undefined}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all w-full"
+          style={{ color: 'rgba(255,255,255,0.25)' }}
+          onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
+          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.25)'}
         >
-          <LogOut className="w-[17px] h-[17px] flex-shrink-0" />
+          <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
           {!collapsed && <span>Logout</span>}
         </button>
 
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="flex items-center justify-center w-full py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors mt-1"
+          className="flex items-center justify-center w-full py-2 rounded-lg transition-all mt-1"
+          style={{ color: 'rgba(255,255,255,0.2)' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

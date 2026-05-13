@@ -29,12 +29,11 @@ function Pill({ icon: Icon, label, onClick, variant = 'ghost' }) {
   return (
     <button
       onClick={e => { e.stopPropagation(); onClick(); }}
-      className={cn(
-        'inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all shrink-0',
-        variant === 'primary'
-          ? 'bg-primary text-white hover:bg-primary/90 shadow-sm'
-          : 'bg-white border border-border text-foreground hover:bg-secondary/60'
-      )}
+      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all shrink-0"
+      style={variant === 'primary'
+        ? { background: '#3B82F6', color: '#fff' }
+        : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }
+      }
     >
       <Icon className="w-3 h-3 shrink-0" />
       <span>{label}</span>
@@ -53,9 +52,11 @@ function UrgencyDot({ level }) {
 function ActionCard({ avatar, name, subtitle, badge, badgeClass, urgency, actions, colorKey }) {
   const color = COLORS[colorKey];
   return (
-    <div className={cn(
-      'group flex items-start gap-3 px-4 py-3.5 hover:bg-slate-50/70 transition-colors',
-    )}>
+    <div
+      className="group flex items-start gap-3 px-4 py-3.5 transition-colors"
+      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+    >
       {/* Avatar */}
       <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm font-bold relative mt-0.5', color.icon)}>
         {name?.[0]?.toUpperCase()}
@@ -67,14 +68,14 @@ function ActionCard({ avatar, name, subtitle, badge, badgeClass, urgency, action
       {/* Body */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-foreground truncate max-w-[120px]">{name}</span>
+          <span className="text-sm font-semibold text-white truncate max-w-[120px]">{name}</span>
           {badge && (
             <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0', badgeClass || color.badge)}>
               {badge}
             </span>
           )}
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5 truncate leading-relaxed">{subtitle}</p>
+        <p className="text-xs mt-0.5 truncate leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>{subtitle}</p>
         {/* Actions */}
         <div className="flex flex-wrap items-center gap-1.5 mt-2">
           {actions}
@@ -91,15 +92,18 @@ function Section({ colorKey, icon: Icon, title, count, children, defaultOpen = t
   if (count === 0) return null;
 
   return (
-    <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+    <div className="rounded-xl overflow-hidden" style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)' }}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3 transition-colors"
+        style={{ borderBottom: open ? '1px solid rgba(255,255,255,0.05)' : 'none' }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
       >
         <div className={cn('w-6 h-6 rounded-md flex items-center justify-center shrink-0', color.icon)}>
           <Icon className="w-3.5 h-3.5" />
         </div>
-        <span className="text-sm font-semibold text-foreground flex-1 text-left">{title}</span>
+        <span className="text-sm font-semibold text-white flex-1 text-left">{title}</span>
         <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full border shrink-0', color.badge)}>
           {count}
         </span>
@@ -107,7 +111,7 @@ function Section({ colorKey, icon: Icon, title, count, children, defaultOpen = t
       </button>
 
       {open && (
-        <div className="border-t border-border divide-y divide-border/60">
+        <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
           {children}
         </div>
       )}
@@ -124,46 +128,50 @@ function CommandBar({ items }) {
 
   if (allClear) {
     return (
-      <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-4 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+      <div className="rounded-xl px-4 py-4 flex items-center gap-3"
+        style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background: 'rgba(34,197,94,0.1)' }}>
+          <CheckCircle2 className="w-4 h-4" style={{ color: '#22C55E' }} />
         </div>
         <div>
-          <p className="text-sm font-bold text-emerald-800">All clear — great work! 🎉</p>
-          <p className="text-xs text-emerald-600 mt-0.5">No actions needed today</p>
+          <p className="text-sm font-bold text-white">All clear — great work!</p>
+          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>No actions needed today</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border bg-[#1A2035] px-4 py-4">
+    <div className="rounded-xl px-4 py-4" style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)' }}>
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-          <Zap className="w-5 h-5 text-white" />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background: 'rgba(59,130,246,0.12)' }}>
+          <Zap className="w-4 h-4" style={{ color: '#3B82F6' }} />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold text-white">Run My Day</p>
-          <p className="text-xs text-white/50 mt-0.5">{total} client{total !== 1 ? 's' : ''} need attention</p>
+          <p className="text-sm font-bold text-white">Action Required</p>
+          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{total} client{total !== 1 ? 's' : ''} need attention</p>
         </div>
         {critical > 0 && (
-          <div className="flex items-center gap-1.5 bg-red-500/20 border border-red-400/30 rounded-full px-2.5 py-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
-            <span className="text-xs font-bold text-red-300">{critical} critical</span>
+          <div className="flex items-center gap-1.5 rounded-full px-2.5 py-1"
+            style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#EF4444' }} />
+            <span className="text-xs font-bold" style={{ color: '#EF4444' }}>{critical} critical</span>
           </div>
         )}
       </div>
 
-      {/* Stat pills */}
       <div className="grid grid-cols-3 gap-2">
         {[
-          { label: 'Critical', count: critical, color: 'text-red-300', bg: critical > 0 ? 'bg-red-500/20 border-red-400/20' : 'bg-white/5 border-white/10' },
-          { label: 'High', count: high, color: 'text-orange-300', bg: high > 0 ? 'bg-orange-500/20 border-orange-400/20' : 'bg-white/5 border-white/10' },
-          { label: 'Total', count: total, color: 'text-white', bg: 'bg-white/10 border-white/10' },
+          { label: 'Critical', count: critical, color: critical > 0 ? '#EF4444' : 'rgba(255,255,255,0.2)', bg: critical > 0 ? 'rgba(239,68,68,0.08)' : 'rgba(255,255,255,0.03)' },
+          { label: 'High', count: high, color: high > 0 ? '#F59E0B' : 'rgba(255,255,255,0.2)', bg: high > 0 ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)' },
+          { label: 'Total', count: total, color: '#fff', bg: 'rgba(255,255,255,0.04)' },
         ].map(s => (
-          <div key={s.label} className={cn('rounded-lg border px-2 py-2 text-center', s.bg)}>
-            <p className={cn('text-lg font-bold tabular-nums leading-none', s.color)}>{s.count}</p>
-            <p className="text-[10px] mt-1 text-white/40">{s.label}</p>
+          <div key={s.label} className="rounded-lg px-2 py-2.5 text-center"
+            style={{ background: s.bg, border: '1px solid rgba(255,255,255,0.05)' }}>
+            <p className="text-lg font-bold tabular-nums leading-none" style={{ color: s.color }}>{s.count}</p>
+            <p className="text-[10px] mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{s.label}</p>
           </div>
         ))}
       </div>
