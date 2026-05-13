@@ -48,10 +48,10 @@ export default function SplashScreen({ onDone }) {
           className="text-center"
         >
           <h1
-            className="text-3xl font-bold tracking-[0.25em] text-white mb-2"
-            style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '0.22em' }}
+            className="text-3xl font-bold text-white mb-2"
+            style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '0.18em' }}
           >
-            H Y B R I D &nbsp; L I F E
+            KOACH AI
           </h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -60,7 +60,7 @@ export default function SplashScreen({ onDone }) {
             className="text-sm tracking-[0.15em] uppercase"
             style={{ color: '#7A7A7A', letterSpacing: '0.2em' }}
           >
-            Built for elite performance.
+            AI Coaching Operating System
           </motion.p>
         </motion.div>
       </motion.div>

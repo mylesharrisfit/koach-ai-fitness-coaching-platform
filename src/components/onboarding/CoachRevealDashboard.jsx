@@ -39,7 +39,7 @@ export default function CoachRevealDashboard({ data }) {
         className="px-5 pt-12 pb-4"
       >
         <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-1" style={{ color: '#3B82F6' }}>
-          Coaching System Live
+          KOACH AI — Live
         </p>
         <h1 className="text-2xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
           Coach Dashboard

@@ -127,12 +127,18 @@ export default function Sidebar({ user, onUpgrade }) {
         'h-[56px] flex items-center border-b border-border flex-shrink-0',
         collapsed ? 'px-4 justify-center' : 'px-4 gap-3'
       )}>
-        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-          <Zap className="w-[13px] h-[13px] text-white" />
+        <div
+          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-[13px]"
+          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', color: '#fff', letterSpacing: '-0.01em' }}
+        >
+          K
         </div>
         {!collapsed && (
           <>
-            <span className="flex-1 font-heading font-bold text-[14px] text-foreground tracking-tight">FitForge</span>
+            <div className="flex-1 min-w-0">
+              <span className="block font-heading font-bold text-[13px] text-foreground tracking-tight leading-none">KOACH AI</span>
+              <span className="block text-[9px] tracking-[0.12em] uppercase" style={{ color: '#5A5A5A' }}>Coaching OS</span>
+            </div>
             <NotificationBell />
           </>
         )}

@@ -52,7 +52,7 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
       </div>
 
       {/* Onboarding link */}
-      <div className="fade-up">
+      <div className="fade-up fade-up-delay-1">
         <OnboardingLinkBanner />
       </div>
 

@@ -29,10 +29,10 @@ export default function WelcomeScreen({ onNext }) {
       >
         <motion.div variants={stagger.item} className="space-y-4">
           <p className="text-xs uppercase tracking-[0.25em]" style={{ color: '#3B82F6' }}>
-            Welcome
+            Welcome to KOACH AI
           </p>
           <h1 className="text-5xl font-bold text-white leading-tight" style={{ letterSpacing: '-0.03em' }}>
-            Let's build<br />your system.
+            Let KOACH AI<br />build your system.
           </h1>
           <p className="text-base" style={{ color: '#7A7A7A' }}>
             Training. Nutrition. Recovery. Performance.

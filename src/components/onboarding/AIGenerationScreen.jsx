@@ -104,10 +104,10 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
           className="text-center space-y-2"
         >
           <p className="text-xs uppercase tracking-[0.2em] font-semibold" style={{ color: '#3B82F6' }}>
-            AI Engine
+            KOACH AI Engine
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
-            Building your system…
+            KOACH AI is preparing your plan.
           </h2>
           <p className="text-sm" style={{ color: '#7A7A7A' }}>
             Personalizing everything based on your profile
@@ -139,7 +139,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
             className="text-center"
           >
             <p className="text-sm font-semibold" style={{ color: '#22C55E' }}>
-              ✓ Your system is ready
+              ✓ Welcome to KOACH AI — your system is ready
             </p>
           </motion.div>
         )}
