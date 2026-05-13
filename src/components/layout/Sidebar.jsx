@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import KoachLogo from '@/components/brand/KoachLogo.jsx';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import {
   LayoutDashboard, Users, MessageSquare, Calendar,
@@ -136,19 +137,7 @@ export default function Sidebar({ user, onUpgrade }) {
         'h-[56px] flex items-center flex-shrink-0',
         collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
       )} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div
-          className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'linear-gradient(145deg, #3B82F6 0%, #1D4ED8 100%)', boxShadow: '0 0 16px rgba(59,130,246,0.5), 0 2px 8px rgba(0,0,0,0.4)' }}
-        >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            {/* Vertical stem */}
-            <line x1="5" y1="3" x2="5" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
-            {/* Upper diagonal */}
-            <line x1="5" y1="10" x2="15" y2="3" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
-            {/* Lower diagonal */}
-            <line x1="5" y1="10" x2="15" y2="17" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
-          </svg>
-        </div>
+        <KoachLogo size={32} rounded="rounded-xl" glow={true} bg={true} />
         {!collapsed && (
           <>
             <div className="flex-1 min-w-0">
