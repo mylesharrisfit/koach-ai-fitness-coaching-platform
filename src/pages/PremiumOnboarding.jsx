@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SplashScreen from '@/components/onboarding/SplashScreen';
 import WelcomeScreen from '@/components/onboarding/WelcomeScreen';
@@ -7,9 +7,15 @@ import ClientGoalScreen from '@/components/onboarding/ClientGoalScreen';
 import ClientExperienceScreen from '@/components/onboarding/ClientExperienceScreen';
 import ClientTrainingStyleScreen from '@/components/onboarding/ClientTrainingStyleScreen';
 import ClientScheduleScreen from '@/components/onboarding/ClientScheduleScreen';
-import ClientNutritionScreen from '@/components/onboarding/ClientNutritionScreen';
 import ClientMetricsScreen from '@/components/onboarding/ClientMetricsScreen';
+import ClientInjuriesScreen from '@/components/onboarding/ClientInjuriesScreen';
+import ClientHealthScreen from '@/components/onboarding/ClientHealthScreen';
+import ClientAllergiesScreen from '@/components/onboarding/ClientAllergiesScreen';
+import ClientNutritionHabitsScreen from '@/components/onboarding/ClientNutritionHabitsScreen';
+import ClientLifestyleScreen from '@/components/onboarding/ClientLifestyleScreen';
 import ClientWhyScreen from '@/components/onboarding/ClientWhyScreen';
+import ClientObstaclesScreen from '@/components/onboarding/ClientObstaclesScreen';
+import ClientAccountabilityScreen from '@/components/onboarding/ClientAccountabilityScreen';
 import AIGenerationScreen from '@/components/onboarding/AIGenerationScreen';
 import CoachClientsScreen from '@/components/onboarding/CoachClientsScreen';
 import CoachTypeScreen from '@/components/onboarding/CoachTypeScreen';
@@ -20,14 +26,27 @@ import OnboardingDashboard from '@/components/onboarding/OnboardingDashboard';
 
 const CLIENT_FLOW = [
   'splash', 'welcome', 'role',
-  'client_goal', 'client_experience', 'client_training', 'client_schedule',
-  'client_nutrition', 'client_metrics', 'client_why', 'ai_generation', 'dashboard'
+  'client_goal',
+  'client_experience',
+  'client_training',
+  'client_schedule',
+  'client_metrics',
+  'client_injuries',
+  'client_health',
+  'client_allergies',
+  'client_nutrition_habits',
+  'client_lifestyle',
+  'client_why',
+  'client_obstacles',
+  'client_accountability',
+  'ai_generation',
+  'dashboard',
 ];
 
 const COACH_FLOW = [
   'splash', 'welcome', 'role',
   'coach_clients', 'coach_type', 'coach_bottleneck', 'coach_software',
-  'coach_generation', 'dashboard'
+  'coach_generation', 'dashboard',
 ];
 
 export default function PremiumOnboarding() {
@@ -61,27 +80,28 @@ export default function PremiumOnboarding() {
     setRole(selectedRole);
     setData(d => ({ ...d, ...newData, role: selectedRole }));
     setDirection(1);
-    if (selectedRole === 'coach') {
-      setStep('coach_clients');
-    } else {
-      setStep('client_goal');
-    }
+    setStep(selectedRole === 'coach' ? 'coach_clients' : 'client_goal');
   };
 
   const flow = getFlow();
   const currentIdx = flow.indexOf(step);
-  const progress = step === 'splash' ? 0 : Math.max(0, (currentIdx - 2) / (flow.length - 3));
+  // Progress excludes splash/welcome/role/dashboard (first 3 + last 1)
+  const progressSteps = flow.length - 4;
+  const progressIdx = currentIdx - 3;
+  const progress = !['splash', 'welcome', 'role', 'dashboard'].includes(step)
+    ? Math.max(0, Math.min(1, progressIdx / progressSteps))
+    : 0;
 
   const variants = {
     enter: (dir) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0 }),
     center: { x: 0, opacity: 1 },
     exit: (dir) => ({ x: dir > 0 ? '-100%' : '100%', opacity: 0 }),
   };
-
   const transition = { type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.4 };
 
+  const props = { onNext: next, onBack: back, data, setData };
+
   const renderStep = () => {
-    const props = { onNext: next, onBack: back, data, setData };
     switch (step) {
       case 'splash': return <SplashScreen onDone={() => { setDirection(1); setStep('welcome'); }} />;
       case 'welcome': return <WelcomeScreen {...props} />;
@@ -90,9 +110,15 @@ export default function PremiumOnboarding() {
       case 'client_experience': return <ClientExperienceScreen {...props} />;
       case 'client_training': return <ClientTrainingStyleScreen {...props} />;
       case 'client_schedule': return <ClientScheduleScreen {...props} />;
-      case 'client_nutrition': return <ClientNutritionScreen {...props} />;
       case 'client_metrics': return <ClientMetricsScreen {...props} />;
+      case 'client_injuries': return <ClientInjuriesScreen {...props} />;
+      case 'client_health': return <ClientHealthScreen {...props} />;
+      case 'client_allergies': return <ClientAllergiesScreen {...props} />;
+      case 'client_nutrition_habits': return <ClientNutritionHabitsScreen {...props} />;
+      case 'client_lifestyle': return <ClientLifestyleScreen {...props} />;
       case 'client_why': return <ClientWhyScreen {...props} />;
+      case 'client_obstacles': return <ClientObstaclesScreen {...props} />;
+      case 'client_accountability': return <ClientAccountabilityScreen {...props} />;
       case 'ai_generation': return <AIGenerationScreen {...props} role="client" />;
       case 'coach_clients': return <CoachClientsScreen {...props} />;
       case 'coach_type': return <CoachTypeScreen {...props} />;
@@ -106,7 +132,7 @@ export default function PremiumOnboarding() {
 
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ background: '#0A0A0A' }}>
-      {/* Progress bar — only show during flow (not splash/welcome/role/dashboard) */}
+      {/* Progress bar */}
       {!['splash', 'welcome', 'role', 'dashboard'].includes(step) && (
         <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'rgba(255,255,255,0.06)' }}>
           <motion.div

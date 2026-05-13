@@ -10,14 +10,12 @@ const GOALS = [
   { id: 'endurance', label: '🏃 Endurance' },
   { id: 'health', label: '🩺 General Health' },
   { id: 'athletic', label: '🏅 Athleticism' },
+  { id: 'lifestyle', label: '✨ Lifestyle Transformation' },
 ];
 
 export default function ClientGoalScreen({ onNext, onBack, data }) {
   const [selected, setSelected] = useState(data.goals || []);
-
-  const toggle = (id) => {
-    setSelected(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
-  };
+  const toggle = (id) => setSelected(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
 
   return (
     <OnboardingLayout
@@ -30,12 +28,7 @@ export default function ClientGoalScreen({ onNext, onBack, data }) {
     >
       <div className="flex flex-wrap gap-2.5">
         {GOALS.map(g => (
-          <ChipSelect
-            key={g.id}
-            label={g.label}
-            selected={selected.includes(g.id)}
-            onClick={() => toggle(g.id)}
-          />
+          <ChipSelect key={g.id} label={g.label} selected={selected.includes(g.id)} onClick={() => toggle(g.id)} />
         ))}
       </div>
     </OnboardingLayout>
