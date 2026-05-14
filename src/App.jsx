@@ -46,6 +46,7 @@ import Migration from './pages/Migration';
 import FoodLibrary from './pages/FoodLibrary';
 import PremiumOnboarding from './pages/PremiumOnboarding';
 import ClientPortal from './pages/ClientPortal';
+import ClientWorkoutView from './pages/ClientWorkoutView';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -113,6 +114,7 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/start" element={<PremiumOnboarding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
+      <Route path="/workout" element={<ClientWorkoutView />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

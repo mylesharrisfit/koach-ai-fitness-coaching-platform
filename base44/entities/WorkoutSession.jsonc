@@ -1,0 +1,67 @@
+{
+  "name": "WorkoutSession",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "program_id": {
+      "type": "string"
+    },
+    "workout_day_name": {
+      "type": "string"
+    },
+    "workout_day_index": {
+      "type": "number"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_minutes": {
+      "type": "number"
+    },
+    "session_rating": {
+      "type": "number",
+      "description": "1-10 difficulty rating"
+    },
+    "session_note": {
+      "type": "string"
+    },
+    "exercise_logs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "exercise_name": {
+            "type": "string"
+          },
+          "sets_completed": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "set_number": {
+                  "type": "number"
+                },
+                "weight": {
+                  "type": "number"
+                },
+                "reps": {
+                  "type": "number"
+                },
+                "completed": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "client_id",
+    "program_id"
+  ]
+}
