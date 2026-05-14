@@ -69,11 +69,47 @@
                 "rest_seconds": {
                   "type": "number"
                 },
-                "notes": {
-                  "type": "string"
+                "tempo": {
+                  "type": "string",
+                  "description": "e.g. 3-1-2-0"
+                },
+                "rpe": {
+                  "type": "string",
+                  "description": "RPE scale 1-10"
+                },
+                "set_type": {
+                  "type": "string",
+                  "enum": [
+                    "straight",
+                    "superset",
+                    "dropset",
+                    "amrap",
+                    "failure"
+                  ],
+                  "default": "straight",
+                  "description": "Type of set"
                 },
                 "superset_group": {
                   "type": "string"
+                },
+                "section": {
+                  "type": "string",
+                  "enum": [
+                    "warmup",
+                    "main",
+                    "finisher",
+                    "cooldown"
+                  ],
+                  "default": "main",
+                  "description": "Training day section"
+                },
+                "video_url": {
+                  "type": "string",
+                  "description": "Video demo URL (YouTube, direct MP4, etc.)"
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "Coaching notes and instructions"
                 }
               }
             }

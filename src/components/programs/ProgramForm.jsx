@@ -7,16 +7,133 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, GripVertical, TrendingUp, Play, BookOpen } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Play, BookOpen, ChevronDown, ChevronUp, Link, Timer, Zap, Layers, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import ExercisePickerModal from '@/components/exercises/ExercisePickerModal';
+
+const SET_TYPES = [
+  { value: 'straight', label: 'Straight Set' },
+  { value: 'superset', label: 'Superset' },
+  { value: 'dropset', label: 'Dropset' },
+  { value: 'amrap', label: 'AMRAP' },
+  { value: 'failure', label: 'To Failure' },
+];
+
+const SECTIONS = [
+  { value: 'warmup', label: '🔥 Warm-Up' },
+  { value: 'main', label: '💪 Main Work' },
+  { value: 'finisher', label: '⚡ Finisher' },
+  { value: 'cooldown', label: '🧘 Cooldown' },
+];
 
 const defaultForm = {
   title: '', description: '', duration_weeks: 8, difficulty: 'intermediate',
   category: 'custom', days_per_week: 4, is_template: false, workouts: []
 };
+
+const newExercise = (section = 'main') => ({
+  name: '', sets: 3, reps: '10', rest_seconds: 60,
+  tempo: '', notes: '', video_url: '',
+  set_type: 'straight', rpe: '', superset_group: '', section,
+});
+
+function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibrary, onWatchDemo }) {
+  const [expanded, setExpanded] = useState(false);
+  const setTypeColor = ex.set_type === 'superset' ? 'border-l-purple-400' : ex.set_type === 'dropset' ? 'border-l-orange-400' : ex.set_type === 'amrap' ? 'border-l-red-400' : 'border-l-transparent';
+
+  return (
+    <div ref={drag.innerRef} {...drag.draggableProps}
+      className={cn('bg-white border border-[#E7EAF3] rounded-xl overflow-hidden border-l-2', isDragging && 'shadow-md', setTypeColor)}>
+      <div className="flex items-center gap-2 px-3 py-2">
+        <div {...drag.dragHandleProps}><GripVertical className="w-3.5 h-3.5 text-muted-foreground cursor-grab" /></div>
+        {ex.set_type && ex.set_type !== 'straight' && (
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 flex-shrink-0">{ex.set_type.toUpperCase()}</span>
+        )}
+        <Input className="h-8 text-xs flex-1" placeholder="Exercise name" value={ex.name} onChange={e => onUpdate('name', e.target.value)} />
+        <button type="button" onClick={onPickLibrary} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary flex-shrink-0">
+          <BookOpen className="w-3.5 h-3.5" />
+        </button>
+        {(ex.video_url || ex._library_exercise?.video_url) && (
+          <button type="button" onClick={onWatchDemo} className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-50 text-primary flex-shrink-0">
+            <Play className="w-3 h-3" fill="currentColor" />
+          </button>
+        )}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <div className="flex flex-col items-center">
+            <Input type="number" value={ex.sets} onChange={e => onUpdate('sets', Number(e.target.value))} className="h-7 w-11 text-xs text-center p-1" />
+            <span className="text-[9px] text-muted-foreground">sets</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Input value={ex.reps} onChange={e => onUpdate('reps', e.target.value)} className="h-7 w-14 text-xs text-center p-1" placeholder="10" />
+            <span className="text-[9px] text-muted-foreground">reps</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <Input type="number" value={ex.rest_seconds} onChange={e => onUpdate('rest_seconds', Number(e.target.value))} className="h-7 w-12 text-xs text-center p-1" placeholder="60" />
+            <span className="text-[9px] text-muted-foreground">rest s</span>
+          </div>
+        </div>
+        <button type="button" onClick={() => setExpanded(v => !v)}
+          className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0', (ex.tempo || ex.notes || ex.video_url || ex.rpe) ? 'bg-amber-50 text-amber-500' : 'hover:bg-secondary text-muted-foreground')}>
+          {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        </button>
+        <button type="button" onClick={onRemove} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-muted-foreground/50 hover:text-destructive flex-shrink-0">
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {expanded && (
+        <div className="border-t border-[#F6F7FB] bg-[#FAFBFE] px-4 py-3 space-y-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Layers className="w-3 h-3" />Set Type</Label>
+              <select value={ex.set_type || 'straight'} onChange={e => onUpdate('set_type', e.target.value)}
+                className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40">
+                {SET_TYPES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Tag className="w-3 h-3" />Group</Label>
+              <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono text-center" placeholder="A/B/C"
+                value={ex.superset_group || ''} onChange={e => onUpdate('superset_group', e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Timer className="w-3 h-3" />Tempo</Label>
+              <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono" placeholder="3-1-2-0"
+                value={ex.tempo || ''} onChange={e => onUpdate('tempo', e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Zap className="w-3 h-3" />RPE (1–10)</Label>
+              <Input type="number" min="1" max="10" className="h-8 text-sm mt-1 border-[#E7EAF3] text-center" placeholder="8"
+                value={ex.rpe || ''} onChange={e => onUpdate('rpe', e.target.value)} />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Section</Label>
+              <select value={ex.section || 'main'} onChange={e => onUpdate('section', e.target.value)}
+                className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40">
+                {SECTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Link className="w-3 h-3" />Video / YouTube URL</Label>
+              <Input className="h-8 text-xs mt-1 border-[#E7EAF3]" placeholder="https://youtube.com/..."
+                value={ex.video_url || ''} onChange={e => onUpdate('video_url', e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Coaching Notes / Instructions</Label>
+            <textarea rows={2}
+              className="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-[#E7EAF3] bg-white resize-none focus:outline-none focus:border-primary/40"
+              placeholder="Form cues, modifications, client instructions..."
+              value={ex.notes || ''} onChange={e => onUpdate('notes', e.target.value)} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
   const [form, setForm] = useState(defaultForm);
@@ -33,14 +150,14 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
       workouts: [...(f.workouts || []), {
         day_name: `Day ${(f.workouts?.length || 0) + 1}`,
         day_number: (f.workouts?.length || 0) + 1,
-        exercises: [{ name: '', sets: 3, reps: '10', rest_seconds: 60, notes: '', auto_progress: false, progress_increment: 2.5 }]
+        exercises: [newExercise('main')]
       }]
     }));
   };
 
-  const addExercise = (workoutIdx) => {
+  const addExercise = (workoutIdx, section = 'main') => {
     const workouts = [...form.workouts];
-    workouts[workoutIdx].exercises.push({ name: '', sets: 3, reps: '10', rest_seconds: 60, notes: '', auto_progress: false, progress_increment: 2.5 });
+    workouts[workoutIdx].exercises.push(newExercise(section));
     setForm({ ...form, workouts });
   };
 
@@ -188,68 +305,26 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
                     </Button>
                   </div>
 
-                  {/* Exercise header */}
-                  <div className="grid grid-cols-12 gap-2 mb-1 px-1">
-                    <span className="col-span-1 text-[10px] text-muted-foreground"></span>
-                    <span className="col-span-3 text-[10px] text-muted-foreground">Exercise + Library</span>
-                    <span className="col-span-1 text-[10px] text-muted-foreground">Sets</span>
-                    <span className="col-span-2 text-[10px] text-muted-foreground">Reps</span>
-                    <span className="col-span-2 text-[10px] text-muted-foreground">Rest(s)</span>
-                    <span className="col-span-2 text-[10px] text-muted-foreground flex items-center gap-1"><TrendingUp className="w-3 h-3" />Progress</span>
-                  </div>
-
                   <DragDropContext onDragEnd={(r) => onDragEnd(wIdx, r)}>
                     <Droppable droppableId={`workout-${wIdx}`}>
                       {(provided) => (
-                        <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
+                        <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-1.5">
                           {workout.exercises.map((ex, eIdx) => (
                             <Draggable key={eIdx} draggableId={`w${wIdx}-e${eIdx}`} index={eIdx}>
                               {(drag, snapshot) => (
-                                <div
-                                  ref={drag.innerRef}
-                                  {...drag.draggableProps}
-                                  className={cn("grid grid-cols-12 gap-2 items-center rounded-lg", snapshot.isDragging && "bg-primary/5 shadow-md")}
-                                >
-                                  <div className="col-span-1 flex justify-center" {...drag.dragHandleProps}>
-                                    <GripVertical className="w-3.5 h-3.5 text-muted-foreground cursor-grab" />
-                                  </div>
-                                  <div className="col-span-3 flex items-center gap-1">
-                                    <Input className="h-8 text-xs flex-1" placeholder="Exercise" value={ex.name} onChange={e => updateExercise(wIdx, eIdx, 'name', e.target.value)} />
-                                    <Button type="button" variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0 text-muted-foreground hover:text-primary" title="Pick from library"
-                                      onClick={() => setPickerTarget({ wIdx, eIdx })}>
-                                      <BookOpen className="w-3 h-3" />
-                                    </Button>
-                                    {ex._library_exercise?.video_url && (
-                                      <Button type="button" variant="ghost" size="icon" className="h-7 w-7 flex-shrink-0 text-primary" title="Watch demo"
-                                        onClick={() => setDemoExercise(ex._library_exercise)}>
-                                        <Play className="w-3 h-3" fill="currentColor" />
-                                      </Button>
-                                    )}
-                                  </div>
-                                  <Input className="col-span-1 h-8 text-xs" type="number" placeholder="3" value={ex.sets} onChange={e => updateExercise(wIdx, eIdx, 'sets', Number(e.target.value))} />
-                                  <Input className="col-span-2 h-8 text-xs" placeholder="10" value={ex.reps} onChange={e => updateExercise(wIdx, eIdx, 'reps', e.target.value)} />
-                                  <Input className="col-span-2 h-8 text-xs" type="number" placeholder="60" value={ex.rest_seconds} onChange={e => updateExercise(wIdx, eIdx, 'rest_seconds', Number(e.target.value))} />
-                                  <div className="col-span-2 flex items-center gap-1">
-                                    <Switch
-                                      checked={!!ex.auto_progress}
-                                      onCheckedChange={v => updateExercise(wIdx, eIdx, 'auto_progress', v)}
-                                      className="scale-75"
-                                    />
-                                    {ex.auto_progress && (
-                                      <Input
-                                        className="h-7 text-xs w-14"
-                                        type="number"
-                                        step="0.5"
-                                        placeholder="+kg"
-                                        value={ex.progress_increment}
-                                        onChange={e => updateExercise(wIdx, eIdx, 'progress_increment', Number(e.target.value))}
-                                      />
-                                    )}
-                                  </div>
-                                  <Button type="button" variant="ghost" size="icon" className="col-span-1 h-8 w-8 text-destructive" onClick={() => removeExercise(wIdx, eIdx)}>
-                                    <Trash2 className="w-3 h-3" />
-                                  </Button>
-                                </div>
+                                <ExerciseFormRow
+                                  key={eIdx}
+                                  ex={ex}
+                                  drag={drag}
+                                  isDragging={snapshot.isDragging}
+                                  onUpdate={(field, val) => updateExercise(wIdx, eIdx, field, val)}
+                                  onRemove={() => removeExercise(wIdx, eIdx)}
+                                  onPickLibrary={() => setPickerTarget({ wIdx, eIdx })}
+                                  onWatchDemo={() => {
+                                    if (ex.video_url) window.open(ex.video_url, '_blank');
+                                    else if (ex._library_exercise) setDemoExercise(ex._library_exercise);
+                                  }}
+                                />
                               )}
                             </Draggable>
                           ))}
@@ -268,10 +343,7 @@ export default function ProgramForm({ open, onOpenChange, onSubmit, program }) {
           </div>
 
           <div className="flex items-center justify-between pt-2 border-t border-border">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <TrendingUp className="w-3.5 h-3.5 text-accent" />
-              <span>Exercises with auto-progress will add weight each week when completed</span>
-            </div>
+            <div />
             <div className="flex gap-3">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit">{program ? 'Update' : 'Create Program'}</Button>

@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import {
   Plus, Trash2, GripVertical, ArrowLeft, Save, Dumbbell,
   ChevronDown, ChevronUp, BookOpen, Play, Copy, Users, Check,
-  Search, Star, Zap, X
+  Search, Star, X, Link, Zap, Timer, Tag, Layers
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
@@ -28,11 +28,36 @@ const MUSCLE_COLORS = {
   full_body: 'bg-indigo-50 text-indigo-700', cardio: 'bg-teal-50 text-teal-700',
 };
 
-const newExercise = () => ({
-  name: '', sets: 3, reps: '10', rest_seconds: 60, tempo: '', notes: '', superset_group: '',
+const SET_TYPES = [
+  { value: 'straight', label: 'Straight Set', color: 'bg-slate-100 text-slate-600' },
+  { value: 'superset', label: 'Superset', color: 'bg-purple-100 text-purple-700' },
+  { value: 'dropset', label: 'Dropset', color: 'bg-orange-100 text-orange-700' },
+  { value: 'amrap', label: 'AMRAP', color: 'bg-red-100 text-red-700' },
+  { value: 'failure', label: 'To Failure', color: 'bg-rose-100 text-rose-700' },
+];
+
+const SECTION_LABELS = [
+  { value: 'warmup', label: '🔥 Warm-Up', color: 'border-l-amber-400 bg-amber-50/40' },
+  { value: 'main', label: '💪 Main Work', color: 'border-l-blue-500 bg-blue-50/30' },
+  { value: 'finisher', label: '⚡ Finisher', color: 'border-l-red-400 bg-red-50/30' },
+  { value: 'cooldown', label: '🧘 Cooldown / Stretching', color: 'border-l-emerald-400 bg-emerald-50/30' },
+];
+
+const SECTION_HEADER_STYLES = {
+  warmup:   { bar: 'bg-amber-400', text: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
+  main:     { bar: 'bg-blue-500',  text: 'text-blue-700',  bg: 'bg-blue-50 border-blue-200' },
+  finisher: { bar: 'bg-red-400',   text: 'text-red-700',   bg: 'bg-red-50 border-red-200' },
+  cooldown: { bar: 'bg-emerald-400', text: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
+};
+
+const newExercise = (section = 'main') => ({
+  name: '', sets: 3, reps: '10', rest_seconds: 60,
+  tempo: '', notes: '', video_url: '',
+  set_type: 'straight', rpe: '', superset_group: '',
+  section,
 });
 const newWorkout = (idx) => ({
-  day_name: `Day ${idx + 1}`, day_number: idx + 1, exercises: [newExercise()],
+  day_name: `Day ${idx + 1}`, day_number: idx + 1, exercises: [newExercise('main')],
 });
 const defaultMeta = {
   title: '', description: '', duration_weeks: 8, difficulty: 'intermediate',
@@ -43,18 +68,15 @@ const defaultMeta = {
 function ExerciseLibraryModal({ open, onClose, onSelect }) {
   const [search, setSearch] = useState('');
   const [muscle, setMuscle] = useState('all');
-
   const { data: exercises = [] } = useQuery({
     queryKey: ['exercises'],
     queryFn: () => base44.entities.ExerciseLibrary.list('-created_date', 200),
     enabled: open,
   });
-
   const filtered = exercises.filter(ex =>
     (!search || ex.name.toLowerCase().includes(search.toLowerCase())) &&
     (muscle === 'all' || ex.muscle_group === muscle)
   );
-
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
       <DialogContent className="max-w-lg max-h-[80vh] flex flex-col p-0 overflow-hidden rounded-2xl">
@@ -85,8 +107,7 @@ function ExerciseLibraryModal({ open, onClose, onSelect }) {
             <button key={ex.id} onClick={() => { onSelect(ex); onClose(); }}
               className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#F6F7FB] transition-colors group text-left mb-0.5">
               <div className="w-9 h-9 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center flex-shrink-0 overflow-hidden">
-                {ex.thumbnail_url
-                  ? <img src={ex.thumbnail_url} alt={ex.name} className="w-full h-full object-cover" />
+                {ex.thumbnail_url ? <img src={ex.thumbnail_url} alt={ex.name} className="w-full h-full object-cover" />
                   : ex.video_url ? <Play className="w-3.5 h-3.5 text-primary" />
                   : <Dumbbell className="w-3.5 h-3.5 text-[#9CA3AF]" />}
               </div>
@@ -122,24 +143,16 @@ function AssignClientModal({ open, onClose, programId, programTitle }) {
   const [selected, setSelected] = useState(null);
   const [done, setDone] = useState(false);
   const queryClient = useQueryClient();
-
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list(),
     enabled: open,
   });
-
   const assignMutation = useMutation({
     mutationFn: () => base44.entities.Client.update(selected, { assigned_program_id: programId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['clients'] });
-      setDone(true);
-      toast.success('Program assigned!');
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); setDone(true); toast.success('Program assigned!'); },
   });
-
   const handleClose = () => { setSelected(null); setDone(false); onClose(); };
-
   return (
     <Dialog open={open} onOpenChange={v => !v && handleClose()}>
       <DialogContent className="max-w-sm rounded-2xl p-0 overflow-hidden">
@@ -175,8 +188,7 @@ function AssignClientModal({ open, onClose, programId, programTitle }) {
             </div>
             <div className="p-4 border-t border-[#E7EAF3] flex gap-2">
               <Button variant="outline" className="flex-1 text-xs" onClick={handleClose}>Cancel</Button>
-              <Button className="flex-1 text-xs" disabled={!selected || assignMutation.isPending}
-                onClick={() => assignMutation.mutate()}>
+              <Button className="flex-1 text-xs" disabled={!selected || assignMutation.isPending} onClick={() => assignMutation.mutate()}>
                 {assignMutation.isPending ? 'Assigning...' : 'Assign Program'}
               </Button>
             </div>
@@ -187,22 +199,58 @@ function AssignClientModal({ open, onClose, programId, programTitle }) {
   );
 }
 
+/* ── Section Divider ── */
+function SectionDivider({ section, onAddExercise }) {
+  const s = SECTION_HEADER_STYLES[section] || SECTION_HEADER_STYLES.main;
+  const label = SECTION_LABELS.find(l => l.value === section)?.label || section;
+  return (
+    <div className={`flex items-center gap-3 px-3 py-2 rounded-xl border ${s.bg} mb-1 mt-2`}>
+      <div className={`w-1 h-5 rounded-full ${s.bar}`} />
+      <span className={`text-xs font-bold uppercase tracking-wider ${s.text}`}>{label}</span>
+      <button onClick={onAddExercise}
+        className={`ml-auto flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-lg ${s.bg} ${s.text} hover:opacity-80 border border-current/20 transition-opacity`}>
+        <Plus className="w-3 h-3" /> Add
+      </button>
+    </div>
+  );
+}
+
 /* ── Exercise Row ── */
 function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onPickLibrary, onWatchDemo }) {
   const [expanded, setExpanded] = useState(false);
-  const hasExtra = ex.tempo || ex.notes || ex.superset_group;
+  const setTypeInfo = SET_TYPES.find(s => s.value === ex.set_type) || SET_TYPES[0];
+  const hasExtra = ex.tempo || ex.notes || ex.video_url || ex.rpe || (ex.set_type && ex.set_type !== 'straight') || ex.superset_group;
+
+  const borderColor = ex.set_type === 'superset' ? 'border-l-purple-400'
+    : ex.set_type === 'dropset' ? 'border-l-orange-400'
+    : ex.set_type === 'amrap' ? 'border-l-red-400'
+    : ex.set_type === 'failure' ? 'border-l-rose-400'
+    : ex.superset_group ? 'border-l-purple-400'
+    : 'border-l-transparent';
 
   return (
     <div ref={drag.innerRef} {...drag.draggableProps}
-      className={cn('bg-white border rounded-xl overflow-hidden transition-all',
+      className={cn('bg-white border rounded-xl overflow-hidden transition-all border-l-2',
         isDragging ? 'shadow-lg border-primary/30' : 'border-[#E7EAF3]',
-        ex.superset_group && 'border-l-2 border-l-purple-400'
+        borderColor
       )}>
       {/* Main row */}
       <div className="flex items-center gap-2 px-3 py-2.5">
         <div {...drag.dragHandleProps} className="flex-shrink-0 cursor-grab">
           <GripVertical className="w-3.5 h-3.5 text-[#D1D5DB]" />
         </div>
+
+        {/* Set type pill */}
+        {ex.set_type && ex.set_type !== 'straight' && (
+          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${setTypeInfo.color}`}>
+            {setTypeInfo.label.split(' ')[0].toUpperCase()}
+          </span>
+        )}
+        {ex.superset_group && (
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 bg-purple-100 text-purple-700">
+            {ex.superset_group}
+          </span>
+        )}
 
         {/* Exercise name + library */}
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
@@ -216,7 +264,7 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
             className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#F6F7FB] text-[#9CA3AF] hover:text-primary transition-colors flex-shrink-0">
             <BookOpen className="w-3.5 h-3.5" />
           </button>
-          {ex._library_exercise?.video_url && (
+          {(ex._library_exercise?.video_url || ex.video_url) && (
             <button onClick={onWatchDemo} title="Watch demo"
               className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-50 text-primary hover:bg-blue-100 transition-colors flex-shrink-0">
               <Play className="w-3 h-3" fill="currentColor" />
@@ -259,23 +307,85 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
         </div>
       </div>
 
-      {/* Expanded panel — tempo, notes, superset */}
+      {/* Expanded panel */}
       {expanded && (
-        <div className="border-t border-[#F6F7FB] bg-[#FAFBFE] px-4 py-3 grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <div>
-            <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Tempo</Label>
-            <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono" placeholder="3-1-2-0"
-              value={ex.tempo || ''} onChange={e => onUpdate('tempo', e.target.value)} />
+        <div className="border-t border-[#F6F7FB] bg-[#FAFBFE] px-4 py-3 space-y-3">
+          {/* Row 1: Set Type + Superset Group + Tempo + RPE */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+                <Layers className="w-3 h-3" /> Set Type
+              </Label>
+              <select
+                value={ex.set_type || 'straight'}
+                onChange={e => onUpdate('set_type', e.target.value)}
+                className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40"
+              >
+                {SET_TYPES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+                <Tag className="w-3 h-3" /> Group (A/B/C)
+              </Label>
+              <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono text-center" placeholder="A"
+                value={ex.superset_group || ''} onChange={e => onUpdate('superset_group', e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+                <Timer className="w-3 h-3" /> Tempo
+              </Label>
+              <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono" placeholder="3-1-2-0"
+                value={ex.tempo || ''} onChange={e => onUpdate('tempo', e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+                <Zap className="w-3 h-3" /> RPE (1–10)
+              </Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Input type="number" min="1" max="10" className="h-8 text-sm border-[#E7EAF3] text-center w-16" placeholder="8"
+                  value={ex.rpe || ''} onChange={e => onUpdate('rpe', e.target.value)} />
+                {ex.rpe && (
+                  <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded-md',
+                    ex.rpe >= 9 ? 'bg-red-100 text-red-700' : ex.rpe >= 7 ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700')}>
+                    RPE {ex.rpe}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          <div>
-            <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Superset</Label>
-            <Input className="h-8 text-sm mt-1 border-[#E7EAF3]" placeholder="A, B, C..."
-              value={ex.superset_group || ''} onChange={e => onUpdate('superset_group', e.target.value)} />
+
+          {/* Row 2: Section + Video URL */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Section</Label>
+              <select
+                value={ex.section || 'main'}
+                onChange={e => onUpdate('section', e.target.value)}
+                className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40"
+              >
+                {SECTION_LABELS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider flex items-center gap-1">
+                <Link className="w-3 h-3" /> Video / YouTube URL
+              </Label>
+              <Input className="h-8 text-xs mt-1 border-[#E7EAF3]" placeholder="https://youtube.com/..."
+                value={ex.video_url || ''} onChange={e => onUpdate('video_url', e.target.value)} />
+            </div>
           </div>
-          <div className="col-span-2 sm:col-span-1">
-            <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Coaching Notes</Label>
-            <Input className="h-8 text-sm mt-1 border-[#E7EAF3]" placeholder="Form cues, modifications..."
-              value={ex.notes || ''} onChange={e => onUpdate('notes', e.target.value)} />
+
+          {/* Row 3: Coaching Notes */}
+          <div>
+            <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Coaching Notes / Instructions</Label>
+            <textarea
+              rows={2}
+              className="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-[#E7EAF3] bg-white resize-none focus:outline-none focus:border-primary/40"
+              placeholder="Form cues, modifications, client-specific instructions..."
+              value={ex.notes || ''}
+              onChange={e => onUpdate('notes', e.target.value)}
+            />
           </div>
         </div>
       )}
@@ -302,7 +412,7 @@ export default function ProgramBuilder() {
 
   const [workouts, setWorkouts] = useState(existingProgram?.workouts || []);
   const [activeDay, setActiveDay] = useState(0);
-  const [pickerTarget, setPickerTarget] = useState(null); // { wIdx, eIdx } or 'add'
+  const [pickerTarget, setPickerTarget] = useState(null);
   const [demoExercise, setDemoExercise] = useState(null);
   const [showAssign, setShowAssign] = useState(false);
   const [savedId, setSavedId] = useState(existingProgram?.id || null);
@@ -323,7 +433,6 @@ export default function ProgramBuilder() {
     saveMutation.mutate({ ...meta, workouts, duration_weeks: Number(meta.duration_weeks), days_per_week: Number(meta.days_per_week) });
   };
 
-  // Workout helpers
   const addWorkout = () => {
     const next = [...workouts, newWorkout(workouts.length)];
     setWorkouts(next); setActiveDay(next.length - 1);
@@ -340,11 +449,10 @@ export default function ProgramBuilder() {
   const updateWorkoutName = (idx, val) =>
     setWorkouts(w => w.map((wk, i) => i !== idx ? wk : { ...wk, day_name: val }));
 
-  // Exercise helpers
-  const addExercise = (wIdx, libraryEx = null) => {
+  const addExercise = (wIdx, libraryEx = null, section = 'main') => {
     const ex = libraryEx
-      ? { ...newExercise(), name: libraryEx.name, rest_seconds: libraryEx.default_rest_seconds || 60, _library_id: libraryEx.id, _library_exercise: libraryEx }
-      : newExercise();
+      ? { ...newExercise(section), name: libraryEx.name, rest_seconds: libraryEx.default_rest_seconds || 60, _library_id: libraryEx.id, _library_exercise: libraryEx, video_url: libraryEx.video_url || '' }
+      : newExercise(section);
     setWorkouts(w => w.map((wk, i) => i !== wIdx ? wk : { ...wk, exercises: [...wk.exercises, ex] }));
   };
   const removeExercise = (wIdx, eIdx) =>
@@ -355,21 +463,21 @@ export default function ProgramBuilder() {
     }));
   const selectFromLibrary = (libraryEx) => {
     if (!pickerTarget) return;
-    if (pickerTarget === 'add') {
-      addExercise(activeDay, libraryEx);
+    if (pickerTarget.mode === 'add') {
+      addExercise(activeDay, libraryEx, pickerTarget.section || 'main');
     } else {
       const { wIdx, eIdx } = pickerTarget;
       setWorkouts(w => w.map((wk, i) => i !== wIdx ? wk : {
         ...wk, exercises: wk.exercises.map((ex, ei) => ei !== eIdx ? ex : {
           ...ex, name: libraryEx.name, rest_seconds: libraryEx.default_rest_seconds || 60,
           _library_id: libraryEx.id, _library_exercise: libraryEx,
+          video_url: libraryEx.video_url || ex.video_url || '',
         })
       }));
     }
     setPickerTarget(null);
   };
 
-  // Drag & Drop
   const onDragEnd = (result) => {
     const { source, destination, type } = result;
     if (!destination) return;
@@ -390,9 +498,22 @@ export default function ProgramBuilder() {
   const currentWorkout = workouts[activeDay];
   const canAssign = !!(savedId || existingProgram?.id);
 
+  // Group exercises by section for display
+  const exercisesBySection = (exercises = []) => {
+    const sections = ['warmup', 'main', 'finisher', 'cooldown'];
+    const grouped = {};
+    sections.forEach(s => { grouped[s] = []; });
+    exercises.forEach((ex, origIdx) => {
+      const sec = ex.section || 'main';
+      if (!grouped[sec]) grouped[sec] = [];
+      grouped[sec].push({ ex, origIdx });
+    });
+    // Only return sections that have exercises OR are 'main'
+    return sections.filter(s => grouped[s].length > 0 || s === 'main').map(s => ({ section: s, items: grouped[s] }));
+  };
+
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex flex-col">
-
       {/* ── Top bar ── */}
       <div className="sticky top-0 z-20 bg-white border-b border-[#E7EAF3] flex items-center gap-3 px-4 sm:px-6 py-3 shadow-sm">
         <button onClick={() => navigate('/programs')}
@@ -401,16 +522,14 @@ export default function ProgramBuilder() {
           <span className="text-sm font-medium hidden sm:inline">Programs</span>
         </button>
         <span className="text-[#D1D5DB] hidden sm:inline">/</span>
-
         <Input
           value={meta.title}
           onChange={e => setMeta(m => ({ ...m, title: e.target.value }))}
           placeholder="Program name..."
           className="border-0 bg-transparent font-bold text-[15px] h-auto p-0 focus-visible:ring-0 flex-1 max-w-xs placeholder:text-[#D1D5DB]"
         />
-
         <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-          <div className="flex items-center gap-1.5 hidden sm:flex">
+          <div className="hidden sm:flex items-center gap-1.5">
             <Switch checked={!!meta.is_template} onCheckedChange={v => setMeta(m => ({ ...m, is_template: v }))} className="scale-75" />
             <span className="text-xs text-[#6B7280] font-medium">Template</span>
           </div>
@@ -427,11 +546,8 @@ export default function ProgramBuilder() {
       </div>
 
       <div className="flex flex-1" style={{ height: 'calc(100vh - 57px)', overflow: 'hidden' }}>
-
         {/* ── Left sidebar ── */}
         <div className="w-52 flex-shrink-0 bg-white border-r border-[#E7EAF3] flex flex-col overflow-hidden hidden sm:flex">
-
-          {/* Days list */}
           <div className="p-4 border-b border-[#F6F7FB]">
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">Training Days</p>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -449,7 +565,7 @@ export default function ProgramBuilder() {
                             )}
                             onClick={() => setActiveDay(idx)}
                           >
-                            <div {...drag.dragHandleProps}><GripVertical className="w-3 h-3 text-[#D1D5DB] group-hover:text-[#9CA3AF]" /></div>
+                            <div {...drag.dragHandleProps}><GripVertical className="w-3 h-3 text-[#D1D5DB]" /></div>
                             <span className="text-[13px] font-medium flex-1 truncate">{wk.day_name}</span>
                             <span className="text-[10px] text-[#9CA3AF]">{wk.exercises.filter(e => e.name).length}</span>
                           </div>
@@ -509,9 +625,7 @@ export default function ProgramBuilder() {
                 <h2 className="font-bold text-lg text-[#1F2A44]">Start building</h2>
                 <p className="text-sm text-[#6B7280] mt-1">Add your first training day to begin</p>
               </div>
-              <Button onClick={addWorkout} className="gap-1.5">
-                <Plus className="w-4 h-4" /> Add Training Day
-              </Button>
+              <Button onClick={addWorkout} className="gap-1.5"><Plus className="w-4 h-4" /> Add Training Day</Button>
             </div>
           ) : currentWorkout ? (
             <div className="flex-1 flex flex-col overflow-hidden">
@@ -537,40 +651,53 @@ export default function ProgramBuilder() {
                 </div>
               </div>
 
-              {/* Exercise list */}
-              <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
-                {/* Column hints */}
-                <div className="flex items-center gap-2 mb-3 px-3">
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Exercise</span>
-                  </div>
-                  <div className="flex gap-4 flex-shrink-0 pr-16">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] w-12 text-center">Sets</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] w-16 text-center">Reps</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] w-14 text-center">Rest</span>
-                  </div>
+              {/* Column hints */}
+              <div className="flex items-center gap-2 px-4 sm:px-6 pt-3 pb-1">
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Exercise</span>
                 </div>
+                <div className="flex gap-4 flex-shrink-0 pr-16">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] w-12 text-center">Sets</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] w-16 text-center">Reps</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] w-14 text-center">Rest</span>
+                </div>
+              </div>
 
+              {/* Exercise list — sectioned */}
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6">
                 <DragDropContext onDragEnd={onDragEnd}>
                   <Droppable droppableId={`ex-${activeDay}`}>
                     {(prov) => (
-                      <div ref={prov.innerRef} {...prov.droppableProps} className="space-y-2">
-                        {currentWorkout.exercises.map((ex, eIdx) => (
-                          <Draggable key={`ex-${activeDay}-${eIdx}`} draggableId={`ex-${activeDay}-${eIdx}`} index={eIdx}>
-                            {(drag, snap) => (
-                              <ExerciseRow
-                                ex={ex}
-                                wIdx={activeDay}
-                                eIdx={eIdx}
-                                drag={drag}
-                                isDragging={snap.isDragging}
-                                onUpdate={(field, val) => updateExercise(activeDay, eIdx, field, val)}
-                                onRemove={() => removeExercise(activeDay, eIdx)}
-                                onPickLibrary={() => setPickerTarget({ wIdx: activeDay, eIdx })}
-                                onWatchDemo={() => setDemoExercise(ex._library_exercise)}
-                              />
-                            )}
-                          </Draggable>
+                      <div ref={prov.innerRef} {...prov.droppableProps} className="space-y-1">
+                        {exercisesBySection(currentWorkout.exercises).map(({ section, items }) => (
+                          <div key={section}>
+                            <SectionDivider
+                              section={section}
+                              onAddExercise={() => addExercise(activeDay, null, section)}
+                            />
+                            <div className="space-y-1.5 mb-2">
+                              {items.map(({ ex, origIdx }) => (
+                                <Draggable key={`ex-${activeDay}-${origIdx}`} draggableId={`ex-${activeDay}-${origIdx}`} index={origIdx}>
+                                  {(drag, snap) => (
+                                    <ExerciseRow
+                                      ex={ex}
+                                      wIdx={activeDay}
+                                      eIdx={origIdx}
+                                      drag={drag}
+                                      isDragging={snap.isDragging}
+                                      onUpdate={(field, val) => updateExercise(activeDay, origIdx, field, val)}
+                                      onRemove={() => removeExercise(activeDay, origIdx)}
+                                      onPickLibrary={() => setPickerTarget({ wIdx: activeDay, eIdx: origIdx })}
+                                      onWatchDemo={() => {
+                                        if (ex.video_url) window.open(ex.video_url, '_blank');
+                                        else if (ex._library_exercise) setDemoExercise(ex._library_exercise);
+                                      }}
+                                    />
+                                  )}
+                                </Draggable>
+                              ))}
+                            </div>
+                          </div>
                         ))}
                         {prov.placeholder}
                       </div>
@@ -584,7 +711,7 @@ export default function ProgramBuilder() {
                     className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-dashed border-[#D1D5DB] text-sm text-[#9CA3AF] hover:border-primary hover:text-primary hover:bg-[#EEF4FF]/30 transition-all">
                     <Plus className="w-3.5 h-3.5" /> Add Exercise
                   </button>
-                  <button onClick={() => setPickerTarget('add')}
+                  <button onClick={() => setPickerTarget({ mode: 'add', section: 'main' })}
                     className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-dashed border-[#D1D5DB] text-sm text-[#9CA3AF] hover:border-primary hover:text-primary hover:bg-[#EEF4FF]/30 transition-all">
                     <BookOpen className="w-3.5 h-3.5" /> From Library
                   </button>
