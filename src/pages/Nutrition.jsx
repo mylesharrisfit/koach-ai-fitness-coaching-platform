@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Salad, MoreHorizontal, Edit, Trash2, Flame, Beef, Wheat, Droplets, Copy, Leaf, Lock } from 'lucide-react';
+import { Plus, Sparkles, BookOpen, Users, Lock, Search, SlidersHorizontal, Salad } from 'lucide-react';
 import { getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import PageHeader from '../components/shared/PageHeader';
-import NutritionForm from '../components/nutrition/NutritionForm';
+import { Input } from '@/components/ui/input';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
+import NutritionForm from '../components/nutrition/NutritionForm';
+import NutritionInsightCards from '../components/nutrition/NutritionInsightCards';
+import NutritionPlanCard from '../components/nutrition/NutritionPlanCard';
+import AIGeneratorModal from '../components/nutrition/AIGeneratorModal';
+import { motion } from 'framer-motion';
+
+const FILTER_TABS = ['All', 'Macro Tracking', 'Habit Mode', 'Templates'];
 
 export default function Nutrition() {
   const [showForm, setShowForm] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState('All');
+  const [pendingMeals, setPendingMeals] = useState(null);
   const queryClient = useQueryClient();
   const { openUpgradeModal } = useUpgradeModal();
 
@@ -50,128 +58,197 @@ export default function Nutrition() {
   const nutritionLimit = getLimit(currentUser, 'max_nutrition_plans');
   const atLimit = nutritionLimit !== -1 && plans.length >= nutritionLimit;
 
-  const openCreate = () => { setEditing(null); setShowForm(true); };
+  const openCreate = (initialData = {}) => {
+    setEditing(null);
+    setShowForm(true);
+    if (initialData.meals) setPendingMeals(initialData.meals);
+  };
+
   const openEdit = (plan) => { setEditing(plan); setShowForm(true); };
 
   const handleSubmit = (data) => {
     if (editing) updateMutation.mutate({ id: editing.id, data });
     else createMutation.mutate(data);
+    setPendingMeals(null);
   };
 
+  const handleAIApply = (result) => {
+    setPendingMeals(result.meals);
+    setEditing(null);
+    setShowForm(true);
+  };
+
+  // Filter plans
+  const filtered = plans.filter(p => {
+    const matchesSearch = !search || p.title?.toLowerCase().includes(search.toLowerCase());
+    const matchesTab =
+      activeTab === 'All' ||
+      (activeTab === 'Macro Tracking' && p.tracking_mode !== 'habits') ||
+      (activeTab === 'Habit Mode' && p.tracking_mode === 'habits') ||
+      (activeTab === 'Templates' && p.is_template);
+    return matchesSearch && matchesTab;
+  });
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader title="Nutrition Plans" subtitle={`${plans.length} plans`}
-        actions={
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
+
+      {/* ── HEADER ── */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-heading font-bold text-foreground tracking-tight">Nutrition System</h1>
+          <p className="text-sm text-muted-foreground mt-1">AI-powered nutrition coaching for performance, recovery, and adherence.</p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
-            onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openCreate(); }}
-            variant={atLimit ? 'outline' : 'default'}
-            className={atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}
+            variant="outline"
+            className="gap-2 text-sm"
+            onClick={() => setShowAIModal(true)}
           >
-            {atLimit ? <Lock className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-            {atLimit ? `Limit Reached (${plans.length}/${nutritionLimit})` : 'Create Plan'}
+            <Sparkles className="w-4 h-4 text-primary" />
+            AI Generator
           </Button>
-        }
-      />
-      <LimitBanner limitKey="max_nutrition_plans" currentCount={plans.length} label="nutrition plans" featureKey="clients" className="mb-6" />
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1,2,3].map(i => <div key={i} className="h-48 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse" />)}
+          <Button
+            onClick={() => {
+              if (atLimit) { openUpgradeModal('clients'); return; }
+              openCreate();
+            }}
+            variant={atLimit ? 'outline' : 'default'}
+            className={`gap-2 text-sm ${atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}`}
+          >
+            {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {atLimit ? `Limit (${plans.length}/${nutritionLimit})` : 'Create Plan'}
+          </Button>
         </div>
-      ) : plans.length === 0 ? (
-        <div className="text-center py-16">
-          <Salad className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">No nutrition plans yet.</p>
+      </div>
+
+      <LimitBanner limitKey="max_nutrition_plans" currentCount={plans.length} label="nutrition plans" featureKey="clients" />
+
+      {/* ── AI INSIGHT CARDS ── */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Sparkles className="w-4 h-4 text-primary" />
+          <p className="text-sm font-semibold text-foreground">AI Insights</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {plans.map(plan => {
-            const isHabits = plan.tracking_mode === 'habits';
-            return (
-              <div key={plan.id} className="bg-white rounded-2xl border border-[#E7EAF3] hover:border-primary/20 hover:shadow-md transition-all group overflow-hidden shadow-sm">
-                <div className={`h-2 ${isHabits ? 'bg-emerald-400' : 'bg-primary'}`} />
-                <div className="p-5">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-heading font-semibold truncate text-[#1F2A44]">{plan.title}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        {isHabits ? (
-                          <Badge variant="outline" className="text-[10px] text-accent border-accent/30 gap-1">
-                            <Leaf className="w-2.5 h-2.5" /> Habit Mode
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-[10px]">Macro Tracking</Badge>
-                        )}
-                      </div>
-                    </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-100 md:opacity-0 md:group-hover:opacity-100">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => openEdit(plan)}><Edit className="w-4 h-4 mr-2" /> Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => duplicatePlan(plan)}><Copy className="w-4 h-4 mr-2" /> Duplicate</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(plan.id)}><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+        <NutritionInsightCards />
+      </div>
 
-                  {plan.description && <p className="text-sm text-[#374151] mb-4 line-clamp-2">{plan.description}</p>}
+      {/* ── STATS ROW ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Total Plans', value: plans.length, icon: BookOpen, color: 'text-primary', bg: 'bg-blue-50 border-blue-100' },
+          { label: 'Macro Plans', value: plans.filter(p => p.tracking_mode !== 'habits').length, icon: SlidersHorizontal, color: 'text-amber-500', bg: 'bg-amber-50 border-amber-100' },
+          { label: 'Habit Plans', value: plans.filter(p => p.tracking_mode === 'habits').length, icon: Users, color: 'text-emerald-500', bg: 'bg-emerald-50 border-emerald-100' },
+          { label: 'Templates', value: plans.filter(p => p.is_template).length, icon: Sparkles, color: 'text-purple-500', bg: 'bg-purple-50 border-purple-100' },
+        ].map(({ label, value, icon: Icon, color, bg }) => (
+          <div key={label} className={`p-4 rounded-2xl border ${bg} flex items-center gap-3`}>
+            <div className="p-2 bg-white/70 rounded-xl">
+              <Icon className={`w-4 h-4 ${color}`} />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-foreground">{value}</p>
+              <p className="text-xs text-muted-foreground">{label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
-                  {isHabits ? (
-                    <div className="space-y-1.5">
-                      {(plan.meals || []).slice(0, 3).map((m, i) => (
-                        <div key={i} className="flex items-start gap-2 text-xs">
-                          <Leaf className="w-3 h-3 text-accent mt-0.5 flex-shrink-0" />
-                          <span className="text-muted-foreground line-clamp-1">{m.habit_description || m.meal_name}</span>
-                        </div>
-                      ))}
-                      {(plan.meals || []).length > 3 && (
-                        <p className="text-xs text-muted-foreground pl-5">+{plan.meals.length - 3} more habits</p>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-4 gap-2">
-                      <div className="text-center p-2 rounded-lg bg-orange-50 border border-orange-100">
-                        <Flame className="w-4 h-4 text-orange-500 mx-auto" />
-                        <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.calories || 0}</p>
-                        <p className="text-[10px] text-[#374151]">cal</p>
-                      </div>
-                      <div className="text-center p-2 rounded-lg bg-red-50 border border-red-100">
-                        <Beef className="w-4 h-4 text-red-500 mx-auto" />
-                        <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.protein_g || 0}g</p>
-                        <p className="text-[10px] text-[#374151]">protein</p>
-                      </div>
-                      <div className="text-center p-2 rounded-lg bg-amber-50 border border-amber-100">
-                        <Wheat className="w-4 h-4 text-amber-500 mx-auto" />
-                        <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.carbs_g || 0}g</p>
-                        <p className="text-[10px] text-[#374151]">carbs</p>
-                      </div>
-                      <div className="text-center p-2 rounded-lg bg-[#EEF4FF] border border-blue-100">
-                        <Droplets className="w-4 h-4 text-primary mx-auto" />
-                        <p className="text-xs font-bold mt-1 text-[#1F2A44]">{plan.fats_g || 0}g</p>
-                        <p className="text-[10px] text-[#374151]">fats</p>
-                      </div>
-                    </div>
-                  )}
+      {/* ── PLAN LIBRARY ── */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h2 className="text-base font-heading font-bold text-foreground">Plan Library</h2>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search plans…"
+                className="pl-8 h-9 text-sm w-48"
+              />
+            </div>
+          </div>
+        </div>
 
-                  {(plan.meals || []).length > 0 && !isHabits && (
-                    <p className="text-xs text-[#374151] mt-3 border-t border-[#E7EAF3] pt-2">{plan.meals.length} meals configured</p>
-                  )}
-                </div>
+        {/* Filter tabs */}
+        <div className="flex gap-1.5 bg-secondary/50 rounded-xl p-1 w-fit flex-wrap">
+          {FILTER_TABS.map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === tab ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {tab}
+              {tab !== 'All' && (
+                <span className="ml-1.5 text-[10px] opacity-60">
+                  ({tab === 'Macro Tracking' ? plans.filter(p => p.tracking_mode !== 'habits').length
+                    : tab === 'Habit Mode' ? plans.filter(p => p.tracking_mode === 'habits').length
+                    : plans.filter(p => p.is_template).length})
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Plans grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-56 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-20 rounded-2xl border-2 border-dashed border-[#E7EAF3]"
+          >
+            <Salad className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+            <p className="font-semibold text-foreground mb-1">
+              {search ? `No plans matching "${search}"` : 'No nutrition plans yet'}
+            </p>
+            <p className="text-sm text-muted-foreground mb-5">
+              {search ? 'Try a different search term.' : 'Create your first plan or use the AI Generator to get started instantly.'}
+            </p>
+            {!search && (
+              <div className="flex items-center justify-center gap-3">
+                <Button variant="outline" onClick={() => setShowAIModal(true)} className="gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" /> AI Generator
+                </Button>
+                <Button onClick={() => openCreate()} className="gap-2">
+                  <Plus className="w-4 h-4" /> Create Plan
+                </Button>
               </div>
-            );
-          })}
-        </div>
-      )}
+            )}
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filtered.map((plan, i) => (
+              <NutritionPlanCard
+                key={plan.id}
+                plan={plan}
+                index={i}
+                onEdit={() => openEdit(plan)}
+                onDuplicate={() => duplicatePlan(plan)}
+                onDelete={() => deleteMutation.mutate(plan.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
+      {/* ── MODALS ── */}
       <NutritionForm
         open={showForm}
-        onOpenChange={setShowForm}
+        onOpenChange={(v) => { setShowForm(v); if (!v) setPendingMeals(null); }}
         onSubmit={handleSubmit}
         plan={editing}
+        initialMeals={pendingMeals}
+      />
+
+      <AIGeneratorModal
+        open={showAIModal}
+        onOpenChange={setShowAIModal}
+        onApply={handleAIApply}
       />
     </div>
   );

@@ -30,7 +30,7 @@ const HABIT_TEMPLATES = [
 
 const defaultForm = { title: '', description: '', tracking_mode: 'macros', calories: '', protein_g: '', carbs_g: '', fats_g: '', notes: '', meals: [], supplements: [] };
 
-export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
+export default function NutritionForm({ open, onOpenChange, onSubmit, plan, initialMeals }) {
   const [form, setForm] = useState(defaultForm);
   const [expandedMeal, setExpandedMeal] = useState(null);
   const [mealTab, setMealTab] = useState('smart'); // 'smart' | 'manual'
@@ -40,9 +40,9 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan }) {
     if (plan) {
       setForm({ ...defaultForm, ...plan, calories: plan.calories || '', protein_g: plan.protein_g || '', carbs_g: plan.carbs_g || '', fats_g: plan.fats_g || '' });
     } else {
-      setForm(defaultForm);
+      setForm({ ...defaultForm, meals: initialMeals || [] });
     }
-  }, [plan, open]);
+  }, [plan, open, initialMeals]);
 
   const addMealTemplate = (template) => {
     setForm(f => ({ ...f, meals: [...(f.meals || []), { ...template }] }));
