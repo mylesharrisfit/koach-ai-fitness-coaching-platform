@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Beef, Wheat, Droplets, Users, Copy, Edit, Trash2, MoreHorizontal, Leaf, Zap } from 'lucide-react';
+import { Flame, Beef, Wheat, Droplets, Users, Copy, Edit, Trash2, MoreHorizontal, Leaf, Zap, Eye } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import NutritionPlanDetailModal from './NutritionPlanDetailModal';
 
 function MacroPill({ label, value, unit = 'g', color }) {
   return (
@@ -29,6 +30,7 @@ function AdherenceBar({ value = 82 }) {
 }
 
 export default function NutritionPlanCard({ plan, onEdit, onDuplicate, onDelete, index }) {
+  const [showDetail, setShowDetail] = useState(false);
   const isHabits = plan.tracking_mode === 'habits';
   const mealCount = (plan.meals || []).length;
   const adherence = 72 + (index % 3) * 9; // placeholder
@@ -117,6 +119,19 @@ export default function NutritionPlanCard({ plan, onEdit, onDuplicate, onDelete,
           </div>
         </div>
       </div>
+      {/* View Detail button */}
+      <div className="px-5 pb-4">
+        <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs" onClick={() => setShowDetail(true)}>
+          <Eye className="w-3.5 h-3.5" /> View Meal Plan
+        </Button>
+      </div>
+
+      <NutritionPlanDetailModal
+        open={showDetail}
+        onOpenChange={setShowDetail}
+        plan={plan}
+        onEdit={() => { setShowDetail(false); onEdit(); }}
+      />
     </motion.div>
   );
 }

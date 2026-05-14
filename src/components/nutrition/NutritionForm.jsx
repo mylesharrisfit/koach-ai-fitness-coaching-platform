@@ -10,6 +10,7 @@ import { Plus, Trash2, ChevronDown, ChevronUp, X, Sparkles, PenLine, BookOpen } 
 import SmartNutritionGenerator from './SmartNutritionGenerator';
 import SupplementPanel from './SupplementPanel';
 import FoodPickerModal from './FoodPickerModal';
+import CarbCyclingPanel from './CarbCyclingPanel';
 import { cn } from '@/lib/utils';
 
 const MEAL_TEMPLATES = [
@@ -28,7 +29,7 @@ const HABIT_TEMPLATES = [
   'Eat slowly and stop when 80% full',
 ];
 
-const defaultForm = { title: '', description: '', tracking_mode: 'macros', calories: '', protein_g: '', carbs_g: '', fats_g: '', notes: '', meals: [], supplements: [] };
+const defaultForm = { title: '', description: '', tracking_mode: 'macros', calories: '', protein_g: '', carbs_g: '', fats_g: '', notes: '', meals: [], supplements: [], carb_cycling: { enabled: false, targets: {}, schedule: {} }, water_target_ml: 2500 };
 
 export default function NutritionForm({ open, onOpenChange, onSubmit, plan, initialMeals }) {
   const [form, setForm] = useState(defaultForm);
@@ -331,6 +332,32 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
               setFoodPickerMealIdx(null);
             }}
           />
+
+          {/* Carb Cycling */}
+          {!isHabits && (
+            <CarbCyclingPanel
+              value={form.carb_cycling || { enabled: false, targets: {}, schedule: {} }}
+              onChange={carb_cycling => setForm(f => ({ ...f, carb_cycling }))}
+            />
+          )}
+
+          {/* Water target */}
+          <div className="flex items-center gap-4 p-3.5 bg-blue-50 border border-blue-100 rounded-xl">
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">Daily Water Target</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Set the client's daily hydration goal</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                value={form.water_target_ml || 2500}
+                onChange={e => setForm(f => ({ ...f, water_target_ml: Number(e.target.value) }))}
+                className="w-24 h-8 text-sm"
+                step={250}
+              />
+              <span className="text-xs text-muted-foreground">ml</span>
+            </div>
+          </div>
 
           <SupplementPanel
             value={form.supplements || []}
