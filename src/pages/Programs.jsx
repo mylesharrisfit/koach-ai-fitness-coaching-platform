@@ -13,6 +13,7 @@ import ProgramCard from '../components/programs/ProgramCard';
 import ProgramListRow from '../components/programs/ProgramListRow';
 import ProgramSearchFilter from '../components/programs/ProgramSearchFilter';
 import ProgramDetailModal from '../components/programs/ProgramDetailModal';
+import ProgramCreationModal from '../components/programs/ProgramCreationModal';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
@@ -143,6 +144,7 @@ function SuggestedCard({ program, onAssign, onEdit }) {
 
 /* ── Main Page ── */
 export default function Programs() {
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [assigningProgram, setAssigningProgram] = useState(null);
   const [cloningProgram, setCloningProgram] = useState(null);
   const [previewingProgram, setPreviewingProgram] = useState(null);
@@ -393,7 +395,7 @@ export default function Programs() {
             ))}
             {/* CTA card */}
             <div
-              onClick={() => openBuilder()}
+              onClick={() => setShowCreateModal(true)}
               className="flex-shrink-0 w-56 border-2 border-dashed border-[#D1D5DB] rounded-2xl flex flex-col items-center justify-center p-5 text-center cursor-pointer hover:border-primary hover:bg-[#EEF4FF]/30 transition-all group"
             >
               <div className="w-8 h-8 rounded-xl bg-[#F6F7FB] group-hover:bg-[#EEF4FF] flex items-center justify-center mb-2 transition-colors">
@@ -420,7 +422,7 @@ export default function Programs() {
             </div>
             <p className="font-semibold text-[#1F2A44]">No programs yet</p>
             <p className="text-sm text-[#6B7280] mt-1 mb-5">Create your first workout program to get started.</p>
-            <Button onClick={() => openBuilder()}><Plus className="w-4 h-4" /> Create Program</Button>
+            <Button onClick={() => setShowCreateModal(true)}><Plus className="w-4 h-4" /> Create Program</Button>
           </div>
         ) : filteredAndSortedPrograms.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-[#E7EAF3]">
@@ -513,6 +515,16 @@ export default function Programs() {
           />
         )}
       </AnimatePresence>
+
+      {/* Program Creation Modal */}
+      <ProgramCreationModal
+        open={showCreateModal}
+        onOpenChange={setShowCreateModal}
+        onProgramCreated={(program) => {
+          queryClient.invalidateQueries({ queryKey: ['programs'] });
+          toast.success('Program created successfully!');
+        }}
+      />
     </div>
   );
 }
