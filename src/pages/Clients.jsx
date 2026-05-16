@@ -43,13 +43,10 @@ export default function Clients() {
 
   // View mode: compact vs expanded. Persisted in localStorage.
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const getDefaultView = (clientCount) => {
+  const [viewMode, setViewModeState] = useState(() => {
     if (isMobile) return 'compact';
-    const saved = localStorage.getItem('clients_view_mode');
-    if (saved) return saved;
-    return clientCount >= 10 ? 'compact' : 'expanded';
-  };
-  const [viewMode, setViewModeState] = useState(() => getDefaultView(0));
+    return localStorage.getItem('clients_view_mode') || 'expanded';
+  });
 
   const setViewMode = (mode) => {
     if (!isMobile) localStorage.setItem('clients_view_mode', mode);
@@ -61,16 +58,16 @@ export default function Clients() {
   }, []);
 
   // Once clients load, set smart default if no saved preference
+  const { data: clients = [], isLoading } = useQuery({
+    queryKey: ['clients'],
+    queryFn: () => base44.entities.Client.list('-created_date'),
+  });
+
   useEffect(() => {
     if (clients.length > 0 && !localStorage.getItem('clients_view_mode') && !isMobile) {
       setViewModeState(clients.length >= 10 ? 'compact' : 'expanded');
     }
   }, [clients.length]);
-
-  const { data: clients = [], isLoading } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list('-created_date'),
-  });
 
   const { data: allCheckIns = [] } = useQuery({
     queryKey: ['checkins-clients'],
