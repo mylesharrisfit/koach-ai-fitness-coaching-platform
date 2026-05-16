@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Send, Search, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown } from 'lucide-react';
+import { Send, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown } from 'lucide-react';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import MessageBubble from '../components/messages/MessageBubble';
 import PinnedNotes from '../components/messages/PinnedNotes';
 import MessageTemplates from '../components/messages/MessageTemplates';
@@ -14,6 +13,7 @@ import AISuggestions from '../components/messages/AISuggestions';
 import QuickReplies from '../components/messages/QuickReplies';
 import { TAG_COLORS } from '../components/messages/MessageTemplates';
 import FeatureLock from '@/components/subscription/FeatureLock';
+import ClientListSidebar from '../components/messages/ClientListSidebar';
 
 const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
 
@@ -25,7 +25,6 @@ export default function Messages() {
   const [selectedClientId, setSelectedClientId] = useState(paramClientId || null);
   const [mobileView, setMobileView] = useState(paramClientId ? 'chat' : 'list');
   const [newMessage, setNewMessage] = useState(paramMessage ? decodeURIComponent(paramMessage) : '');
-  const [search, setSearch] = useState('');
   const [selectedTag, setSelectedTag] = useState('general');
   const [showTemplates, setShowTemplates] = useState(false);
   const [showAI, setShowAI] = useState(false);
@@ -67,17 +66,6 @@ export default function Messages() {
 
   const pinnedMessages = clientMessages.filter(m => m.is_pinned);
 
-  const clientMessageCounts = {};
-  const clientLastMessages = {};
-  allMessages.forEach(m => {
-    clientMessageCounts[m.client_id] = (clientMessageCounts[m.client_id] || 0) + (!m.is_read && m.sender === 'client' ? 1 : 0);
-    if (!clientLastMessages[m.client_id] || new Date(m.created_date) > new Date(clientLastMessages[m.client_id].created_date)) {
-      clientLastMessages[m.client_id] = m;
-    }
-  });
-
-  const filteredClients = clients.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()));
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [clientMessages.length]);
@@ -111,49 +99,12 @@ export default function Messages() {
     <div className="h-[calc(100dvh-64px)] md:h-screen flex overflow-hidden">
       {/* Sidebar — hidden on mobile when chat is open */}
       <div className={`${mobileView === 'chat' ? 'hidden' : 'flex'} md:flex w-full md:w-72 border-r border-[#E7EAF3] bg-white flex-col flex-shrink-0`}>
-        <div className="p-4 border-b border-[#E7EAF3]">
-          <h2 className="font-heading font-bold text-lg mb-3 text-[#1F2A44]">Messages</h2>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#374151]" />
-            <Input placeholder="Search clients..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 h-9" />
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          {filteredClients.map(client => {
-            const lastMsg = clientLastMessages[client.id];
-            const unread = clientMessageCounts[client.id] || 0;
-            return (
-              <button
-                key={client.id}
-                onClick={() => handleSelectClient(client.id)}
-                className={cn(
-                  "w-full flex items-center gap-3 p-4 text-left hover:bg-[#F6F7FB] transition-all border-b border-[#E7EAF3]",
-                  selectedClientId === client.id && "bg-[#F6F7FB]"
-                )}
-              >
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
-                  {client.name?.[0]?.toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium text-sm truncate">{client.name}</p>
-                    {lastMsg && <span className="text-[10px] text-[#374151]">{format(new Date(lastMsg.created_date), 'MMM d')}</span>}
-                  </div>
-                  {lastMsg && (
-                    <p className="text-xs text-[#374151] truncate mt-0.5">
-                      {lastMsg.tag && lastMsg.tag !== 'general' && `[${lastMsg.tag.replace('_', '-')}] `}{lastMsg.content}
-                    </p>
-                  )}
-                </div>
-                {unread > 0 && (
-                  <div className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold flex-shrink-0">
-                    {unread}
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
+        <ClientListSidebar
+          clients={clients}
+          allMessages={allMessages}
+          selectedClientId={selectedClientId}
+          onSelectClient={handleSelectClient}
+        />
       </div>
 
       {/* Chat Area */}
