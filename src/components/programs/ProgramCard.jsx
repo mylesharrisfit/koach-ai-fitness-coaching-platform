@@ -65,6 +65,7 @@ export default function ProgramCard({
   onPreview,
   onArchive,
   onDelete,
+  allClients = [],
 }) {
   const [hovered, setHovered] = useState(false);
   const [showClientList, setShowClientList] = useState(false);

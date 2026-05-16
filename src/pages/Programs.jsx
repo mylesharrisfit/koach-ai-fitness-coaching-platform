@@ -14,6 +14,7 @@ import ProgramListRow from '../components/programs/ProgramListRow';
 import ProgramSearchFilter from '../components/programs/ProgramSearchFilter';
 import ProgramDetailModal from '../components/programs/ProgramDetailModal';
 import ProgramCreationModal from '../components/programs/ProgramCreationModal';
+import ProgramAssignmentModal from '../components/programs/ProgramAssignmentModal';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
@@ -454,6 +455,7 @@ export default function Programs() {
                   onPreview={() => setPreviewingProgram(program)}
                   onArchive={() => archiveMutation.mutate(program.id)}
                   onDelete={() => deleteMutation.mutate(program.id)}
+                  allClients={allClients}
                 />
               );
             })}
@@ -477,6 +479,7 @@ export default function Programs() {
                   onPreview={() => setPreviewingProgram(program)}
                   onArchive={() => archiveMutation.mutate(program.id)}
                   onDelete={() => deleteMutation.mutate(program.id)}
+                  allClients={allClients}
                 />
               );
             })}
@@ -485,16 +488,29 @@ export default function Programs() {
       </section>
 
       {/* ── Modals ── */}
-      {assigningProgram && (
-        <AssignModal program={assigningProgram} onClose={() => setAssigningProgram(null)} />
-      )}
-      {cloningProgram && (
-        <CloneToClientDialog
-          open={!!cloningProgram}
-          onOpenChange={v => !v && setCloningProgram(null)}
-          program={cloningProgram}
-        />
-      )}
+      <ProgramAssignmentModal
+        open={!!assigningProgram}
+        onOpenChange={(open) => !open && setAssigningProgram(null)}
+        program={assigningProgram}
+        allClients={allClients}
+        onAssign={async (assignmentData) => {
+          const { selectedClients, startDate, notifyClient, kickoffSession } = assignmentData;
+          
+          for (const clientId of selectedClients) {
+            await base44.entities.Client.update(clientId, { assigned_program_id: assigningProgram.id });
+          }
+          
+          queryClient.invalidateQueries({ queryKey: ['clients'] });
+          
+          const clientNames = selectedClients
+            .map((id) => allClients.find((c) => c.id === id)?.name || 'Client')
+            .join(', ');
+          
+          toast.success(`${assigningProgram.title} assigned to ${clientNames} ✓`);
+          setAssigningProgram(null);
+        }}
+      />
+
 
       {/* Program Detail Modal */}
       <AnimatePresence>
