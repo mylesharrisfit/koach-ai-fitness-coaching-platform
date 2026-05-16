@@ -41,10 +41,43 @@ const STAGE_LABELS = {
   new_lead: 'New', dmd: "DM'd", call_booked: 'Call', proposal_sent: 'Proposal', closed: 'Closed', lost: 'Lost',
 };
 
+const GOAL_LABELS = {
+  weight_loss: 'Weight Loss',
+  muscle_gain: 'Muscle Gain',
+  strength: 'Strength',
+  endurance: 'Endurance',
+  flexibility: 'Flexibility',
+  general_fitness: 'General Fitness',
+};
+
+const AVATAR_COLORS = [
+  ['bg-blue-100', 'text-blue-700'],
+  ['bg-violet-100', 'text-violet-700'],
+  ['bg-emerald-100', 'text-emerald-700'],
+  ['bg-amber-100', 'text-amber-700'],
+  ['bg-rose-100', 'text-rose-700'],
+  ['bg-cyan-100', 'text-cyan-700'],
+];
+
+function getAvatarColor(name = '') {
+  const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
+  return AVATAR_COLORS[idx];
+}
+
+function CheckInAge({ lastCheckIn }) {
+  if (!lastCheckIn) return (
+    <span className="text-[10px] text-[#9CA3AF]">No check-ins yet</span>
+  );
+  const days = Math.floor((Date.now() - new Date(lastCheckIn.date)) / 86400000);
+  const label = days === 0 ? 'Today' : days === 1 ? '1 day ago' : `${days} days ago`;
+  const color = days <= 7 ? 'text-emerald-600' : days <= 14 ? 'text-amber-500' : 'text-red-500';
+  return <span className={cn('text-[10px] font-medium', color)}>{label}</span>;
+}
+
 export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0, onEdit, onDelete, onStatusChange, onView, selected, onSelect }) {
-  const initials = client.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
+  const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
+  const [avatarBg, avatarText] = getAvatarColor(client.name);
   const scoreColor = score === null ? '' : score >= 80 ? 'text-emerald-600' : score >= 60 ? 'text-amber-600' : 'text-red-500';
-  const lastCheckInText = lastCheckIn ? formatDistanceToNow(new Date(lastCheckIn.date), { addSuffix: true }) : 'Never';
   const isLead = (client.lifecycle_status || 'lead') === 'lead';
 
   return (
@@ -67,25 +100,35 @@ export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0
       </div>
 
       {/* Avatar */}
-      <div className="w-9 h-9 rounded-full bg-[#EEF4FF] text-primary flex items-center justify-center font-bold text-xs flex-shrink-0 overflow-hidden">
+      <div className={cn('w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 overflow-hidden', client.avatar_url ? '' : `${avatarBg} ${avatarText}`)}>
         {client.avatar_url
           ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
           : initials}
       </div>
 
-      {/* Name + email + tags + onboarding dots */}
+      {/* Name + email + goal + tags + onboarding dots */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <p className="text-sm font-semibold text-[#1F2A44] truncate leading-tight">{client.name}</p>
+        {/* Row 1: name + pipeline stage + onboarding dots */}
+        <div className="flex items-center gap-1.5">
+          <p className="text-sm font-bold text-[#1F2A44] truncate leading-tight">{client.name}</p>
           <OnboardingDots client={client} checkIns={checkInCount} />
           {isLead && client.pipeline_stage && client.pipeline_stage !== 'new_lead' && (
-            <span className={cn('text-[10px] font-bold', STAGE_COLORS[client.pipeline_stage])}>
+            <span className={cn('text-[10px] font-bold flex-shrink-0', STAGE_COLORS[client.pipeline_stage])}>
               · {STAGE_LABELS[client.pipeline_stage]}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <p className="text-xs text-[#6B7280] truncate leading-tight">{client.email}</p>
+        {/* Row 2: email */}
+        <p className="text-xs text-[#6B7280] truncate leading-tight">{client.email}</p>
+        {/* Row 3: goal + tags */}
+        <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+          {client.goal ? (
+            <span className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#F0FDF4] text-emerald-700 flex-shrink-0">
+              {GOAL_LABELS[client.goal] || client.goal}
+            </span>
+          ) : (
+            <span className="text-[10px] text-[#C4C9D8] flex-shrink-0">No goal set</span>
+          )}
           {(client.tags || []).slice(0, 2).map(tag => (
             <span key={tag} className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#EEF4FF] text-primary flex-shrink-0">#{tag}</span>
           ))}
@@ -114,7 +157,7 @@ export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0
 
       {/* Last check-in */}
       <div className="hidden lg:flex flex-col items-end flex-shrink-0 w-24">
-        <span className="text-xs text-[#374151] leading-tight">{lastCheckInText}</span>
+        <CheckInAge lastCheckIn={lastCheckIn} />
         <span className="text-[10px] text-[#9CA3AF]">check-in</span>
       </div>
 
