@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ClientForm from '../components/clients/ClientForm';
 import ClientRow from '../components/clients/ClientRow';
-import ClientQuickPanel from '../components/clients/ClientQuickPanel';
+import ClientDashboardModal from '../components/clients/dashboard/ClientDashboardModal';
 import LeadPipelinePanel from '../components/clients/LeadPipelinePanel';
 import BulkActionBar from '../components/clients/BulkActionBar';
 import LifecycleBadge, { LIFECYCLE_CONFIG } from '../components/clients/LifecycleBadge';
@@ -463,9 +463,9 @@ export default function Clients() {
       <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
       <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
 
-      {/* Quick profile panel */}
+      {/* Client dashboard modal */}
       {quickPanelClient && (
-        <ClientQuickPanel
+        <ClientDashboardModal
           client={quickPanelClient}
           checkIns={checkInMap[quickPanelClient.id] || []}
           onClose={() => setQuickPanelClient(null)}
