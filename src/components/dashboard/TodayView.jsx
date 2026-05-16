@@ -6,6 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import RunMyDayCenter from './RunMyDayCenter';
 import RecommendationsWidget from './RecommendationsWidget';
 import DashboardKPIs from './DashboardKPIs';
+import TodaySchedule from './TodaySchedule';
 import FirstTimeBanner from './FirstTimeBanner';
 
 function OnboardingLinkBanner() {
@@ -93,6 +94,9 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
 
       {/* ── KPI Strip ──────────────────────────────── */}
       <DashboardKPIs clients={clients} checkIns={checkIns} payments={payments} />
+
+      {/* ── Today's Schedule ───────────────────────── */}
+      <TodaySchedule clients={clients} />
 
       {/* ── Onboarding Link ────────────────────────── */}
       <OnboardingLinkBanner />
