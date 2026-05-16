@@ -11,7 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ClientForm from '../components/clients/ClientForm';
 import ClientRow from '../components/clients/ClientRow';
-
+import ClientQuickPanel from '../components/clients/ClientQuickPanel';
+import LeadPipelinePanel from '../components/clients/LeadPipelinePanel';
+import BulkActionBar from '../components/clients/BulkActionBar';
 import LifecycleBadge, { LIFECYCLE_CONFIG } from '../components/clients/LifecycleBadge';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
@@ -31,6 +33,9 @@ export default function Clients() {
   const [sortBy, setSortBy] = useState('created_date');
   const [currentUser, setCurrentUser] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [quickPanelClient, setQuickPanelClient] = useState(null);
+  const [leadPanelClient, setLeadPanelClient] = useState(null);
+  const [selectedIds, setSelectedIds] = useState(new Set());
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -133,7 +138,28 @@ export default function Clients() {
 
   const openEdit = (client) => {
     setEditingClient(client);
+    setQuickPanelClient(null);
+    setLeadPanelClient(null);
     setShowForm(true);
+  };
+
+  const openQuickPanel = (client) => {
+    const isLead = (client.lifecycle_status || 'lead') === 'lead';
+    if (isLead) {
+      setLeadPanelClient(client);
+      setQuickPanelClient(null);
+    } else {
+      setQuickPanelClient(client);
+      setLeadPanelClient(null);
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   };
 
   const clientLimit = getLimit(currentUser, 'max_clients');
@@ -292,7 +318,10 @@ export default function Clients() {
                 client={client}
                 score={score}
                 lastCheckIn={cis[0]}
-                onView={() => navigate(`/client-profile?id=${client.id}`)}
+                checkInCount={cis.length}
+                selected={selectedIds.has(client.id)}
+                onSelect={() => toggleSelect(client.id)}
+                onView={() => openQuickPanel(client)}
                 onEdit={() => openEdit(client)}
                 onDelete={() => deleteMutation.mutate(client.id)}
                 onStatusChange={(s) => updateMutation.mutate({ id: client.id, data: { ...client, lifecycle_status: s } })}
@@ -304,6 +333,57 @@ export default function Clients() {
 
       <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
       <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
+
+      {/* Quick profile panel */}
+      {quickPanelClient && (
+        <ClientQuickPanel
+          client={quickPanelClient}
+          checkIns={checkInMap[quickPanelClient.id] || []}
+          onClose={() => setQuickPanelClient(null)}
+          onEdit={() => openEdit(quickPanelClient)}
+        />
+      )}
+
+      {/* Lead pipeline panel */}
+      {leadPanelClient && (
+        <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setLeadPanelClient(null)}>
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+          <div
+            className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0F2F8]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#EEF4FF] text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
+                  {leadPanelClient.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-bold text-[#1F2A44] text-sm">{leadPanelClient.name}</p>
+                  <p className="text-xs text-[#6B7280]">Lead Pipeline</p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setLeadPanelClient(null)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">
+              <LeadPipelinePanel
+                client={leadPanelClient}
+                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk action bar */}
+      <BulkActionBar
+        selectedIds={selectedIds}
+        clients={clients}
+        allCheckIns={allCheckIns}
+        onClear={() => setSelectedIds(new Set())}
+        onRefresh={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
+      />
     </div>
   );
 }
