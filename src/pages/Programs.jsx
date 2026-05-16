@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
 import ProgramCard from '../components/programs/ProgramCard';
+import ProgramListRow from '../components/programs/ProgramListRow';
+import ProgramSearchFilter from '../components/programs/ProgramSearchFilter';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
@@ -142,6 +144,15 @@ export default function Programs() {
   const [assigningProgram, setAssigningProgram] = useState(null);
   const [cloningProgram, setCloningProgram] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [difficulty, setDifficulty] = useState('all');
+  const [categories, setCategories] = useState([]);
+  const [duration, setDuration] = useState('all');
+  const [frequency, setFrequency] = useState('all');
+  const [sessionLength, setSessionLength] = useState('all');
+  const [status, setStatus] = useState('all');
+  const [sort, setSort] = useState('newest');
+  const [layout, setLayout] = useState('grid');
   const queryClient = useQueryClient();
   const { openUpgradeModal } = useUpgradeModal();
   const navigate = useNavigate();
@@ -209,6 +220,100 @@ export default function Programs() {
     return { assigned, inProgress };
   };
 
+  // Filter and sort programs
+  const filteredAndSortedPrograms = useMemo(() => {
+    let filtered = [...programs];
+
+    // Search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(p =>
+        p.title?.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query) ||
+        p.category?.toLowerCase().includes(query) ||
+        p.workouts?.some(w => w.exercises?.some(e => e.name?.toLowerCase().includes(query)))
+      );
+    }
+
+    // Difficulty
+    if (difficulty !== 'all') {
+      filtered = filtered.filter(p => p.difficulty === difficulty);
+    }
+
+    // Categories
+    if (categories.length > 0) {
+      filtered = filtered.filter(p => categories.includes(p.category));
+    }
+
+    // Duration
+    if (duration !== 'all') {
+      filtered = filtered.filter(p => {
+        const weeks = p.duration_weeks || 0;
+        if (duration === '1-4') return weeks >= 1 && weeks <= 4;
+        if (duration === '5-8') return weeks >= 5 && weeks <= 8;
+        if (duration === '9-12') return weeks >= 9 && weeks <= 12;
+        if (duration === '12+') return weeks > 12;
+        return true;
+      });
+    }
+
+    // Frequency
+    if (frequency !== 'all') {
+      filtered = filtered.filter(p => {
+        const days = p.days_per_week || 0;
+        if (frequency === '2-3') return days >= 2 && days <= 3;
+        if (frequency === '4-5') return days >= 4 && days <= 5;
+        if (frequency === '6') return days === 6;
+        return true;
+      });
+    }
+
+    // Session Length
+    if (sessionLength !== 'all') {
+      filtered = filtered.filter(p => {
+        const mins = (() => {
+          if (!p.workouts?.length) return 0;
+          const avgExercises = p.workouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0) / p.workouts.length;
+          return Math.round(avgExercises * 5 + (p.workouts[0]?.exercises?.reduce((s, e) => s + (e.sets || 3) * ((e.rest_seconds || 60) / 60 + 1), 0) || 30));
+        })();
+        if (sessionLength === '0-30') return mins < 30;
+        if (sessionLength === '30-45') return mins >= 30 && mins <= 45;
+        if (sessionLength === '45-60') return mins > 45 && mins <= 60;
+        if (sessionLength === '60+') return mins > 60;
+        return true;
+      });
+    }
+
+    // Status
+    if (status !== 'all') {
+      filtered = filtered.filter(p => {
+        const clientsForProgram = getClientsForProgram(p.id);
+        if (status === 'active') return clientsForProgram.assigned.length > 0;
+        if (status === 'unassigned') return clientsForProgram.assigned.length === 0;
+        if (status === 'archived') return p.is_archived;
+        return true;
+      });
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      if (sort === 'newest') return new Date(b.created_date) - new Date(a.created_date);
+      if (sort === 'oldest') return new Date(a.created_date) - new Date(b.created_date);
+      if (sort === 'alphabetical-az') return a.title.localeCompare(b.title);
+      if (sort === 'alphabetical-za') return b.title.localeCompare(a.title);
+      if (sort === 'duration-short') return (a.duration_weeks || 0) - (b.duration_weeks || 0);
+      if (sort === 'duration-long') return (b.duration_weeks || 0) - (a.duration_weeks || 0);
+      if (sort === 'most-assigned') {
+        const aCount = getClientsForProgram(a.id).assigned.length;
+        const bCount = getClientsForProgram(b.id).assigned.length;
+        return bCount - aCount;
+      }
+      return 0;
+    });
+
+    return filtered;
+  }, [programs, searchQuery, difficulty, categories, duration, frequency, sessionLength, status, sort, allClients, allCheckIns]);
+
   // "Suggested" = top 4 programs, prioritising recently created + templates
   const suggested = [...programs]
     .sort((a, b) => (b.is_template ? 1 : 0) - (a.is_template ? 1 : 0))
@@ -235,8 +340,31 @@ export default function Programs() {
 
       <LimitBanner limitKey="max_programs" currentCount={programs.length} label="programs" featureKey="clients" />
 
+      {/* ── Search & Filter Bar ── */}
+      <ProgramSearchFilter
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        difficulty={difficulty}
+        onDifficultyChange={setDifficulty}
+        categories={categories}
+        onCategoriesChange={setCategories}
+        duration={duration}
+        onDurationChange={setDuration}
+        frequency={frequency}
+        onFrequencyChange={setFrequency}
+        sessionLength={sessionLength}
+        onSessionLengthChange={setSessionLength}
+        status={status}
+        onStatusChange={setStatus}
+        sort={sort}
+        onSortChange={setSort}
+        layout={layout}
+        onLayoutChange={setLayout}
+        resultCount={filteredAndSortedPrograms.length}
+      />
+
       {/* ── Intelligence Bar ── */}
-      {allClients.length > 0 && (
+      {allClients.length > 0 && !searchQuery && categories.length === 0 && difficulty === 'all' && duration === 'all' && frequency === 'all' && sessionLength === 'all' && status === 'all' && (
         <div className="-mx-4 sm:-mx-6 lg:-mx-8">
           <IntelligenceBar clients={allClients} checkIns={allCheckIns} />
           <div className="mt-4" />
@@ -276,11 +404,11 @@ export default function Programs() {
 
       {/* ── All Programs ── */}
       <section>
-        <h2 className="text-sm font-bold text-[#374151] mb-3">All Programs</h2>
-
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1,2,3].map(i => <div key={i} className="h-52 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse" />)}
+          <div className={layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-2'}>
+            {[1, 2, 3].map(i => (
+              <div key={i} className={layout === 'grid' ? 'h-52 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse' : 'h-16 bg-white rounded-lg border border-[#E7EAF3] animate-pulse'} />
+            ))}
           </div>
         ) : programs.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-[#E7EAF3]">
@@ -291,12 +419,46 @@ export default function Programs() {
             <p className="text-sm text-[#6B7280] mt-1 mb-5">Create your first workout program to get started.</p>
             <Button onClick={() => openBuilder()}><Plus className="w-4 h-4" /> Create Program</Button>
           </div>
-        ) : (
+        ) : filteredAndSortedPrograms.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-[#E7EAF3]">
+            <div className="w-14 h-14 rounded-2xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center mx-auto mb-4">
+              <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
+            </div>
+            <p className="font-semibold text-[#1F2A44]">No programs match your search</p>
+            <p className="text-sm text-[#6B7280] mt-1 mb-5">Try different keywords or create a new program.</p>
+            <Button onClick={() => { setSearchQuery(''); setDifficulty('all'); setCategories([]); setDuration('all'); setFrequency('all'); setSessionLength('all'); setStatus('all'); }}>
+              Clear Filters
+            </Button>
+          </div>
+        ) : layout === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {programs.map(program => {
+            {filteredAndSortedPrograms.map(program => {
               const { assigned, inProgress } = getClientsForProgram(program.id);
               return (
                 <ProgramCard
+                  key={program.id}
+                  program={program}
+                  clientsAssigned={assigned}
+                  clientsInProgress={inProgress}
+                  onEdit={() => openBuilder(program)}
+                  onDuplicate={() => {
+                    if (!canUseTemplates) { openUpgradeModal('program_templates'); return; }
+                    duplicateProgram(program);
+                  }}
+                  onAssign={() => setAssigningProgram(program)}
+                  onPreview={() => openBuilder(program)}
+                  onArchive={() => archiveMutation.mutate(program.id)}
+                  onDelete={() => deleteMutation.mutate(program.id)}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {filteredAndSortedPrograms.map(program => {
+              const { assigned, inProgress } = getClientsForProgram(program.id);
+              return (
+                <ProgramListRow
                   key={program.id}
                   program={program}
                   clientsAssigned={assigned}
