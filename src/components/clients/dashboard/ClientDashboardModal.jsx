@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { X, Edit, ExternalLink, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { X, Edit, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import LifecycleBadge from '../LifecycleBadge';
@@ -21,16 +20,24 @@ const TABS_BASE = [
 ];
 
 const AVATAR_COLORS = [
-  ['bg-blue-100', 'text-blue-700'],
-  ['bg-violet-100', 'text-violet-700'],
-  ['bg-emerald-100', 'text-emerald-700'],
-  ['bg-amber-100', 'text-amber-700'],
-  ['bg-rose-100', 'text-rose-700'],
+  ['#3b82f6', '#dbeafe'],
+  ['#8b5cf6', '#ede9fe'],
+  ['#10b981', '#d1fae5'],
+  ['#f59e0b', '#fef3c7'],
+  ['#ef4444', '#fee2e2'],
 ];
 function getAvatarColor(name = '') {
   const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
   return AVATAR_COLORS[idx];
 }
+
+const STATUS_RING = {
+  active:    '#00ff88',
+  at_risk:   '#ff6b35',
+  lead:      '#00d4ff',
+  completed: '#9ca3af',
+  alumni:    '#a78bfa',
+};
 
 export default function ClientDashboardModal({ client, checkIns = [], onClose, onEdit }) {
   const isLead = (client?.lifecycle_status || 'lead') === 'lead';
@@ -75,7 +82,8 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
   if (!client) return null;
 
   const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase();
-  const [avatarBg, avatarText] = getAvatarColor(client.name);
+  const [ringColor, avatarBg] = getAvatarColor(client.name);
+  const statusRingColor = STATUS_RING[client.lifecycle_status || 'lead'] || '#00d4ff';
 
   const tabs = [
     ...(isLead ? [{ key: 'pipeline', label: 'Pipeline' }] : []),
@@ -84,72 +92,86 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative w-full max-w-[90vw] h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full max-w-[90vw] h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+        style={{ background: '#111827' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* ── Dark header ── */}
-        <div className="bg-[#0F1523] flex-shrink-0">
-          {/* Top strip: client info + actions */}
-          <div className="flex items-center gap-4 px-6 py-4">
-            {/* Avatar */}
-            <div className={cn(
-              'w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden',
-              client.avatar_url ? '' : `${avatarBg} ${avatarText}`
-            )}>
-              {client.avatar_url
-                ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
-                : <span>{initials}</span>
-              }
+        {/* ── Power bar accent ── */}
+        <div style={{ height: 3, background: 'linear-gradient(90deg, #00d4ff 0%, #00ff88 50%, #6366f1 100%)', flexShrink: 0 }} />
+
+        {/* ── Gradient header ── */}
+        <div style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%)', flexShrink: 0 }}>
+          {/* Client info row */}
+          <div className="flex items-center gap-4 px-6 pt-4 pb-3">
+            {/* Avatar with status ring */}
+            <div className="relative flex-shrink-0">
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-base overflow-hidden"
+                style={{
+                  background: client.avatar_url ? 'transparent' : `linear-gradient(135deg, ${avatarBg}, ${ringColor}33)`,
+                  color: ringColor,
+                  boxShadow: `0 0 0 3px ${statusRingColor}, 0 0 12px ${statusRingColor}55`,
+                }}
+              >
+                {client.avatar_url
+                  ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
+                  : <span style={{ color: ringColor }}>{initials}</span>
+                }
+              </div>
             </div>
 
-            {/* Name + badge */}
+            {/* Name + email + badge */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-white font-bold text-lg leading-tight">{client.name}</h2>
+                <h2 className="text-white font-bold text-xl leading-tight tracking-tight">{client.name}</h2>
                 <LifecycleBadge status={client.lifecycle_status || 'lead'} />
               </div>
-              <p className="text-white/50 text-sm mt-0.5">{client.email}</p>
+              <p className="text-white/40 text-sm mt-0.5">{client.email}</p>
             </div>
 
-            {/* Action buttons */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <Button
-                size="sm" variant="ghost"
-                className="text-white/70 hover:text-white hover:bg-white/10 gap-1.5 h-8"
+            {/* Icon-only action buttons */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <button
                 onClick={onEdit}
+                title="Edit client"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
               >
-                <Edit className="w-3.5 h-3.5" /> Edit
-              </Button>
-              <Button
-                size="sm" variant="ghost"
-                className="text-white/70 hover:text-white hover:bg-white/10 gap-1.5 h-8"
+                <Edit className="w-4 h-4" />
+              </button>
+              <button
                 onClick={() => navigate(`/client-profile?id=${client.id}`)}
+                title="Full Profile"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
               >
-                <ExternalLink className="w-3.5 h-3.5" /> Full Profile
-              </Button>
+                <ExternalLink className="w-4 h-4" />
+              </button>
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors ml-1"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors ml-1"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="flex overflow-x-auto px-6 gap-0">
+          {/* Pill tabs */}
+          <div className="flex overflow-x-auto px-5 pb-3 gap-1.5">
             {tabs.map(t => (
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  'px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-all flex-shrink-0',
+                  'px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap rounded-full transition-all flex-shrink-0',
                   tab === t.key
-                    ? 'border-blue-400 text-white'
-                    : 'border-transparent text-white/40 hover:text-white/70'
+                    ? 'text-[#0a0a14]'
+                    : 'text-white/40 hover:text-white/70 hover:bg-white/8'
                 )}
+                style={tab === t.key ? {
+                  background: 'linear-gradient(135deg, #00d4ff, #6366f1)',
+                  boxShadow: '0 0 12px #00d4ff55',
+                } : {}}
               >
                 {t.label}
               </button>
@@ -158,7 +180,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
         </div>
 
         {/* ── Tab content ── */}
-        <div className="flex-1 overflow-hidden bg-[#F4F6FA]">
+        <div className="flex-1 overflow-hidden" style={{ background: '#f8f9fa' }}>
           {tab === 'pipeline' && (
             <div className="h-full overflow-y-auto p-6 max-w-lg">
               <LeadPipelinePanel
@@ -186,11 +208,11 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
           {(tab === 'consultation' || tab === 'attachments' || tab === 'sales' || tab === 'invoices' || tab === 'forms') && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <div className="w-16 h-16 rounded-2xl bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-white border border-gray-100 shadow-sm flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">📋</span>
                 </div>
-                <p className="text-[#374151] font-semibold capitalize">{tab}</p>
-                <p className="text-[#9CA3AF] text-sm mt-1">Coming soon</p>
+                <p className="text-gray-700 font-semibold capitalize">{tab}</p>
+                <p className="text-gray-400 text-sm mt-1">Coming soon</p>
               </div>
             </div>
           )}

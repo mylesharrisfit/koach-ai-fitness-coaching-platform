@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { format, formatDistanceToNow, differenceInDays, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
+import { format, formatDistanceToNow, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import { cn } from '@/lib/utils';
-import { Plus, Link as LinkIcon, Bell, Trophy, Watch, Dumbbell, Salad } from 'lucide-react';
+import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -13,46 +13,66 @@ const goalLabels = {
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
 };
 
-// ── Circular progress ring ──
+// Gradient ring using SVG linearGradient
 function Ring({ pct = 0, label, sublabel, size = 72, active = false }) {
   const r = (size - 10) / 2;
   const circ = 2 * Math.PI * r;
-  const dash = (pct / 100) * circ;
+  const dash = Math.max(0, Math.min(pct / 100, 1)) * circ;
+  const gradId = `ring-grad-${label.replace(/\s/g, '')}`;
+
   return (
     <div className={cn('flex flex-col items-center gap-1.5', active && 'scale-105')}>
-      <div className={cn('relative rounded-full', active && 'shadow-lg shadow-blue-100')}>
+      <div
+        className="relative rounded-full"
+        style={active ? { filter: 'drop-shadow(0 0 8px rgba(0,212,255,0.5))' } : {}}
+      >
         <svg width={size} height={size} className="-rotate-90">
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={active ? '#DBEAFE' : '#F0F2F8'} strokeWidth={6} />
+          <defs>
+            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#00d4ff" />
+              <stop offset="100%" stopColor="#6366f1" />
+            </linearGradient>
+          </defs>
+          {/* Track */}
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e5e7eb" strokeWidth={active ? 7 : 6} />
+          {/* Progress */}
           <circle
             cx={size / 2} cy={size / 2} r={r}
             fill="none"
-            stroke={active ? '#3b82f6' : pct >= 80 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444'}
-            strokeWidth={6}
+            stroke={pct > 0 ? `url(#${gradId})` : '#e5e7eb'}
+            strokeWidth={active ? 7 : 6}
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={cn('font-bold tabular-nums', active ? 'text-sm text-blue-600' : 'text-xs text-[#374151]')}>{pct}%</span>
+          <span className={cn('font-bold tabular-nums leading-none', active ? 'text-sm' : 'text-xs')}
+            style={active ? { color: '#00d4ff' } : { color: '#374151' }}>
+            {pct}%
+          </span>
+          {sublabel && (
+            <span className="text-[8px] leading-none mt-0.5" style={{ color: '#9ca3af' }}>{sublabel}</span>
+          )}
         </div>
       </div>
       <div className="text-center">
-        <p className={cn('text-[10px] font-semibold leading-tight', active ? 'text-blue-600' : 'text-[#6B7280]')}>{label}</p>
-        {sublabel && <p className="text-[9px] text-[#9CA3AF] leading-tight">{sublabel}</p>}
+        <p className={cn('text-[10px] font-semibold leading-tight', active ? '' : 'text-gray-500')}
+          style={active ? { color: '#00d4ff' } : {}}>
+          {label}
+        </p>
       </div>
     </div>
   );
 }
 
-// ── Compute week compliance from check-ins ──
+// Week compliance helpers
 function weekCompliance(checkIns, weekStart, weekEnd) {
   const inRange = checkIns.filter(ci => {
     const d = new Date(ci.date);
     return d >= weekStart && d <= weekEnd;
   });
   if (!inRange.length) return 0;
-  const avg = inRange.reduce((s, ci) => s + (ci.compliance_training ?? 0), 0) / inRange.length;
-  return Math.round(avg);
+  return Math.round(inRange.reduce((s, ci) => s + (ci.compliance_training ?? 0), 0) / inRange.length);
 }
 function weekNutritionCompliance(checkIns, weekStart, weekEnd) {
   const inRange = checkIns.filter(ci => {
@@ -60,41 +80,44 @@ function weekNutritionCompliance(checkIns, weekStart, weekEnd) {
     return d >= weekStart && d <= weekEnd;
   });
   if (!inRange.length) return 0;
-  const avg = inRange.reduce((s, ci) => s + (ci.compliance_nutrition ?? 0), 0) / inRange.length;
-  return Math.round(avg);
+  return Math.round(inRange.reduce((s, ci) => s + (ci.compliance_nutrition ?? 0), 0) / inRange.length);
 }
 
-// ── Smart tag generation ──
+// Smart tag colors: red = warning, yellow = caution, green = positive, blue = info
 function generateSmartTags(client, checkIns, messages) {
   const tags = [];
   const now = Date.now();
   const recent = checkIns.slice(0, 4);
-
   const avgNutrition = recent.length ? recent.reduce((s, c) => s + (c.compliance_nutrition ?? 50), 0) / recent.length : null;
   const avgTraining = recent.length ? recent.reduce((s, c) => s + (c.compliance_training ?? 50), 0) / recent.length : null;
 
-  if (avgNutrition !== null && avgNutrition < 60) tags.push({ label: 'Low nutrition compliance', color: 'bg-red-50 text-red-600 border-red-100' });
-  if (avgTraining !== null && avgTraining < 60) tags.push({ label: 'Low workout compliance', color: 'bg-orange-50 text-orange-600 border-orange-100' });
+  if (avgNutrition !== null && avgNutrition < 60) tags.push({ label: 'Low nutrition', type: 'red' });
+  if (avgTraining !== null && avgTraining < 60) tags.push({ label: 'Low workouts', type: 'orange' });
 
   const lastCoachMsg = messages.find(m => m.sender === 'coach');
   if (!lastCoachMsg || (now - new Date(lastCoachMsg.created_date)) > 7 * 86400000) {
-    tags.push({ label: 'Not messaged lately', color: 'bg-amber-50 text-amber-600 border-amber-100' });
+    tags.push({ label: 'No recent message', type: 'yellow' });
   }
-
-  // Personal best: weight improvement last week
   if (checkIns.length >= 2) {
     const latest = checkIns[0];
     const prev = checkIns[1];
     if (latest.weight && prev.weight && latest.weight < prev.weight) {
-      tags.push({ label: 'Weight trending down ↓', color: 'bg-emerald-50 text-emerald-700 border-emerald-100' });
+      tags.push({ label: 'Weight trending ↓', type: 'green' });
     }
   }
-
-  if (client.assigned_nutrition_id) tags.push({ label: 'On nutrition plan', color: 'bg-blue-50 text-blue-600 border-blue-100' });
-  if (!client.assigned_program_id) tags.push({ label: 'No program assigned', color: 'bg-gray-50 text-gray-500 border-gray-100' });
-
+  if (client.assigned_nutrition_id) tags.push({ label: 'On meal plan', type: 'blue' });
+  if (!client.assigned_program_id) tags.push({ label: 'No program', type: 'gray' });
   return tags;
 }
+
+const TAG_STYLES = {
+  red:    { bg: '#fef2f2', text: '#dc2626', border: '#fecaca' },
+  orange: { bg: '#fff7ed', text: '#ea580c', border: '#fed7aa' },
+  yellow: { bg: '#fefce8', text: '#ca8a04', border: '#fde68a' },
+  green:  { bg: '#f0fdf4', text: '#16a34a', border: '#bbf7d0' },
+  blue:   { bg: '#eff6ff', text: '#2563eb', border: '#bfdbfe' },
+  gray:   { bg: '#f9fafb', text: '#6b7280', border: '#e5e7eb' },
+};
 
 // ─────────────────────────────────────────────────────────
 export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions }) {
@@ -107,16 +130,14 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
   const lastMsgFromCoach = messages.find(m => m.sender === 'coach');
   const lastMsgFromClient = messages.find(m => m.sender === 'client');
 
-  // Weekly compliance rings
   const now = new Date();
   const weeks = [
     { label: '2 Wks Ago', start: startOfWeek(subWeeks(now, 2)), end: endOfWeek(subWeeks(now, 2)) },
-    { label: '1 Wk Ago', start: startOfWeek(subWeeks(now, 1)), end: endOfWeek(subWeeks(now, 1)) },
+    { label: '1 Wk Ago',  start: startOfWeek(subWeeks(now, 1)), end: endOfWeek(subWeeks(now, 1)) },
     { label: 'This Week', start: startOfWeek(now), end: endOfWeek(now), active: true },
     { label: 'Next Week', start: startOfWeek(new Date(now.getTime() + 7 * 86400000)), end: endOfWeek(new Date(now.getTime() + 7 * 86400000)) },
   ];
 
-  // Weight chart
   const weightData = [...checkIns]
     .filter(ci => ci.weight)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
@@ -125,7 +146,6 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
 
   const currentWeight = client.current_weight || checkIns.find(ci => ci.weight)?.weight;
 
-  // Add custom tag
   const saveTag = async () => {
     if (!newTag.trim()) return;
     const existing = client.tags || [];
@@ -136,54 +156,59 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
   };
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="grid grid-cols-3 gap-0 h-full min-h-0" style={{ gridTemplateColumns: '260px 1fr 280px' }}>
+    <div className="h-full overflow-y-auto" style={{ background: '#f8f9fa' }}>
+      <div className="grid h-full min-h-0" style={{ gridTemplateColumns: '260px 1fr 280px' }}>
 
         {/* ═══════════════ LEFT COLUMN ═══════════════ */}
-        <div className="border-r border-[#E5E7EB] bg-white overflow-y-auto p-5 space-y-5">
+        <div className="border-r border-gray-200 bg-white overflow-y-auto p-5 space-y-5">
 
           {/* Contact info */}
           <div className="space-y-1">
             <InfoRow label="Goal" value={goalLabels[client.goal] || 'General Fitness'} />
             {client.phone && <InfoRow label="Phone" value={client.phone} />}
             {client.start_date && <InfoRow label="Client since" value={format(new Date(client.start_date), 'MMM d, yyyy')} />}
-            {client.monthly_rate && <InfoRow label="Monthly rate" value={`$${client.monthly_rate}`} />}
+            {client.monthly_rate && <InfoRow label="Rate" value={`$${client.monthly_rate}/mo`} />}
           </div>
 
-          {/* Timestamps */}
           <Section title="Activity">
             <InfoRow label="Last check-in" value={lastCheckIn ? formatDistanceToNow(new Date(lastCheckIn.date), { addSuffix: true }) : 'Never'} />
             <InfoRow label="Msg sent" value={lastMsgFromCoach ? formatDistanceToNow(new Date(lastMsgFromCoach.created_date), { addSuffix: true }) : 'Never'} />
             <InfoRow label="Msg received" value={lastMsgFromClient ? formatDistanceToNow(new Date(lastMsgFromClient.created_date), { addSuffix: true }) : 'Never'} />
           </Section>
 
-          {/* Totals */}
           <Section title="Totals">
             <InfoRow label="Workouts done" value={workoutSessions.length || 0} />
             <InfoRow label="Check-ins" value={checkIns.length} />
           </Section>
 
-          {/* Badges */}
           <Section title="Achievements">
             {checkIns.length === 0 ? (
-              <p className="text-xs text-[#9CA3AF]">No achievements yet</p>
+              <p className="text-xs text-gray-400">No achievements yet</p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
-                {checkIns.length >= 1 && <Badge emoji="🏅" label="First Check-in" />}
-                {checkIns.length >= 4 && <Badge emoji="🔥" label="4-Week Streak" />}
-                {score !== null && score >= 80 && <Badge emoji="⭐" label="High Adherence" />}
+                {checkIns.length >= 1 && <AchievementBadge emoji="🏅" label="First Check-in" />}
+                {checkIns.length >= 4 && <AchievementBadge emoji="🔥" label="4-Week Streak" />}
+                {score !== null && score >= 80 && <AchievementBadge emoji="⭐" label="High Adherence" />}
               </div>
             )}
           </Section>
 
-          {/* Smart tags */}
           <Section title="Smart Tags">
             <div className="flex flex-wrap gap-1.5">
-              {smartTags.map((t, i) => (
-                <span key={i} className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', t.color)}>{t.label}</span>
-              ))}
+              {smartTags.map((t, i) => {
+                const s = TAG_STYLES[t.type] || TAG_STYLES.gray;
+                return (
+                  <span key={i} className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                    style={{ background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>
+                    {t.label}
+                  </span>
+                );
+              })}
               {(client.tags || []).map((t, i) => (
-                <span key={`custom-${i}`} className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-purple-50 text-purple-600 border-purple-100">#{t}</span>
+                <span key={`c-${i}`} className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
+                  style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe' }}>
+                  #{t}
+                </span>
               ))}
             </div>
             {addingTag ? (
@@ -194,19 +219,19 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
                   onChange={e => setNewTag(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && saveTag()}
                   placeholder="Tag name…"
-                  className="flex-1 text-xs border border-[#E5E7EB] rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-primary"
+                  className="flex-1 text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-blue-400"
                 />
-                <button onClick={saveTag} className="text-xs text-primary font-semibold px-2">Save</button>
-                <button onClick={() => setAddingTag(false)} className="text-xs text-[#9CA3AF] px-1">✕</button>
+                <button onClick={saveTag} className="text-xs text-blue-500 font-semibold px-2">Save</button>
+                <button onClick={() => setAddingTag(false)} className="text-xs text-gray-400 px-1">✕</button>
               </div>
             ) : (
-              <button onClick={() => setAddingTag(true)} className="flex items-center gap-1 text-[10px] text-primary font-semibold mt-1.5 hover:opacity-70">
+              <button onClick={() => setAddingTag(true)} className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
+                style={{ color: '#00d4ff' }}>
                 <Plus className="w-3 h-3" /> Add Tag
               </button>
             )}
           </Section>
 
-          {/* Integrations */}
           <Section title="Integrations">
             {[
               { name: 'Apple Watch', icon: '⌚' },
@@ -217,92 +242,95 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               <div key={app.name} className="flex items-center justify-between py-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{app.icon}</span>
-                  <span className="text-xs text-[#374151]">{app.name}</span>
+                  <span className="text-xs text-gray-600">{app.name}</span>
                 </div>
-                <button className="text-[10px] text-primary font-semibold hover:opacity-70">Ask to Connect</button>
+                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: '#00d4ff' }}>Connect</button>
               </div>
             ))}
           </Section>
 
-          {/* Threshold Alerts */}
           <Section title="Threshold Alerts">
-            <button className="flex items-center gap-1.5 text-xs text-primary font-semibold hover:opacity-70">
+            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: '#00d4ff' }}>
               <Bell className="w-3.5 h-3.5" /> Set up alerts
             </button>
           </Section>
         </div>
 
         {/* ═══════════════ MIDDLE COLUMN ═══════════════ */}
-        <div className="overflow-y-auto p-5 space-y-6">
+        <div className="overflow-y-auto p-5 space-y-4">
 
-          {/* Program info */}
-          <div className="bg-white rounded-xl border border-[#E5E7EB] p-4">
+          {/* Program card */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-1">Current Program</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#00d4ff' }}>Current Program</p>
                 {program ? (
                   <>
-                    <p className="font-bold text-[#1F2A44]">{program.title}</p>
-                    <p className="text-xs text-[#6B7280] mt-0.5">
+                    <p className="font-bold text-gray-800">{program.title}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">
                       {program.duration_weeks ? `${program.duration_weeks} weeks` : ''}
                       {client.start_date && program.duration_weeks ? ` · ${format(new Date(client.start_date), 'MMM d')} – ${format(new Date(new Date(client.start_date).getTime() + program.duration_weeks * 7 * 86400000), 'MMM d')}` : ''}
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-[#9CA3AF]">No program assigned</p>
+                  <p className="text-sm text-gray-400">No program assigned</p>
                 )}
               </div>
-              <Dumbbell className="w-5 h-5 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
+              <Dumbbell className="w-5 h-5 text-gray-300 flex-shrink-0 mt-0.5" />
             </div>
             {nutritionPlan && (
-              <div className="mt-3 pt-3 border-t border-[#F0F2F8] flex items-center gap-2">
-                <Salad className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+              <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2">
+                <Salad className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <div>
-                  <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide">Meal Plan</p>
-                  <p className="text-xs font-semibold text-primary underline underline-offset-2 cursor-pointer hover:opacity-70">{nutritionPlan.title}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#00ff88' }}>Meal Plan</p>
+                  <p className="text-xs font-semibold text-blue-500 underline underline-offset-2 cursor-pointer hover:opacity-70">{nutritionPlan.title}</p>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Exercise compliance rings */}
+          {/* Exercise compliance */}
           <ComplianceSection
             title="Exercise Compliance"
             weeks={weeks}
             checkIns={checkIns}
             type="training"
-            plan={program}
-            planLabel={program ? `${program.days_per_week || '?'} days/wk plan` : null}
+            planLabel={program ? `${program.days_per_week || '?'} days/wk` : null}
           />
 
-          {/* Nutrition compliance rings */}
+          {/* Nutrition compliance */}
           <ComplianceSection
             title="Nutrition Compliance"
             weeks={weeks}
             checkIns={checkIns}
             type="nutrition"
-            plan={nutritionPlan}
-            planLabel={nutritionPlan?.calories ? `${nutritionPlan.calories} kcal · ${nutritionPlan.protein_g || '?'}g protein` : null}
+            planLabel={nutritionPlan?.calories ? `${nutritionPlan.calories} kcal` : null}
           />
 
           {/* Body weight chart */}
-          <div className="bg-white rounded-xl border border-[#E5E7EB] p-4">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">Body Weight</p>
-              {currentWeight && <span className="text-sm font-bold text-[#1F2A44]">{currentWeight} lbs</span>}
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6366f1' }}>Body Weight</p>
+              {currentWeight && <span className="text-sm font-bold text-gray-800">{currentWeight} lbs</span>}
             </div>
             {weightData.length >= 2 ? (
               <ResponsiveContainer width="100%" height={140}>
                 <LineChart data={weightData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F0F2F8" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#9CA3AF' }} />
-                  <YAxis tick={{ fontSize: 9, fill: '#9CA3AF' }} domain={['auto', 'auto']} />
-                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E5E7EB', padding: '4px 8px' }} />
-                  <Line type="monotone" dataKey="weight" stroke="#3b82f6" strokeWidth={2} dot={{ r: 2.5, fill: '#3b82f6' }} />
+                  <defs>
+                    <linearGradient id="weightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#00d4ff" />
+                      <stop offset="100%" stopColor="#6366f1" />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#9ca3af' }} />
+                  <YAxis tick={{ fontSize: 9, fill: '#9ca3af' }} domain={['auto', 'auto']} />
+                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', padding: '4px 8px' }} />
+                  <Line type="monotone" dataKey="weight" stroke="url(#weightGrad)" strokeWidth={2.5} dot={{ r: 3, fill: '#6366f1', strokeWidth: 0 }} />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-28 flex items-center justify-center text-xs text-[#9CA3AF]">
+              <div className="h-28 flex items-center justify-center text-xs text-gray-400">
                 Not enough weight data yet
               </div>
             )}
@@ -310,7 +338,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
         </div>
 
         {/* ═══════════════ RIGHT COLUMN ═══════════════ */}
-        <div className="border-l border-[#E5E7EB] bg-white overflow-hidden flex flex-col">
+        <div className="border-l border-gray-200 bg-white overflow-hidden flex flex-col">
           <NotesColumn client={client} />
         </div>
       </div>
@@ -323,7 +351,10 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
 function Section({ title, children }) {
   return (
     <div>
-      <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-2">{title}</p>
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-0.5 h-3 rounded-full" style={{ background: 'linear-gradient(180deg, #00d4ff, #6366f1)' }} />
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{title}</p>
+      </div>
       <div className="space-y-1">{children}</div>
     </div>
   );
@@ -332,26 +363,30 @@ function Section({ title, children }) {
 function InfoRow({ label, value }) {
   return (
     <div className="flex items-center justify-between gap-2 py-0.5">
-      <span className="text-xs text-[#9CA3AF] flex-shrink-0">{label}</span>
-      <span className="text-xs font-semibold text-[#374151] text-right truncate">{value ?? '—'}</span>
+      <span className="text-xs text-gray-400 flex-shrink-0">{label}</span>
+      <span className="text-xs font-semibold text-gray-700 text-right truncate">{value ?? '—'}</span>
     </div>
   );
 }
 
-function Badge({ emoji, label }) {
+function AchievementBadge({ emoji, label }) {
   return (
-    <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+    <div className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+      style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>
       <span>{emoji}</span> {label}
     </div>
   );
 }
 
-function ComplianceSection({ title, weeks, checkIns, type, plan, planLabel }) {
+function ComplianceSection({ title, weeks, checkIns, type, planLabel }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] p-4">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">{title}</p>
-        {planLabel && <span className="text-[10px] text-[#6B7280] font-medium">{planLabel}</span>}
+        <p className="text-[10px] font-bold uppercase tracking-widest"
+          style={{ color: type === 'training' ? '#00d4ff' : '#00ff88' }}>
+          {title}
+        </p>
+        {planLabel && <span className="text-[10px] text-gray-400 font-medium">{planLabel}</span>}
       </div>
       <div className="flex items-end justify-around gap-2">
         {weeks.map((w, i) => {
@@ -364,7 +399,7 @@ function ComplianceSection({ title, weeks, checkIns, type, plan, planLabel }) {
               pct={pct}
               label={w.label}
               active={!!w.active}
-              size={w.active ? 80 : 68}
+              size={w.active ? 82 : 68}
             />
           );
         })}
@@ -373,20 +408,17 @@ function ComplianceSection({ title, weeks, checkIns, type, plan, planLabel }) {
   );
 }
 
-// ── Inline notes column ──
 function NotesColumn({ client }) {
   const [newNote, setNewNote] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const { data: checkIns = [], refetch } = useQuery({
+  const { data: notes = [], refetch } = useQuery({
     queryKey: ['notes-col', client?.id],
     queryFn: () => base44.entities.CheckIn.filter({ client_id: client.id }),
     enabled: !!client?.id,
     select: d => d.filter(ci => ci.coach_notes).sort((a, b) => new Date(b.date) - new Date(a.date)),
   });
 
-  // We store notes as coach_notes on a special "note" check-in or use a separate field
-  // For simplicity: create a CheckIn record with just coach_notes & today's date
   const save = async () => {
     if (!newNote.trim()) return;
     setSaving(true);
@@ -405,29 +437,37 @@ function NotesColumn({ client }) {
 
   return (
     <>
-      <div className="px-4 py-3 border-b border-[#F0F2F8] flex items-center justify-between flex-shrink-0">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-bold text-[#1F2A44]">Trainer Notes</p>
-          {checkIns.length > 0 && (
-            <span className="text-[10px] bg-[#EEF4FF] text-primary font-bold px-1.5 py-0.5 rounded-full">{checkIns.length}</span>
+          <div className="w-0.5 h-3.5 rounded-full" style={{ background: 'linear-gradient(180deg, #00d4ff, #6366f1)' }} />
+          <p className="text-sm font-bold text-gray-800">Trainer Notes</p>
+          {notes.length > 0 && (
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+              style={{ background: 'rgba(0,212,255,0.1)', color: '#00d4ff' }}>
+              {notes.length}
+            </span>
           )}
         </div>
       </div>
 
-      {/* Add note */}
-      <div className="px-4 py-3 border-b border-[#F0F2F8] flex-shrink-0 bg-[#FAFBFD]">
-        <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-1.5">Add today's note</p>
-        <textarea
-          value={newNote}
-          onChange={e => setNewNote(e.target.value)}
-          placeholder="Write a note about this client…"
-          rows={3}
-          className="w-full text-xs border border-[#E5E7EB] rounded-lg p-2.5 resize-none outline-none focus:ring-1 focus:ring-primary bg-white"
-        />
+      {/* Input area */}
+      <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0" style={{ background: '#fafbff' }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Add a note</p>
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+          <textarea
+            value={newNote}
+            onChange={e => setNewNote(e.target.value)}
+            placeholder="Write a note about this client…"
+            rows={3}
+            className="w-full text-xs p-2.5 resize-none outline-none bg-transparent"
+          />
+        </div>
         <button
           onClick={save}
           disabled={saving || !newNote.trim()}
-          className="mt-2 w-full bg-[#1F2A44] text-white text-xs font-semibold py-1.5 rounded-lg hover:bg-[#2d3a55] transition-colors disabled:opacity-40"
+          className="mt-2 w-full text-white text-xs font-semibold py-2 rounded-lg transition-all disabled:opacity-40"
+          style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)' }}
         >
           {saving ? 'Saving…' : 'Save Note'}
         </button>
@@ -435,12 +475,14 @@ function NotesColumn({ client }) {
 
       {/* Notes list */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {checkIns.length === 0 ? (
-          <p className="text-xs text-[#9CA3AF] text-center pt-4">No notes yet</p>
-        ) : checkIns.map(ci => (
-          <div key={ci.id} className="border border-[#F0F2F8] rounded-xl p-3 bg-white">
-            <p className="text-[10px] font-bold text-[#9CA3AF] mb-1">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
-            <p className="text-xs text-[#374151] leading-relaxed whitespace-pre-wrap">{ci.coach_notes}</p>
+        {notes.length === 0 ? (
+          <p className="text-xs text-gray-400 text-center pt-4">No notes yet</p>
+        ) : notes.map(ci => (
+          <div key={ci.id} className="rounded-xl bg-white border border-gray-100 p-3 shadow-sm">
+            <p className="text-[10px] font-bold mb-1" style={{ color: '#00d4ff' }}>
+              {format(new Date(ci.date), 'MMM d, yyyy')}
+            </p>
+            <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{ci.coach_notes}</p>
           </div>
         ))}
       </div>
