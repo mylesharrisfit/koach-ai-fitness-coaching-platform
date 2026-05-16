@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Send, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown } from 'lucide-react';
+import { Send, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown, ArrowDown } from 'lucide-react';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import MessageBubble from '../components/messages/MessageBubble';
+import { isToday, isYesterday, format } from 'date-fns';
+import MessageBubble, { DateSeparator } from '../components/messages/MessageBubble';
 import PinnedNotes from '../components/messages/PinnedNotes';
 import MessageTemplates from '../components/messages/MessageTemplates';
 import AISuggestions from '../components/messages/AISuggestions';
@@ -14,6 +15,8 @@ import QuickReplies from '../components/messages/QuickReplies';
 import { TAG_COLORS } from '../components/messages/MessageTemplates';
 import FeatureLock from '@/components/subscription/FeatureLock';
 import ClientListSidebar from '../components/messages/ClientListSidebar';
+import ConversationHeader from '../components/messages/ConversationHeader';
+import ConversationEmpty from '../components/messages/ConversationEmpty';
 
 const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
 
@@ -32,6 +35,8 @@ export default function Messages() {
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const queryClient = useQueryClient();
   const { openUpgradeModal } = useUpgradeModal();
 
@@ -66,9 +71,52 @@ export default function Messages() {
 
   const pinnedMessages = clientMessages.filter(m => m.is_pinned);
 
-  useEffect(() => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [clientMessages.length]);
+    setShowJumpToLatest(false);
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [clientMessages.length, selectedClientId]);
+
+  const handleScroll = () => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    setShowJumpToLatest(distFromBottom > 200);
+  };
+
+  // Build grouped messages with date separators
+  const groupedItems = (() => {
+    const items = [];
+    let lastDate = null;
+    let lastSender = null;
+    let groupStart = 0;
+    const msgs = clientMessages;
+    msgs.forEach((msg, i) => {
+      const d = new Date(msg.created_date);
+      const dateKey = format(d, 'yyyy-MM-dd');
+      if (dateKey !== lastDate) {
+        let label;
+        if (isToday(d)) label = 'Today';
+        else if (isYesterday(d)) label = 'Yesterday';
+        else label = format(d, 'EEEE, MMMM d');
+        items.push({ type: 'separator', label, key: `sep-${dateKey}` });
+        lastDate = dateKey;
+        lastSender = null;
+      }
+      const isFirst = lastSender !== msg.sender;
+      // peek ahead to find isLast
+      const nextMsg = msgs[i + 1];
+      const nextDate = nextMsg ? format(new Date(nextMsg.created_date), 'yyyy-MM-dd') : null;
+      const isLast = !nextMsg || nextMsg.sender !== msg.sender || nextDate !== dateKey;
+      if (isFirst) groupStart = i;
+      items.push({ type: 'msg', msg, isFirst, isLast, key: msg.id });
+      lastSender = msg.sender;
+    });
+    return items;
+  })();
 
   const handleSend = () => {
     if (!newMessage.trim() || !selectedClientId) return;
@@ -112,33 +160,53 @@ export default function Messages() {
         {selectedClient ? (
           <>
             {/* Header */}
-            <div className="h-14 md:h-16 border-b border-[#E7EAF3] flex items-center px-4 md:px-6 bg-white flex-shrink-0 gap-3">
-              {/* Back button on mobile */}
-              <button onClick={() => setMobileView('list')} className="md:hidden -ml-1 p-1.5 rounded-lg hover:bg-secondary transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              </button>
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs flex-shrink-0">
-                {selectedClient.name?.[0]?.toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate">{selectedClient.name}</p>
-                <p className="text-xs text-[#374151] truncate">{selectedClient.email}</p>
-              </div>
-            </div>
+            <ConversationHeader
+              client={selectedClient}
+              allMessages={allMessages}
+              onBack={() => setMobileView('list')}
+              onLogCheckIn={() => {/* future: open log check-in modal */}}
+            />
 
             {/* Pinned notes */}
             <PinnedNotes messages={pinnedMessages} onUnpin={handleTogglePin} />
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-3">
-              {clientMessages.length === 0 && (
-                <p className="text-center text-[#374151] text-sm py-8">No messages yet. Start the conversation!</p>
+            <div
+              ref={messagesContainerRef}
+              onScroll={handleScroll}
+              className="flex-1 overflow-y-auto px-5 py-4 space-y-0.5"
+            >
+              {clientMessages.length === 0 ? (
+                <ConversationEmpty client={selectedClient} onSelect={(text) => setNewMessage(text)} />
+              ) : (
+                groupedItems.map(item =>
+                  item.type === 'separator'
+                    ? <DateSeparator key={item.key} date={item.label} />
+                    : (
+                      <MessageBubble
+                        key={item.key}
+                        msg={item.msg}
+                        isFirst={item.isFirst}
+                        isLast={item.isLast}
+                        onTogglePin={handleTogglePin}
+                        clientName={selectedClient.name}
+                        clientAvatar={selectedClient.avatar_url}
+                      />
+                    )
+                )
               )}
-              {clientMessages.map(msg => (
-                <MessageBubble key={msg.id} msg={msg} onTogglePin={handleTogglePin} />
-              ))}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Jump to latest */}
+            {showJumpToLatest && (
+              <button
+                onClick={scrollToBottom}
+                className="absolute bottom-24 right-5 flex items-center gap-1.5 bg-primary text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:bg-primary/90 transition-all z-10"
+              >
+                <ArrowDown className="w-3.5 h-3.5" /> Jump to latest
+              </button>
+            )}
 
             {/* Composer */}
             <div className="border-t border-[#E7EAF3] bg-white p-4 flex-shrink-0">
@@ -253,11 +321,11 @@ export default function Messages() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-[#374151] gap-3">
+          <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] gap-3">
             <div className="w-16 h-16 rounded-2xl bg-[#EEF4FF] flex items-center justify-center">
               <Send className="w-7 h-7 text-primary" />
             </div>
-            <p className="text-sm">Select a client to start messaging</p>
+            <p className="text-sm font-medium text-[#6B7280]">Select a client to start messaging</p>
           </div>
         )}
       </div>
