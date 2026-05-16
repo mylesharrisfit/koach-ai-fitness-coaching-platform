@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, X, AlertTriangle, ArrowRight, Lock } from 'lucide-react';
+import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal } from 'lucide-react';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
@@ -33,6 +33,9 @@ export default function Clients() {
   const [sortBy, setSortBy] = useState('created_date');
   const [currentUser, setCurrentUser] = useState(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [goalFilter, setGoalFilter] = useState('');
+  const [checkInFilter, setCheckInFilter] = useState('');
   const [quickPanelClient, setQuickPanelClient] = useState(null);
   const [leadPanelClient, setLeadPanelClient] = useState(null);
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -101,25 +104,45 @@ export default function Clients() {
   }, [clients]);
 
   const filteredClients = useMemo(() => {
+    const now = Date.now();
     let result = clients.filter(c => {
       const q = search.toLowerCase();
       const matchesSearch = !search || c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q);
       const matchesStatus = statusFilter === 'all' || c.lifecycle_status === statusFilter;
       const matchesTag = !tagFilter || (c.tags || []).includes(tagFilter);
-      return matchesSearch && matchesStatus && matchesTag;
+      const matchesGoal = !goalFilter || c.goal === goalFilter;
+      let matchesCheckIn = true;
+      if (checkInFilter) {
+        const lastCi = checkInMap[c.id]?.[0];
+        if (checkInFilter === 'this_week') matchesCheckIn = lastCi && (now - new Date(lastCi.date)) < 7 * 86400000;
+        if (checkInFilter === 'overdue') matchesCheckIn = lastCi && (now - new Date(lastCi.date)) >= 7 * 86400000;
+        if (checkInFilter === 'never') matchesCheckIn = !lastCi;
+      }
+      return matchesSearch && matchesStatus && matchesTag && matchesGoal && matchesCheckIn;
     });
     result = [...result].sort((a, b) => {
+      if (sortBy === 'oldest') return new Date(a.created_date) - new Date(b.created_date);
       if (sortBy === 'name') return a.name.localeCompare(b.name);
       if (sortBy === 'lifecycle') return LIFECYCLE_ORDER.indexOf(a.lifecycle_status || 'lead') - LIFECYCLE_ORDER.indexOf(b.lifecycle_status || 'lead');
-      if (sortBy === 'adherence') {
+      if (sortBy === 'adherence_high') {
         const sa = compositeAdherenceScore(checkInMap[a.id] || []) ?? -1;
         const sb = compositeAdherenceScore(checkInMap[b.id] || []) ?? -1;
         return sb - sa;
       }
+      if (sortBy === 'adherence_low') {
+        const sa = compositeAdherenceScore(checkInMap[a.id] || []) ?? 101;
+        const sb = compositeAdherenceScore(checkInMap[b.id] || []) ?? 101;
+        return sa - sb;
+      }
+      if (sortBy === 'last_checkin') {
+        const da = checkInMap[a.id]?.[0] ? new Date(checkInMap[a.id][0].date) : new Date(0);
+        const db = checkInMap[b.id]?.[0] ? new Date(checkInMap[b.id][0].date) : new Date(0);
+        return db - da;
+      }
       return new Date(b.created_date) - new Date(a.created_date);
     });
     return result;
-  }, [clients, search, statusFilter, tagFilter, sortBy, checkInMap]);
+  }, [clients, search, statusFilter, tagFilter, goalFilter, checkInFilter, sortBy, checkInMap]);
 
   const counts = useMemo(() => {
     const c = { all: clients.length };
@@ -168,7 +191,7 @@ export default function Clients() {
   const atRiskClients = useMemo(() => getAtRiskClients(clients, allCheckIns), [clients, allCheckIns]);
   const highRiskCount = atRiskClients.filter(e => e.riskScore >= 60).length;
 
-  const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + (tagFilter ? 1 : 0);
+  const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + (tagFilter ? 1 : 0) + (goalFilter ? 1 : 0) + (checkInFilter ? 1 : 0) + (sortBy !== 'created_date' ? 1 : 0);
 
   return (
     <div className="flex flex-col h-full">
@@ -239,7 +262,7 @@ export default function Clients() {
           ))}
         </div>
 
-        {/* Search + tag + sort */}
+        {/* Search bar + filter toggle */}
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
@@ -247,7 +270,7 @@ export default function Clients() {
               placeholder="Search by name or email…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 h-8 text-sm bg-[#F6F7FB] border-[#E7EAF3]"
+              className="pl-8 pr-8 h-8 text-sm bg-[#F6F7FB] border-[#E7EAF3]"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2">
@@ -255,38 +278,95 @@ export default function Clients() {
               </button>
             )}
           </div>
-
-          {allTags.length > 0 && (
-            <Select value={tagFilter || 'all'} onValueChange={v => setTagFilter(v === 'all' ? '' : v)}>
-              <SelectTrigger className="w-32 h-8 text-xs bg-[#F6F7FB] border-[#E7EAF3]">
-                <SelectValue placeholder="Tag" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Tags</SelectItem>
-                {allTags.map(t => <SelectItem key={t} value={t}>#{t}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          )}
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-32 h-8 text-xs bg-[#F6F7FB] border-[#E7EAF3]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="created_date">Newest</SelectItem>
-              <SelectItem value="name">Name A–Z</SelectItem>
-              <SelectItem value="lifecycle">Stage</SelectItem>
-              <SelectItem value="adherence">Adherence</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {activeFiltersCount > 0 && (
-            <Button variant="ghost" size="sm" className="h-8 px-2 text-xs text-[#374151]"
-              onClick={() => { setStatusFilter('all'); setTagFilter(''); }}>
-              <X className="w-3 h-3 mr-1" /> Clear
-            </Button>
-          )}
+          <button
+            onClick={() => setShowFilters(v => !v)}
+            className={cn(
+              'h-8 w-8 flex items-center justify-center rounded-lg border text-xs transition-all flex-shrink-0',
+              showFilters || activeFiltersCount > 0
+                ? 'bg-primary text-white border-primary'
+                : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:text-[#1F2A44]'
+            )}
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+          </button>
         </div>
+
+        {/* Expandable filter chips */}
+        {showFilters && (
+          <div className="space-y-2">
+            {/* Sort by */}
+            <div>
+              <p className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-1">Sort by</p>
+              <div className="flex flex-wrap gap-1">
+                {[
+                  { key: 'created_date', label: 'Newest' },
+                  { key: 'oldest', label: 'Oldest' },
+                  { key: 'last_checkin', label: 'Last Check-in' },
+                  { key: 'adherence_high', label: 'Adherence ↓' },
+                  { key: 'adherence_low', label: 'Adherence ↑' },
+                ].map(({ key, label }) => (
+                  <button key={key} onClick={() => setSortBy(key)}
+                    className={cn('px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all',
+                      sortBy === key ? 'bg-[#1F2A44] text-white border-[#1F2A44]' : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-[#1F2A44]'
+                    )}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Goal */}
+            <div>
+              <p className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-1">Goal</p>
+              <div className="flex flex-wrap gap-1">
+                {[
+                  { key: 'weight_loss', label: 'Weight Loss' },
+                  { key: 'muscle_gain', label: 'Muscle Gain' },
+                  { key: 'strength', label: 'Strength' },
+                  { key: 'general_fitness', label: 'General Fitness' },
+                ].map(({ key, label }) => (
+                  <button key={key} onClick={() => setGoalFilter(v => v === key ? '' : key)}
+                    className={cn('px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all',
+                      goalFilter === key ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-emerald-400'
+                    )}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Check-in status */}
+            <div>
+              <p className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-1">Check-in Status</p>
+              <div className="flex flex-wrap gap-1">
+                {[
+                  { key: 'this_week', label: 'This week' },
+                  { key: 'overdue', label: 'Overdue (7+ days)' },
+                  { key: 'never', label: 'Never checked in' },
+                ].map(({ key, label }) => (
+                  <button key={key} onClick={() => setCheckInFilter(v => v === key ? '' : key)}
+                    className={cn('px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all',
+                      checkInFilter === key ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-amber-400'
+                    )}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Clear link */}
+            {activeFiltersCount > 0 && (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => { setSortBy('created_date'); setGoalFilter(''); setCheckInFilter(''); setTagFilter(''); setStatusFilter('all'); }}
+                  className="text-xs text-primary underline underline-offset-2 hover:opacity-70 transition-opacity"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Column headers ── */}
