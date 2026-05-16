@@ -186,14 +186,8 @@ export default function Clients() {
   };
 
   const openQuickPanel = (client) => {
-    const isLead = (client.lifecycle_status || 'lead') === 'lead';
-    if (isLead) {
-      setLeadPanelClient(client);
-      setQuickPanelClient(null);
-    } else {
-      setQuickPanelClient(client);
-      setLeadPanelClient(null);
-    }
+    setQuickPanelClient(client);
+    setLeadPanelClient(null);
   };
 
   const toggleSelect = (id) => {
@@ -479,37 +473,7 @@ export default function Clients() {
         />
       )}
 
-      {/* Lead pipeline panel */}
-      {leadPanelClient && (
-        <div className="fixed inset-0 z-50 flex justify-end" onClick={() => setLeadPanelClient(null)}>
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
-          <div
-            className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col overflow-hidden"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0F2F8]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#EEF4FF] text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
-                  {leadPanelClient.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
-                </div>
-                <div>
-                  <p className="font-bold text-[#1F2A44] text-sm">{leadPanelClient.name}</p>
-                  <p className="text-xs text-[#6B7280]">Lead Pipeline</p>
-                </div>
-              </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setLeadPanelClient(null)}>
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-5">
-              <LeadPipelinePanel
-                client={leadPanelClient}
-                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Bulk action bar */}
       <BulkActionBar
