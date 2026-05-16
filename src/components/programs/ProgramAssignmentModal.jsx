@@ -36,6 +36,7 @@ export default function ProgramAssignmentModal({
 
   // Draft auto-save
   useEffect(() => {
+    if (!program) return;
     if (selectedClients.length > 0 || customMessage) {
       const draft = {
         selectedClients,
@@ -51,10 +52,11 @@ export default function ProgramAssignmentModal({
       };
       localStorage.setItem(`assignment_draft_${program.id}`, JSON.stringify(draft));
     }
-  }, [selectedClients, startDate, repeatProgram, pace, customMessage, showCustomMessage, notifyClient, scheduleKickoff, kickoffSession, currentStep, program.id]);
+  }, [selectedClients, startDate, repeatProgram, pace, customMessage, showCustomMessage, notifyClient, scheduleKickoff, kickoffSession, currentStep, program]);
 
   // Load draft on mount
   useEffect(() => {
+    if (!program) return;
     const draft = localStorage.getItem(`assignment_draft_${program.id}`);
     if (draft) {
       try {
@@ -73,7 +75,7 @@ export default function ProgramAssignmentModal({
         // Ignore parse errors
       }
     }
-  }, [program.id, open]);
+  }, [program, open]);
 
   const handleClose = () => {
     onOpenChange(false);
@@ -103,7 +105,9 @@ export default function ProgramAssignmentModal({
     });
     
     // Clear draft
-    localStorage.removeItem(`assignment_draft_${program.id}`);
+    if (program) {
+      localStorage.removeItem(`assignment_draft_${program.id}`);
+    }
     handleClose();
   };
 
@@ -117,6 +121,8 @@ export default function ProgramAssignmentModal({
     3: isStep3Valid,
     4: true,
   }[currentStep];
+
+  if (!program) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
