@@ -177,7 +177,7 @@ function PriorityGroup({ priority, items, onResolve }) {
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function RunMyDayCenter({ clients, checkIns, messages, payments = [] }) {
+export default function RunMyDayCenter({ clients, checkIns, messages, payments = [], refreshKey: externalRefreshKey = 0 }) {
   const navigate = useNavigate();
   const [resolvedIds, setResolvedIds] = useState(new Set());
   const [resolvedToday, setResolvedToday] = useState(0);
@@ -398,7 +398,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages, payments =
 
     return result;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clients, checkIns, messages, payments, refreshKey]);
+  }, [clients, checkIns, messages, payments, refreshKey, externalRefreshKey]);
 
   const visibleItems = useMemo(() => items.filter(i => !resolvedIds.has(i.id)), [items, resolvedIds]);
 
@@ -422,12 +422,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages, payments =
             </span>
           )}
         </div>
-        <button
-          onClick={handleRefresh}
-          className="flex items-center gap-1 text-[11px] font-semibold text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          <RefreshCw className="w-3 h-3" /> Refresh
-        </button>
+        {/* refresh handled by parent */}
       </div>
 
       {/* All clear */}
