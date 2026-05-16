@@ -7,6 +7,7 @@ import RunMyDayCenter from './RunMyDayCenter';
 import RecommendationsWidget from './RecommendationsWidget';
 import DashboardKPIs from './DashboardKPIs';
 import TodaySchedule from './TodaySchedule';
+import WeeklySnapshot from './WeeklySnapshot';
 import FirstTimeBanner from './FirstTimeBanner';
 
 function OnboardingLinkBanner() {
@@ -97,6 +98,9 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
 
       {/* ── Today's Schedule ───────────────────────── */}
       <TodaySchedule clients={clients} />
+
+      {/* ── Weekly Snapshot ────────────────────────── */}
+      <WeeklySnapshot checkIns={checkIns} payments={payments} />
 
       {/* ── Onboarding Link ────────────────────────── */}
       <OnboardingLinkBanner />
