@@ -12,12 +12,14 @@ import CloneToClientDialog from '../components/programs/CloneToClientDialog';
 import ProgramCard from '../components/programs/ProgramCard';
 import ProgramListRow from '../components/programs/ProgramListRow';
 import ProgramSearchFilter from '../components/programs/ProgramSearchFilter';
+import ProgramDetailModal from '../components/programs/ProgramDetailModal';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { AnimatePresence } from 'framer-motion';
 
 /* ── Config ── */
 const DIFFICULTY_STYLES = {
@@ -143,6 +145,7 @@ function SuggestedCard({ program, onAssign, onEdit }) {
 export default function Programs() {
   const [assigningProgram, setAssigningProgram] = useState(null);
   const [cloningProgram, setCloningProgram] = useState(null);
+  const [previewingProgram, setPreviewingProgram] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficulty, setDifficulty] = useState('all');
@@ -446,7 +449,7 @@ export default function Programs() {
                     duplicateProgram(program);
                   }}
                   onAssign={() => setAssigningProgram(program)}
-                  onPreview={() => openBuilder(program)}
+                  onPreview={() => setPreviewingProgram(program)}
                   onArchive={() => archiveMutation.mutate(program.id)}
                   onDelete={() => deleteMutation.mutate(program.id)}
                 />
@@ -469,7 +472,7 @@ export default function Programs() {
                     duplicateProgram(program);
                   }}
                   onAssign={() => setAssigningProgram(program)}
-                  onPreview={() => openBuilder(program)}
+                  onPreview={() => setPreviewingProgram(program)}
                   onArchive={() => archiveMutation.mutate(program.id)}
                   onDelete={() => deleteMutation.mutate(program.id)}
                 />
@@ -490,6 +493,26 @@ export default function Programs() {
           program={cloningProgram}
         />
       )}
+
+      {/* Program Detail Modal */}
+      <AnimatePresence>
+        {previewingProgram && (
+          <ProgramDetailModal
+            program={previewingProgram}
+            assignedClients={getClientsForProgram(previewingProgram.id).assigned}
+            allClients={allClients}
+            onClose={() => setPreviewingProgram(null)}
+            onAssign={() => {
+              setAssigningProgram(previewingProgram);
+              setPreviewingProgram(null);
+            }}
+            onEdit={() => {
+              openBuilder(previewingProgram);
+              setPreviewingProgram(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
