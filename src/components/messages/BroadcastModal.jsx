@@ -1,11 +1,8 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { X, Megaphone, Search, CheckSquare, Square, ChevronRight, ChevronLeft, Send, Calendar, Users, AlertTriangle, Check } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { format } from 'date-fns';
 
 const FILTERS = [
   { key: 'all', label: 'All Clients' },
@@ -16,41 +13,40 @@ const FILTERS = [
 ];
 
 const TOKENS = [
-  { token: '[First Name]', label: 'First Name' },
-  { token: '[Goal]', label: 'Goal' },
-  { token: '[Program Name]', label: 'Program' },
-  { token: '[Last Check-in Date]', label: 'Last Check-in' },
-  { token: '[Coach Name]', label: 'Coach Name' },
+  { label: '[First Name]', value: '[First Name]' },
+  { label: '[Goal]', value: '[Goal]' },
+  { label: '[Program Name]', value: '[Program Name]' },
+  { label: '[Last Check-in Date]', value: '[Last Check-in Date]' },
+  { label: '[Coach Name]', value: '[Coach Name]' },
 ];
 
-function resolveTokens(text, client, currentUser) {
-  if (!client) return text;
-  const firstName = (client.name || '').split(' ')[0];
-  const goalMap = { weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength', endurance: 'Endurance', general_fitness: 'General Fitness' };
-  return text
-    .replace(/\[First Name\]/g, firstName || 'there')
-    .replace(/\[Goal\]/g, goalMap[client.goal] || 'fitness')
-    .replace(/\[Program Name\]/g, 'your program')
-    .replace(/\[Last Check-in Date\]/g, 'recently')
-    .replace(/\[Coach Name\]/g, currentUser?.full_name || 'your coach');
+const AVATAR_COLORS = [
+  ['bg-blue-100', 'text-blue-700'],
+  ['bg-violet-100', 'text-violet-700'],
+  ['bg-emerald-100', 'text-emerald-700'],
+  ['bg-amber-100', 'text-amber-700'],
+  ['bg-rose-100', 'text-rose-700'],
+];
+
+function getAvatarColor(name = '') {
+  return AVATAR_COLORS[(name.charCodeAt(0) || 0) % AVATAR_COLORS.length];
 }
 
-function getInitials(name = '') {
-  return name.split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase();
+function previewMessage(message, sampleClient) {
+  if (!sampleClient) return message;
+  return message
+    .replace(/\[First Name\]/g, sampleClient.name?.split(' ')[0] || sampleClient.name)
+    .replace(/\[Goal\]/g, sampleClient.goal?.replace('_', ' ') || 'your goal')
+    .replace(/\[Program Name\]/g, sampleClient.assigned_program_id ? 'your program' : 'your plan')
+    .replace(/\[Last Check-in Date\]/g, format(new Date(), 'MMM d'))
+    .replace(/\[Coach Name\]/g, 'Coach');
 }
 
-const AVATAR_COLORS = ['bg-blue-100 text-blue-600', 'bg-emerald-100 text-emerald-600', 'bg-purple-100 text-purple-600', 'bg-amber-100 text-amber-600', 'bg-rose-100 text-rose-600'];
-function avatarColor(name = '') {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
-  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
-}
-
-export default function BroadcastModal({ clients, allMessages, currentUser, onClose }) {
+export default function BroadcastModal({ clients, onClose, onSend }) {
   const [step, setStep] = useState(1);
+  const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [selected, setSelected] = useState(new Set());
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [scheduleMode, setScheduleMode] = useState(false);
@@ -58,219 +54,224 @@ export default function BroadcastModal({ clients, allMessages, currentUser, onCl
   const textareaRef = useRef(null);
 
   const filteredClients = useMemo(() => {
-    return clients.filter(c => {
+    let list = clients;
+    if (filter === 'active') list = list.filter(c => c.lifecycle_status === 'active' || c.status === 'active');
+    else if (filter === 'at_risk') list = list.filter(c => c.lifecycle_status === 'at_risk');
+    else if (filter === 'no_program') list = list.filter(c => !c.assigned_program_id);
+    else if (filter === 'lead') list = list.filter(c => c.lifecycle_status === 'lead' || c.status === 'prospect');
+    if (search.trim()) {
       const q = search.toLowerCase();
-      const matchSearch = !search || c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q);
-      let matchFilter = true;
-      if (activeFilter === 'active') matchFilter = c.lifecycle_status === 'active' || c.status === 'active';
-      else if (activeFilter === 'at_risk') matchFilter = c.lifecycle_status === 'at_risk';
-      else if (activeFilter === 'no_program') matchFilter = !c.assigned_program_id;
-      else if (activeFilter === 'lead') matchFilter = c.lifecycle_status === 'lead';
-      return matchSearch && matchFilter;
-    });
-  }, [clients, search, activeFilter]);
+      list = list.filter(c => c.name?.toLowerCase().includes(q));
+    }
+    return list;
+  }, [clients, filter, search]);
 
   const handleFilterChange = (key) => {
-    setActiveFilter(key);
-    const matching = clients.filter(c => {
+    setFilter(key);
+    const matches = clients.filter(c => {
       if (key === 'all') return true;
       if (key === 'active') return c.lifecycle_status === 'active' || c.status === 'active';
       if (key === 'at_risk') return c.lifecycle_status === 'at_risk';
       if (key === 'no_program') return !c.assigned_program_id;
-      if (key === 'lead') return c.lifecycle_status === 'lead';
+      if (key === 'lead') return c.lifecycle_status === 'lead' || c.status === 'prospect';
       return true;
     });
-    setSelectedIds(new Set(matching.map(c => c.id)));
+    setSelected(new Set(matches.map(c => c.id)));
   };
 
   const toggleClient = (id) => {
-    setSelectedIds(prev => {
+    setSelected(prev => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
   };
 
-  const selectAll = () => setSelectedIds(new Set(filteredClients.map(c => c.id)));
-  const deselectAll = () => setSelectedIds(new Set());
+  const selectAll = () => setSelected(new Set(filteredClients.map(c => c.id)));
+  const deselectAll = () => setSelected(new Set());
 
   const insertToken = (token) => {
-    const ta = textareaRef.current;
-    if (!ta) { setMessage(m => m + token); return; }
-    const start = ta.selectionStart;
-    const end = ta.selectionEnd;
+    const el = textareaRef.current;
+    if (!el) {
+      setMessage(m => m + token);
+      return;
+    }
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
     const newVal = message.slice(0, start) + token + message.slice(end);
     setMessage(newVal);
-    setTimeout(() => { ta.focus(); ta.setSelectionRange(start + token.length, start + token.length); }, 0);
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start + token.length, start + token.length);
+    }, 0);
   };
 
-  const sampleClient = useMemo(() => clients.find(c => selectedIds.has(c.id)) || clients[0], [clients, selectedIds]);
-  const previewText = useMemo(() => resolveTokens(message, sampleClient, currentUser), [message, sampleClient, currentUser]);
-
-  const selectedClients = clients.filter(c => selectedIds.has(c.id));
+  const sampleClient = clients.find(c => selected.has(c.id)) || clients[0];
 
   const handleSend = async () => {
-    if (!message.trim() || selectedIds.size === 0) return;
+    if (selected.size === 0 || !message.trim()) return;
     setSending(true);
-    try {
-      await Promise.all(
-        selectedClients.map(client =>
-          base44.entities.Message.create({
-            client_id: client.id,
-            client_name: client.name || '',
-            sender: 'coach',
-            content: resolveTokens(message, client, currentUser),
-            is_read: true,
-            tag: 'general',
-            media_type: 'text',
-            is_broadcast: true,
-          })
-        )
-      );
-      toast.success(`Broadcast sent to ${selectedIds.size} client${selectedIds.size !== 1 ? 's' : ''} ✓`);
-      onClose();
-    } catch {
-      toast.error('Failed to send broadcast');
-    } finally {
-      setSending(false);
-    }
+    await onSend([...selected], message);
+    setSending(false);
+    toast.success(`Broadcast sent to ${selected.size} client${selected.size !== 1 ? 's' : ''} ✓`);
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F0F2F8] flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E7EAF3] flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Megaphone className="w-4 h-4 text-primary" />
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center">
+              <Megaphone className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#1F2A44]">Broadcast Message</h2>
-              <p className="text-xs text-[#6B7280]">Step {step} of 3</p>
+              <p className="text-sm font-bold text-[#1F2A44]">Broadcast Message</p>
+              <p className="text-[11px] text-[#9CA3AF]">Step {step} of 3</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#F6F7FB] text-[#6B7280] transition-colors">
-            <X className="w-4 h-4" />
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+            <X className="w-4 h-4 text-[#6B7280]" />
           </button>
         </div>
 
         {/* Step indicators */}
-        <div className="flex px-6 py-3 gap-2 border-b border-[#F0F2F8] flex-shrink-0">
-          {[{ n: 1, label: 'Select Recipients' }, { n: 2, label: 'Compose' }, { n: 3, label: 'Review & Send' }].map(({ n, label }) => (
-            <div key={n} className="flex items-center gap-1.5">
-              <div className={cn('w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors',
-                step === n ? 'bg-primary text-white' : step > n ? 'bg-emerald-500 text-white' : 'bg-[#F0F2F8] text-[#6B7280]'
+        <div className="flex items-center gap-1 px-5 py-3 border-b border-[#F0F2F8] flex-shrink-0">
+          {[1, 2, 3].map(s => (
+            <React.Fragment key={s}>
+              <div className={cn(
+                'flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all',
+                step === s ? 'bg-primary text-white' : step > s ? 'bg-green-100 text-green-700' : 'bg-[#F6F7FB] text-[#9CA3AF]'
               )}>
-                {step > n ? <Check className="w-3 h-3" /> : n}
+                {step > s ? <Check className="w-3 h-3" /> : s}
+                {s === 1 ? 'Recipients' : s === 2 ? 'Compose' : 'Review'}
               </div>
-              <span className={cn('text-xs hidden sm:block', step === n ? 'font-semibold text-[#1F2A44]' : 'text-[#9CA3AF]')}>{label}</span>
-              {n < 3 && <ChevronRight className="w-3 h-3 text-[#D1D5DB]" />}
-            </div>
+              {s < 3 && <div className="flex-1 h-px bg-[#E7EAF3]" />}
+            </React.Fragment>
           ))}
         </div>
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto">
-
-          {/* ── Step 1: Select Recipients ── */}
+          {/* ── Step 1: Recipients ── */}
           {step === 1 && (
-            <div className="p-6 space-y-4">
-              {/* Filter buttons */}
+            <div className="p-5 space-y-3">
+              {/* Filter chips */}
               <div className="flex flex-wrap gap-1.5">
                 {FILTERS.map(f => (
-                  <button key={f.key} onClick={() => handleFilterChange(f.key)}
-                    className={cn('text-xs px-3 py-1 rounded-full font-medium border transition-all',
-                      activeFilter === f.key ? 'bg-primary text-white border-primary' : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-primary'
-                    )}>
+                  <button
+                    key={f.key}
+                    onClick={() => handleFilterChange(f.key)}
+                    className={cn(
+                      'text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all',
+                      filter === f.key
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:border-primary/40 hover:text-primary'
+                    )}
+                  >
                     {f.label}
                   </button>
                 ))}
               </div>
 
-              {/* Search + select all */}
-              <div className="flex gap-2 items-center">
+              {/* Search + select all/none */}
+              <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
-                  <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search clients…" className="pl-8 h-8 text-sm" />
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+                  <input
+                    placeholder="Search clients…"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[#E7EAF3] bg-[#F6F7FB] outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20"
+                  />
                 </div>
-                <button onClick={selectAll} className="text-xs text-primary hover:underline whitespace-nowrap font-medium">Select All</button>
-                <span className="text-[#D1D5DB]">·</span>
-                <button onClick={deselectAll} className="text-xs text-[#6B7280] hover:underline whitespace-nowrap font-medium">Deselect All</button>
+                <button onClick={selectAll} className="text-[11px] text-primary font-semibold hover:underline whitespace-nowrap">All</button>
+                <button onClick={deselectAll} className="text-[11px] text-[#9CA3AF] font-semibold hover:underline whitespace-nowrap">None</button>
               </div>
 
-              {/* Count */}
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#6B7280]" />
-                <span className="text-sm font-semibold text-[#1F2A44]">{selectedIds.size} client{selectedIds.size !== 1 ? 's' : ''} selected</span>
+              {/* Counter */}
+              <div className="flex items-center gap-1.5 text-xs text-[#6B7280]">
+                <Users className="w-3.5 h-3.5" />
+                <span><span className="font-bold text-primary">{selected.size}</span> client{selected.size !== 1 ? 's' : ''} selected</span>
               </div>
 
               {/* Client list */}
-              <div className="space-y-1 max-h-72 overflow-y-auto">
+              <div className="space-y-1 max-h-64 overflow-y-auto">
                 {filteredClients.map(client => {
-                  const checked = selectedIds.has(client.id);
+                  const [bg, text] = getAvatarColor(client.name);
+                  const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase();
+                  const isChecked = selected.has(client.id);
                   return (
-                    <button key={client.id} onClick={() => toggleClient(client.id)}
-                      className={cn('w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-all border',
-                        checked ? 'bg-[#EEF4FF] border-primary/20' : 'bg-white border-transparent hover:bg-[#F6F7FB]'
+                    <button
+                      key={client.id}
+                      onClick={() => toggleClient(client.id)}
+                      className={cn(
+                        'w-full flex items-center gap-3 px-3 py-2 rounded-xl border transition-all text-left',
+                        isChecked ? 'border-primary/30 bg-[#EEF4FF]' : 'border-[#E7EAF3] bg-white hover:bg-[#F6F7FB]'
+                      )}
+                    >
+                      <div className={cn('w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden flex-shrink-0', bg, text)}>
+                        {client.avatar_url
+                          ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
+                          : initials}
+                      </div>
+                      <span className="flex-1 text-sm font-medium text-[#1F2A44] truncate">{client.name}</span>
+                      <div className={cn(
+                        'w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all',
+                        isChecked ? 'bg-primary border-primary' : 'border-[#D1D5DB]'
                       )}>
-                      <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden flex-shrink-0', avatarColor(client.name))}>
-                        {client.avatar_url ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" /> : getInitials(client.name)}
+                        {isChecked && <Check className="w-2.5 h-2.5 text-white" />}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#1F2A44] truncate">{client.name}</p>
-                        <p className="text-[11px] text-[#9CA3AF] truncate">{client.email}</p>
-                      </div>
-                      {checked ? <CheckSquare className="w-4 h-4 text-primary flex-shrink-0" /> : <Square className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />}
                     </button>
                   );
                 })}
+                {filteredClients.length === 0 && (
+                  <p className="text-xs text-center text-[#9CA3AF] py-6">No clients found</p>
+                )}
               </div>
             </div>
           )}
 
           {/* ── Step 2: Compose ── */}
           {step === 2 && (
-            <div className="p-6 space-y-4">
+            <div className="p-5 space-y-4">
               {/* Token bar */}
               <div>
-                <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-2">Personalization Tokens</p>
+                <p className="text-[11px] font-semibold text-[#6B7280] mb-2">Personalization tokens — click to insert:</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {TOKENS.map(({ token, label }) => (
-                    <button key={token} onClick={() => insertToken(token)}
-                      className="text-xs px-2.5 py-1 rounded-full bg-[#EEF4FF] text-primary border border-primary/20 hover:bg-primary hover:text-white transition-all font-medium">
-                      {label}
+                  {TOKENS.map(t => (
+                    <button
+                      key={t.value}
+                      onClick={() => insertToken(t.value)}
+                      className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 hover:bg-violet-100 transition-colors"
+                    >
+                      {t.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Compose area */}
+              {/* Message textarea */}
               <div>
-                <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-2">Message</p>
+                <p className="text-[11px] font-semibold text-[#6B7280] mb-1.5">Message</p>
                 <textarea
                   ref={textareaRef}
                   value={message}
                   onChange={e => setMessage(e.target.value)}
-                  placeholder={`Hey [First Name], just checking in on your [Goal] journey…`}
+                  placeholder="Hey [First Name], just wanted to check in on your [Goal] journey…"
                   rows={5}
-                  className="w-full rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] text-sm text-[#1F2A44] p-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary placeholder:text-[#9CA3AF]"
+                  className="w-full resize-none rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] px-4 py-3 text-sm text-[#1F2A44] placeholder-[#9CA3AF] outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 focus:bg-white transition-all"
                 />
-                <p className="text-[11px] text-[#9CA3AF] mt-1">{message.length} characters · {selectedIds.size} recipients</p>
+                <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{message.length} chars</p>
               </div>
 
               {/* Live preview */}
-              {message && sampleClient && (
-                <div className="rounded-xl border border-[#E7EAF3] bg-[#F6F7FB] p-4">
-                  <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-2">Preview — as seen by {sampleClient.name?.split(' ')[0]}</p>
-                  <div className="flex gap-2">
-                    <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0', avatarColor(sampleClient.name))}>
-                      {getInitials(sampleClient.name)}
-                    </div>
-                    <div className="bg-white rounded-xl px-3 py-2 text-sm text-[#1F2A44] shadow-sm border border-[#E7EAF3] max-w-xs">
-                      {previewText}
-                    </div>
+              {message.trim() && sampleClient && (
+                <div>
+                  <p className="text-[11px] font-semibold text-[#6B7280] mb-1.5">Preview (for {sampleClient.name?.split(' ')[0]}):</p>
+                  <div className="rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 px-4 py-3">
+                    <p className="text-sm text-white leading-relaxed">{previewMessage(message, sampleClient)}</p>
                   </div>
                 </div>
               )}
@@ -279,79 +280,92 @@ export default function BroadcastModal({ clients, allMessages, currentUser, onCl
 
           {/* ── Step 3: Review & Send ── */}
           {step === 3 && (
-            <div className="p-6 space-y-5">
-              {/* Summary */}
-              <div className="rounded-xl border border-[#E7EAF3] bg-[#F6F7FB] p-4 space-y-3">
+            <div className="p-5 space-y-4">
+              {/* Summary card */}
+              <div className="rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] p-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#6B7280]" />
-                  <span className="text-sm text-[#1F2A44]"><span className="font-bold">{selectedIds.size}</span> recipient{selectedIds.size !== 1 ? 's' : ''}</span>
+                  <Users className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-[#1F2A44]">{selected.size} recipient{selected.size !== 1 ? 's' : ''}</span>
                 </div>
-                <div className="border-t border-[#E7EAF3] pt-3">
-                  <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide mb-1">Message Preview</p>
-                  <p className="text-sm text-[#374151] whitespace-pre-wrap leading-relaxed">{message}</p>
+                <div>
+                  <p className="text-[11px] text-[#9CA3AF] mb-1">Message preview:</p>
+                  <div className="rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 px-3 py-2">
+                    <p className="text-xs text-white leading-relaxed line-clamp-4">
+                      {sampleClient ? previewMessage(message, sampleClient) : message}
+                    </p>
+                  </div>
                 </div>
-                <div className="border-t border-[#E7EAF3] pt-3 flex items-center gap-2">
-                  <Send className="w-4 h-4 text-[#6B7280]" />
-                  <span className="text-sm text-[#374151]">{scheduleMode && scheduleDate ? `Scheduled: ${format(new Date(scheduleDate), 'MMM d, yyyy h:mm a')}` : 'Send immediately'}</span>
-                </div>
-              </div>
-
-              {/* Warning */}
-              {selectedClients.some(c => c.lifecycle_status === 'completed' || c.lifecycle_status === 'alumni') && (
-                <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl p-3">
-                  <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-amber-700">
-                    {selectedClients.filter(c => c.lifecycle_status === 'completed' || c.lifecycle_status === 'alumni').length} selected client(s) are completed/alumni and may not be expecting messages.
-                  </p>
-                </div>
-              )}
-
-              {/* Schedule toggle */}
-              <div>
-                <button onClick={() => setScheduleMode(v => !v)}
-                  className="flex items-center gap-2 text-sm text-primary font-medium hover:underline">
-                  <Calendar className="w-4 h-4" />
-                  {scheduleMode ? 'Cancel scheduling' : 'Schedule for later'}
-                </button>
-                {scheduleMode && (
-                  <input type="datetime-local" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)}
-                    className="mt-2 block w-full rounded-xl border border-[#E7EAF3] bg-white text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                {!scheduleMode && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
+                    <Send className="w-3.5 h-3.5" />
+                    Sends immediately to all selected clients
+                  </div>
+                )}
+                {scheduleMode && scheduleDate && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
+                    <Calendar className="w-3.5 h-3.5" />
+                    Scheduled for {format(new Date(scheduleDate), 'MMM d, yyyy h:mm a')}
+                  </div>
                 )}
               </div>
 
-              {/* Send buttons */}
-              <div className="flex gap-3">
-                <Button
-                  onClick={handleSend}
-                  disabled={sending || selectedIds.size === 0 || !message.trim()}
-                  className="flex-1 h-10 font-semibold"
-                  style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}
+              {/* Schedule send toggle */}
+              <div>
+                <button
+                  onClick={() => setScheduleMode(m => !m)}
+                  className={cn(
+                    'w-full text-xs font-semibold py-2 rounded-xl border transition-all flex items-center justify-center gap-2',
+                    scheduleMode
+                      ? 'bg-primary/10 text-primary border-primary/30'
+                      : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:border-primary/30 hover:text-primary'
+                  )}
                 >
-                  {sending ? 'Sending…' : `Send Now to ${selectedIds.size} Client${selectedIds.size !== 1 ? 's' : ''}`}
-                </Button>
+                  <Calendar className="w-3.5 h-3.5" />
+                  {scheduleMode ? 'Switch to Send Now' : 'Schedule Send'}
+                </button>
+                {scheduleMode && (
+                  <input
+                    type="datetime-local"
+                    value={scheduleDate}
+                    onChange={e => setScheduleDate(e.target.value)}
+                    className="mt-2 w-full text-xs rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] px-3 py-2 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
+                )}
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer nav */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-[#F0F2F8] flex-shrink-0 bg-[#FAFBFC]">
+        {/* Footer */}
+        <div className="px-5 py-4 border-t border-[#E7EAF3] flex items-center justify-between gap-3 flex-shrink-0">
           <button
-            onClick={() => step > 1 ? setStep(s => s - 1) : onClose()}
-            className="flex items-center gap-1.5 text-sm text-[#6B7280] hover:text-[#1F2A44] font-medium transition-colors"
+            onClick={step === 1 ? onClose : () => setStep(s => s - 1)}
+            className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#1F2A44] font-medium transition-colors"
           >
-            <ChevronLeft className="w-4 h-4" />
-            {step === 1 ? 'Cancel' : 'Back'}
+            {step === 1 ? (
+              'Cancel'
+            ) : (
+              <><ChevronLeft className="w-4 h-4" /> Back</>
+            )}
           </button>
-          {step < 3 && (
-            <Button
+
+          {step < 3 ? (
+            <button
               onClick={() => setStep(s => s + 1)}
-              disabled={step === 1 ? selectedIds.size === 0 : !message.trim()}
-              size="sm"
-              className="gap-1.5"
+              disabled={(step === 1 && selected.size === 0) || (step === 2 && !message.trim())}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
-              Continue <ChevronRight className="w-3.5 h-3.5" />
-            </Button>
+              Continue <ChevronRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={handleSend}
+              disabled={sending || selected.size === 0}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md"
+            >
+              <Send className="w-3.5 h-3.5" />
+              {sending ? 'Sending…' : scheduleMode && scheduleDate ? 'Schedule Broadcast' : `Send to ${selected.size} Client${selected.size !== 1 ? 's' : ''}`}
+            </button>
           )}
         </div>
       </div>
