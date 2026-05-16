@@ -13,7 +13,8 @@ import Clients from './pages/Clients';
 import Programs from './pages/Programs';
 import Nutrition from './pages/Nutrition';
 import Schedule from './pages/Schedule';
-import Messages from './pages/Messages';
+import Messages from './pages/Messages.jsx';
+
 import Progress from './pages/Progress';
 import Store from './pages/Store';
 import Settings from './pages/Settings';
