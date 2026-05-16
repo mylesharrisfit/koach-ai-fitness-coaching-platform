@@ -1,37 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
-import { Plus, ChevronLeft, ChevronRight, Video, MapPin, ClipboardCheck, Phone, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import {
+  format, startOfWeek, addDays, addWeeks, addMonths,
+  subWeeks, subMonths, subDays, isSameDay, startOfMonth
+} from 'date-fns';
+import { Video, MapPin, ClipboardCheck, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import PageHeader from '../components/shared/PageHeader';
-import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const typeIcons = { video_call: Video, in_person: MapPin, check_in: ClipboardCheck, consultation: Phone };
-const statusColors = {
-  scheduled: 'bg-[#EEF4FF] text-primary',
-  completed: 'bg-emerald-50 text-emerald-600',
-  cancelled: 'bg-[#F6F7FB] text-[#374151]',
-  no_show: 'bg-red-50 text-red-500',
+import CalendarHeader from '../components/schedule/CalendarHeader';
+import TimeGrid from '../components/schedule/TimeGrid';
+import MonthView from '../components/schedule/MonthView';
+
+const EMPTY_FORM = {
+  client_id: '', client_name: '', title: '', date: '',
+  time: '', type: 'video_call', duration_minutes: 60, notes: '', meeting_link: '', status: 'scheduled'
 };
 
 export default function Schedule() {
-  const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [view, setView] = useState(isMobile ? 'day' : 'week');
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ client_id: '', client_name: '', title: '', date: '', time: '', type: 'video_call', duration_minutes: 60, notes: '', meeting_link: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
   const queryClient = useQueryClient();
 
   const { data: sessions = [] } = useQuery({
     queryKey: ['sessions'],
-    queryFn: () => base44.entities.Session.list('-date', 100),
+    queryFn: () => base44.entities.Session.list('-date', 200),
   });
 
   const { data: clients = [] } = useQuery({
@@ -51,20 +54,50 @@ export default function Schedule() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Session.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sessions'] }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['sessions'] }); setShowForm(false); },
   });
 
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(currentWeekStart, i));
+  // Navigation
+  const handlePrev = () => {
+    if (view === 'week') setCurrentDate(d => subWeeks(d, 1));
+    else if (view === 'month') setCurrentDate(d => subMonths(d, 1));
+    else setCurrentDate(d => subDays(d, 1));
+  };
+  const handleNext = () => {
+    if (view === 'week') setCurrentDate(d => addWeeks(d, 1));
+    else if (view === 'month') setCurrentDate(d => addMonths(d, 1));
+    else setCurrentDate(d => addDays(d, 1));
+  };
+  const handleToday = () => setCurrentDate(new Date());
+
+  // Header title
+  const headerTitle = (() => {
+    if (view === 'month') return format(currentDate, 'MMMM yyyy');
+    if (view === 'day') return format(currentDate, 'EEEE, MMMM d, yyyy');
+    const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+    const weekEnd = addDays(weekStart, 6);
+    const sameMonth = format(weekStart, 'MM') === format(weekEnd, 'MM');
+    const base = format(weekStart, 'MMM d');
+    const end = sameMonth ? format(weekEnd, 'd') : format(weekEnd, 'MMM d');
+    return `${base} – ${end}, ${format(weekEnd, 'yyyy')}`;
+  })();
+
+  // Days array for grid views
+  const weekDays = (() => {
+    if (view === 'day') return [currentDate];
+    const start = startOfWeek(currentDate, { weekStartsOn: 1 });
+    return Array.from({ length: 7 }, (_, i) => addDays(start, i));
+  })();
 
   const openCreate = (date) => {
     setEditing(null);
-    setForm({ client_id: '', client_name: '', title: '', date: date ? format(date, 'yyyy-MM-dd') : '', time: '', type: 'video_call', duration_minutes: 60, notes: '', meeting_link: '' });
+    setForm({ ...EMPTY_FORM, date: date ? format(date, 'yyyy-MM-dd') : '' });
     setShowForm(true);
   };
 
   const openEdit = (session) => {
     setEditing(session);
-    setForm({ ...session });
+    setForm({ ...EMPTY_FORM, ...session });
     setShowForm(true);
   };
 
@@ -77,77 +110,63 @@ export default function Schedule() {
 
   const handleClientSelect = (clientId) => {
     const client = clients.find(c => c.id === clientId);
-    setForm({ ...form, client_id: clientId, client_name: client?.name || '' });
+    setForm(f => ({ ...f, client_id: clientId, client_name: client?.name || '' }));
+  };
+
+  const handleMonthDayClick = (day) => {
+    setCurrentDate(day);
+    setView('day');
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader title="Schedule" subtitle="Manage your sessions"
-        actions={<Button onClick={() => openCreate(null)}><Plus className="w-4 h-4 mr-2" /> Book Session</Button>}
+    <div className="p-4 sm:p-6 max-w-screen-2xl mx-auto">
+      <CalendarHeader
+        title={headerTitle}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        onToday={handleToday}
+        view={view}
+        onViewChange={setView}
+        onNewSession={() => openCreate(view === 'day' ? currentDate : null)}
       />
 
-      {/* Week Nav */}
-      <div className="flex items-center gap-2 mb-6 flex-wrap">
-        <Button variant="outline" size="icon" onClick={() => setCurrentWeekStart(addDays(currentWeekStart, -7))}>
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
-        <span className="font-heading font-semibold">
-          {format(currentWeekStart, 'MMM d')} – {format(addDays(currentWeekStart, 6), 'MMM d, yyyy')}
-        </span>
-        <Button variant="outline" size="icon" onClick={() => setCurrentWeekStart(addDays(currentWeekStart, 7))}>
-          <ChevronRight className="w-4 h-4" />
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => setCurrentWeekStart(startOfWeek(new Date(), { weekStartsOn: 1 }))}>
-          Today
-        </Button>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={view}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.18 }}
+        >
+          {view === 'month' ? (
+            <MonthView
+              currentDate={currentDate}
+              sessions={sessions}
+              onDayClick={handleMonthDayClick}
+              onEditSession={openEdit}
+            />
+          ) : (
+            <TimeGrid
+              days={weekDays}
+              sessions={sessions}
+              onEdit={openEdit}
+              onNewSession={openCreate}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Week Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
-        {weekDays.map(day => {
-          const isToday = isSameDay(day, new Date());
-          const daySessions = sessions.filter(s => s.date === format(day, 'yyyy-MM-dd'));
-          return (
-            <div key={day.toISOString()} className={cn(
-              "bg-white rounded-2xl border p-4 min-h-[200px] transition-all shadow-sm",
-              isToday ? "border-primary/40" : "border-[#E7EAF3]"
-            )}>
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="text-xs text-[#374151]">{format(day, 'EEE')}</p>
-                  <p className={cn("text-lg font-heading font-bold text-[#1F2A44]", isToday && "text-primary")}>{format(day, 'd')}</p>
-                </div>
-                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => openCreate(day)}>
-                  <Plus className="w-3 h-3" />
-                </Button>
-              </div>
-              <div className="space-y-2">
-                {daySessions.map(session => {
-                  const Icon = typeIcons[session.type] || Video;
-                  return (
-                    <div key={session.id} className="p-2 rounded-lg bg-[#F6F7FB] hover:bg-[#EEF4FF] border border-[#E7EAF3] transition-all cursor-pointer group/session" onClick={() => openEdit(session)}>
-                      <div className="flex items-center gap-1.5">
-                        <Icon className="w-3 h-3 text-primary flex-shrink-0" />
-                        <p className="text-xs font-medium text-[#1F2A44] truncate">{session.title}</p>
-                      </div>
-                      {session.time && <p className="text-[10px] text-[#374151] mt-0.5 ml-4.5">{session.time}</p>}
-                      <p className="text-[10px] text-[#374151] truncate ml-4.5">{session.client_name}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
+      {/* Session Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-heading">{editing ? 'Edit Session' : 'Book Session'}</DialogTitle>
+            <DialogTitle className="font-heading">{editing ? 'Edit Session' : 'New Session'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            <div><Label>Title *</Label><Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} required placeholder="e.g., Weekly Check-in" /></div>
+          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+            <div>
+              <Label>Title *</Label>
+              <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required placeholder="e.g., Weekly Check-in" />
+            </div>
             <div>
               <Label>Client</Label>
               <Select value={form.client_id} onValueChange={handleClientSelect}>
@@ -158,11 +177,17 @@ export default function Schedule() {
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div><Label>Date *</Label><Input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} required /></div>
-              <div><Label>Time</Label><Input type="time" value={form.time} onChange={e => setForm({...form, time: e.target.value})} /></div>
+              <div>
+                <Label>Date *</Label>
+                <Input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} required />
+              </div>
+              <div>
+                <Label>Time</Label>
+                <Input type="time" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} />
+              </div>
               <div>
                 <Label>Type</Label>
-                <Select value={form.type} onValueChange={v => setForm({...form, type: v})}>
+                <Select value={form.type} onValueChange={v => setForm(f => ({ ...f, type: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="video_call">Video Call</SelectItem>
@@ -172,13 +197,36 @@ export default function Schedule() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Duration (min)</Label><Input type="number" value={form.duration_minutes} onChange={e => setForm({...form, duration_minutes: e.target.value})} /></div>
+              <div>
+                <Label>Duration (min)</Label>
+                <Input type="number" value={form.duration_minutes} onChange={e => setForm(f => ({ ...f, duration_minutes: e.target.value }))} />
+              </div>
             </div>
-            <div><Label>Meeting Link</Label><Input value={form.meeting_link} onChange={e => setForm({...form, meeting_link: e.target.value})} placeholder="https://zoom.us/..." /></div>
-            <div><Label>Notes</Label><Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} rows={2} /></div>
+            <div>
+              <Label>Status</Label>
+              <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="no_show">No Show</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Meeting Link</Label>
+              <Input value={form.meeting_link} onChange={e => setForm(f => ({ ...f, meeting_link: e.target.value }))} placeholder="https://zoom.us/..." />
+            </div>
+            <div>
+              <Label>Notes</Label>
+              <Textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} />
+            </div>
             <div className="flex justify-end gap-3 pt-2">
               {editing && (
-                <Button type="button" variant="destructive" onClick={() => { deleteMutation.mutate(editing.id); setShowForm(false); }}>Delete</Button>
+                <Button type="button" variant="destructive" onClick={() => deleteMutation.mutate(editing.id)}>
+                  Delete
+                </Button>
               )}
               <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
               <Button type="submit">{editing ? 'Update' : 'Book Session'}</Button>

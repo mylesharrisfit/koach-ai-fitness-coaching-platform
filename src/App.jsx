@@ -12,7 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import Programs from './pages/Programs';
 import Nutrition from './pages/Nutrition';
-import Schedule from './pages/Schedule';
+import Schedule from './pages/Schedule.jsx';
 import Messages from './pages/Messages.jsx';
 
 import Progress from './pages/Progress';
