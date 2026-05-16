@@ -8,6 +8,7 @@ import RecommendationsWidget from './RecommendationsWidget';
 import DashboardKPIs from './DashboardKPIs';
 import TodaySchedule from './TodaySchedule';
 import WeeklySnapshot from './WeeklySnapshot';
+import AIInsights from './AIInsights';
 import FirstTimeBanner from './FirstTimeBanner';
 
 function OnboardingLinkBanner() {
@@ -116,6 +117,9 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
         </div>
         <RunMyDayCenter clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
       </div>
+
+      {/* ── AI Insights ────────────────────────────── */}
+      <AIInsights clients={clients} checkIns={checkIns} messages={messages} />
 
       {/* ── AI Recommendations ─────────────────────── */}
       {checkIns.length > 0 && clients.length > 0 && (

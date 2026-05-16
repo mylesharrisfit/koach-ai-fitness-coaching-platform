@@ -1,26 +1,23 @@
-import React, { useState, useMemo } from 'react';
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
-  CartesianGrid,
-} from 'recharts';
-import { BarChart2 } from 'lucide-react';
-import { startOfWeek, endOfWeek, subWeeks, subDays, format, isWithinInterval, parseISO } from 'date-fns';
+import React, { useMemo, useState } from 'react';
+import { format, startOfWeek, endOfWeek, subWeeks, subDays, eachDayOfInterval, parseISO, isWithinInterval } from 'date-fns';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, Cell } from 'recharts';
+import { TrendingUp, BarChart2 } from 'lucide-react';
 
-const RANGES = [
+const RANGE_OPTIONS = [
   { key: 'this_week',  label: 'This Week' },
   { key: 'last_week',  label: 'Last Week' },
   { key: 'last_30',   label: 'Last 30 Days' },
   { key: 'last_90',   label: 'Last 90 Days' },
 ];
 
-function getRange(key) {
+function getDateRange(key) {
   const now = new Date();
   switch (key) {
     case 'this_week':
       return { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
     case 'last_week': {
-      const lw = subWeeks(now, 1);
-      return { start: startOfWeek(lw, { weekStartsOn: 1 }), end: endOfWeek(lw, { weekStartsOn: 1 }) };
+      const s = startOfWeek(subWeeks(now, 1), { weekStartsOn: 1 });
+      return { start: s, end: endOfWeek(s, { weekStartsOn: 1 }) };
     }
     case 'last_30':
       return { start: subDays(now, 29), end: now };
@@ -31,132 +28,109 @@ function getRange(key) {
   }
 }
 
-// Generate day-by-day buckets for week views, or week buckets for longer ranges
-function buildCheckinBuckets(rangeKey, checkIns) {
-  const { start, end } = getRange(rangeKey);
-  const inRange = checkIns.filter(ci => {
-    try { return isWithinInterval(parseISO(ci.date), { start, end }); } catch { return false; }
-  });
+function getBarLabel(key, date) {
+  if (key === 'last_30' || key === 'last_90') return format(date, 'MMM d');
+  return format(date, 'EEE').slice(0, 3);
+}
 
-  if (rangeKey === 'this_week' || rangeKey === 'last_week') {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const counts = {};
-    days.forEach(d => counts[d] = 0);
-    inRange.forEach(ci => {
-      const day = format(parseISO(ci.date), 'EEE');
-      if (counts[day] !== undefined) counts[day]++;
-    });
-    return days.map(d => ({ label: d, value: counts[d] }));
-  } else {
-    // Weekly buckets
-    const buckets = {};
-    inRange.forEach(ci => {
-      const weekStart = format(startOfWeek(parseISO(ci.date), { weekStartsOn: 1 }), 'MMM d');
-      buckets[weekStart] = (buckets[weekStart] || 0) + 1;
-    });
-    return Object.entries(buckets).map(([label, value]) => ({ label, value }));
+function groupByDay(items, dateField, range, rangeKey) {
+  const days = eachDayOfInterval({ start: range.start, end: range.end });
+  // For 30/90 days, bucket by week
+  if (rangeKey === 'last_30' || rangeKey === 'last_90') {
+    const buckets = [];
+    for (let i = 0; i < days.length; i += 7) {
+      const weekDays = days.slice(i, i + 7);
+      const count = items.filter(item => {
+        const d = parseISO(item[dateField]);
+        return weekDays.some(wd => format(wd, 'yyyy-MM-dd') === format(d, 'yyyy-MM-dd'));
+      }).length;
+      buckets.push({ label: format(weekDays[0], 'MMM d'), count });
+    }
+    return buckets;
   }
+  return days.map(day => ({
+    label: format(day, 'EEE').slice(0, 3),
+    count: items.filter(item => format(parseISO(item[dateField]), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd')).length,
+  }));
 }
 
-function buildWorkoutBuckets(rangeKey, sessions) {
-  const { start, end } = getRange(rangeKey);
-  const inRange = sessions.filter(s => {
-    try { return isWithinInterval(parseISO(s.date), { start, end }); } catch { return false; }
-  });
+const GRAD_COLORS = ['#3b82f6', '#6366f1', '#8b5cf6'];
 
-  if (rangeKey === 'this_week' || rangeKey === 'last_week') {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const completed = {}, total = {};
-    days.forEach(d => { completed[d] = 0; total[d] = 0; });
-    inRange.forEach(s => {
-      const day = format(parseISO(s.date), 'EEE');
-      if (total[day] !== undefined) {
-        total[day]++;
-        if (s.status === 'completed') completed[day]++;
-      }
-    });
-    return days.map(d => ({ label: d, completed: completed[d], total: total[d] }));
-  } else {
-    const buckets = {};
-    inRange.forEach(s => {
-      const weekStart = format(startOfWeek(parseISO(s.date), { weekStartsOn: 1 }), 'MMM d');
-      if (!buckets[weekStart]) buckets[weekStart] = { label: weekStart, completed: 0, total: 0 };
-      buckets[weekStart].total++;
-      if (s.status === 'completed') buckets[weekStart].completed++;
-    });
-    return Object.values(buckets);
-  }
+function CustomBar(props) {
+  const { x, y, width, height, index, total } = props;
+  const colorIndex = Math.floor((index / Math.max(total - 1, 1)) * (GRAD_COLORS.length - 1));
+  const color = GRAD_COLORS[Math.min(colorIndex, GRAD_COLORS.length - 1)];
+  return <rect x={x} y={y} width={width} height={height} rx={4} fill={color} opacity={height === 0 ? 0.2 : 1} />;
 }
 
-function buildRevenueBuckets(rangeKey, payments) {
-  const { start, end } = getRange(rangeKey);
-  const inRange = payments.filter(p => {
-    const d = p.paid_date || p.created_date;
-    if (!d) return false;
-    try { return isWithinInterval(parseISO(d.split('T')[0]), { start, end }); } catch { return false; }
-  });
-
-  if (rangeKey === 'this_week' || rangeKey === 'last_week') {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const totals = {};
-    days.forEach(d => totals[d] = 0);
-    inRange.forEach(p => {
-      const dateStr = (p.paid_date || p.created_date || '').split('T')[0];
-      const day = format(parseISO(dateStr), 'EEE');
-      if (totals[day] !== undefined) totals[day] += (p.amount || 0);
-    });
-    return days.map(d => ({ label: d, value: totals[d] }));
-  } else {
-    const buckets = {};
-    inRange.forEach(p => {
-      const dateStr = (p.paid_date || p.created_date || '').split('T')[0];
-      const weekStart = format(startOfWeek(parseISO(dateStr), { weekStartsOn: 1 }), 'MMM d');
-      buckets[weekStart] = (buckets[weekStart] || 0) + (p.amount || 0);
-    });
-    return Object.entries(buckets).map(([label, value]) => ({ label, value }));
-  }
-}
-
-// Gradient bar fill via a linearGradient def
-const GRAD_ID = 'barGrad';
-
-function CustomTooltip({ active, payload, label, prefix = '', suffix = '' }) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-lg"
-      style={{ background: '#1e293b', color: '#fff' }}>
-      <span style={{ opacity: 0.6 }}>{label}: </span>
-      {prefix}{payload[0].value}{suffix}
-    </div>
-  );
-}
-
-function MiniChart({ title, summary, children }) {
+function MiniChart({ title, summary, chart }) {
   return (
     <div className="flex-1 min-w-0 flex flex-col gap-2">
-      <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">{title}</p>
-      <div className="h-32">{children}</div>
+      <p className="text-xs font-bold text-gray-700">{title}</p>
+      <div className="h-28">{chart}</div>
       <p className="text-[11px] text-gray-400 font-medium">{summary}</p>
     </div>
   );
 }
 
-export default function WeeklySnapshot({ checkIns = [], sessions = [], payments = [] }) {
+export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
   const [range, setRange] = useState('this_week');
+  const dateRange = useMemo(() => getDateRange(range), [range]);
 
-  const checkinData = useMemo(() => buildCheckinBuckets(range, checkIns), [range, checkIns]);
-  const sessionData = useMemo(() => buildWorkoutBuckets(range, sessions), [range, sessions]);
-  const revenueData = useMemo(() => buildRevenueBuckets(range, payments), [range, payments]);
+  // Chart 1 — Check-in adherence
+  const checkInData = useMemo(() => {
+    const items = checkIns.filter(ci => {
+      const d = parseISO(ci.date);
+      return isWithinInterval(d, { start: dateRange.start, end: dateRange.end });
+    });
+    return groupByDay(items, 'date', dateRange, range);
+  }, [checkIns, dateRange, range]);
 
-  const totalCheckins = checkinData.reduce((s, d) => s + d.value, 0);
-  const totalSessions = sessionData.reduce((s, d) => s + d.total, 0);
-  const completedSessions = sessionData.reduce((s, d) => s + d.completed, 0);
-  const totalRevenue = revenueData.reduce((s, d) => s + d.value, 0);
+  const totalCheckIns = useMemo(() => checkInData.reduce((s, d) => s + d.count, 0), [checkInData]);
 
-  const sessionChartData = sessionData.map(d => ({
-    ...d,
-    missed: d.total - d.completed,
-  }));
+  // Chart 2 — New clients joined
+  const newClientData = useMemo(() => {
+    const items = clients.filter(c => {
+      if (!c.created_date) return false;
+      const d = parseISO(c.created_date);
+      return isWithinInterval(d, { start: dateRange.start, end: dateRange.end });
+    });
+    return groupByDay(items, 'created_date', dateRange, range);
+  }, [clients, dateRange, range]);
+
+  const totalNewClients = useMemo(() => newClientData.reduce((s, d) => s + d.count, 0), [newClientData]);
+
+  // Chart 3 — Avg training compliance
+  const complianceData = useMemo(() => {
+    const items = checkIns.filter(ci => {
+      const d = parseISO(ci.date);
+      return isWithinInterval(d, { start: dateRange.start, end: dateRange.end }) && ci.compliance_training != null;
+    });
+    if (range === 'last_30' || range === 'last_90') {
+      const days = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+      const buckets = [];
+      for (let i = 0; i < days.length; i += 7) {
+        const weekDays = days.slice(i, i + 7);
+        const bucket = items.filter(ci => weekDays.some(wd => format(parseISO(ci.date), 'yyyy-MM-dd') === format(wd, 'yyyy-MM-dd')));
+        const avg = bucket.length ? Math.round(bucket.reduce((s, ci) => s + ci.compliance_training, 0) / bucket.length) : 0;
+        buckets.push({ label: format(weekDays[0], 'MMM d'), count: avg });
+      }
+      return buckets;
+    }
+    const days = eachDayOfInterval({ start: dateRange.start, end: dateRange.end });
+    return days.map(day => {
+      const bucket = items.filter(ci => format(parseISO(ci.date), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd'));
+      const avg = bucket.length ? Math.round(bucket.reduce((s, ci) => s + ci.compliance_training, 0) / bucket.length) : 0;
+      return { label: format(day, 'EEE').slice(0, 3), count: avg };
+    });
+  }, [checkIns, dateRange, range]);
+
+  const avgCompliance = useMemo(() => {
+    const vals = complianceData.filter(d => d.count > 0);
+    return vals.length ? Math.round(vals.reduce((s, d) => s + d.count, 0) / vals.length) : 0;
+  }, [complianceData]);
+
+  const axisStyle = { fontSize: 10, fill: '#9ca3af' };
 
   return (
     <div className="rounded-xl bg-white border border-gray-100 overflow-hidden"
@@ -165,7 +139,7 @@ export default function WeeklySnapshot({ checkIns = [], sessions = [], payments 
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.12))' }}>
+            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))' }}>
             <BarChart2 className="w-3.5 h-3.5" style={{ color: '#8b5cf6' }} />
           </div>
           <h2 className="text-sm font-bold text-gray-900">Weekly Snapshot</h2>
@@ -173,108 +147,87 @@ export default function WeeklySnapshot({ checkIns = [], sessions = [], payments 
         <select
           value={range}
           onChange={e => setRange(e.target.value)}
-          className="text-xs font-semibold rounded-lg px-2.5 py-1.5 border border-gray-200 bg-gray-50 text-gray-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          className="text-xs font-semibold border border-gray-200 rounded-lg px-2 py-1 bg-white text-gray-600 focus:outline-none focus:ring-1 focus:ring-indigo-300 cursor-pointer"
         >
-          {RANGES.map(r => <option key={r.key} value={r.key}>{r.label}</option>)}
+          {RANGE_OPTIONS.map(o => (
+            <option key={o.key} value={o.key}>{o.label}</option>
+          ))}
         </select>
       </div>
 
       {/* Charts */}
-      <div className="px-5 py-4 flex flex-col sm:flex-row gap-6 sm:divide-x divide-gray-100">
-
-        {/* Chart 1 — Check-in Adherence */}
+      <div className="px-5 py-4 flex flex-col sm:flex-row gap-6 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+        {/* Chart 1 */}
         <MiniChart
           title="Check-in Adherence"
-          summary={`${totalCheckins} check-in${totalCheckins !== 1 ? 's' : ''} this period`}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={checkinData} barCategoryGap="30%">
-              <defs>
-                <linearGradient id={GRAD_ID} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} stroke="#f3f4f6" />
-              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-              <YAxis hide allowDecimals={false} />
-              <Tooltip content={<CustomTooltip suffix=" check-ins" />} cursor={{ fill: '#f3f4f6' }} />
-              <Bar dataKey="value" fill={`url(#${GRAD_ID})`} radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </MiniChart>
-
-        {/* Chart 2 — Session Completion */}
-        <div className="sm:pl-6 flex-1 min-w-0 flex flex-col gap-2">
-          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Session Completion</p>
-          <div className="h-32">
+          summary={`${totalCheckIns} check-in${totalCheckIns !== 1 ? 's' : ''} this period`}
+          chart={
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={sessionChartData} barCategoryGap="30%" barGap={2}>
-                <defs>
-                  <linearGradient id="sessGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" />
-                    <stop offset="100%" stopColor="#059669" />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid vertical={false} stroke="#f3f4f6" />
-                <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-                <YAxis hide allowDecimals={false} />
+              <BarChart data={checkInData} barSize={14} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
+                <YAxis tick={axisStyle} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    return (
-                      <div className="px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-lg"
-                        style={{ background: '#1e293b', color: '#fff' }}>
-                        <div style={{ opacity: 0.6, marginBottom: 2 }}>{label}</div>
-                        <div>✓ {payload.find(p => p.dataKey === 'completed')?.value ?? 0} done</div>
-                        <div style={{ color: '#f87171' }}>✗ {payload.find(p => p.dataKey === 'missed')?.value ?? 0} missed</div>
-                      </div>
-                    );
-                  }}
-                  cursor={{ fill: '#f3f4f6' }}
+                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                  formatter={(v) => [v, 'Check-ins']}
                 />
-                <Bar dataKey="completed" fill="url(#sessGrad)" radius={[4, 4, 0, 0]} stackId="s" />
-                <Bar dataKey="missed" fill="#fee2e2" radius={[4, 4, 0, 0]} stackId="s" />
+                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                  {checkInData.map((_, i) => (
+                    <Cell key={i} fill={i < checkInData.length / 2 ? '#3b82f6' : '#6366f1'} fillOpacity={_ .count === 0 ? 0.2 : 1} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
-          <p className="text-[11px] text-gray-400 font-medium">
-            {completedSessions}/{totalSessions} session{totalSessions !== 1 ? 's' : ''} completed
-          </p>
+          }
+        />
+
+        {/* Chart 2 */}
+        <div className="sm:pl-6 flex-1 min-w-0">
+          <MiniChart
+            title="New Clients"
+            summary={`${totalNewClients} new client${totalNewClients !== 1 ? 's' : ''} added`}
+            chart={
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={newClientData} barSize={14} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                  <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis tick={axisStyle} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                    formatter={(v) => [v, 'New Clients']}
+                  />
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                    {newClientData.map((entry, i) => (
+                      <Cell key={i} fill="#10b981" fillOpacity={entry.count === 0 ? 0.2 : 1} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            }
+          />
         </div>
 
-        {/* Chart 3 — Revenue */}
-        <div className="sm:pl-6 flex-1 min-w-0 flex flex-col gap-2">
-          <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Revenue</p>
-          <div className="h-32">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={revenueData}>
-                <defs>
-                  <linearGradient id="revGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#f59e0b" />
-                    <stop offset="100%" stopColor="#f97316" />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid vertical={false} stroke="#f3f4f6" />
-                <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-                <YAxis hide />
-                <Tooltip content={<CustomTooltip prefix="$" />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="url(#revGrad)"
-                  strokeWidth={2.5}
-                  dot={{ r: 3, fill: '#f59e0b', strokeWidth: 0 }}
-                  activeDot={{ r: 5, fill: '#f59e0b' }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <p className="text-[11px] text-gray-400 font-medium">
-            ${totalRevenue.toLocaleString()} this period
-          </p>
+        {/* Chart 3 */}
+        <div className="sm:pl-6 flex-1 min-w-0">
+          <MiniChart
+            title="Avg Training Compliance"
+            summary={`${avgCompliance}% avg compliance`}
+            chart={
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={complianceData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                  <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <Tooltip
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                    formatter={(v) => [`${v}%`, 'Compliance']}
+                  />
+                  <Line
+                    type="monotone" dataKey="count" stroke="#f59e0b"
+                    strokeWidth={2} dot={{ r: 3, fill: '#f59e0b' }} activeDot={{ r: 5 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            }
+          />
         </div>
-
       </div>
     </div>
   );
