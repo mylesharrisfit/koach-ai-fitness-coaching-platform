@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, SlidersHorizontal, Check } from 'lucide-react';
+import { Search, X, SlidersHorizontal, Check, Megaphone } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow, isToday, isYesterday, format } from 'date-fns';
@@ -42,7 +42,7 @@ function isOnline(client, allMessages) {
   return !!recent;
 }
 
-export default function ClientListSidebar({ clients, allMessages, selectedClientId, onSelectClient }) {
+export default function ClientListSidebar({ clients, allMessages, selectedClientId, onSelectClient, onBroadcast }) {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState('recent');
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -117,6 +117,15 @@ export default function ClientListSidebar({ clients, allMessages, selectedClient
       <div className="p-4 border-b border-[#E7EAF3] flex-shrink-0">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-heading font-bold text-lg text-[#1F2A44]">Messages</h2>
+          <div className="flex items-center gap-1.5">
+            {/* Broadcast button */}
+            <button
+              onClick={onBroadcast}
+              title="Broadcast message"
+              className="p-1.5 rounded-lg border bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:bg-primary hover:text-white hover:border-primary transition-all"
+            >
+              <Megaphone className="w-3.5 h-3.5" />
+            </button>
           {/* Sort button */}
           <div className="relative">
             <button
@@ -145,6 +154,7 @@ export default function ClientListSidebar({ clients, allMessages, selectedClient
                 ))}
               </div>
             )}
+          </div>
           </div>
         </div>
 

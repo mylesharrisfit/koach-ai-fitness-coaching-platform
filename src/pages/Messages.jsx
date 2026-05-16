@@ -1,24 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Send, LayoutTemplate, Sparkles, Mic, Video, Tag, ChevronDown, ArrowDown } from 'lucide-react';
-import { useUpgradeModal } from '@/components/layout/AppLayout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Send, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { isToday, isYesterday, format } from 'date-fns';
 import MessageBubble, { DateSeparator } from '../components/messages/MessageBubble';
 import PinnedNotes from '../components/messages/PinnedNotes';
-import MessageTemplates from '../components/messages/MessageTemplates';
-import AISuggestions from '../components/messages/AISuggestions';
-import QuickReplies from '../components/messages/QuickReplies';
-import { TAG_COLORS } from '../components/messages/MessageTemplates';
-import FeatureLock from '@/components/subscription/FeatureLock';
 import ClientListSidebar from '../components/messages/ClientListSidebar';
 import ConversationHeader from '../components/messages/ConversationHeader';
 import ConversationEmpty from '../components/messages/ConversationEmpty';
-
-const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
+import ComposeBar from '../components/messages/ComposeBar';
 
 export default function Messages() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -29,20 +20,12 @@ export default function Messages() {
   const [mobileView, setMobileView] = useState(paramClientId ? 'chat' : 'list');
   const [newMessage, setNewMessage] = useState(paramMessage ? decodeURIComponent(paramMessage) : '');
   const [selectedTag, setSelectedTag] = useState('general');
-  const [showTemplates, setShowTemplates] = useState(false);
-  const [showAI, setShowAI] = useState(false);
-  const [showTagPicker, setShowTagPicker] = useState(false);
-  const [showQuickReplies, setShowQuickReplies] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const queryClient = useQueryClient();
-  const { openUpgradeModal } = useUpgradeModal();
 
-  useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
-  }, []);
+
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -52,6 +35,14 @@ export default function Messages() {
   const { data: allMessages = [] } = useQuery({
     queryKey: ['messages'],
     queryFn: () => base44.entities.Message.list('-created_date', 500),
+  });
+
+  const { data: clientCheckIns = [] } = useQuery({
+    queryKey: ['checkins-messages', selectedClientId],
+    queryFn: () => selectedClientId
+      ? base44.entities.CheckIn.filter({ client_id: selectedClientId }, '-date', 10)
+      : Promise.resolve([]),
+    enabled: !!selectedClientId,
   });
 
   const createMutation = useMutation({

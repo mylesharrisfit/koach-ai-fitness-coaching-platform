@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { Pin, Mic, Video, Tag, Check, CheckCheck, Download, FileText, Eye } from 'lucide-react';
+import { Pin, Mic, Video, Tag, Check, CheckCheck, Download, FileText, Eye, Megaphone } from 'lucide-react';
 import { TAG_COLORS } from './MessageTemplates';
 
 function ReadReceipt({ msg }) {
@@ -98,8 +98,15 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
       )}
 
       <div className={cn('max-w-[72%] flex flex-col', isCoach ? 'items-end' : 'items-start')}>
+        {/* Broadcast label — only visible to coach */}
+        {msg.is_broadcast && isFirst && isCoach && (
+          <div className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border font-medium w-fit mb-1 bg-violet-50 text-violet-600 border-violet-200">
+            <Megaphone className="w-2.5 h-2.5" />
+            Broadcast
+          </div>
+        )}
         {/* Tag */}
-        {msg.tag && msg.tag !== 'general' && isFirst && (
+        {msg.tag && msg.tag !== 'general' && isFirst && !msg.is_broadcast && (
           <div className={cn('flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border font-medium w-fit mb-1', TAG_COLORS[msg.tag] || '')}>
             <Tag className="w-2.5 h-2.5" />
             {msg.tag.replace('_', '-')}

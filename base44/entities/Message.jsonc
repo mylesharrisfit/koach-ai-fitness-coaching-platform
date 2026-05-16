@@ -41,6 +41,11 @@
       "type": "boolean",
       "default": false
     },
+    "is_broadcast": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if this message was sent as part of a broadcast to multiple clients"
+    },
     "media_type": {
       "type": "string",
       "enum": [
