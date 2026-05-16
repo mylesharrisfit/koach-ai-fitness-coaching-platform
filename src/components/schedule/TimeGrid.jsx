@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { format, isSameDay, parseISO } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 import { Video, MapPin, ClipboardCheck, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const HOUR_START = 6;
 const HOUR_END = 22;
 const HOURS = Array.from({ length: HOUR_END - HOUR_START }, (_, i) => HOUR_START + i);
-const SLOT_HEIGHT = 64; // px per hour
+const SLOT_HEIGHT = 64;
 
 const typeIcons = { video_call: Video, in_person: MapPin, check_in: ClipboardCheck, consultation: Phone };
 const typeColors = {
@@ -22,7 +22,7 @@ function parseTimeToMinutes(timeStr) {
   return h * 60 + (m || 0);
 }
 
-function CurrentTimeLine({ days }) {
+function CurrentTimeLine() {
   const now = new Date();
   const minutes = now.getHours() * 60 + now.getMinutes();
   const startMinutes = HOUR_START * 60;
@@ -79,9 +79,9 @@ function SessionChip({ session, onEdit, compact }) {
 
 export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
   const scrollRef = useRef(null);
+  const today = new Date();
 
   useEffect(() => {
-    // Scroll to current time or 8am on mount
     if (scrollRef.current) {
       const now = new Date();
       const minutes = now.getHours() * 60 + now.getMinutes();
@@ -91,8 +91,6 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
     }
   }, []);
 
-  const today = new Date();
-
   return (
     <div className="flex flex-col bg-white rounded-2xl border border-[#E7EAF3] shadow-sm overflow-hidden">
       {/* Day headers */}
@@ -101,17 +99,22 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
         {days.map(day => {
           const isToday = isSameDay(day, today);
           return (
-            <div key={day.toISOString()} className={cn(
-              'flex-1 py-2.5 px-1 text-center border-l border-[#E7EAF3]',
-              isToday && 'bg-blue-50/50'
-            )}>
+            <div
+              key={day.toISOString()}
+              className={cn(
+                'flex-1 py-2.5 px-1 text-center border-l border-[#E7EAF3]',
+                isToday && 'bg-blue-50/50'
+              )}
+            >
               <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wide">
                 {format(day, 'EEE')}
               </p>
-              <div className={cn(
-                'w-8 h-8 mx-auto mt-0.5 flex items-center justify-center rounded-full text-sm font-bold',
-                isToday ? 'bg-primary text-white' : 'text-[#1F2A44]'
-              )}>
+              <div
+                className={cn(
+                  'w-8 h-8 mx-auto mt-0.5 flex items-center justify-center rounded-full text-sm font-bold',
+                  isToday ? 'bg-primary text-white' : 'text-[#1F2A44]'
+                )}
+              >
                 {format(day, 'd')}
               </div>
             </div>
@@ -170,7 +173,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
                 {/* No sessions label */}
                 {daySessions.length === 0 && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span className="text-[11px] text-[#D1D5DB] font-medium rotate-0">No sessions</span>
+                    <span className="text-[11px] text-[#D1D5DB] font-medium">No sessions</span>
                   </div>
                 )}
 
@@ -185,7 +188,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
                 ))}
 
                 {/* Current time */}
-                {isToday && <CurrentTimeLine days={days} />}
+                {isToday && <CurrentTimeLine />}
               </div>
             );
           })}

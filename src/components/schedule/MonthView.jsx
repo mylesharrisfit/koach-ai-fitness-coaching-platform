@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   startOfMonth, endOfMonth, startOfWeek, endOfWeek,
   addDays, isSameDay, isSameMonth, format
 } from 'date-fns';
-import { Video, MapPin, ClipboardCheck, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import SessionDetailPopover from './SessionDetailPopover';
 
 const typeColors = {
-  video_call: 'bg-blue-500',
-  in_person: 'bg-emerald-500',
-  check_in: 'bg-amber-400',
-  consultation: 'bg-violet-500',
+  video_call: 'bg-blue-500 text-white',
+  in_person: 'bg-emerald-500 text-white',
+  check_in: 'bg-blue-500 text-white',
+  program_review: 'bg-violet-500 text-white',
+  onboarding: 'bg-emerald-500 text-white',
+  progress_review: 'bg-amber-500 text-white',
+  consultation: 'bg-gray-400 text-white',
 };
 
-export default function MonthView({ currentDate, sessions, onDayClick, onEditSession }) {
+export default function MonthView({ currentDate, sessions, onDayClick, onEditSession, clients = [] }) {
+  const [selectedSession, setSelectedSession] = useState(null);
   const today = new Date();
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -72,18 +76,23 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
 
                 {/* Session chips */}
                 <div className="space-y-0.5">
-                  {daySessions.slice(0, maxVisible).map(s => (
-                    <div
-                      key={s.id}
-                      onClick={e => { e.stopPropagation(); onEditSession(s); }}
-                      className={cn(
-                        'w-full text-left text-[10px] font-medium text-white px-1.5 py-0.5 rounded truncate',
-                        typeColors[s.type] || 'bg-primary'
-                      )}
-                    >
-                      {s.time ? `${s.time} ` : ''}{s.title}
-                    </div>
-                  ))}
+                  {daySessions.slice(0, maxVisible).map(s => {
+                    const isCancelled = s.status === 'cancelled';
+                    const client = clients.find(c => c.id === s.client_id);
+                    return (
+                      <div
+                        key={s.id}
+                        onClick={e => { e.stopPropagation(); setSelectedSession(s); }}
+                        className={cn(
+                          'w-full text-left text-[10px] font-medium px-1.5 py-0.5 rounded truncate cursor-pointer hover:opacity-90 transition-opacity',
+                          typeColors[s.type] || 'bg-primary text-white',
+                          isCancelled && 'bg-red-500 text-white line-through'
+                        )}
+                      >
+                        {s.time ? `${s.time} ` : ''}{s.title}
+                      </div>
+                    );
+                  })}
                   {extra > 0 && (
                     <div className="text-[10px] font-semibold text-[#6B7280] pl-1">
                       +{extra} more
@@ -96,5 +105,27 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
         </div>
       ))}
     </div>
-  );
+
+    {/* Session Detail Popover */}
+    {selectedSession && (
+      <SessionDetailPopover
+        session={selectedSession}
+        client={clients.find(c => c.id === selectedSession.client_id)}
+        onClose={() => setSelectedSession(null)}
+        onUpdate={(data) => {
+          setSelectedSession(null);
+        }}
+        onMessage={(clientId) => {
+          setSelectedSession(null);
+          window.location.href = `/messages?clientId=${clientId}`;
+        }}
+        onReschedule={() => {
+          setSelectedSession(null);
+        }}
+        onCancel={() => {
+          setSelectedSession(null);
+        }}
+      />
+    )}
+  </>;
 }

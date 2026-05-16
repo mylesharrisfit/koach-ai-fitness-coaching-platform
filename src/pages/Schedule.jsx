@@ -144,6 +144,7 @@ export default function Schedule() {
               sessions={sessions}
               onDayClick={handleMonthDayClick}
               onEditSession={openEdit}
+              clients={clients}
             />
           ) : (
             <TimeGrid
@@ -151,6 +152,14 @@ export default function Schedule() {
               sessions={sessions}
               onEdit={openEdit}
               onNewSession={openCreate}
+              clients={clients}
+              onUpdate={({ id, data, isReschedule }) => {
+                if (isReschedule) {
+                  updateMutation.mutate({ id, data });
+                } else {
+                  updateMutation.mutate({ id, data });
+                }
+              }}
             />
           )}
         </motion.div>
