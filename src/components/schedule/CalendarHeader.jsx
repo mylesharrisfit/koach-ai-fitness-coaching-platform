@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function CalendarHeader({ title, onPrev, onNext, onToday, view, onViewChange, onNewSession }) {
+export default function CalendarHeader({ title, onPrev, onNext, onToday, view, onViewChange, onNewSession, onAvailability }) {
   const views = ['Day', 'Week', 'Month'];
   return (
     <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
@@ -47,7 +47,13 @@ export default function CalendarHeader({ title, onPrev, onNext, onToday, view, o
           ))}
         </div>
 
-        {/* New Session button */}
+        {/* Buttons */}
+        <button
+          onClick={onAvailability}
+          className="text-sm font-semibold px-4 py-2 rounded-xl border border-[#E7EAF3] bg-white hover:bg-[#F6F7FB] text-[#374151] transition-colors"
+        >
+          Set Availability
+        </button>
         <button
           onClick={onNewSession}
           className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl text-white bg-gradient-to-r from-blue-500 to-violet-600 hover:opacity-90 transition-opacity shadow-sm"

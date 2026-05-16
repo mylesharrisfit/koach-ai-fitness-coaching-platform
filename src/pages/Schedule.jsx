@@ -17,6 +17,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CalendarHeader from '../components/schedule/CalendarHeader';
 import TimeGrid from '../components/schedule/TimeGrid';
 import MonthView from '../components/schedule/MonthView';
+import AvailabilityDrawer from '../components/schedule/AvailabilityDrawer';
+import { useAuth } from '@/lib/AuthContext';
 
 const EMPTY_FORM = {
   client_id: '', client_name: '', title: '', date: '',
@@ -30,7 +32,9 @@ export default function Schedule() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [showAvailability, setShowAvailability] = useState(false);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: sessions = [] } = useQuery({
     queryKey: ['sessions'],
@@ -128,6 +132,7 @@ export default function Schedule() {
         view={view}
         onViewChange={setView}
         onNewSession={() => openCreate(view === 'day' ? currentDate : null)}
+        onAvailability={() => setShowAvailability(true)}
       />
 
       <AnimatePresence mode="wait">
@@ -243,6 +248,14 @@ export default function Schedule() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Availability Drawer */}
+      {showAvailability && (
+        <AvailabilityDrawer
+          coachId={user?.email}
+          onClose={() => setShowAvailability(false)}
+        />
+      )}
     </div>
   );
 }

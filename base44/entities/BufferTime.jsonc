@@ -1,0 +1,25 @@
+{
+  "name": "BufferTime",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string",
+      "description": "Coach email/ID"
+    },
+    "minutes": {
+      "type": "number",
+      "enum": [
+        0,
+        5,
+        10,
+        15,
+        30
+      ],
+      "default": 0,
+      "description": "Buffer time between sessions in minutes"
+    }
+  },
+  "required": [
+    "coach_id"
+  ]
+}

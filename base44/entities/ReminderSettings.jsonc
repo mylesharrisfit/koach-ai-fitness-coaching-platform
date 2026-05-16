@@ -1,0 +1,40 @@
+{
+  "name": "ReminderSettings",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string",
+      "description": "Coach email/ID"
+    },
+    "reminder_24h_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "24 hour reminder enabled"
+    },
+    "reminder_24h_message": {
+      "type": "string",
+      "description": "Custom 24h reminder message"
+    },
+    "reminder_1h_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "1 hour reminder enabled"
+    },
+    "reminder_1h_message": {
+      "type": "string",
+      "description": "Custom 1h reminder message"
+    },
+    "noshow_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "No-show follow-up enabled"
+    },
+    "noshow_message": {
+      "type": "string",
+      "description": "Custom no-show message"
+    }
+  },
+  "required": [
+    "coach_id"
+  ]
+}

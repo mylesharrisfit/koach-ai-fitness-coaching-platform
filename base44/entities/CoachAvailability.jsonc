@@ -1,0 +1,44 @@
+{
+  "name": "CoachAvailability",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string",
+      "description": "Coach email/ID"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "0=Sunday, 6=Saturday"
+    },
+    "time_blocks": {
+      "type": "array",
+      "description": "Array of available time blocks",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_time": {
+            "type": "string",
+            "description": "HH:MM format"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "HH:MM format"
+          },
+          "is_available": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    },
+    "timezone": {
+      "type": "string",
+      "default": "America/New_York",
+      "description": "IANA timezone"
+    }
+  },
+  "required": [
+    "coach_id",
+    "day_of_week"
+  ]
+}

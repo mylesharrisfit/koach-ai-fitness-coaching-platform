@@ -1,0 +1,45 @@
+{
+  "name": "BlockedTime",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string",
+      "description": "Coach email/ID"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of blocked time"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "HH:MM format"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "HH:MM format"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "personal",
+        "lunch",
+        "admin",
+        "vacation",
+        "other"
+      ],
+      "default": "personal",
+      "description": "Type of blocked time"
+    },
+    "title": {
+      "type": "string",
+      "description": "Display title for the blocked time"
+    }
+  },
+  "required": [
+    "coach_id",
+    "date",
+    "start_time",
+    "end_time"
+  ]
+}
