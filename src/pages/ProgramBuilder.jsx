@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -19,6 +19,10 @@ import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import ExerciseLibraryPicker from '@/components/programs/ExerciseLibraryPicker';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import ProgramBuilderHeader from '@/components/programs/builder/ProgramBuilderHeader';
+import ProgramSettingsPanel from '@/components/programs/builder/ProgramSettingsPanel';
+import TrainingDayCard from '@/components/programs/builder/TrainingDayCard';
+import AIAssistButton from '@/components/programs/builder/AIAssistButton';
 
 /* ── Constants ── */
 const MUSCLE_COLORS = {
@@ -64,6 +68,8 @@ const newWorkout = (idx) => ({
 const defaultMeta = {
   title: '', description: '', duration_weeks: 8, difficulty: 'intermediate',
   category: 'custom', days_per_week: 4, is_template: false,
+  equipment: [], tags: [], program_icon: 'dumbbell', estimated_session_length: '60',
+  progression_model: 'linear', deload_frequency: 'never', rest_day_notes: '',
 };
 
 /* ExerciseLibraryModal removed — using ExerciseLibraryPicker component */
@@ -373,6 +379,13 @@ export default function ProgramBuilder() {
     category: existingProgram.category || 'custom',
     days_per_week: existingProgram.days_per_week || 4,
     is_template: existingProgram.is_template || false,
+    equipment: existingProgram.equipment || [],
+    tags: existingProgram.tags || [],
+    program_icon: existingProgram.program_icon || 'dumbbell',
+    estimated_session_length: existingProgram.estimated_session_length || '60',
+    progression_model: existingProgram.progression_model || 'linear',
+    deload_frequency: existingProgram.deload_frequency || 'never',
+    rest_day_notes: existingProgram.rest_day_notes || '',
   } : { ...defaultMeta });
 
   const [workouts, setWorkouts] = useState(existingProgram?.workouts || []);
@@ -380,7 +393,34 @@ export default function ProgramBuilder() {
   const [pickerTarget, setPickerTarget] = useState(null);
   const [demoExercise, setDemoExercise] = useState(null);
   const [showAssign, setShowAssign] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [savedId, setSavedId] = useState(existingProgram?.id || null);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Auto-save every 30 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (hasUnsavedChanges) {
+        const now = new Date();
+        setLastSaved(`${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+        setHasUnsavedChanges(false);
+      }
+    }, 30000);
+    return () => clearTimeout(timer);
+  }, [hasUnsavedChanges]);
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const saveMutation = useMutation({
     mutationFn: (data) => existingProgram || savedId
@@ -389,6 +429,9 @@ export default function ProgramBuilder() {
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ['programs'] });
       if (result?.id) setSavedId(result.id);
+      const now = new Date();
+      setLastSaved(`${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+      setHasUnsavedChanges(false);
       toast.success(existingProgram || savedId ? 'Program updated!' : 'Program saved!');
     },
   });
@@ -398,34 +441,58 @@ export default function ProgramBuilder() {
     saveMutation.mutate({ ...meta, workouts, duration_weeks: Number(meta.duration_weeks), days_per_week: Number(meta.days_per_week) });
   };
 
+  const trackChange = () => {
+    setHasUnsavedChanges(true);
+  };
+
   const addWorkout = () => {
     const next = [...workouts, newWorkout(workouts.length)];
-    setWorkouts(next); setActiveDay(next.length - 1);
+    setWorkouts(next); setActiveDay(next.length - 1); trackChange();
   };
   const removeWorkout = (idx) => {
     setWorkouts(w => w.filter((_, i) => i !== idx));
     setActiveDay(a => Math.max(0, Math.min(a, workouts.length - 2)));
+    trackChange();
   };
   const duplicateWorkout = (idx) => {
     const copy = { ...workouts[idx], exercises: workouts[idx].exercises.map(e => ({ ...e })), day_name: `${workouts[idx].day_name} (Copy)` };
     const next = [...workouts.slice(0, idx + 1), copy, ...workouts.slice(idx + 1)];
-    setWorkouts(next); setActiveDay(idx + 1);
+    setWorkouts(next); setActiveDay(idx + 1); trackChange();
   };
-  const updateWorkoutName = (idx, val) =>
+  const moveWorkoutUp = (idx) => {
+    if (idx <= 0) return;
+    const next = [...workouts];
+    [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+    setWorkouts(next); setActiveDay(idx - 1); trackChange();
+  };
+  const moveWorkoutDown = (idx) => {
+    if (idx >= workouts.length - 1) return;
+    const next = [...workouts];
+    [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+    setWorkouts(next); setActiveDay(idx + 1); trackChange();
+  };
+  const updateWorkoutName = (idx, val) => {
     setWorkouts(w => w.map((wk, i) => i !== idx ? wk : { ...wk, day_name: val }));
+    trackChange();
+  };
 
   const addExercise = (wIdx, libraryEx = null, section = 'main') => {
     const ex = libraryEx
       ? { ...newExercise(section), name: libraryEx.name, rest_seconds: libraryEx.default_rest_seconds || 60, _library_id: libraryEx.id, _library_exercise: libraryEx, video_url: libraryEx.video_url || '' }
       : newExercise(section);
     setWorkouts(w => w.map((wk, i) => i !== wIdx ? wk : { ...wk, exercises: [...wk.exercises, ex] }));
+    trackChange();
   };
-  const removeExercise = (wIdx, eIdx) =>
+  const removeExercise = (wIdx, eIdx) => {
     setWorkouts(w => w.map((wk, i) => i !== wIdx ? wk : { ...wk, exercises: wk.exercises.filter((_, ei) => ei !== eIdx) }));
-  const updateExercise = (wIdx, eIdx, field, value) =>
+    trackChange();
+  };
+  const updateExercise = (wIdx, eIdx, field, value) => {
     setWorkouts(w => w.map((wk, i) => i !== wIdx ? wk : {
       ...wk, exercises: wk.exercises.map((ex, ei) => ei !== eIdx ? ex : { ...ex, [field]: value })
     }));
+    trackChange();
+  };
   const selectFromLibrary = (libraryEx) => {
     if (!pickerTarget) return;
     if (pickerTarget.mode === 'add') {
@@ -479,36 +546,18 @@ export default function ProgramBuilder() {
 
   return (
     <div className="min-h-screen bg-[#F6F7FB] flex flex-col">
-      {/* ── Top bar ── */}
-      <div className="sticky top-0 z-20 bg-white border-b border-[#E7EAF3] flex items-center gap-3 px-4 sm:px-6 py-3 shadow-sm">
-        <button onClick={() => navigate('/programs')}
-          className="flex items-center gap-1.5 text-[#6B7280] hover:text-[#1F2A44] transition-colors flex-shrink-0">
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm font-medium hidden sm:inline">Programs</span>
-        </button>
-        <span className="text-[#D1D5DB] hidden sm:inline">/</span>
-        <Input
-          value={meta.title}
-          onChange={e => setMeta(m => ({ ...m, title: e.target.value }))}
-          placeholder="Program name..."
-          className="border-0 bg-transparent font-bold text-[15px] h-auto p-0 focus-visible:ring-0 flex-1 max-w-xs placeholder:text-[#D1D5DB]"
-        />
-        <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-          <div className="hidden sm:flex items-center gap-1.5">
-            <Switch checked={!!meta.is_template} onCheckedChange={v => setMeta(m => ({ ...m, is_template: v }))} className="scale-75" />
-            <span className="text-xs text-[#6B7280] font-medium">Template</span>
-          </div>
-          {canAssign && (
-            <Button size="sm" variant="outline" onClick={() => setShowAssign(true)} className="gap-1.5 border-[#E7EAF3] text-xs h-8 hidden sm:flex">
-              <Users className="w-3.5 h-3.5" /> Assign
-            </Button>
-          )}
-          <Button size="sm" onClick={handleSave} disabled={saveMutation.isPending} className="gap-1.5 h-8 text-xs">
-            <Save className="w-3.5 h-3.5" />
-            {saveMutation.isPending ? 'Saving...' : 'Save'}
-          </Button>
-        </div>
-      </div>
+      <ProgramBuilderHeader
+        title={meta.title}
+        onTitleChange={t => { setMeta(m => ({ ...m, title: t })); trackChange(); }}
+        isTemplate={meta.is_template}
+        onTemplateChange={v => { setMeta(m => ({ ...m, is_template: v })); trackChange(); }}
+        onSave={handleSave}
+        onPreview={() => setShowPreview(true)}
+        onAssign={() => setShowAssign(true)}
+        isSaving={saveMutation.isPending}
+        canAssign={canAssign}
+        lastSaved={lastSaved}
+      />
 
       <div className="flex flex-1" style={{ height: 'calc(100vh - 57px)', overflow: 'hidden' }}>
         {/* ── Left sidebar ── */}
@@ -555,6 +604,7 @@ export default function ProgramBuilder() {
                 }));
                 setWorkouts(w => [...w, ...week]);
                 setActiveDay(workouts.length);
+                trackChange();
                 toast.success('Week duplicated!');
               }}
                 className="w-full mt-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-dashed border-purple-200 text-xs text-purple-500 hover:border-purple-400 hover:bg-purple-50/50 transition-colors">
@@ -564,34 +614,10 @@ export default function ProgramBuilder() {
           </div>
 
           {/* Program settings */}
-          <div className="p-4 space-y-3 overflow-y-auto flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF]">Settings</p>
-            <div>
-              <Label className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Duration (weeks)</Label>
-              <Input type="number" value={meta.duration_weeks}
-                onChange={e => setMeta(m => ({ ...m, duration_weeks: e.target.value }))}
-                className="h-8 text-sm mt-1 border-[#E7EAF3] bg-[#F6F7FB]" />
-            </div>
-            <div>
-              <Label className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Difficulty</Label>
-              <Select value={meta.difficulty} onValueChange={v => setMeta(m => ({ ...m, difficulty: v }))}>
-                <SelectTrigger className="h-8 text-sm mt-1 border-[#E7EAF3] bg-[#F6F7FB]"><SelectValue /></SelectTrigger>
-                <SelectContent>{['beginner','intermediate','advanced','elite'].map(d => <SelectItem key={d} value={d} className="capitalize">{d}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Category</Label>
-              <Select value={meta.category} onValueChange={v => setMeta(m => ({ ...m, category: v }))}>
-                <SelectTrigger className="h-8 text-sm mt-1 border-[#E7EAF3] bg-[#F6F7FB]"><SelectValue /></SelectTrigger>
-                <SelectContent>{['strength','hypertrophy','fat_loss','athletic','mobility','custom'].map(c => <SelectItem key={c} value={c}>{c.replace('_',' ')}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Description</Label>
-              <Textarea value={meta.description || ''} onChange={e => setMeta(m => ({ ...m, description: e.target.value }))}
-                rows={3} className="text-sm mt-1 resize-none border-[#E7EAF3] bg-[#F6F7FB]" placeholder="Program overview..." />
-            </div>
-          </div>
+          <ProgramSettingsPanel
+            meta={meta}
+            onMetaChange={m => { setMeta(m); trackChange(); }}
+          />
         </div>
 
         {/* ── Center — exercise editor ── */}
@@ -719,6 +745,20 @@ export default function ProgramBuilder() {
         onClose={() => setShowAssign(false)}
         programId={savedId || existingProgram?.id}
         programTitle={meta.title}
+      />
+
+      {/* AI Assist Button */}
+      <AIAssistButton
+        onSuggestExercises={() => {
+          if (currentWorkout) {
+            toast.info('AI exercise suggestions coming soon!');
+          } else {
+            toast.error('Select a training day first');
+          }
+        }}
+        onGenerateProgram={() => toast.info('AI program generation coming soon!')}
+        onCheckBalance={() => toast.info('Muscle balance checker coming soon!')}
+        onAddProgression={() => toast.info('Progressive overload helper coming soon!')}
       />
     </div>
   );
