@@ -9,6 +9,7 @@ import { hasFeature, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import CloneToClientDialog from '../components/programs/CloneToClientDialog';
+import ProgramCard from '../components/programs/ProgramCard';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
@@ -102,96 +103,7 @@ function AssignModal({ program, onClose }) {
   );
 }
 
-/* ── Program Card ── */
-function ProgramCard({ program, onEdit, onDuplicate, onAssign, onDelete, canTemplate }) {
-  const [hovered, setHovered] = useState(false);
-  const catMeta = CATEGORY_META[program.category] || CATEGORY_META.custom;
-  const CatIcon = catMeta.icon;
-  const estMins = estSessionMins(program);
-  const workoutCount = program.workouts?.length || 0;
-  const exerciseCount = program.workouts?.reduce((s, w) => s + (w.exercises?.length || 0), 0) || 0;
 
-  return (
-    <div
-      className="bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden transition-all hover:border-blue-200 hover:shadow-md group"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* Card body — click to edit */}
-      <div className="p-5 cursor-pointer" onClick={onEdit}>
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          <span className={cn('text-[11px] font-semibold px-2 py-0.5 rounded-lg border capitalize', DIFFICULTY_STYLES[program.difficulty] || 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3]')}>
-            {program.difficulty || 'custom'}
-          </span>
-          <span className={cn('text-[11px] font-semibold px-2 py-0.5 rounded-lg border flex items-center gap-1', catMeta.color)}>
-            <CatIcon className="w-2.5 h-2.5" />
-            {catMeta.label}
-          </span>
-          {program.is_template && (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-lg border bg-indigo-50 text-indigo-700 border-indigo-100">
-              Template
-            </span>
-          )}
-        </div>
-
-        {/* Title */}
-        <h3 className="font-semibold text-[#1F2A44] text-[15px] leading-snug mb-1">{program.title}</h3>
-        {program.description && (
-          <p className="text-xs text-[#6B7280] line-clamp-2 leading-relaxed mb-3">{program.description}</p>
-        )}
-
-        {/* Stats row */}
-        <div className="flex items-center gap-3 text-[11px] text-[#9CA3AF]">
-          {program.duration_weeks && (
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" /> {program.duration_weeks}wk
-            </span>
-          )}
-          {program.days_per_week && (
-            <span className="flex items-center gap-1">
-              <BarChart3 className="w-3 h-3" /> {program.days_per_week}×/wk
-            </span>
-          )}
-          {workoutCount > 0 && (
-            <span className="flex items-center gap-1">
-              <Dumbbell className="w-3 h-3" /> {workoutCount} days
-            </span>
-          )}
-          {estMins && (
-            <span className="flex items-center gap-1 ml-auto text-primary font-medium">
-              ~{estMins}min/session
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Action bar — always visible on mobile, hover on desktop */}
-      <div className={cn(
-        'border-t border-[#F6F7FB] bg-[#FAFBFE] flex items-center px-4 py-2.5 gap-1 transition-all',
-        'opacity-100 md:opacity-0 md:group-hover:opacity-100',
-        hovered && 'md:opacity-100'
-      )}>
-        <button onClick={onAssign}
-          className="flex items-center gap-1.5 text-[11px] font-semibold text-primary bg-[#EEF4FF] hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">
-          <Users className="w-3 h-3" /> Assign
-        </button>
-        <button onClick={onDuplicate}
-          className="flex items-center gap-1.5 text-[11px] font-semibold text-[#374151] bg-[#F6F7FB] hover:bg-[#ECEEF5] px-3 py-1.5 rounded-lg transition-colors">
-          <Copy className="w-3 h-3" /> Duplicate
-        </button>
-        <button onClick={onEdit}
-          className="flex items-center gap-1.5 text-[11px] font-semibold text-[#374151] bg-[#F6F7FB] hover:bg-[#ECEEF5] px-3 py-1.5 rounded-lg transition-colors">
-          <Edit className="w-3 h-3" /> Edit
-        </button>
-        <button onClick={onDelete}
-          className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg text-[#D1D5DB] hover:text-red-500 hover:bg-red-50 transition-colors">
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 /* ── Suggested Card (horizontal strip) ── */
 function SuggestedCard({ program, onAssign, onEdit }) {
@@ -265,7 +177,18 @@ export default function Programs() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.WorkoutProgram.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['programs'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      toast.success('Program deleted');
+    },
+  });
+
+  const archiveMutation = useMutation({
+    mutationFn: (id) => base44.entities.WorkoutProgram.update(id, { is_archived: true }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      toast.success('Program archived');
+    },
   });
 
   const duplicateProgram = (program) => {
@@ -275,6 +198,16 @@ export default function Programs() {
   };
 
   const openBuilder = (program = null) => navigate('/program-builder', { state: { program } });
+
+  // Calculate clients assigned to each program + who is in progress
+  const getClientsForProgram = (programId) => {
+    const assigned = allClients.filter(c => c.assigned_program_id === programId);
+    const inProgress = assigned.filter(c => {
+      const clientCheckIns = allCheckIns.filter(ci => ci.client_id === c.id);
+      return clientCheckIns.length > 0;
+    });
+    return { assigned, inProgress };
+  };
 
   // "Suggested" = top 4 programs, prioritising recently created + templates
   const suggested = [...programs]
@@ -359,21 +292,27 @@ export default function Programs() {
             <Button onClick={() => openBuilder()}><Plus className="w-4 h-4" /> Create Program</Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {programs.map(program => (
-              <ProgramCard
-                key={program.id}
-                program={program}
-                canTemplate={canUseTemplates}
-                onEdit={() => openBuilder(program)}
-                onDuplicate={() => {
-                  if (!canUseTemplates) { openUpgradeModal('program_templates'); return; }
-                  duplicateProgram(program);
-                }}
-                onAssign={() => setAssigningProgram(program)}
-                onDelete={() => deleteMutation.mutate(program.id)}
-              />
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {programs.map(program => {
+              const { assigned, inProgress } = getClientsForProgram(program.id);
+              return (
+                <ProgramCard
+                  key={program.id}
+                  program={program}
+                  clientsAssigned={assigned}
+                  clientsInProgress={inProgress}
+                  onEdit={() => openBuilder(program)}
+                  onDuplicate={() => {
+                    if (!canUseTemplates) { openUpgradeModal('program_templates'); return; }
+                    duplicateProgram(program);
+                  }}
+                  onAssign={() => setAssigningProgram(program)}
+                  onPreview={() => openBuilder(program)}
+                  onArchive={() => archiveMutation.mutate(program.id)}
+                  onDelete={() => deleteMutation.mutate(program.id)}
+                />
+              );
+            })}
           </div>
         )}
       </section>
