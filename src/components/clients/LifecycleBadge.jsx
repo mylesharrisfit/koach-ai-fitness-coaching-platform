@@ -3,11 +3,11 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 export const LIFECYCLE_CONFIG = {
-  lead:      { label: 'Lead',      color: 'bg-chart-4/15 text-chart-4 border-chart-4/30' },
-  active:    { label: 'Active',    color: 'bg-accent/15 text-accent border-accent/30' },
-  at_risk:   { label: 'At Risk',   color: 'bg-destructive/15 text-destructive border-destructive/30' },
-  completed: { label: 'Completed', color: 'bg-chart-3/15 text-chart-3 border-chart-3/30' },
-  alumni:    { label: 'Alumni',    color: 'bg-primary/15 text-primary border-primary/30' },
+  lead:      { label: 'Lead',      color: 'bg-blue-500 text-white border-blue-500' },
+  active:    { label: 'Active',    color: 'bg-emerald-500 text-white border-emerald-500' },
+  at_risk:   { label: 'At Risk',   color: 'bg-orange-500 text-white border-orange-500' },
+  completed: { label: 'Completed', color: 'bg-gray-400 text-white border-gray-400' },
+  alumni:    { label: 'Alumni',    color: 'bg-purple-500 text-white border-purple-500' },
 };
 
 export default function LifecycleBadge({ status, className }) {

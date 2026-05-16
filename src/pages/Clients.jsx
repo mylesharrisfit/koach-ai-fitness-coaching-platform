@@ -213,19 +213,26 @@ export default function Clients() {
       <div className="px-5 pt-3 pb-3 flex-shrink-0 space-y-2">
         {/* Lifecycle tabs */}
         <div className="flex flex-wrap gap-1">
-          {[{ key: 'all', label: 'All' }, ...LIFECYCLE_ORDER.map(s => ({ key: s, label: LIFECYCLE_CONFIG[s].label }))].map(({ key, label }) => (
+          {[
+            { key: 'all',       label: 'All',       active: 'bg-[#1F2A44] text-white border-[#1F2A44]',        count: 'bg-white/20 text-white' },
+            { key: 'lead',      label: 'Lead',      active: 'bg-blue-500 text-white border-blue-500',           count: 'bg-white/20 text-white' },
+            { key: 'active',    label: 'Active',    active: 'bg-emerald-500 text-white border-emerald-500',     count: 'bg-white/20 text-white' },
+            { key: 'at_risk',   label: 'At Risk',   active: 'bg-orange-500 text-white border-orange-500',       count: 'bg-white/20 text-white' },
+            { key: 'completed', label: 'Completed', active: 'bg-gray-400 text-white border-gray-400',           count: 'bg-white/20 text-white' },
+            { key: 'alumni',    label: 'Alumni',    active: 'bg-purple-500 text-white border-purple-500',       count: 'bg-white/20 text-white' },
+          ].map(({ key, label, active, count }) => (
             <button
               key={key}
               onClick={() => setStatusFilter(key)}
               className={cn(
                 'flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all',
                 statusFilter === key
-                  ? 'bg-[#EEF4FF] text-primary border-blue-200'
+                  ? active
                   : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:text-[#1F2A44]'
               )}
             >
               {label}
-              <span className={cn('text-[10px] rounded-md px-1 tabular-nums', statusFilter === key ? 'bg-blue-100 text-primary' : 'bg-[#F6F7FB] text-[#9CA3AF]')}>
+              <span className={cn('text-[10px] rounded-md px-1 tabular-nums', statusFilter === key ? count : 'bg-[#F6F7FB] text-[#9CA3AF]')}>
                 {counts[key] || 0}
               </span>
             </button>
