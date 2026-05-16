@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal } from 'lucide-react';
+import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal, AlignJustify, LayoutList } from 'lucide-react';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
@@ -41,9 +41,31 @@ export default function Clients() {
   const [selectedIds, setSelectedIds] = useState(new Set());
   const queryClient = useQueryClient();
 
+  // View mode: compact vs expanded. Persisted in localStorage.
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const getDefaultView = (clientCount) => {
+    if (isMobile) return 'compact';
+    const saved = localStorage.getItem('clients_view_mode');
+    if (saved) return saved;
+    return clientCount >= 10 ? 'compact' : 'expanded';
+  };
+  const [viewMode, setViewModeState] = useState(() => getDefaultView(0));
+
+  const setViewMode = (mode) => {
+    if (!isMobile) localStorage.setItem('clients_view_mode', mode);
+    setViewModeState(mode);
+  };
+
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
   }, []);
+
+  // Once clients load, set smart default if no saved preference
+  useEffect(() => {
+    if (clients.length > 0 && !localStorage.getItem('clients_view_mode') && !isMobile) {
+      setViewModeState(clients.length >= 10 ? 'compact' : 'expanded');
+    }
+  }, [clients.length]);
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ['clients'],
@@ -278,6 +300,34 @@ export default function Clients() {
               </button>
             )}
           </div>
+          {/* View toggle */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <button
+              title="Compact view"
+              onClick={() => setViewMode('compact')}
+              className={cn(
+                'h-8 w-8 flex items-center justify-center rounded-lg border transition-all',
+                viewMode === 'compact'
+                  ? 'bg-[#1F2A44] text-white border-[#1F2A44]'
+                  : 'bg-[#F6F7FB] text-[#9CA3AF] border-[#E7EAF3] hover:text-[#374151]'
+              )}
+            >
+              <AlignJustify className="w-3.5 h-3.5" />
+            </button>
+            <button
+              title="Expanded view"
+              onClick={() => setViewMode('expanded')}
+              className={cn(
+                'h-8 w-8 flex items-center justify-center rounded-lg border transition-all',
+                viewMode === 'expanded'
+                  ? 'bg-[#1F2A44] text-white border-[#1F2A44]'
+                  : 'bg-[#F6F7FB] text-[#9CA3AF] border-[#E7EAF3] hover:text-[#374151]'
+              )}
+            >
+              <LayoutList className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           <button
             onClick={() => setShowFilters(v => !v)}
             className={cn(
@@ -406,6 +456,7 @@ export default function Clients() {
                 score={score}
                 lastCheckIn={cis[0]}
                 checkInCount={cis.length}
+                compact={isMobile || viewMode === 'compact'}
                 selected={selectedIds.has(client.id)}
                 onSelect={() => toggleSelect(client.id)}
                 onView={() => openQuickPanel(client)}
