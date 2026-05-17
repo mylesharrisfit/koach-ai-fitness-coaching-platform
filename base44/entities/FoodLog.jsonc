@@ -1,0 +1,72 @@
+{
+  "name": "FoodLog",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Links to Client entity"
+    },
+    "nutrition_plan_id": {
+      "type": "string",
+      "description": "Links to NutritionPlan entity (optional)"
+    },
+    "logged_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the food was logged"
+    },
+    "meal_name": {
+      "type": "string",
+      "description": "e.g. Breakfast, Lunch, Snack"
+    },
+    "food_item_id": {
+      "type": "string",
+      "description": "Links to FoodItem entity"
+    },
+    "food_name": {
+      "type": "string",
+      "description": "Stored directly in case food item is deleted later"
+    },
+    "serving_quantity": {
+      "type": "number",
+      "description": "Number of servings logged"
+    },
+    "serving_unit": {
+      "type": "string",
+      "description": "e.g. g, ml, oz"
+    },
+    "calories": {
+      "type": "number",
+      "description": "Total calories for this log entry"
+    },
+    "protein": {
+      "type": "number",
+      "description": "Protein in grams"
+    },
+    "carbs": {
+      "type": "number",
+      "description": "Carbohydrates in grams"
+    },
+    "fats": {
+      "type": "number",
+      "description": "Fats in grams"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes"
+    },
+    "logged_by": {
+      "type": "string",
+      "enum": [
+        "client",
+        "coach"
+      ],
+      "default": "client",
+      "description": "Who logged this entry"
+    }
+  },
+  "required": [
+    "client_id",
+    "logged_date"
+  ]
+}
