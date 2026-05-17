@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  MoreHorizontal, Pencil, Users, Copy, Trash2, Salad, Apple,
-  BookOpen, Flame, Beef, Wheat, Droplets, ArrowRight
+  MoreHorizontal, Pencil, Users, Copy, Trash2, ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import NutritionPlanDetailModal from './NutritionPlanDetailModal';
@@ -29,11 +28,11 @@ function PlanBadge({ plan }) {
   return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">Macro Tracking</span>;
 }
 
-function MacroChip({ icon: Icon, label, value, unit = '', color }) {
+function MacroChip({ label, value, unit = '', color }) {
   return (
-    <div className={cn('flex flex-col items-center px-2.5 py-1.5 rounded-xl', color)}>
-      <span className="text-[11px] font-bold leading-none">{value ?? '—'}{unit}</span>
-      <span className="text-[9px] font-semibold opacity-60 mt-0.5 uppercase tracking-wide">{label}</span>
+    <div className="flex flex-col items-center flex-1">
+      <span className={cn('text-xs font-bold leading-none', color)}>{value ?? '—'}{unit}</span>
+      <span className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wide">{label}</span>
     </div>
   );
 }
@@ -162,11 +161,14 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
 
           {/* Macro chips — hidden for habit mode */}
           {!isHabits && (
-            <div className="flex gap-1.5 flex-wrap">
-              <MacroChip icon={Flame}   label="kcal"    value={plan.calories}   unit=""  color="bg-orange-50 text-orange-600" />
-              <MacroChip icon={Beef}    label="protein" value={plan.protein_g}  unit="g" color="bg-red-50 text-red-600" />
-              <MacroChip icon={Wheat}   label="carbs"   value={plan.carbs_g}    unit="g" color="bg-amber-50 text-amber-600" />
-              <MacroChip icon={Droplets}label="fats"    value={plan.fats_g}     unit="g" color="bg-blue-50 text-blue-600" />
+            <div className="flex items-center justify-between bg-secondary/40 rounded-xl px-3 py-2">
+              <MacroChip label="kcal"    value={plan.calories}  unit=""  color="text-orange-500" />
+              <div className="w-px h-6 bg-border" />
+              <MacroChip label="protein" value={plan.protein_g} unit="g" color="text-red-500" />
+              <div className="w-px h-6 bg-border" />
+              <MacroChip label="carbs"   value={plan.carbs_g}   unit="g" color="text-amber-500" />
+              <div className="w-px h-6 bg-border" />
+              <MacroChip label="fats"    value={plan.fats_g}    unit="g" color="text-blue-500" />
             </div>
           )}
 
