@@ -72,11 +72,18 @@ export default function FoodDatabaseTab() {
 
   async function seedDefaults() {
     setSeeding(true);
-    for (const food of DEFAULT_FOODS) {
+    const existing = await base44.entities.FoodItem.list('-created_date', 500);
+    const existingNames = new Set(existing.map(f => f.name?.toLowerCase()));
+    const toCreate = DEFAULT_FOODS.filter(f => !existingNames.has(f.name.toLowerCase()));
+    for (const food of toCreate) {
       await base44.entities.FoodItem.create(food);
     }
     qc.invalidateQueries({ queryKey: ['food-database'] });
-    toast.success('20 default foods loaded!');
+    if (toCreate.length === 0) {
+      toast.info('All default foods are already in your library.');
+    } else {
+      toast.success(`${toCreate.length} default food${toCreate.length !== 1 ? 's' : ''} loaded!`);
+    }
     setSeeding(false);
   }
 
