@@ -272,6 +272,7 @@ export default function NutritionPlanCard({ plan, onEdit, onDuplicate, onDelete,
         onOpenChange={setShowDetail}
         plan={plan}
         onEdit={() => { setShowDetail(false); onEdit(); }}
+        onAssign={() => { setShowDetail(false); onAssign?.(); }}
       />
     </motion.div>
   );

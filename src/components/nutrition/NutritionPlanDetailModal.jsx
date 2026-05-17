@@ -1,147 +1,183 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { X, Edit2, UserPlus, Leaf, Zap, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Utensils, ShoppingCart, Salad, Droplets, RefreshCw, Edit2 } from 'lucide-react';
-import MealPlanViewer from './MealPlanViewer';
-import GroceryListModal from './GroceryListModal';
-import NutritionCheckInModal from './NutritionCheckInModal';
-import WaterTracker from './WaterTracker';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import OverviewTab from './detail/OverviewTab';
+import MealPlanTab from './detail/MealPlanTab';
+import AlternativesTab from './detail/AlternativesTab';
+import ShoppingListTab from './detail/ShoppingListTab';
+import PlanDetailSidebar from './detail/PlanDetailSidebar';
 
 const TABS = [
-  { key: 'meals', label: 'Meal Plan', icon: Utensils },
-  { key: 'water', label: 'Water', icon: Droplets },
-  { key: 'checkin', label: 'Check-In', icon: Salad },
+  { key: 'overview',      label: 'Overview' },
+  { key: 'meals',         label: 'Meal Plan' },
+  { key: 'alternatives',  label: 'Alternatives' },
+  { key: 'shopping',      label: 'Shopping List' },
 ];
 
-export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onEdit }) {
-  const [tab, setTab] = useState('meals');
-  const [showGrocery, setShowGrocery] = useState(false);
-  const [showCheckIn, setShowCheckIn] = useState(false);
-  const [waterTarget, setWaterTarget] = useState(plan?.water_target_ml || 2500);
+// Reuse same goal theme logic
+function getGoalTheme(plan) {
+  const text = ((plan.title || '') + ' ' + (plan.description || '')).toLowerCase();
+  if (text.includes('fat loss') || text.includes('cut') || text.includes('deficit'))
+    return { from: '#F43F5E', to: '#FB923C', icon: '🔥', label: 'Fat Loss' };
+  if (text.includes('bulk') || text.includes('muscle') || text.includes('gain') || text.includes('mass'))
+    return { from: '#3B82F6', to: '#60A5FA', icon: '💪', label: 'Muscle Gain' };
+  if (text.includes('maintain') || text.includes('maintenance'))
+    return { from: '#22C55E', to: '#4ADE80', icon: '⚖️', label: 'Maintenance' };
+  return { from: '#A855F7', to: '#C084FC', icon: '🥗', label: 'Custom' };
+}
 
-  if (!plan) return null;
+export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onEdit, onAssign }) {
+  const [tab, setTab] = useState('overview');
 
-  const carbCycling = plan.carb_cycling;
+  if (!plan || !open) return null;
+
+  const theme = getGoalTheme(plan);
+  const isHabits = plan.tracking_mode === 'habits';
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => onOpenChange(false)} />
 
-          {/* Header */}
-          <div className="px-5 pt-5 pb-4 border-b border-[#E7EAF3] bg-white flex-shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <DialogTitle className="font-heading font-bold text-base text-foreground truncate">{plan.title}</DialogTitle>
-                {plan.description && <p className="text-xs text-muted-foreground mt-0.5 truncate">{plan.description}</p>}
-              </div>
-              <Button variant="outline" size="sm" className="gap-1.5 text-xs flex-shrink-0" onClick={onEdit}>
-                <Edit2 className="w-3 h-3" /> Edit
-              </Button>
-            </div>
-
-            {/* Macro summary */}
-            {plan.tracking_mode !== 'habits' && (
-              <div className="flex items-center gap-2 mt-3 flex-wrap">
-                {[
-                  { label: 'kcal', value: plan.calories, cls: 'bg-orange-50 text-orange-600 border-orange-100' },
-                  { label: 'Protein', value: `${plan.protein_g}g`, cls: 'bg-red-50 text-red-600 border-red-100' },
-                  { label: 'Carbs', value: `${plan.carbs_g}g`, cls: 'bg-amber-50 text-amber-600 border-amber-100' },
-                  { label: 'Fats', value: `${plan.fats_g}g`, cls: 'bg-blue-50 text-blue-600 border-blue-100' },
-                ].map(({ label, value, cls }) => value ? (
-                  <span key={label} className={`text-xs font-bold px-2.5 py-1 rounded-xl border ${cls}`}>
-                    {value} <span className="font-normal opacity-70">{label}</span>
+      {/* Modal */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        transition={{ duration: 0.2 }}
+        className="relative w-full max-w-[90vw] h-[90vh] bg-[#F5F7FA] rounded-2xl flex flex-col overflow-hidden shadow-2xl"
+        style={{ maxWidth: 1100 }}
+      >
+        {/* ── Dark gradient header ─────────────────── */}
+        <div
+          className="flex-shrink-0 px-6 pt-5 pb-0"
+          style={{ background: `linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #1a2340 100%)` }}
+        >
+          {/* Top row: title + actions */}
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <div className="flex-1 min-w-0">
+              {/* Badges */}
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                {isHabits ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <Leaf className="w-3 h-3" /> Habit Mode
                   </span>
-                ) : null)}
-                {carbCycling?.enabled && (
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-xl border bg-amber-50 text-amber-700 border-amber-100">⚡ Carb Cycling ON</span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    <Zap className="w-3 h-3" /> Macro Tracking
+                  </span>
                 )}
+                {plan.is_template && (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">Template</span>
+                )}
+                <span className="text-lg leading-none">{theme.icon}</span>
               </div>
-            )}
+              {/* Plan name */}
+              <h2 className="text-2xl font-heading font-extrabold text-white leading-tight truncate">{plan.title}</h2>
+              {plan.description && (
+                <p className="text-sm text-white/60 mt-1 line-clamp-2">{plan.description}</p>
+              )}
+            </div>
+            {/* Action buttons + close */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Button
+                size="sm"
+                className="gap-1.5 text-xs h-8 bg-gradient-to-r from-primary to-blue-500 text-white border-0"
+                onClick={onAssign}
+              >
+                <UserPlus className="w-3.5 h-3.5" /> Assign
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 text-xs h-8 border-white/20 text-white hover:bg-white/10 hover:text-white"
+                onClick={onEdit}
+              >
+                <Edit2 className="w-3.5 h-3.5" /> Edit Plan
+              </Button>
+              <button
+                onClick={() => onOpenChange(false)}
+                className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
 
-            {/* Tabs */}
-            <div className="flex gap-1 mt-3 bg-secondary/50 rounded-xl p-1 w-fit">
-              {TABS.map(t => (
-                <button
-                  key={t.key}
-                  onClick={() => setTab(t.key)}
-                  className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
-                    tab === t.key ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
-                  )}
-                >
-                  <t.icon className="w-3 h-3" /> {t.label}
-                </button>
+          {/* Macro stats row */}
+          {!isHabits && (
+            <div className="flex items-center gap-4 mb-4 flex-wrap">
+              {[
+                { label: 'Calories', value: plan.calories, unit: 'kcal', color: 'text-gray-300' },
+                { label: 'Protein', value: plan.protein_g, unit: 'g', color: 'text-blue-300' },
+                { label: 'Carbs', value: plan.carbs_g, unit: 'g', color: 'text-orange-300' },
+                { label: 'Fats', value: plan.fats_g, unit: 'g', color: 'text-yellow-300' },
+              ].filter(m => m.value).map(m => (
+                <div key={m.label} className="flex flex-col">
+                  <span className={`text-xl font-extrabold leading-none ${m.color}`}>{m.value}<span className="text-sm font-normal ml-0.5">{m.unit}</span></span>
+                  <span className="text-[10px] text-white/40 uppercase tracking-wide mt-0.5">{m.label}</span>
+                </div>
               ))}
             </div>
-          </div>
+          )}
 
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto p-5">
-
-            {tab === 'meals' && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                    {(plan.meals || []).length} Meals Configured
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs"
-                    onClick={() => setShowGrocery(true)}
-                  >
-                    <ShoppingCart className="w-3.5 h-3.5" /> Grocery List
-                  </Button>
-                </div>
-
-                {/* Carb cycling schedule if enabled */}
-                {carbCycling?.enabled && carbCycling.schedule && (
-                  <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
-                    <p className="text-xs font-bold text-amber-700 mb-2">⚡ Carb Cycling Schedule</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {Object.entries(carbCycling.schedule).map(([day, type]) => {
-                        if (type === 'none') return null;
-                        const colors = { high: 'bg-amber-400 text-white', medium: 'bg-blue-400 text-white', low: 'bg-emerald-400 text-white' };
-                        return (
-                          <span key={day} className={`text-[11px] font-bold px-2 py-0.5 rounded-lg ${colors[type] || 'bg-secondary text-muted-foreground'}`}>
-                            {day.slice(0, 3)}: {type}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
+          {/* Tab bar */}
+          <div className="flex gap-0 overflow-x-auto">
+            {TABS.map(t => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={cn(
+                  'relative px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors',
+                  tab === t.key
+                    ? 'text-white'
+                    : 'text-white/50 hover:text-white/80'
                 )}
-
-                <MealPlanViewer plan={plan} />
-              </div>
-            )}
-
-            {tab === 'water' && (
-              <WaterTracker
-                target={waterTarget}
-                onTargetChange={setWaterTarget}
-              />
-            )}
-
-            {tab === 'checkin' && (
-              <div className="space-y-4">
-                <div className="p-4 bg-green-50 border border-green-100 rounded-xl">
-                  <p className="text-sm font-semibold text-foreground mb-1">Weekly Nutrition Adherence</p>
-                  <p className="text-xs text-muted-foreground">Rate how well you followed this plan and log any notes for your coach.</p>
-                </div>
-                <Button onClick={() => setShowCheckIn(true)} className="w-full gap-2">
-                  <Salad className="w-4 h-4" /> Start Weekly Check-In
-                </Button>
-              </div>
-            )}
+              >
+                {t.label}
+                {tab === t.key && (
+                  <motion.div
+                    layoutId="active-tab-indicator"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full"
+                    style={{ background: `linear-gradient(90deg, ${theme.from}, ${theme.to})` }}
+                  />
+                )}
+              </button>
+            ))}
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
 
-      <GroceryListModal open={showGrocery} onOpenChange={setShowGrocery} plan={plan} />
-      <NutritionCheckInModal open={showCheckIn} onOpenChange={setShowCheckIn} planId={plan?.id} />
-    </>
+        {/* ── Two-column body ──────────────────────── */}
+        <div className="flex-1 flex overflow-hidden min-h-0">
+          {/* Left: main content (70%) */}
+          <div className="flex-1 min-w-0 overflow-y-auto px-6 py-5">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+              >
+                {tab === 'overview'     && <OverviewTab plan={plan} />}
+                {tab === 'meals'        && <MealPlanTab plan={plan} />}
+                {tab === 'alternatives' && <AlternativesTab />}
+                {tab === 'shopping'     && <ShoppingListTab plan={plan} />}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Right: sidebar (30%) */}
+          <div
+            className="flex-shrink-0 overflow-y-auto px-5 py-5 border-l border-[#E7EAF3] bg-white hidden md:block"
+            style={{ width: 280 }}
+          >
+            <PlanDetailSidebar plan={plan} onAssign={onAssign} />
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 }
