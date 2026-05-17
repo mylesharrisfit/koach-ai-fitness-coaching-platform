@@ -25,19 +25,19 @@
     },
     "food_name": {
       "type": "string",
-      "description": "Stored directly in case food item is deleted later"
+      "description": "Store name directly in case food is deleted later"
     },
     "serving_quantity": {
       "type": "number",
-      "description": "Number of servings logged"
+      "description": "How many servings"
     },
     "serving_unit": {
       "type": "string",
-      "description": "e.g. g, ml, oz"
+      "description": "Unit of serving e.g. g, ml, oz"
     },
     "calories": {
       "type": "number",
-      "description": "Total calories for this log entry"
+      "description": "Calories for this log entry"
     },
     "protein": {
       "type": "number",
@@ -53,7 +53,7 @@
     },
     "notes": {
       "type": "string",
-      "description": "Optional notes"
+      "description": "Optional notes for this log entry"
     },
     "logged_by": {
       "type": "string",
@@ -61,8 +61,12 @@
         "client",
         "coach"
       ],
-      "default": "client",
+      "default": "coach",
       "description": "Who logged this entry"
+    },
+    "coach_daily_notes": {
+      "type": "string",
+      "description": "Coach daily nutrition feedback (stored on a sentinel entry per client+date)"
     }
   },
   "required": [

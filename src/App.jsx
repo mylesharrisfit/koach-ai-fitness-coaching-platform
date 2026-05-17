@@ -45,6 +45,7 @@ import ClientOnboarding from './pages/ClientOnboarding';
 import OnboardingManager from './pages/OnboardingManager';
 import Migration from './pages/Migration';
 import FoodLibrary from './pages/FoodLibrary';
+import FoodLogPage from './pages/FoodLogPage';
 import PremiumOnboarding from './pages/PremiumOnboarding';
 import ClientPortal from './pages/ClientPortal';
 import ClientWorkoutView from './pages/ClientWorkoutView';
@@ -104,6 +105,7 @@ const AuthenticatedApp = () => {
         <Route path="/onboarding-manager" element={<OnboardingManager />} />
         <Route path="/migration" element={<Migration />} />
         <Route path="/food-library" element={<FoodLibrary />} />
+        <Route path="/food-log" element={<FoodLogPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
         <Route path="/at-risk" element={<AtRiskClients />} />
