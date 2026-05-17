@@ -36,7 +36,7 @@ const LOADING_MESSAGES = ['Calculating macros...', 'Structuring meals...', 'Opti
 
 const INITIAL_DETAILS = {
   weight: '', weightUnit: 'kg',
-  height: '', heightUnit: 'cm',
+  height: '', heightFeet: '', heightInches: '', heightUnit: 'cm',
   age: '', sex: 'male',
   activity: '', trainingDays: 4, workoutTime: 'Morning', workoutTypes: [],
   mealsPerDay: 4, preWorkout: false, preWorkoutTiming: '1hr', preWorkoutCarbs: false,
@@ -251,12 +251,32 @@ function Step2Details({ details, setDetails }) {
               <Label className="text-xs font-semibold mb-1.5 block">Body Weight <span className="text-destructive">*</span></Label>
               <Input type="number" placeholder="e.g. 80" value={details.weight} onChange={e => u('weight', e.target.value)} />
             </div>
-            <UnitToggle options={['kg', 'lbs']} value={details.weightUnit} onChange={v => u('weightUnit', v)} />
+            <UnitToggle options={['kg', 'lbs']} value={details.weightUnit} onChange={v => {
+              const cur = parseFloat(details.weight);
+              if (!isNaN(cur)) {
+                const converted = v === 'lbs' ? Math.round(cur * 2.20462 * 10) / 10 : Math.round(cur * 0.453592 * 10) / 10;
+                u('weight', String(converted));
+              }
+              u('weightUnit', v);
+            }} />
           </div>
           <div className="flex gap-3 items-end">
+            <Label className="text-xs font-semibold mb-1.5 block self-start pt-1">Height</Label>
             <div className="flex-1">
-              <Label className="text-xs font-semibold mb-1.5 block">Height</Label>
-              <Input type="number" placeholder="e.g. 175" value={details.height} onChange={e => u('height', e.target.value)} />
+              {details.heightUnit === 'ft' ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Input type="number" placeholder="5" min={1} max={8} value={details.heightFeet} onChange={e => u('heightFeet', e.target.value)} className="w-16 text-center" />
+                    <span className="text-xs font-semibold text-muted-foreground">ft</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Input type="number" placeholder="10" min={0} max={11} value={details.heightInches} onChange={e => u('heightInches', e.target.value)} className="w-16 text-center" />
+                    <span className="text-xs font-semibold text-muted-foreground">in</span>
+                  </div>
+                </div>
+              ) : (
+                <Input type="number" placeholder="175" max={250} value={details.height} onChange={e => u('height', e.target.value)} />
+              )}
             </div>
             <UnitToggle options={['cm', 'ft']} value={details.heightUnit} onChange={v => u('heightUnit', v)} />
           </div>
@@ -557,6 +577,10 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
     const weightKg = details.weightUnit === 'lbs'
       ? parseFloat(details.weight) * 0.453592
       : parseFloat(details.weight);
+    // eslint-disable-next-line no-unused-vars
+    const heightCm = details.heightUnit === 'ft'
+      ? (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54
+      : parseFloat(details.height) || 0;
     const macros = calcMacros(goal, weightKg, details.activity, details.diet);
     setResult({
       ...macros, goal,
@@ -579,7 +603,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   }
 
   function reset() {
-    setStep(0); setDir(1); setGoal(null); setDetails(INITIAL_DETAILS); setResult(null);
+    setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS }); setResult(null);
   }
 
   function canNext() {
