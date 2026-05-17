@@ -202,12 +202,12 @@ export default function Nutrition() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center py-20 rounded-2xl border-2 border-dashed border-[#E7EAF3]"
           >
-            <Salad className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+            <Salad className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
             <p className="font-semibold text-foreground mb-1">
               {search ? `No plans matching "${search}"` : 'No nutrition plans yet'}
             </p>
             <p className="text-sm text-muted-foreground mb-5">
-              {search ? 'Try a different search term.' : 'Create your first plan or use the AI Generator to get started instantly.'}
+              {search ? 'Try a different search term.' : 'No nutrition plans yet — create your first plan to get started.'}
             </p>
             {!search && (
               <div className="flex items-center justify-center gap-3">
@@ -230,6 +230,7 @@ export default function Nutrition() {
                 onEdit={() => openEdit(plan)}
                 onDuplicate={() => duplicatePlan(plan)}
                 onDelete={() => deleteMutation.mutate(plan.id)}
+                onAssign={() => openEdit(plan)}
               />
             ))}
           </div>
