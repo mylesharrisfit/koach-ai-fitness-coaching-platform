@@ -11,6 +11,7 @@ import NutritionForm from '../components/nutrition/NutritionForm';
 import NutritionInsightCards from '../components/nutrition/NutritionInsightCards';
 import NutritionPlanCard from '../components/nutrition/NutritionPlanCard';
 import AIGeneratorModal from '../components/nutrition/AIGeneratorModal';
+import NewPlanLaunchModal from '../components/nutrition/NewPlanLaunchModal';
 import { motion } from 'framer-motion';
 
 const FILTER_TABS = ['All', 'Macro Tracking', 'Habit Mode', 'Templates'];
@@ -18,6 +19,7 @@ const FILTER_TABS = ['All', 'Macro Tracking', 'Habit Mode', 'Templates'];
 export default function Nutrition() {
   const [showForm, setShowForm] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [showLaunchModal, setShowLaunchModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [search, setSearch] = useState('');
@@ -110,13 +112,13 @@ export default function Nutrition() {
           <Button
             onClick={() => {
               if (atLimit) { openUpgradeModal('clients'); return; }
-              openCreate();
+              setShowLaunchModal(true);
             }}
             variant={atLimit ? 'outline' : 'default'}
             className={`gap-2 text-sm ${atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}`}
           >
             {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-            {atLimit ? `Limit (${plans.length}/${nutritionLimit})` : 'Create Plan'}
+            {atLimit ? `Limit (${plans.length}/${nutritionLimit})` : '+ New Plan'}
           </Button>
         </div>
       </div>
@@ -214,8 +216,8 @@ export default function Nutrition() {
                 <Button variant="outline" onClick={() => setShowAIModal(true)} className="gap-2">
                   <Sparkles className="w-4 h-4 text-primary" /> AI Generator
                 </Button>
-                <Button onClick={() => openCreate()} className="gap-2">
-                  <Plus className="w-4 h-4" /> Create Plan
+                <Button onClick={() => setShowLaunchModal(true)} className="gap-2">
+                  <Plus className="w-4 h-4" /> + New Plan
                 </Button>
               </div>
             )}
@@ -250,6 +252,13 @@ export default function Nutrition() {
         open={showAIModal}
         onOpenChange={setShowAIModal}
         onApply={handleAIApply}
+      />
+
+      <NewPlanLaunchModal
+        open={showLaunchModal}
+        onOpenChange={setShowLaunchModal}
+        onSelectAI={() => { setShowLaunchModal(false); setShowAIModal(true); }}
+        onSelectManual={() => { setShowLaunchModal(false); openCreate(); }}
       />
     </div>
   );
