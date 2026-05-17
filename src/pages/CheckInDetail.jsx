@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { checkInScore, averageAdherenceScore, scoreColor, scoreBg } from '@/lib/adherence';
 import CheckInResponseBox from '@/components/checkin/CheckInResponseBox';
 import AIProgramSuggestions from '@/components/checkin/AIProgramSuggestions';
+import CheckInNutritionTab from '@/components/checkin/CheckInNutritionTab';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 const MOOD_LABEL = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
@@ -118,6 +119,7 @@ export default function CheckInDetail() {
   const checkInId = params.get('id');
   const clientId = params.get('clientId');
 
+  const [activeTab, setActiveTab] = useState('overview');
   const [markSaving, setMarkSaving] = useState(false);
   const [marked, setMarked] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -233,7 +235,41 @@ export default function CheckInDetail() {
         )}
       </div>
 
+      {/* Tab bar */}
+      <div className="border-b border-border bg-card/80 backdrop-blur sticky top-[57px] z-10">
+        <div className="max-w-xl mx-auto px-4 flex gap-1 pt-2">
+          {[
+            { id: 'overview',   label: 'Overview' },
+            { id: 'nutrition',  label: 'Nutrition' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                'px-4 py-2 text-sm font-semibold rounded-t-lg border-b-2 transition-colors',
+                activeTab === tab.id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-xl mx-auto px-4 py-5 space-y-5 pb-32">
+
+        {/* ── Nutrition Tab ── */}
+        {activeTab === 'nutrition' && (
+          <CheckInNutritionTab
+            clientId={clientId}
+            checkInDate={checkIn.date}
+            nutritionPlan={nutritionPlan}
+          />
+        )}
+
+        {activeTab === 'overview' && <>
 
         {/* ── Adherence Score Hero ── */}
         <div className="bg-card border border-border rounded-2xl p-5 flex items-center gap-5">
@@ -391,6 +427,8 @@ export default function CheckInDetail() {
             />
           </div>
         )}
+
+        </> /* end overview tab */}
       </div>
 
       {/* ── Sticky action bar ── */}
