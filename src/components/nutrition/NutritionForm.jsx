@@ -1,395 +1,378 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trash2, Plus, ChevronUp, ChevronDown, Loader2, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, ChevronDown, ChevronUp, X, Sparkles, PenLine, BookOpen } from 'lucide-react';
-import SmartNutritionGenerator from './SmartNutritionGenerator';
-import SupplementPanel from './SupplementPanel';
-import FoodPickerModal from './FoodPickerModal';
-import CarbCyclingPanel from './CarbCyclingPanel';
 import { cn } from '@/lib/utils';
 
-const MEAL_TEMPLATES = [
-  { meal_name: 'Breakfast', time: '7:00 AM', foods: [{ food_name: 'Oats', portion: '1 cup', calories: 300, protein: 10, carbs: 54, fats: 5, swap_options: ['Greek yogurt bowl', 'Protein pancakes'] }] },
-  { meal_name: 'Lunch', time: '12:30 PM', foods: [{ food_name: 'Chicken & Rice', portion: '200g + 1 cup', calories: 450, protein: 40, carbs: 45, fats: 8, swap_options: ['Tuna wrap', 'Turkey bowl'] }] },
-  { meal_name: 'Dinner', time: '7:00 PM', foods: [{ food_name: 'Salmon & Veggies', portion: '180g + 2 cups', calories: 400, protein: 38, carbs: 20, fats: 18, swap_options: ['Steak & salad', 'Tofu stir fry'] }] },
-  { meal_name: 'Pre-Workout', time: '3:00 PM', foods: [{ food_name: 'Banana + Protein Bar', portion: '1 each', calories: 280, protein: 20, carbs: 38, fats: 6, swap_options: ['Rice cake + PB', 'Fruit smoothie'] }] },
-  { meal_name: 'Post-Workout', time: '6:00 PM', foods: [{ food_name: 'Protein Shake', portion: '1 scoop', calories: 150, protein: 25, carbs: 8, fats: 2, swap_options: ['Cottage cheese', 'Greek yogurt'] }] },
-];
+const EMOJIS = ['🥗', '🔥', '💪', '🥦', '🍗', '⚡', '🏆', '🌿'];
 
-const HABIT_TEMPLATES = [
-  'Eat a palm-sized portion of protein with every meal',
-  'Fill half your plate with vegetables at lunch and dinner',
-  'Drink 2–3L of water throughout the day',
-  'Avoid processed snacks after 8pm',
-  'Eat slowly and stop when 80% full',
-];
-
-const defaultForm = { title: '', description: '', tracking_mode: 'macros', calories: '', protein_g: '', carbs_g: '', fats_g: '', notes: '', meals: [], supplements: [], carb_cycling: { enabled: false, targets: {}, schedule: {} }, water_target_ml: 2500 };
-
-export default function NutritionForm({ open, onOpenChange, onSubmit, plan, initialMeals }) {
-  const [form, setForm] = useState(defaultForm);
-  const [expandedMeal, setExpandedMeal] = useState(null);
-  const [mealTab, setMealTab] = useState('smart'); // 'smart' | 'manual'
-  const [foodPickerMealIdx, setFoodPickerMealIdx] = useState(null);
-
-  useEffect(() => {
-    if (plan) {
-      setForm({ ...defaultForm, ...plan, calories: plan.calories || '', protein_g: plan.protein_g || '', carbs_g: plan.carbs_g || '', fats_g: plan.fats_g || '' });
-    } else {
-      setForm({ ...defaultForm, meals: initialMeals || [] });
-    }
-  }, [plan, open, initialMeals]);
-
-  const addMealTemplate = (template) => {
-    setForm(f => ({ ...f, meals: [...(f.meals || []), { ...template }] }));
+function defaultForm(plan, initialMeals) {
+  return {
+    title: plan?.title ?? '',
+    description: plan?.description ?? '',
+    emoji: plan?.emoji ?? '🥗',
+    tracking_mode: plan?.tracking_mode ?? 'macros',
+    is_template: plan?.is_template ?? false,
+    calories: plan?.calories ?? '',
+    protein: plan?.protein_g ?? '',
+    carbs: plan?.carbs_g ?? '',
+    fats: plan?.fats_g ?? '',
+    meals: plan?.meals?.length
+      ? plan.meals.map(m => ({ name: m.meal_name ?? '', calories: m.calories ?? '', notes: m.habit_description ?? '' }))
+      : (initialMeals ?? []),
+    assigned_clients: plan?.assigned_clients ?? [],
   };
+}
 
-  const addBlankMeal = () => {
-    setForm(f => ({ ...f, meals: [...(f.meals || []), { meal_name: 'New Meal', time: '', habit_description: '', foods: [] }] }));
-  };
+// ─── Macro Ratio Bar ─────────────────────────────────────────────────────────
+function MacroRatioBar({ protein, carbs, fats }) {
+  const p = parseFloat(protein) || 0;
+  const c = parseFloat(carbs) || 0;
+  const f = parseFloat(fats) || 0;
+  const totalCal = p * 4 + c * 4 + f * 9;
+  if (totalCal === 0) return null;
 
-  const removeMeal = (idx) => {
-    setForm(f => ({ ...f, meals: f.meals.filter((_, i) => i !== idx) }));
-  };
-
-  const updateMeal = (idx, field, value) => {
-    setForm(f => ({ ...f, meals: f.meals.map((m, i) => i !== idx ? m : { ...m, [field]: value }) }));
-  };
-
-  const addFood = (mIdx) => {
-    setForm(f => ({
-      ...f,
-      meals: f.meals.map((m, i) => i !== mIdx ? m : {
-        ...m, foods: [...(m.foods || []), { food_name: '', portion: '', calories: 0, protein: 0, carbs: 0, fats: 0, swap_options: [] }]
-      })
-    }));
-  };
-
-  const updateFood = (mIdx, fIdx, field, value) => {
-    setForm(f => ({
-      ...f,
-      meals: f.meals.map((m, i) => i !== mIdx ? m : {
-        ...m,
-        foods: m.foods.map((food, fi) => fi !== fIdx ? food : { ...food, [field]: value })
-      })
-    }));
-  };
-
-  const removeFood = (mIdx, fIdx) => {
-    setForm(f => ({
-      ...f,
-      meals: f.meals.map((m, i) => i !== mIdx ? m : { ...m, foods: m.foods.filter((_, fi) => fi !== fIdx) })
-    }));
-  };
-
-  const addSwap = (mIdx, fIdx, swap) => {
-    if (!swap.trim()) return;
-    setForm(f => ({
-      ...f,
-      meals: f.meals.map((m, i) => i !== mIdx ? m : {
-        ...m,
-        foods: m.foods.map((food, fi) => fi !== fIdx ? food : { ...food, swap_options: [...(food.swap_options || []), swap] })
-      })
-    }));
-  };
-
-  const removeSwap = (mIdx, fIdx, sIdx) => {
-    setForm(f => ({
-      ...f,
-      meals: f.meals.map((m, i) => i !== mIdx ? m : {
-        ...m,
-        foods: m.foods.map((food, fi) => fi !== fIdx ? food : { ...food, swap_options: food.swap_options.filter((_, si) => si !== sIdx) })
-      })
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({
-      ...form,
-      calories: Number(form.calories) || 0,
-      protein_g: Number(form.protein_g) || 0,
-      carbs_g: Number(form.carbs_g) || 0,
-      fats_g: Number(form.fats_g) || 0,
-    });
-    onOpenChange(false);
-  };
-
-  const isHabits = form.tracking_mode === 'habits';
+  const pPct = Math.round((p * 4 / totalCal) * 100);
+  const cPct = Math.round((c * 4 / totalCal) * 100);
+  const fPct = 100 - pPct - cPct;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-heading">{plan ? 'Edit Nutrition Plan' : 'Create Nutrition Plan'}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-5 mt-4">
-          {/* Basic info */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <Label>Plan Name *</Label>
-              <Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} required placeholder="e.g., Lean Bulk Phase 1" />
-            </div>
-            <div className="col-span-2">
-              <Label>Description</Label>
-              <Textarea value={form.description || ''} onChange={e => setForm({...form, description: e.target.value})} rows={2} />
-            </div>
-          </div>
-
-          {/* Tracking mode toggle */}
-          <div className="flex items-center gap-4 p-4 bg-secondary/40 rounded-xl">
-            <div className="flex-1">
-              <p className="font-medium text-sm">Non-Tracking (Habit) Mode</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {isHabits ? 'Client follows simple habits instead of counting macros' : 'Client tracks calories and macros precisely'}
-              </p>
-            </div>
-            <Switch
-              checked={isHabits}
-              onCheckedChange={v => setForm({...form, tracking_mode: v ? 'habits' : 'macros'})}
-            />
-          </div>
-
-          {/* Macro targets (only in macro mode) */}
-          {!isHabits && (
-            <div>
-              <Label className="mb-2 block">Daily Targets</Label>
-              <div className="grid grid-cols-4 gap-3">
-                <div><Label className="text-xs">Calories</Label><Input type="number" value={form.calories} onChange={e => setForm({...form, calories: e.target.value})} /></div>
-                <div><Label className="text-xs">Protein (g)</Label><Input type="number" value={form.protein_g} onChange={e => setForm({...form, protein_g: e.target.value})} /></div>
-                <div><Label className="text-xs">Carbs (g)</Label><Input type="number" value={form.carbs_g} onChange={e => setForm({...form, carbs_g: e.target.value})} /></div>
-                <div><Label className="text-xs">Fats (g)</Label><Input type="number" value={form.fats_g} onChange={e => setForm({...form, fats_g: e.target.value})} /></div>
-              </div>
-            </div>
-          )}
-
-          {/* Meals */}
-          <div>
-            {/* Tab switcher — only in macro mode */}
-            {!isHabits && (
-              <div className="flex gap-1 bg-secondary/50 rounded-lg p-1 mb-3 w-fit">
-                <button
-                  type="button"
-                  onClick={() => setMealTab('smart')}
-                  className={cn('flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md font-medium transition-colors',
-                    mealTab === 'smart' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}
-                >
-                  <Sparkles className="w-3 h-3" /> Smart Generate
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMealTab('manual')}
-                  className={cn('flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md font-medium transition-colors',
-                    mealTab === 'manual' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}
-                >
-                  <PenLine className="w-3 h-3" /> Manual
-                </button>
-              </div>
-            )}
-
-            {/* Smart generator */}
-            {!isHabits && mealTab === 'smart' && (
-              <SmartNutritionGenerator
-                initialMeals={form.meals}
-                targets={{ calories: form.calories, protein_g: form.protein_g, carbs_g: form.carbs_g, fats_g: form.fats_g }}
-                onMealsChange={(meals) => setForm(f => ({ ...f, meals }))}
-              />
-            )}
-
-            {/* Manual mode heading + buttons */}
-            {(isHabits || mealTab === 'manual') && (
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-heading font-semibold text-sm">{isHabits ? 'Habit Guidelines' : 'Meals'}</h3>
-              <div className="flex gap-2">
-                {isHabits ? (
-                  <Button type="button" variant="outline" size="sm" onClick={() => {
-                    const habits = HABIT_TEMPLATES.map((h, i) => ({ meal_name: `Habit ${i + 1}`, habit_description: h, foods: [] }));
-                    setForm(f => ({ ...f, meals: [...(f.meals || []), ...habits] }));
-                  }}>
-                    <Plus className="w-3 h-3 mr-1" /> Add All Habits
-                  </Button>
-                ) : (
-                  <div className="flex gap-2 flex-wrap">
-                    {MEAL_TEMPLATES.map(t => (
-                      <Button key={t.meal_name} type="button" variant="outline" size="sm" className="text-xs h-7"
-                        onClick={() => addMealTemplate(t)}>
-                        + {t.meal_name}
-                      </Button>
-                    ))}
-                  </div>
-                )}
-                <Button type="button" variant="outline" size="sm" onClick={addBlankMeal}>
-                  <Plus className="w-3 h-3 mr-1" /> Custom
-                </Button>
-              </div>
-            </div>
-
-            )} {/* closes manual heading div */}
-
-            {(isHabits || mealTab === 'manual') && <div className="space-y-3">
-              {(form.meals || []).map((meal, mIdx) => (
-                <div key={mIdx} className="border border-border rounded-xl overflow-hidden bg-card">
-                  <div
-                    className="flex items-center gap-3 p-3 cursor-pointer hover:bg-secondary/30 transition-colors"
-                    onClick={() => setExpandedMeal(expandedMeal === mIdx ? null : mIdx)}
-                  >
-                    <div className="flex-1 flex items-center gap-3">
-                      <Input
-                        value={meal.meal_name}
-                        onChange={e => { e.stopPropagation(); updateMeal(mIdx, 'meal_name', e.target.value); }}
-                        onClick={e => e.stopPropagation()}
-                        className="font-medium h-7 max-w-[160px] text-sm"
-                      />
-                      {!isHabits && (
-                        <Input
-                          value={meal.time || ''}
-                          onChange={e => { e.stopPropagation(); updateMeal(mIdx, 'time', e.target.value); }}
-                          onClick={e => e.stopPropagation()}
-                          placeholder="Time"
-                          className="h-7 max-w-[100px] text-xs text-muted-foreground"
-                        />
-                      )}
-                      {!isHabits && <span className="text-xs text-muted-foreground">{meal.foods?.length || 0} foods</span>}
-                    </div>
-                    <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive"
-                      onClick={e => { e.stopPropagation(); removeMeal(mIdx); }}>
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                    {expandedMeal === mIdx ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-                  </div>
-
-                  {expandedMeal === mIdx && (
-                    <div className="p-3 border-t border-border space-y-3">
-                      {isHabits ? (
-                        <Textarea
-                          value={meal.habit_description || ''}
-                          onChange={e => updateMeal(mIdx, 'habit_description', e.target.value)}
-                          placeholder="Describe the habit..."
-                          rows={2}
-                          className="text-sm"
-                        />
-                      ) : (
-                        <>
-                          {(meal.foods || []).map((food, fIdx) => (
-                            <div key={fIdx} className="p-3 bg-secondary/30 rounded-lg space-y-2">
-                              <div className="grid grid-cols-12 gap-2 items-center">
-                                <Input className="col-span-4 h-8 text-xs" placeholder="Food name" value={food.food_name} onChange={e => updateFood(mIdx, fIdx, 'food_name', e.target.value)} />
-                                <Input className="col-span-3 h-8 text-xs" placeholder="Portion" value={food.portion} onChange={e => updateFood(mIdx, fIdx, 'portion', e.target.value)} />
-                                <Input className="col-span-1 h-8 text-xs" type="number" placeholder="Cal" value={food.calories || ''} onChange={e => updateFood(mIdx, fIdx, 'calories', Number(e.target.value))} />
-                                <Input className="col-span-1 h-8 text-xs" type="number" placeholder="P" value={food.protein || ''} onChange={e => updateFood(mIdx, fIdx, 'protein', Number(e.target.value))} />
-                                <Input className="col-span-1 h-8 text-xs" type="number" placeholder="C" value={food.carbs || ''} onChange={e => updateFood(mIdx, fIdx, 'carbs', Number(e.target.value))} />
-                                <Button type="button" variant="ghost" size="icon" className="col-span-1 h-8 w-8 text-destructive" onClick={() => removeFood(mIdx, fIdx)}>
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
-                              {/* Food swaps */}
-                              <div className="flex flex-wrap gap-1 items-center">
-                                <span className="text-[10px] text-muted-foreground font-medium">Swaps:</span>
-                                {(food.swap_options || []).map((s, sIdx) => (
-                                  <Badge key={sIdx} variant="secondary" className="text-[10px] gap-1 pr-1">
-                                    {s}
-                                    <button type="button" onClick={() => removeSwap(mIdx, fIdx, sIdx)}><X className="w-2.5 h-2.5" /></button>
-                                  </Badge>
-                                ))}
-                                <SwapInput onAdd={(s) => addSwap(mIdx, fIdx, s)} />
-                              </div>
-                            </div>
-                          ))}
-                          <div className="flex gap-2">
-                            <Button type="button" variant="ghost" size="sm" className="text-primary text-xs" onClick={() => addFood(mIdx)}>
-                              <Plus className="w-3 h-3 mr-1" /> Add Blank
-                            </Button>
-                            <Button type="button" variant="outline" size="sm" className="text-xs h-7" onClick={() => setFoodPickerMealIdx(mIdx)}>
-                              <BookOpen className="w-3 h-3 mr-1" /> Food Library
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>}
-          </div>
-
-          {/* Supplements & Vitamins */}
-          {/* Food picker modal */}
-          <FoodPickerModal
-            open={foodPickerMealIdx !== null}
-            onOpenChange={(o) => { if (!o) setFoodPickerMealIdx(null); }}
-            onSelect={(food) => {
-              setForm(f => ({
-                ...f,
-                meals: f.meals.map((m, i) => i !== foodPickerMealIdx ? m : {
-                  ...m, foods: [...(m.foods || []), food]
-                })
-              }));
-              setFoodPickerMealIdx(null);
-            }}
-          />
-
-          {/* Carb Cycling */}
-          {!isHabits && (
-            <CarbCyclingPanel
-              value={form.carb_cycling || { enabled: false, targets: {}, schedule: {} }}
-              onChange={carb_cycling => setForm(f => ({ ...f, carb_cycling }))}
-            />
-          )}
-
-          {/* Water target */}
-          <div className="flex items-center gap-4 p-3.5 bg-blue-50 border border-blue-100 rounded-xl">
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">Daily Water Target</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Set the client's daily hydration goal</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Input
-                type="number"
-                value={form.water_target_ml || 2500}
-                onChange={e => setForm(f => ({ ...f, water_target_ml: Number(e.target.value) }))}
-                className="w-24 h-8 text-sm"
-                step={250}
-              />
-              <span className="text-xs text-muted-foreground">ml</span>
-            </div>
-          </div>
-
-          <SupplementPanel
-            value={form.supplements || []}
-            onChange={supplements => setForm(f => ({ ...f, supplements }))}
-          />
-
-          <div>
-            <Label>Notes</Label>
-            <Textarea value={form.notes || ''} onChange={e => setForm({...form, notes: e.target.value})} rows={2} />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-2 border-t border-border">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit">{plan ? 'Update Plan' : 'Create Plan'}</Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <div className="mt-3 space-y-1.5">
+      <div className="flex h-3 rounded-full overflow-hidden gap-0.5">
+        <div className="bg-blue-500 rounded-full transition-all duration-300" style={{ width: `${pPct}%` }} />
+        <div className="bg-amber-400 rounded-full transition-all duration-300" style={{ width: `${cPct}%` }} />
+        <div className="bg-red-400 rounded-full transition-all duration-300" style={{ width: `${Math.max(fPct, 0)}%` }} />
+      </div>
+      <div className="flex justify-between text-[10px] font-semibold">
+        <span className="text-blue-500">Protein {pPct}%</span>
+        <span className="text-amber-500">Carbs {cPct}%</span>
+        <span className="text-red-500">Fats {Math.max(fPct, 0)}%</span>
+      </div>
+    </div>
   );
 }
 
-function SwapInput({ onAdd }) {
-  const [val, setVal] = useState('');
+// ─── Client Picker ────────────────────────────────────────────────────────────
+function ClientPicker({ selected, onChange }) {
+  const [search, setSearch] = useState('');
+  const { data: clients = [] } = useQuery({
+    queryKey: ['clients-picker'],
+    queryFn: () => base44.entities.Client.list(),
+  });
+
+  const filtered = clients.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()));
+  const selectedClients = clients.filter(c => selected.includes(c.id));
+  const overflow = selectedClients.length > 6 ? selectedClients.length - 6 : 0;
+
+  function toggle(id) {
+    onChange(selected.includes(id) ? selected.filter(x => x !== id) : [...selected, id]);
+  }
+
   return (
-    <div className="flex gap-1">
+    <div className="space-y-3">
+      {/* Selected chips */}
+      {selectedClients.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedClients.slice(0, 6).map(c => (
+            <span key={c.id} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+              {c.name}
+              <button onClick={() => toggle(c.id)} className="opacity-60 hover:opacity-100 text-xs leading-none">×</button>
+            </span>
+          ))}
+          {overflow > 0 && (
+            <span className="px-2.5 py-1 rounded-full bg-secondary text-muted-foreground text-xs font-semibold">+{overflow} more</span>
+          )}
+        </div>
+      )}
+
+      {/* Search */}
       <Input
-        className="h-6 text-[10px] w-28"
-        placeholder="+ add swap"
-        value={val}
-        onChange={e => setVal(e.target.value)}
-        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); onAdd(val); setVal(''); } }}
+        placeholder="Search clients..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        className="text-sm"
       />
+
+      {/* List */}
+      <div className="max-h-40 overflow-y-auto space-y-0.5 pr-1">
+        {filtered.map(c => (
+          <label key={c.id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selected.includes(c.id)}
+              onChange={() => toggle(c.id)}
+              className="rounded border-input accent-primary"
+            />
+            <span className="text-sm font-medium text-foreground">{c.name}</span>
+            {c.lifecycle_status && (
+              <span className="ml-auto text-[10px] text-muted-foreground capitalize">{c.lifecycle_status}</span>
+            )}
+          </label>
+        ))}
+        {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">No clients found</p>}
+      </div>
     </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+export default function NutritionForm({ open, onOpenChange, onSubmit, plan, initialMeals }) {
+  const isEdit = !!plan;
+  const [form, setForm] = useState(() => defaultForm(plan, initialMeals));
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (open) setForm(defaultForm(plan, initialMeals));
+  }, [open, plan]);
+
+  function set(field, value) { setForm(f => ({ ...f, [field]: value })); }
+
+  // Meals
+  function addMeal() {
+    setForm(f => ({ ...f, meals: [...f.meals, { name: '', calories: '', notes: '' }] }));
+  }
+  function updateMeal(i, field, val) {
+    setForm(f => {
+      const meals = [...f.meals];
+      meals[i] = { ...meals[i], [field]: val };
+      return { ...f, meals };
+    });
+  }
+  function removeMeal(i) {
+    setForm(f => ({ ...f, meals: f.meals.filter((_, idx) => idx !== i) }));
+  }
+  function moveMeal(i, dir) {
+    setForm(f => {
+      const meals = [...f.meals];
+      const j = i + dir;
+      if (j < 0 || j >= meals.length) return f;
+      [meals[i], meals[j]] = [meals[j], meals[i]];
+      return { ...f, meals };
+    });
+  }
+
+  async function handleSubmit() {
+    if (!form.title.trim()) return;
+    setSaving(true);
+    await onSubmit({
+      title: form.title,
+      description: form.description,
+      emoji: form.emoji,
+      tracking_mode: form.tracking_mode,
+      is_template: form.is_template,
+      calories: form.calories ? Number(form.calories) : undefined,
+      protein_g: form.protein ? Number(form.protein) : undefined,
+      carbs_g: form.carbs ? Number(form.carbs) : undefined,
+      fats_g: form.fats ? Number(form.fats) : undefined,
+      meals: form.meals.map(m => ({ meal_name: m.name, calories: m.calories ? Number(m.calories) : undefined, habit_description: m.notes })),
+      assigned_clients: form.assigned_clients,
+    });
+    setSaving(false);
+    onOpenChange(false);
+  }
+
+  const sectionClass = "space-y-4 pb-6 border-b border-border";
+  const labelClass = "text-xs font-semibold text-foreground block mb-1.5";
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full sm:max-w-xl p-0 flex flex-col overflow-hidden">
+        <SheetHeader className="px-6 py-5 border-b border-border flex-shrink-0">
+          <SheetTitle className="font-heading font-bold text-lg">
+            {isEdit ? 'Edit Plan' : 'New Plan'}
+          </SheetTitle>
+        </SheetHeader>
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+
+          {/* SECTION 1 — Basics */}
+          <div className={sectionClass}>
+            <h3 className="text-sm font-bold text-foreground">Plan Basics</h3>
+
+            <div>
+              <label className={labelClass}>Plan Title *</label>
+              <Input
+                placeholder="e.g. Fat Loss Phase 1"
+                value={form.title}
+                onChange={e => set('title', e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Description</label>
+              <textarea
+                value={form.description}
+                onChange={e => set('description', e.target.value)}
+                placeholder="Brief description of this plan..."
+                rows={2}
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Emoji</label>
+              <div className="flex gap-2 flex-wrap">
+                {EMOJIS.map(e => (
+                  <button
+                    key={e}
+                    onClick={() => set('emoji', e)}
+                    className={cn(
+                      'w-10 h-10 rounded-xl text-xl flex items-center justify-center border-2 transition-all',
+                      form.emoji === e ? 'border-primary bg-accent/60 shadow-sm' : 'border-border bg-white hover:border-primary/40'
+                    )}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className={labelClass}>Tracking Mode</label>
+              <div className="flex rounded-lg border border-input overflow-hidden w-fit text-sm font-semibold">
+                {[{ id: 'macros', label: 'Macro Tracking' }, { id: 'habits', label: 'Habit Mode' }].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => set('tracking_mode', opt.id)}
+                    className={cn(
+                      'px-4 py-2 transition-colors',
+                      form.tracking_mode === opt.id ? 'bg-primary text-white' : 'bg-white text-muted-foreground hover:bg-secondary'
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.is_template}
+                onChange={e => set('is_template', e.target.checked)}
+                className="rounded border-input accent-primary"
+              />
+              <span className="text-sm font-medium text-foreground">Save as reusable template</span>
+            </label>
+          </div>
+
+          {/* SECTION 2 — Macros */}
+          {form.tracking_mode === 'macros' && (
+            <div className={sectionClass}>
+              <h3 className="text-sm font-bold text-foreground">Macro Targets</h3>
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { field: 'calories', label: 'Calories', unit: 'kcal' },
+                  { field: 'protein',  label: 'Protein',  unit: 'g' },
+                  { field: 'carbs',    label: 'Carbs',    unit: 'g' },
+                  { field: 'fats',     label: 'Fats',     unit: 'g' },
+                ].map(({ field, label, unit }) => (
+                  <div key={field}>
+                    <label className={labelClass}>{label} <span className="font-normal text-muted-foreground">({unit})</span></label>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      value={form[field]}
+                      onChange={e => set(field, e.target.value)}
+                      className="text-center"
+                    />
+                  </div>
+                ))}
+              </div>
+              <MacroRatioBar protein={form.protein} carbs={form.carbs} fats={form.fats} />
+            </div>
+          )}
+
+          {/* SECTION 3 — Meals */}
+          <div className={sectionClass}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-foreground">Meal Structure</h3>
+              <Button size="sm" variant="outline" onClick={addMeal} className="gap-1.5 h-8 text-xs">
+                <Plus className="w-3.5 h-3.5" /> Add Meal
+              </Button>
+            </div>
+
+            <AnimatePresence initial={false}>
+              {form.meals.map((meal, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-4 rounded-xl border border-border bg-secondary/30 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex flex-col gap-0.5">
+                        <button onClick={() => moveMeal(i, -1)} disabled={i === 0} className="p-0.5 hover:text-primary disabled:opacity-30">
+                          <ChevronUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={() => moveMeal(i, 1)} disabled={i === form.meals.length - 1} className="p-0.5 hover:text-primary disabled:opacity-30">
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <Input
+                        placeholder="Meal name (e.g. Breakfast)"
+                        value={meal.name}
+                        onChange={e => updateMeal(i, 'name', e.target.value)}
+                        className="flex-1 text-sm"
+                      />
+                      <Input
+                        type="number"
+                        placeholder="kcal"
+                        value={meal.calories}
+                        onChange={e => updateMeal(i, 'calories', e.target.value)}
+                        className="w-20 text-sm text-center"
+                      />
+                      <button onClick={() => removeMeal(i)} className="p-1.5 text-muted-foreground hover:text-destructive transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <textarea
+                      value={meal.notes}
+                      onChange={e => updateMeal(i, 'notes', e.target.value)}
+                      placeholder="Food suggestions or instructions..."
+                      rows={2}
+                      className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {form.meals.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-4">No meals added yet. Click "+ Add Meal" to start.</p>
+            )}
+          </div>
+
+          {/* SECTION 4 — Assign Clients */}
+          <div className="space-y-4 pb-6">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <h3 className="text-sm font-bold text-foreground">Assign to Clients</h3>
+              <span className="text-xs text-muted-foreground">(optional)</span>
+            </div>
+            <ClientPicker
+              selected={form.assigned_clients}
+              onChange={val => set('assigned_clients', val)}
+            />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex-shrink-0 border-t border-border px-6 py-4 flex items-center justify-end gap-3 bg-background">
+          <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSubmit} disabled={saving || !form.title.trim()} className="gap-2 min-w-[110px]">
+            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Plan'}
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
