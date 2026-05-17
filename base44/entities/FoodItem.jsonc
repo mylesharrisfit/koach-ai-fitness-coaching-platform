@@ -4,112 +4,68 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "Food name"
+      "description": "Food item name"
     },
     "brand": {
       "type": "string",
-      "description": "Brand or source"
+      "description": "Brand or source (optional)"
     },
     "serving_size": {
-      "type": "string",
-      "description": "e.g. 100g, 1 cup, 1 oz"
-    },
-    "serving_weight_g": {
       "type": "number",
-      "description": "Serving size in grams"
+      "description": "Serving size amount e.g. 100"
+    },
+    "serving_unit": {
+      "type": "string",
+      "description": "Serving unit e.g. g, ml, oz"
     },
     "calories": {
-      "type": "number"
+      "type": "number",
+      "description": "Calories per serving"
     },
-    "protein_g": {
-      "type": "number"
+    "protein": {
+      "type": "number",
+      "description": "Protein in grams per serving"
     },
-    "carbs_g": {
-      "type": "number"
+    "carbs": {
+      "type": "number",
+      "description": "Carbohydrates in grams per serving"
     },
-    "fats_g": {
-      "type": "number"
+    "fats": {
+      "type": "number",
+      "description": "Fats in grams per serving"
     },
-    "fiber_g": {
-      "type": "number"
+    "fiber": {
+      "type": "number",
+      "description": "Fiber in grams per serving (optional)"
     },
-    "sugar_g": {
-      "type": "number"
-    },
-    "sodium_mg": {
-      "type": "number"
-    },
-    "micronutrients": {
-      "type": "object",
-      "description": "Key micronutrients",
-      "properties": {
-        "vitamin_c_mg": {
-          "type": "number"
-        },
-        "iron_mg": {
-          "type": "number"
-        },
-        "calcium_mg": {
-          "type": "number"
-        },
-        "potassium_mg": {
-          "type": "number"
-        },
-        "vitamin_d_iu": {
-          "type": "number"
-        }
-      }
-    },
-    "source": {
-      "type": "string",
-      "enum": [
-        "usda",
-        "custom",
-        "favorite"
-      ],
-      "default": "custom",
-      "description": "Where this food came from"
-    },
-    "usda_fdc_id": {
-      "type": "string",
-      "description": "USDA FoodData Central ID"
-    },
-    "is_favorite": {
-      "type": "boolean",
-      "default": false
+    "sugar": {
+      "type": "number",
+      "description": "Sugar in grams per serving (optional)"
     },
     "category": {
       "type": "string",
-      "description": "Food category e.g. Dairy, Grains"
-    },
-    "coach_approved": {
-      "type": "boolean",
-      "default": false,
-      "description": "Coach has approved this food for clients"
-    },
-    "coach_hidden": {
-      "type": "boolean",
-      "default": false,
-      "description": "Coach has hidden this food from clients"
-    },
-    "approved_category": {
-      "type": "string",
       "enum": [
-        "proteins",
-        "carbs",
-        "fats",
-        "fruits",
-        "vegetables",
-        "supplements"
+        "Protein",
+        "Carbs",
+        "Fats",
+        "Vegetables",
+        "Dairy",
+        "Fruits",
+        "Other"
       ],
-      "description": "Coach-assigned food category for client-facing organization"
+      "description": "Food category"
     },
-    "notes": {
-      "type": "string"
+    "is_custom": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if coach added it manually"
+    },
+    "coach_id": {
+      "type": "string",
+      "description": "Coach user ID who created this item"
     }
   },
   "required": [
-    "name",
-    "calories"
+    "name"
   ]
 }
