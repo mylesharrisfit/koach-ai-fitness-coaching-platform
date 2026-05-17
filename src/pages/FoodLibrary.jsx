@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { CheckCircle2, Utensils, BookOpen, Pill, Plus, Search, ChevronDown } from 'lucide-react';
+import { CheckCircle2, Utensils, BookOpen, Pill, Plus, Search, ChevronDown, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -10,12 +10,14 @@ import MealTemplatesSection from '@/components/food-library/MealTemplatesSection
 import SupplementsSection from '@/components/food-library/SupplementsSection';
 import CustomFoodForm from '@/components/nutrition/CustomFoodForm';
 import FoodSearchPanel from '@/components/food-library/FoodSearchPanel';
+import FoodDatabaseTab from '@/components/food-library/FoodDatabaseTab';
 
 const TABS = [
   { id: 'approved',    icon: CheckCircle2, label: 'Approved Foods',  color: 'text-green-600' },
-  { id: 'templates',   icon: BookOpen,      label: 'Meal Templates',  color: 'text-blue-600' },
-  { id: 'supplements', icon: Pill,          label: 'Supplements',     color: 'text-purple-600' },
-  { id: 'custom',      icon: Utensils,      label: 'My Custom Foods', color: 'text-orange-600' },
+  { id: 'database',    icon: Database,     label: 'Food Database',   color: 'text-primary' },
+  { id: 'templates',   icon: BookOpen,     label: 'Meal Templates',  color: 'text-blue-600' },
+  { id: 'supplements', icon: Pill,         label: 'Supplements',     color: 'text-purple-600' },
+  { id: 'custom',      icon: Utensils,     label: 'My Custom Foods', color: 'text-orange-600' },
 ];
 
 function FoodRow({ food, onEdit, onDelete, onToggleApproved, updateMutation }) {
@@ -168,6 +170,9 @@ export default function FoodLibrary() {
           <ApprovedFoodsSection foods={savedFoods} />
         </div>
       )}
+
+      {/* Food Database */}
+      {tab === 'database' && <FoodDatabaseTab />}
 
       {/* Meal Templates */}
       {tab === 'templates' && <MealTemplatesSection />}
