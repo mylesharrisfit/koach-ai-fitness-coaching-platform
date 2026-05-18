@@ -44,7 +44,16 @@ const INITIAL_DETAILS = {
   postWorkout: false, mealPrepStyle: 'Mix',
   diet: '', allergies: [], dislikedFoods: '',
   supplements: [], notes: '',
+  weightLossRate: 1,
 };
+
+const WEIGHT_LOSS_RATES = [
+  { value: 0.25, label: '0.25 lbs/wk', desc: 'Very Gradual',     color: 'green',  badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+  { value: 0.5,  label: '0.5 lbs/wk',  desc: 'Slow & Steady',    color: 'green',  badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+  { value: 1,    label: '1 lb/wk',     desc: 'Moderate',          color: 'blue',   badgeColor: 'bg-blue-100 text-blue-700 border-blue-300',   recommended: true },
+  { value: 1.5,  label: '1.5 lbs/wk',  desc: 'Aggressive',        color: 'amber',  badgeColor: 'bg-amber-100 text-amber-700 border-amber-300' },
+  { value: 2,    label: '2 lbs/wk',    desc: 'Very Aggressive',   color: 'red',    badgeColor: 'bg-red-100 text-red-700 border-red-300',       warning: true },
+];
 
 // ── Macro calculation ─────────────────────────────────────────────────────────
 const ACTIVITY_MULTIPLIERS = {
@@ -55,7 +64,9 @@ const ACTIVITY_MULTIPLIERS = {
   athlete:           1.9,
 };
 
-function calcMacros(goal, weightKg, heightCm, age, sex, activityValue, diet) {
+const MIN_CALORIES = { male: 1500, female: 1200 };
+
+function calcMacros(goal, weightKg, heightCm, age, sex, activityValue, diet, weightLossRate = 1) {
   // Step 1 — BMR (Mifflin-St Jeor)
   const base = (10 * weightKg) + (6.25 * heightCm) - (5 * (parseFloat(age) || 25));
   const bmr = sex === 'female' ? base - 161 : base + 5;
@@ -65,8 +76,25 @@ function calcMacros(goal, weightKg, heightCm, age, sex, activityValue, diet) {
   const tdee = bmr * multiplier;
 
   // Step 3 — Goal adjustment
-  const goalMultipliers = { fat_loss: 0.80, muscle_gain: 1.10, performance: 1.05, maintenance: 1.00 };
-  let calories = tdee * (goalMultipliers[goal] || 1.0);
+  let calories;
+  let dailyDeficit = 0;
+  let deficitCapped = false;
+
+  if (goal === 'fat_loss') {
+    const weeklyDeficit = weightLossRate * 3500;
+    dailyDeficit = Math.round(weeklyDeficit / 7);
+    const minCal = MIN_CALORIES[sex] || 1500;
+    const uncapped = tdee - dailyDeficit;
+    if (uncapped < minCal) {
+      calories = minCal;
+      deficitCapped = true;
+    } else {
+      calories = uncapped;
+    }
+  } else {
+    const goalMultipliers = { muscle_gain: 1.10, performance: 1.05, maintenance: 1.00 };
+    calories = tdee * (goalMultipliers[goal] || 1.0);
+  }
 
   // Step 4 — Macros
   const proteinRatios    = { fat_loss: 2.2, muscle_gain: 2.0, performance: 1.8, maintenance: 1.6 };
@@ -75,7 +103,7 @@ function calcMacros(goal, weightKg, heightCm, age, sex, activityValue, diet) {
   let fats    = weightKg * (fatRatios[goal]    || 0.9);
 
   // Diet overrides
-  if (diet === 'Keto')        { fats = weightKg * 1.8; }
+  if (diet === 'Keto')         { fats = weightKg * 1.8; }
   if (diet === 'High Protein') { protein = weightKg * 2.8; }
 
   let carbs = (calories - protein * 4 - fats * 9) / 4;
@@ -84,12 +112,14 @@ function calcMacros(goal, weightKg, heightCm, age, sex, activityValue, diet) {
   if (carbs < 50) { carbs = 50; calories = protein * 4 + fats * 9 + carbs * 4; }
 
   return {
-    bmr:      Math.round(bmr),
-    tdee:     Math.round(tdee),
-    calories: Math.round(calories),
-    protein:  Math.round(protein),
-    carbs:    Math.round(carbs),
-    fats:     Math.round(fats),
+    bmr:           Math.round(bmr),
+    tdee:          Math.round(tdee),
+    calories:      Math.round(calories),
+    protein:       Math.round(protein),
+    carbs:         Math.round(carbs),
+    fats:          Math.round(fats),
+    dailyDeficit,
+    deficitCapped,
   };
 }
 
@@ -203,6 +233,54 @@ const slideVariants = {
   exit:   (dir) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
 };
 
+// ── Weight Loss Rate Selector ─────────────────────────────────────────────────
+function WeightLossRateSelector({ value, onChange }) {
+  return (
+    <div className="space-y-2.5">
+      <div className="flex flex-wrap gap-2">
+        {WEIGHT_LOSS_RATES.map(rate => (
+          <button
+            key={rate.value}
+            type="button"
+            onClick={() => onChange(rate.value)}
+            className={cn(
+              'relative flex flex-col items-start px-3 py-2 rounded-xl border-2 text-left transition-all text-xs',
+              value === rate.value
+                ? rate.color === 'green'  ? 'border-emerald-500 bg-emerald-50'
+                : rate.color === 'blue'   ? 'border-blue-500 bg-blue-50'
+                : rate.color === 'amber'  ? 'border-amber-500 bg-amber-50'
+                : 'border-red-500 bg-red-50'
+                : 'border-border bg-background hover:border-muted-foreground/40'
+            )}
+          >
+            <div className="flex items-center gap-1.5">
+              <span className={cn('font-bold', value === rate.value
+                ? rate.color === 'green'  ? 'text-emerald-700'
+                : rate.color === 'blue'   ? 'text-blue-700'
+                : rate.color === 'amber'  ? 'text-amber-700'
+                : 'text-red-700'
+                : 'text-foreground'
+              )}>
+                {rate.label}
+              </span>
+              {rate.warning && <span className="text-xs">⚠️</span>}
+            </div>
+            <span className="text-[10px] text-muted-foreground mt-0.5">{rate.desc}</span>
+            {rate.recommended && (
+              <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
+                Recommended
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+      <p className="text-[10px] text-muted-foreground bg-secondary/50 px-2.5 py-1.5 rounded-lg">
+        1 lb of fat = ~3,500 calories. Higher deficits risk muscle loss.
+      </p>
+    </div>
+  );
+}
+
 // ── Step 1 — Goal ─────────────────────────────────────────────────────────────
 function Step1Goal({ goal, setGoal }) {
   return (
@@ -231,7 +309,7 @@ function Step1Goal({ goal, setGoal }) {
 }
 
 // ── Step 2 — Detailed Intake ──────────────────────────────────────────────────
-function Step2Details({ details, setDetails }) {
+function Step2Details({ details, setDetails, goal }) {
   const u = (key, val) => setDetails(d => ({ ...d, [key]: val }));
 
   const s1Complete = !!details.weight;
@@ -308,6 +386,12 @@ function Step2Details({ details, setDetails }) {
               </div>
             </div>
           </div>
+          {goal === 'fat_loss' && (
+            <div>
+              <Label className="text-xs font-semibold mb-1.5 block">Weekly Weight Loss Goal</Label>
+              <WeightLossRateSelector value={details.weightLossRate} onChange={v => u('weightLossRate', v)} />
+            </div>
+          )}
         </AccordionSection>
 
         {/* Section 2 — Training */}
@@ -600,6 +684,16 @@ function Step4Result({ result, onApply, onRegenerate }) {
         <div className="text-center">
           <p className="text-4xl font-extrabold text-foreground tracking-tight">{result.calories}</p>
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">calories / day · ~{perMealCal} kcal per meal</p>
+          {result.goal === 'fat_loss' && result.weightLossRate && (
+            <p className="text-[11px] text-blue-600 font-semibold mt-1">
+              Target: lose {result.weightLossRate} lb/week · {result.dailyDeficit} kcal/day deficit
+            </p>
+          )}
+          {result.deficitCapped && (
+            <p className="text-[11px] text-amber-600 font-semibold mt-0.5 bg-amber-50 px-3 py-1 rounded-full inline-block">
+              ⚠️ Deficit capped to protect minimum healthy intake
+            </p>
+          )}
           <div className="flex justify-center gap-3 mt-2">
             <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
             <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
@@ -675,7 +769,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       ? parseFloat(details.weight) / 2.2046
       : parseFloat(details.weight);
     const heightCm = (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54;
-    const macros = calcMacros(goal, weightKg, heightCm, details.age, details.sex, details.activity, details.diet);
+    const macros = calcMacros(goal, weightKg, heightCm, details.age, details.sex, details.activity, details.diet, details.weightLossRate || 1);
     const payload = {
       age: details.age || 25,
       sex: details.sex || 'male',
@@ -693,7 +787,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       restrictions: [...(details.allergies || []), details.dislikedFoods].filter(Boolean).join(', '),
       supplements: details.supplements,
     };
-    setMacroPayload({ ...payload, _macros: macros });
+    setMacroPayload({ ...payload, _macros: { ...macros, weightLossRate: details.weightLossRate || 1 } });
     go(2);
   }
 
@@ -701,14 +795,15 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
     const m = macroPayload._macros;
     setResult({
       ...m, goal,
-      diet:           details.diet || 'Standard',
-      activity:       details.activity || 'sedentary',
-      mealsPerDay:    details.mealsPerDay || 4,
-      preWorkout:     details.preWorkout,
+      diet:            details.diet || 'Standard',
+      activity:        details.activity || 'sedentary',
+      mealsPerDay:     details.mealsPerDay || 4,
+      preWorkout:      details.preWorkout,
       preWorkoutCarbs: details.preWorkoutCarbs,
-      postWorkout:    details.postWorkout,
-      supplements:    details.supplements,
-      allergies:      details.allergies,
+      postWorkout:     details.postWorkout,
+      supplements:     details.supplements,
+      allergies:       details.allergies,
+      weightLossRate:  details.weightLossRate || 1,
       meals,
     });
     setDir(1); setStep(3);
@@ -738,7 +833,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
           <AnimatePresence custom={dir} mode="wait">
             <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }}>
               {step === 0 && <Step1Goal goal={goal} setGoal={setGoal} />}
-              {step === 1 && <Step2Details details={details} setDetails={setDetails} />}
+              {step === 1 && <Step2Details details={details} setDetails={setDetails} goal={goal} />}
               {step === 2 && <Step3Generating onDone={handleGeneratingDone} macroPayload={macroPayload} />}
               {step === 3 && result && <Step4Result result={result} onApply={handleApply} onRegenerate={() => go(2)} />}
             </motion.div>
