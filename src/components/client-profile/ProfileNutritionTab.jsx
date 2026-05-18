@@ -2,91 +2,77 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Apple, UtensilsCrossed, TrendingUp, Clock, CheckCircle2,
-  AlertCircle, Plus, ChevronRight, Flame, Zap,
+  Apple, Utensils, Clock, TrendingUp, CheckCircle2,
+  XCircle, Minus, Plus, ChevronRight, BarChart3, Calendar
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { format, subDays, startOfDay, parseISO, isToday } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { format, subDays, isToday, parseISO } from 'date-fns';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function MacroPill({ label, value, unit = 'g', colorClass }) {
+function pct(val, max) {
+  if (!max || !val) return 0;
+  return Math.min(100, Math.round((val / max) * 100));
+}
+
+function MacroChip({ label, value, unit = 'g', color }) {
   return (
-    <div className={cn('flex flex-col items-center px-3 py-2 rounded-xl text-center flex-1', colorClass)}>
-      <span className="text-sm font-bold tabular-nums leading-tight">{value ?? '—'}{unit}</span>
-      <span className="text-[10px] opacity-75 mt-0.5">{label}</span>
+    <div className={cn('flex flex-col items-center px-3 py-2 rounded-xl text-center flex-1', color)}>
+      <span className="text-sm font-bold tabular-nums leading-tight">{value ?? '—'}{unit === 'kcal' ? '' : unit}</span>
+      <span className="text-[10px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
     </div>
   );
 }
 
-function ProgressBar({ value, max, colorClass = 'bg-primary' }) {
-  const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
+function ProgressBar({ value, max, color = 'bg-primary' }) {
+  const p = pct(value, max);
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-2 bg-[#F0F2F8] rounded-full overflow-hidden">
-        <motion.div
-          className={cn('h-full rounded-full', colorClass)}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.5 }}
-        />
-      </div>
-      <span className="text-[10px] font-semibold text-[#6B7280] tabular-nums w-8 text-right">{pct}%</span>
-    </div>
-  );
-}
-
-// ── Assign Plan Modal ─────────────────────────────────────────────────────────
-function AssignPlanModal({ clientId, plans, currentPlanId, onClose }) {
-  const [selected, setSelected] = useState(currentPlanId || null);
-  const qc = useQueryClient();
-
-  const assign = useMutation({
-    mutationFn: async () => {
-      // Remove client from old plan
-      if (currentPlanId && currentPlanId !== selected) {
-        const old = plans.find(p => p.id === currentPlanId);
-        if (old) {
-          await base44.entities.NutritionPlan.update(currentPlanId, {
-            assigned_clients: (old.assigned_clients || []).filter(id => id !== clientId),
-          });
-        }
-      }
-      // Add client to new plan
-      if (selected) {
-        const plan = plans.find(p => p.id === selected);
-        const existing = plan?.assigned_clients || [];
-        if (!existing.includes(clientId)) {
-          await base44.entities.NutritionPlan.update(selected, {
-            assigned_clients: [...existing, clientId],
-          });
-        }
-      }
-      // Update client record
-      await base44.entities.Client.update(clientId, { assigned_nutrition_id: selected });
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['nutrition-plans'] });
-      qc.invalidateQueries({ queryKey: ['client', clientId] });
-      onClose();
-    },
-  });
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
+    <div className="h-1.5 bg-[#F0F2F8] rounded-full overflow-hidden">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5"
-        onClick={e => e.stopPropagation()}
+        className={cn('h-full rounded-full', color)}
+        initial={{ width: 0 }}
+        animate={{ width: `${p}%` }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      />
+    </div>
+  );
+}
+
+// ── Section 1: Assign Plan Modal ──────────────────────────────────────────────
+function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
+  const qc = useQueryClient();
+  const [selected, setSelected] = useState(null);
+
+  const assign = async () => {
+    if (!selected) return;
+    const plan = plans.find(p => p.id === selected);
+    const existing = plan.assigned_clients || [];
+    if (!existing.includes(clientId)) {
+      await base44.entities.NutritionPlan.update(selected, {
+        assigned_clients: [...existing, clientId],
+      });
+    }
+    qc.invalidateQueries({ queryKey: ['nutrition-plans-all'] });
+    onAssigned();
+    onClose();
+  };
+
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 30 }}
+        className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
       >
-        <h3 className="text-base font-bold text-[#1F2A44] mb-1">
-          {currentPlanId ? 'Change Nutrition Plan' : 'Assign Nutrition Plan'}
-        </h3>
-        <p className="text-xs text-[#9CA3AF] mb-4">Select a plan to assign to this client</p>
-        <div className="max-h-64 overflow-y-auto space-y-1.5 mb-4">
+        <div className="px-5 py-4 border-b border-[#E7EAF3] flex items-center justify-between">
+          <h3 className="text-sm font-bold text-[#1F2A44]">Assign Nutrition Plan</h3>
+          <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#374151] text-lg leading-none">×</button>
+        </div>
+        <div className="max-h-72 overflow-y-auto px-4 py-3 space-y-2">
           {plans.length === 0 && (
             <p className="text-xs text-[#9CA3AF] text-center py-6">No plans available. Create one first.</p>
           )}
@@ -98,7 +84,7 @@ function AssignPlanModal({ clientId, plans, currentPlanId, onClose }) {
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all',
                 selected === plan.id
                   ? 'border-primary bg-primary/5'
-                  : 'border-[#E7EAF3] hover:border-primary/30 hover:bg-[#F8F9FC]'
+                  : 'border-[#E7EAF3] hover:border-primary/30'
               )}
             >
               <span className="text-xl">{plan.emoji || '🥗'}</span>
@@ -113,72 +99,72 @@ function AssignPlanModal({ clientId, plans, currentPlanId, onClose }) {
             </button>
           ))}
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
-          <Button
-            className="flex-1"
-            disabled={!selected || assign.isPending}
-            onClick={() => assign.mutate()}
-          >
-            {assign.isPending ? 'Saving...' : 'Assign Plan'}
-          </Button>
+        <div className="px-4 py-3 border-t border-[#E7EAF3] flex gap-2">
+          <Button variant="outline" onClick={onClose} className="flex-1 text-xs h-9">Cancel</Button>
+          <Button onClick={assign} disabled={!selected} className="flex-1 text-xs h-9">Assign Plan</Button>
         </div>
       </motion.div>
     </div>
   );
 }
 
-// ── Section 1 — Assigned Plan ─────────────────────────────────────────────────
-function AssignedPlanSection({ client, allPlans }) {
-  const [showModal, setShowModal] = useState(false);
+// ── Section 1: Assigned Plan Card ─────────────────────────────────────────────
+function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
   const navigate = useNavigate();
+  const qc = useQueryClient();
 
-  const assigned = allPlans.find(p =>
+  // Find plan assigned to this client (by assigned_clients array OR by client.assigned_nutrition_id)
+  const assigned = plans.find(p =>
     (p.assigned_clients || []).includes(client.id) || p.id === client.assigned_nutrition_id
   );
 
-  if (!assigned) {
-    return (
-      <div className="bg-white rounded-2xl border border-[#E7EAF3] p-5 flex flex-col items-center text-center">
-        <div className="w-11 h-11 rounded-full bg-[#F6F7FB] flex items-center justify-center mb-3">
-          <Apple className="w-5 h-5 text-[#9CA3AF]" />
-        </div>
-        <p className="text-sm font-semibold text-[#1F2A44]">No nutrition plan assigned</p>
-        <p className="text-xs text-[#9CA3AF] mt-1 mb-4">Assign an existing plan or create a new one</p>
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={() => setShowModal(true)} className="gap-1.5 text-xs">
-            <Plus className="w-3.5 h-3.5" /> Assign Plan
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => navigate(`/nutrition?client=${client.id}`)}
-            className="gap-1.5 text-xs"
-          >
-            <Plus className="w-3.5 h-3.5" /> Create New Plan
-          </Button>
-        </div>
-        {showModal && (
-          <AssignPlanModal
-            clientId={client.id}
-            plans={allPlans}
-            currentPlanId={null}
-            onClose={() => setShowModal(false)}
-          />
-        )}
+  const unassign = async () => {
+    if (!assigned) return;
+    await base44.entities.NutritionPlan.update(assigned.id, {
+      assigned_clients: (assigned.assigned_clients || []).filter(id => id !== client.id),
+    });
+    qc.invalidateQueries({ queryKey: ['nutrition-plans-all'] });
+  };
+
+  if (!assigned) return (
+    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-6 flex flex-col items-center text-center gap-3">
+      <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center">
+        <Apple className="w-5 h-5 text-[#9CA3AF]" />
       </div>
-    );
-  }
+      <div>
+        <p className="text-sm font-semibold text-[#374151]">No nutrition plan assigned yet</p>
+        <p className="text-xs text-[#9CA3AF] mt-0.5">Assign an existing plan or create a new one</p>
+      </div>
+      <div className="flex gap-2 flex-wrap justify-center">
+        <Button size="sm" onClick={onOpenAssign} className="gap-1.5 h-8 text-xs">
+          <Plus className="w-3 h-3" /> Assign Plan
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5 h-8 text-xs border-[#E7EAF3]"
+          onClick={() => navigate(`/nutrition?client=${client.id}`)}
+        >
+          <Plus className="w-3 h-3" /> Create New Plan
+        </Button>
+      </div>
+    </div>
+  );
 
   const isHabits = assigned.tracking_mode === 'habits';
+  const adherencePct = 72; // placeholder — would come from food log analysis
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3">
-      {/* Header */}
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <span className="text-2xl">{assigned.emoji || '🥗'}</span>
           <div>
-            <p className="text-sm font-bold text-[#1F2A44]">{assigned.title}</p>
+            <p className="text-sm font-bold text-[#1F2A44] leading-tight">{assigned.title}</p>
             {assigned.description && (
               <p className="text-xs text-[#9CA3AF] mt-0.5 line-clamp-1">{assigned.description}</p>
             )}
@@ -186,59 +172,55 @@ function AssignedPlanSection({ client, allPlans }) {
         </div>
         <span className={cn(
           'text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
-          isHabits ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+          isHabits
+            ? 'bg-purple-50 text-purple-600 border-purple-100'
+            : 'bg-emerald-50 text-emerald-600 border-emerald-100'
         )}>
           {isHabits ? 'Habit Mode' : 'Macro Tracking'}
         </span>
       </div>
 
-      {/* Macro targets */}
       {!isHabits && assigned.calories > 0 && (
-        <div className="flex gap-1.5">
-          <div className="flex flex-col items-center px-3 py-2 rounded-xl bg-[#F6F7FB] text-center flex-1">
-            <span className="text-base font-bold text-[#1F2A44] tabular-nums">{assigned.calories}</span>
-            <span className="text-[10px] text-[#9CA3AF] mt-0.5">kcal/day</span>
-          </div>
-          {assigned.protein_g > 0 && <MacroPill label="Protein" value={assigned.protein_g} colorClass="bg-blue-50 text-blue-700" />}
-          {assigned.carbs_g   > 0 && <MacroPill label="Carbs"   value={assigned.carbs_g}   colorClass="bg-amber-50 text-amber-700" />}
-          {assigned.fats_g    > 0 && <MacroPill label="Fats"    value={assigned.fats_g}    colorClass="bg-rose-50 text-rose-600" />}
+        <div className="flex gap-2">
+          <MacroChip label="Calories" value={assigned.calories} unit="kcal" color="bg-[#FFF7ED] text-orange-700" />
+          {assigned.protein_g > 0 && <MacroChip label="Protein" value={assigned.protein_g} color="bg-blue-50 text-blue-700" />}
+          {assigned.carbs_g   > 0 && <MacroChip label="Carbs"   value={assigned.carbs_g}   color="bg-amber-50 text-amber-700" />}
+          {assigned.fats_g    > 0 && <MacroChip label="Fats"    value={assigned.fats_g}     color="bg-rose-50 text-rose-600" />}
         </div>
       )}
 
-      {/* Actions */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between text-[11px]">
+          <span className="text-[#6B7280] font-medium">Weekly Adherence</span>
+          <span className="font-bold text-[#374151]">{adherencePct}%</span>
+        </div>
+        <ProgressBar value={adherencePct} max={100} color={adherencePct >= 80 ? 'bg-emerald-400' : adherencePct >= 60 ? 'bg-amber-400' : 'bg-red-400'} />
+      </div>
+
       <div className="flex gap-2 pt-1">
         <Button
           size="sm"
           variant="outline"
-          className="text-xs gap-1.5 h-8"
-          onClick={() => navigate(`/nutrition`)}
+          className="flex-1 text-xs h-8 border-[#E7EAF3] gap-1"
+          onClick={() => navigate('/nutrition')}
         >
           View Plan <ChevronRight className="w-3 h-3" />
         </Button>
         <Button
           size="sm"
-          variant="ghost"
-          className="text-xs gap-1.5 h-8 text-[#6B7280]"
-          onClick={() => setShowModal(true)}
+          variant="outline"
+          className="flex-1 text-xs h-8 border-[#E7EAF3]"
+          onClick={onOpenAssign}
         >
           Change Plan
         </Button>
       </div>
-
-      {showModal && (
-        <AssignPlanModal
-          clientId={client.id}
-          plans={allPlans}
-          currentPlanId={assigned.id}
-          onClose={() => setShowModal(false)}
-        />
-      )}
-    </div>
+    </motion.div>
   );
 }
 
-// ── Section 2 — Today's Food Log ──────────────────────────────────────────────
-function TodayFoodLogSection({ client, assignedPlan }) {
+// ── Section 2: Today's Food Log ───────────────────────────────────────────────
+function TodayFoodLog({ client, assignedPlan }) {
   const today = format(new Date(), 'yyyy-MM-dd');
 
   const { data: logs = [], isLoading } = useQuery({
@@ -246,221 +228,219 @@ function TodayFoodLogSection({ client, assignedPlan }) {
     queryFn: () => base44.entities.FoodLog.filter({ client_id: client.id, logged_date: today }),
   });
 
-  const realLogs = logs.filter(l => l.food_name);
-
-  // Group by meal_name
   const grouped = useMemo(() => {
     const map = {};
-    realLogs.forEach(log => {
+    logs.forEach(log => {
       const key = log.meal_name || 'Other';
       if (!map[key]) map[key] = [];
       map[key].push(log);
     });
     return map;
-  }, [realLogs]);
+  }, [logs]);
 
-  const totalCals = realLogs.reduce((s, l) => s + (l.calories || 0), 0);
-  const totalProt = realLogs.reduce((s, l) => s + (l.protein || 0), 0);
+  const totalCals = logs.reduce((s, l) => s + (l.calories || 0), 0);
+  const totalProtein = logs.reduce((s, l) => s + (l.protein || 0), 0);
   const targetCals = assignedPlan?.calories || 0;
-  const targetProt = assignedPlan?.protein_g || 0;
+  const targetProtein = assignedPlan?.protein_g || 0;
 
   if (isLoading) return <div className="h-24 bg-white rounded-2xl animate-pulse border border-[#E7EAF3]" />;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">Today's Food Log</h3>
-        <span className="text-[10px] text-[#9CA3AF]">{format(new Date(), 'MMM d')}</span>
+    <div className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#F0F2F8] flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Utensils className="w-3.5 h-3.5 text-[#9CA3AF]" />
+          <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">Today's Food Log</span>
+        </div>
+        <span className="text-[11px] text-[#9CA3AF]">{format(new Date(), 'MMM d')}</span>
       </div>
 
-      {realLogs.length === 0 ? (
-        <div className="flex flex-col items-center py-5 text-center">
-          <UtensilsCrossed className="w-7 h-7 text-[#D1D5DB] mb-2" />
-          <p className="text-xs font-medium text-[#9CA3AF]">No food logged today</p>
+      {/* Daily totals bar */}
+      {logs.length > 0 && (
+        <div className="px-4 py-3 bg-[#F8F9FC] border-b border-[#F0F2F8] space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-[#6B7280]">Calories</span>
+            <span className="font-semibold text-[#374151] tabular-nums">
+              {totalCals}{targetCals > 0 ? ` / ${targetCals}` : ''} kcal
+            </span>
+          </div>
+          {targetCals > 0 && <ProgressBar value={totalCals} max={targetCals} color="bg-orange-400" />}
+          {targetProtein > 0 && (
+            <>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#6B7280]">Protein</span>
+                <span className="font-semibold text-blue-600 tabular-nums">{totalProtein} / {targetProtein}g</span>
+              </div>
+              <ProgressBar value={totalProtein} max={targetProtein} color="bg-blue-400" />
+            </>
+          )}
+        </div>
+      )}
+
+      {logs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 gap-2">
+          <Utensils className="w-8 h-8 text-[#D1D5DB]" />
+          <p className="text-sm text-[#9CA3AF]">No food logged today</p>
         </div>
       ) : (
-        <>
-          {/* Daily totals bar */}
-          {targetCals > 0 && (
-            <div className="bg-[#F6F7FB] rounded-xl p-3 space-y-2">
-              <div>
-                <div className="flex justify-between text-[11px] font-semibold mb-1">
-                  <span className="text-orange-600">Calories</span>
-                  <span className="text-[#6B7280] tabular-nums">{totalCals} / {targetCals} kcal</span>
+        <div className="divide-y divide-[#F0F2F8]">
+          {Object.entries(grouped).map(([mealName, items]) => {
+            const mealCals = items.reduce((s, i) => s + (i.calories || 0), 0);
+            return (
+              <div key={mealName}>
+                <div className="flex items-center justify-between px-4 py-2 bg-[#FAFBFD]">
+                  <span className="text-xs font-semibold text-[#374151]">{mealName}</span>
+                  {mealCals > 0 && <span className="text-[11px] font-semibold text-orange-600 tabular-nums">{mealCals} kcal</span>}
                 </div>
-                <ProgressBar value={totalCals} max={targetCals} colorClass="bg-orange-400" />
+                {items.map((item, i) => (
+                  <div key={i} className="flex items-center justify-between px-4 py-2 last:pb-2">
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-[#1F2A44] font-medium">{item.food_name}</span>
+                      {item.serving_quantity && (
+                        <span className="text-[11px] text-[#9CA3AF] ml-1.5">
+                          {item.serving_quantity}{item.serving_unit || ''}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] font-medium shrink-0 ml-2">
+                      {item.protein > 0  && <span className="text-blue-500">{item.protein}P</span>}
+                      {item.carbs > 0    && <span className="text-amber-500">{item.carbs}C</span>}
+                      {item.fats > 0     && <span className="text-rose-400">{item.fats}F</span>}
+                      {item.calories > 0 && <span className="text-[#374151] font-semibold">{item.calories}</span>}
+                    </div>
+                  </div>
+                ))}
               </div>
-              {targetProt > 0 && (
-                <div>
-                  <div className="flex justify-between text-[11px] font-semibold mb-1">
-                    <span className="text-blue-600">Protein</span>
-                    <span className="text-[#6B7280] tabular-nums">{Math.round(totalProt)}g / {targetProt}g</span>
-                  </div>
-                  <ProgressBar value={totalProt} max={targetProt} colorClass="bg-blue-500" />
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Meals */}
-          <div className="space-y-2">
-            {Object.entries(grouped).map(([mealName, foods]) => {
-              const mealCals = foods.reduce((s, f) => s + (f.calories || 0), 0);
-              return (
-                <div key={mealName} className="border border-[#F0F2F8] rounded-xl overflow-hidden">
-                  <div className="flex items-center justify-between px-3 py-2 bg-[#F8F9FC]">
-                    <span className="text-xs font-semibold text-[#1F2A44]">{mealName}</span>
-                    {mealCals > 0 && <span className="text-[10px] font-semibold text-orange-600 tabular-nums">{mealCals} kcal</span>}
-                  </div>
-                  <div className="px-3 divide-y divide-[#F6F7FB]">
-                    {foods.map((food, i) => (
-                      <div key={i} className="flex items-center justify-between py-2">
-                        <div className="flex-1 min-w-0">
-                          <span className="text-xs font-medium text-[#1F2A44]">{food.food_name}</span>
-                          {food.serving_quantity && (
-                            <span className="text-[10px] text-[#9CA3AF] ml-1.5">{food.serving_quantity}{food.serving_unit || ''}</span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 text-[10px] font-semibold shrink-0 ml-2 tabular-nums">
-                          {food.protein > 0 && <span className="text-blue-500">{food.protein}P</span>}
-                          {food.carbs   > 0 && <span className="text-amber-500">{food.carbs}C</span>}
-                          {food.fats    > 0 && <span className="text-rose-400">{food.fats}F</span>}
-                          {food.calories > 0 && <span className="text-[#374151]">{food.calories} cal</span>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
+            );
+          })}
+        </div>
       )}
     </div>
   );
 }
 
-// ── Section 3 — Weekly Adherence Grid ────────────────────────────────────────
-function WeeklyAdherenceSection({ client, assignedPlan }) {
-  const days = useMemo(() => {
-    return Array.from({ length: 7 }, (_, i) => {
-      const d = subDays(new Date(), 6 - i);
-      return { date: d, key: format(d, 'yyyy-MM-dd'), label: format(d, 'EEE'), dayNum: format(d, 'd') };
-    });
-  }, []);
-
-  const startDate = days[0].key;
-  const endDate   = days[6].key;
+// ── Section 3: Weekly Adherence Grid ─────────────────────────────────────────
+function WeeklyAdherenceGrid({ client, assignedPlan }) {
+  const days = Array.from({ length: 7 }, (_, i) => subDays(new Date(), 6 - i));
+  const startDate = format(days[0], 'yyyy-MM-dd');
+  const endDate = format(days[6], 'yyyy-MM-dd');
 
   const { data: logs = [] } = useQuery({
     queryKey: ['food-log-week', client.id, startDate, endDate],
-    queryFn: async () => {
-      const all = await base44.entities.FoodLog.filter({ client_id: client.id });
-      return all.filter(l => l.logged_date >= startDate && l.logged_date <= endDate && l.food_name);
-    },
+    queryFn: () => base44.entities.FoodLog.filter({ client_id: client.id }),
+    select: (data) => data.filter(l => l.logged_date >= startDate && l.logged_date <= endDate),
   });
 
   const targetCals = assignedPlan?.calories || 0;
 
-  const dayStats = useMemo(() => {
-    return days.map(({ key }) => {
-      const dayLogs = logs.filter(l => l.logged_date === key);
-      if (dayLogs.length === 0) return { status: 'empty' };
-      const total = dayLogs.reduce((s, l) => s + (l.calories || 0), 0);
-      if (targetCals > 0) {
-        const pct = total / targetCals;
-        return { status: pct >= 0.8 ? 'hit' : 'miss', calories: total };
-      }
-      return { status: 'logged', calories: total };
+  const dayStatuses = useMemo(() => {
+    return days.map(day => {
+      const dateStr = format(day, 'yyyy-MM-dd');
+      const dayLogs = logs.filter(l => l.logged_date === dateStr);
+      if (dayLogs.length === 0) return 'none';
+      if (!targetCals) return 'logged';
+      const consumed = dayLogs.reduce((s, l) => s + (l.calories || 0), 0);
+      return consumed / targetCals >= 0.8 ? 'hit' : 'missed';
     });
-  }, [days, logs, targetCals]);
+  }, [logs, days, targetCals]);
 
-  const hitDays   = dayStats.filter(d => d.status === 'hit').length;
-  const loggedDays = dayStats.filter(d => d.status !== 'empty').length;
-  const adherencePct = loggedDays > 0
-    ? (targetCals > 0 ? Math.round((hitDays / 7) * 100) : Math.round((loggedDays / 7) * 100))
+  const hitCount = dayStatuses.filter(s => s === 'hit').length;
+  const loggedCount = dayStatuses.filter(s => s !== 'none').length;
+  const adherencePct = loggedCount > 0
+    ? Math.round((hitCount / 7) * 100)
     : 0;
+
+  const squareColor = {
+    hit:    'bg-emerald-400',
+    missed: 'bg-amber-300',
+    logged: 'bg-blue-300',
+    none:   'bg-[#E7EAF3]',
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">7-Day Adherence</h3>
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-3.5 h-3.5 text-[#9CA3AF]" />
+          <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">7-Day Adherence</span>
+        </div>
         <span className={cn(
           'text-xs font-bold tabular-nums',
           adherencePct >= 80 ? 'text-emerald-600' : adherencePct >= 50 ? 'text-amber-500' : 'text-[#9CA3AF]'
         )}>
-          {adherencePct}% this week
+          {loggedCount > 0 ? `${adherencePct}%` : '—'}
         </span>
       </div>
 
-      <div className="flex gap-1.5">
-        {days.map(({ key, label, dayNum }, i) => {
-          const stat = dayStats[i];
-          const isToday = key === format(new Date(), 'yyyy-MM-dd');
-          const bgColor =
-            stat.status === 'hit'    ? 'bg-emerald-400' :
-            stat.status === 'logged' ? 'bg-emerald-400' :
-            stat.status === 'miss'   ? 'bg-amber-400'   :
-                                       'bg-[#E7EAF3]';
-          return (
-            <div key={key} className="flex-1 flex flex-col items-center gap-1">
-              <div className={cn(
+      <div className="flex gap-2 justify-between">
+        {days.map((day, i) => (
+          <div key={i} className="flex flex-col items-center gap-1.5 flex-1">
+            <motion.div
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: i * 0.05 }}
+              className={cn(
                 'w-full aspect-square rounded-lg',
-                bgColor,
-                isToday && 'ring-2 ring-primary ring-offset-1'
-              )} title={stat.calories ? `${stat.calories} kcal` : 'Not logged'} />
-              <span className="text-[9px] font-medium text-[#9CA3AF]">{label}</span>
-              <span className={cn('text-[9px] font-bold', isToday ? 'text-primary' : 'text-[#C4C9D4]')}>{dayNum}</span>
-            </div>
-          );
-        })}
+                squareColor[dayStatuses[i]],
+                isToday(day) && 'ring-2 ring-primary ring-offset-1'
+              )}
+            />
+            <span className="text-[9px] text-[#9CA3AF] font-medium">{format(day, 'EEE')}</span>
+            <span className="text-[8px] text-[#C4C9D4]">{format(day, 'd')}</span>
+          </div>
+        ))}
       </div>
 
-      <div className="flex items-center gap-3 text-[10px] text-[#9CA3AF]">
+      <div className="flex items-center gap-3 text-[10px] text-[#9CA3AF] flex-wrap">
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-emerald-400 inline-block" /> Hit target</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-400 inline-block" /> Missed</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#E7EAF3] inline-block" /> Not logged</span>
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-300 inline-block" /> Logged, missed</span>
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#E7EAF3] inline-block" /> Nothing logged</span>
       </div>
     </div>
   );
 }
 
-// ── Section 4 — Plan History ──────────────────────────────────────────────────
-function PlanHistorySection({ client, allPlans }) {
-  // Show all plans that have ever been assigned to this client
+// ── Section 4: Plan History ───────────────────────────────────────────────────
+function PlanHistory({ client, allPlans }) {
+  // Plans that were previously assigned but no longer are (or all plans mentioning client)
   const history = allPlans.filter(p =>
-    (p.assigned_clients || []).includes(client.id) || p.id === client.assigned_nutrition_id
+    p.id !== client.assigned_nutrition_id &&
+    (p.assigned_clients || []).includes(client.id)
   );
 
-  if (history.length === 0) return null;
+  if (history.length === 0) return (
+    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <Calendar className="w-3.5 h-3.5 text-[#9CA3AF]" />
+        <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">Plan History</span>
+      </div>
+      <p className="text-xs text-[#9CA3AF] text-center py-4">No previous plans on record</p>
+    </div>
+  );
 
   return (
     <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3">
-      <h3 className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">Plan History</h3>
-      <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Calendar className="w-3.5 h-3.5 text-[#9CA3AF]" />
+        <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">Plan History</span>
+      </div>
+      <div className="space-y-3">
         {history.map((plan, i) => (
           <div key={plan.id} className="flex items-center gap-3">
-            <div className="flex flex-col items-center shrink-0">
-              <div className={cn(
-                'w-2.5 h-2.5 rounded-full',
-                i === 0 ? 'bg-primary' : 'bg-[#D1D5DB]'
-              )} />
-              {i < history.length - 1 && <div className="w-px h-8 bg-[#E7EAF3] mt-0.5" />}
+            <div className="flex flex-col items-center">
+              <div className="w-2 h-2 rounded-full bg-[#D1D5DB]" />
+              {i < history.length - 1 && <div className="w-px h-8 bg-[#E7EAF3] mt-1" />}
             </div>
-            <div className="flex-1 min-w-0 pb-2">
+            <div className="flex-1 pb-3 border-b border-[#F0F2F8] last:border-0 last:pb-0">
               <div className="flex items-center gap-2">
                 <span className="text-base">{plan.emoji || '🥗'}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#1F2A44] truncate">{plan.title}</p>
+                <div>
+                  <p className="text-xs font-semibold text-[#374151]">{plan.title}</p>
                   <p className="text-[10px] text-[#9CA3AF]">
                     {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
                     {plan.calories ? ` · ${plan.calories} kcal` : ''}
-                    {plan.updated_date ? ` · Updated ${format(new Date(plan.updated_date), 'MMM d, yyyy')}` : ''}
                   </p>
                 </div>
-                {i === 0 && (
-                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary shrink-0">Active</span>
-                )}
               </div>
             </div>
           </div>
@@ -472,8 +452,11 @@ function PlanHistorySection({ client, allPlans }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function ProfileNutritionTab({ client }) {
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const qc = useQueryClient();
+
   const { data: allPlans = [], isLoading } = useQuery({
-    queryKey: ['nutrition-plans'],
+    queryKey: ['nutrition-plans-all'],
     queryFn: () => base44.entities.NutritionPlan.list(),
   });
 
@@ -490,16 +473,36 @@ export default function ProfileNutritionTab({ client }) {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      className="space-y-3"
-    >
-      <AssignedPlanSection client={client} allPlans={allPlans} />
-      <TodayFoodLogSection client={client} assignedPlan={assignedPlan} />
-      <WeeklyAdherenceSection client={client} assignedPlan={assignedPlan} />
-      <PlanHistorySection client={client} allPlans={allPlans} />
-    </motion.div>
+    <div className="space-y-4">
+      {/* Section 1 — Assigned Plan */}
+      <AssignedPlanSection
+        client={client}
+        plans={allPlans}
+        allPlans={allPlans}
+        onOpenAssign={() => setAssignModalOpen(true)}
+      />
+
+      {/* Section 2 — Today's Food Log */}
+      <TodayFoodLog client={client} assignedPlan={assignedPlan} />
+
+      {/* Section 3 — Weekly Adherence */}
+      <WeeklyAdherenceGrid client={client} assignedPlan={assignedPlan} />
+
+      {/* Section 4 — Plan History */}
+      <PlanHistory client={client} allPlans={allPlans} />
+
+      {/* Assign Plan Modal */}
+      <AnimatePresence>
+        {assignModalOpen && (
+          <AssignPlanModal
+            open={assignModalOpen}
+            onClose={() => setAssignModalOpen(false)}
+            plans={allPlans}
+            clientId={client.id}
+            onAssigned={() => qc.invalidateQueries({ queryKey: ['nutrition-plans-all'] })}
+          />
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
