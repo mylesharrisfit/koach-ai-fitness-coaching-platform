@@ -32,6 +32,7 @@ Meals: ${mealCount} total (${mealsPerDay} regular${preWorkout ? ', 1 pre-workout
 Restrictions: ${restrictions || 'None'}
 ${complexityLine}
 ${condimentsLine}
+${supplementsLine}
 
 Each meal: {"name","time","calories","protein","carbs","fats","foods":[{"name","amount","calories","protein","carbs","fats"}],"instructions","prepTime"}
 Keep foods array to 3-4 items max per meal. Keep instructions under 30 words.
