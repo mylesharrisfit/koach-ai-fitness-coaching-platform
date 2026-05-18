@@ -39,13 +39,26 @@ export default function Nutrition() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.NutritionPlan.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['nutrition'] });
+      // Invalidate any client-specific nutrition queries for assigned clients
+      (result?.assigned_clients || []).forEach(cid => {
+        const id = typeof cid === 'object' ? cid?.id : cid;
+        if (id) queryClient.invalidateQueries({ queryKey: ['nutrition-client', id] });
+      });
+    },
     onError: (err) => console.error('Save error:', err),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.NutritionPlan.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['nutrition'] });
+      (result?.assigned_clients || []).forEach(cid => {
+        const id = typeof cid === 'object' ? cid?.id : cid;
+        if (id) queryClient.invalidateQueries({ queryKey: ['nutrition-client', id] });
+      });
+    },
     onError: (err) => console.error('Save error:', err),
   });
 

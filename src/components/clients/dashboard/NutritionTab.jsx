@@ -38,20 +38,24 @@ function Bar({ value, max, color = 'bg-blue-400' }) {
 // ── Assign Plan Dialog ────────────────────────────────────────────────────────
 function AssignDialog({ clientId, allPlans, onClose }) {
   const [selected, setSelected] = useState(null);
+  const [saving, setSaving] = useState(false);
   const qc = useQueryClient();
 
   const assign = async () => {
     if (!selected) return;
+    setSaving(true);
     const plan = allPlans.find(p => p.id === selected);
-    const existing = plan?.assigned_clients || [];
+    const existing = (plan?.assigned_clients || []).map(ac =>
+      typeof ac === 'object' ? ac?.id : ac
+    ).filter(Boolean);
     if (!existing.includes(clientId)) {
       await base44.entities.NutritionPlan.update(selected, {
-        ...plan,
         assigned_clients: [...existing, clientId],
       });
     }
-    qc.invalidateQueries({ queryKey: ['nutrition-client', clientId] });
-    qc.invalidateQueries({ queryKey: ['nutrition'] });
+    await qc.invalidateQueries({ queryKey: ['nutrition-client', clientId] });
+    await qc.invalidateQueries({ queryKey: ['nutrition'] });
+    setSaving(false);
     onClose();
   };
 
@@ -107,11 +111,11 @@ function AssignDialog({ clientId, allPlans, onClose }) {
           </button>
           <button
             onClick={assign}
-            disabled={!selected}
+            disabled={!selected || saving}
             className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)' }}
           >
-            Assign Plan
+            {saving ? 'Assigning...' : 'Assign Plan'}
           </button>
         </div>
       </motion.div>
@@ -122,16 +126,30 @@ function AssignDialog({ clientId, allPlans, onClose }) {
 // ── Section 1: Assigned Plan ──────────────────────────────────────────────────
 function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
   const [showDialog, setShowDialog] = useState(false);
+  const [creating, setCreating] = useState(false);
   const qc = useQueryClient();
 
-  const createPlan = async () => {
-    await base44.entities.NutritionPlan.create({
-      title: `${client.name}'s Plan`,
-      tracking_mode: 'macros',
-      assigned_clients: [client.id],
-    });
-    qc.invalidateQueries({ queryKey: ['nutrition-client', client.id] });
-    qc.invalidateQueries({ queryKey: ['nutrition'] });
+  const createPlan = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCreating(true);
+    try {
+      await base44.entities.NutritionPlan.create({
+        title: `${client.name}'s Plan`,
+        tracking_mode: 'macros',
+        calories: 2000,
+        protein_g: 150,
+        carbs_g: 200,
+        fats_g: 60,
+        assigned_clients: [client.id],
+      });
+      await qc.invalidateQueries({ queryKey: ['nutrition-client', client.id] });
+      await qc.invalidateQueries({ queryKey: ['nutrition'] });
+    } catch (err) {
+      console.error('Create plan failed:', err);
+    } finally {
+      setCreating(false);
+    }
   };
 
   if (!assignedPlan) return (
@@ -154,32 +172,11 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
             <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
           </button>
           <button
-            onClick={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              try {
-                const newPlan = {
-                  title: `${client.name}'s Nutrition Plan`,
-                  tracking_mode: 'macro',
-                  calories: 2000,
-                  protein: 150,
-                  carbs: 200,
-                  fats: 60,
-                  assigned_clients: [client.id]
-                };
-                console.log('Creating plan for client:', client.id);
-                const result = await base44.entities.NutritionPlan.create(newPlan);
-                console.log('Plan created:', result);
-                qc.invalidateQueries({ queryKey: ['nutrition-client', client.id] });
-                qc.invalidateQueries({ queryKey: ['nutrition'] });
-              } catch(err) {
-                console.error('Create failed:', err);
-                alert('Error: ' + err.message);
-              }
-            }}
-            className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold"
+            onClick={createPlan}
+            disabled={creating}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 disabled:opacity-50"
           >
-            + Create New Plan
+            <Plus className="w-3.5 h-3.5" /> {creating ? 'Creating...' : 'Create New Plan'}
           </button>
         </div>
       </div>
@@ -438,15 +435,19 @@ export default function NutritionTab({ client }) {
   const { data: allPlans = [], isLoading, refetch } = useQuery({
     queryKey: ['nutrition-client', client.id],
     queryFn: () => base44.entities.NutritionPlan.list('-created_date'),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
-  const assignedPlans = allPlans.filter(plan =>
-    Array.isArray(plan.assigned_clients) && plan.assigned_clients.includes(client.id)
-  );
+  const assignedPlans = allPlans.filter(plan => {
+    if (!Array.isArray(plan.assigned_clients)) return false;
+    return plan.assigned_clients.some(ac => {
+      const acId = typeof ac === 'object' ? ac?.id : ac;
+      return acId === client.id;
+    });
+  });
 
   const assignedPlan = assignedPlans[0] || null;
-
-  console.log('All plans:', allPlans.length, 'Assigned:', assignedPlans.length, 'Client ID:', client.id);
 
   if (isLoading) return (
     <div className="p-5 space-y-3">
