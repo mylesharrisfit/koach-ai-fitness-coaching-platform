@@ -509,9 +509,31 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
         {/* Footer */}
         <div className="flex-shrink-0 border-t border-border px-6 py-4 flex items-center justify-end gap-3 bg-background">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={saving || !form.title.trim()} className="gap-2 min-w-[110px]">
-            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : 'Save Plan'}
-          </Button>
+          <button
+            onClick={async () => {
+              try {
+                const testPlan = {
+                  title: "Test Plan",
+                  tracking_mode: "macro",
+                  calories: 2000,
+                  protein: 150,
+                  carbs: 200,
+                  fats: 60,
+                  assigned_clients: []
+                };
+                console.log('Attempting direct save...');
+                const result = await base44.entities.NutritionPlan.create(testPlan);
+                console.log('Save SUCCESS:', result);
+                alert('Saved! ID: ' + result.id);
+              } catch (err) {
+                console.error('Save FAILED:', err);
+                alert('Error: ' + err.message);
+              }
+            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Test Direct Save
+          </button>
         </div>
       </SheetContent>
     </Sheet>

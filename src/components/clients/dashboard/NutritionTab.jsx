@@ -154,10 +154,32 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
             <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
           </button>
           <button
-            onClick={createPlan}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50"
+            onClick={async (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              try {
+                const newPlan = {
+                  title: `${client.name}'s Nutrition Plan`,
+                  tracking_mode: 'macro',
+                  calories: 2000,
+                  protein: 150,
+                  carbs: 200,
+                  fats: 60,
+                  assigned_clients: [client.id]
+                };
+                console.log('Creating plan for client:', client.id);
+                const result = await base44.entities.NutritionPlan.create(newPlan);
+                console.log('Plan created:', result);
+                qc.invalidateQueries({ queryKey: ['nutrition-client', client.id] });
+                qc.invalidateQueries({ queryKey: ['nutrition'] });
+              } catch(err) {
+                console.error('Create failed:', err);
+                alert('Error: ' + err.message);
+              }
+            }}
+            className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold"
           >
-            <Plus className="w-3.5 h-3.5" /> Create New Plan
+            + Create New Plan
           </button>
         </div>
       </div>
