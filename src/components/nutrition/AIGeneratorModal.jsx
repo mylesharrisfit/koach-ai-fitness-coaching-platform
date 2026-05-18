@@ -46,38 +46,48 @@ const INITIAL_DETAILS = {
 };
 
 // ── Macro calculation ─────────────────────────────────────────────────────────
-function calcMacros(goal, weightKg, activityValue, diet) {
-  const activity = ACTIVITY_LEVELS.find(a => a.value === activityValue) || ACTIVITY_LEVELS[0];
-  const m = activity.multiplier;
-  let calories, protein, fats;
+const ACTIVITY_MULTIPLIERS = {
+  sedentary:         1.2,
+  lightly_active:    1.375,
+  moderately_active: 1.55,
+  very_active:       1.725,
+  athlete:           1.9,
+};
 
-  if (goal === 'fat_loss') {
-    calories = weightKg * 24 * 0.8 * m;
-    protein  = weightKg * 2.2;
-    fats     = weightKg * 0.8;
-  } else if (goal === 'muscle_gain') {
-    calories = weightKg * 24 * 1.15 * m;
-    protein  = weightKg * 2.4;
-    fats     = weightKg * 1.0;
-  } else if (goal === 'performance') {
-    calories = weightKg * 24 * 1.1 * m;
-    protein  = weightKg * 2.0;
-    fats     = weightKg * 0.9;
-  } else {
-    calories = weightKg * 24 * m;
-    protein  = weightKg * 1.8;
-    fats     = weightKg * 0.9;
-  }
+function calcMacros(goal, weightKg, heightCm, age, sex, activityValue, diet) {
+  // Step 1 — BMR (Mifflin-St Jeor)
+  const base = (10 * weightKg) + (6.25 * heightCm) - (5 * (parseFloat(age) || 25));
+  const bmr = sex === 'female' ? base - 161 : base + 5;
 
-  // Diet adjustments
-  if (diet === 'Keto') { fats = weightKg * 1.8; calories = protein * 4 + fats * 9 + 20 * 4; }
-  if (diet === 'High Protein') protein = weightKg * 2.8;
+  // Step 2 — TDEE
+  const multiplier = ACTIVITY_MULTIPLIERS[activityValue] || 1.2;
+  const tdee = bmr * multiplier;
 
-  const carbs = (calories - protein * 4 - fats * 9) / 4;
+  // Step 3 — Goal adjustment
+  const goalMultipliers = { fat_loss: 0.80, muscle_gain: 1.10, performance: 1.05, maintenance: 1.00 };
+  let calories = tdee * (goalMultipliers[goal] || 1.0);
+
+  // Step 4 — Macros
+  const proteinRatios    = { fat_loss: 2.2, muscle_gain: 2.0, performance: 1.8, maintenance: 1.6 };
+  const fatRatios        = { fat_loss: 0.8, muscle_gain: 1.0, performance: 0.9, maintenance: 0.9 };
+  let protein = weightKg * (proteinRatios[goal] || 1.8);
+  let fats    = weightKg * (fatRatios[goal]    || 0.9);
+
+  // Diet overrides
+  if (diet === 'Keto')        { fats = weightKg * 1.8; }
+  if (diet === 'High Protein') { protein = weightKg * 2.8; }
+
+  let carbs = (calories - protein * 4 - fats * 9) / 4;
+
+  // Step 5 — Sanity check
+  if (carbs < 50) { carbs = 50; calories = protein * 4 + fats * 9 + carbs * 4; }
+
   return {
+    bmr:      Math.round(bmr),
+    tdee:     Math.round(tdee),
     calories: Math.round(calories),
     protein:  Math.round(protein),
-    carbs:    Math.round(Math.max(carbs, 0)),
+    carbs:    Math.round(carbs),
     fats:     Math.round(fats),
   };
 }
@@ -488,6 +498,10 @@ function Step4Result({ result, onApply, onRegenerate }) {
         <div className="text-center">
           <p className="text-4xl font-extrabold text-foreground tracking-tight">{result.calories}</p>
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">calories / day · ~{perMealCal} kcal per meal</p>
+          <div className="flex justify-center gap-4 mt-2">
+            <span className="text-[11px] text-muted-foreground bg-white/60 px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
+            <span className="text-[11px] text-muted-foreground bg-white/60 px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
+          </div>
         </div>
 
         {/* Macros */}
@@ -582,10 +596,10 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
 
   function handleGeneratingDone() {
     const weightKg = details.weightUnit === 'lbs'
-      ? parseFloat(details.weight) * 0.453592
+      ? parseFloat(details.weight) / 2.2046
       : parseFloat(details.weight);
     const heightCm = (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54;
-    const macros = calcMacros(goal, weightKg, details.activity, details.diet);
+    const macros = calcMacros(goal, weightKg, heightCm, details.age, details.sex, details.activity, details.diet);
     setResult({
       ...macros, goal,
       diet:          details.diet || 'Standard',
