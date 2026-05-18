@@ -9,46 +9,18 @@ Deno.serve(async (req) => {
     const { age, sex, weightKg, goal, diet, calories, protein, carbs, fats,
             mealsPerDay, preWorkout, preWorkoutCarbs, postWorkout, restrictions, supplements } = await req.json();
 
-    const prompt = `Generate a detailed one-day meal plan as JSON only, no markdown.
+    const mealCount = mealsPerDay + (preWorkout ? 1 : 0) + (postWorkout ? 1 : 0);
+    const prompt = `Create a one-day meal plan as a JSON array only. No markdown, no explanations.
 
-Client stats: ${age}yr ${sex}, ${weightKg}kg, goal: ${goal}, diet: ${diet || 'Standard'}
-Daily targets: ${calories} kcal, ${protein}g protein, ${carbs}g carbs, ${fats}g fats
-Meals per day: ${mealsPerDay}
-Include pre-workout meal: ${preWorkout}
-Include post-workout meal: ${postWorkout}
+Stats: ${age}yr ${sex}, ${weightKg}kg | Goal: ${goal} | Diet: ${diet || 'Standard'}
+Targets: ${calories}kcal, P${protein}g, C${carbs}g, F${fats}g
+Meals: ${mealCount} total (${mealsPerDay} regular${preWorkout ? ', 1 pre-workout' : ''}${postWorkout ? ', 1 post-workout' : ''})
 Restrictions: ${restrictions || 'None'}
-Supplements: ${(supplements || []).join(', ') || 'None'}
 
-Return ONLY a JSON array of meals like this:
-[
-  {
-    "name": "Breakfast",
-    "time": "7:00 AM",
-    "type": "main",
-    "calories": 520,
-    "protein": 42,
-    "carbs": 55,
-    "fats": 12,
-    "foods": [
-      {
-        "name": "Scrambled Eggs",
-        "amount": "3 large eggs",
-        "calories": 234,
-        "protein": 18,
-        "carbs": 2,
-        "fats": 16,
-        "prep": "Whisk and cook in non-stick pan with cooking spray"
-      }
-    ],
-    "instructions": "Prepare eggs first, then oats. Can be meal prepped the night before.",
-    "prepTime": "10 mins"
-  }
-]
-
-Make foods realistic, match the dietary preference, hit the macro targets closely.
-Pre-workout meal should be carb-heavy if carb focus is ${preWorkoutCarbs}.
-Post-workout meal should be protein + carbs focused.
-Return ONLY the JSON array, no other text.`;
+Each meal: {"name","time","calories","protein","carbs","fats","foods":[{"name","amount","calories","protein","carbs","fats"}],"instructions","prepTime"}
+Keep foods array to 3-4 items max per meal. Keep instructions under 20 words.
+${preWorkout ? 'Pre-workout: carb-heavy.' : ''} ${postWorkout ? 'Post-workout: high protein+carbs.' : ''}
+Return ONLY the JSON array.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -58,8 +30,8 @@ Return ONLY the JSON array, no other text.`;
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
+        model: 'claude-opus-4-5',
+        max_tokens: 3000,
         messages: [{ role: 'user', content: prompt }],
       }),
     });
