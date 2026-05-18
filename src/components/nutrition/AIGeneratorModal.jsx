@@ -260,25 +260,18 @@ function Step2Details({ details, setDetails }) {
               u('weightUnit', v);
             }} />
           </div>
-          <div className="flex gap-3 items-end">
-            <Label className="text-xs font-semibold mb-1.5 block self-start pt-1">Height</Label>
-            <div className="flex-1">
-              {details.heightUnit === 'ft' ? (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Input type="number" placeholder="5" min={1} max={8} value={details.heightFeet} onChange={e => u('heightFeet', e.target.value)} className="w-16 text-center" />
-                    <span className="text-xs font-semibold text-muted-foreground">ft</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Input type="number" placeholder="10" min={0} max={11} value={details.heightInches} onChange={e => u('heightInches', e.target.value)} className="w-16 text-center" />
-                    <span className="text-xs font-semibold text-muted-foreground">in</span>
-                  </div>
-                </div>
-              ) : (
-                <Input type="number" placeholder="175" max={250} value={details.height} onChange={e => u('height', e.target.value)} />
-              )}
+          <div>
+            <Label className="text-xs font-semibold mb-1.5 block">Height</Label>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <Input type="number" placeholder="5" min={1} max={8} value={details.heightFeet} onChange={e => u('heightFeet', e.target.value)} className="w-16 text-center" />
+                <span className="text-xs font-semibold text-muted-foreground">ft</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Input type="number" placeholder="10" min={0} max={11} value={details.heightInches} onChange={e => u('heightInches', e.target.value)} className="w-16 text-center" />
+                <span className="text-xs font-semibold text-muted-foreground">in</span>
+              </div>
             </div>
-            <UnitToggle options={['cm', 'ft']} value={details.heightUnit} onChange={v => u('heightUnit', v)} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -287,7 +280,21 @@ function Step2Details({ details, setDetails }) {
             </div>
             <div>
               <Label className="text-xs font-semibold mb-1.5 block">Biological Sex</Label>
-              <PillToggle options={['Male', 'Female']} value={details.sex} onChange={v => u('sex', v.toLowerCase())} />
+              <div className="flex gap-2">
+                {['male', 'female'].map(s => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => u('sex', s)}
+                    className={cn(
+                      'flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize',
+                      details.sex === s ? 'bg-primary text-white' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
+                    )}
+                  >
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </AccordionSection>
@@ -577,10 +584,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
     const weightKg = details.weightUnit === 'lbs'
       ? parseFloat(details.weight) * 0.453592
       : parseFloat(details.weight);
-    // eslint-disable-next-line no-unused-vars
-    const heightCm = details.heightUnit === 'ft'
-      ? (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54
-      : parseFloat(details.height) || 0;
+    const heightCm = (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54;
     const macros = calcMacros(goal, weightKg, details.activity, details.diet);
     setResult({
       ...macros, goal,
