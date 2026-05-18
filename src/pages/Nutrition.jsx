@@ -150,6 +150,32 @@ export default function Nutrition() {
 
       <LimitBanner limitKey="max_nutrition_plans" currentCount={plans.length} label="nutrition plans" featureKey="clients" />
 
+      <button
+        onClick={async () => {
+          try {
+            console.log('Testing direct NutritionPlan create...');
+            const result = await base44.entities.NutritionPlan.create({
+              title: 'Debug Test Plan',
+              tracking_mode: 'macros',
+              calories: 2000,
+              protein_g: 150,
+              carbs_g: 200,
+              fats_g: 60,
+              assigned_clients: []
+            });
+            console.log('SUCCESS:', result);
+            alert('SAVED! ID: ' + result.id);
+            queryClient.invalidateQueries({ queryKey: ['nutrition'] });
+          } catch(err) {
+            console.error('FAILED:', err);
+            alert('FAILED: ' + JSON.stringify(err));
+          }
+        }}
+        style={{ background: 'red', color: 'white', padding: '8px 16px', margin: '8px' }}
+      >
+        DEBUG: Test Save
+      </button>
+
       {/* ── AI INSIGHT CARDS ── */}
       <div>
         <div className="flex items-center gap-2 mb-3">
