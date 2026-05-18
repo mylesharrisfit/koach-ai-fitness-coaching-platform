@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, ChevronLeft, ChevronRight, RotateCcw, Check, Flame, Zap, Leaf,
-  Dumbbell, Scale, UtensilsCrossed, Pill, FileText, ChevronDown,
+  Dumbbell, Scale, UtensilsCrossed, Pill, FileText, ChevronDown, Copy, ClipboardCheck,
 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,7 +33,7 @@ const DIET_PREFS = ['Standard', 'High Protein', 'Vegetarian', 'Vegan', 'Keto', '
 const WORKOUT_TYPES = ['Weightlifting', 'HIIT', 'Cardio', 'CrossFit', 'Sports', 'Yoga/Pilates', 'Mixed'];
 const ALLERGIES = ['Gluten Free', 'Dairy Free', 'Nut Free', 'Egg Free', 'Soy Free', 'Shellfish Free'];
 const SUPPLEMENTS = ['Whey Protein', 'Creatine', 'Pre-Workout', 'BCAAs', 'Fish Oil', 'Vitamin D', 'Magnesium', 'Multivitamin', 'Caffeine', 'Collagen', 'None'];
-const LOADING_MESSAGES = ['Calculating macros...', 'Structuring meals...', 'Optimizing for goal...', 'Adding supplements...'];
+const LOADING_MESSAGES = ['Calculating macros...', 'Structuring meals...', '🤖 AI is building your meal plan...', 'Optimizing for goal...', 'Adding supplements...', 'Finalizing your plan...'];
 
 const INITIAL_DETAILS = {
   weight: '', weightUnit: 'kg',
@@ -417,21 +418,44 @@ function Step2Details({ details, setDetails }) {
 }
 
 // ── Step 3 — Generating ───────────────────────────────────────────────────────
-function Step3Generating({ onDone }) {
+function Step3Generating({ onDone, macroPayload }) {
   const [progress, setProgress] = useState(0);
   const [msgIndex, setMsgIndex] = useState(0);
   const doneRef = useRef(false);
+  const apiCalledRef = useRef(false);
 
   useEffect(() => {
-    doneRef.current = false; setProgress(0); setMsgIndex(0);
+    doneRef.current = false;
+    apiCalledRef.current = false;
+    setProgress(0);
+    setMsgIndex(0);
+
+    // Progress bar: goes to 85% quickly then waits for API
     const interval = setInterval(() => {
       setProgress(p => {
-        const next = p + 2;
-        if (next >= 100 && !doneRef.current) { doneRef.current = true; clearInterval(interval); setTimeout(onDone, 300); }
-        return Math.min(next, 100);
+        if (p >= 85) return p;
+        return p + 1.5;
       });
-    }, 40);
-    const msgTimer = setInterval(() => setMsgIndex(i => (i + 1) % LOADING_MESSAGES.length), 900);
+    }, 50);
+    const msgTimer = setInterval(() => setMsgIndex(i => (i + 1) % LOADING_MESSAGES.length), 1000);
+
+    // Call the API
+    if (!apiCalledRef.current) {
+      apiCalledRef.current = true;
+      base44.functions.invoke('generateMealPlan', macroPayload)
+        .then(res => {
+          const meals = res.data?.meals || [];
+          clearInterval(interval);
+          setProgress(100);
+          setTimeout(() => { if (!doneRef.current) { doneRef.current = true; onDone(meals); } }, 400);
+        })
+        .catch(() => {
+          clearInterval(interval);
+          setProgress(100);
+          setTimeout(() => { if (!doneRef.current) { doneRef.current = true; onDone([]); } }, 400);
+        });
+    }
+
     return () => { clearInterval(interval); clearInterval(msgTimer); };
   }, []);
 
@@ -452,106 +476,158 @@ function Step3Generating({ onDone }) {
       </div>
       <div className="w-full max-w-xs">
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
-          <motion.div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.1 }} />
+          <motion.div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />
         </div>
-        <p className="text-xs text-muted-foreground text-right mt-1">{progress}%</p>
+        <p className="text-xs text-muted-foreground text-right mt-1">{Math.round(progress)}%</p>
       </div>
+    </div>
+  );
+}
+
+// ── Meal Card ─────────────────────────────────────────────────────────────────
+function MealCard({ meal }) {
+  const [open, setOpen] = useState(false);
+  const isPre  = meal.type === 'pre_workout'  || meal.name?.toLowerCase().includes('pre-workout');
+  const isPost = meal.type === 'post_workout' || meal.name?.toLowerCase().includes('post-workout');
+  const bg = isPre ? 'bg-amber-50 border-amber-200' : isPost ? 'bg-blue-50 border-blue-200' : 'bg-card border-border';
+  const emoji = isPre ? '⚡' : isPost ? '💪' : '🍽️';
+
+  return (
+    <div className={cn('rounded-xl border overflow-hidden', bg)}>
+      <button type="button" onClick={() => setOpen(o => !o)} className="w-full flex items-center gap-3 p-3 text-left hover:bg-black/5 transition-colors">
+        <span className="text-lg">{emoji}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-bold text-foreground">{meal.name}</span>
+            {meal.time && <span className="text-[10px] text-muted-foreground font-medium">{meal.time}</span>}
+            {meal.prepTime && <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded-full text-muted-foreground">⏱ {meal.prepTime}</span>}
+          </div>
+          <div className="flex gap-2 mt-1 flex-wrap">
+            <span className="text-[10px] font-bold text-orange-600">{meal.calories} kcal</span>
+            <span className="text-[10px] font-semibold text-red-500">P {meal.protein}g</span>
+            <span className="text-[10px] font-semibold text-amber-500">C {meal.carbs}g</span>
+            <span className="text-[10px] font-semibold text-blue-500">F {meal.fats}g</span>
+          </div>
+        </div>
+        <ChevronDown className={cn('w-4 h-4 text-muted-foreground shrink-0 transition-transform', open && 'rotate-180')} />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+            <div className="px-3 pb-3 space-y-2 border-t border-border/50">
+              {/* Foods */}
+              {meal.foods?.map((food, i) => (
+                <div key={i} className="flex items-start gap-2 pt-2">
+                  <span className="text-base mt-0.5">🥗</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="text-xs font-semibold text-foreground">{food.name}</span>
+                      <span className="text-[10px] text-orange-600 font-bold shrink-0">{food.calories} kcal</span>
+                    </div>
+                    <div className="flex gap-2 mt-0.5">
+                      <span className="text-[10px] text-muted-foreground">{food.amount}</span>
+                      <span className="text-[10px] text-red-400">P {food.protein}g</span>
+                      <span className="text-[10px] text-amber-400">C {food.carbs}g</span>
+                      <span className="text-[10px] text-blue-400">F {food.fats}g</span>
+                    </div>
+                    {food.prep && <p className="text-[10px] text-muted-foreground mt-0.5 italic">{food.prep}</p>}
+                  </div>
+                </div>
+              ))}
+              {/* Instructions */}
+              {meal.instructions && (
+                <div className="mt-2 p-2 bg-secondary/40 rounded-lg">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">How to prepare</p>
+                  <p className="text-xs text-foreground">{meal.instructions}</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
 // ── Step 4 — Result ───────────────────────────────────────────────────────────
 function Step4Result({ result, onApply, onRegenerate }) {
+  const [copied, setCopied] = useState(false);
   const goalMeta = GOALS.find(g => g.id === result.goal);
   const actLabel = ACTIVITY_LEVELS.find(a => a.value === result.activity)?.label;
-  const perMealCal = Math.round(result.calories / result.mealsPerDay);
+  const perMealCal = Math.round(result.calories / (result.meals?.length || result.mealsPerDay || 4));
 
-  // Build meals list
-  const baseMealNames = {
-    2: ['Meal 1', 'Meal 2'],
-    3: ['Breakfast', 'Lunch', 'Dinner'],
-    4: ['Breakfast', 'Lunch', 'Snack', 'Dinner'],
-    5: ['Breakfast', 'Morning Snack', 'Lunch', 'Afternoon Snack', 'Dinner'],
-    6: ['Breakfast', 'Morning Snack', 'Lunch', 'Afternoon Snack', 'Dinner', 'Evening Snack'],
-  };
-  let meals = [...(baseMealNames[result.mealsPerDay] || baseMealNames[4])];
-  if (result.preWorkout && !meals.includes('Pre-Workout')) meals.push('Pre-Workout');
-  if (result.postWorkout && !meals.includes('Post-Workout')) meals.push('Post-Workout');
+  function copyPlan() {
+    const lines = [`=== AI Nutrition Plan ===`, `Goal: ${goalMeta?.label} | Diet: ${result.diet} | ${actLabel}`,
+      `Calories: ${result.calories} kcal (BMR: ${result.bmr} | TDEE: ${result.tdee})`,
+      `Protein: ${result.protein}g | Carbs: ${result.carbs}g | Fats: ${result.fats}g`, ''];
+    (result.meals || []).forEach(meal => {
+      lines.push(`--- ${meal.name} (${meal.time || ''}) ---`);
+      lines.push(`${meal.calories} kcal | P ${meal.protein}g | C ${meal.carbs}g | F ${meal.fats}g`);
+      (meal.foods || []).forEach(f => lines.push(`  • ${f.name} — ${f.amount} (${f.calories} kcal)`));
+      if (meal.instructions) lines.push(`  How to prep: ${meal.instructions}`);
+      lines.push('');
+    });
+    if (result.supplements?.filter(s => s !== 'None').length > 0) {
+      lines.push(`Supplements: ${result.supplements.filter(s => s !== 'None').join(', ')}`);
+    }
+    navigator.clipboard.writeText(lines.join('\n'));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
     <div className="max-h-[65vh] overflow-y-auto pr-1 space-y-4">
-      <div>
-        <h2 className="text-xl font-bold font-heading mb-1">Your AI Plan is Ready ✨</h2>
-        <p className="text-sm text-muted-foreground">Review the calculated plan below</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-xl font-bold font-heading mb-1">Your AI Plan is Ready ✨</h2>
+          <p className="text-sm text-muted-foreground">Review the detailed meal plan below</p>
+        </div>
+        <button type="button" onClick={copyPlan} className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-secondary">
+          {copied ? <ClipboardCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
       </div>
 
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 rounded-2xl p-5 space-y-4">
-        {/* Goal + diet badge row */}
+      {/* Summary card */}
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 rounded-2xl p-4 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xl">{goalMeta?.emoji}</span>
           <span className="text-sm font-bold px-3 py-1 rounded-full bg-white border border-primary/20 text-primary shadow-sm">{goalMeta?.label}</span>
           {result.diet && <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white border border-border text-muted-foreground">{result.diet}</span>}
           <span className="text-xs text-muted-foreground ml-auto">{actLabel}</span>
         </div>
-
-        {/* Calories */}
         <div className="text-center">
           <p className="text-4xl font-extrabold text-foreground tracking-tight">{result.calories}</p>
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">calories / day · ~{perMealCal} kcal per meal</p>
-          <div className="flex justify-center gap-4 mt-2">
-            <span className="text-[11px] text-muted-foreground bg-white/60 px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
-            <span className="text-[11px] text-muted-foreground bg-white/60 px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
+          <div className="flex justify-center gap-3 mt-2">
+            <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
+            <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
           </div>
         </div>
-
-        {/* Macros */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {[
             { label: 'Protein', value: result.protein, color: 'text-red-500' },
             { label: 'Carbs',   value: result.carbs,   color: 'text-amber-500' },
             { label: 'Fats',    value: result.fats,    color: 'text-blue-500' },
           ].map(m => (
-            <div key={m.label} className="bg-white rounded-xl p-3 text-center shadow-sm">
-              <p className={cn('text-2xl font-extrabold', m.color)}>{m.value}<span className="text-sm font-semibold text-muted-foreground">g</span></p>
-              <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">{m.label}</p>
+            <div key={m.label} className="bg-white rounded-xl p-2.5 text-center shadow-sm">
+              <p className={cn('text-xl font-extrabold', m.color)}>{m.value}<span className="text-xs font-semibold text-muted-foreground">g</span></p>
+              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">{m.label}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Meal structure */}
-      <div className="bg-card border border-border rounded-2xl p-4 space-y-2.5">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">
-          Meal Structure ({meals.length} meals/day)
-        </p>
-        {meals.map(name => {
-          const isPre  = name === 'Pre-Workout';
-          const isPost = name === 'Post-Workout';
-          const calAmt = isPre  ? Math.round(result.calories * 0.15)
-                       : isPost ? Math.round(result.calories * 0.20)
-                       : perMealCal;
-          const protAmt = isPre  ? Math.round(result.protein * 0.10)
-                        : isPost ? Math.round(result.protein * 0.30)
-                        : Math.round(result.protein / result.mealsPerDay);
-          const carbAmt = isPre && result.preWorkoutCarbs ? Math.round(result.carbs * 0.30) : Math.round(result.carbs / result.mealsPerDay);
-          return (
-            <div key={name} className={cn('flex items-center justify-between p-2.5 rounded-xl', isPre ? 'bg-amber-50 border border-amber-100' : isPost ? 'bg-blue-50 border border-blue-100' : 'bg-secondary/30')}>
-              <div className="flex items-center gap-2">
-                <span className="text-sm">{isPre ? '⚡' : isPost ? '💪' : '🍽️'}</span>
-                <div>
-                  <p className="text-xs font-bold text-foreground">{name}</p>
-                  {(isPre || isPost) && <p className="text-[10px] text-muted-foreground">{isPost ? 'High protein + carbs' : result.preWorkoutCarbs ? 'Carb focused' : 'Balanced'}</p>}
-                </div>
-              </div>
-              <div className="flex gap-2 text-[10px] font-semibold">
-                <span className="text-orange-600">{calAmt} kcal</span>
-                <span className="text-red-500">P {protAmt}g</span>
-                <span className="text-amber-500">C {carbAmt}g</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {/* Meal cards */}
+      {result.meals?.length > 0 ? (
+        <div className="space-y-2">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Daily Meal Plan ({result.meals.length} meals)</p>
+          {result.meals.map((meal, i) => <MealCard key={i} meal={meal} />)}
+        </div>
+      ) : (
+        <div className="text-xs text-muted-foreground text-center py-4">No meal data available</div>
+      )}
 
       {/* Supplements */}
       {result.supplements?.filter(s => s !== 'None').length > 0 && (
@@ -565,7 +641,6 @@ function Step4Result({ result, onApply, onRegenerate }) {
         </div>
       )}
 
-      {/* Allergies / restrictions note */}
       {result.allergies?.length > 0 && (
         <div className="text-xs text-muted-foreground bg-secondary/40 rounded-xl px-3 py-2">
           ⚠️ Plan excludes: {result.allergies.join(', ')}
@@ -586,30 +661,55 @@ function Step4Result({ result, onApply, onRegenerate }) {
 
 // ── Main Modal ────────────────────────────────────────────────────────────────
 export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
-  const [step, setStep]       = useState(0);
-  const [dir, setDir]         = useState(1);
-  const [goal, setGoal]       = useState(null);
-  const [details, setDetails] = useState(INITIAL_DETAILS);
-  const [result, setResult]   = useState(null);
+  const [step, setStep]           = useState(0);
+  const [dir, setDir]             = useState(1);
+  const [goal, setGoal]           = useState(null);
+  const [details, setDetails]     = useState(INITIAL_DETAILS);
+  const [result, setResult]       = useState(null);
+  const [macroPayload, setMacroPayload] = useState(null);
 
   function go(next) { setDir(next > step ? 1 : -1); setStep(next); }
 
-  function handleGeneratingDone() {
+  function handleStartGenerating() {
     const weightKg = details.weightUnit === 'lbs'
       ? parseFloat(details.weight) / 2.2046
       : parseFloat(details.weight);
     const heightCm = (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54;
     const macros = calcMacros(goal, weightKg, heightCm, details.age, details.sex, details.activity, details.diet);
-    setResult({
-      ...macros, goal,
-      diet:          details.diet || 'Standard',
-      activity:      details.activity || 'sedentary',
-      mealsPerDay:   details.mealsPerDay || 4,
-      preWorkout:    details.preWorkout,
+    const payload = {
+      age: details.age || 25,
+      sex: details.sex || 'male',
+      weightKg: Math.round(weightKg * 10) / 10,
+      goal,
+      diet: details.diet || 'Standard',
+      calories: macros.calories,
+      protein: macros.protein,
+      carbs: macros.carbs,
+      fats: macros.fats,
+      mealsPerDay: details.mealsPerDay || 4,
+      preWorkout: details.preWorkout,
       preWorkoutCarbs: details.preWorkoutCarbs,
-      postWorkout:   details.postWorkout,
-      supplements:   details.supplements,
-      allergies:     details.allergies,
+      postWorkout: details.postWorkout,
+      restrictions: [...(details.allergies || []), details.dislikedFoods].filter(Boolean).join(', '),
+      supplements: details.supplements,
+    };
+    setMacroPayload({ ...payload, _macros: macros });
+    go(2);
+  }
+
+  function handleGeneratingDone(meals) {
+    const m = macroPayload._macros;
+    setResult({
+      ...m, goal,
+      diet:           details.diet || 'Standard',
+      activity:       details.activity || 'sedentary',
+      mealsPerDay:    details.mealsPerDay || 4,
+      preWorkout:     details.preWorkout,
+      preWorkoutCarbs: details.preWorkoutCarbs,
+      postWorkout:    details.postWorkout,
+      supplements:    details.supplements,
+      allergies:      details.allergies,
+      meals,
     });
     setDir(1); setStep(3);
   }
@@ -621,7 +721,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   }
 
   function reset() {
-    setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS }); setResult(null);
+    setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS }); setResult(null); setMacroPayload(null);
   }
 
   function canNext() {
@@ -639,7 +739,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
             <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }}>
               {step === 0 && <Step1Goal goal={goal} setGoal={setGoal} />}
               {step === 1 && <Step2Details details={details} setDetails={setDetails} />}
-              {step === 2 && <Step3Generating onDone={handleGeneratingDone} />}
+              {step === 2 && <Step3Generating onDone={handleGeneratingDone} macroPayload={macroPayload} />}
               {step === 3 && result && <Step4Result result={result} onApply={handleApply} onRegenerate={() => go(2)} />}
             </motion.div>
           </AnimatePresence>
@@ -650,7 +750,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
             <Button variant="ghost" size="sm" onClick={step === 0 ? () => onOpenChange(false) : () => go(step - 1)} className="gap-1 text-muted-foreground">
               {step === 0 ? 'Cancel' : <><ChevronLeft className="w-4 h-4" /> Back</>}
             </Button>
-            <Button size="sm" disabled={!canNext()} onClick={() => go(step + 1)} className="gap-1">
+            <Button size="sm" disabled={!canNext()} onClick={step === 1 ? handleStartGenerating : () => go(step + 1)} className="gap-1">
               {step === 1 ? <><Sparkles className="w-3.5 h-3.5" /> Generate Plan</> : <>Next <ChevronRight className="w-4 h-4" /></>}
             </Button>
           </div>
