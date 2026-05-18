@@ -8,7 +8,7 @@ Deno.serve(async (req) => {
 
     const { age, sex, weightKg, goal, diet, calories, protein, carbs, fats,
             mealsPerDay, preWorkout, preWorkoutCarbs, postWorkout, restrictions, supplements,
-            mealComplexity, condiments } = await req.json();
+            supplementDosages, mealComplexity, condiments } = await req.json();
 
     const mealCount = mealsPerDay + (preWorkout ? 1 : 0) + (postWorkout ? 1 : 0);
 
@@ -18,6 +18,10 @@ Deno.serve(async (req) => {
 
     const condimentsLine = condiments && condiments.length > 0
       ? `Condiments/seasonings to incorporate: ${condiments.join(', ')}. Include these in the HOW TO PREPARE instructions for relevant meals.`
+      : '';
+
+    const supplementsLine = supplements && supplements.filter(s => s !== 'None').length > 0
+      ? `Supplements & timing:\n${supplements.filter(s => s !== 'None').map(s => `- ${s}: ${(supplementDosages && supplementDosages[s]) || s}`).join('\n')}\n\nInclude supplement timing in meal instructions. For each meal that coincides with a supplement dose, add a note at the end of the instructions formatted as: "💊 Supplements with this meal: [supplement name] - [dose]". For example, add Creatine note to the post-workout meal, Vitamin D to a meal with fats, Magnesium to the last meal, Caffeine/Pre-Workout to the pre-workout meal.`
       : '';
 
     const prompt = `Create a one-day meal plan as a JSON array only. No markdown, no explanations.

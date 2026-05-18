@@ -34,6 +34,70 @@ const WORKOUT_TYPES = ['Weightlifting', 'HIIT', 'Cardio', 'CrossFit', 'Sports', 
 const ALLERGIES = ['Gluten Free', 'Dairy Free', 'Nut Free', 'Egg Free', 'Soy Free', 'Shellfish Free'];
 const SUPPLEMENTS = ['Whey Protein', 'Creatine', 'Pre-Workout', 'BCAAs', 'Fish Oil', 'Vitamin D', 'Magnesium', 'Multivitamin', 'Caffeine', 'Collagen', 'None'];
 
+const SUPPLEMENT_DEFAULTS = {
+  'Whey Protein':  { dosage: '25-30g per serving, post-workout',            timing: 'Post-Workout', emoji: '🥛' },
+  'Creatine':      { dosage: '5g daily, any time',                           timing: 'Morning',      emoji: '💪' },
+  'Pre-Workout':   { dosage: '1 scoop, 20-30 min before training',           timing: 'Pre-Workout',  emoji: '⚡' },
+  'BCAAs':         { dosage: '5-10g during or post-workout',                 timing: 'Post-Workout', emoji: '🔋' },
+  'Fish Oil':      { dosage: '1-2g EPA/DHA daily, with meals',               timing: 'With Meals',   emoji: '🐟' },
+  'Vitamin D':     { dosage: '2000-5000 IU daily, with fat-containing meal', timing: 'With Meals',   emoji: '☀️' },
+  'Magnesium':     { dosage: '300-400mg daily, before bed',                  timing: 'Before Bed',   emoji: '😴' },
+  'Multivitamin':  { dosage: '1 serving daily, with breakfast',              timing: 'Morning',      emoji: '💊' },
+  'Caffeine':      { dosage: '100-200mg, 30-45 min pre-workout',             timing: 'Pre-Workout',  emoji: '☕' },
+  'Collagen':      { dosage: '10-15g daily, with vitamin C source',          timing: 'Morning',      emoji: '✨' },
+};
+
+const SUPPLEMENT_GOAL_REASONS = {
+  fat_loss: {
+    'Whey Protein': 'Preserve muscle mass during caloric deficit',
+    'Fish Oil':     'Reduce inflammation, support fat metabolism',
+    'Caffeine':     'Boost metabolic rate and training performance',
+    'Vitamin D':    'Support hormone balance and immune function',
+    'Creatine':     'Maintain strength output while in a deficit',
+    'Magnesium':    'Reduce cortisol and support quality sleep',
+    'Multivitamin': 'Fill micronutrient gaps from reduced food intake',
+    'BCAAs':        'Minimize muscle catabolism during fasted training',
+    'Pre-Workout':  'Increase calorie burn and workout intensity',
+    'Collagen':     'Support joint health during increased activity',
+  },
+  muscle_gain: {
+    'Creatine':     'Increase strength output and muscle cell volume',
+    'Whey Protein': 'Fast-absorbing protein to maximize muscle protein synthesis',
+    'Magnesium':    'Support recovery and sleep quality for muscle repair',
+    'BCAAs':        'Stimulate muscle protein synthesis between meals',
+    'Pre-Workout':  'Drive heavier lifts and greater training volume',
+    'Fish Oil':     'Reduce inflammation and support anabolic signaling',
+    'Multivitamin': 'Ensure micronutrient sufficiency for growth',
+    'Caffeine':     'Improve performance and reduce perceived exertion',
+    'Vitamin D':    'Support testosterone levels and muscle function',
+    'Collagen':     'Strengthen connective tissue to support heavier loads',
+  },
+  performance: {
+    'Pre-Workout':  'Enhance focus, pump and endurance during training',
+    'BCAAs':        'Reduce muscle breakdown during intense training',
+    'Creatine':     'Improve power output and training capacity',
+    'Caffeine':     'Delay fatigue and sharpen mental focus',
+    'Fish Oil':     'Reduce exercise-induced inflammation and DOMS',
+    'Magnesium':    'Prevent cramping and support energy metabolism',
+    'Whey Protein': 'Accelerate post-training muscle repair',
+    'Vitamin D':    'Optimize neuromuscular function and VO2 max',
+    'Multivitamin': 'Support high training demands on micronutrients',
+    'Collagen':     'Protect joints and tendons under high load',
+  },
+  maintenance: {
+    'Whey Protein': 'Meet daily protein targets conveniently',
+    'Fish Oil':     'Support cardiovascular health and longevity',
+    'Magnesium':    'Promote relaxation and overall wellbeing',
+    'Multivitamin': 'Fill daily micronutrient gaps from diet',
+    'Vitamin D':    'Maintain bone density and immune resilience',
+    'Creatine':     'Preserve strength and cognitive function',
+    'Collagen':     'Support skin, hair and joint health',
+    'Caffeine':     'Sustain training energy and motivation',
+    'BCAAs':        'Support lean mass retention',
+    'Pre-Workout':  'Keep training sessions focused and productive',
+  },
+};
+
 const MEAL_COMPLEXITY = [
   { id: 'very_basic', emoji: '🥫', label: 'Very Basic',  desc: 'Simple whole foods, minimal cooking', color: 'gray' },
   { id: 'simple',     emoji: '🍳', label: 'Simple',      desc: 'Easy recipes, 15 min or less',        color: 'gray' },
@@ -66,7 +130,7 @@ const INITIAL_DETAILS = {
   mealsPerDay: 4, preWorkout: false, preWorkoutTiming: '1hr', preWorkoutCarbs: false,
   postWorkout: false, mealPrepStyle: 'Mix',
   diet: '', allergies: [], dislikedFoods: '',
-  supplements: [], notes: '',
+  supplements: [], supplementDosages: {}, notes: '',
   weightLossRate: 1,
   mealComplexity: 'moderate',
   condiments: [],
@@ -566,15 +630,76 @@ function Step2Details({ details, setDetails, goal }) {
 
         {/* Section 5 — Supplements */}
         <AccordionSection icon={Pill} title="Current Supplements" complete={s5Complete}>
-          <PillToggle options={SUPPLEMENTS} value={details.supplements} onChange={v => u('supplements', v)} multi />
-          {details.supplements.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {details.supplements.map(s => (
-                <span key={s} className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+          <div className="flex flex-wrap gap-1.5">
+            {SUPPLEMENTS.filter(s => s !== 'None').map(s => {
+              const active = details.supplements.includes(s);
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => {
+                    const next = active
+                      ? details.supplements.filter(x => x !== s)
+                      : [...details.supplements, s];
+                    u('supplements', next);
+                    if (!active && !details.supplementDosages[s]) {
+                      u('supplementDosages', { ...details.supplementDosages, [s]: SUPPLEMENT_DEFAULTS[s]?.dosage || '' });
+                    }
+                  }}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all',
+                    active ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-muted-foreground border-border hover:border-primary/40 hover:text-foreground'
+                  )}
+                >
+                  <span>{SUPPLEMENT_DEFAULTS[s]?.emoji || '💊'}</span>
                   {s}
-                  <button type="button" onClick={() => u('supplements', details.supplements.filter(x => x !== s))} className="hover:text-destructive">×</button>
-                </span>
-              ))}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => { u('supplements', []); u('supplementDosages', {}); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-semibold border transition-all',
+                details.supplements.length === 0 ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-muted-foreground border-border hover:border-primary/40'
+              )}
+            >
+              None
+            </button>
+          </div>
+
+          {details.supplements.length > 0 && (
+            <div className="space-y-2 mt-2">
+              {details.supplements.map(s => {
+                const def = SUPPLEMENT_DEFAULTS[s] || {};
+                return (
+                  <div key={s} className="rounded-xl border border-border bg-card p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">{def.emoji || '💊'}</span>
+                        <span className="text-sm font-bold text-foreground">{s}</span>
+                        {def.timing && (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                            {def.timing}
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => u('supplements', details.supplements.filter(x => x !== s))}
+                        className="text-muted-foreground hover:text-destructive text-xs"
+                      >×</button>
+                    </div>
+                    <input
+                      type="text"
+                      value={details.supplementDosages[s] ?? def.dosage ?? ''}
+                      onChange={e => u('supplementDosages', { ...details.supplementDosages, [s]: e.target.value })}
+                      placeholder="e.g. 5g daily, any time"
+                      className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </AccordionSection>
@@ -817,12 +942,31 @@ function Step4Result({ result, onApply, onRegenerate }) {
 
       {/* Supplements */}
       {result.supplements?.filter(s => s !== 'None').length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-4">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">💊 Supplement Stack</p>
-          <div className="flex flex-wrap gap-1.5">
-            {result.supplements.filter(s => s !== 'None').map(s => (
-              <span key={s} className="px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">{s}</span>
-            ))}
+        <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">💊 Supplement Protocol</p>
+          <div className="space-y-2">
+            {result.supplements.filter(s => s !== 'None').map(s => {
+              const def = SUPPLEMENT_DEFAULTS[s] || {};
+              const dosage = result.supplementDosages?.[s] || def.dosage || '';
+              const reason = (SUPPLEMENT_GOAL_REASONS[result.goal] || {})[s] || 'Support overall health and performance';
+              return (
+                <div key={s} className="flex items-start gap-3 p-3 rounded-xl bg-secondary/40 border border-border">
+                  <span className="text-xl shrink-0 mt-0.5">{def.emoji || '💊'}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-bold text-foreground">{s}</span>
+                      {def.timing && (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                          {def.timing}
+                        </span>
+                      )}
+                    </div>
+                    {dosage && <p className="text-xs text-foreground font-medium mt-0.5">{dosage}</p>}
+                    <p className="text-[11px] text-muted-foreground mt-0.5 italic">{reason}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -878,6 +1022,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       postWorkout: details.postWorkout,
       restrictions: [...(details.allergies || []), details.dislikedFoods].filter(Boolean).join(', '),
       supplements: details.supplements,
+      supplementDosages: details.supplementDosages || {},
       mealComplexity: details.mealComplexity || 'moderate',
       condiments: (details.condiments || []).map(id => CONDIMENTS.find(c => c.id === id)?.label).filter(Boolean),
     };
@@ -895,9 +1040,10 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       preWorkout:      details.preWorkout,
       preWorkoutCarbs: details.preWorkoutCarbs,
       postWorkout:     details.postWorkout,
-      supplements:     details.supplements,
-      allergies:       details.allergies,
-      weightLossRate:  details.weightLossRate || 1,
+      supplements:        details.supplements,
+      supplementDosages:  details.supplementDosages || {},
+      allergies:          details.allergies,
+      weightLossRate:     details.weightLossRate || 1,
       meals,
     });
     setDir(1); setStep(3);
@@ -939,7 +1085,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   }
 
   function reset() {
-    setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS }); setResult(null); setMacroPayload(null);
+    setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS, supplementDosages: {} }); setResult(null); setMacroPayload(null);
   }
 
   function canNext() {
