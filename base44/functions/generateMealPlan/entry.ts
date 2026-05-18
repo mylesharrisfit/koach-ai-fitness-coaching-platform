@@ -7,18 +7,30 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { age, sex, weightKg, goal, diet, calories, protein, carbs, fats,
-            mealsPerDay, preWorkout, preWorkoutCarbs, postWorkout, restrictions, supplements } = await req.json();
+            mealsPerDay, preWorkout, preWorkoutCarbs, postWorkout, restrictions, supplements,
+            mealComplexity, condiments } = await req.json();
 
     const mealCount = mealsPerDay + (preWorkout ? 1 : 0) + (postWorkout ? 1 : 0);
+
+    const complexityLine = mealComplexity
+      ? `Meal complexity: ${mealComplexity} — adjust recipe complexity accordingly. Very Basic means plain grilled/boiled foods with minimal prep. Gourmet means sophisticated techniques, marinades, complex flavors.`
+      : '';
+
+    const condimentsLine = condiments && condiments.length > 0
+      ? `Condiments/seasonings to incorporate: ${condiments.join(', ')}. Include these in the HOW TO PREPARE instructions for relevant meals.`
+      : '';
+
     const prompt = `Create a one-day meal plan as a JSON array only. No markdown, no explanations.
 
 Stats: ${age}yr ${sex}, ${weightKg}kg | Goal: ${goal} | Diet: ${diet || 'Standard'}
 Targets: ${calories}kcal, P${protein}g, C${carbs}g, F${fats}g
 Meals: ${mealCount} total (${mealsPerDay} regular${preWorkout ? ', 1 pre-workout' : ''}${postWorkout ? ', 1 post-workout' : ''})
 Restrictions: ${restrictions || 'None'}
+${complexityLine}
+${condimentsLine}
 
 Each meal: {"name","time","calories","protein","carbs","fats","foods":[{"name","amount","calories","protein","carbs","fats"}],"instructions","prepTime"}
-Keep foods array to 3-4 items max per meal. Keep instructions under 20 words.
+Keep foods array to 3-4 items max per meal. Keep instructions under 30 words.
 ${preWorkout ? 'Pre-workout: carb-heavy.' : ''} ${postWorkout ? 'Post-workout: high protein+carbs.' : ''}
 Return ONLY the JSON array.`;
 
@@ -44,7 +56,6 @@ Return ONLY the JSON array.`;
     const data = await response.json();
     const text = data.content?.[0]?.text || '[]';
 
-    // Strip any markdown fences if present
     const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const meals = JSON.parse(cleaned);
 

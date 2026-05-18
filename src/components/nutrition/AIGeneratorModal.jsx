@@ -33,6 +33,29 @@ const DIET_PREFS = ['Standard', 'High Protein', 'Vegetarian', 'Vegan', 'Keto', '
 const WORKOUT_TYPES = ['Weightlifting', 'HIIT', 'Cardio', 'CrossFit', 'Sports', 'Yoga/Pilates', 'Mixed'];
 const ALLERGIES = ['Gluten Free', 'Dairy Free', 'Nut Free', 'Egg Free', 'Soy Free', 'Shellfish Free'];
 const SUPPLEMENTS = ['Whey Protein', 'Creatine', 'Pre-Workout', 'BCAAs', 'Fish Oil', 'Vitamin D', 'Magnesium', 'Multivitamin', 'Caffeine', 'Collagen', 'None'];
+
+const MEAL_COMPLEXITY = [
+  { id: 'very_basic', emoji: '🥫', label: 'Very Basic',  desc: 'Simple whole foods, minimal cooking', color: 'gray' },
+  { id: 'simple',     emoji: '🍳', label: 'Simple',      desc: 'Easy recipes, 15 min or less',        color: 'gray' },
+  { id: 'moderate',   emoji: '🥘', label: 'Moderate',    desc: 'Balanced home cooking',                color: 'blue', popular: true },
+  { id: 'upscale',    emoji: '👨‍🍳', label: 'Upscale',    desc: 'Restaurant-quality meals',            color: 'amber' },
+  { id: 'gourmet',    emoji: '⭐', label: 'Gourmet',     desc: 'Complex recipes, premium ingredients', color: 'purple' },
+];
+
+const CONDIMENTS = [
+  { id: 'hot_sauce',       emoji: '🌶️', label: 'Hot Sauce',        kcal: '0–5 kcal' },
+  { id: 'lemon_lime',      emoji: '🍋', label: 'Lemon/Lime',        kcal: '5 kcal' },
+  { id: 'fresh_herbs',     emoji: '🌿', label: 'Fresh Herbs',        kcal: '0 kcal' },
+  { id: 'garlic_onion',    emoji: '🧄', label: 'Garlic & Onion',    kcal: '10 kcal' },
+  { id: 'mustard',         emoji: '🥣', label: 'Mustard',            kcal: '5 kcal' },
+  { id: 'soy_sauce',       emoji: '🍶', label: 'Soy Sauce',          kcal: '10 kcal' },
+  { id: 'salsa',           emoji: '🫙', label: 'Salsa',              kcal: '15 kcal' },
+  { id: 'sf_bbq',          emoji: '🥫', label: 'Sugar-Free BBQ',    kcal: '15 kcal' },
+  { id: 'spice_blends',    emoji: '🧂', label: 'Spice Blends',       kcal: '0 kcal' },
+  { id: 'balsamic',        emoji: '🍯', label: 'Balsamic Glaze',     kcal: '20 kcal' },
+  { id: 'greek_yogurt',    emoji: '🥛', label: 'Greek Yogurt Sauce', kcal: '20 kcal' },
+  { id: 'olive_spray',     emoji: '🫒', label: 'Olive Oil Spray',    kcal: '10 kcal' },
+];
 const LOADING_MESSAGES = ['Calculating macros...', 'Structuring meals...', '🤖 AI is building your meal plan...', 'Optimizing for goal...', 'Adding supplements...', 'Finalizing your plan...'];
 
 const INITIAL_DETAILS = {
@@ -45,6 +68,8 @@ const INITIAL_DETAILS = {
   diet: '', allergies: [], dislikedFoods: '',
   supplements: [], notes: '',
   weightLossRate: 1,
+  mealComplexity: 'moderate',
+  condiments: [],
 };
 
 const WEIGHT_LOSS_RATES = [
@@ -449,6 +474,73 @@ function Step2Details({ details, setDetails, goal }) {
             <Label className="text-xs font-semibold mb-1.5 block">Meal Prep Style</Label>
             <PillToggle options={['Fresh Daily', 'Meal Prep Weekly', 'Mix']} value={details.mealPrepStyle} onChange={v => u('mealPrepStyle', v)} />
           </div>
+
+          {/* Meal Complexity */}
+          <div>
+            <Label className="text-xs font-semibold mb-1.5 block">Meal Style</Label>
+            <div className="flex flex-wrap gap-2">
+              {MEAL_COMPLEXITY.map(opt => {
+                const active = details.mealComplexity === opt.id;
+                const borderColor =
+                  opt.color === 'blue'   ? (active ? 'border-blue-500 bg-blue-50'     : 'border-border hover:border-blue-300') :
+                  opt.color === 'amber'  ? (active ? 'border-amber-500 bg-amber-50'   : 'border-border hover:border-amber-300') :
+                  opt.color === 'purple' ? (active ? 'border-purple-500 bg-purple-50' : 'border-border hover:border-purple-300') :
+                                          (active ? 'border-gray-400 bg-gray-50'     : 'border-border hover:border-gray-300');
+                const labelColor =
+                  active
+                    ? opt.color === 'blue'   ? 'text-blue-700'
+                    : opt.color === 'amber'  ? 'text-amber-700'
+                    : opt.color === 'purple' ? 'text-purple-700'
+                    : 'text-gray-700'
+                    : 'text-foreground';
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => u('mealComplexity', opt.id)}
+                    className={`relative flex flex-col items-start px-3 py-2 rounded-xl border-2 text-left transition-all text-xs ${borderColor}`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span>{opt.emoji}</span>
+                      <span className={`font-bold ${labelColor}`}>{opt.label}</span>
+                      {opt.popular && (
+                        <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">Popular</span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">{opt.desc}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Sauces & Seasonings */}
+          <div>
+            <Label className="text-xs font-semibold mb-0.5 block">Sauces & Seasonings</Label>
+            <p className="text-[10px] text-muted-foreground mb-2">Low calorie options to keep meals flavorful</p>
+            <div className="flex flex-wrap gap-1.5">
+              {CONDIMENTS.map(c => {
+                const active = details.condiments.includes(c.id);
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => u('condiments', active ? details.condiments.filter(x => x !== c.id) : [...details.condiments, c.id])}
+                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full border text-xs font-semibold transition-all ${
+                      active ? 'border-primary bg-accent text-primary' : 'border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground'
+                    }`}
+                  >
+                    <span>{c.emoji}</span>
+                    <span>{c.label}</span>
+                    <span className={`text-[10px] font-normal ${active ? 'text-primary/70' : 'text-muted-foreground'}`}>{c.kcal}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-2 bg-secondary/50 px-2.5 py-1.5 rounded-lg">
+              These add flavor without significantly impacting your macros
+            </p>
+          </div>
         </AccordionSection>
 
         {/* Section 4 — Diet & Restrictions */}
@@ -786,6 +878,8 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       postWorkout: details.postWorkout,
       restrictions: [...(details.allergies || []), details.dislikedFoods].filter(Boolean).join(', '),
       supplements: details.supplements,
+      mealComplexity: details.mealComplexity || 'moderate',
+      condiments: (details.condiments || []).map(id => CONDIMENTS.find(c => c.id === id)?.label).filter(Boolean),
     };
     setMacroPayload({ ...payload, _macros: { ...macros, weightLossRate: details.weightLossRate || 1 } });
     go(2);
