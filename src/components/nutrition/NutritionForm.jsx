@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, ChevronUp, ChevronDown, Loader2, Users, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -240,11 +241,21 @@ function MealCard({ meal, index, total, onUpdate, onRemove, onMoveUp, onMoveDown
 export default function NutritionForm({ open, onOpenChange, onSubmit, plan, initialMeals }) {
   const isEdit = !!plan;
   const [form, setForm] = useState(() => defaultForm(plan, initialMeals));
+  const [selectedClientIds, setSelectedClientIds] = useState(plan?.assigned_clients || []);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (open) setForm(defaultForm(plan, initialMeals));
+    if (open) {
+      setForm(defaultForm(plan, initialMeals));
+      setSelectedClientIds(plan?.assigned_clients || []);
+    }
   }, [open, plan, initialMeals]);
+
+  const toggleClient = (id) => {
+    setSelectedClientIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
 
   function set(field, value) { setForm(f => ({ ...f, [field]: value })); }
 
@@ -317,9 +328,10 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
         habit_description: m.notes,
         foods:             m.foods,
       })),
-      assigned_clients: form.assigned_clients,
+      assigned_clients: selectedClientIds,
     });
     setSaving(false);
+    toast.success('Plan saved successfully');
     onOpenChange(false);
   }
 
@@ -488,7 +500,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
               <h3 className="text-sm font-bold text-foreground">Assign to Clients</h3>
               <span className="text-xs text-muted-foreground">(optional)</span>
             </div>
-            <ClientPicker selected={form.assigned_clients} onChange={val => set('assigned_clients', val)} />
+            <ClientPicker selected={selectedClientIds} onChange={setSelectedClientIds} />
           </div>
         </div>
 
