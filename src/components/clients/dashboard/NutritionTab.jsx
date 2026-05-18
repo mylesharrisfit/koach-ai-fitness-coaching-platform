@@ -1,0 +1,434 @@
+import React, { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Apple, Utensils, CheckCircle2, Plus, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { format, subDays } from 'date-fns';
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function pct(val, max) {
+  if (!max || !val) return 0;
+  return Math.min(100, Math.round((val / max) * 100));
+}
+
+function MacroChip({ label, value, unit = 'g', color }) {
+  return (
+    <div className={cn('flex flex-col items-center px-3 py-2 rounded-xl text-center', color)}>
+      <span className="text-sm font-bold tabular-nums leading-tight">{value ?? '—'}{unit === 'kcal' ? '' : unit}</span>
+      <span className="text-[10px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
+    </div>
+  );
+}
+
+function Bar({ value, max, color = 'bg-blue-400' }) {
+  const p = pct(value, max);
+  return (
+    <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+      <motion.div
+        className={cn('h-full rounded-full', color)}
+        initial={{ width: 0 }}
+        animate={{ width: `${p}%` }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      />
+    </div>
+  );
+}
+
+// ── Assign Plan Dialog ────────────────────────────────────────────────────────
+function AssignDialog({ clientId, allPlans, onClose }) {
+  const [selected, setSelected] = useState(null);
+  const qc = useQueryClient();
+
+  const assign = async () => {
+    if (!selected) return;
+    const plan = allPlans.find(p => p.id === selected);
+    const existing = plan?.assigned_clients || [];
+    if (!existing.includes(clientId)) {
+      await base44.entities.NutritionPlan.update(selected, {
+        assigned_clients: [...existing, clientId],
+      });
+    }
+    qc.invalidateQueries({ queryKey: ['nutrition'] });
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/50" />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+          <h3 className="text-sm font-bold text-gray-900">Assign Nutrition Plan</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1"><X className="w-4 h-4" /></button>
+        </div>
+
+        <div className="max-h-64 overflow-y-auto px-3 py-3 space-y-2">
+          {allPlans.length === 0 && (
+            <p className="text-xs text-gray-400 text-center py-6">No plans available. Create one first.</p>
+          )}
+          {allPlans.map(plan => (
+            <button
+              key={plan.id}
+              onClick={() => setSelected(plan.id)}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all',
+                selected === plan.id
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+              )}
+            >
+              <span className="text-xl">{plan.emoji || '🥗'}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">{plan.title}</p>
+                <p className="text-[10px] text-gray-400">
+                  {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
+                  {plan.calories ? ` · ${plan.calories} kcal` : ''}
+                </p>
+              </div>
+              {selected === plan.id && <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />}
+            </button>
+          ))}
+        </div>
+
+        <div className="px-3 py-3 border-t border-gray-100 flex gap-2">
+          <button
+            onClick={onClose}
+            className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={assign}
+            disabled={!selected}
+            className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)' }}
+          >
+            Assign Plan
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ── Section 1: Assigned Plan ──────────────────────────────────────────────────
+function AssignedPlanSection({ client, allPlans, assignedPlan }) {
+  const [showDialog, setShowDialog] = useState(false);
+  const qc = useQueryClient();
+
+  const createPlan = async () => {
+    await base44.entities.NutritionPlan.create({
+      title: `${client.name}'s Plan`,
+      tracking_mode: 'macros',
+      assigned_clients: [client.id],
+    });
+    qc.invalidateQueries({ queryKey: ['nutrition'] });
+  };
+
+  if (!assignedPlan) return (
+    <>
+      <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col items-center text-center gap-3">
+        <div className="w-11 h-11 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center">
+          <Apple className="w-5 h-5 text-gray-300" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-gray-700">No nutrition plan assigned yet</p>
+          <p className="text-xs text-gray-400 mt-0.5">Assign an existing plan or create a new one</p>
+        </div>
+        <div className="flex gap-2 flex-wrap justify-center">
+          <button
+            onClick={() => setShowDialog(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white"
+            style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)' }}
+          >
+            <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
+          </button>
+          <button
+            onClick={createPlan}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50"
+          >
+            <Plus className="w-3.5 h-3.5" /> Create New Plan
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {showDialog && (
+          <AssignDialog
+            clientId={client.id}
+            allPlans={allPlans}
+            onClose={() => setShowDialog(false)}
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+
+  const isHabits = assignedPlan.tracking_mode === 'habits';
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2.5">
+          <span className="text-2xl">{assignedPlan.emoji || '🥗'}</span>
+          <div>
+            <p className="text-sm font-bold text-gray-800 leading-tight">{assignedPlan.title}</p>
+            {assignedPlan.description && (
+              <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{assignedPlan.description}</p>
+            )}
+          </div>
+        </div>
+        <span className={cn(
+          'text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
+          isHabits ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+        )}>
+          {isHabits ? 'Habit Mode' : 'Macro Tracking'}
+        </span>
+      </div>
+
+      {!isHabits && assignedPlan.calories > 0 && (
+        <div className="flex gap-2">
+          <MacroChip label="Calories" value={assignedPlan.calories} unit="kcal" color="bg-orange-50 text-orange-700" />
+          {assignedPlan.protein_g > 0 && <MacroChip label="Protein"  value={assignedPlan.protein_g} color="bg-blue-50 text-blue-700" />}
+          {assignedPlan.carbs_g   > 0 && <MacroChip label="Carbs"    value={assignedPlan.carbs_g}   color="bg-amber-50 text-amber-700" />}
+          {assignedPlan.fats_g    > 0 && <MacroChip label="Fats"     value={assignedPlan.fats_g}    color="bg-rose-50 text-rose-600" />}
+        </div>
+      )}
+
+      {assignedPlan.adherence_rate > 0 && (
+        <div className="space-y-1">
+          <div className="flex justify-between text-[11px]">
+            <span className="text-gray-500">Adherence</span>
+            <span className="font-semibold text-gray-700">{assignedPlan.adherence_rate}%</span>
+          </div>
+          <Bar
+            value={assignedPlan.adherence_rate}
+            max={100}
+            color={assignedPlan.adherence_rate >= 80 ? 'bg-emerald-400' : assignedPlan.adherence_rate >= 60 ? 'bg-amber-400' : 'bg-red-400'}
+          />
+        </div>
+      )}
+
+      <button
+        className="text-xs font-semibold text-blue-500 hover:text-blue-700 transition-colors"
+      >
+        Edit Plan →
+      </button>
+    </div>
+  );
+}
+
+// ── Section 2: Today's Food Log ───────────────────────────────────────────────
+function TodayFoodLog({ client, assignedPlan }) {
+  const today = format(new Date(), 'yyyy-MM-dd');
+
+  const { data: logs = [], isLoading } = useQuery({
+    queryKey: ['nutrition', 'food-log', client.id, today],
+    queryFn: async () => {
+      const all = await base44.entities.FoodLog.list();
+      return all.filter(l => l.client_id === client.id && l.logged_date === today);
+    },
+    enabled: !!client?.id,
+  });
+
+  const grouped = useMemo(() => {
+    const map = {};
+    logs.forEach(l => {
+      const key = l.meal_name || 'Other';
+      if (!map[key]) map[key] = [];
+      map[key].push(l);
+    });
+    return map;
+  }, [logs]);
+
+  const totalCals = logs.reduce((s, l) => s + (l.calories || 0), 0);
+  const totalProtein = logs.reduce((s, l) => s + (l.protein || 0), 0);
+  const targetCals = assignedPlan?.calories || 0;
+  const targetProtein = assignedPlan?.protein_g || 0;
+
+  if (isLoading) return <div className="h-20 bg-gray-100 animate-pulse rounded-xl" />;
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <Utensils className="w-3.5 h-3.5 text-gray-400" />
+          <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">Today's Food Log</span>
+        </div>
+        <span className="text-[10px] text-gray-400">{format(new Date(), 'MMM d')}</span>
+      </div>
+
+      {/* Totals bar */}
+      {logs.length > 0 && targetCals > 0 && (
+        <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100 space-y-1.5">
+          <div className="flex justify-between text-xs">
+            <span className="text-gray-500">Calories</span>
+            <span className="font-semibold text-gray-700 tabular-nums">{totalCals} / {targetCals} kcal</span>
+          </div>
+          <Bar value={totalCals} max={targetCals} color="bg-orange-400" />
+          {targetProtein > 0 && (
+            <>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-gray-500">Protein</span>
+                <span className="font-semibold text-blue-600 tabular-nums">{Math.round(totalProtein)}g / {targetProtein}g</span>
+              </div>
+              <Bar value={totalProtein} max={targetProtein} color="bg-blue-400" />
+            </>
+          )}
+        </div>
+      )}
+
+      {logs.length === 0 ? (
+        <div className="flex flex-col items-center py-8 gap-2">
+          <Utensils className="w-7 h-7 text-gray-200" />
+          <p className="text-xs text-gray-400">No food logged today</p>
+        </div>
+      ) : (
+        <div className="divide-y divide-gray-50">
+          {Object.entries(grouped).map(([mealName, items]) => {
+            const mealCals = items.reduce((s, i) => s + (i.calories || 0), 0);
+            return (
+              <div key={mealName}>
+                <div className="flex items-center justify-between px-4 py-2 bg-gray-50">
+                  <span className="text-xs font-semibold text-gray-600">{mealName}</span>
+                  {mealCals > 0 && <span className="text-[10px] font-semibold text-orange-500 tabular-nums">{mealCals} kcal</span>}
+                </div>
+                {items.map((item, i) => (
+                  <div key={i} className="flex items-center justify-between px-4 py-2">
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-gray-700 font-medium">{item.food_name}</span>
+                      {item.serving_quantity && (
+                        <span className="text-[10px] text-gray-400 ml-1.5">{item.serving_quantity}{item.serving_unit || ''}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] font-semibold shrink-0 ml-2">
+                      {item.protein > 0  && <span className="text-blue-500">{item.protein}P</span>}
+                      {item.carbs > 0    && <span className="text-amber-500">{item.carbs}C</span>}
+                      {item.fats > 0     && <span className="text-rose-400">{item.fats}F</span>}
+                      {item.calories > 0 && <span className="text-gray-600 font-bold">{item.calories}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Section 3: Weekly Adherence Grid ─────────────────────────────────────────
+function WeeklyAdherenceGrid({ client }) {
+  const days = useMemo(() =>
+    Array.from({ length: 7 }, (_, i) => subDays(new Date(), 6 - i)),
+    []
+  );
+  const startDate = format(days[0], 'yyyy-MM-dd');
+  const endDate   = format(days[6], 'yyyy-MM-dd');
+
+  const { data: logs = [] } = useQuery({
+    queryKey: ['nutrition', 'food-log-week', client.id, startDate],
+    queryFn: async () => {
+      const all = await base44.entities.FoodLog.list();
+      return all.filter(l => l.client_id === client.id && l.logged_date >= startDate && l.logged_date <= endDate);
+    },
+    enabled: !!client?.id,
+  });
+
+  const dayStatuses = useMemo(() => {
+    return days.map(day => {
+      const dateStr = format(day, 'yyyy-MM-dd');
+      const dayLogs = logs.filter(l => l.logged_date === dateStr);
+      if (dayLogs.length === 0) return 'none';
+      // Use adherence_rate if available on logs, else just "logged"
+      const rate = dayLogs.find(l => l.adherence_rate != null)?.adherence_rate;
+      if (rate != null) return rate >= 80 ? 'hit' : 'missed';
+      return 'logged';
+    });
+  }, [logs, days]);
+
+  const hitCount = dayStatuses.filter(s => s === 'hit' || s === 'logged').length;
+  const adherencePct = Math.round((hitCount / 7) * 100);
+
+  const COLOR = {
+    hit:    'bg-emerald-400',
+    logged: 'bg-emerald-400',
+    missed: 'bg-amber-300',
+    none:   'bg-gray-200',
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">7-Day Adherence</span>
+        <span className={cn(
+          'text-xs font-bold tabular-nums',
+          adherencePct >= 80 ? 'text-emerald-600' : adherencePct >= 50 ? 'text-amber-500' : 'text-gray-400'
+        )}>
+          {hitCount > 0 ? `${adherencePct}%` : '—'}
+        </span>
+      </div>
+
+      <div className="flex gap-1.5 justify-between">
+        {days.map((day, i) => {
+          const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+          return (
+            <div key={i} className="flex flex-col items-center gap-1 flex-1">
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: i * 0.05 }}
+                className={cn(
+                  'w-full aspect-square rounded-lg',
+                  COLOR[dayStatuses[i]],
+                  isToday && 'ring-2 ring-blue-500 ring-offset-1'
+                )}
+              />
+              <span className="text-[9px] text-gray-400 font-medium">{format(day, 'EEE')}</span>
+              <span className="text-[8px] text-gray-300">{format(day, 'd')}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex gap-3 text-[10px] text-gray-400 flex-wrap">
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-emerald-400 inline-block" /> Logged</span>
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-300 inline-block" /> Missed target</span>
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-gray-200 inline-block" /> Nothing logged</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Main export ───────────────────────────────────────────────────────────────
+export default function NutritionTab({ client }) {
+  const { data: allPlans = [], isLoading } = useQuery({
+    queryKey: ['nutrition', 'plans'],
+    queryFn: () => base44.entities.NutritionPlan.list(),
+  });
+
+  const assignedPlan = allPlans.find(p =>
+    (p.assigned_clients || []).includes(client.id) || p.id === client.assigned_nutrition_id
+  );
+
+  if (isLoading) return (
+    <div className="p-5 space-y-3">
+      {[1, 2, 3].map(i => <div key={i} className="h-20 bg-gray-100 animate-pulse rounded-xl" />)}
+    </div>
+  );
+
+  return (
+    <div className="h-full overflow-y-auto p-5 space-y-4">
+      <AssignedPlanSection client={client} allPlans={allPlans} assignedPlan={assignedPlan} />
+      <TodayFoodLog client={client} assignedPlan={assignedPlan} />
+      <WeeklyAdherenceGrid client={client} />
+    </div>
+  );
+}
