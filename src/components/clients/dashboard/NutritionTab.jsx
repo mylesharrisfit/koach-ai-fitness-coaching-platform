@@ -46,9 +46,11 @@ function AssignDialog({ clientId, allPlans, onClose }) {
     const existing = plan?.assigned_clients || [];
     if (!existing.includes(clientId)) {
       await base44.entities.NutritionPlan.update(selected, {
+        ...plan,
         assigned_clients: [...existing, clientId],
       });
     }
+    qc.invalidateQueries({ queryKey: ['nutrition-client', clientId] });
     qc.invalidateQueries({ queryKey: ['nutrition'] });
     onClose();
   };
@@ -128,6 +130,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan }) {
       tracking_mode: 'macros',
       assigned_clients: [client.id],
     });
+    qc.invalidateQueries({ queryKey: ['nutrition-client', client.id] });
     qc.invalidateQueries({ queryKey: ['nutrition'] });
   };
 
@@ -192,12 +195,12 @@ function AssignedPlanSection({ client, allPlans, assignedPlan }) {
         </span>
       </div>
 
-      {!isHabits && assignedPlan.calories > 0 && (
+      {!isHabits && (assignedPlan.calories ?? assignedPlan.daily_calories ?? 0) > 0 && (
         <div className="flex gap-2">
-          <MacroChip label="Calories" value={assignedPlan.calories} unit="kcal" color="bg-orange-50 text-orange-700" />
-          {assignedPlan.protein_g > 0 && <MacroChip label="Protein"  value={assignedPlan.protein_g} color="bg-blue-50 text-blue-700" />}
-          {assignedPlan.carbs_g   > 0 && <MacroChip label="Carbs"    value={assignedPlan.carbs_g}   color="bg-amber-50 text-amber-700" />}
-          {assignedPlan.fats_g    > 0 && <MacroChip label="Fats"     value={assignedPlan.fats_g}    color="bg-rose-50 text-rose-600" />}
+          <MacroChip label="Calories" value={assignedPlan.calories ?? assignedPlan.daily_calories} unit="kcal" color="bg-orange-50 text-orange-700" />
+          {(assignedPlan.protein_g ?? assignedPlan.protein ?? 0) > 0 && <MacroChip label="Protein" value={assignedPlan.protein_g ?? assignedPlan.protein} color="bg-blue-50 text-blue-700" />}
+          {(assignedPlan.carbs_g   ?? assignedPlan.carbs   ?? 0) > 0 && <MacroChip label="Carbs"   value={assignedPlan.carbs_g   ?? assignedPlan.carbs}   color="bg-amber-50 text-amber-700" />}
+          {(assignedPlan.fats_g    ?? assignedPlan.fats    ?? 0) > 0 && <MacroChip label="Fats"    value={assignedPlan.fats_g    ?? assignedPlan.fats}    color="bg-rose-50 text-rose-600" />}
         </div>
       )}
 
@@ -249,8 +252,8 @@ function TodayFoodLog({ client, assignedPlan }) {
 
   const totalCals = logs.reduce((s, l) => s + (l.calories || 0), 0);
   const totalProtein = logs.reduce((s, l) => s + (l.protein || 0), 0);
-  const targetCals = assignedPlan?.calories || 0;
-  const targetProtein = assignedPlan?.protein_g || 0;
+  const targetCals = assignedPlan?.calories ?? assignedPlan?.daily_calories ?? 0;
+  const targetProtein = assignedPlan?.protein_g ?? assignedPlan?.protein ?? 0;
 
   if (isLoading) return <div className="h-20 bg-gray-100 animate-pulse rounded-xl" />;
 
@@ -410,13 +413,17 @@ function WeeklyAdherenceGrid({ client }) {
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function NutritionTab({ client }) {
   const { data: allPlans = [], isLoading } = useQuery({
-    queryKey: ['nutrition', 'plans'],
-    queryFn: () => base44.entities.NutritionPlan.list(),
+    queryKey: ['nutrition-client', client.id],
+    queryFn: () => base44.entities.NutritionPlan.list('-created_date'),
   });
 
-  const assignedPlan = allPlans.find(p =>
-    (p.assigned_clients || []).includes(client.id) || p.id === client.assigned_nutrition_id
+  const assignedPlans = allPlans.filter(plan =>
+    Array.isArray(plan.assigned_clients) && plan.assigned_clients.includes(client.id)
   );
+
+  const assignedPlan = assignedPlans[0] || null;
+
+  console.log('All plans:', allPlans.length, 'Assigned:', assignedPlans.length, 'Client ID:', client.id);
 
   if (isLoading) return (
     <div className="p-5 space-y-3">
