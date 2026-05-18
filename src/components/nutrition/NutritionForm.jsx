@@ -11,12 +11,23 @@ import FoodSearchModal from './FoodSearchModal';
 
 const EMOJIS = ['🥗', '🔥', '💪', '🥦', '🍗', '⚡', '🏆', '🌿'];
 
+function normalizeFood(f) {
+  return {
+    name:     f?.food_name ?? f?.name     ?? '',
+    amount:   f?.portion   ?? f?.amount   ?? '',
+    calories: f?.calories  ?? 0,
+    protein:  f?.protein   ?? 0,
+    carbs:    f?.carbs     ?? 0,
+    fats:     f?.fats      ?? 0,
+  };
+}
+
 function defaultMeal(m) {
   return {
     name:     m?.meal_name     ?? m?.name   ?? '',
     calories: m?.calories                   ?? '',
     notes:    m?.habit_description ?? m?.notes ?? '',
-    foods:    m?.foods ?? [],
+    foods:    (m?.foods ?? []).map(normalizeFood),
   };
 }
 
@@ -165,12 +176,12 @@ function MealCard({ meal, index, total, onUpdate, onRemove, onMoveUp, onMoveDown
         onChange={e => onUpdate('notes', e.target.value)}
         placeholder="Food suggestions or instructions..."
         rows={1}
-        className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+        className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
       />
 
       {/* Added foods */}
       {meal.foods.length > 0 && (
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           <AnimatePresence initial={false}>
             {meal.foods.map((food, fi) => (
               <motion.div
@@ -181,12 +192,18 @@ function MealCard({ meal, index, total, onUpdate, onRemove, onMoveUp, onMoveDown
                 transition={{ duration: 0.15 }}
                 className="overflow-hidden"
               >
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-border">
-                  <span className="flex-1 text-xs font-semibold text-foreground truncate">{food.name}</span>
-                  <div className="flex gap-2 text-[10px] font-medium shrink-0">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border">
+                  <span className="text-base shrink-0">🥗</span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-xs font-semibold text-foreground block truncate">{food.name || '—'}</span>
+                    {food.amount && (
+                      <span className="text-[10px] text-muted-foreground">{food.amount}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-1.5 text-[10px] font-semibold shrink-0">
                     <span className="text-orange-600">{food.calories} kcal</span>
                     <span className="text-blue-600">P {food.protein}g</span>
-                    <span className="text-amber-600">C {food.carbs}g</span>
+                    <span className="text-amber-500">C {food.carbs}g</span>
                     <span className="text-red-500">F {food.fats}g</span>
                   </div>
                   <button onClick={() => removeFood(fi)} className="p-0.5 text-muted-foreground hover:text-destructive transition-colors shrink-0">
