@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Sparkles, BookOpen, Users, Lock, Search, SlidersHorizontal, Salad } from 'lucide-react';
+import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,27 +40,26 @@ export default function Nutrition() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.NutritionPlan.create(data),
-    onSuccess: (result) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nutrition'] });
-      // Invalidate any client-specific nutrition queries for assigned clients
-      (result?.assigned_clients || []).forEach(cid => {
-        const id = typeof cid === 'object' ? cid?.id : cid;
-        if (id) queryClient.invalidateQueries({ queryKey: ['nutrition-client', id] });
-      });
+      queryClient.invalidateQueries({ queryKey: ['nutrition-client'] });
     },
-    onError: (err) => console.error('Save error:', err),
+    onError: (err) => {
+      console.error('Create plan error:', err);
+      toast.error('Failed to save plan: ' + err.message);
+    },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.NutritionPlan.update(id, data),
-    onSuccess: (result) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nutrition'] });
-      (result?.assigned_clients || []).forEach(cid => {
-        const id = typeof cid === 'object' ? cid?.id : cid;
-        if (id) queryClient.invalidateQueries({ queryKey: ['nutrition-client', id] });
-      });
+      queryClient.invalidateQueries({ queryKey: ['nutrition-client'] });
     },
-    onError: (err) => console.error('Save error:', err),
+    onError: (err) => {
+      console.error('Update plan error:', err);
+      toast.error('Failed to update plan: ' + err.message);
+    },
   });
 
   const deleteMutation = useMutation({
@@ -83,12 +83,19 @@ export default function Nutrition() {
 
   const openEdit = (plan) => { setEditing(plan); setShowForm(true); };
 
-  const handleSubmit = (data) => {
-    console.log('handleSubmit called with:', data);
-    console.log('editing:', editing);
-    if (editing) updateMutation.mutate({ id: editing.id, data });
-    else createMutation.mutate(data);
-    setPendingMeals(null);
+  const handleSubmit = async (data) => {
+    try {
+      console.log('handleSubmit called, editing:', editing?.id, 'data:', data);
+      if (editing) {
+        await updateMutation.mutateAsync({ id: editing.id, data });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
+      setPendingMeals(null);
+      setEditing(null);
+    } catch (err) {
+      console.error('handleSubmit error:', err);
+    }
   };
 
   const handleAIApply = (result) => {

@@ -308,33 +308,41 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
   }
 
   async function handleSubmit() {
-    if (!form.title.trim()) return;
+    if (!form.title.trim()) {
+      toast.error('Plan title is required');
+      return;
+    }
     setSaving(true);
-    const formData = {
-      title:         form.title,
-      description:   form.description,
-      emoji:         form.emoji,
-      tracking_mode: form.tracking_mode,
-      is_template:   form.is_template,
-      calories:      hasFoodTotals ? totalFoodCalories : (form.calories ? Number(form.calories) : undefined),
-      protein_g:     hasFoodTotals ? totalFoodProtein  : (form.protein  ? Number(form.protein)  : undefined),
-      carbs_g:       hasFoodTotals ? totalFoodCarbs    : (form.carbs    ? Number(form.carbs)    : undefined),
-      fats_g:        hasFoodTotals ? totalFoodFats     : (form.fats     ? Number(form.fats)     : undefined),
-      meals: form.meals.map(m => ({
-        meal_name:         m.name,
-        calories:          m.foods.length > 0
-          ? m.foods.reduce((s, f) => s + (parseFloat(f.calories) || 0), 0)
-          : (m.calories ? Number(m.calories) : undefined),
-        habit_description: m.notes,
-        foods:             m.foods,
-      })),
-      assigned_clients: selectedClientIds.map(id => typeof id === 'object' ? id?.id : id).filter(Boolean),
-    };
-    console.log('Submitting plan data:', formData);
-    await onSubmit(formData);
-    setSaving(false);
-    toast.success('Plan saved successfully');
-    onOpenChange(false);
+    try {
+      const formData = {
+        title:         form.title,
+        description:   form.description,
+        emoji:         form.emoji,
+        tracking_mode: form.tracking_mode,
+        is_template:   form.is_template,
+        calories:      hasFoodTotals ? totalFoodCalories : (form.calories ? Number(form.calories) : undefined),
+        protein_g:     hasFoodTotals ? totalFoodProtein  : (form.protein  ? Number(form.protein)  : undefined),
+        carbs_g:       hasFoodTotals ? totalFoodCarbs    : (form.carbs    ? Number(form.carbs)    : undefined),
+        fats_g:        hasFoodTotals ? totalFoodFats     : (form.fats     ? Number(form.fats)     : undefined),
+        meals: form.meals.map(m => ({
+          meal_name:         m.name,
+          calories:          m.foods.length > 0
+            ? m.foods.reduce((s, f) => s + (parseFloat(f.calories) || 0), 0)
+            : (m.calories ? Number(m.calories) : undefined),
+          habit_description: m.notes,
+          foods:             m.foods,
+        })),
+        assigned_clients: selectedClientIds.map(id => typeof id === 'object' ? id?.id : id).filter(Boolean),
+      };
+      console.log('Submitting plan data:', formData);
+      await onSubmit(formData);
+      onOpenChange(false);
+    } catch (err) {
+      console.error('Form submit error:', err);
+      toast.error('Failed to save plan');
+    } finally {
+      setSaving(false);
+    }
   }
 
   const sectionClass = "space-y-4 pb-6 border-b border-border";
