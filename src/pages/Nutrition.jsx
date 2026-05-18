@@ -40,11 +40,13 @@ export default function Nutrition() {
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.NutritionPlan.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+    onError: (err) => console.error('Save error:', err),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.NutritionPlan.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+    onError: (err) => console.error('Save error:', err),
   });
 
   const deleteMutation = useMutation({
@@ -69,6 +71,8 @@ export default function Nutrition() {
   const openEdit = (plan) => { setEditing(plan); setShowForm(true); };
 
   const handleSubmit = (data) => {
+    console.log('handleSubmit called with:', data);
+    console.log('editing:', editing);
     if (editing) updateMutation.mutate({ id: editing.id, data });
     else createMutation.mutate(data);
     setPendingMeals(null);

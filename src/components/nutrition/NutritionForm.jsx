@@ -310,7 +310,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
   async function handleSubmit() {
     if (!form.title.trim()) return;
     setSaving(true);
-    await onSubmit({
+    const formData = {
       title:         form.title,
       description:   form.description,
       emoji:         form.emoji,
@@ -328,8 +328,10 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
         habit_description: m.notes,
         foods:             m.foods,
       })),
-      assigned_clients: selectedClientIds,
-    });
+      assigned_clients: selectedClientIds.map(id => typeof id === 'object' ? id.id : id),
+    };
+    console.log('Submitting plan data:', formData);
+    await onSubmit(formData);
     setSaving(false);
     toast.success('Plan saved successfully');
     onOpenChange(false);

@@ -120,7 +120,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
 }
 
 // ── Section 1: Assigned Plan ──────────────────────────────────────────────────
-function AssignedPlanSection({ client, allPlans, assignedPlan }) {
+function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
   const [showDialog, setShowDialog] = useState(false);
   const qc = useQueryClient();
 
@@ -143,6 +143,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan }) {
         <div>
           <p className="text-sm font-semibold text-gray-700">No nutrition plan assigned yet</p>
           <p className="text-xs text-gray-400 mt-0.5">Assign an existing plan or create a new one</p>
+          <button onClick={onRefetch} className="text-xs text-primary underline mt-1">Refresh</button>
         </div>
         <div className="flex gap-2 flex-wrap justify-center">
           <button
@@ -412,7 +413,7 @@ function WeeklyAdherenceGrid({ client }) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function NutritionTab({ client }) {
-  const { data: allPlans = [], isLoading } = useQuery({
+  const { data: allPlans = [], isLoading, refetch } = useQuery({
     queryKey: ['nutrition-client', client.id],
     queryFn: () => base44.entities.NutritionPlan.list('-created_date'),
   });
@@ -433,7 +434,7 @@ export default function NutritionTab({ client }) {
 
   return (
     <div className="h-full overflow-y-auto p-5 space-y-4">
-      <AssignedPlanSection client={client} allPlans={allPlans} assignedPlan={assignedPlan} />
+      <AssignedPlanSection client={client} allPlans={allPlans} assignedPlan={assignedPlan} onRefetch={refetch} />
       <TodayFoodLog client={client} assignedPlan={assignedPlan} />
       <WeeklyAdherenceGrid client={client} />
     </div>
