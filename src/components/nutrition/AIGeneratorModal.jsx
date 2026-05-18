@@ -904,7 +904,36 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   }
 
   function handleApply() {
-    onApply?.(result);
+    const goalMeta = GOALS.find(g => g.id === result.goal);
+    const emojiMap = { fat_loss: '🔥', muscle_gain: '💪', performance: '⚡', maintenance: '🌿' };
+    const condimentLabels = (result.condiments || []);
+
+    onApply?.({
+      title: `${goalMeta?.label || result.goal} Plan - AI Generated`,
+      description: `AI-generated ${(goalMeta?.label || result.goal).toLowerCase()} plan. ${result.diet || 'Standard'} diet, ${result.mealsPerDay} meals/day.${result.goal === 'fat_loss' && result.weightLossRate ? ` Target: lose ${result.weightLossRate} lb/week.` : ''}`,
+      emoji: emojiMap[result.goal] || '🥗',
+      tracking_mode: 'macros',
+      calories: result.calories,
+      protein_g: result.protein,
+      carbs_g: result.carbs,
+      fats_g: result.fats,
+      meals: (result.meals || []).map(meal => ({
+        meal_name: meal.name,
+        time: meal.time,
+        calories: meal.calories,
+        habit_description: meal.instructions,
+        foods: (meal.foods || []).map(f => ({
+          food_name: f.name,
+          portion: f.amount,
+          calories: f.calories,
+          protein: f.protein,
+          carbs: f.carbs,
+          fats: f.fats,
+        })),
+      })),
+      supplements: (result.supplements || []).filter(s => s !== 'None').map(s => ({ name: s, category: 'supplement' })),
+      notes: condimentLabels.length > 0 ? `Seasonings: ${condimentLabels.join(', ')}` : '',
+    });
     onOpenChange(false);
     reset();
   }

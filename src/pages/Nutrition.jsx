@@ -75,8 +75,9 @@ export default function Nutrition() {
   };
 
   const handleAIApply = (result) => {
-    setPendingMeals(result.meals);
-    setEditing(null);
+    setEditing(result);
+    setPendingMeals(result.meals || null);
+    setShowAIModal(false);
     setShowForm(true);
   };
 

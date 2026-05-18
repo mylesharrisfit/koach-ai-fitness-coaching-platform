@@ -27,10 +27,11 @@ function defaultForm(plan, initialMeals) {
     emoji:           plan?.emoji            ?? '🥗',
     tracking_mode:   plan?.tracking_mode    ?? 'macros',
     is_template:     plan?.is_template      ?? false,
+    // AI result uses plain calories/protein/carbs/fats; saved plans use protein_g etc.
     calories:        plan?.calories         ?? '',
-    protein:         plan?.protein_g        ?? '',
-    carbs:           plan?.carbs_g          ?? '',
-    fats:            plan?.fats_g           ?? '',
+    protein:         plan?.protein_g        ?? plan?.protein ?? '',
+    carbs:           plan?.carbs_g          ?? plan?.carbs   ?? '',
+    fats:            plan?.fats_g           ?? plan?.fats    ?? '',
     meals:           plan?.meals?.length
       ? plan.meals.map(defaultMeal)
       : (initialMeals?.map(defaultMeal) ?? []),
@@ -226,7 +227,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
 
   useEffect(() => {
     if (open) setForm(defaultForm(plan, initialMeals));
-  }, [open, plan]);
+  }, [open, plan, initialMeals]);
 
   function set(field, value) { setForm(f => ({ ...f, [field]: value })); }
 
@@ -321,7 +322,9 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
       <SheetContent side="right" className="w-full sm:max-w-xl p-0 flex flex-col overflow-hidden">
         <SheetHeader className="px-6 py-5 border-b border-border flex-shrink-0">
           <SheetTitle className="font-heading font-bold text-lg">
-            {isEdit ? 'Edit Plan' : 'New Plan'}
+            {isEdit
+              ? plan?.title?.includes('AI Generated') ? '✨ Review AI Plan' : 'Edit Plan'
+              : 'New Plan'}
           </SheetTitle>
         </SheetHeader>
 
