@@ -81,12 +81,17 @@ export default function Nutrition() {
     if (initialData.meals) setPendingMeals(initialData.meals);
   };
 
-  const openEdit = (plan) => { setEditing(plan); setShowForm(true); };
+  const openEdit = (plan) => {
+    console.log('openEdit called with:', plan);
+    setEditing(plan);
+    setShowForm(true);
+  };
 
   const handleSubmit = async (data) => {
     try {
-      console.log('handleSubmit called, editing:', editing?.id, 'data:', data);
-      if (editing) {
+      console.log('editing object:', editing);
+      console.log('editing id:', editing?.id);
+      if (editing && editing.id) {
         await updateMutation.mutateAsync({ id: editing.id, data });
       } else {
         await createMutation.mutateAsync(data);
@@ -99,7 +104,7 @@ export default function Nutrition() {
   };
 
   const handleAIApply = (result) => {
-    setEditing(result);
+    setEditing(null);
     setPendingMeals(result.meals || null);
     setShowAIModal(false);
     setShowForm(true);
@@ -150,31 +155,6 @@ export default function Nutrition() {
 
       <LimitBanner limitKey="max_nutrition_plans" currentCount={plans.length} label="nutrition plans" featureKey="clients" />
 
-      <button
-        onClick={async () => {
-          try {
-            console.log('Testing direct NutritionPlan create...');
-            const result = await base44.entities.NutritionPlan.create({
-              title: 'Debug Test Plan',
-              tracking_mode: 'macros',
-              calories: 2000,
-              protein_g: 150,
-              carbs_g: 200,
-              fats_g: 60,
-              assigned_clients: []
-            });
-            console.log('SUCCESS:', result);
-            alert('SAVED! ID: ' + result.id);
-            queryClient.invalidateQueries({ queryKey: ['nutrition'] });
-          } catch(err) {
-            console.error('FAILED:', err);
-            alert('FAILED: ' + JSON.stringify(err));
-          }
-        }}
-        style={{ background: 'red', color: 'white', padding: '8px 16px', margin: '8px' }}
-      >
-        DEBUG: Test Save
-      </button>
 
       {/* ── AI INSIGHT CARDS ── */}
       <div>
