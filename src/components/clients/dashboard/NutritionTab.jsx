@@ -241,13 +241,13 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
           onClick={() => setShowPlanDetail(true)}
           className="flex-1 py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary/90 transition-colors"
         >
-          👁 View Full Plan
+          View Full Plan
         </button>
         <button
           onClick={() => setShowDialog(true)}
           className="flex-1 py-2 rounded-xl bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors"
         >
-          ✏️ Edit Plan
+          Edit Plan
         </button>
       </div>
 
