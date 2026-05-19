@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import NutritionPlanDetailModal from './NutritionPlanDetailModal';
+import { getFoodImageUrl } from '@/lib/foodImages';
 
 const ACCENTS = [
   { bar: 'bg-blue-500',   ring: 'ring-blue-200',   bg: 'bg-blue-50',   text: 'text-blue-600'   },
@@ -181,6 +182,16 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Users className="w-3.5 h-3.5" />
             <span>{clientCount} {clientCount === 1 ? 'client' : 'clients'}</span>
+            {plan.meals?.[0]?.foods?.slice(0, 3).map((food, i) => (
+              <img
+                key={i}
+                src={getFoodImageUrl(food.name || food.food_name, 32)}
+                alt={food.name || food.food_name}
+                loading="lazy"
+                className="w-6 h-6 rounded-full object-cover border-2 border-white -ml-1 first:ml-1"
+                onError={e => { e.target.style.display = 'none'; }}
+              />
+            ))}
           </div>
 
           {/* View Plan → hover reveal */}

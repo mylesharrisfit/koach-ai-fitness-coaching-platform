@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getMealImageUrl } from '@/lib/foodImages';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, ChevronLeft, ChevronRight, RotateCcw, Check, Flame, Zap, Leaf,
@@ -817,6 +818,13 @@ function MealCard({ meal }) {
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
             <div className="px-3 pb-3 space-y-2 border-t border-border/50">
+              <img
+                src={getMealImageUrl(meal.name, meal.foods)}
+                alt={meal.name}
+                loading="lazy"
+                className="w-full h-24 object-cover rounded-xl mt-2"
+                onError={e => { e.target.style.display = 'none'; }}
+              />
               {/* Foods */}
               {meal.foods?.map((food, i) => (
                 <div key={i} className="flex items-start gap-2 pt-2">

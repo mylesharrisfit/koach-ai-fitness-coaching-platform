@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { getFoodImageUrl, getMealImageUrl, getCategoryEmoji } from '@/lib/foodImages';
 
 const SWAP_SUGGESTIONS = {
   chicken: ['Turkey breast (same macros)', 'Tilapia fillet', 'Egg whites (3 large)'],
@@ -29,6 +30,13 @@ function FoodRow({ food }) {
   return (
     <div className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0 group/food">
       <div className="flex items-center gap-2 flex-1 min-w-0">
+        <img
+          src={getFoodImageUrl(name, 48)}
+          alt={name}
+          loading="lazy"
+          className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+          onError={e => { e.target.style.display = 'none'; }}
+        />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground truncate">{name}</p>
           {portion && <p className="text-[11px] text-muted-foreground">{portion}</p>}
@@ -93,6 +101,13 @@ function MealCard({ meal, index }) {
 
   return (
     <div className="bg-white border border-[#E7EAF3] rounded-xl overflow-hidden">
+      <img
+        src={getMealImageUrl(mealName, foods)}
+        alt={mealName}
+        loading="lazy"
+        className="w-full h-32 object-cover"
+        onError={e => { e.target.style.display = 'none'; }}
+      />
       <button
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors"
         onClick={() => setExpanded(e => !e)}
