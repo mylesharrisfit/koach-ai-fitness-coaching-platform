@@ -188,9 +188,6 @@ export default function MealPlanTab({ plan }) {
 
   return (
     <div className="space-y-3 pb-4">
-      <pre style={{ fontSize: 10, background: '#f0f0f0', padding: 8, borderRadius: 8, overflow: 'auto', maxHeight: 200 }}>
-        {JSON.stringify(plan.meals?.[0], null, 2)}
-      </pre>
       <div className="flex items-center justify-between mb-1">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">{meals.length} meal{meals.length !== 1 ? 's' : ''} configured</p>
       </div>

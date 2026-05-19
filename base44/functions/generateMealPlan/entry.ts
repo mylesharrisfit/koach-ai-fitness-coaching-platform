@@ -34,6 +34,7 @@ ${complexityLine}
 ${condimentsLine}
 ${supplementsLine}
 
+IMPORTANT: Every food object must have a "name" field (string) with the food name. Every meal object must have a "name" field with the meal name.
 Each meal: {"name","time","calories","protein","carbs","fats","foods":[{"name","amount","calories","protein","carbs","fats"}],"instructions","prepTime"}
 Keep foods array to 3-4 items max per meal. Keep instructions under 30 words.
 ${preWorkout ? 'Pre-workout: carb-heavy.' : ''} ${postWorkout ? 'Post-workout: high protein+carbs.' : ''}

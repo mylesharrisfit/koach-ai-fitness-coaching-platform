@@ -1030,7 +1030,25 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
     go(2);
   }
 
-  function handleGeneratingDone(meals) {
+  function handleGeneratingDone(rawMeals) {
+    const normalizedMeals = (rawMeals || []).map(meal => ({
+      ...meal,
+      name:         meal.name || meal.meal_name || '',
+      meal_name:    meal.name || meal.meal_name || '',
+      instructions: meal.instructions || meal.prep || '',
+      notes:        meal.instructions || meal.prep || '',
+      foods: (meal.foods || []).map(food => ({
+        name:      food.name || food.food_name || food.item || '',
+        food_name: food.name || food.food_name || food.item || '',
+        amount:    food.amount || food.serving || food.portion || '',
+        portion:   food.amount || food.serving || food.portion || '',
+        calories:  Number(food.calories) || 0,
+        protein:   Number(food.protein)  || 0,
+        carbs:     Number(food.carbs)    || 0,
+        fats:      Number(food.fats)     || Number(food.fat) || 0,
+        prep:      food.prep             || '',
+      })),
+    }));
     const m = macroPayload._macros;
     setResult({
       ...m, goal,
@@ -1044,7 +1062,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       supplementDosages:  details.supplementDosages || {},
       allergies:          details.allergies,
       weightLossRate:     details.weightLossRate || 1,
-      meals,
+      meals: normalizedMeals,
     });
     setDir(1); setStep(3);
   }
@@ -1064,17 +1082,22 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       carbs_g: result.carbs,
       fats_g: result.fats,
       meals: (result.meals || []).map(meal => ({
-        meal_name: meal.name,
-        time: meal.time,
-        calories: meal.calories,
+        name:              meal.name,
+        meal_name:         meal.name,
+        time:              meal.time,
+        calories:          meal.calories,
+        instructions:      meal.instructions,
+        notes:             meal.instructions,
         habit_description: meal.instructions,
         foods: (meal.foods || []).map(f => ({
+          name:      f.name,
           food_name: f.name,
-          portion: f.amount,
-          calories: f.calories,
-          protein: f.protein,
-          carbs: f.carbs,
-          fats: f.fats,
+          amount:    f.amount,
+          portion:   f.amount,
+          calories:  f.calories,
+          protein:   f.protein,
+          carbs:     f.carbs,
+          fats:      f.fats,
         })),
       })),
       supplements: (result.supplements || []).filter(s => s !== 'None').map(s => ({ name: s, category: 'supplement' })),
