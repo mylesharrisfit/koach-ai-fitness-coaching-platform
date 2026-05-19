@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Apple, Utensils, CheckCircle2, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, subDays } from 'date-fns';
+import NutritionPlanDetailModal from '@/components/nutrition/NutritionPlanDetailModal';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function pct(val, max) {
@@ -121,6 +122,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
 function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
   const [showDialog, setShowDialog] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [showPlanDetail, setShowPlanDetail] = useState(false);
   const qc = useQueryClient();
 
   const createPlan = async (e) => {
@@ -234,11 +236,28 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
         </div>
       )}
 
-      <button
-        className="text-xs font-semibold text-blue-500 hover:text-blue-700 transition-colors"
-      >
-        Edit Plan →
-      </button>
+      <div className="flex items-center gap-2 mt-3">
+        <button
+          onClick={() => setShowPlanDetail(true)}
+          className="flex-1 py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary/90 transition-colors"
+        >
+          👁 View Full Plan
+        </button>
+        <button
+          onClick={() => setShowDialog(true)}
+          className="flex-1 py-2 rounded-xl bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors"
+        >
+          ✏️ Edit Plan
+        </button>
+      </div>
+
+      <NutritionPlanDetailModal
+        open={showPlanDetail}
+        onOpenChange={setShowPlanDetail}
+        plan={assignedPlan}
+        onEdit={() => setShowPlanDetail(false)}
+        onAssign={() => setShowPlanDetail(false)}
+      />
     </div>
   );
 }
