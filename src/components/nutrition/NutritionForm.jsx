@@ -48,6 +48,7 @@ function defaultForm(plan, initialMeals) {
       ? plan.meals.map(defaultMeal)
       : (initialMeals?.map(defaultMeal) ?? []),
     assigned_clients: plan?.assigned_clients ?? [],
+    supplements:      plan?.supplements     ?? [],
   };
 }
 
@@ -325,13 +326,26 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
         carbs_g:       hasFoodTotals ? totalFoodCarbs    : (form.carbs    ? Number(form.carbs)    : undefined),
         fats_g:        hasFoodTotals ? totalFoodFats     : (form.fats     ? Number(form.fats)     : undefined),
         meals: form.meals.map(m => ({
+          name:              m.name,
           meal_name:         m.name,
           calories:          m.foods.length > 0
             ? m.foods.reduce((s, f) => s + (parseFloat(f.calories) || 0), 0)
             : (m.calories ? Number(m.calories) : undefined),
           habit_description: m.notes,
-          foods:             m.foods,
+          instructions:      m.notes,
+          notes:             m.notes,
+          foods:             m.foods.map(f => ({
+            name:      f.name || f.food_name || '',
+            food_name: f.name || f.food_name || '',
+            amount:    f.amount || f.portion || '',
+            portion:   f.amount || f.portion || '',
+            calories:  f.calories || 0,
+            protein:   f.protein  || 0,
+            carbs:     f.carbs    || 0,
+            fats:      f.fats     || 0,
+          })),
         })),
+        supplements:      form.supplements || [],
         assigned_clients: selectedClientIds.map(id => typeof id === 'object' ? id?.id : id).filter(Boolean),
       };
       console.log('Submitting plan data:', formData);

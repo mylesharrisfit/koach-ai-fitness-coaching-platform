@@ -19,12 +19,12 @@ function getSwaps(foodName) {
 }
 
 function FoodRow({ food }) {
-  const name     = food.food_name ?? food.name     ?? 'Food item';
-  const portion  = food.portion   ?? food.amount   ?? '';
-  const calories = food.calories  ?? 0;
-  const protein  = food.protein   ?? 0;
-  const carbs    = food.carbs     ?? 0;
-  const fats     = food.fats      ?? 0;
+  const name     = food.name     || food.food_name || 'Unknown food';
+  const portion  = food.amount   || food.portion   || '';
+  const calories = food.calories || 0;
+  const protein  = food.protein  || 0;
+  const carbs    = food.carbs    || 0;
+  const fats     = food.fats     || 0;
 
   return (
     <div className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0 group/food">
@@ -88,8 +88,8 @@ function MealTotals({ foods }) {
 function MealCard({ meal, index }) {
   const [expanded, setExpanded] = useState(true);
   const foods = meal.foods || [];
-  const mealName = meal.meal_name ?? meal.name ?? `Meal ${index + 1}`;
-  const instructions = meal.instructions || meal.habit_description || meal.notes || null;
+  const mealName = meal.name || meal.meal_name || `Meal ${index + 1}`;
+  const instructions = meal.instructions || meal.notes || meal.habit_description || '';
 
   return (
     <div className="bg-white border border-[#E7EAF3] rounded-xl overflow-hidden">
