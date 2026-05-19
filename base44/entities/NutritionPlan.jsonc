@@ -107,6 +107,13 @@
         }
       }
     },
+    "assigned_clients": {
+      "type": "array",
+      "description": "List of client IDs assigned to this plan",
+      "items": {
+        "type": "string"
+      }
+    },
     "notes": {
       "type": "string"
     },

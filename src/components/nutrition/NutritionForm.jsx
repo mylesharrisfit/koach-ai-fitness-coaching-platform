@@ -315,6 +315,10 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
     }
     setSaving(true);
     try {
+      const cleanClientIds = selectedClientIds
+        .map(id => typeof id === 'object' ? id?.id : id)
+        .filter(Boolean);
+
       const formData = {
         title:         form.title,
         description:   form.description,
@@ -346,14 +350,21 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
           })),
         })),
         supplements:      form.supplements || [],
-        assigned_clients: selectedClientIds.map(id => typeof id === 'object' ? id?.id : id).filter(Boolean),
+        assigned_clients: cleanClientIds,
       };
-      console.log('FINAL FORM DATA BEING SUBMITTED:', JSON.stringify({
-        title: formData.title,
-        assigned_clients: formData.assigned_clients,
-        selectedClientIds: selectedClientIds
-      }, null, 2));
-      await onSubmit(formData);
+
+      // 1. Save the plan (via parent handler)
+      const savedPlan = await onSubmit(formData);
+
+      // 2. Update each selected client's assigned_nutrition_id
+      if (cleanClientIds.length > 0 && savedPlan?.id) {
+        await Promise.all(
+          cleanClientIds.map(clientId =>
+            base44.entities.Client.update(clientId, { assigned_nutrition_id: savedPlan.id })
+          )
+        );
+      }
+
       onOpenChange(false);
     } catch (err) {
       console.error('Form submit error:', err);

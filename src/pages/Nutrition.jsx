@@ -88,22 +88,13 @@ export default function Nutrition() {
   };
 
   const handleSubmit = async (data) => {
-    try {
-      console.log('editing object:', editing);
-      console.log('editing id:', editing?.id);
-      console.log('NUTRITION PAGE handleSubmit received:', JSON.stringify({
-        title: data.title,
-        assigned_clients: data.assigned_clients
-      }, null, 2));
-      const result = editing && editing.id
-        ? await updateMutation.mutateAsync({ id: editing.id, data })
-        : await createMutation.mutateAsync(data);
-      console.log('SAVE RESULT FROM BASE44:', JSON.stringify(result, null, 2));
-      setPendingMeals(null);
-      setEditing(null);
-    } catch (err) {
-      console.error('handleSubmit error:', err);
-    }
+    const result = editing && editing.id
+      ? await updateMutation.mutateAsync({ id: editing.id, data })
+      : await createMutation.mutateAsync(data);
+    setPendingMeals(null);
+    setEditing(null);
+    toast.success('Plan saved!');
+    return result; // NutritionForm uses the returned plan id to update clients
   };
 
   const handleAIApply = (result) => {

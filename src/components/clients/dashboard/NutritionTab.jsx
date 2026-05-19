@@ -44,17 +44,11 @@ function AssignDialog({ clientId, allPlans, onClose }) {
   const assign = async () => {
     if (!selected) return;
     setSaving(true);
-    const plan = allPlans.find(p => p.id === selected);
-    const existing = (plan?.assigned_clients || []).map(ac =>
-      typeof ac === 'object' ? ac?.id : ac
-    ).filter(Boolean);
-    if (!existing.includes(clientId)) {
-      await base44.entities.NutritionPlan.update(selected, {
-        assigned_clients: [...existing, clientId],
-      });
-    }
+    // Update the client's assigned_nutrition_id
+    await base44.entities.Client.update(clientId, { assigned_nutrition_id: selected });
     await qc.invalidateQueries({ queryKey: ['nutrition-client', clientId] });
     await qc.invalidateQueries({ queryKey: ['nutrition'] });
+    await qc.invalidateQueries({ queryKey: ['clients'] });
     setSaving(false);
     onClose();
   };
@@ -134,17 +128,19 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
     e.stopPropagation();
     setCreating(true);
     try {
-      await base44.entities.NutritionPlan.create({
+      const newPlan = await base44.entities.NutritionPlan.create({
         title: `${client.name}'s Plan`,
         tracking_mode: 'macros',
         calories: 2000,
         protein_g: 150,
         carbs_g: 200,
         fats_g: 60,
-        assigned_clients: [client.id],
       });
+      // Assign via client record
+      await base44.entities.Client.update(client.id, { assigned_nutrition_id: newPlan.id });
       await qc.invalidateQueries({ queryKey: ['nutrition-client', client.id] });
       await qc.invalidateQueries({ queryKey: ['nutrition'] });
+      await qc.invalidateQueries({ queryKey: ['clients'] });
     } catch (err) {
       console.error('Create plan failed:', err);
     } finally {
@@ -439,15 +435,8 @@ export default function NutritionTab({ client }) {
     refetchOnMount: true,
   });
 
-  const assignedPlans = allPlans.filter(plan => {
-    if (!Array.isArray(plan.assigned_clients)) return false;
-    return plan.assigned_clients.some(ac => {
-      const acId = typeof ac === 'object' ? ac?.id : ac;
-      return acId === client.id;
-    });
-  });
-
-  const assignedPlan = assignedPlans[0] || null;
+  // Look up the plan by the client's assigned_nutrition_id (source of truth)
+  const assignedPlan = allPlans.find(p => p.id === client.assigned_nutrition_id) || null;
 
   if (isLoading) return (
     <div className="p-5 space-y-3">

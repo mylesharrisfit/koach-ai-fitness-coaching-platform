@@ -24,15 +24,14 @@ function getAvatarColor(name) {
 }
 
 export default function PlanDetailSidebar({ plan, onAssign }) {
-  const assignedIds = plan?.assigned_clients || [];
-
   const { data: allClients = [] } = useQuery({
     queryKey: ['clients-sidebar'],
     queryFn: () => base44.entities.Client.list(),
-    enabled: assignedIds.length > 0,
+    enabled: !!plan?.id,
   });
 
-  const assignedClients = allClients.filter(c => assignedIds.includes(c.id));
+  // Clients are assigned via their assigned_nutrition_id field
+  const assignedClients = allClients.filter(c => c.assigned_nutrition_id === plan?.id);
   const supplements = plan?.supplements || [];
 
   const COMPLEXITY_LABELS = {
@@ -98,7 +97,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
         </h4>
         <div className="space-y-0">
           {[
-            { label: 'Total assigned',    value: `${assignedIds.length} client${assignedIds.length !== 1 ? 's' : ''}`,     icon: Users },
+            { label: 'Total assigned',    value: `${assignedClients.length} client${assignedClients.length !== 1 ? 's' : ''}`,     icon: Users },
             { label: 'Meals configured',  value: `${(plan.meals || []).length}`,                                            icon: UtensilsCrossed },
             { label: 'Supplements',       value: `${supplements.length}`,                                                   icon: Pill },
             plan.weekly_loss_rate ? { label: 'Weekly loss target', value: `${plan.weekly_loss_rate} lb/week`,               icon: Scale } : null,
