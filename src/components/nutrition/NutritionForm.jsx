@@ -348,7 +348,11 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
         supplements:      form.supplements || [],
         assigned_clients: selectedClientIds.map(id => typeof id === 'object' ? id?.id : id).filter(Boolean),
       };
-      console.log('Submitting plan data:', formData);
+      console.log('FINAL FORM DATA BEING SUBMITTED:', JSON.stringify({
+        title: formData.title,
+        assigned_clients: formData.assigned_clients,
+        selectedClientIds: selectedClientIds
+      }, null, 2));
       await onSubmit(formData);
       onOpenChange(false);
     } catch (err) {

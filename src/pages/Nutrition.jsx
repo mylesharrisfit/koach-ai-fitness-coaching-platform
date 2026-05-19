@@ -91,11 +91,14 @@ export default function Nutrition() {
     try {
       console.log('editing object:', editing);
       console.log('editing id:', editing?.id);
-      if (editing && editing.id) {
-        await updateMutation.mutateAsync({ id: editing.id, data });
-      } else {
-        await createMutation.mutateAsync(data);
-      }
+      console.log('NUTRITION PAGE handleSubmit received:', JSON.stringify({
+        title: data.title,
+        assigned_clients: data.assigned_clients
+      }, null, 2));
+      const result = editing && editing.id
+        ? await updateMutation.mutateAsync({ id: editing.id, data })
+        : await createMutation.mutateAsync(data);
+      console.log('SAVE RESULT FROM BASE44:', JSON.stringify(result, null, 2));
       setPendingMeals(null);
       setEditing(null);
     } catch (err) {
