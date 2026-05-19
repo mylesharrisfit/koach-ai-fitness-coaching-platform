@@ -9,12 +9,14 @@ import LeadPipelinePanel from '../LeadPipelinePanel';
 import SummaryTab from './SummaryTab';
 import NotesTab from './NotesTab';
 import NutritionTab from './NutritionTab';
+import ProgramsTab from './ProgramsTab';
 
 const TABS_BASE = [
   { key: 'summary', label: 'Summary' },
   { key: 'notes', label: 'Notes' },
   { key: 'consultation', label: 'Consultation' },
   { key: 'nutrition',    label: 'Nutrition' },
+  { key: 'programs',     label: 'Programs' },
   { key: 'attachments', label: 'Attachments' },
   { key: 'sales', label: 'Sales' },
   { key: 'invoices', label: 'Invoices' },
@@ -209,6 +211,10 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
           {tab === 'nutrition' && (
             <NutritionTab client={client} />
+          )}
+
+          {tab === 'programs' && (
+            <ProgramsTab client={client} />
           )}
 
           {(tab === 'consultation' || tab === 'attachments' || tab === 'sales' || tab === 'invoices' || tab === 'forms') && (
