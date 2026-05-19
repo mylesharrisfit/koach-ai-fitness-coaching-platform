@@ -1,64 +1,84 @@
 import React from 'react';
-import { Users, MessageCircle, UserPlus, BarChart2, Star } from 'lucide-react';
+import { Users, UserPlus, BarChart2, Scale, UtensilsCrossed, Pill, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { format } from 'date-fns';
 
-function adherenceColor(v) {
-  if (v >= 80) return { text: 'text-emerald-600', bg: 'bg-emerald-50', bar: '#22C55E' };
-  if (v >= 60) return { text: 'text-amber-600', bg: 'bg-amber-50', bar: '#F59E0B' };
-  return { text: 'text-red-500', bg: 'bg-red-50', bar: '#EF4444' };
+const LIFECYCLE_COLORS = {
+  active:    'bg-emerald-100 text-emerald-700',
+  lead:      'bg-blue-100 text-blue-700',
+  at_risk:   'bg-red-100 text-red-700',
+  completed: 'bg-gray-100 text-gray-600',
+  alumni:    'bg-purple-100 text-purple-700',
+};
+
+function getInitials(name) {
+  return (name || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
-// Placeholder assigned clients — in real usage pass as prop from query
-const DEMO_CLIENTS = [];
+function getAvatarColor(name) {
+  const colors = ['bg-blue-200 text-blue-800', 'bg-purple-200 text-purple-800', 'bg-emerald-200 text-emerald-800', 'bg-amber-200 text-amber-800', 'bg-red-200 text-red-800'];
+  const idx = (name || '').charCodeAt(0) % colors.length;
+  return colors[idx];
+}
 
 export default function PlanDetailSidebar({ plan, onAssign }) {
-  const clients = DEMO_CLIENTS;
-  const avgAdherence = clients.length
-    ? Math.round(clients.reduce((s, c) => s + c.adherence, 0) / clients.length)
-    : 0;
+  const assignedIds = plan?.assigned_clients || [];
+
+  const { data: allClients = [] } = useQuery({
+    queryKey: ['clients-sidebar'],
+    queryFn: () => base44.entities.Client.list(),
+    enabled: assignedIds.length > 0,
+  });
+
+  const assignedClients = allClients.filter(c => assignedIds.includes(c.id));
+  const supplements = plan?.supplements || [];
+
+  const COMPLEXITY_LABELS = {
+    very_basic: 'Very Basic',
+    simple: 'Simple',
+    moderate: 'Moderate',
+    upscale: 'Upscale',
+    gourmet: 'Gourmet',
+  };
 
   return (
     <div className="space-y-5">
+
       {/* ── Assigned Clients ───────────────────────── */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5" /> Assigned Clients
           </h4>
-          {clients.length > 0 && (
-            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{clients.length}</span>
+          {assignedClients.length > 0 && (
+            <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{assignedClients.length}</span>
           )}
         </div>
 
-        {clients.length === 0 ? (
+        {assignedClients.length === 0 ? (
           <div className="text-center py-6 bg-secondary/30 rounded-xl">
             <Users className="w-7 h-7 text-muted-foreground/40 mx-auto mb-1" />
             <p className="text-xs text-muted-foreground">No clients assigned yet</p>
           </div>
         ) : (
           <div className="space-y-2">
-            {clients.map((c, i) => {
-              const colors = adherenceColor(c.adherence);
-              return (
-                <div key={i} className="flex items-center gap-2.5 p-2.5 bg-white border border-[#E7EAF3] rounded-xl">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
-                    {c.name?.[0] || '?'}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-foreground truncate">{c.name}</p>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${colors.bg} ${colors.text}`}>
-                        {c.adherence}%
-                      </div>
-                      {c.lastLog && <span className="text-[10px] text-muted-foreground">{c.lastLog}</span>}
-                    </div>
-                  </div>
-                  <button className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors flex-shrink-0">
-                    <MessageCircle className="w-3.5 h-3.5" />
-                  </button>
+            {assignedClients.map((c) => (
+              <div key={c.id} className="flex items-center gap-2.5 p-2.5 bg-white border border-[#E7EAF3] rounded-xl">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(c.name)}`}>
+                  {getInitials(c.name)}
                 </div>
-              );
-            })}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-foreground truncate">{c.name}</p>
+                  {c.lifecycle_status && (
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${LIFECYCLE_COLORS[c.lifecycle_status] || 'bg-gray-100 text-gray-600'}`}>
+                      {c.lifecycle_status}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -76,13 +96,14 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
         <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 mb-3">
           <BarChart2 className="w-3.5 h-3.5" /> Plan Stats
         </h4>
-        <div className="space-y-2">
+        <div className="space-y-0">
           {[
-            { label: 'Total assigned', value: `${clients.length} client${clients.length !== 1 ? 's' : ''}` },
-            { label: 'Avg. adherence', value: clients.length ? `${avgAdherence}%` : '—' },
-            { label: 'Meals configured', value: `${(plan.meals || []).length}` },
-            { label: 'Supplements', value: `${(plan.supplements || []).length}` },
-          ].map(({ label, value }) => (
+            { label: 'Total assigned',    value: `${assignedIds.length} client${assignedIds.length !== 1 ? 's' : ''}`,     icon: Users },
+            { label: 'Meals configured',  value: `${(plan.meals || []).length}`,                                            icon: UtensilsCrossed },
+            { label: 'Supplements',       value: `${supplements.length}`,                                                   icon: Pill },
+            plan.weekly_loss_rate ? { label: 'Weekly loss target', value: `${plan.weekly_loss_rate} lb/week`,               icon: Scale } : null,
+            plan.meal_complexity   ? { label: 'Meal complexity',   value: COMPLEXITY_LABELS[plan.meal_complexity] || plan.meal_complexity, icon: UtensilsCrossed } : null,
+          ].filter(Boolean).map(({ label, value, icon: Icon }) => (
             <div key={label} className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0">
               <span className="text-xs text-muted-foreground">{label}</span>
               <span className="text-xs font-bold text-foreground">{value}</span>
@@ -90,6 +111,30 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
           ))}
         </div>
       </div>
+
+      {/* ── Created Date ───────────────────────────── */}
+      {plan.created_date && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+          <CalendarDays className="w-3.5 h-3.5 flex-shrink-0" />
+          <span>Created {format(new Date(plan.created_date), 'MMM d, yyyy')}</span>
+        </div>
+      )}
+
+      {/* ── Supplements Chips ──────────────────────── */}
+      {supplements.length > 0 && (
+        <div>
+          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 mb-2">
+            <Pill className="w-3.5 h-3.5" /> Supplements
+          </h4>
+          <div className="flex flex-wrap gap-1.5">
+            {supplements.map((s, i) => (
+              <span key={i} className="px-2.5 py-1 rounded-full bg-purple-50 border border-purple-100 text-xs font-semibold text-purple-700">
+                {s.name || s}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

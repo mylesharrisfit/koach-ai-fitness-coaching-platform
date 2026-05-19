@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, RefreshCw, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const SWAP_SUGGESTIONS = {
@@ -20,18 +19,25 @@ function getSwaps(foodName) {
 }
 
 function FoodRow({ food }) {
+  const name     = food.food_name ?? food.name     ?? 'Food item';
+  const portion  = food.portion   ?? food.amount   ?? '';
+  const calories = food.calories  ?? 0;
+  const protein  = food.protein   ?? 0;
+  const carbs    = food.carbs     ?? 0;
+  const fats     = food.fats      ?? 0;
+
   return (
     <div className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0 group/food">
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-foreground truncate">{food.food_name || 'Food item'}</p>
-          {food.portion && <p className="text-[11px] text-muted-foreground">{food.portion}</p>}
+          <p className="text-sm font-medium text-foreground truncate">{name}</p>
+          {portion && <p className="text-[11px] text-muted-foreground">{portion}</p>}
         </div>
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground flex-shrink-0">
-          {food.calories && <span className="font-semibold text-foreground">{food.calories} kcal</span>}
-          {food.protein && <span className="text-blue-500 font-medium">{food.protein}p</span>}
-          {food.carbs && <span className="text-orange-500 font-medium">{food.carbs}c</span>}
-          {food.fats && <span className="text-yellow-600 font-medium">{food.fats}f</span>}
+          {calories > 0 && <span className="font-semibold text-foreground">{calories} kcal</span>}
+          {protein  > 0 && <span className="text-blue-500 font-medium">{protein}p</span>}
+          {carbs    > 0 && <span className="text-orange-500 font-medium">{carbs}c</span>}
+          {fats     > 0 && <span className="text-yellow-600 font-medium">{fats}f</span>}
         </div>
       </div>
       <Popover>
@@ -43,7 +49,7 @@ function FoodRow({ food }) {
         <PopoverContent className="w-56 p-3" align="end">
           <p className="text-xs font-bold text-foreground mb-2">Swap Suggestions</p>
           <div className="space-y-1.5">
-            {getSwaps(food.food_name).map((s, i) => (
+            {getSwaps(name).map((s, i) => (
               <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
                 <div className="w-1 h-1 rounded-full bg-primary flex-shrink-0" />
                 {s}
@@ -58,10 +64,10 @@ function FoodRow({ food }) {
 
 function MealTotals({ foods }) {
   const totals = foods.reduce((acc, f) => ({
-    calories: acc.calories + (f.calories || 0),
-    protein: acc.protein + (f.protein || 0),
-    carbs: acc.carbs + (f.carbs || 0),
-    fats: acc.fats + (f.fats || 0),
+    calories: acc.calories + (f.calories ?? 0),
+    protein:  acc.protein  + (f.protein  ?? 0),
+    carbs:    acc.carbs    + (f.carbs    ?? 0),
+    fats:     acc.fats     + (f.fats     ?? 0),
   }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
   if (!totals.calories && !totals.protein) return null;
@@ -82,7 +88,8 @@ function MealTotals({ foods }) {
 function MealCard({ meal, index }) {
   const [expanded, setExpanded] = useState(true);
   const foods = meal.foods || [];
-  const timeLabel = meal.time ? ` | ${meal.time}` : '';
+  const mealName = meal.meal_name ?? meal.name ?? `Meal ${index + 1}`;
+  const instructions = meal.instructions || meal.habit_description || meal.notes || null;
 
   return (
     <div className="bg-white border border-[#E7EAF3] rounded-xl overflow-hidden">
@@ -90,25 +97,30 @@ function MealCard({ meal, index }) {
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
           <div className="w-6 h-6 rounded-lg bg-primary/10 text-primary text-[11px] font-extrabold flex items-center justify-center flex-shrink-0">
             {index + 1}
           </div>
-          <div className="text-left">
-            <p className="text-sm font-bold text-foreground">{meal.meal_name || `Meal ${index + 1}`}<span className="text-muted-foreground font-normal">{timeLabel}</span></p>
-            {!expanded && foods.length > 0 && (
-              <p className="text-[11px] text-muted-foreground">{foods.length} food{foods.length !== 1 ? 's' : ''}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-sm font-bold text-foreground">{mealName}</p>
+            {meal.time && (
+              <span className="flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                <Clock className="w-3 h-3" /> {meal.time}
+              </span>
+            )}
+            {meal.prepTime && (
+              <span className="flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100">
+                <Timer className="w-3 h-3" /> {meal.prepTime}
+              </span>
             )}
           </div>
         </div>
-        {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+        {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
       </button>
 
       {expanded && (
         <div className="px-4 pb-3">
-          {meal.habit_description ? (
-            <p className="text-sm text-muted-foreground py-2">{meal.habit_description}</p>
-          ) : foods.length > 0 ? (
+          {foods.length > 0 ? (
             <>
               {foods.map((f, i) => <FoodRow key={i} food={f} />)}
               <MealTotals foods={foods} />
@@ -116,9 +128,14 @@ function MealCard({ meal, index }) {
           ) : (
             <p className="text-sm text-muted-foreground py-2 italic">No foods added yet.</p>
           )}
-          <button className="mt-2 flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-semibold transition-colors">
-            <Plus className="w-3.5 h-3.5" /> Add Food
-          </button>
+
+          {/* How to prepare */}
+          {instructions && (
+            <div className="mt-3 p-3 bg-secondary/40 rounded-lg">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">How to prepare</p>
+              <p className="text-xs text-foreground leading-relaxed">{instructions}</p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -127,10 +144,10 @@ function MealCard({ meal, index }) {
 
 function DailyTotalBar({ meals, targets }) {
   const totals = (meals || []).flatMap(m => m.foods || []).reduce((acc, f) => ({
-    calories: acc.calories + (f.calories || 0),
-    protein: acc.protein + (f.protein || 0),
-    carbs: acc.carbs + (f.carbs || 0),
-    fats: acc.fats + (f.fats || 0),
+    calories: acc.calories + (f.calories ?? 0),
+    protein:  acc.protein  + (f.protein  ?? 0),
+    carbs:    acc.carbs    + (f.carbs    ?? 0),
+    fats:     acc.fats     + (f.fats     ?? 0),
   }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
   if (!targets.calories) return null;
@@ -156,10 +173,10 @@ function DailyTotalBar({ meals, targets }) {
     <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-[#E7EAF3] px-4 py-3 mt-4 rounded-b-xl">
       <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2">Daily totals vs target</p>
       <div className="flex gap-3">
-        <StatusBar label="Kcal" current={totals.calories} target={targets.calories} color="#6B7280" />
-        <StatusBar label="Protein" current={totals.protein} target={targets.protein} color="#3B82F6" />
-        <StatusBar label="Carbs" current={totals.carbs} target={targets.carbs} color="#F97316" />
-        <StatusBar label="Fats" current={totals.fats} target={targets.fats} color="#CA8A04" />
+        <StatusBar label="Kcal"    current={totals.calories} target={targets.calories} color="#6B7280" />
+        <StatusBar label="Protein" current={totals.protein}  target={targets.protein}  color="#3B82F6" />
+        <StatusBar label="Carbs"   current={totals.carbs}    target={targets.carbs}    color="#F97316" />
+        <StatusBar label="Fats"    current={totals.fats}     target={targets.fats}     color="#CA8A04" />
       </div>
     </div>
   );

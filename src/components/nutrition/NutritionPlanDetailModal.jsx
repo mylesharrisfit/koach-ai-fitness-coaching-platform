@@ -163,7 +163,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
               >
                 {tab === 'overview'     && <OverviewTab plan={plan} />}
                 {tab === 'meals'        && <MealPlanTab plan={plan} />}
-                {tab === 'alternatives' && <AlternativesTab />}
+                {tab === 'alternatives' && <AlternativesTab plan={plan} />}
                 {tab === 'shopping'     && <ShoppingListTab plan={plan} />}
               </motion.div>
             </AnimatePresence>
