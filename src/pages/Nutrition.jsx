@@ -247,9 +247,6 @@ export default function Nutrition() {
                 <Button variant="outline" onClick={() => setShowAIModal(true)} className="gap-2">
                   <Sparkles className="w-4 h-4 text-primary" /> AI Generator
                 </Button>
-                <Button onClick={() => setShowLaunchModal(true)} className="gap-2">
-                  <Plus className="w-4 h-4" /> + New Plan
-                </Button>
               </div>
             )}
           </motion.div>
