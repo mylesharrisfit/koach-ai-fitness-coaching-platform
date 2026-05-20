@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { format, differenceInDays, parseISO } from 'date-fns';
-import { Link2, Copy, Check, ExternalLink, UserPlus, RefreshCw, Zap } from 'lucide-react';
+import { Link, Copy, Check, ExternalLink, UserPlus, RefreshCw, Zap } from 'lucide-react';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import RunMyDayCenter from './RunMyDayCenter';
@@ -12,34 +13,31 @@ import WeeklySnapshot from './WeeklySnapshot';
 import FirstTimeBanner from './FirstTimeBanner';
 
 function OnboardingLinkBanner() {
-  const [copied, setCopied] = useState(false);
-  const link = `${window.location.origin}/start`;
-
-  const copy = () => {
-    navigator.clipboard.writeText(link);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const onboardingUrl = `${window.location.origin}/start`;
 
   return (
-    <div className="rounded-xl px-4 py-3 flex items-center gap-3 bg-white border border-[#E5E7EB]">
-      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#F3F4F6]">
-        <Link2 className="w-3.5 h-3.5 text-[#6B7280]" />
+    <div className="flex items-center justify-between p-4 bg-[#111827] rounded-xl">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+          <Link className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-white">Client Onboarding Link</p>
+          <p className="text-xs text-white/60 mt-0.5 font-mono truncate max-w-[400px]">{onboardingUrl}</p>
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-[#111827]">Client Onboarding Link</p>
-        <p className="text-[11px] truncate mt-0.5 text-[#6B7280]">{link}</p>
-      </div>
-      <div className="flex items-center gap-1.5 shrink-0">
-        <a href="/start" target="_blank" rel="noopener noreferrer"
-          className="p-1.5 rounded-md text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
-          <ExternalLink className="w-3.5 h-3.5" />
-        </a>
-        <button onClick={copy}
-          className="p-1.5 rounded-md text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
-          {copied
-            ? <Check className="w-3.5 h-3.5 text-[#16A34A]" />
-            : <Copy className="w-3.5 h-3.5" />}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <button
+          onClick={() => { navigator.clipboard.writeText(onboardingUrl); toast.success('Link copied!'); }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors"
+        >
+          <Copy className="w-3.5 h-3.5" /> Copy Link
+        </button>
+        <button
+          onClick={() => window.open(onboardingUrl, '_blank')}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#111827] text-xs font-semibold hover:bg-white/90 transition-colors"
+        >
+          <ExternalLink className="w-3.5 h-3.5" /> Open
         </button>
       </div>
     </div>
@@ -146,6 +144,9 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
         </button>
       </div>
 
+      {/* ── Onboarding Link ────────────────────────── */}
+      <OnboardingLinkBanner />
+
       {/* ── First-Time Welcome Banner ───────────────── */}
       <AnimatePresence>
         {showBanner && <FirstTimeBanner onDismiss={dismissBanner} />}
@@ -159,9 +160,6 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
 
       {/* ── Weekly Snapshot ─────────────────────────── */}
       <WeeklySnapshot checkIns={checkIns} clients={clients} />
-
-      {/* ── Onboarding Link ────────────────────────── */}
-      <OnboardingLinkBanner />
 
       {/* ── Action Center ──────────────────────────── */}
       <ActionCenterSection clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
