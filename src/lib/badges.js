@@ -1,5 +1,24 @@
 export const BADGE_CONFIG = {
-  // Streaks
+  // ── Micro achievements (trigger frequently) ──
+  first_checkin:     { label: 'First Step',         emoji: '👟', tier: 'bronze', desc: 'Completed first check-in',       auto: true },
+  checkin_3:         { label: 'Getting Started',    emoji: '✅', tier: 'bronze', desc: '3 check-ins completed',           auto: true },
+  checkin_5:         { label: 'Building Habits',    emoji: '📈', tier: 'bronze', desc: '5 check-ins completed',           auto: true },
+  checkin_10:        { label: 'Double Digits',      emoji: '🔟', tier: 'silver', desc: '10 check-ins completed',          auto: true },
+  first_meal_logged: { label: 'Fueled Up',          emoji: '🍽️', tier: 'bronze', desc: 'Logged first meal',               auto: true },
+  meal_log_3days:    { label: 'Nutrition Tracking', emoji: '📊', tier: 'bronze', desc: 'Logged meals 3 days in a row',    auto: true },
+  first_workout:     { label: 'First Sweat',        emoji: '🏋️', tier: 'bronze', desc: 'Completed first workout',         auto: true },
+  workout_3:         { label: 'On a Roll',          emoji: '🎯', tier: 'bronze', desc: '3 workouts completed',            auto: true },
+  weight_logged:     { label: 'Tracked It',         emoji: '⚖️', tier: 'bronze', desc: 'Logged body weight',              auto: true },
+  sleep_7hrs:        { label: 'Well Rested',        emoji: '😴', tier: 'bronze', desc: 'Logged 7+ hours sleep',           auto: true },
+  energy_high:       { label: 'Full Energy',        emoji: '⚡', tier: 'bronze', desc: 'Logged high energy day',          auto: true },
+  mood_great:        { label: 'Great Mindset',      emoji: '😊', tier: 'bronze', desc: 'Logged great mood',               auto: true },
+  compliance_80:     { label: 'Strong Week',        emoji: '💪', tier: 'bronze', desc: 'Hit 80% compliance',              auto: true },
+  compliance_100:    { label: 'Perfect Day',        emoji: '🌟', tier: 'silver', desc: 'Hit 100% compliance',             auto: true },
+  protein_hit:       { label: 'Protein Pro',        emoji: '🥩', tier: 'bronze', desc: 'Hit protein target',              auto: true },
+  steps_10k:         { label: '10K Steps',          emoji: '🚶', tier: 'bronze', desc: 'Hit 10,000 steps',                auto: true },
+  water_goal:        { label: 'Hydrated',           emoji: '💧', tier: 'bronze', desc: 'Hit water goal',                  auto: true },
+
+  // ── Streaks ──
   streak_7:         { label: '7-Day Streak',     emoji: '🔥', tier: 'bronze',   desc: '7 consecutive check-ins' },
   streak_14:        { label: '14-Day Streak',     emoji: '⚡', tier: 'silver',   desc: '14 consecutive check-ins' },
   streak_30:        { label: '30-Day Streak',     emoji: '💎', tier: 'gold',     desc: '30-day champion' },

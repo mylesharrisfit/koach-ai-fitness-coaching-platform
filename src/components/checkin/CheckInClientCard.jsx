@@ -9,6 +9,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkInScore, compositeAdherenceScore, averageAdherenceScore, scoreColor, scoreBreakdown } from '@/lib/adherence';
+import { runAutoAwardForClient } from '@/lib/autoAward';
+import { showAchievementToast } from '@/components/achievements/AchievementToast';
+import { toast } from 'sonner';
 import { AdherenceBreakdown } from '@/components/adherence/AdherenceScore';
 import CheckInMetrics from './CheckInMetrics';
 import CheckInResponseBox from './CheckInResponseBox';
@@ -87,11 +90,20 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
   const handleMarkReviewed = async () => {
     if (isReviewed) return;
     setMarkSaving(true);
-    setMarked(true); // optimistic
+    setMarked(true);
     setJustCompleted(true);
     updateMutation.mutate({ coach_responded: true, review_status: 'reviewed' });
     setMarkSaving(false);
     setTimeout(() => setJustCompleted(false), 1200);
+
+    // Run auto-award check for this client after review
+    if (client) {
+      try {
+        const existingBadges = await base44.entities.ClientBadge.filter({ client_id: client.id });
+        const newKeys = await runAutoAwardForClient(client, allClientCIs, existingBadges);
+        newKeys.forEach(key => showAchievementToast(toast, key, client.name));
+      } catch (_) { /* silent */ }
+    }
   };
 
   const sleepColor = checkIn.sleep_hours >= 7 ? 'text-[#16A34A]' : checkIn.sleep_hours >= 6 ? 'text-[#D97706]' : 'text-[#DC2626]';

@@ -68,6 +68,13 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
     enabled: !!client?.id,
   });
 
+  const { data: earnedBadges = [] } = useQuery({
+    queryKey: ['badges-modal', client?.id],
+    queryFn: () => base44.entities.ClientBadge.filter({ client_id: client.id }),
+    enabled: !!client?.id,
+    select: d => [...d].sort((a, b) => new Date(b.earned_date) - new Date(a.earned_date)),
+  });
+
   if (!client) return null;
 
   const initials = getInitials(client.name);
@@ -173,6 +180,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
               program={program}
               nutritionPlan={nutritionPlan}
               workoutSessions={workoutSessions}
+              earnedBadges={earnedBadges}
             />
           )}
 

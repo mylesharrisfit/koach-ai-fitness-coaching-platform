@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Trophy, Zap, AlertTriangle, Crown } from 'lucide-react';
@@ -16,9 +16,13 @@ import BadgeCard from '../components/adherence/BadgeCard';
 import BadgeUnlockToast from '../components/adherence/BadgeUnlockToast';
 import { averageAdherenceScore, calculateStreak, checkInScore } from '@/lib/adherence';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
+import { runAutoAwardForClient } from '@/lib/autoAward';
+import { showAchievementToast } from '@/components/achievements/AchievementToast';
 import { cn } from '@/lib/utils';
 
 const TIER_FILTERS = ['All', 'bronze', 'silver', 'gold', 'platinum', 'elite'];
+
+// Remove the inline checkAndAutoAward — now handled by lib/autoAward.js
 
 const TIER_TAB_STYLES = {
   bronze:   { active: 'background:#CD7F32; color:#1A0F00; border-color:#CD7F32',   dot: '#CD7F32' },
@@ -38,35 +42,6 @@ const BADGE_PROGRESS_HINT = {
   first_checkin: { max: 1, field: 'checkins' },
   perfect_week:  { max: 4, field: 'perfectCheckins' },
 };
-
-function checkAndAutoAward(client, checkIns, existingBadges) {
-  const awarded = new Set(existingBadges.map(b => b.badge_key));
-  const eligible = [];
-  const streak = calculateStreak(checkIns);
-
-  if (streak >= 7  && !awarded.has('streak_7'))  eligible.push('streak_7');
-  if (streak >= 14 && !awarded.has('streak_14')) eligible.push('streak_14');
-  if (streak >= 30 && !awarded.has('streak_30')) eligible.push('streak_30');
-  if (streak >= 60 && !awarded.has('streak_60')) eligible.push('streak_60');
-  if (streak >= 90 && !awarded.has('streak_90')) eligible.push('streak_90');
-
-  if (checkIns.length >= 1 && !awarded.has('first_checkin')) eligible.push('first_checkin');
-
-  const recentScores = checkIns.slice(0, 4).map(checkInScore).filter(s => s !== null);
-  if (recentScores.length >= 4 && recentScores.every(s => s >= 80) && !awarded.has('perfect_week')) {
-    eligible.push('perfect_week');
-  }
-
-  if (checkIns.length >= 2) {
-    const latest = checkInScore(checkIns[0]);
-    const prev = checkInScore(checkIns[1]);
-    if (prev !== null && latest !== null && prev < 50 && latest >= 70 && !awarded.has('comeback')) {
-      eligible.push('comeback');
-    }
-  }
-
-  return eligible;
-}
 
 function getProgressForBadge(badgeKey, checkIns) {
   const hint = BADGE_PROGRESS_HINT[badgeKey];
@@ -134,8 +109,18 @@ export default function Adherence() {
   const [awardForm, setAwardForm] = useState({ client_id: '', badge_key: 'pr_hit', earned_date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
   const [tierFilter, setTierFilter] = useState('All');
   const [autoAwarding, setAutoAwarding] = useState(false);
-  const [unlockToast, setUnlockToast] = useState(null); // { badgeKey, clientName }
+  const [unlockToast, setUnlockToast] = useState(null);
   const queryClient = useQueryClient();
+
+  // Real-time subscription: re-run auto-award whenever a new check-in is created
+  useEffect(() => {
+    const unsub = base44.entities.CheckIn.subscribe((event) => {
+      if (event.type === 'create') {
+        queryClient.invalidateQueries({ queryKey: ['checkins'] });
+      }
+    });
+    return unsub;
+  }, [queryClient]);
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
@@ -154,9 +139,11 @@ export default function Adherence() {
     mutationFn: (data) => base44.entities.ClientBadge.create(data),
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ['badges'] });
+      queryClient.invalidateQueries({ queryKey: ['recent-badges'] });
       setAwardOpen(false);
       const client = clients.find(c => c.id === vars.client_id);
       setUnlockToast({ badgeKey: vars.badge_key, clientName: client?.name });
+      showAchievementToast(toast, vars.badge_key, client?.name);
     },
   });
 
@@ -207,24 +194,20 @@ export default function Adherence() {
     setAutoAwarding(true);
     let totalBadges = 0;
     let affectedClients = 0;
-    const today = format(new Date(), 'yyyy-MM-dd');
     try {
       for (const client of activeClients) {
         const cis = getCheckIns(client.id);
         const cBadges = getBadges(client.id);
-        const eligible = checkAndAutoAward(client, cis, cBadges);
-        if (eligible.length > 0) {
+        const newKeys = await runAutoAwardForClient(client, cis, cBadges);
+        if (newKeys.length > 0) {
           affectedClients++;
-          for (const key of eligible) {
-            await base44.entities.ClientBadge.create({
-              client_id: client.id, client_name: client.name,
-              badge_key: key, earned_date: today, notes: 'Auto-awarded',
-            });
-            totalBadges++;
-          }
+          totalBadges += newKeys.length;
+          // Show a toast for each new badge
+          newKeys.forEach(key => showAchievementToast(toast, key, client.name));
         }
       }
       queryClient.invalidateQueries({ queryKey: ['badges'] });
+      queryClient.invalidateQueries({ queryKey: ['recent-badges'] });
       if (totalBadges === 0) {
         toast.info('No new badges to award — everyone is up to date!');
       } else {

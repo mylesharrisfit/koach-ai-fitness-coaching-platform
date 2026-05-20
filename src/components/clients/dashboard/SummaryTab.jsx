@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format, formatDistanceToNow, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { compositeAdherenceScore } from '@/lib/adherence';
+import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { cn } from '@/lib/utils';
 import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
@@ -120,7 +121,7 @@ const TAG_STYLES = {
 };
 
 // ─────────────────────────────────────────────────────────
-export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions }) {
+export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions, earnedBadges = [], onAwardBadge }) {
   const [newTag, setNewTag] = useState('');
   const [addingTag, setAddingTag] = useState(false);
 
@@ -182,14 +183,32 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           </Section>
 
           <Section title="Achievements">
-            {checkIns.length === 0 ? (
+            {earnedBadges.length === 0 ? (
               <p className="text-xs text-gray-400">No achievements yet</p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
-                {checkIns.length >= 1 && <AchievementBadge emoji="🏅" label="First Check-in" />}
-                {checkIns.length >= 4 && <AchievementBadge emoji="🔥" label="4-Week Streak" />}
-                {score !== null && score >= 80 && <AchievementBadge emoji="⭐" label="High Adherence" />}
+                {[...earnedBadges].sort((a,b) => new Date(b.earned_date) - new Date(a.earned_date)).slice(0, 8).map(b => {
+                  const cfg = BADGE_CONFIG[b.badge_key];
+                  const tier = cfg ? TIER_STYLES[cfg.tier] : null;
+                  if (!cfg || !tier) return null;
+                  return (
+                    <div key={b.id}
+                      className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                      style={{ background: `${tier.accent}15`, color: tier.accent, border: `1px solid ${tier.accent}35` }}
+                      title={`${cfg.desc} · ${b.earned_date}`}
+                    >
+                      <span>{cfg.emoji}</span> {cfg.label}
+                    </div>
+                  );
+                })}
               </div>
+            )}
+            {onAwardBadge && (
+              <button onClick={onAwardBadge}
+                className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
+                style={{ color: '#00d4ff' }}>
+                <Plus className="w-3 h-3" /> Award Badge
+              </button>
             )}
           </Section>
 

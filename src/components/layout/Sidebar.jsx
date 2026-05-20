@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import AchievementBell from '@/components/achievements/AchievementBell';
 import {
   LayoutDashboard, Users, MessageSquare, Calendar,
   Dumbbell, Salad, ClipboardList, TrendingUp,
@@ -144,7 +145,10 @@ export default function Sidebar({ user, onUpgrade }) {
               <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
               <span className="block text-[9px] tracking-[0.12em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>Coaching OS</span>
             </div>
-            <NotificationBell />
+            <div className="flex items-center gap-1">
+              <AchievementBell />
+              <NotificationBell />
+            </div>
           </>
         )}
       </div>
