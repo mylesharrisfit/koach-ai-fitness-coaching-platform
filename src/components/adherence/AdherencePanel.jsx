@@ -97,12 +97,10 @@ export default function AdherencePanel({ client, checkIns, badges = [] }) {
       )}
 
       {/* Badges */}
-      {allBadgeKeys.length > 0 && (
-        <div>
-          <p className="text-xs text-[#374151] mb-2 font-medium">Earned Badges</p>
-          <BadgeRow earnedKeys={allBadgeKeys} />
-        </div>
-      )}
+      <div>
+        <p className="text-xs text-[#374151] mb-2 font-medium">Achievements</p>
+        <BadgeRow earnedKeys={allBadgeKeys} max={5} />
+      </div>
     </div>
   );
 }
