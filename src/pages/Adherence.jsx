@@ -21,6 +21,7 @@ import { showAchievementToast } from '@/components/achievements/AchievementToast
 import { cn } from '@/lib/utils';
 
 const TIER_FILTERS = ['All', 'bronze', 'silver', 'gold', 'platinum', 'elite'];
+const CATEGORY_FILTERS = ['All', 'Milestones', 'Check-ins', 'Streaks', 'Compliance', 'Nutrition', 'Recovery', 'Mindset', 'Transformation', 'Performance', 'Special'];
 
 // Remove the inline checkAndAutoAward — now handled by lib/autoAward.js
 
@@ -108,6 +109,7 @@ export default function Adherence() {
   const [awardOpen, setAwardOpen] = useState(false);
   const [awardForm, setAwardForm] = useState({ client_id: '', badge_key: 'pr_hit', earned_date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
   const [tierFilter, setTierFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
   const [autoAwarding, setAutoAwarding] = useState(false);
   const [unlockToast, setUnlockToast] = useState(null);
   const queryClient = useQueryClient();
@@ -163,9 +165,24 @@ export default function Adherence() {
   }, [badges]);
 
   const filteredBadgeKeys = useMemo(() =>
-    Object.keys(BADGE_CONFIG).filter(k =>
-      tierFilter === 'All' || BADGE_CONFIG[k].tier === tierFilter
-    ), [tierFilter]);
+    Object.keys(BADGE_CONFIG).filter(k => {
+      const cfg = BADGE_CONFIG[k];
+      const tierMatch = tierFilter === 'All' || cfg.tier === tierFilter;
+      const catMatch = categoryFilter === 'All' || cfg.category === categoryFilter;
+      return tierMatch && catMatch;
+    }), [tierFilter, categoryFilter]);
+
+  const categoryBadgeCounts = useMemo(() => {
+    const counts = {};
+    CATEGORY_FILTERS.forEach(cat => {
+      if (cat === 'All') {
+        counts[cat] = Object.keys(BADGE_CONFIG).length;
+      } else {
+        counts[cat] = Object.values(BADGE_CONFIG).filter(b => b.category === cat).length;
+      }
+    });
+    return counts;
+  }, []);
 
   const leaderboard = useMemo(() =>
     activeClients
@@ -288,7 +305,7 @@ export default function Adherence() {
         </div>
 
         {/* Tier tabs */}
-        <div className="flex flex-wrap gap-2 mb-5">
+        <div className="flex flex-wrap gap-2 mb-3">
           {TIER_FILTERS.map(t => {
             const isActive = tierFilter === t;
             const ts = TIER_TAB_STYLES[t];
@@ -316,6 +333,29 @@ export default function Adherence() {
                     ({Object.values(BADGE_CONFIG).filter(b => b.tier === t).length})
                   </span>
                 )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Category tabs */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {CATEGORY_FILTERS.map(cat => {
+            const isActive = categoryFilter === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all"
+                style={isActive
+                  ? { background: '#111827', color: '#fff', borderColor: '#111827' }
+                  : { background: '#fff', color: '#6B7280', borderColor: '#E5E7EB' }
+                }
+              >
+                {cat}
+                <span className={isActive ? 'opacity-60' : 'opacity-40'}>
+                  ({categoryBadgeCounts[cat]})
+                </span>
               </button>
             );
           })}
@@ -368,13 +408,19 @@ export default function Adherence() {
                   <p className="font-bold text-sm text-[#111827]">{client.name}</p>
                   <p className="text-xs text-[#6B7280] capitalize">{client.goal?.replace(/_/g, ' ')}</p>
                 </div>
-                <button
-                  onClick={() => openAwardFor('pr_hit', client.id)}
-                  className="text-xs font-bold px-3 py-1 rounded-lg transition-all"
-                  style={{ background: 'rgba(255,215,0,0.12)', color: '#FFD700', border: '1px solid rgba(255,215,0,0.25)' }}
-                >
-                  + Award
-                </button>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="text-xs text-[#6B7280]">
+                    <span className="font-bold text-[#111827]">{clientBadges.length}</span>
+                    <span className="text-[#9CA3AF]"> / {Object.keys(BADGE_CONFIG).length}</span>
+                  </span>
+                  <button
+                    onClick={() => openAwardFor('pr_hit', client.id)}
+                    className="text-xs font-bold px-3 py-1 rounded-lg transition-all"
+                    style={{ background: 'rgba(255,215,0,0.12)', color: '#B45309', border: '1px solid rgba(217,119,6,0.25)' }}
+                  >
+                    + Award
+                  </button>
+                </div>
               </div>
 
               {/* Top earned badges for this client */}

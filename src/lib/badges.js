@@ -1,55 +1,93 @@
 export const BADGE_CONFIG = {
-  // ── Micro achievements (trigger frequently) ──
-  first_checkin:     { label: 'First Step',         emoji: '👟', tier: 'bronze', desc: 'Completed first check-in',       auto: true },
-  checkin_3:         { label: 'Getting Started',    emoji: '✅', tier: 'bronze', desc: '3 check-ins completed',           auto: true },
-  checkin_5:         { label: 'Building Habits',    emoji: '📈', tier: 'bronze', desc: '5 check-ins completed',           auto: true },
-  checkin_10:        { label: 'Double Digits',      emoji: '🔟', tier: 'silver', desc: '10 check-ins completed',          auto: true },
-  first_meal_logged: { label: 'Fueled Up',          emoji: '🍽️', tier: 'bronze', desc: 'Logged first meal',               auto: true },
-  meal_log_3days:    { label: 'Nutrition Tracking', emoji: '📊', tier: 'bronze', desc: 'Logged meals 3 days in a row',    auto: true },
-  first_workout:     { label: 'First Sweat',        emoji: '🏋️', tier: 'bronze', desc: 'Completed first workout',         auto: true },
-  workout_3:         { label: 'On a Roll',          emoji: '🎯', tier: 'bronze', desc: '3 workouts completed',            auto: true },
-  weight_logged:     { label: 'Tracked It',         emoji: '⚖️', tier: 'bronze', desc: 'Logged body weight',              auto: true },
-  sleep_7hrs:        { label: 'Well Rested',        emoji: '😴', tier: 'bronze', desc: 'Logged 7+ hours sleep',           auto: true },
-  energy_high:       { label: 'Full Energy',        emoji: '⚡', tier: 'bronze', desc: 'Logged high energy day',          auto: true },
-  mood_great:        { label: 'Great Mindset',      emoji: '😊', tier: 'bronze', desc: 'Logged great mood',               auto: true },
-  compliance_80:     { label: 'Strong Week',        emoji: '💪', tier: 'bronze', desc: 'Hit 80% compliance',              auto: true },
-  compliance_100:    { label: 'Perfect Day',        emoji: '🌟', tier: 'silver', desc: 'Hit 100% compliance',             auto: true },
-  protein_hit:       { label: 'Protein Pro',        emoji: '🥩', tier: 'bronze', desc: 'Hit protein target',              auto: true },
-  steps_10k:         { label: '10K Steps',          emoji: '🚶', tier: 'bronze', desc: 'Hit 10,000 steps',                auto: true },
-  water_goal:        { label: 'Hydrated',           emoji: '💧', tier: 'bronze', desc: 'Hit water goal',                  auto: true },
 
-  // ── Streaks ──
-  streak_7:         { label: '7-Day Streak',     emoji: '🔥', tier: 'bronze',   desc: '7 consecutive check-ins' },
-  streak_14:        { label: '14-Day Streak',     emoji: '⚡', tier: 'silver',   desc: '14 consecutive check-ins' },
-  streak_30:        { label: '30-Day Streak',     emoji: '💎', tier: 'gold',     desc: '30-day champion' },
-  streak_60:        { label: '60-Day Streak',     emoji: '👑', tier: 'platinum', desc: '60 days unstoppable' },
-  streak_90:        { label: '90-Day Legend',     emoji: '🌟', tier: 'elite',    desc: '90 days of consistency' },
+  // ─── FIRST TIMES (fire once, early) ───
+  first_checkin:       { label: 'First Step',           emoji: '👟', tier: 'bronze',   desc: 'Completed your first check-in', auto: true, category: 'Milestones' },
+  first_meal_logged:   { label: 'Fueled Up',            emoji: '🍽️', tier: 'bronze',   desc: 'Logged your first meal', auto: true, category: 'Milestones' },
+  first_workout:       { label: 'First Sweat',          emoji: '🏋️', tier: 'bronze',   desc: 'Completed first workout', auto: true, category: 'Milestones' },
+  first_photo:         { label: 'Before Shot',          emoji: '📸', tier: 'bronze',   desc: 'Uploaded first progress photo', auto: true, category: 'Milestones' },
+  first_pr:            { label: 'PR Baby',              emoji: '🎉', tier: 'silver',   desc: 'Hit your first personal record', auto: true, category: 'Milestones' },
+  first_week:          { label: 'Week One Done',        emoji: '🗓️', tier: 'bronze',   desc: 'Completed your first full week', auto: true, category: 'Milestones' },
+  first_month:         { label: 'One Month Strong',     emoji: '📅', tier: 'silver',   desc: 'One full month in the program', auto: true, category: 'Milestones' },
+  profile_complete:    { label: 'All Set Up',           emoji: '✅', tier: 'bronze',   desc: 'Completed your profile', auto: true, category: 'Milestones' },
 
-  // Performance
-  pr_hit:           { label: 'PR Smashed',        emoji: '🏆', tier: 'gold',     desc: 'Personal record achieved' },
-  first_checkin:    { label: 'First Step',        emoji: '👟', tier: 'bronze',   desc: 'Completed first check-in' },
-  perfect_week:     { label: 'Perfect Week',      emoji: '⭐', tier: 'silver',   desc: '4 check-ins all 80%+' },
-  perfect_month:    { label: 'Perfect Month',     emoji: '🎖️', tier: 'gold',     desc: 'Full month above 80%' },
+  // ─── CHECK-IN COUNTS ───
+  checkin_3:           { label: 'Getting Started',      emoji: '📋', tier: 'bronze',   desc: '3 check-ins completed', auto: true, category: 'Check-ins' },
+  checkin_5:           { label: 'Building Habits',      emoji: '📈', tier: 'bronze',   desc: '5 check-ins done', auto: true, category: 'Check-ins' },
+  checkin_10:          { label: 'Double Digits',        emoji: '🔟', tier: 'bronze',   desc: '10 check-ins completed', auto: true, category: 'Check-ins' },
+  checkin_25:          { label: 'Quarter Century',      emoji: '🥈', tier: 'silver',   desc: '25 check-ins completed', auto: true, category: 'Check-ins' },
+  checkin_50:          { label: 'Half Century',         emoji: '🥇', tier: 'gold',     desc: '50 check-ins completed', auto: true, category: 'Check-ins' },
+  checkin_100:         { label: 'Century Club',         emoji: '💯', tier: 'platinum', desc: '100 check-ins — legendary', auto: true, category: 'Check-ins' },
 
-  // Nutrition
-  nutrition_king:   { label: 'Nutrition King',    emoji: '🥗', tier: 'silver',   desc: '14 days hitting macros' },
-  macro_master:     { label: 'Macro Master',      emoji: '⚖️', tier: 'gold',     desc: '30 days hitting macros' },
-  hydration_hero:   { label: 'Hydration Hero',    emoji: '💧', tier: 'bronze',   desc: 'Logged water 7 days straight' },
+  // ─── STREAKS ───
+  streak_3:            { label: '3-Day Streak',         emoji: '🔥', tier: 'bronze',   desc: '3 days in a row', auto: true, category: 'Streaks' },
+  streak_7:            { label: 'Week Warrior',         emoji: '⚡', tier: 'bronze',   desc: '7 consecutive check-ins', auto: true, category: 'Streaks' },
+  streak_14:           { label: '2-Week Beast',         emoji: '💪', tier: 'silver',   desc: '14 days straight', auto: true, category: 'Streaks' },
+  streak_21:           { label: 'Habit Formed',         emoji: '🧠', tier: 'silver',   desc: '21 days — habit is locked in', auto: true, category: 'Streaks' },
+  streak_30:           { label: '30-Day Champion',      emoji: '💎', tier: 'gold',     desc: '30 days unstoppable', auto: true, category: 'Streaks' },
+  streak_60:           { label: '60-Day Machine',       emoji: '👑', tier: 'platinum', desc: '60 days of pure consistency', auto: true, category: 'Streaks' },
+  streak_90:           { label: '90-Day Legend',        emoji: '🌟', tier: 'elite',    desc: '90 days — you are elite', auto: true, category: 'Streaks' },
 
-  // Transformation
-  goal_reached:     { label: 'Goal Reached',      emoji: '🎯', tier: 'gold',     desc: 'Target achieved' },
-  halfway_there:    { label: 'Halfway There',     emoji: '🏁', tier: 'silver',   desc: '50% of goal reached' },
-  transformation:   { label: 'Transformation',   emoji: '🦋', tier: 'elite',    desc: 'Complete body transformation' },
-  weight_loss_5:    { label: 'Lost 5 lbs',        emoji: '📉', tier: 'bronze',   desc: '5 lbs down' },
-  weight_loss_10:   { label: 'Lost 10 lbs',       emoji: '🔽', tier: 'silver',   desc: '10 lbs down' },
-  weight_loss_20:   { label: 'Lost 20 lbs',       emoji: '⬇️', tier: 'gold',     desc: '20 lbs down' },
+  // ─── COMPLIANCE ───
+  compliance_80:       { label: 'Strong Week',          emoji: '💪', tier: 'bronze',   desc: 'Hit 80%+ compliance', auto: true, category: 'Compliance' },
+  compliance_90:       { label: 'Dialed In',            emoji: '🎯', tier: 'silver',   desc: 'Hit 90%+ compliance', auto: true, category: 'Compliance' },
+  compliance_100:      { label: 'Perfect Day',          emoji: '🌟', tier: 'silver',   desc: '100% compliance — flawless', auto: true, category: 'Compliance' },
+  perfect_week:        { label: 'Perfect Week',         emoji: '⭐', tier: 'gold',     desc: '4 check-ins all 80%+', auto: true, category: 'Compliance' },
+  perfect_month:       { label: 'Perfect Month',        emoji: '🎖️', tier: 'gold',     desc: 'Full month above 80%', auto: true, category: 'Compliance' },
+  comeback:            { label: 'Comeback Kid',         emoji: '🔄', tier: 'silver',   desc: 'Bounced back after a tough week', auto: true, category: 'Compliance' },
 
-  // Mental / Consistency
-  comeback:         { label: 'Comeback Kid',      emoji: '💪', tier: 'silver',   desc: 'Bounced back strong' },
-  consistent_month: { label: 'Iron Consistent',   emoji: '📅', tier: 'gold',     desc: '30 days of consistency' },
-  mindset_warrior:  { label: 'Mindset Warrior',   emoji: '🧠', tier: 'silver',   desc: 'Logged mood 14 days' },
-  early_bird:       { label: 'Early Bird',        emoji: '🌅', tier: 'bronze',   desc: 'Consistent morning training' },
-  night_owl:        { label: 'Night Owl',         emoji: '🦉', tier: 'bronze',   desc: 'Consistent evening training' },
+  // ─── NUTRITION ───
+  protein_hit:         { label: 'Protein Pro',          emoji: '🥩', tier: 'bronze',   desc: 'Hit protein target', auto: true, category: 'Nutrition' },
+  nutrition_3days:     { label: 'On Track',             emoji: '📊', tier: 'bronze',   desc: 'Logged meals 3 days straight', auto: true, category: 'Nutrition' },
+  nutrition_7days:     { label: 'Nutrition Streak',     emoji: '🥗', tier: 'silver',   desc: 'Logged meals 7 days straight', auto: true, category: 'Nutrition' },
+  nutrition_king:      { label: 'Nutrition King',       emoji: '👨‍🍳', tier: 'gold',     desc: '14 days hitting all macros', auto: true, category: 'Nutrition' },
+  macro_master:        { label: 'Macro Master',         emoji: '⚖️', tier: 'gold',     desc: '30 days hitting macros', auto: true, category: 'Nutrition' },
+  hydration_hero:      { label: 'Hydration Hero',       emoji: '💧', tier: 'bronze',   desc: 'Hit water goal', auto: true, category: 'Nutrition' },
+  calorie_goal:        { label: 'Calorie Control',      emoji: '🔢', tier: 'bronze',   desc: 'Hit calorie target', auto: true, category: 'Nutrition' },
+  no_cheat_week:       { label: 'Clean Week',           emoji: '🥦', tier: 'silver',   desc: 'Full week of clean eating', auto: true, category: 'Nutrition' },
+
+  // ─── SLEEP & RECOVERY ───
+  sleep_7hrs:          { label: 'Well Rested',          emoji: '😴', tier: 'bronze',   desc: 'Logged 7+ hours of sleep', auto: true, category: 'Recovery' },
+  sleep_8hrs:          { label: 'Sleep Champion',       emoji: '🛏️', tier: 'bronze',   desc: 'Logged 8+ hours of sleep', auto: true, category: 'Recovery' },
+  sleep_streak_5:      { label: 'Sleep Streak',         emoji: '💤', tier: 'silver',   desc: '5 nights of quality sleep', auto: true, category: 'Recovery' },
+  recovery_week:       { label: 'Recovery Pro',         emoji: '🧘', tier: 'silver',   desc: 'Prioritized recovery all week', auto: true, category: 'Recovery' },
+
+  // ─── MOOD & MINDSET ───
+  mood_great:          { label: 'Great Mindset',        emoji: '😊', tier: 'bronze',   desc: 'Logged a great mood day', auto: true, category: 'Mindset' },
+  mood_streak_5:       { label: 'Positive Vibes',       emoji: '✨', tier: 'bronze',   desc: '5 great mood days', auto: true, category: 'Mindset' },
+  energy_high:         { label: 'Full Energy',          emoji: '⚡', tier: 'bronze',   desc: 'Logged high energy', auto: true, category: 'Mindset' },
+  energy_streak:       { label: 'Energized',            emoji: '🔋', tier: 'silver',   desc: '5 high energy days', auto: true, category: 'Mindset' },
+  mindset_warrior:     { label: 'Mindset Warrior',      emoji: '🧠', tier: 'silver',   desc: 'Consistent positive mindset', auto: true, category: 'Mindset' },
+  stress_managed:      { label: 'Stress Slayer',        emoji: '🧘', tier: 'bronze',   desc: 'Managed stress this week', auto: true, category: 'Mindset' },
+
+  // ─── BODY TRANSFORMATION ───
+  weight_logged:       { label: 'Tracked It',           emoji: '⚖️', tier: 'bronze',   desc: 'Logged body weight', auto: true, category: 'Transformation' },
+  weight_loss_1:       { label: 'First Pound Down',     emoji: '📉', tier: 'bronze',   desc: 'Lost first pound', auto: true, category: 'Transformation' },
+  weight_loss_5:       { label: 'Down 5 lbs',           emoji: '🔽', tier: 'silver',   desc: '5 lbs lost', auto: true, category: 'Transformation' },
+  weight_loss_10:      { label: 'Down 10 lbs',          emoji: '⬇️', tier: 'gold',     desc: '10 lbs lost', auto: true, category: 'Transformation' },
+  weight_loss_20:      { label: 'Down 20 lbs',          emoji: '🏆', tier: 'platinum', desc: '20 lbs lost — incredible', auto: true, category: 'Transformation' },
+  halfway_there:       { label: 'Halfway There',        emoji: '🏁', tier: 'silver',   desc: '50% of goal reached', auto: true, category: 'Transformation' },
+  goal_reached:        { label: 'Goal Reached',         emoji: '🎯', tier: 'gold',     desc: 'Hit your target', auto: true, category: 'Transformation' },
+  transformation:      { label: 'Transformation',       emoji: '🦋', tier: 'elite',    desc: 'Complete body transformation', auto: true, category: 'Transformation' },
+
+  // ─── PERFORMANCE ───
+  pr_hit:              { label: 'PR Smashed',           emoji: '🏆', tier: 'gold',     desc: 'Personal record broken', auto: true, category: 'Performance' },
+  steps_5k:            { label: '5K Steps',             emoji: '🚶', tier: 'bronze',   desc: 'Hit 5,000 steps', auto: true, category: 'Performance' },
+  steps_10k:           { label: '10K Steps',            emoji: '🏃', tier: 'silver',   desc: 'Hit 10,000 steps', auto: true, category: 'Performance' },
+  steps_15k:           { label: '15K Crusher',          emoji: '🔥', tier: 'gold',     desc: 'Hit 15,000 steps', auto: true, category: 'Performance' },
+  workout_3:           { label: 'On a Roll',            emoji: '🎳', tier: 'bronze',   desc: '3 workouts completed', auto: true, category: 'Performance' },
+  workout_10:          { label: 'Workout Warrior',      emoji: '⚔️', tier: 'silver',   desc: '10 workouts completed', auto: true, category: 'Performance' },
+  workout_25:          { label: 'Iron Will',            emoji: '🦾', tier: 'gold',     desc: '25 workouts completed', auto: true, category: 'Performance' },
+  workout_50:          { label: 'Unstoppable',          emoji: '🚀', tier: 'platinum', desc: '50 workouts — elite level', auto: true, category: 'Performance' },
+
+  // ─── SPECIAL / COACH AWARDED ───
+  most_improved:       { label: 'Most Improved',        emoji: '📈', tier: 'gold',     desc: 'Greatest improvement this month', auto: false, category: 'Special' },
+  client_of_month:     { label: 'Client of the Month',  emoji: '🥇', tier: 'elite',    desc: 'Top performer this month', auto: false, category: 'Special' },
+  coachable:           { label: 'Super Coachable',      emoji: '🎓', tier: 'silver',   desc: 'Always applies feedback', auto: false, category: 'Special' },
+  never_quit:          { label: 'Never Quit',           emoji: '💯', tier: 'gold',     desc: 'Pushed through adversity', auto: false, category: 'Special' },
+  team_player:         { label: 'Team Player',          emoji: '🤝', tier: 'silver',   desc: 'Positive community presence', auto: false, category: 'Special' },
+  early_bird:          { label: 'Early Bird',           emoji: '🌅', tier: 'bronze',   desc: 'Consistent morning training', auto: false, category: 'Special' },
+  night_owl:           { label: 'Night Owl',            emoji: '🦉', tier: 'bronze',   desc: 'Consistent evening training', auto: false, category: 'Special' },
+  consistency_king:    { label: 'Consistency King',     emoji: '👑', tier: 'elite',    desc: 'Most consistent client', auto: false, category: 'Special' },
 };
 
 // Dark premium tier styles for cards
@@ -63,7 +101,6 @@ export const TIER_STYLES = {
     text:        '#FFB870',
     label:       'Bronze',
     shimmer:     false,
-    // legacy tailwind (used in small chips / BadgeRow)
     tw_bg:       'bg-[#FDF4EE]',
     tw_border:   'border-[#D97706]',
     tw_text:     'text-[#D97706]',
