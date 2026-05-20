@@ -47,10 +47,10 @@ const FILTERS = [
 ];
 
 const STAT_CARDS = [
-  { key: 'pending',  label: 'Pending',  icon: Clock,        dotColor: 'bg-amber-400',   numColor: 'text-amber-600',   dark: false },
-  { key: 'flagged',  label: 'Flagged',  icon: Flag,         dotColor: 'bg-red-500',     numColor: 'text-red-600',     dark: true  },
-  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2, dotColor: 'bg-emerald-500', numColor: 'text-emerald-700', dark: false },
-  { key: 'missed',   label: 'Missed',   icon: UserX,        dotColor: 'bg-orange-400',  numColor: 'text-orange-600',  dark: true  },
+  { key: 'pending',  label: 'Pending',  icon: Clock,        dotColor: 'bg-amber-400',   numColor: 'text-[#111827]', dark: true  },
+  { key: 'flagged',  label: 'Flagged',  icon: Flag,         dotColor: 'bg-red-500',     numColor: 'text-[#111827]', dark: false },
+  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2, dotColor: 'bg-emerald-500', numColor: 'text-[#111827]', dark: false },
+  { key: 'missed',   label: 'Missed',   icon: UserX,        dotColor: 'bg-orange-400',  numColor: 'text-[#111827]', dark: true  },
 ];
 
 export default function CheckInReview() {
