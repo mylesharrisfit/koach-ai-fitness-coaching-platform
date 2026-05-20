@@ -5,7 +5,8 @@ import { differenceInDays, differenceInMonths, subMonths, format, startOfMonth, 
 import MRROverview from '@/components/business/MRROverview';
 import AcquisitionTrends from '@/components/business/AcquisitionTrends';
 import ChurnRiskTable from '@/components/business/ChurnRiskTable';
-import { DollarSign, Users, TrendingUp, AlertTriangle } from 'lucide-react';
+import BusinessMetricCard from '@/components/business/BusinessMetricCard';
+import { DollarSign, Users, TrendingUp, TrendingDown, UserCheck, AlertTriangle } from 'lucide-react';
 import PageGuard from '@/components/subscription/PageGuard';
 
 function BusinessPage() {
@@ -83,7 +84,7 @@ function BusinessPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="bg-[#111827] rounded-xl p-5 text-white mb-6">
         <h1 className="text-xl font-semibold text-white">Business Overview</h1>
         <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>MRR, client acquisition, and churn risk analytics</p>
@@ -91,23 +92,34 @@ function BusinessPage() {
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 fade-up">
-        {[
-          { icon: DollarSign, label: 'Monthly Recurring Revenue', value: `$${mrr.toLocaleString()}`, sub: `$${mrrAtRisk.toLocaleString()} at risk` },
-          { icon: Users, label: 'Active Clients', value: activeClients.length, sub: `${newClientsThisMonth} new this month` },
-          { icon: AlertTriangle, label: 'Churn Risk', value: churnRiskClients.length, sub: churnRiskClients.length > 0 ? 'clients need attention' : 'All clients engaged' },
-          { icon: TrendingUp, label: 'Avg. Client LTV', value: avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—', sub: 'lifetime value estimate' },
-        ].map(({ icon: Icon, label, value, sub }) => (
-          <div key={label} className="bg-[#111827] rounded-xl p-5 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
-              <Icon className="w-5 h-5 text-white/30" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold leading-none text-white">{value}</p>
-              <p className="text-xs mt-1 text-white/50">{label}</p>
-              {sub && <p className="text-xs mt-0.5 text-white/40">{sub}</p>}
-            </div>
-          </div>
-        ))}
+        <BusinessMetricCard
+          icon={DollarSign}
+          label="Monthly Recurring Revenue"
+          value={`$${mrr.toLocaleString()}`}
+          sub={`$${mrrAtRisk.toLocaleString()} at risk`}
+          dark
+        />
+        <BusinessMetricCard
+          icon={Users}
+          label="Active Clients"
+          value={activeClients.length}
+          sub={`${newClientsThisMonth} new this month`}
+          dark
+        />
+        <BusinessMetricCard
+          icon={AlertTriangle}
+          label="Churn Risk"
+          value={churnRiskClients.length}
+          sub={churnRiskClients.length > 0 ? 'clients need attention' : 'All clients engaged'}
+          dark
+        />
+        <BusinessMetricCard
+          icon={TrendingUp}
+          label="Avg. Client LTV"
+          value={avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—'}
+          sub="lifetime value estimate"
+          dark
+        />
       </div>
 
       {/* MRR + Acquisition */}

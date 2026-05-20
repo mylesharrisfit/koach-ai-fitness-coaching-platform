@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import PageHeader from '../components/shared/PageHeader';
 import { toast } from 'sonner';
 
 const PLANS = [
@@ -95,21 +94,22 @@ export default function WhiteLabel() {
 
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto">
-      <PageHeader
-        title="White Label App"
-        subtitle="Launch your own fully branded coaching app — your logo, your domain, your identity."
-      />
+      {/* Header */}
+      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6">
+        <h1 className="text-xl font-semibold text-white">White Label App</h1>
+        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Launch your own fully branded coaching app — your logo, your domain, your identity.</p>
+      </div>
 
       {/* Value Props */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         {PERKS.map((perk) => (
-          <div key={perk.title} className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-              <perk.icon className="w-5 h-5 text-primary" />
+          <div key={perk.title} className="bg-[#111827] rounded-xl p-5 flex flex-col gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <perk.icon className="w-5 h-5 text-white/30" />
             </div>
             <div>
-              <p className="font-semibold text-sm font-heading">{perk.title}</p>
-              <p className="text-xs text-[#374151] mt-1 leading-relaxed">{perk.desc}</p>
+              <p className="font-semibold text-sm text-white">{perk.title}</p>
+              <p className="text-xs mt-1 leading-relaxed text-white/50">{perk.desc}</p>
             </div>
           </div>
         ))}
