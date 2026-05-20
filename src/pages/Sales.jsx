@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, TrendingUp, DollarSign, Target, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import PageHeader from '../components/shared/PageHeader';
 import FunnelView from '../components/sales/FunnelView';
 import LeadCard from '../components/sales/LeadCard';
 import LeadForm from '../components/sales/LeadForm';
@@ -78,46 +76,52 @@ export default function Sales() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader
-        title="Sales & Revenue"
-        subtitle="Track leads, calls, payments and upsell opportunities"
-        actions={
-          <div className="flex items-center gap-3">
-            <div className="flex bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg p-1">
-              {['pipeline', 'payments'].map(tab => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all ${
-                    activeTab === tab ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#374151] hover:text-[#1F2A44]'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <Button onClick={() => { setEditingLead(null); setShowForm(true); }}>
-              <Plus className="w-4 h-4 mr-2" /> Add Lead
-            </Button>
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Sales & Revenue</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Track leads, calls, payments and upsell opportunities</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-lg p-1" style={{ background: 'rgba(255,255,255,0.1)' }}>
+            {['pipeline', 'payments'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all"
+                style={activeTab === tab
+                  ? { background: '#fff', color: '#111827' }
+                  : { color: 'rgba(255,255,255,0.6)' }}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
-        }
-      />
+          <button
+            onClick={() => { setEditingLead(null); setShowForm(true); }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold"
+            style={{ background: '#fff', color: '#111827' }}
+          >
+            <Plus className="w-4 h-4" /> Add Lead
+          </button>
+        </div>
+      </div>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Total Leads', value: leads.length, icon: Users, color: 'text-primary', bg: 'bg-[#EEF4FF]' },
-          { label: 'Pipeline Value', value: `$${pipelineValue.toLocaleString()}`, icon: TrendingUp, color: 'text-violet-500', bg: 'bg-violet-50' },
-          { label: 'Closed Revenue', value: `$${closedValue.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-          { label: 'Close Rate', value: `${conversionRate}%`, icon: Target, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: 'Total Leads', value: leads.length, icon: Users },
+          { label: 'Pipeline Value', value: `$${pipelineValue.toLocaleString()}`, icon: TrendingUp },
+          { label: 'Closed Revenue', value: `$${closedValue.toLocaleString()}`, icon: DollarSign },
+          { label: 'Close Rate', value: `${conversionRate}%`, icon: Target },
         ].map(s => (
-          <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-xl p-4 flex items-center gap-3 shadow-sm">
-            <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center flex-shrink-0`}>
-              <s.icon className={`w-5 h-5 ${s.color}`} />
+          <div key={s.label} className="bg-[#111827] rounded-xl p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <s.icon className="w-5 h-5 text-white/30" />
             </div>
             <div>
-              <p className="text-xl font-heading font-bold leading-none text-[#1F2A44]">{s.value}</p>
-              <p className="text-xs text-[#374151] mt-1">{s.label}</p>
+              <p className="text-2xl font-bold leading-none text-white">{s.value}</p>
+              <p className="text-sm mt-1 text-white/50">{s.label}</p>
             </div>
           </div>
         ))}

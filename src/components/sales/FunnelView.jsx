@@ -3,10 +3,10 @@ import { cn } from '@/lib/utils';
 import { ChevronRight, UserPlus, PhoneCall, CheckCircle2, Users } from 'lucide-react';
 
 const STAGES = [
-  { key: 'lead', label: 'Lead', icon: UserPlus, color: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-400/30' },
-  { key: 'booked', label: 'Booked', icon: PhoneCall, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/30' },
-  { key: 'closed', label: 'Closed', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/30' },
-  { key: 'active_client', label: 'Active Client', icon: Users, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/30' },
+  { key: 'lead', label: 'Lead', icon: UserPlus },
+  { key: 'booked', label: 'Booked', icon: PhoneCall },
+  { key: 'closed', label: 'Closed', icon: CheckCircle2 },
+  { key: 'active_client', label: 'Active Client', icon: Users },
 ];
 
 export default function FunnelView({ leads, onStageClick, selectedStage }) {
@@ -29,19 +29,18 @@ export default function FunnelView({ leads, onStageClick, selectedStage }) {
               <button
                 onClick={() => onStageClick(isSelected ? null : stage.key)}
                 className={cn(
-                  "flex-1 rounded-xl border-2 p-4 transition-all text-left",
-                  stage.bg, stage.border,
-                  isSelected ? "ring-2 ring-offset-2 ring-offset-card scale-105 shadow-lg" : "hover:scale-102 opacity-90 hover:opacity-100"
+                  "flex-1 rounded-xl border p-4 transition-all text-left bg-white border-[#E5E7EB]",
+                  isSelected ? "ring-2 ring-[#111827]/20 scale-105 shadow-lg" : "hover:opacity-90"
                 )}
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <stage.icon className={cn("w-4 h-4", stage.color)} />
-                  <span className={cn("text-xs font-semibold uppercase tracking-wide", stage.color)}>{stage.label}</span>
+                  <stage.icon className="w-4 h-4 text-[#6B7280]" />
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">{stage.label}</span>
                 </div>
-                <p className={cn("text-3xl font-heading font-bold", stage.color)}>{count}</p>
+                <p className="text-3xl font-heading font-bold text-[#111827]">{count}</p>
                 <p className="text-xs text-muted-foreground mt-1">{pct}% of total</p>
-                <div className="mt-3 h-1.5 bg-black/10 rounded-full overflow-hidden">
-                  <div className={cn("h-full rounded-full transition-all", stage.color.replace('text-', 'bg-'))} style={{ width: `${pct}%` }} />
+                <div className="mt-3 h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
+                  <div className="h-full rounded-full bg-[#111827] transition-all" style={{ width: `${pct}%` }} />
                 </div>
               </button>
               {idx < STAGES.length - 1 && (
