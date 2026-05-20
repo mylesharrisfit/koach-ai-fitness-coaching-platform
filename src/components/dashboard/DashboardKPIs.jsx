@@ -17,7 +17,28 @@ function AdherenceBar({ pct }) {
   );
 }
 
-function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borderColor, bottomBar, extra, onClick }) {
+function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borderColor, extra, onClick, dark }) {
+  if (dark) {
+    return (
+      <div
+        className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:opacity-90 cursor-default"
+        onClick={onClick}
+        style={{ background: '#111827', minHeight: 110 }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
+            <Icon className="w-4 h-4 text-white/70" />
+          </div>
+          <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
+        </div>
+        <div>
+          <p className="text-3xl font-extrabold leading-none text-white" style={{ letterSpacing: '-0.03em' }}>{value}</p>
+          {sub && <p className="text-xs mt-1 font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{sub}</p>}
+          {extra}
+        </div>
+      </div>
+    );
+  }
   return (
     <div
       className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default"
@@ -121,19 +142,16 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
 
-      {/* Active Clients */}
+      {/* Active Clients — dark */}
       <KPICard
+        dark
         icon={Users}
         label="Active Clients"
         value={active}
         sub={newThisMonth > 0 ? `+${newThisMonth} this month` : 'same as last month'}
-        subColor={newThisMonth > 0 ? '#16a34a' : '#9ca3af'}
-        color="#3b82f6"
-        bgGrad="linear-gradient(135deg, #ffffff 0%, #eff6ff 100%)"
-        borderColor="#dbeafe"
       />
 
-      {/* Avg Adherence */}
+      {/* Avg Adherence — light */}
       <KPICard
         icon={TrendingUp}
         label="Avg Adherence"
@@ -150,22 +168,17 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
         extra={avgAdherence !== null ? <AdherenceBar pct={avgAdherence} /> : null}
       />
 
-      {/* Pending Reviews */}
+      {/* Pending Reviews — dark */}
       <KPICard
+        dark
         icon={ClipboardList}
         label="Pending Reviews"
         value={pendingReviews === 0 ? 'All clear' : pendingReviews}
         sub={pendingReviews === 0 ? 'All caught up ✓' : `check-in${pendingReviews !== 1 ? 's' : ''} awaiting`}
-        subColor={pendingReviews === 0 ? '#16a34a' : '#ea580c'}
-        color="#8b5cf6"
-        bgGrad={pendingReviews > 0
-          ? 'linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%)'
-          : 'linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%)'}
-        borderColor={pendingReviews > 0 ? '#fdba74' : '#ddd6fe'}
         onClick={pendingReviews > 0 ? () => navigate('/checkin-review') : undefined}
       />
 
-      {/* Revenue */}
+      {/* Revenue — light */}
       <KPICard
         icon={DollarSign}
         label="Revenue"

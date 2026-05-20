@@ -47,10 +47,10 @@ const FILTERS = [
 ];
 
 const STAT_CARDS = [
-  { key: 'pending',  label: 'Pending',  icon: Clock,        dotColor: 'bg-amber-400',   numColor: 'text-amber-600' },
-  { key: 'flagged',  label: 'Flagged',  icon: Flag,         dotColor: 'bg-red-500',     numColor: 'text-red-600' },
-  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2, dotColor: 'bg-emerald-500', numColor: 'text-emerald-700' },
-  { key: 'missed',   label: 'Missed',   icon: UserX,        dotColor: 'bg-orange-400',  numColor: 'text-orange-600' },
+  { key: 'pending',  label: 'Pending',  icon: Clock,        dotColor: 'bg-amber-400',   numColor: 'text-amber-600',   dark: false },
+  { key: 'flagged',  label: 'Flagged',  icon: Flag,         dotColor: 'bg-red-500',     numColor: 'text-red-600',     dark: true  },
+  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2, dotColor: 'bg-emerald-500', numColor: 'text-emerald-700', dark: false },
+  { key: 'missed',   label: 'Missed',   icon: UserX,        dotColor: 'bg-orange-400',  numColor: 'text-orange-600',  dark: true  },
 ];
 
 export default function CheckInReview() {
@@ -161,53 +161,55 @@ export default function CheckInReview() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
 
       {/* ── Header ── */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-[#111827] rounded-xl p-5">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-[#1F2A44]">Check-in Dashboard</h1>
-          <p className="text-sm text-[#374151] mt-0.5">
+          <h1 className="text-xl font-heading font-bold text-white tracking-tight">Check-in Dashboard</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {format(new Date(), 'EEEE, MMMM d, yyyy')} · {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-xs"
+          <button
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
             onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in when you get a chance 📋")}`)}
           >
             <Bell className="w-3.5 h-3.5" /> Send Bulk Reminder
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-xs"
+          </button>
+          <button
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
             onClick={() => toast.info('Export feature coming soon!')}
           >
             <Download className="w-3.5 h-3.5" /> Export
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        {STAT_CARDS.map(({ key, label, icon: Icon, dotColor, numColor }) => (
+        {STAT_CARDS.map(({ key, label, icon: Icon, dotColor, numColor, dark }) => (
           <motion.button
             key={key}
             whileTap={{ scale: 0.97 }}
             onClick={() => setFilter(filter === key ? 'all' : key)}
             className={cn(
-              'bg-white border border-[#E5E7EB] rounded-xl p-4 text-left transition-all hover:border-[#D1D5DB]',
-              filter === key && 'ring-2 ring-[#2563EB]/20 border-[#2563EB]/40'
+              'rounded-xl p-4 text-left transition-all',
+              dark
+                ? 'bg-[#111827]'
+                : 'bg-white border border-[#E5E7EB] hover:border-[#D1D5DB]',
+              filter === key && !dark && 'ring-2 ring-[#2563EB]/20 border-[#2563EB]/40',
+              filter === key && dark && 'ring-2 ring-white/20'
             )}
           >
             <div className="flex items-center justify-between mb-3">
-              <div className={cn('w-2 h-2 rounded-full', dotColor)} />
-              <Icon className="w-4 h-4 text-[#9CA3AF]" />
+              <div className={cn('w-2 h-2 rounded-full', dark ? 'bg-white/30' : dotColor)} />
+              <Icon className={cn('w-4 h-4', dark ? 'text-white/40' : 'text-[#9CA3AF]')} />
             </div>
-            <p className={cn('text-2xl font-semibold', counts[key] > 0 ? numColor : 'text-[#111827]')}>
+            <p className={cn('text-2xl font-semibold', dark ? 'text-white' : counts[key] > 0 ? numColor : 'text-[#111827]')}>
               {counts[key]}
             </p>
-            <p className="text-xs text-[#6B7280] mt-0.5 capitalize">{label}</p>
+            <p className={cn('text-xs mt-0.5 capitalize', dark ? 'text-white/50' : 'text-[#6B7280]')}>{label}</p>
           </motion.button>
         ))}
       </div>

@@ -209,20 +209,19 @@ export default function Clients() {
   return (
     <div className="flex flex-col h-full">
       {/* ── Top bar ── */}
-      <div className="px-5 py-4 bg-white border-b border-[#F0F2F8] flex items-center justify-between gap-3 flex-shrink-0">
+      <div className="px-5 py-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: '#111827' }}>
         <div>
-          <h1 className="text-lg font-heading font-bold text-[#1F2A44] leading-tight">Clients</h1>
-          <p className="text-xs text-[#6B7280]">{counts.active || 0} active · {counts.at_risk || 0} at-risk · {counts.lead || 0} leads</p>
+          <h1 className="text-lg font-heading font-bold text-white leading-tight">Clients</h1>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{counts.active || 0} active · {counts.at_risk || 0} at-risk · {counts.lead || 0} leads</p>
         </div>
-        <Button
-          size="sm"
+        <button
           onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
-          variant={atLimit ? 'outline' : 'default'}
-          className={atLimit ? 'border-red-200 text-red-500 hover:bg-red-50' : ''}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+          style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
         >
           {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
           {atLimit ? 'Limit Reached' : 'Add Client'}
-        </Button>
+        </button>
       </div>
 
       {/* ── Alerts ── */}

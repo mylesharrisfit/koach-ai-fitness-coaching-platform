@@ -35,17 +35,30 @@ export default function StripeRevenueSummary({ data }) {
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map(s => (
-        <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
-          <div className={`w-11 h-11 rounded-xl ${s.bg} flex items-center justify-center flex-shrink-0`}>
-            <s.icon className={`w-5 h-5 ${s.color}`} />
+      {stats.map((s, i) => {
+        const isDark = i === 0 || i === 2;
+        return isDark ? (
+          <div key={s.label} className="rounded-2xl p-5 flex items-center gap-4 transition-all" style={{ background: '#111827' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <s.icon className="w-5 h-5 text-white/70" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xl font-heading font-bold leading-none text-white">{s.value}</p>
+              <p className="text-[11px] mt-1 leading-tight" style={{ color: 'rgba(255,255,255,0.45)' }}>{s.label}</p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-xl font-heading font-bold leading-none text-[#1F2A44]">{s.value}</p>
-            <p className="text-[11px] text-[#374151] mt-1 leading-tight">{s.label}</p>
+        ) : (
+          <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+            <div className={`w-11 h-11 rounded-xl ${s.bg} flex items-center justify-center flex-shrink-0`}>
+              <s.icon className={`w-5 h-5 ${s.color}`} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xl font-heading font-bold leading-none text-[#1F2A44]">{s.value}</p>
+              <p className="text-[11px] text-[#374151] mt-1 leading-tight">{s.label}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

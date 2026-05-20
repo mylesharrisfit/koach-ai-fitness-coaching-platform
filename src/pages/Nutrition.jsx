@@ -119,31 +119,31 @@ export default function Nutrition() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 
       {/* ── HEADER ── */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111827] rounded-xl p-5">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-foreground tracking-tight">Nutrition System</h1>
-          <p className="text-sm text-muted-foreground mt-1">AI-powered nutrition coaching for performance, recovery, and adherence.</p>
+          <h1 className="text-xl font-heading font-bold text-white tracking-tight">Nutrition System</h1>
+          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Button
-            variant="outline"
-            className="gap-2 text-sm"
+          <button
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
             onClick={() => setShowAIModal(true)}
           >
-            <Sparkles className="w-4 h-4 text-primary" />
+            <Sparkles className="w-4 h-4" />
             AI Generator
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() => {
               if (atLimit) { openUpgradeModal('clients'); return; }
               setShowLaunchModal(true);
             }}
-            variant={atLimit ? 'outline' : 'default'}
-            className={`gap-2 text-sm ${atLimit ? 'border-destructive/40 text-destructive hover:bg-destructive/10' : ''}`}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+            style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
           >
             {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {atLimit ? `Limit (${plans.length}/${nutritionLimit})` : '+ New Plan'}
-          </Button>
+          </button>
         </div>
       </div>
 
