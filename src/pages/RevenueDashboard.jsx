@@ -3,7 +3,6 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { DollarSign, TrendingUp, Users, AlertTriangle, XCircle, RefreshCw, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import PageHeader from '@/components/shared/PageHeader';
 import StripeRevenueSummary from '@/components/stripe/StripeRevenueSummary';
 import StripeRevenueChart from '@/components/stripe/StripeRevenueChart';
 import StripeSubscriptionTable from '@/components/stripe/StripeSubscriptionTable';
@@ -28,20 +27,29 @@ export default function RevenueDashboard() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader
-        title="Revenue Dashboard"
-        subtitle="Stripe subscriptions, MRR, and payment health"
-        actions={
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => refetch()}>
-              <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Refresh
-            </Button>
-            <Button size="sm" onClick={() => setShowCreate(true)}>
-              <Plus className="w-3.5 h-3.5 mr-1.5" /> New Subscription
-            </Button>
-          </div>
-        }
-      />
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Revenue Dashboard</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Stripe subscriptions, MRR, and payment health</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => refetch()}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+          >
+            <RefreshCw className="w-3.5 h-3.5" /> Refresh
+          </button>
+          <button
+            onClick={() => setShowCreate(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold"
+            style={{ background: '#fff', color: '#111827' }}
+          >
+            <Plus className="w-3.5 h-3.5" /> New Subscription
+          </button>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
@@ -58,14 +66,14 @@ export default function RevenueDashboard() {
               <h3 className="text-xs font-bold text-[#374151] uppercase tracking-widest mb-4">Payment Health</h3>
               <div className="space-y-3">
                 {[
-                  { label: 'Active Subscriptions', value: dashData?.active_subscriptions || 0, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                  { label: 'Past Due', value: dashData?.past_due || 0, color: 'text-amber-600', bg: 'bg-amber-50' },
-                  { label: 'Canceled', value: dashData?.canceled || 0, color: 'text-[#374151]', bg: 'bg-[#F6F7FB]' },
-                  { label: 'Failed Charges', value: dashData?.failed_charges || 0, color: 'text-red-500', bg: 'bg-red-50' },
+                  { label: 'Active Subscriptions', value: dashData?.active_subscriptions || 0 },
+                  { label: 'Past Due', value: dashData?.past_due || 0 },
+                  { label: 'Canceled', value: dashData?.canceled || 0 },
+                  { label: 'Failed Charges', value: dashData?.failed_charges || 0 },
                 ].map(item => (
-                  <div key={item.label} className={`flex items-center justify-between p-3 rounded-xl border border-[#E7EAF3] ${item.bg}`}>
+                  <div key={item.label} className="flex items-center justify-between p-3 rounded-xl border border-[#E7EAF3] bg-[#F9FAFB]">
                     <span className="text-sm text-[#374151]">{item.label}</span>
-                    <span className={`text-sm font-bold ${item.color}`}>{item.value}</span>
+                    <span className="text-sm font-bold text-[#111827]">{item.value}</span>
                   </div>
                 ))}
               </div>
