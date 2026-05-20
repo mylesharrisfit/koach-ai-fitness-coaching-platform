@@ -1,170 +1,224 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { subDays, subMonths, subYears, isAfter, format } from 'date-fns';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { format } from 'date-fns';
-import ClientProgressCard from '../components/progress/ClientProgressCard';
-import { hasFeature } from '@/lib/subscription';
+import ProgressSidebar, { METRIC_CATEGORIES } from '../components/progress/ProgressSidebar';
+import ProgressChart from '../components/progress/ProgressChart';
+import ProgressStatsRow from '../components/progress/ProgressStatsRow';
+import ProgressDataTable from '../components/progress/ProgressDataTable';
+import ProgressPhotos from '../components/progress/ProgressPhotos';
 
-const moodEmojis = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
+// Resolve nested field paths like "measurements.chest"
+function getFieldValue(ci, field) {
+  if (!field) return null;
+  const parts = field.split('.');
+  let val = ci;
+  for (const p of parts) val = val?.[p];
+  return val ?? null;
+}
+
+// Derive computed metrics
+function getDerivedValue(ci, key, clientHeight) {
+  if (key === 'lean_mass') {
+    if (ci.weight == null || ci.body_fat_pct == null) return null;
+    return +(ci.weight * (1 - ci.body_fat_pct / 100)).toFixed(1);
+  }
+  if (key === 'fat_mass') {
+    if (ci.weight == null || ci.body_fat_pct == null) return null;
+    return +(ci.weight * (ci.body_fat_pct / 100)).toFixed(1);
+  }
+  if (key === 'bmi') {
+    if (ci.weight == null || !clientHeight) return null;
+    // parse height like "5'10" or "70in" or plain number as inches
+    let inches = parseFloat(clientHeight);
+    const feetMatch = clientHeight?.match(/(\d+)'(\d+)/);
+    if (feetMatch) inches = parseInt(feetMatch[1]) * 12 + parseInt(feetMatch[2]);
+    if (!inches) return null;
+    return +((ci.weight / (inches * inches)) * 703).toFixed(1);
+  }
+  if (key === 'overall_adherence') {
+    const t = ci.compliance_training;
+    const n = ci.compliance_nutrition;
+    if (t == null && n == null) return null;
+    const vals = [t, n].filter(v => v != null);
+    return +(vals.reduce((s, v) => s + v, 0) / vals.length).toFixed(1);
+  }
+  return null;
+}
+
+function filterByTimeRange(checkIns, range) {
+  if (range === 'All') return checkIns;
+  const now = new Date();
+  const cutoff = range === '1M' ? subMonths(now, 1)
+    : range === '3M' ? subMonths(now, 3)
+    : range === '6M' ? subMonths(now, 6)
+    : subYears(now, 1);
+  return checkIns.filter(ci => isAfter(new Date(ci.date), cutoff));
+}
+
+const DEFAULT_METRIC = METRIC_CATEGORIES[0].items[0]; // Body Weight
 
 export default function Progress() {
-  const [showForm, setShowForm] = useState(false);
-  const [search, setSearch] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
-  const [form, setForm] = useState({
-    client_id: '', client_name: '', date: format(new Date(), 'yyyy-MM-dd'),
-    weight: '', body_fat_pct: '', sleep_hours: '', mood: 'good',
-    compliance_training: '', compliance_nutrition: '', notes: '',
-  });
+  const [selectedMetric, setSelectedMetric] = useState(DEFAULT_METRIC);
+  const [selectedClientId, setSelectedClientId] = useState('');
+  const [timeRange, setTimeRange] = useState('3M');
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
-  }, []);
-
-  const canViewGraphs = hasFeature(currentUser, 'analytics_graphs');
-
-  const { data: checkIns = [] } = useQuery({
-    queryKey: ['checkins'],
-    queryFn: () => base44.entities.CheckIn.list('-date', 200),
-  });
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list('name'),
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.CheckIn.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['checkins'] }); setShowForm(false); },
+  const { data: allCheckIns = [] } = useQuery({
+    queryKey: ['checkins'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 500),
   });
 
-  const handleClientSelect = (clientId) => {
-    const client = clients.find(c => c.id === clientId);
-    setForm({ ...form, client_id: clientId, client_name: client?.name || '' });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    createMutation.mutate({
-      ...form,
-      weight: Number(form.weight) || undefined,
-      body_fat_pct: Number(form.body_fat_pct) || undefined,
-      sleep_hours: Number(form.sleep_hours) || undefined,
-      compliance_training: Number(form.compliance_training) || undefined,
-      compliance_nutrition: Number(form.compliance_nutrition) || undefined,
-    });
-  };
-
-  // Group check-ins by client
   const activeClients = clients.filter(c => c.status === 'active');
-  const filteredClients = activeClients.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+  const selectedClient = activeClients.find(c => c.id === selectedClientId) || activeClients[0] || null;
+  const effectiveClientId = selectedClient?.id;
+
+  const clientCheckIns = useMemo(() =>
+    allCheckIns.filter(ci => ci.client_id === effectiveClientId)
+      .sort((a, b) => new Date(a.date) - new Date(b.date)),
+    [allCheckIns, effectiveClientId]
   );
 
-  const getClientCheckIns = (clientId) =>
-    checkIns.filter(ci => ci.client_id === clientId);
+  const filteredCheckIns = useMemo(() =>
+    filterByTimeRange(clientCheckIns, timeRange),
+    [clientCheckIns, timeRange]
+  );
+
+  // Build chart data for the selected metric
+  const chartData = useMemo(() => {
+    return filteredCheckIns
+      .map(ci => {
+        const value = selectedMetric.derived
+          ? getDerivedValue(ci, selectedMetric.key, selectedClient?.height)
+          : getFieldValue(ci, selectedMetric.field);
+        if (value == null) return null;
+        return {
+          date: format(new Date(ci.date), 'MMM d'),
+          rawDate: ci.date,
+          value: +value,
+          notes: ci.notes,
+        };
+      })
+      .filter(Boolean);
+  }, [filteredCheckIns, selectedMetric, selectedClient]);
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.CheckIn.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['checkins'] }),
+  });
+
+  const handleLog = ({ value, date, notes }) => {
+    if (!effectiveClientId) return;
+    const payload = {
+      client_id: effectiveClientId,
+      client_name: selectedClient?.name || '',
+      date,
+      notes,
+    };
+    // Map metric key to checkin field
+    if (!selectedMetric.derived && selectedMetric.field && !selectedMetric.field.includes('.')) {
+      payload[selectedMetric.field] = value;
+    } else if (selectedMetric.field?.includes('.')) {
+      const [parent, child] = selectedMetric.field.split('.');
+      payload[parent] = { [child]: value };
+    }
+    createMutation.mutate(payload);
+  };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* ── Header ── */}
-      <div className="bg-[#111827] rounded-xl p-5 mb-6 flex items-center justify-between">
+    <div className="flex flex-col h-full min-h-screen bg-[#F9FAFB]">
+      {/* Header */}
+      <div className="mx-6 mt-6 mb-4 rounded-xl p-5 text-white flex items-center justify-between"
+        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <div>
-          <h1 className="text-xl font-semibold text-white">Progress</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {canViewGraphs ? 'Client analytics & trend tracking' : 'Basic progress tracking — upgrade to Pro for full analytics'}
-          </p>
+          <h1 className="text-xl font-semibold text-white">Progress Tracking</h1>
+          <p className="text-sm mt-0.5 text-white/50">Client metrics, trends & body composition over time</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: '#fff', color: '#111827' }}
-        >
-          <Plus className="w-4 h-4" /> Log Check-in
-        </button>
+        {/* Client selector */}
+        <Select value={selectedClient?.id || ''} onValueChange={setSelectedClientId}>
+          <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white h-9 text-sm">
+            <SelectValue placeholder="Select client" />
+          </SelectTrigger>
+          <SelectContent>
+            {activeClients.map(c => (
+              <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6 max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder="Search clients..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="pl-9"
-        />
-      </div>
+      {/* Two-column layout */}
+      <div className="flex flex-1 overflow-hidden mx-6 mb-6 rounded-xl border border-[#E5E7EB] bg-white" style={{ minHeight: 600 }}>
+        {/* Left sidebar */}
+        <ProgressSidebar activeKey={selectedMetric.key} onSelect={setSelectedMetric} />
 
-      {/* Client Cards */}
-      <div className="space-y-3">
-        {filteredClients.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground">No active clients found.</div>
-        ) : filteredClients.map(client => (
-          <ClientProgressCard
-            key={client.id}
-            client={client}
-            checkIns={getClientCheckIns(client.id)}
-            showGraphs={canViewGraphs}
-          />
-        ))}
-      </div>
+        {/* Right content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+          {/* Metric title */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedMetric.key}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-5"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-[#111827]">{selectedMetric.label}</h2>
+                  {selectedClient && (
+                    <p className="text-sm text-[#6B7280] mt-0.5">
+                      {selectedClient.name} · {clientCheckIns.length} total entries
+                    </p>
+                  )}
+                </div>
+              </div>
 
-      {/* Log Check-in Dialog */}
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="font-heading">Log Check-in</DialogTitle></DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            <div>
-              <Label>Client *</Label>
-              <Select value={form.client_id} onValueChange={handleClientSelect}>
-                <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
-                <SelectContent>
-                  {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div><Label>Date *</Label><Input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} required /></div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Weight (lbs)</Label><Input type="number" value={form.weight} onChange={e => setForm({ ...form, weight: e.target.value })} /></div>
-              {canViewGraphs && (
-                <>
-                  <div><Label>Body Fat %</Label><Input type="number" value={form.body_fat_pct} onChange={e => setForm({ ...form, body_fat_pct: e.target.value })} /></div>
-                  <div><Label>Sleep (hours)</Label><Input type="number" value={form.sleep_hours} onChange={e => setForm({ ...form, sleep_hours: e.target.value })} /></div>
-                  <div>
-                    <Label>Mood</Label>
-                    <Select value={form.mood} onValueChange={v => setForm({ ...form, mood: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(moodEmojis).map(([k, v]) => <SelectItem key={k} value={k}>{v} {k}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
+              {!selectedClient ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-[#EFF6FF] flex items-center justify-center">
+                    <span className="text-[#2563EB] text-xl">👤</span>
                   </div>
-                  <div><Label>Training Compliance %</Label><Input type="number" max={100} value={form.compliance_training} onChange={e => setForm({ ...form, compliance_training: e.target.value })} /></div>
-                  <div><Label>Nutrition Compliance %</Label><Input type="number" max={100} value={form.compliance_nutrition} onChange={e => setForm({ ...form, compliance_nutrition: e.target.value })} /></div>
+                  <p className="text-[#374151] font-medium">No client selected</p>
+                  <p className="text-[#9CA3AF] text-sm">Select an active client from the dropdown above.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Chart */}
+                  <ProgressChart
+                    data={chartData}
+                    metric={selectedMetric}
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
+                  />
+
+                  {/* Stats row */}
+                  <ProgressStatsRow data={chartData} metric={selectedMetric} />
+
+                  {/* Data table */}
+                  <ProgressDataTable
+                    data={chartData}
+                    metric={selectedMetric}
+                    selectedClient={selectedClient}
+                    onLog={handleLog}
+                  />
+
+                  {/* Progress photos */}
+                  <ProgressPhotos checkIns={clientCheckIns} />
                 </>
               )}
-            </div>
-            <div><Label>Notes</Label><Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={3} /></div>
-            {!canViewGraphs && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-secondary/50 border border-border text-xs text-muted-foreground">
-                <Lock className="w-3.5 h-3.5 flex-shrink-0" />
-                Body fat %, sleep, mood, and compliance fields are available on Pro+.
-              </div>
-            )}
-            <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-              <Button type="submit">Log Check-in</Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 }
