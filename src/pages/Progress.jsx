@@ -1,14 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { subDays, subMonths, subYears, isAfter, format } from 'date-fns';
+import { subMonths, subYears, isAfter, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScanLine } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import ProgressSidebar, { METRIC_CATEGORIES } from '../components/progress/ProgressSidebar';
 import ProgressChart from '../components/progress/ProgressChart';
 import ProgressStatsRow from '../components/progress/ProgressStatsRow';
 import ProgressDataTable from '../components/progress/ProgressDataTable';
 import ProgressPhotos from '../components/progress/ProgressPhotos';
+import InBodyScanner from '../components/progress/InBodyScanner';
 
 // Resolve nested field paths like "measurements.chest"
 function getFieldValue(ci, field) {
@@ -64,6 +67,7 @@ export default function Progress() {
   const [selectedMetric, setSelectedMetric] = useState(DEFAULT_METRIC);
   const [selectedClientId, setSelectedClientId] = useState('');
   const [timeRange, setTimeRange] = useState('3M');
+  const [showInBody, setShowInBody] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: clients = [] } = useQuery({
@@ -141,18 +145,42 @@ export default function Progress() {
           <h1 className="text-xl font-semibold text-white">Progress Tracking</h1>
           <p className="text-sm mt-0.5 text-white/50">Client metrics, trends & body composition over time</p>
         </div>
-        {/* Client selector */}
-        <Select value={selectedClient?.id || ''} onValueChange={setSelectedClientId}>
-          <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white h-9 text-sm">
-            <SelectValue placeholder="Select client" />
-          </SelectTrigger>
-          <SelectContent>
-            {activeClients.map(c => (
-              <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowInBody(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all"
+          >
+            <ScanLine className="w-4 h-4" /> Upload InBody Scan
+          </button>
+          {/* Client selector */}
+          <Select value={selectedClient?.id || ''} onValueChange={setSelectedClientId}>
+            <SelectTrigger className="w-44 bg-white/10 border-white/20 text-white h-9 text-sm">
+              <SelectValue placeholder="Select client" />
+            </SelectTrigger>
+            <SelectContent>
+              {activeClients.map(c => (
+                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
+
+      {/* InBody Sheet */}
+      <Sheet open={showInBody} onOpenChange={setShowInBody}>
+        <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+          <SheetHeader className="mb-4">
+            <SheetTitle className="text-lg font-bold text-[#111827]">InBody Scan Upload</SheetTitle>
+            <p className="text-sm text-[#6B7280]">Upload an InBody scan PDF or photo — AI will extract all metrics automatically</p>
+          </SheetHeader>
+          <InBodyScanner
+            preselectedClient={selectedClient}
+            onScanSaved={() => {
+              queryClient.invalidateQueries({ queryKey: ['checkins'] });
+            }}
+          />
+        </SheetContent>
+      </Sheet>
 
       {/* Two-column layout */}
       <div className="flex flex-1 overflow-hidden mx-6 mb-6 rounded-xl border border-[#E5E7EB] bg-white" style={{ minHeight: 600 }}>
