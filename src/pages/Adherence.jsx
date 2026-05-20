@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
-import PageHeader from '../components/shared/PageHeader';
 import AdherencePanel from '../components/adherence/AdherencePanel';
 import AdherenceScore from '../components/adherence/AdherenceScore';
 import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
@@ -54,15 +53,20 @@ export default function Adherence() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader
-        title="Adherence & Gamification"
-        subtitle="Scores, streaks, and achievement badges"
-        actions={
-          <Button onClick={() => setAwardOpen(true)}>
-            <Trophy className="w-4 h-4 mr-2" /> Award Badge
-          </Button>
-        }
-      />
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Adherence</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Track client compliance and consistency</p>
+        </div>
+        <button
+          onClick={() => setAwardOpen(true)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
+          style={{ background: '#fff', color: '#111827' }}
+        >
+          <Trophy className="w-4 h-4" /> Award Badge
+        </button>
+      </div>
 
       {/* Alert banner */}
       {atRisk.length > 0 && (

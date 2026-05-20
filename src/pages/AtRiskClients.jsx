@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { averageAdherenceScore, scoreColor } from '@/lib/adherence';
 import { getAtRiskClients, SEVERITY_CONFIG, FLAG_ICONS } from '@/lib/riskEngine';
-import PageHeader from '@/components/shared/PageHeader';
 
 /* ── Risk score ring colour ── */
 function ringColor(score) {
@@ -193,10 +192,13 @@ export default function AtRiskClients() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
-      <PageHeader
-        title="At-Risk Clients"
-        subtitle={`${atRisk.length} client${atRisk.length !== 1 ? 's' : ''} need attention`}
-      />
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 mb-5">
+        <h1 className="text-xl font-semibold text-white">At-Risk Clients</h1>
+        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          {atRisk.length} client{atRisk.length !== 1 ? 's' : ''} need{atRisk.length === 1 ? 's' : ''} immediate attention
+        </p>
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-5">

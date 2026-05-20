@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Dumbbell, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import PageHeader from '@/components/shared/PageHeader';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import ExerciseFormModal from '@/components/exercises/ExerciseFormModal';
@@ -45,15 +44,22 @@ export default function ExerciseLibrary() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader
-        title="Exercise Library"
-        subtitle={`${exercises.length} exercises · ${exercises.filter(e => e.is_coach_branded).length} coach-branded`}
-        actions={
-          <Button onClick={() => { setEditingExercise(null); setShowForm(true); }}>
-            <Plus className="w-4 h-4 mr-2" /> Add Exercise
-          </Button>
-        }
-      />
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Exercise Library</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {exercises.length} exercises · {exercises.filter(e => e.is_coach_branded).length} coach-branded
+          </p>
+        </div>
+        <button
+          onClick={() => { setEditingExercise(null); setShowForm(true); }}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
+          style={{ background: '#fff', color: '#111827' }}
+        >
+          <Plus className="w-4 h-4" /> Add Exercise
+        </button>
+      </div>
 
       <ExerciseFilters
         search={search} onSearch={setSearch}

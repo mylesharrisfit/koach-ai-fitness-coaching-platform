@@ -329,19 +329,19 @@ export default function Programs() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-[#111827] rounded-xl p-5">
         <div>
-          <h1 className="text-2xl font-bold text-[#1F2A44]">Workout Library</h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-xl font-semibold text-white">Programs</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{programs.length} program{programs.length !== 1 ? 's' : ''} · Training programs and workout plans</p>
         </div>
-        <Button
+        <button
           onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openBuilder(); }}
-          variant={atLimit ? 'outline' : 'default'}
-          className={cn('gap-1.5', atLimit && 'border-red-200 text-red-500 hover:bg-red-50')}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+          style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
         >
           {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {atLimit ? `Limit (${programs.length}/${programLimit})` : 'New Program'}
-        </Button>
+          {atLimit ? `Limit (${programs.length}/${programLimit})` : '+ New Program'}
+        </button>
       </div>
 
       <LimitBanner limitKey="max_programs" currentCount={programs.length} label="programs" featureKey="clients" />

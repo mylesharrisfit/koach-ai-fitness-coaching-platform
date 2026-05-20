@@ -203,15 +203,20 @@ export default function OnboardingManager() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <Shield className="w-5 h-5 text-blue-500" />
-          <h1 className="text-xl font-bold text-gray-900">Client Onboarding</h1>
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Client Onboarding</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Send your intake link and review submissions</p>
         </div>
-        <p className="text-sm text-gray-500">
-          Send your private intake link to new clients. Review and approve their intake before they become active clients.
-        </p>
+        <button
+          onClick={copyLink}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
+          style={{ background: '#fff', color: '#111827' }}
+        >
+          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {copied ? 'Copied!' : 'Copy Intake Link'}
+        </button>
       </div>
 
       {/* How it works */}

@@ -95,10 +95,19 @@ export default function FoodLibrary() {
 
   return (
     <div className="p-4 sm:p-6 max-w-3xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-heading font-bold text-foreground">Food Library</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Your curated food system — approved foods, meals, and supplements for clients.</p>
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Food Library</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Manage foods for meal planning</p>
+        </div>
+        <button
+          onClick={() => { setEditingFood(null); setShowCustomForm(true); }}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
+          style={{ background: '#fff', color: '#111827' }}
+        >
+          <Plus className="w-4 h-4" /> Add Food
+        </button>
       </div>
 
       {/* Tabs — simple text tabs, not pill overload */}

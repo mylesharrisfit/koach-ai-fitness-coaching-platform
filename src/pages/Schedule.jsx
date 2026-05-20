@@ -124,6 +124,11 @@ export default function Schedule() {
 
   return (
     <div className="p-4 sm:p-6 max-w-screen-2xl mx-auto">
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 mb-5">
+        <h1 className="text-xl font-semibold text-white">Calendar</h1>
+        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Schedule and upcoming sessions</p>
+      </div>
       <CalendarHeader
         title={headerTitle}
         onPrev={handlePrev}

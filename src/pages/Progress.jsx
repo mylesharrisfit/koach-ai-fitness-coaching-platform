@@ -9,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format } from 'date-fns';
-import PageHeader from '../components/shared/PageHeader';
 import ClientProgressCard from '../components/progress/ClientProgressCard';
 import { hasFeature } from '@/lib/subscription';
 
@@ -75,11 +74,22 @@ export default function Progress() {
 
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader
-        title="Progress Tracking"
-        subtitle={canViewGraphs ? "Client analytics & trend tracking" : "Basic progress tracking — upgrade to Pro for full analytics"}
-        actions={<Button onClick={() => setShowForm(true)}><Plus className="w-4 h-4 mr-2" /> Log Check-in</Button>}
-      />
+      {/* ── Header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Progress</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {canViewGraphs ? 'Client analytics & trend tracking' : 'Basic progress tracking — upgrade to Pro for full analytics'}
+          </p>
+        </div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
+          style={{ background: '#fff', color: '#111827' }}
+        >
+          <Plus className="w-4 h-4" /> Log Check-in
+        </button>
+      </div>
 
       {/* Search */}
       <div className="relative mb-6 max-w-sm">
