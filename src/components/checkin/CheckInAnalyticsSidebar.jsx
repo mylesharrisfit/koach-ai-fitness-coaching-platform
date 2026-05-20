@@ -130,105 +130,90 @@ export default function CheckInAnalyticsSidebar({ checkIns, clients, latestPerCl
     <div className="space-y-4">
 
       {/* ── Section A: Weekly Overview ── */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 shadow-sm">
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-[#1F2A44]">This Week</h3>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          <h3 className="text-sm font-semibold text-[#111827]">This Week</h3>
+          <div className="flex items-center gap-1 text-xs text-[#6B7280]">
             <TrendIcon val={weeklyStats.countChange} />
             {weeklyStats.countChange !== null && (
-              <span className={cn(weeklyStats.countChange > 0 ? 'text-emerald-600' : weeklyStats.countChange < 0 ? 'text-red-500' : '')}>
+              <span className={cn(weeklyStats.countChange > 0 ? 'text-[#16A34A]' : weeklyStats.countChange < 0 ? 'text-[#DC2626]' : '')}>
                 {weeklyStats.countChange > 0 ? '+' : ''}{weeklyStats.countChange}%
               </span>
             )}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-[#F6F7FB] rounded-xl p-3 text-center">
-            <p className="text-2xl font-bold text-[#1F2A44]">{weeklyStats.ciCount}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">Check-ins</p>
+          <div className="border border-[#E5E7EB] rounded-lg p-3 text-center">
+            <p className="text-2xl font-semibold text-[#111827]">{weeklyStats.ciCount}</p>
+            <p className="text-xs text-[#6B7280] mt-0.5">Check-ins</p>
             {weeklyStats.lastCount > 0 && (
-              <p className="text-[10px] text-muted-foreground">vs {weeklyStats.lastCount} last wk</p>
+              <p className="text-xs text-[#9CA3AF]">vs {weeklyStats.lastCount} last wk</p>
             )}
           </div>
-          <div className="bg-[#F6F7FB] rounded-xl p-3 text-center">
-            <p className={cn('text-2xl font-bold', weeklyStats.avgCompliance >= 75 ? 'text-emerald-600' : weeklyStats.avgCompliance >= 50 ? 'text-amber-500' : 'text-red-500')}>
+          <div className="border border-[#E5E7EB] rounded-lg p-3 text-center">
+            <p className="text-2xl font-semibold text-[#111827]">
               {weeklyStats.avgCompliance ?? '–'}{weeklyStats.avgCompliance != null && '%'}
             </p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">Avg Compliance</p>
+            <p className="text-xs text-[#6B7280] mt-0.5">Compliance</p>
           </div>
-          <div className="flex items-center gap-2 bg-[#F6F7FB] rounded-xl p-2.5">
-            <Moon className="w-4 h-4 text-indigo-400 shrink-0" />
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-lg p-2.5">
+            <Moon className="w-3.5 h-3.5 text-[#9CA3AF] shrink-0" />
             <div>
-              <p className="text-sm font-bold text-[#1F2A44]">{weeklyStats.avgSleep ?? '–'}<span className="text-[10px] font-normal text-muted-foreground"> hrs</span></p>
-              <p className="text-[10px] text-muted-foreground">Avg Sleep</p>
+              <p className="text-sm font-medium text-[#111827]">{weeklyStats.avgSleep ?? '–'}<span className="text-xs font-normal text-[#6B7280]"> hrs</span></p>
+              <p className="text-xs text-[#9CA3AF]">Avg Sleep</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-[#F6F7FB] rounded-xl p-2.5">
-            <Smile className="w-4 h-4 text-amber-400 shrink-0" />
+          <div className="flex items-center gap-2 border border-[#E5E7EB] rounded-lg p-2.5">
+            <Smile className="w-3.5 h-3.5 text-[#9CA3AF] shrink-0" />
             <div>
-              <p className="text-sm font-bold text-[#1F2A44]">{weeklyStats.avgMood ?? '–'}<span className="text-[10px] font-normal text-muted-foreground">/5</span></p>
-              <p className="text-[10px] text-muted-foreground">Avg Mood</p>
+              <p className="text-sm font-medium text-[#111827]">{weeklyStats.avgMood ?? '–'}<span className="text-xs font-normal text-[#6B7280]">/5</span></p>
+              <p className="text-xs text-[#9CA3AF]">Avg Mood</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── Section B: 4-Week Compliance Trend ── */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 shadow-sm">
-        <h3 className="text-sm font-bold text-[#1F2A44] mb-3">Compliance Trend</h3>
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+        <h3 className="text-sm font-semibold text-[#111827] mb-3">Compliance Trend</h3>
         <ResponsiveContainer width="100%" height={110}>
           <BarChart data={weeklyTrend} barCategoryGap="25%">
             <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
             <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} width={28} />
             <Tooltip
-              contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E7EAF3' }}
+              contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E5E7EB', boxShadow: 'none' }}
               formatter={(v) => [`${v}%`, 'Compliance']}
             />
-            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-              {weeklyTrend.map((entry, i) => (
-                <Cell key={i} fill={barColor(entry.value)} />
-              ))}
-            </Bar>
+            <Bar dataKey="value" radius={[3, 3, 0, 0]} fill="#2563EB" />
           </BarChart>
         </ResponsiveContainer>
-        <div className="flex gap-3 mt-1 justify-center">
-          {[['#10B981', '>75%'], ['#F59E0B', '50–75%'], ['#EF4444', '<50%']].map(([color, label]) => (
-            <div key={label} className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-              <span className="text-[10px] text-muted-foreground">{label}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* ── Section C: At-Risk Clients ── */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <AlertTriangle className="w-4 h-4 text-red-500" />
-          <h3 className="text-sm font-bold text-[#1F2A44]">At-Risk Clients</h3>
-        </div>
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+        <h3 className="text-sm font-semibold text-[#111827] mb-3">At-Risk</h3>
         {atRiskClients.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-3">All clients on track 🎉</p>
+          <p className="text-xs text-[#9CA3AF] text-center py-3">All clients on track</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1">
             {atRiskClients.map(({ ci, client, score, flags }) => (
-              <div key={ci.id} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-red-50/60 border border-red-100">
-                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xs shrink-0">
+              <div key={ci.id} className="flex items-center gap-2.5 py-2 border-b border-[#F3F4F6] last:border-0">
+                <div className="w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#374151] font-medium text-xs shrink-0">
                   {(client?.name || ci.client_name || '?')[0]?.toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold truncate">{client?.name || ci.client_name}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{flags.slice(0, 2).join(' · ')}</p>
+                  <p className="text-xs font-medium text-[#111827] truncate">{client?.name || ci.client_name}</p>
+                  <p className="text-[10px] text-[#9CA3AF] truncate">{flags.slice(0, 2).join(' · ')}</p>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-2 shrink-0">
                   {score !== null && (
-                    <span className="text-[10px] font-bold text-red-600">{score}%</span>
+                    <span className="text-xs font-medium text-[#DC2626]">{score}%</span>
                   )}
                   <button
                     onClick={() => navigate(`/messages?clientId=${ci.client_id}`)}
-                    className="p-1.5 rounded-lg bg-white border border-red-100 text-red-500 hover:bg-red-50 transition-colors"
+                    className="p-1 rounded text-[#9CA3AF] hover:text-[#374151] transition-colors"
                   >
-                    <MessageSquare className="w-3 h-3" />
+                    <MessageSquare className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -238,30 +223,27 @@ export default function CheckInAnalyticsSidebar({ checkIns, clients, latestPerCl
       </div>
 
       {/* ── Section D: Top Performers ── */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <Trophy className="w-4 h-4 text-amber-500" />
-          <h3 className="text-sm font-bold text-[#1F2A44]">Top Performers</h3>
-        </div>
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+        <h3 className="text-sm font-semibold text-[#111827] mb-3">Top Performers</h3>
         {topPerformers.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-3">No top performers yet this week</p>
+          <p className="text-xs text-[#9CA3AF] text-center py-3">No top performers yet this week</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1">
             {topPerformers.map(({ ci, client, score, streak }, idx) => (
-              <div key={ci.id} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
-                <div className="relative shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
-                    {(client?.name || ci.client_name || '?')[0]?.toUpperCase()}
-                  </div>
-                  {idx === 0 && <span className="absolute -top-1 -right-1 text-xs">🏆</span>}
+              <div key={ci.id} className="flex items-center gap-2.5 py-2 border-b border-[#F3F4F6] last:border-0">
+                <div className="w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#374151] font-medium text-xs shrink-0">
+                  {(client?.name || ci.client_name || '?')[0]?.toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold truncate">{client?.name || ci.client_name}</p>
-                  {streak > 1 && <p className="text-[10px] text-muted-foreground">{streak} check-in streak 🔥</p>}
+                  <p className="text-xs font-medium text-[#111827] truncate">{client?.name || ci.client_name}</p>
+                  {streak > 1 && <p className="text-[10px] text-[#9CA3AF]">{streak}-check streak</p>}
                 </div>
-                {score !== null && (
-                  <span className="text-[10px] font-bold text-emerald-600 shrink-0">{score}%</span>
-                )}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {idx === 0 && <span className="text-xs">🏆</span>}
+                  {score !== null && (
+                    <span className="text-xs font-medium text-[#16A34A]">{score}%</span>
+                  )}
+                </div>
               </div>
             ))}
           </div>

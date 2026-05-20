@@ -47,10 +47,10 @@ const FILTERS = [
 ];
 
 const STAT_CARDS = [
-  { key: 'pending',  label: 'Pending',  icon: Clock,         bg: 'bg-amber-50',   border: 'border-amber-100',   text: 'text-amber-600',   iconColor: 'text-amber-400' },
-  { key: 'flagged',  label: 'Flagged',  icon: Flag,          bg: 'bg-red-50',     border: 'border-red-100',     text: 'text-red-600',     iconColor: 'text-red-400' },
-  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2,  bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700', iconColor: 'text-emerald-400' },
-  { key: 'missed',   label: 'Missed',   icon: UserX,         bg: 'bg-orange-50',  border: 'border-orange-100',  text: 'text-orange-600',  iconColor: 'text-orange-400' },
+  { key: 'pending',  label: 'Pending',  icon: Clock,        dotColor: 'bg-amber-400',   numColor: 'text-amber-600' },
+  { key: 'flagged',  label: 'Flagged',  icon: Flag,         dotColor: 'bg-red-500',     numColor: 'text-red-600' },
+  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2, dotColor: 'bg-emerald-500', numColor: 'text-emerald-700' },
+  { key: 'missed',   label: 'Missed',   icon: UserX,        dotColor: 'bg-orange-400',  numColor: 'text-orange-600' },
 ];
 
 export default function CheckInReview() {
@@ -190,61 +190,47 @@ export default function CheckInReview() {
 
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-        {STAT_CARDS.map(({ key, label, icon: Icon, bg, border, text, iconColor }) => (
+        {STAT_CARDS.map(({ key, label, icon: Icon, dotColor, numColor }) => (
           <motion.button
             key={key}
             whileTap={{ scale: 0.97 }}
             onClick={() => setFilter(filter === key ? 'all' : key)}
             className={cn(
-              'rounded-2xl p-4 text-left transition-all shadow-sm border',
-              bg, border,
-              filter === key && 'ring-2 ring-primary/30 ring-offset-1'
+              'bg-white border border-[#E5E7EB] rounded-xl p-4 text-left transition-all hover:border-[#D1D5DB]',
+              filter === key && 'ring-2 ring-[#2563EB]/20 border-[#2563EB]/40'
             )}
           >
-            <div className="flex items-start justify-between mb-2">
-              <Icon className={cn('w-5 h-5', iconColor)} />
-              {counts[key] > 0 && (
-                <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white/70', text)}>
-                  {counts[key]}
-                </span>
-              )}
+            <div className="flex items-center justify-between mb-3">
+              <div className={cn('w-2 h-2 rounded-full', dotColor)} />
+              <Icon className="w-4 h-4 text-[#9CA3AF]" />
             </div>
-            <p className={cn('text-3xl font-extrabold font-heading', counts[key] > 0 ? text : 'text-[#374151]')}>
+            <p className={cn('text-2xl font-semibold', counts[key] > 0 ? numColor : 'text-[#111827]')}>
               {counts[key]}
             </p>
-            <p className="text-xs text-[#6B7280] font-medium mt-0.5 capitalize">{label}</p>
+            <p className="text-xs text-[#6B7280] mt-0.5 capitalize">{label}</p>
           </motion.button>
         ))}
       </div>
 
       {/* ── Quick Actions Bar ── */}
-      <div className="flex gap-2 flex-wrap mb-5 p-3 bg-white border border-[#E7EAF3] rounded-2xl shadow-sm">
-        <button
-          onClick={() => setFilter('pending')}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100 transition-colors"
-        >
-          <Clock className="w-3.5 h-3.5" /> Review All Pending
-          {counts.pending > 0 && <span className="bg-amber-200 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{counts.pending}</span>}
-        </button>
-        <button
-          onClick={() => setFilter('flagged')}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors"
-        >
-          <Flag className="w-3.5 h-3.5" /> Flag Low Scores
-          {counts.flagged > 0 && <span className="bg-red-200 text-red-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{counts.flagged}</span>}
-        </button>
-        <button
-          onClick={() => navigate('/messages')}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors"
-        >
-          <MessageSquare className="w-3.5 h-3.5" /> Send Reminders
-        </button>
-        <button
-          onClick={() => toast.info('Export report coming soon!')}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-[#F6F7FB] text-[#374151] border border-[#E7EAF3] hover:bg-secondary transition-colors"
-        >
-          <Download className="w-3.5 h-3.5" /> Export Report
-        </button>
+      <div className="flex gap-2 flex-wrap mb-5">
+        {[
+          { label: 'Pending', action: () => setFilter('pending'), count: counts.pending },
+          { label: 'Flagged', action: () => setFilter('flagged'), count: counts.flagged },
+          { label: 'Reminders', action: () => navigate('/messages'), count: 0 },
+          { label: 'Export', action: () => toast.info('Export coming soon'), count: 0 },
+        ].map(({ label, action, count }) => (
+          <button
+            key={label}
+            onClick={action}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB] hover:border-[#D1D5DB] transition-colors"
+          >
+            {label}
+            {count > 0 && (
+              <span className="bg-[#F3F4F6] text-[#374151] text-[10px] font-semibold px-1.5 py-0.5 rounded-full">{count}</span>
+            )}
+          </button>
+        ))}
       </div>
 
       {/* ── Two-column layout ── */}
