@@ -30,7 +30,7 @@ function injectStyle() {
 }
 injectStyle();
 
-export default function BadgeCard({ badgeKey, earned = false, earnedDate, clientCount = 0, onClick, progress, progressMax }) {
+export default function BadgeCard({ badgeKey, earned = false, earnedDate, clientCount = 0, onClick, progress, progressMax, light = false }) {
   const [hovered, setHovered] = useState(false);
   const cfg = BADGE_CONFIG[badgeKey];
   if (!cfg) return null;
@@ -46,6 +46,10 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       ? `0 0 24px 6px ${tier.glowHover}, 0 8px 32px rgba(0,0,0,0.5)`
       : `0 0 14px 2px ${tier.glow}, 0 4px 16px rgba(0,0,0,0.4)`,
     animation: isElite ? 'eliteGlow 2.4s ease-in-out infinite' : undefined,
+  } : light ? {
+    background: '#F9FAFB',
+    border: '1px solid #E5E7EB',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   } : {
     background: '#18191F',
     border: '1px solid rgba(255,255,255,0.06)',
@@ -88,7 +92,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Lock overlay for unearned */}
       {!earned && (
         <span className="absolute top-2 right-2 opacity-40">
-          <Lock size={10} color="#9CA3AF" />
+          <Lock size={10} color={light ? '#D1D5DB' : '#9CA3AF'} />
         </span>
       )}
 
@@ -105,7 +109,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Name */}
       <p
         className="text-[11px] font-bold leading-tight"
-        style={{ color: earned ? tier.text : '#4B5563' }}
+        style={{ color: earned ? tier.text : (light ? '#111827' : '#4B5563') }}
       >
         {cfg.label}
       </p>
@@ -115,14 +119,16 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
         className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
         style={earned
           ? { background: `${tier.accent}22`, color: tier.accent, border: `1px solid ${tier.accent}55` }
-          : { background: 'rgba(255,255,255,0.04)', color: '#4B5563', border: '1px solid rgba(255,255,255,0.08)' }
+          : light
+            ? { background: '#F3F4F6', color: '#9CA3AF', border: '1px solid #E5E7EB' }
+            : { background: 'rgba(255,255,255,0.04)', color: '#4B5563', border: '1px solid rgba(255,255,255,0.08)' }
         }
       >
         {tier.label}
       </span>
 
       {/* Description */}
-      <p className="text-[9px] leading-tight" style={{ color: earned ? `${tier.accent}99` : '#374151' }}>
+      <p className="text-[9px] leading-tight" style={{ color: earned ? `${tier.accent}99` : (light ? '#6B7280' : '#374151') }}>
         {cfg.desc}
       </p>
 
@@ -146,7 +152,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Progress ring for unearned */}
       {showProgress && (
         <div className="flex flex-col items-center gap-0.5 mt-0.5">
-          <div className="w-full bg-[#1F2937] rounded-full h-1 overflow-hidden">
+          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-[#E5E7EB]' : 'bg-[#1F2937]'}`}>
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}

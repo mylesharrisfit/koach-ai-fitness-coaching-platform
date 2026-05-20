@@ -279,14 +279,13 @@ export default function Adherence() {
       </div>
 
       {/* ── Achievements Gallery ── */}
-      <div className="rounded-2xl p-5 mb-6"
-        style={{ background: '#161820', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 mb-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <Trophy size={15} className="text-[#FFD700]" />
-            <p className="text-sm font-bold text-white uppercase tracking-wider">Achievements Gallery</p>
+            <Trophy size={15} className="text-[#111827]" />
+            <p className="text-sm font-bold text-[#111827] uppercase tracking-wider">Achievements Gallery</p>
           </div>
-          <p className="text-xs text-[#4B5563]">{Object.keys(BADGE_CONFIG).length} total badges</p>
+          <p className="text-xs text-[#6B7280]">{Object.keys(BADGE_CONFIG).length} total badges</p>
         </div>
 
         {/* Tier tabs */}
@@ -298,15 +297,15 @@ export default function Adherence() {
               <button
                 key={t}
                 onClick={() => setTierFilter(t)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all"
                 style={isActive
                   ? (t === 'All'
-                    ? { background: '#fff', color: '#111', borderColor: '#fff' }
+                    ? { background: '#111827', color: '#fff', borderColor: '#111827' }
                     : (t === 'elite'
                       ? { background: 'linear-gradient(135deg,#2563EB,#7C3AED)', color: '#fff', borderColor: '#2563EB', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }
                       : { background: TIER_STYLES[t]?.accent, color: '#111', borderColor: TIER_STYLES[t]?.accent, boxShadow: `0 0 10px ${TIER_STYLES[t]?.glow}` }
                     ))
-                  : { background: 'transparent', color: '#6B7280', borderColor: 'rgba(255,255,255,0.08)' }
+                  : { background: '#fff', color: '#6B7280', borderColor: '#E5E7EB' }
                 }
               >
                 {t !== 'All' && ts && (
@@ -343,6 +342,7 @@ export default function Adherence() {
                   progress={!badgeCountMap[key] ? prog : undefined}
                   progressMax={!badgeCountMap[key] ? hint?.max : undefined}
                   onClick={() => openAwardFor(key)}
+                  light={!badgeCountMap[key]}
                 />
               </motion.div>
             );
