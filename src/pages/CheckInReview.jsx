@@ -2,12 +2,20 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { differenceInDays, parseISO, format } from 'date-fns';
-import { ClipboardList, Search, X, AlertCircle, MessageSquare, Send } from 'lucide-react';
+import {
+  ClipboardList, Search, X, AlertCircle, MessageSquare, Send,
+  Clock, Flag, CheckCircle2, UserX, Download, Bell, ChevronRight
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkInScore, averageAdherenceScore } from '@/lib/adherence';
 import CheckInClientCard from '../components/checkin/CheckInClientCard';
+import CheckInAnalyticsSidebar from '../components/checkin/CheckInAnalyticsSidebar';
+import CheckInDetailDrawer from '../components/checkin/CheckInDetailDrawer';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 /* ── helpers ── */
 function getReviewStatus(ci) {
@@ -26,12 +34,8 @@ function isFlagged(ci) {
 function isOverdue(ci) {
   return differenceInDays(new Date(), parseISO(ci.date)) > 14;
 }
-function isPending(ci) {
-  return getReviewStatus(ci) === 'pending';
-}
-function isReviewed(ci) {
-  return getReviewStatus(ci) === 'reviewed';
-}
+function isPending(ci) { return getReviewStatus(ci) === 'pending'; }
+function isReviewed(ci) { return getReviewStatus(ci) === 'reviewed'; }
 
 const FILTERS = [
   { key: 'all',      label: 'All' },
@@ -42,20 +46,21 @@ const FILTERS = [
   { key: 'missed',   label: 'Missed' },
 ];
 
-const STAT_COLORS = {
-  pending:  'text-amber-500',
-  flagged:  'text-destructive',
-  reviewed: 'text-emerald-600',
-  missed:   'text-orange-500',
-};
+const STAT_CARDS = [
+  { key: 'pending',  label: 'Pending',  icon: Clock,         bg: 'bg-amber-50',   border: 'border-amber-100',   text: 'text-amber-600',   iconColor: 'text-amber-400' },
+  { key: 'flagged',  label: 'Flagged',  icon: Flag,          bg: 'bg-red-50',     border: 'border-red-100',     text: 'text-red-600',     iconColor: 'text-red-400' },
+  { key: 'reviewed', label: 'Reviewed', icon: CheckCircle2,  bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700', iconColor: 'text-emerald-400' },
+  { key: 'missed',   label: 'Missed',   icon: UserX,         bg: 'bg-orange-50',  border: 'border-orange-100',  text: 'text-orange-600',  iconColor: 'text-orange-400' },
+];
 
 export default function CheckInReview() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
+  const [drawerCheckIn, setDrawerCheckIn] = useState(null);
+  const [drawerIndex, setDrawerIndex] = useState(0);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // Real-time: refresh list when any check-in is updated (coach responds/reviews)
   useEffect(() => {
     const unsub = base44.entities.CheckIn.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: ['checkins-review'] });
@@ -78,7 +83,6 @@ export default function CheckInReview() {
     [clients]
   );
 
-  /* Latest check-in per client (for the dashboard view) */
   const latestPerClient = useMemo(() => {
     const seen = new Map();
     for (const ci of checkIns) {
@@ -87,7 +91,6 @@ export default function CheckInReview() {
     return Array.from(seen.values());
   }, [checkIns]);
 
-  /* All CIs grouped by client (for adherence/trends) */
   const cisByClient = useMemo(() => {
     const map = {};
     for (const ci of checkIns) {
@@ -97,10 +100,8 @@ export default function CheckInReview() {
     return map;
   }, [checkIns]);
 
-  /* Filter + search */
   const visible = useMemo(() => {
     let list = latestPerClient;
-
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(ci => {
@@ -108,13 +109,10 @@ export default function CheckInReview() {
         return name.includes(q);
       });
     }
-
     if (filter === 'pending')  list = list.filter(isPending);
     if (filter === 'flagged')  list = list.filter(isFlagged);
     if (filter === 'reviewed') list = list.filter(isReviewed);
     if (filter === 'overdue')  list = list.filter(isOverdue);
-
-    // Sort: at-risk first, then by date desc
     return [...list].sort((a, b) => {
       const aFlag = isFlagged(a) ? 1 : 0;
       const bFlag = isFlagged(b) ? 1 : 0;
@@ -123,7 +121,6 @@ export default function CheckInReview() {
     });
   }, [latestPerClient, filter, search, clientMap]);
 
-  /* Missed check-ins: active clients with no check-in in 7+ days */
   const missedClients = useMemo(() => {
     const activeClients = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active');
     return activeClients.filter(client => {
@@ -132,7 +129,7 @@ export default function CheckInReview() {
       const latest = clientCIs.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
       return differenceInDays(new Date(), parseISO(latest.date)) >= 7;
     }).map(client => {
-      const clientCIs = checkIns.filter(ci => ci.client_id === client.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const clientCIs = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
       const lastCI = clientCIs[0];
       const daysAgo = lastCI ? differenceInDays(new Date(), parseISO(lastCI.date)) : null;
       return { client, lastCI, daysAgo };
@@ -146,162 +143,270 @@ export default function CheckInReview() {
     missed:   missedClients.length,
   }), [latestPerClient, missedClients]);
 
+  // Drawer navigation — navigates within the current visible list
+  const openDrawer = (ci, idx) => {
+    setDrawerCheckIn(ci);
+    setDrawerIndex(idx);
+  };
+  const navigateDrawer = (newIdx) => {
+    if (newIdx >= 0 && newIdx < visible.length) {
+      setDrawerCheckIn(visible[newIdx]);
+      setDrawerIndex(newIdx);
+    }
+  };
+
+  const pendingClients = latestPerClient.filter(isPending);
+
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="mb-6 fade-up">
-        <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-[#1F2A44]">Check-in Dashboard</h1>
-        <p className="text-sm text-[#374151] mt-1">
-          {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
-          {counts.pending > 0 && ` · ${counts.pending} awaiting review`}
-        </p>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+
+      {/* ── Header ── */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-heading font-bold tracking-tight text-[#1F2A44]">Check-in Dashboard</h1>
+          <p className="text-sm text-[#374151] mt-0.5">
+            {format(new Date(), 'EEEE, MMMM d, yyyy')} · {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
+          </p>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs"
+            onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in when you get a chance 📋")}`)}
+          >
+            <Bell className="w-3.5 h-3.5" /> Send Bulk Reminder
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs"
+            onClick={() => toast.info('Export feature coming soon!')}
+          >
+            <Download className="w-3.5 h-3.5" /> Export
+          </Button>
+        </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-2 mb-5 fade-up fade-up-delay-1">
-        {(['pending', 'flagged', 'reviewed', 'missed']).map(k => (
-          <button
-            key={k}
-            onClick={() => setFilter(filter === k ? 'all' : k)}
+      {/* ── Stat Cards ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        {STAT_CARDS.map(({ key, label, icon: Icon, bg, border, text, iconColor }) => (
+          <motion.button
+            key={key}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setFilter(filter === key ? 'all' : key)}
             className={cn(
-              'bg-white border rounded-xl p-3 text-center transition-all active:scale-[0.97] shadow-sm',
-              filter === k ? 'border-primary ring-1 ring-primary/30' : 'border-[#E7EAF3]'
+              'rounded-2xl p-4 text-left transition-all shadow-sm border',
+              bg, border,
+              filter === key && 'ring-2 ring-primary/30 ring-offset-1'
             )}
           >
-            <p className={cn('text-2xl font-bold font-heading', counts[k] > 0 ? (STAT_COLORS[k] || 'text-amber-500') : 'text-[#374151]')}>
-              {counts[k]}
+            <div className="flex items-start justify-between mb-2">
+              <Icon className={cn('w-5 h-5', iconColor)} />
+              {counts[key] > 0 && (
+                <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white/70', text)}>
+                  {counts[key]}
+                </span>
+              )}
+            </div>
+            <p className={cn('text-3xl font-extrabold font-heading', counts[key] > 0 ? text : 'text-[#374151]')}>
+              {counts[key]}
             </p>
-            <p className="text-[11px] text-[#374151] mt-0.5 capitalize">{k}</p>
-          </button>
+            <p className="text-xs text-[#6B7280] font-medium mt-0.5 capitalize">{label}</p>
+          </motion.button>
         ))}
       </div>
 
-      {/* Filter tabs + search */}
-      <div className="space-y-3 mb-5 fade-up fade-up-delay-2">
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-          {FILTERS.map(f => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={cn(
-                'flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all',
-                filter === f.key
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-white border border-[#E7EAF3] text-[#374151] hover:text-[#1F2A44]'
+      {/* ── Quick Actions Bar ── */}
+      <div className="flex gap-2 flex-wrap mb-5 p-3 bg-white border border-[#E7EAF3] rounded-2xl shadow-sm">
+        <button
+          onClick={() => setFilter('pending')}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-100 hover:bg-amber-100 transition-colors"
+        >
+          <Clock className="w-3.5 h-3.5" /> Review All Pending
+          {counts.pending > 0 && <span className="bg-amber-200 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{counts.pending}</span>}
+        </button>
+        <button
+          onClick={() => setFilter('flagged')}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-100 hover:bg-red-100 transition-colors"
+        >
+          <Flag className="w-3.5 h-3.5" /> Flag Low Scores
+          {counts.flagged > 0 && <span className="bg-red-200 text-red-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{counts.flagged}</span>}
+        </button>
+        <button
+          onClick={() => navigate('/messages')}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 hover:bg-blue-100 transition-colors"
+        >
+          <MessageSquare className="w-3.5 h-3.5" /> Send Reminders
+        </button>
+        <button
+          onClick={() => toast.info('Export report coming soon!')}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-[#F6F7FB] text-[#374151] border border-[#E7EAF3] hover:bg-secondary transition-colors"
+        >
+          <Download className="w-3.5 h-3.5" /> Export Report
+        </button>
+      </div>
+
+      {/* ── Two-column layout ── */}
+      <div className="flex flex-col lg:flex-row gap-6">
+
+        {/* ── Left: Check-in list (65%) ── */}
+        <div className="flex-1 min-w-0" style={{ flexBasis: '65%' }}>
+
+          {/* Filter tabs + search */}
+          <div className="space-y-3 mb-5">
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {FILTERS.map(f => (
+                <button
+                  key={f.key}
+                  onClick={() => setFilter(f.key)}
+                  className={cn(
+                    'flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all',
+                    filter === f.key
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-white border border-[#E7EAF3] text-[#374151] hover:text-[#1F2A44]'
+                  )}
+                >
+                  {f.label}
+                  {f.key !== 'all' && counts[f.key] > 0 && (
+                    <span className={cn(
+                      'ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
+                      filter === f.key ? 'bg-white/20 text-white' : 'bg-secondary-foreground/10'
+                    )}>
+                      {counts[f.key]}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search clients..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-9 h-10"
+              />
+              {search && (
+                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <X className="w-4 h-4 text-muted-foreground" />
+                </button>
               )}
-            >
-              {f.label}
-              {f.key !== 'all' && counts[f.key] > 0 && (
-                <span className={cn(
-                  'ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                  filter === f.key ? 'bg-white/20 text-white' : 'bg-secondary-foreground/10'
-                )}>
-                  {counts[f.key]}
-                </span>
-              )}
-            </button>
-          ))}
+            </div>
+          </div>
+
+          {/* List */}
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            </div>
+          ) : filter === 'missed' ? (
+            missedClients.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
+                <ClipboardList className="w-12 h-12 opacity-30" />
+                <p className="text-sm font-medium">All active clients checked in this week 🎉</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground mb-3">
+                  {missedClients.length} active client{missedClients.length !== 1 ? 's' : ''} haven't checked in this week
+                </p>
+                {missedClients.map(({ client, lastCI, daysAgo }, i) => (
+                  <div
+                    key={client.id}
+                    className="bg-white border border-[#E7EAF3] rounded-2xl p-4 flex items-center gap-3 shadow-sm fade-up"
+                    style={{ animationDelay: `${i * 0.04}s` }}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-sm flex-shrink-0">
+                      {client.name?.[0]?.toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm truncate">{client.name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {daysAgo !== null
+                          ? `Last check-in ${daysAgo}d ago · ${lastCI ? format(parseISO(lastCI.date), 'MMM d') : ''}`
+                          : 'No check-ins yet'}
+                      </p>
+                    </div>
+                    <span className={cn(
+                      'text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0',
+                      daysAgo === null || daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'
+                    )}>
+                      {daysAgo !== null ? `${daysAgo}d` : 'Never'}
+                    </span>
+                    <div className="flex gap-1.5 shrink-0">
+                      <button
+                        onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in when you get a chance 📋")}`)}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors"
+                      >
+                        <Send className="w-3 h-3" /> Remind
+                      </button>
+                      <button
+                        onClick={() => navigate(`/messages?clientId=${client.id}`)}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] hover:bg-[#ECEEF4] transition-colors"
+                      >
+                        <MessageSquare className="w-3 h-3" /> Chat
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          ) : visible.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
+              <ClipboardList className="w-12 h-12 opacity-30" />
+              <p className="text-sm font-medium">
+                {filter === 'pending' ? 'All check-ins responded to 🎉' :
+                 filter === 'flagged' ? 'No flagged check-ins' :
+                 filter === 'overdue' ? 'No overdue check-ins' :
+                 search ? 'No clients found' : 'No check-ins yet'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {visible.map((ci, i) => (
+                <div
+                  key={ci.id}
+                  className="fade-up cursor-pointer"
+                  style={{ animationDelay: `${Math.min(i * 0.04, 0.3)}s` }}
+                  onClick={() => openDrawer(ci, i)}
+                >
+                  <CheckInClientCard
+                    checkIn={ci}
+                    client={clientMap[ci.client_id]}
+                    allClientCIs={cisByClient[ci.client_id] || []}
+                    defaultOpen={false}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search clients..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 h-10"
+        {/* ── Right: Analytics Sidebar (35%) ── */}
+        <div className="w-full lg:w-80 xl:w-96 flex-shrink-0">
+          <CheckInAnalyticsSidebar
+            checkIns={checkIns}
+            clients={clients}
+            latestPerClient={latestPerClient}
+            clientMap={clientMap}
           />
-          {search && (
-            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2">
-              <X className="w-4 h-4 text-muted-foreground" />
-            </button>
-          )}
         </div>
       </div>
 
-      {/* List */}
-      {isLoading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-        </div>
-      ) : filter === 'missed' ? (
-        /* ── Missed check-ins panel ── */
-        missedClients.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
-            <ClipboardList className="w-12 h-12 opacity-30" />
-            <p className="text-sm font-medium">All active clients checked in this week 🎉</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-xs text-muted-foreground mb-3">
-              {missedClients.length} active client{missedClients.length !== 1 ? 's' : ''} haven't checked in this week
-            </p>
-            {missedClients.map(({ client, lastCI, daysAgo }, i) => (
-              <div
-                key={client.id}
-                className="bg-white border border-[#E7EAF3] rounded-2xl p-4 flex items-center gap-3 shadow-sm fade-up"
-                style={{ animationDelay: `${i * 0.04}s` }}
-              >
-                <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-sm flex-shrink-0">
-                  {client.name?.[0]?.toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm truncate">{client.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {daysAgo !== null
-                      ? `Last check-in ${daysAgo}d ago · ${lastCI ? format(parseISO(lastCI.date), 'MMM d') : ''}`
-                      : 'No check-ins yet'}
-                  </p>
-                </div>
-                <span className={cn(
-                  'text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0',
-                  daysAgo === null || daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100'
-                )}>
-                  {daysAgo !== null ? `${daysAgo}d` : 'Never'}
-                </span>
-                <div className="flex gap-1.5 shrink-0">
-                  <button
-                    onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in when you get a chance 📋")}`)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors"
-                  >
-                    <Send className="w-3 h-3" />
-                    Remind
-                  </button>
-                  <button
-                    onClick={() => navigate(`/messages?clientId=${client.id}`)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] hover:bg-[#ECEEF4] transition-colors"
-                  >
-                    <MessageSquare className="w-3 h-3" />
-                    Chat
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )
-      ) : visible.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
-          <ClipboardList className="w-12 h-12 opacity-30" />
-          <p className="text-sm font-medium">
-            {filter === 'pending' ? 'All check-ins responded to 🎉' :
-             filter === 'flagged' ? 'No flagged check-ins' :
-             filter === 'overdue' ? 'No overdue check-ins' :
-             search ? 'No clients found' : 'No check-ins yet'}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {visible.map((ci, i) => (
-            <div key={ci.id} className="fade-up" style={{ animationDelay: `${Math.min(i * 0.04, 0.3)}s` }}>
-              <CheckInClientCard
-                checkIn={ci}
-                client={clientMap[ci.client_id]}
-                allClientCIs={cisByClient[ci.client_id] || []}
-                defaultOpen={filter === 'flagged' && visible.length <= 3}
-              />
-            </div>
-          ))}
-        </div>
+      {/* ── Detail Drawer ── */}
+      {drawerCheckIn && (
+        <CheckInDetailDrawer
+          checkIn={drawerCheckIn}
+          client={clientMap[drawerCheckIn.client_id]}
+          allCheckIns={cisByClient[drawerCheckIn.client_id] || []}
+          currentIndex={drawerIndex}
+          total={visible.length}
+          onNavigate={navigateDrawer}
+          open={!!drawerCheckIn}
+          onOpenChange={(v) => { if (!v) setDrawerCheckIn(null); }}
+        />
       )}
     </div>
   );
