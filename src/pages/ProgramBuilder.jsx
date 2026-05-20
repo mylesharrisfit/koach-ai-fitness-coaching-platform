@@ -58,7 +58,9 @@ const SECTION_HEADER_STYLES = {
 const newExercise = (section = 'main') => ({
   name: '', sets: 3, reps: '10', rest_seconds: 60,
   tempo: '', notes: '', video_url: '',
-  set_type: 'straight', rpe: '', superset_group: '',
+  set_type: 'straight', rpe: '', rir: '',
+  superset_group: '', dropset_scheme: '',
+  stretch_type: 'static', duration_seconds: 30,
   section,
   progression_type: 'none', progression_value: 5,
 });
@@ -68,7 +70,7 @@ const newWorkout = (idx) => ({
 const defaultMeta = {
   title: '', description: '', duration_weeks: 8, difficulty: 'intermediate',
   category: 'custom', days_per_week: 4, is_template: false,
-  equipment: [], tags: [], program_icon: 'dumbbell', estimated_session_length: '60',
+  equipment: [], tags: [], estimated_session_length: '60',
   progression_model: 'linear', deload_frequency: 'never', rest_day_notes: '',
 };
 
@@ -151,6 +153,27 @@ function SectionDivider({ section, onAddExercise }) {
   );
 }
 
+/* ── Quick Add Row ── */
+function QuickAddRow({ onAdd }) {
+  const [name, setName] = useState('');
+  return (
+    <div className="flex items-center gap-2 mb-2">
+      <Input
+        placeholder="Type exercise name and press Enter..."
+        value={name}
+        onChange={e => setName(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && name.trim()) {
+            onAdd(name.trim());
+            setName('');
+          }
+        }}
+        className="h-8 text-sm bg-white border-dashed"
+      />
+    </div>
+  );
+}
+
 /* ── Exercise Row ── */
 function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onPickLibrary, onWatchDemo }) {
   const [expanded, setExpanded] = useState(false);
@@ -217,9 +240,20 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
             <span className="text-[9px] text-[#9CA3AF] mt-0.5">sets</span>
           </div>
           <div className="flex flex-col items-center">
-            <Input value={ex.reps} placeholder="10" onChange={e => onUpdate('reps', e.target.value)}
-              className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
-            <span className="text-[9px] text-[#9CA3AF] mt-0.5">reps</span>
+            {(ex.section === 'warmup' || ex.section === 'cooldown') ? (
+              <>
+                <Input type="number" value={ex.duration_seconds ?? 30} placeholder="30"
+                  onChange={e => onUpdate('duration_seconds', Number(e.target.value))}
+                  className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+                <span className="text-[9px] text-[#9CA3AF] mt-0.5">sec</span>
+              </>
+            ) : (
+              <>
+                <Input value={ex.reps} placeholder="10" onChange={e => onUpdate('reps', e.target.value)}
+                  className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+                <span className="text-[9px] text-[#9CA3AF] mt-0.5">reps</span>
+              </>
+            )}
           </div>
           <div className="flex flex-col items-center">
             <Input type="number" value={ex.rest_seconds} placeholder="60"
@@ -289,6 +323,50 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Row 1b: RIR + Drop Set Details */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">RIR (0–5)</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Input type="number" min="0" max="5" className="h-8 text-sm border-[#E7EAF3] text-center w-16"
+                  placeholder="2"
+                  value={ex.rir || ''}
+                  onChange={e => onUpdate('rir', e.target.value)} />
+                {ex.rir !== undefined && ex.rir !== '' && (
+                  <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded-md',
+                    ex.rir <= 1 ? 'bg-red-100 text-red-700' :
+                    ex.rir <= 2 ? 'bg-orange-100 text-orange-700' :
+                    'bg-green-100 text-green-700')}>
+                    {ex.rir} RIR
+                  </span>
+                )}
+              </div>
+            </div>
+            {ex.set_type === 'dropset' && (
+              <div className="sm:col-span-3">
+                <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Drop Sets</Label>
+                <Input className="h-8 text-sm mt-1 border-[#E7EAF3]"
+                  placeholder="e.g. 3 drops, 20% each"
+                  value={ex.dropset_scheme || ''}
+                  onChange={e => onUpdate('dropset_scheme', e.target.value)} />
+              </div>
+            )}
+            {ex.section === 'cooldown' && (
+              <div>
+                <Label className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Stretch Type</Label>
+                <select value={ex.stretch_type || 'static'}
+                  onChange={e => onUpdate('stretch_type', e.target.value)}
+                  className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40">
+                  <option value="static">Static Hold</option>
+                  <option value="dynamic">Dynamic</option>
+                  <option value="pnf">PNF</option>
+                  <option value="foam_roll">Foam Roll</option>
+                  <option value="mobility">Mobility Drill</option>
+                </select>
+              </div>
+            )}
           </div>
 
           {/* Row 2: Section + Video URL */}
@@ -381,7 +459,6 @@ export default function ProgramBuilder() {
     is_template: existingProgram.is_template || false,
     equipment: existingProgram.equipment || [],
     tags: existingProgram.tags || [],
-    program_icon: existingProgram.program_icon || 'dumbbell',
     estimated_session_length: existingProgram.estimated_session_length || '60',
     progression_model: existingProgram.progression_model || 'linear',
     deload_frequency: existingProgram.deload_frequency || 'never',
@@ -681,27 +758,53 @@ export default function ProgramBuilder() {
                               section={section}
                               onAddExercise={() => addExercise(activeDay, null, section)}
                             />
+                            <QuickAddRow onAdd={name => {
+                              const ex = { ...newExercise(section), name };
+                              setWorkouts(w => w.map((wk, i) => i !== activeDay ? wk : { ...wk, exercises: [...wk.exercises, ex] }));
+                              trackChange();
+                            }} />
                             <div className="space-y-1.5 mb-2">
-                              {items.map(({ ex, origIdx }) => (
-                                <Draggable key={`ex-${activeDay}-${origIdx}`} draggableId={`ex-${activeDay}-${origIdx}`} index={origIdx}>
-                                  {(drag, snap) => (
-                                    <ExerciseRow
-                                      ex={ex}
-                                      wIdx={activeDay}
-                                      eIdx={origIdx}
-                                      drag={drag}
-                                      isDragging={snap.isDragging}
-                                      onUpdate={(field, val) => updateExercise(activeDay, origIdx, field, val)}
-                                      onRemove={() => removeExercise(activeDay, origIdx)}
-                                      onPickLibrary={() => setPickerTarget({ wIdx: activeDay, eIdx: origIdx })}
-                                      onWatchDemo={() => {
-                                        if (ex.video_url) window.open(ex.video_url, '_blank');
-                                        else if (ex._library_exercise) setDemoExercise(ex._library_exercise);
-                                      }}
-                                    />
-                                  )}
-                                </Draggable>
-                              ))}
+                              {items.map(({ ex, origIdx }, itemIdx) => {
+                                // Superset visual grouping
+                                const prevEx = itemIdx > 0 ? items[itemIdx - 1].ex : null;
+                                const nextEx = itemIdx < items.length - 1 ? items[itemIdx + 1].ex : null;
+                                const inGroup = ex.superset_group && ex.superset_group.trim();
+                                const isGroupStart = inGroup && (!prevEx || prevEx.superset_group !== ex.superset_group);
+                                const isGroupEnd = inGroup && (!nextEx || nextEx.superset_group !== ex.superset_group);
+                                const isGroupMiddle = inGroup && !isGroupStart && !isGroupEnd;
+                                return (
+                                  <div key={`ex-${activeDay}-${origIdx}`} className={cn('relative', inGroup && 'pl-3')}>
+                                    {inGroup && (
+                                      <>
+                                        <div className={cn('absolute left-0 w-1 bg-purple-300 rounded-full',
+                                          isGroupStart ? 'top-3 bottom-0' : isGroupEnd ? 'top-0 bottom-3' : 'inset-y-0'
+                                        )} />
+                                        {isGroupStart && (
+                                          <span className="absolute -left-1 top-1.5 text-[8px] font-black text-purple-600 bg-purple-100 rounded px-0.5 z-10">SS</span>
+                                        )}
+                                      </>
+                                    )}
+                                    <Draggable draggableId={`ex-${activeDay}-${origIdx}`} index={origIdx}>
+                                      {(drag, snap) => (
+                                        <ExerciseRow
+                                          ex={ex}
+                                          wIdx={activeDay}
+                                          eIdx={origIdx}
+                                          drag={drag}
+                                          isDragging={snap.isDragging}
+                                          onUpdate={(field, val) => updateExercise(activeDay, origIdx, field, val)}
+                                          onRemove={() => removeExercise(activeDay, origIdx)}
+                                          onPickLibrary={() => setPickerTarget({ wIdx: activeDay, eIdx: origIdx })}
+                                          onWatchDemo={() => {
+                                            if (ex.video_url) window.open(ex.video_url, '_blank');
+                                            else if (ex._library_exercise) setDemoExercise(ex._library_exercise);
+                                          }}
+                                        />
+                                      )}
+                                    </Draggable>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         ))}

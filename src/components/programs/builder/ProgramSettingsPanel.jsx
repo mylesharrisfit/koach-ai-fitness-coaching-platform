@@ -6,7 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import ProgramIconSelector from './ProgramIconSelector';
 
 const DIFFICULTY_STYLES = {
   beginner: { color: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
@@ -50,12 +49,6 @@ export default function ProgramSettingsPanel({ meta, onMetaChange }) {
 
   return (
     <div className="space-y-3 overflow-y-auto flex-1">
-      {/* Icon Selector */}
-      <ProgramIconSelector
-        selected={meta.program_icon || 'dumbbell'}
-        onChange={icon => onMetaChange({ ...meta, program_icon: icon })}
-      />
-
       {/* Duration */}
       <div className="px-4 pt-4">
         <Label className="text-[10px] font-semibold text-[#9CA3AF] uppercase tracking-wider">Duration (weeks)</Label>
