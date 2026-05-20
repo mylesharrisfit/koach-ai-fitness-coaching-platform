@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Mini adherence bar shown under the % value
 function AdherenceBar({ pct }) {
-  const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#d97706' : '#dc2626';
+  const color = pct < 40 ? '#dc2626' : '#2563EB';
   return (
     <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: '#f3f4f6' }}>
       <div
@@ -23,7 +23,7 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
       <div
         className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:opacity-90 cursor-default"
         onClick={onClick}
-        style={{ background: '#111827', minHeight: 110 }}
+        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)', minHeight: 110 }}
       >
         <div className="flex items-center justify-between">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
@@ -41,22 +41,29 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
   }
   return (
     <div
-      className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default bg-white border border-[#E5E7EB]"
+      className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default"
       onClick={onClick}
-      style={{ minHeight: 110 }}
+      style={{
+        background: '#ffffff',
+        border: '1px solid #E5E7EB',
+        minHeight: 110,
+      }}
     >
       <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#F3F4F6' }}>
-          <Icon className="w-4 h-4 text-[#111827]" />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
+          <Icon className="w-4 h-4" style={{ color: '#2563EB' }} />
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</p>
       </div>
       <div>
-        <p className="text-3xl font-extrabold leading-none text-[#111827]" style={{ letterSpacing: '-0.03em' }}>
+        <p
+          className="text-3xl font-extrabold leading-none"
+          style={{ letterSpacing: '-0.03em', color: '#111827' }}
+        >
           {value}
         </p>
         {sub && (
-          <p className="text-xs mt-1 font-medium" style={{ color: subColor || '#6B7280' }}>{sub}</p>
+          <p className="text-xs mt-1 font-medium" style={{ color: subColor || '#9ca3af' }}>{sub}</p>
         )}
         {extra}
       </div>
@@ -99,9 +106,9 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
   }, [clients, checkIns]);
 
   const adherenceColor = avgAdherence === null ? '#9ca3af'
-    : avgAdherence >= 80 ? '#16a34a'
-    : avgAdherence >= 50 ? '#d97706'
-    : '#dc2626';
+    : avgAdherence >= 80 ? '#16A34A'
+    : avgAdherence >= 50 ? '#D97706'
+    : '#DC2626';
 
   // Pending reviews
   const pendingReviews = useMemo(() =>
@@ -154,9 +161,6 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
           : 'Needs attention'
           : 'Check-ins needed'}
         subColor={adherenceColor}
-        color="#f59e0b"
-        bgGrad="linear-gradient(135deg, #ffffff 0%, #fffbeb 100%)"
-        borderColor="#fde68a"
         extra={avgAdherence !== null ? <AdherenceBar pct={avgAdherence} /> : null}
       />
 
@@ -183,13 +187,10 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
             : 'this month'
         }
         subColor={
-          monthRevenue === 0 ? '#3b82f6'
-          : revenueTrend !== null && revenueTrend >= 0 ? '#16a34a'
-          : '#dc2626'
+          monthRevenue === 0 ? '#6B7280'
+          : revenueTrend !== null && revenueTrend >= 0 ? '#16A34A'
+          : '#DC2626'
         }
-        color="#16a34a"
-        bgGrad="linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)"
-        borderColor="#bbf7d0"
         onClick={monthRevenue === 0 ? () => navigate('/revenue') : undefined}
       />
     </div>

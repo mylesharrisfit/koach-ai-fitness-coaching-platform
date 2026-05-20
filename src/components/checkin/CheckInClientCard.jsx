@@ -31,9 +31,9 @@ function getStatus(checkIn, allClientCIs) {
   const isAtRisk = (score !== null && score < 60) || flags.length >= 2;
   const needsAttention = flags.length > 0 || (score !== null && score < 80);
 
-  if (isAtRisk) return { label: 'At Risk', color: 'bg-[#FEF2F2] text-[#DC2626] border-[#FCA5A5]', border: 'border-[#FCA5A5]', flags };
-  if (needsAttention) return { label: 'Needs Attention', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', border: 'border-[#E5E7EB]', flags };
-  return { label: 'Good', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', border: 'border-[#E5E7EB]', flags };
+  if (isAtRisk) return { label: 'At Risk', color: 'bg-[#FEF2F2] text-[#DC2626] border-[#FCA5A5]', leftColor: '#DC2626', flags };
+  if (needsAttention) return { label: 'Needs Attention', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', leftColor: '#D97706', flags };
+  return { label: 'Good', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', leftColor: '#16A34A', flags };
 }
 
 function WeightDelta({ current, previous }) {
@@ -101,8 +101,10 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     <div className={cn(
       'bg-white border rounded-2xl overflow-hidden transition-all duration-300 shadow-sm',
       justCompleted && 'ring-2 ring-emerald-500/40 border-emerald-500/30',
-      !justCompleted && status.border
-    )}>
+      !justCompleted && status.borderLeft
+    )}
+    style={!justCompleted ? { borderLeft: `3px solid ${status.leftColor}` } : {}}
+    >
       {/* ── Summary row (always visible) ── */}
       <button
         className="w-full p-4 hover:bg-[#F9FAFB] active:bg-[#F9FAFB] transition-colors text-left"

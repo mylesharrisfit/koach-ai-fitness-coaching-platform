@@ -85,7 +85,7 @@ function BusinessPage() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6">
+      <div className="rounded-xl p-5 text-white mb-6" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <h1 className="text-xl font-semibold text-white">Business Overview</h1>
         <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>MRR, client acquisition, and churn risk analytics</p>
       </div>

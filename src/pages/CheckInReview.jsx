@@ -161,7 +161,7 @@ export default function CheckInReview() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
 
       {/* ── Header ── */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-[#111827] rounded-xl p-5">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl p-5" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <div>
           <h1 className="text-xl font-heading font-bold text-white tracking-tight">Check-in Dashboard</h1>
           <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
