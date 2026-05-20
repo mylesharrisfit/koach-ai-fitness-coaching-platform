@@ -221,7 +221,7 @@ export default function Adherence() {
   };
 
   return (
-    <div className="min-h-screen p-6 lg:p-8 max-w-7xl mx-auto" style={{ background: '#0F1014' }}>
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       {/* ── Header ── */}
       <div
         className="rounded-2xl p-6 mb-6 flex items-center justify-between"
@@ -265,11 +265,10 @@ export default function Adherence() {
       )}
 
       {/* ── Leaderboard ── */}
-      <div className="rounded-2xl p-5 mb-6"
-        style={{ background: '#161820', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Crown size={15} className="text-[#FFD700]" />
-          <p className="text-sm font-bold text-white uppercase tracking-wider">Leaderboard</p>
+          <Crown size={15} className="text-[#F59E0B]" />
+          <p className="text-sm font-bold text-[#111827] uppercase tracking-wider">Leaderboard</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {leaderboard.map(({ client, score, streak, badgeCount }, i) => (
@@ -358,16 +357,15 @@ export default function Adherence() {
           const score = averageAdherenceScore(cis);
           return (
             <div key={client.id}
-              className="rounded-2xl p-5"
-              style={{ background: '#161820', border: '1px solid rgba(255,255,255,0.06)' }}
+              className="bg-white border border-[#E5E7EB] rounded-xl p-5"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
-                  style={{ background: 'linear-gradient(135deg,#1E3A5F,#162030)', color: '#93C5FD', border: '1px solid rgba(147,197,253,0.2)' }}>
+                  style={{ background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE' }}>
                   {client.name?.[0]}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-white">{client.name}</p>
+                  <p className="font-bold text-sm text-[#111827]">{client.name}</p>
                   <p className="text-xs text-[#6B7280] capitalize">{client.goal?.replace(/_/g, ' ')}</p>
                 </div>
                 <button
@@ -397,14 +395,14 @@ export default function Adherence() {
                   })}
                   {clientBadges.length > 5 && (
                     <span className="text-xs text-[#6B7280] px-2 py-1 rounded-full"
-                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      style={{ background: '#F3F4F6', border: '1px solid #E5E7EB' }}>
                       +{clientBadges.length - 5} more
                     </span>
                   )}
                 </div>
               )}
               {clientBadges.length === 0 && (
-                <p className="text-xs text-[#4B5563] italic mb-4">No achievements yet — award their first badge!</p>
+                <p className="text-xs text-[#9CA3AF] italic mb-4">No achievements yet — award their first badge!</p>
               )}
 
               <AdherencePanel client={client} checkIns={cis} badges={clientBadges} />
