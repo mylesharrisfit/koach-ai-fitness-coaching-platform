@@ -41,30 +41,22 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
   }
   return (
     <div
-      className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default"
+      className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default bg-white border border-[#E5E7EB]"
       onClick={onClick}
-      style={{
-        background: bgGrad,
-        border: `1px solid ${borderColor}`,
-        boxShadow: `0 1px 4px rgba(0,0,0,0.05), inset 0 -3px 0 0 ${color}`,
-        minHeight: 110,
-      }}
+      style={{ minHeight: 110 }}
     >
       <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}18` }}>
-          <Icon className="w-4 h-4" style={{ color }} />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#F3F4F6' }}>
+          <Icon className="w-4 h-4 text-[#111827]" />
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">{label}</p>
       </div>
       <div>
-        <p
-          className="text-3xl font-extrabold leading-none"
-          style={{ letterSpacing: '-0.03em', color: sub === 'All caught up ✓' ? '#16a34a' : '#111827' }}
-        >
+        <p className="text-3xl font-extrabold leading-none text-[#111827]" style={{ letterSpacing: '-0.03em' }}>
           {value}
         </p>
         {sub && (
-          <p className="text-xs mt-1 font-medium" style={{ color: subColor || '#9ca3af' }}>{sub}</p>
+          <p className="text-xs mt-1 font-medium" style={{ color: subColor || '#6B7280' }}>{sub}</p>
         )}
         {extra}
       </div>
