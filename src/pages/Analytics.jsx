@@ -58,6 +58,7 @@ export default function Analytics() {
       {/* Summary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 fade-up">
         <AnalyticsStatCard
+          dark
           title="Retention Rate"
           value={`${stats.retentionRate}%`}
           subtitle={`${stats.active} active clients`}
@@ -66,6 +67,7 @@ export default function Analytics() {
           trendPositive={retentionDelta != null ? retentionDelta >= 0 : null}
         />
         <AnalyticsStatCard
+          dark
           title="Avg Adherence"
           value={`${stats.avgAdherence}%`}
           subtitle="Training + nutrition avg"
@@ -74,6 +76,7 @@ export default function Analytics() {
           trendPositive={adherenceDelta != null ? adherenceDelta >= 0 : null}
         />
         <AnalyticsStatCard
+          dark
           title="Avg Weight Change"
           value={stats.avgWeightDelta != null ? `${stats.avgWeightDelta > 0 ? '+' : ''}${stats.avgWeightDelta} lbs` : '—'}
           subtitle="Across all clients"
@@ -82,6 +85,7 @@ export default function Analytics() {
           trendPositive={stats.avgWeightDelta != null ? stats.avgWeightDelta <= 0 : null}
         />
         <AnalyticsStatCard
+          dark
           title="Churn Risk"
           value={`${stats.churnRate}%`}
           subtitle={`${stats.atRisk} at-risk client${stats.atRisk !== 1 ? 's' : ''}`}
