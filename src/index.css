@@ -58,9 +58,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #F9FAFB;
   }
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;

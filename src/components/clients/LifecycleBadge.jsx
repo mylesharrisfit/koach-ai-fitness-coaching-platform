@@ -1,20 +1,20 @@
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 export const LIFECYCLE_CONFIG = {
-  lead:      { label: 'Lead',      color: 'bg-blue-500 text-white border-blue-500' },
-  active:    { label: 'Active',    color: 'bg-emerald-500 text-white border-emerald-500' },
-  at_risk:   { label: 'At Risk',   color: 'bg-orange-500 text-white border-orange-500' },
-  completed: { label: 'Completed', color: 'bg-gray-400 text-white border-gray-400' },
-  alumni:    { label: 'Alumni',    color: 'bg-purple-500 text-white border-purple-500' },
+  lead:      { label: 'Lead',      dot: 'bg-[#9CA3AF]' },
+  active:    { label: 'Active',    dot: 'bg-[#16A34A]' },
+  at_risk:   { label: 'At Risk',   dot: 'bg-[#DC2626]' },
+  completed: { label: 'Completed', dot: 'bg-[#9CA3AF]' },
+  alumni:    { label: 'Alumni',    dot: 'bg-[#9CA3AF]' },
 };
 
 export default function LifecycleBadge({ status, className }) {
   const config = LIFECYCLE_CONFIG[status] || LIFECYCLE_CONFIG.lead;
   return (
-    <Badge variant="outline" className={cn('text-[10px] font-semibold border', config.color, className)}>
+    <span className={cn('inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]', className)}>
+      <span className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', config.dot)} />
       {config.label}
-    </Badge>
+    </span>
   );
 }

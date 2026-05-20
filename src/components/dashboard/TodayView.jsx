@@ -22,27 +22,23 @@ function OnboardingLinkBanner() {
   };
 
   return (
-    <div className="rounded-xl px-4 py-3 flex items-center gap-3"
-      style={{ background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
-      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-        style={{ background: '#DBEAFE' }}>
-        <Link2 className="w-3.5 h-3.5 text-blue-600" />
+    <div className="rounded-xl px-4 py-3 flex items-center gap-3 bg-white border border-[#E5E7EB]">
+      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-[#F3F4F6]">
+        <Link2 className="w-3.5 h-3.5 text-[#6B7280]" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-blue-900">Client Onboarding Link</p>
-        <p className="text-[11px] truncate mt-0.5 text-blue-600">{link}</p>
+        <p className="text-xs font-medium text-[#111827]">Client Onboarding Link</p>
+        <p className="text-[11px] truncate mt-0.5 text-[#6B7280]">{link}</p>
       </div>
       <div className="flex items-center gap-1.5 shrink-0">
         <a href="/start" target="_blank" rel="noopener noreferrer"
-          className="p-1.5 rounded-md transition-colors hover:bg-blue-100"
-          style={{ color: '#2563EB' }}>
+          className="p-1.5 rounded-md text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
         <button onClick={copy}
-          className="p-1.5 rounded-md transition-colors hover:bg-blue-100"
-          style={{ color: '#2563EB' }}>
+          className="p-1.5 rounded-md text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
           {copied
-            ? <Check className="w-3.5 h-3.5 text-green-600" />
+            ? <Check className="w-3.5 h-3.5 text-[#16A34A]" />
             : <Copy className="w-3.5 h-3.5" />}
         </button>
       </div>
@@ -101,9 +97,8 @@ function ActionCenterSection({ clients, checkIns, messages, payments }) {
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
-          <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-semibold"
-            style={{ background: '#EFF6FF', color: '#3B82F6' }}>
-            <Zap className="w-2.5 h-2.5" /> AI Powered
+          <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+            <Zap className="w-2.5 h-2.5" /> AI
           </span>
         </div>
       </div>
@@ -134,8 +129,8 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
       {/* ── Header ─────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ letterSpacing: '-0.02em' }}>
-            {greeting}, Coach 👋
+          <h1 className="text-xl font-semibold text-[#111827]" style={{ letterSpacing: '-0.02em' }}>
+            {greeting}, Coach
           </h1>
           <p className="text-sm mt-1 text-gray-500">
             {format(new Date(), 'EEEE, MMMM d')} · {activeCount} active client{activeCount !== 1 ? 's' : ''}
@@ -144,7 +139,7 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
         <button
           onClick={() => navigate('/clients')}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 shadow-sm"
-          style={{ background: '#3B82F6', color: '#fff' }}
+          style={{ background: '#111827', color: '#fff' }}
         >
           <UserPlus className="w-3.5 h-3.5" />
           Add Client

@@ -49,12 +49,12 @@ const GOAL_LABELS = {
 };
 
 const AVATAR_COLORS = [
-  ['bg-blue-100', 'text-blue-700'],
-  ['bg-violet-100', 'text-violet-700'],
-  ['bg-emerald-100', 'text-emerald-700'],
-  ['bg-amber-100', 'text-amber-700'],
-  ['bg-rose-100', 'text-rose-700'],
-  ['bg-cyan-100', 'text-cyan-700'],
+  ['bg-[#F3F4F6]', 'text-[#374151]'],
+  ['bg-[#F3F4F6]', 'text-[#374151]'],
+  ['bg-[#F3F4F6]', 'text-[#374151]'],
+  ['bg-[#F3F4F6]', 'text-[#374151]'],
+  ['bg-[#F3F4F6]', 'text-[#374151]'],
+  ['bg-[#F3F4F6]', 'text-[#374151]'],
 ];
 
 function getAvatarColor(name = '') {
@@ -68,16 +68,16 @@ function CheckInAge({ lastCheckIn }) {
   );
   const days = Math.floor((Date.now() - new Date(lastCheckIn.date)) / 86400000);
   const label = days === 0 ? 'Today' : days === 1 ? '1 day ago' : `${days} days ago`;
-  const color = days <= 7 ? 'text-emerald-600' : days <= 14 ? 'text-amber-500' : 'text-red-500';
+  const color = days <= 7 ? 'text-[#16A34A]' : days <= 14 ? 'text-[#D97706]' : 'text-[#DC2626]';
   return <span className={cn('text-[10px] font-medium', color)}>{label}</span>;
 }
 
 /* ── Adherence bar (expanded view) ── */
 function AdherenceBar({ score }) {
-  if (score === null) return <div className="h-1 w-full rounded-full bg-[#F0F2F8] mt-1" />;
-  const color = score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-red-400';
+  if (score === null) return <div className="h-1 w-full rounded-full bg-[#E5E7EB] mt-1" />;
+  const color = score >= 80 ? 'bg-[#16A34A]' : score >= 60 ? 'bg-[#D97706]' : 'bg-[#DC2626]';
   return (
-    <div className="h-1 w-full rounded-full bg-[#F0F2F8] mt-1 overflow-hidden">
+    <div className="h-1 w-full rounded-full bg-[#E5E7EB] mt-1 overflow-hidden">
       <div className={cn('h-full rounded-full transition-all', color)} style={{ width: `${Math.min(score, 100)}%` }} />
     </div>
   );
@@ -86,15 +86,15 @@ function AdherenceBar({ score }) {
 export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0, compact = false, onEdit, onDelete, onStatusChange, onView, selected, onSelect }) {
   const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
   const [avatarBg, avatarText] = getAvatarColor(client.name);
-  const scoreColor = score === null ? '' : score >= 80 ? 'text-emerald-600' : score >= 60 ? 'text-amber-600' : 'text-red-500';
+  const scoreColor = score === null ? '' : score >= 80 ? 'text-[#16A34A]' : score >= 60 ? 'text-[#D97706]' : 'text-[#DC2626]';
   const isLead = (client.lifecycle_status || 'lead') === 'lead';
 
   return (
     <div
       className={cn(
-        'flex items-center gap-3 px-4 bg-white border-b border-[#F0F2F8] hover:bg-[#F8F9FD] transition-colors cursor-pointer group',
+        'flex items-center gap-3 px-4 bg-white border-b border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors cursor-pointer group',
         compact ? 'py-2' : 'py-3',
-        selected && 'bg-[#EEF4FF] hover:bg-[#E4EDFF]'
+        selected && 'bg-[#F3F4F6] hover:bg-[#F3F4F6]'
       )}
       onClick={onView}
     >
@@ -135,14 +135,14 @@ export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0
           <>
             <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
               {client.goal ? (
-                <span className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#F0FDF4] text-emerald-700 flex-shrink-0">
+                <span className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#F3F4F6] text-[#374151] flex-shrink-0">
                   {GOAL_LABELS[client.goal] || client.goal}
                 </span>
               ) : (
                 <span className="text-[10px] text-[#C4C9D8] flex-shrink-0">No goal set</span>
               )}
               {(client.tags || []).slice(0, 2).map(tag => (
-                <span key={tag} className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#EEF4FF] text-primary flex-shrink-0">#{tag}</span>
+                <span key={tag} className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#F3F4F6] text-[#374151] flex-shrink-0">#{tag}</span>
               ))}
               {(client.tags || []).length > 2 && (
                 <span className="text-[10px] text-[#9CA3AF]">+{client.tags.length - 2}</span>

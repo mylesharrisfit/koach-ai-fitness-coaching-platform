@@ -31,9 +31,9 @@ function getStatus(checkIn, allClientCIs) {
   const isAtRisk = (score !== null && score < 60) || flags.length >= 2;
   const needsAttention = flags.length > 0 || (score !== null && score < 80);
 
-  if (isAtRisk) return { label: 'At Risk', color: 'bg-red-50 text-red-500 border-red-100', border: 'border-red-100', flags };
-  if (needsAttention) return { label: 'Needs Attention', color: 'bg-amber-50 text-amber-600 border-amber-100', border: 'border-amber-100', flags };
-  return { label: 'Good', color: 'bg-emerald-50 text-emerald-600 border-emerald-100', border: 'border-[#E7EAF3]', flags };
+  if (isAtRisk) return { label: 'At Risk', color: 'bg-[#FEF2F2] text-[#DC2626] border-[#FCA5A5]', border: 'border-[#FCA5A5]', flags };
+  if (needsAttention) return { label: 'Needs Attention', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', border: 'border-[#E5E7EB]', flags };
+  return { label: 'Good', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', border: 'border-[#E5E7EB]', flags };
 }
 
 function WeightDelta({ current, previous }) {
@@ -94,8 +94,8 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     setTimeout(() => setJustCompleted(false), 1200);
   };
 
-  const sleepColor = checkIn.sleep_hours >= 7 ? 'text-emerald-600' : checkIn.sleep_hours >= 6 ? 'text-amber-600' : 'text-red-500';
-  const energyColor = checkIn.energy_level >= 4 ? 'text-emerald-600' : checkIn.energy_level >= 2 ? 'text-amber-600' : 'text-red-500';
+  const sleepColor = checkIn.sleep_hours >= 7 ? 'text-[#16A34A]' : checkIn.sleep_hours >= 6 ? 'text-[#D97706]' : 'text-[#DC2626]';
+  const energyColor = checkIn.energy_level >= 4 ? 'text-[#16A34A]' : checkIn.energy_level >= 2 ? 'text-[#D97706]' : 'text-[#DC2626]';
 
   return (
     <div className={cn(
@@ -105,7 +105,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     )}>
       {/* ── Summary row (always visible) ── */}
       <button
-        className="w-full p-4 hover:bg-[#F6F7FB] active:bg-[#F6F7FB] transition-colors text-left"
+        className="w-full p-4 hover:bg-[#F9FAFB] active:bg-[#F9FAFB] transition-colors text-left"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex items-start gap-3">
@@ -139,7 +139,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             </p>
 
             {/* Key metrics row */}
-            <div className="grid grid-cols-4 gap-2 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-2.5">
+            <div className="grid grid-cols-4 gap-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-2.5">
               <div className="flex flex-col items-center gap-0.5">
                 <span className="text-[10px] text-[#374151]">Weight</span>
                 <WeightDelta current={checkIn.weight} previous={prevCI?.weight} />
@@ -196,7 +196,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
       {/* ── Expanded detail ── */}
       {expanded && (
-        <div className="border-t border-[#E7EAF3] p-4 space-y-4">
+        <div className="border-t border-[#E5E7EB] p-4 space-y-4">
           {/* View full detail */}
           <button
             onClick={() => navigate(`/checkin-detail?id=${checkIn.id}&clientId=${checkIn.client_id}`)}
@@ -222,7 +222,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Adherence breakdown */}
           {breakdown && (
-            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-3">
               <p className="text-xs font-semibold text-[#374151] uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-[#374151]">Overall</span>
@@ -237,7 +237,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Client notes */}
           {checkIn.notes && (
-            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-3">
               <p className="text-xs font-semibold text-[#374151] uppercase tracking-wide mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
@@ -285,7 +285,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Response box */}
           {showFeedback && (
-            <div className="bg-[#F6F7FB] rounded-xl p-4 border border-[#E7EAF3] fade-up">
+            <div className="bg-[#F9FAFB] rounded-xl p-4 border border-[#E5E7EB] fade-up">
               <CheckInResponseBox
                 checkIn={checkIn}
                 client={client}
