@@ -1,6 +1,5 @@
 import React from 'react';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
-import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function BadgeRow({ earnedKeys = [], max = 5, onAdd }) {
@@ -17,33 +16,40 @@ export default function BadgeRow({ earnedKeys = [], max = 5, onAdd }) {
           return (
             <Tooltip key={key}>
               <TooltipTrigger asChild>
-                <div className={cn(
-                  'flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs font-medium cursor-default',
-                  tier.bg, tier.border, tier.text
-                )}>
+                <div
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold cursor-default"
+                  style={{
+                    background: `${tier.accent}18`,
+                    color: tier.accent,
+                    border: `1px solid ${tier.accent}40`,
+                  }}
+                >
                   <span>{cfg.emoji}</span>
                   <span className="hidden sm:inline">{cfg.label}</span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent><p className="text-xs">{cfg.desc}</p></TooltipContent>
+              <TooltipContent>
+                <p className="text-xs font-medium">{cfg.desc}</p>
+                <p className="text-[10px] opacity-60 mt-0.5">{tier.label}</p>
+              </TooltipContent>
             </Tooltip>
           );
         })}
         {overflow > 0 && (
-          <span className="text-xs text-[#6B7280] font-medium px-2 py-0.5 bg-[#F3F4F6] rounded-full border border-[#E5E7EB]">
+          <span className="text-xs text-[#6B7280] font-medium px-2 py-0.5 bg-[#1F2937] rounded-full border border-white/10">
             +{overflow} more
           </span>
         )}
         {onAdd && (
           <button
             onClick={onAdd}
-            className="w-6 h-6 rounded-full border border-dashed border-[#D1D5DB] text-[#9CA3AF] hover:border-[#2563EB] hover:text-[#2563EB] transition-colors flex items-center justify-center text-sm font-bold"
+            className="w-6 h-6 rounded-full border border-dashed border-[#374151] text-[#6B7280] hover:border-[#2563EB] hover:text-[#2563EB] transition-colors flex items-center justify-center text-sm font-bold"
           >
             +
           </button>
         )}
         {earnedKeys.length === 0 && (
-          <span className="text-xs text-[#9CA3AF] italic">No achievements yet — award their first badge!</span>
+          <span className="text-xs text-[#4B5563] italic">No achievements yet</span>
         )}
       </div>
     </TooltipProvider>
