@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Dumbbell, Star } from 'lucide-react';
+import { Plus, Dumbbell, Star, Download, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import ExerciseFormModal from '@/components/exercises/ExerciseFormModal';
@@ -17,6 +19,8 @@ export default function ExerciseLibrary() {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [editingExercise, setEditingExercise] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importProgress, setImportProgress] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: exercises = [], isLoading } = useQuery({
@@ -28,6 +32,25 @@ export default function ExerciseLibrary() {
     mutationFn: (id) => base44.entities.ExerciseLibrary.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['exercises'] }),
   });
+
+  const importMutation = useMutation({
+    mutationFn: () => base44.functions.invoke('generateExerciseLibrary', {}),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      toast.success(`✅ Imported ${res.data.count} exercises!`);
+      setImportOpen(false);
+      setImportProgress(null);
+    },
+    onError: (err) => {
+      toast.error('Import failed: ' + err.message);
+      setImportProgress(null);
+    },
+  });
+
+  const handleImport = async () => {
+    setImportProgress(0);
+    importMutation.mutate();
+  };
 
   const filtered = exercises.filter(ex => {
     const matchSearch = !search || ex.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -52,13 +75,23 @@ export default function ExerciseLibrary() {
             {exercises.length} exercises · {exercises.filter(e => e.is_coach_branded).length} coach-branded
           </p>
         </div>
-        <button
-          onClick={() => { setEditingExercise(null); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: '#fff', color: '#111827' }}
-        >
-          <Plus className="w-4 h-4" /> Add Exercise
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setImportOpen(true)}
+            disabled={importMutation.isPending}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}
+          >
+            <Download className="w-4 h-4" /> Import Full Library
+          </button>
+          <button
+            onClick={() => { setEditingExercise(null); setShowForm(true); }}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
+            style={{ background: '#fff', color: '#111827' }}
+          >
+            <Plus className="w-4 h-4" /> Add Exercise
+          </button>
+        </div>
       </div>
 
       <ExerciseFilters
@@ -143,6 +176,54 @@ export default function ExerciseLibrary() {
           setShowForm(false);
         }}
       />
+
+      {/* Import Modal */}
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Import Full Exercise Library</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+              <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-blue-900">
+                <p className="font-semibold">Generate 50 exercises via Claude AI</p>
+                <p className="text-xs mt-1 opacity-75">Includes YouTube tutorials, form cues, muscle groups, and equipment tags</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              This will create a comprehensive library with exercises from beginner to advanced levels across all muscle groups.
+            </p>
+            {importProgress !== null && (
+              <div className="space-y-2">
+                <div className="w-full bg-secondary rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-primary h-full transition-all duration-300"
+                    style={{ width: `${importProgress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center">Importing exercises...</p>
+              </div>
+            )}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setImportOpen(false)}
+                disabled={importMutation.isPending}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold border border-input hover:bg-accent"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleImport}
+                disabled={importMutation.isPending}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 disabled:opacity-60"
+              >
+                {importMutation.isPending ? 'Importing...' : 'Start Import'}
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

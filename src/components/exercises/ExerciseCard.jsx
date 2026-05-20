@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Play, Star, Edit, Trash2, MoreHorizontal, Dumbbell } from 'lucide-react';
+import { Play, Star, Edit, Trash2, MoreHorizontal, Dumbbell, ExternalLink, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { base44 } from '@/api/base44Client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 const MUSCLE_COLORS = {
   chest: 'text-chart-1 bg-chart-1/10',
@@ -52,7 +57,46 @@ function VideoThumbnail({ url, thumbnailUrl, name }) {
 }
 
 export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compact = false }) {
+  const [videoDialogOpen, setVideoDialogOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
+  const queryClient = useQueryClient();
   const muscleColor = MUSCLE_COLORS[exercise.muscle_group] || 'text-muted-foreground bg-secondary';
+
+  const updateVideoMutation = useMutation({
+    mutationFn: ({ url }) => {
+      const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
+      let thumbnailUrl = '';
+      if (isYoutube) {
+        const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+        if (match) thumbnailUrl = `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+      }
+      return base44.entities.ExerciseLibrary.update(exercise.id, {
+        video_url: url,
+        thumbnail_url: thumbnailUrl,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      toast.success('Video added!');
+      setVideoDialogOpen(false);
+      setVideoUrl('');
+    },
+  });
+
+  const handleAddVideo = () => {
+    if (!videoUrl.trim()) {
+      toast.error('Please enter a video URL');
+      return;
+    }
+    updateVideoMutation.mutate({ url: videoUrl.trim() });
+  };
+
+  const handleOpenVideo = (e) => {
+    e.stopPropagation();
+    if (exercise.video_url) {
+      window.open(exercise.video_url, '_blank');
+    }
+  };
 
   return (
     <div
@@ -70,7 +114,26 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
               <Star className="w-2.5 h-2.5" fill="currentColor" /> Coach
             </div>
           )}
-          <div className="absolute top-2 right-2" onClick={e => e.stopPropagation()}>
+          {exercise.difficulty && (
+            <div className={cn(
+              "absolute bottom-2 left-2 text-[10px] font-bold px-2.5 py-1 rounded-lg capitalize",
+              exercise.difficulty === 'beginner' ? 'bg-green-100/90 text-green-900' :
+              exercise.difficulty === 'intermediate' ? 'bg-amber-100/90 text-amber-900' :
+              'bg-red-100/90 text-red-900'
+            )}>
+              {exercise.difficulty}
+            </div>
+          )}
+          <div className="absolute top-2 right-2 flex items-center gap-1" onClick={e => e.stopPropagation()}>
+            {exercise.video_url && (
+              <Button
+                size="icon"
+                className="h-7 w-7 bg-white/90 hover:bg-white text-gray-900 shadow"
+                onClick={handleOpenVideo}
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Button>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-7 w-7 bg-black/40 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity">
@@ -78,6 +141,9 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setVideoDialogOpen(true)}>
+                  <Upload className="w-4 h-4 mr-2" /> {exercise.video_url ? 'Update' : 'Add'} Video
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={onEdit}><Edit className="w-4 h-4 mr-2" /> Edit</DropdownMenuItem>
                 <DropdownMenuItem className="text-destructive" onClick={onDelete}><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
               </DropdownMenuContent>
@@ -118,7 +184,43 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
             </Badge>
           )}
         </div>
-      </div>
-    </div>
-  );
-}
+        </div>
+
+        {/* Video URL Dialog */}
+        <Dialog open={videoDialogOpen} onOpenChange={setVideoDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{exercise.video_url ? 'Update' : 'Add'} Video</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm font-medium mb-2">Video URL</p>
+              <Input
+                placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                className="text-sm"
+              />
+              <p className="text-xs text-muted-foreground mt-1">YouTube, Vimeo, or direct video link</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setVideoDialogOpen(false); setVideoUrl(''); }}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold border border-input hover:bg-accent"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddVideo}
+                disabled={updateVideoMutation.isPending}
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 disabled:opacity-60"
+              >
+                {updateVideoMutation.isPending ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+        </Dialog>
+        </div>
+        );
+        }
