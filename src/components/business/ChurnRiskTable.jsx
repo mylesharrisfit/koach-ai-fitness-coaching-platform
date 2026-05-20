@@ -29,7 +29,7 @@ export default function ChurnRiskTable({ clients, mrr }) {
           <h3 className="text-xs font-semibold text-[#6B7280] uppercase tracking-widest mb-1">Churn Risk Analysis</h3>
           <p className="text-sm text-[#1F2A44]">
             {clients.length > 0
-              ? <><span className="font-semibold text-amber-600">{clients.length} clients</span> flagged — <span className="font-semibold text-red-500">${mrrAtRisk.toLocaleString()}</span> MRR at risk ({pctAtRisk}%)</>
+              ? <><span className="font-semibold text-[#111827]">{clients.length} clients</span> flagged — <span className="font-semibold text-[#111827]">${mrrAtRisk.toLocaleString()}</span> MRR at risk ({pctAtRisk}%)</>
               : <span className="text-emerald-600 font-semibold">All clients are engaged ✓</span>
             }
           </p>
