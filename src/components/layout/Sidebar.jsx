@@ -20,6 +20,7 @@ const NAV_GROUPS = [
     label: 'MAIN',
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+      { icon: BookOpen, label: 'Onboarding', path: '/onboarding-manager' },
       { icon: Users, label: 'Clients', path: '/clients' },
       { icon: MessageSquare, label: 'Messages', path: '/messages' },
       { icon: Calendar, label: 'Calendar', path: '/schedule' },
@@ -60,7 +61,6 @@ const NAV_GROUPS = [
     label: 'TOOLS',
     items: [
       { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
-      { icon: BookOpen, label: 'Onboarding', path: '/onboarding-manager' },
       { icon: Palette, label: 'White Label', path: '/white-label' },
       { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
     ],
