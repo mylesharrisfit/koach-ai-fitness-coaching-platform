@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { format, differenceInDays, parseISO } from 'date-fns';
-import { Link, Copy, Check, ExternalLink, UserPlus, RefreshCw, Zap } from 'lucide-react';
+import { Link, Copy, Check, ExternalLink, UserPlus, RefreshCw, Zap, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import RunMyDayCenter from './RunMyDayCenter';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import RecommendationsWidget from './RecommendationsWidget';
@@ -13,31 +15,67 @@ import WeeklySnapshot from './WeeklySnapshot';
 import FirstTimeBanner from './FirstTimeBanner';
 
 function OnboardingLinkBanner() {
-  const onboardingUrl = `${window.location.origin}/start`;
+  const navigate = useNavigate();
+
+  const { data: user } = useQuery({
+    queryKey: ['me'],
+    queryFn: () => base44.auth.me(),
+  });
+
+  const { data: responses = [] } = useQuery({
+    queryKey: ['onboarding-responses'],
+    queryFn: () => base44.entities.OnboardingResponse.list('-created_date', 100),
+  });
+
+  const onboardingUrl = `${window.location.origin}/client-onboarding${user?.email ? `?coach=${encodeURIComponent(user.email)}` : ''}`;
+
+  const totalSent = responses.length;
+  const pending = responses.filter(r => r.status !== 'converted').length;
+  const approved = responses.filter(r => r.status === 'converted').length;
 
   return (
-    <div className="flex items-center justify-between p-4 bg-[#111827] rounded-xl">
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
-          <Link className="w-5 h-5 text-white" />
+    <div className="p-4 bg-[#111827] rounded-xl">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+            <Link className="w-5 h-5 text-white" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-sm font-semibold text-white">Client Intake Link</p>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-white/50">{totalSent} Sent</span>
+                <span className="text-white/20">·</span>
+                <span className="text-[11px] text-white/50">{pending} Pending</span>
+                <span className="text-white/20">·</span>
+                <span className="text-[11px] text-white/50">{approved} Approved</span>
+              </div>
+            </div>
+            <p className="text-xs text-white/40 mt-0.5">Share with prospective clients to start onboarding</p>
+            <p className="text-xs text-white/50 mt-0.5 font-mono truncate max-w-[380px]">{onboardingUrl}</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-white">Client Onboarding Link</p>
-          <p className="text-xs text-white/60 mt-0.5 font-mono truncate max-w-[400px]">{onboardingUrl}</p>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={() => { navigator.clipboard.writeText(onboardingUrl); toast.success('Link copied!'); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors"
+          >
+            <Copy className="w-3.5 h-3.5" /> Copy Link
+          </button>
+          <button
+            onClick={() => window.open(onboardingUrl, '_blank')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#111827] text-xs font-semibold hover:bg-white/90 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" /> Open
+          </button>
         </div>
       </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="mt-3 pt-3 border-t border-white/10 flex justify-end">
         <button
-          onClick={() => { navigator.clipboard.writeText(onboardingUrl); toast.success('Link copied!'); }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors"
+          onClick={() => navigate('/onboarding-manager')}
+          className="flex items-center gap-1 text-[11px] text-white/50 hover:text-white/80 transition-colors font-medium"
         >
-          <Copy className="w-3.5 h-3.5" /> Copy Link
-        </button>
-        <button
-          onClick={() => window.open(onboardingUrl, '_blank')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#111827] text-xs font-semibold hover:bg-white/90 transition-colors"
-        >
-          <ExternalLink className="w-3.5 h-3.5" /> Open
+          View All Intakes <ArrowRight className="w-3 h-3" />
         </button>
       </div>
     </div>
