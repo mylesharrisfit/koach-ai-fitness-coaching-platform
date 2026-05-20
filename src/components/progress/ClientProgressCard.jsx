@@ -50,7 +50,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
         className="w-full flex items-center gap-4 p-5 text-left hover:bg-[#F6F7FB] transition-all"
         onClick={() => setExpanded(!expanded)}
       >
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-[#EFF6FF] flex items-center justify-center text-[#2563EB] font-semibold flex-shrink-0">
           {client.name?.[0]?.toUpperCase() || '?'}
         </div>
         <div className="flex-1 min-w-0">

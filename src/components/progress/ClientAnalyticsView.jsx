@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { format, subDays, isAfter } from 'date-fns';
-import { Sparkles, Loader2, RefreshCw, ChevronLeft, ChevronRight, Image } from 'lucide-react';
+import { Sparkles, Loader2, RefreshCw, ChevronLeft, ChevronRight, Image, BarChart2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
@@ -88,23 +88,23 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
     <div className="p-6 space-y-6 bg-secondary/10">
       {/* View toggle */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-1 bg-secondary rounded-lg p-1">
+        <div className="flex gap-1">
           {VIEWS.map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-3 py-1 text-xs rounded-md font-medium transition-all ${view === v ? 'bg-card text-foreground shadow' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${view === v ? 'bg-[#2563EB] text-white' : 'bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#2563EB] hover:text-[#2563EB]'}`}
             >
               {v}
             </button>
           ))}
         </div>
-        <div className="flex gap-1 bg-secondary rounded-lg p-1">
+        <div className="flex gap-1">
           {CHARTS.map(c => (
             <button
               key={c.key}
               onClick={() => setActiveChart(c.key)}
-              className={`px-3 py-1 text-xs rounded-md font-medium transition-all ${activeChart === c.key ? 'bg-card text-foreground shadow' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${activeChart === c.key ? 'bg-[#111827] text-white' : 'bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#374151] hover:text-[#374151]'}`}
             >
               {c.label}
             </button>
@@ -146,7 +146,10 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
           </ResponsiveContainer>
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground text-center py-6">Not enough data for this time range.</p>
+        <div className="flex flex-col items-center justify-center py-8 gap-2">
+          <BarChart2 className="w-8 h-8 text-[#D1D5DB]" />
+          <p className="text-[#9CA3AF] text-sm">Not enough data for this time range.</p>
+        </div>
       )}
 
       {/* Week vs Week */}
@@ -203,28 +206,28 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
       )}
 
       {/* AI Summary */}
-      <div className="bg-card rounded-xl border border-purple-500/30 p-4">
+      <div className="bg-[#F8FAFF] border border-[#DBEAFE] rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-purple-400" />
-            <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">AI Coach Summary</p>
+            <Sparkles className="w-4 h-4 text-[#2563EB]" />
+            <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-wider">AI Coach Summary</p>
           </div>
-          <button onClick={fetchAiSummary} disabled={aiLoading} className="text-purple-400 hover:text-purple-300 disabled:opacity-50">
+          <button onClick={fetchAiSummary} disabled={aiLoading} className="text-[#2563EB] hover:text-[#1D4ED8] disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${aiLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
         {aiSummary ? (
-          <p className="text-sm text-foreground/90 leading-relaxed">{aiSummary}</p>
+          <p className="text-sm text-[#111827] leading-relaxed">{aiSummary}</p>
         ) : aiLoading ? (
           <div className="flex items-center gap-2 py-3">
-            <Loader2 className="w-4 h-4 animate-spin text-purple-400" />
-            <p className="text-sm text-muted-foreground">Analyzing {client.name}'s progress...</p>
+            <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
+            <p className="text-sm text-[#6B7280]">Analyzing {client.name}'s progress...</p>
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Generate an AI-powered progress summary for this client.</p>
-            <Button size="sm" onClick={fetchAiSummary} className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/30 ml-4 flex-shrink-0">
+            <p className="text-sm text-[#6B7280]">Generate an AI-powered progress summary for this client.</p>
+            <Button size="sm" onClick={fetchAiSummary} className="bg-[#2563EB] text-white hover:bg-[#1D4ED8] ml-4 flex-shrink-0">
               Generate
             </Button>
           </div>
