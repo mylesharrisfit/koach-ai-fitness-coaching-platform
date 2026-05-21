@@ -11,6 +11,7 @@ import ConversationHeader from '../components/messages/ConversationHeader';
 import ConversationEmpty from '../components/messages/ConversationEmpty';
 import ComposeBar from '../components/messages/ComposeBar.jsx';
 import BroadcastModal from '../components/messages/BroadcastModal';
+import ClientInfoSidebar from '../components/messages/ClientInfoSidebar';
 
 export default function Messages() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -37,6 +38,24 @@ export default function Messages() {
     queryFn: () => base44.entities.Message.list('-created_date', 500),
   });
 
+  const { data: checkIns = [] } = useQuery({
+    queryKey: ['checkins-messages'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 300),
+  });
+
+  const { data: badges = [] } = useQuery({
+    queryKey: ['client-badges-messages'],
+    queryFn: () => base44.entities.ClientBadge.list('-awarded_at', 100),
+  });
+
+  // Real-time subscription
+  useEffect(() => {
+    const unsub = base44.entities.Message.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+    });
+    return unsub;
+  }, [queryClient]);
+
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Message.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['messages'] }),
@@ -44,7 +63,6 @@ export default function Messages() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Message.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['messages'] }),
   });
 
   const selectedClient = clients.find(c => c.id === selectedClientId);
@@ -53,6 +71,13 @@ export default function Messages() {
     .sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
   const pinnedMessages = clientMessages.filter(m => m.is_pinned);
+
+  // Mark unread messages as read when conversation opens
+  useEffect(() => {
+    if (!selectedClientId) return;
+    const unread = allMessages.filter(m => m.client_id === selectedClientId && m.sender === 'client' && !m.is_read);
+    unread.forEach(m => updateMutation.mutate({ id: m.id, data: { is_read: true } }));
+  }, [selectedClientId]); // eslint-disable-line
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -74,8 +99,7 @@ export default function Messages() {
     const items = [];
     let lastDate = null;
     let lastSender = null;
-    const msgs = clientMessages;
-    msgs.forEach((msg, i) => {
+    clientMessages.forEach((msg, i) => {
       const d = new Date(msg.created_date);
       const dateKey = format(d, 'yyyy-MM-dd');
       if (dateKey !== lastDate) {
@@ -88,7 +112,7 @@ export default function Messages() {
         lastSender = null;
       }
       const isFirst = lastSender !== msg.sender;
-      const nextMsg = msgs[i + 1];
+      const nextMsg = clientMessages[i + 1];
       const nextDate = nextMsg ? format(new Date(nextMsg.created_date), 'yyyy-MM-dd') : null;
       const isLast = !nextMsg || nextMsg.sender !== msg.sender || nextDate !== dateKey;
       items.push({ type: 'msg', msg, isFirst, isLast, key: msg.id });
@@ -121,19 +145,32 @@ export default function Messages() {
     setMobileView('chat');
   };
 
+  const clientCheckIns = checkIns.filter(ci => ci.client_id === selectedClientId);
+
   return (
-    <div className="h-[calc(100dvh-64px)] md:h-screen flex overflow-hidden">
-      <div className={`${mobileView === 'chat' ? 'hidden' : 'flex'} md:flex w-full md:w-72 border-r border-[#E7EAF3] bg-white flex-col flex-shrink-0`}>
+    <div className="h-[calc(100dvh-56px)] md:h-screen flex overflow-hidden bg-[#F9FAFB]">
+      {/* ── Left: Conversation list (280px) ── */}
+      <div className={cn(
+        'flex-shrink-0 flex-col border-r border-[#E5E7EB]',
+        mobileView === 'chat' ? 'hidden' : 'flex',
+        'md:flex w-full md:w-[280px]'
+      )}>
         <ClientListSidebar
           clients={clients}
           allMessages={allMessages}
+          checkIns={checkIns}
           selectedClientId={selectedClientId}
           onSelectClient={handleSelectClient}
           onBroadcast={() => setShowBroadcast(true)}
         />
       </div>
 
-      <div className={`${mobileView === 'list' ? 'hidden' : 'flex'} md:flex flex-1 flex-col min-w-0 relative bg-[#F6F7FB]`}>
+      {/* ── Center: Chat area ── */}
+      <div className={cn(
+        'flex-1 flex-col min-w-0 relative',
+        mobileView === 'list' ? 'hidden' : 'flex',
+        'md:flex'
+      )}>
         {selectedClient ? (
           <>
             <ConversationHeader
@@ -148,7 +185,7 @@ export default function Messages() {
             <div
               ref={messagesContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto px-5 py-4 space-y-0.5"
+              className="flex-1 overflow-y-auto px-5 py-4 space-y-0.5 bg-[#F9FAFB]"
             >
               {clientMessages.length === 0 ? (
                 <ConversationEmpty client={selectedClient} onSelect={(text) => setNewMessage(text)} />
@@ -175,7 +212,7 @@ export default function Messages() {
             {showJumpToLatest && (
               <button
                 onClick={scrollToBottom}
-                className="absolute bottom-24 right-5 flex items-center gap-1.5 bg-primary text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:bg-primary/90 transition-all z-10"
+                className="absolute bottom-24 right-5 flex items-center gap-1.5 bg-[#111827] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:bg-black transition-all z-10"
               >
                 <ArrowDown className="w-3.5 h-3.5" /> Jump to latest
               </button>
@@ -192,14 +229,25 @@ export default function Messages() {
             />
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] gap-3">
+          <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] gap-3 bg-[#F9FAFB]">
             <div className="w-16 h-16 rounded-2xl bg-[#EEF4FF] flex items-center justify-center">
-              <Send className="w-7 h-7 text-primary" />
+              <Send className="w-7 h-7 text-[#2563EB]" />
             </div>
-            <p className="text-sm font-medium text-[#6B7280]">Select a client to start messaging</p>
+            <p className="text-sm font-medium text-[#6B7280]">Select a conversation to start messaging</p>
           </div>
         )}
       </div>
+
+      {/* ── Right: Client info sidebar (260px) ── */}
+      {selectedClient && (
+        <div className="hidden lg:flex flex-col w-[260px] flex-shrink-0">
+          <ClientInfoSidebar
+            client={selectedClient}
+            checkIns={clientCheckIns}
+            badges={badges}
+          />
+        </div>
+      )}
 
       {showBroadcast && (
         <BroadcastModal

@@ -1,23 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, SlidersHorizontal, Check, Megaphone } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Megaphone, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow, isToday, isYesterday, format } from 'date-fns';
 
-const SORT_OPTIONS = [
-  { key: 'recent', label: 'Most Recent' },
-  { key: 'unread', label: 'Unread First' },
-  { key: 'alpha', label: 'Alphabetical' },
-  { key: 'at_risk', label: 'At-Risk First' },
+const FILTER_CHIPS = [
+  { key: 'all', label: 'All' },
+  { key: 'unread', label: 'Unread' },
+  { key: 'lead', label: 'Leads' },
+  { key: 'active', label: 'Active' },
+  { key: 'at_risk', label: 'At-Risk' },
 ];
-
-function formatMsgTime(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isToday(d)) return formatDistanceToNow(d, { addSuffix: false }).replace('about ', '') + ' ago';
-  if (isYesterday(d)) return 'Yesterday';
-  return format(d, 'EEE'); // Mon, Tue, etc.
-}
 
 const AVATAR_COLORS = [
   ['bg-blue-100', 'text-blue-700'],
@@ -33,21 +25,24 @@ function getAvatarColor(name = '') {
   return AVATAR_COLORS[idx];
 }
 
-function isOnline(client, allMessages) {
-  // Consider "online" if there's a client message in the last 5 minutes
-  const recent = allMessages.find(
-    m => m.client_id === client.id && m.sender === 'client' &&
-    (Date.now() - new Date(m.created_date)) < 5 * 60 * 1000
-  );
-  return !!recent;
+function formatMsgTime(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isToday(d)) return formatDistanceToNow(d, { addSuffix: false }).replace('about ', '') + ' ago';
+  if (isYesterday(d)) return 'Yesterday';
+  return format(d, 'EEE');
 }
 
-export default function ClientListSidebar({ clients, allMessages, selectedClientId, onSelectClient, onBroadcast }) {
-  const [search, setSearch] = useState('');
-  const [sortKey, setSortKey] = useState('recent');
-  const [showSortMenu, setShowSortMenu] = useState(false);
+function isCheckedInToday(client, checkIns = []) {
+  if (!checkIns) return false;
+  const today = format(new Date(), 'yyyy-MM-dd');
+  return checkIns.some(ci => ci.client_id === client.id && ci.date === today);
+}
 
-  // Build per-client metadata
+export default function ClientListSidebar({ clients, allMessages, checkIns = [], selectedClientId, onSelectClient, onBroadcast }) {
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
+
   const clientMeta = useMemo(() => {
     const meta = {};
     allMessages.forEach(m => {
@@ -61,213 +56,126 @@ export default function ClientListSidebar({ clients, allMessages, selectedClient
     return meta;
   }, [allMessages]);
 
-  // Search: name + message content
-  const searched = useMemo(() => {
-    if (!search.trim()) return clients;
-    const q = search.toLowerCase();
-    return clients.filter(c => {
-      if (c.name?.toLowerCase().includes(q)) return true;
-      const lastMsg = clientMeta[c.id]?.lastMsg;
-      if (lastMsg?.content?.toLowerCase().includes(q)) return true;
-      return false;
-    });
-  }, [clients, search, clientMeta]);
-
-  // Sort
-  const sorted = useMemo(() => {
-    const arr = [...searched];
-    if (sortKey === 'alpha') {
-      return arr.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  const filtered = useMemo(() => {
+    let list = [...clients];
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(c => c.name?.toLowerCase().includes(q) || clientMeta[c.id]?.lastMsg?.content?.toLowerCase().includes(q));
     }
-    if (sortKey === 'unread') {
-      return arr.sort((a, b) => {
-        const ua = clientMeta[a.id]?.unread || 0;
-        const ub = clientMeta[b.id]?.unread || 0;
-        if (ub !== ua) return ub - ua;
-        const ta = clientMeta[a.id]?.lastMsg?.created_date || '';
-        const tb = clientMeta[b.id]?.lastMsg?.created_date || '';
-        return tb.localeCompare(ta);
-      });
-    }
-    if (sortKey === 'at_risk') {
-      return arr.sort((a, b) => {
-        const ar = (a.lifecycle_status === 'at_risk' || a.status === 'at_risk') ? 0 : 1;
-        const br = (b.lifecycle_status === 'at_risk' || b.status === 'at_risk') ? 0 : 1;
-        if (ar !== br) return ar - br;
-        const ta = clientMeta[a.id]?.lastMsg?.created_date || '';
-        const tb = clientMeta[b.id]?.lastMsg?.created_date || '';
-        return tb.localeCompare(ta);
-      });
-    }
-    // default: recent, unread float to top
-    return arr.sort((a, b) => {
+    if (filter === 'unread') list = list.filter(c => (clientMeta[c.id]?.unread || 0) > 0);
+    else if (filter === 'lead') list = list.filter(c => c.lifecycle_status === 'lead');
+    else if (filter === 'active') list = list.filter(c => c.lifecycle_status === 'active');
+    else if (filter === 'at_risk') list = list.filter(c => c.lifecycle_status === 'at_risk');
+    // Sort: unread first, then by most recent message
+    return list.sort((a, b) => {
       const ua = clientMeta[a.id]?.unread || 0;
       const ub = clientMeta[b.id]?.unread || 0;
       if (ub > 0 && ua === 0) return 1;
       if (ua > 0 && ub === 0) return -1;
-      const ta = clientMeta[a.id]?.lastMsg?.created_date || '';
-      const tb = clientMeta[b.id]?.lastMsg?.created_date || '';
+      const ta = clientMeta[a.id]?.lastMsg?.created_date || a.created_date || '';
+      const tb = clientMeta[b.id]?.lastMsg?.created_date || b.created_date || '';
       return tb.localeCompare(ta);
     });
-  }, [searched, sortKey, clientMeta]);
+  }, [clients, search, filter, clientMeta]);
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-[#E7EAF3] flex-shrink-0">
+      {/* Dark header */}
+      <div className="bg-[#111827] p-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-heading font-bold text-lg text-[#1F2A44]">Messages</h2>
-          <div className="flex items-center gap-1.5">
-            {/* Broadcast button */}
-            <button
-              onClick={onBroadcast}
-              title="Broadcast message"
-              className="p-1.5 rounded-lg border bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:bg-primary hover:text-white hover:border-primary transition-all"
-            >
-              <Megaphone className="w-3.5 h-3.5" />
-            </button>
-          {/* Sort button */}
-          <div className="relative">
-            <button
-              onClick={() => setShowSortMenu(v => !v)}
-              className={cn(
-                'p-1.5 rounded-lg border transition-all',
-                showSortMenu || sortKey !== 'recent'
-                  ? 'bg-primary text-white border-primary'
-                  : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:text-[#1F2A44]'
-              )}
-              title="Sort clients"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-            </button>
-            {showSortMenu && (
-              <div className="absolute right-0 top-full mt-1.5 bg-white border border-[#E7EAF3] rounded-xl shadow-lg z-30 w-44 py-1 overflow-hidden">
-                {SORT_OPTIONS.map(opt => (
-                  <button
-                    key={opt.key}
-                    onClick={() => { setSortKey(opt.key); setShowSortMenu(false); }}
-                    className="w-full flex items-center justify-between gap-2 px-3 py-2 text-xs font-medium hover:bg-[#F6F7FB] text-[#374151] transition-colors"
-                  >
-                    {opt.label}
-                    {sortKey === opt.key && <Check className="w-3.5 h-3.5 text-primary" />}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          </div>
+          <h2 className="font-semibold text-white">Messages</h2>
+          <button
+            onClick={onBroadcast}
+            title="Broadcast message"
+            className="p-1.5 rounded-lg bg-white/10 text-white/60 hover:bg-white/20 hover:text-white transition-all"
+          >
+            <Megaphone className="w-3.5 h-3.5" />
+          </button>
         </div>
-
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
-          <Input
-            placeholder="Search name or message..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 pr-8 h-9 text-sm bg-[#F6F7FB] border-[#E7EAF3]"
-          />
-          {search && (
-            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2">
-              <X className="w-3.5 h-3.5 text-[#9CA3AF]" />
-            </button>
-          )}
-        </div>
-        {search.trim() && (
-          <p className="text-[11px] text-[#9CA3AF] mt-1.5 font-medium">
-            {sorted.length} result{sorted.length !== 1 ? 's' : ''}
-          </p>
-        )}
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search conversations..."
+          className="w-full bg-white/10 text-white placeholder-white/40 rounded-lg px-3 py-1.5 text-sm border-0 outline-none focus:bg-white/15 transition-colors"
+        />
       </div>
 
-      {/* Client list */}
-      <div className="flex-1 overflow-y-auto">
-        {sorted.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-            <Search className="w-5 h-5 text-[#C4C9D8] mb-2" />
-            <p className="text-xs text-[#9CA3AF]">No clients found</p>
+      {/* Filter chips */}
+      <div className="flex gap-1.5 px-3 py-2.5 border-b border-[#E7EAF3] overflow-x-auto flex-shrink-0 bg-white">
+        {FILTER_CHIPS.map(chip => (
+          <button
+            key={chip.key}
+            onClick={() => setFilter(chip.key)}
+            className={cn(
+              'text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap transition-all',
+              filter === chip.key
+                ? 'bg-[#111827] text-white'
+                : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
+            )}
+          >
+            {chip.label}
+            {chip.key === 'unread' && (() => {
+              const total = clients.reduce((s, c) => s + (clientMeta[c.id]?.unread || 0), 0);
+              return total > 0 ? <span className="ml-1 bg-blue-500 text-white text-[9px] font-bold rounded-full px-1">{total}</span> : null;
+            })()}
+          </button>
+        ))}
+      </div>
+
+      {/* Conversation list */}
+      <div className="flex-1 overflow-y-auto bg-white">
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center px-4">
+            <p className="text-xs text-[#9CA3AF]">No conversations found</p>
           </div>
-        ) : (
-          sorted.map(client => {
-            const meta = clientMeta[client.id] || { lastMsg: null, unread: 0 };
-            const { lastMsg, unread } = meta;
-            const isSelected = selectedClientId === client.id;
-            const online = isOnline(client, allMessages);
-            const [avatarBg, avatarText] = getAvatarColor(client.name);
-            const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase();
-            const hasUnread = unread > 0;
+        ) : filtered.map(client => {
+          const meta = clientMeta[client.id] || { lastMsg: null, unread: 0 };
+          const { lastMsg, unread } = meta;
+          const isSelected = selectedClientId === client.id;
+          const hasUnread = unread > 0;
+          const online = isCheckedInToday(client, checkIns);
+          const [avatarBg, avatarText] = getAvatarColor(client.name);
+          const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase();
 
-            return (
-              <button
-                key={client.id}
-                onClick={() => onSelectClient(client.id)}
-                className={cn(
-                  'w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-b border-[#F0F2F8] relative',
-                  isSelected
-                    ? 'bg-[#EEF4FF]'
-                    : 'hover:bg-[#F8F9FD]'
-                )}
-              >
-                {/* Selected indicator — left border accent */}
-                {isSelected && (
-                  <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-r-full bg-primary" />
-                )}
-
-                {/* Avatar + online dot */}
-                <div className="relative flex-shrink-0">
-                  <div className={cn(
-                    'w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm overflow-hidden',
-                    client.avatar_url ? '' : `${avatarBg} ${avatarText}`
-                  )}>
-                    {client.avatar_url
-                      ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
-                      : initials
-                    }
-                  </div>
-                  {online && (
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white animate-pulse" />
+          return (
+            <button
+              key={client.id}
+              onClick={() => onSelectClient(client.id)}
+              className={cn(
+                'w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-b border-[#F3F4F6] relative',
+                isSelected ? 'bg-[#F0F4FF]' : 'hover:bg-[#F9FAFB]'
+              )}
+            >
+              {isSelected && <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-r-full bg-[#2563EB]" />}
+              <div className="relative flex-shrink-0">
+                <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm overflow-hidden', client.avatar_url ? '' : `${avatarBg} ${avatarText}`)}>
+                  {client.avatar_url ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" /> : initials}
+                </div>
+                {online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1 mb-0.5">
+                  <p className={cn('text-sm truncate leading-tight', hasUnread ? 'font-bold text-[#111827]' : 'font-medium text-[#374151]')}>
+                    {client.name}
+                  </p>
+                  {lastMsg && (
+                    <span className={cn('text-[10px] flex-shrink-0', hasUnread ? 'text-[#2563EB] font-semibold' : 'text-[#9CA3AF]')}>
+                      {formatMsgTime(lastMsg.created_date)}
+                    </span>
                   )}
                 </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1 mb-0.5">
-                    <p className={cn(
-                      'text-sm truncate leading-tight',
-                      hasUnread ? 'font-bold text-[#1F2A44]' : 'font-semibold text-[#374151]'
-                    )}>
-                      {client.name}
-                    </p>
-                    {lastMsg && (
-                      <span className={cn(
-                        'text-[10px] flex-shrink-0 leading-tight',
-                        hasUnread ? 'text-primary font-semibold' : 'text-[#9CA3AF]'
-                      )}>
-                        {formatMsgTime(lastMsg.created_date)}
-                      </span>
-                    )}
-                  </div>
-                  <p className={cn(
-                    'text-xs truncate leading-tight',
-                    hasUnread ? 'text-[#374151]' : 'text-[#9CA3AF]'
-                  )}>
-                    {lastMsg
-                      ? (lastMsg.sender === 'coach' ? '↩ ' : '') + lastMsg.content
-                      : <span className="italic">No messages yet</span>
-                    }
-                  </p>
+                <p className={cn('text-xs truncate leading-tight', hasUnread ? 'text-[#374151] font-medium' : 'text-[#9CA3AF]')}>
+                  {lastMsg ? (lastMsg.sender === 'coach' ? '↩ ' : '') + lastMsg.content : <span className="italic">No messages yet</span>}
+                </p>
+              </div>
+              {hasUnread && (
+                <div className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-[#2563EB] text-white text-[10px] font-bold flex items-center justify-center px-1">
+                  {unread > 99 ? '99+' : unread}
                 </div>
-
-                {/* Unread badge */}
-                {hasUnread && (
-                  <div className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center px-1">
-                    {unread > 99 ? '99+' : unread}
-                  </div>
-                )}
-              </button>
-            );
-          })
-        )}
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

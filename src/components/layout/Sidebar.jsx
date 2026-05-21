@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import AchievementBell from '@/components/achievements/AchievementBell';
@@ -73,11 +74,22 @@ const BOTTOM_ITEMS = [
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
+function useUnreadCount() {
+  const { data: messages = [] } = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => base44.entities.Message.list('-created_date', 200),
+    staleTime: 30000,
+  });
+  return messages.filter(m => m.sender === 'client' && !m.is_read).length;
+}
+
 function NavItem({ item, collapsed, onUpgrade, user }) {
   const location = useLocation();
   const isActive = location.pathname === item.path ||
     (item.path !== '/' && location.pathname.startsWith(item.path));
   const isLocked = item.feature && !hasFeature(user, item.feature);
+  const unreadCount = useUnreadCount();
+  const showUnread = item.path === '/messages' && unreadCount > 0;
 
   if (isLocked) {
     return (
@@ -117,7 +129,15 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
         <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: '#3B82F6' }} />
       )}
       <item.icon className={cn('w-[16px] h-[16px] flex-shrink-0 transition-colors')} />
-      {!collapsed && <span>{item.label}</span>}
+      {!collapsed && <span className="flex-1">{item.label}</span>}
+      {!collapsed && showUnread && (
+        <span className="min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1 flex-shrink-0">
+          {unreadCount > 99 ? '99+' : unreadCount}
+        </span>
+      )}
+      {collapsed && showUnread && (
+        <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500" />
+      )}
     </Link>
   );
 }
