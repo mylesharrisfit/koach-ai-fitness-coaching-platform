@@ -86,8 +86,18 @@ function BusinessPage() {
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="rounded-xl p-5 text-white mb-6" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
-        <h1 className="text-xl font-semibold text-white">Business Overview</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>MRR, client acquisition, and churn risk analytics</p>
+        <div>
+          <h1 className="text-xl font-semibold text-white">Business Overview</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>MRR, client acquisition, and churn risk analytics</p>
+        </div>
+        <div className="flex gap-2">
+          <button className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg text-sm font-semibold hover:bg-white/20 transition-colors">
+            Last 30 days
+          </button>
+          <button className="px-4 py-2 bg-white text-[#111827] rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
+            Export
+          </button>
+        </div>
       </div>
 
       {/* KPI Row */}
@@ -96,7 +106,7 @@ function BusinessPage() {
           icon={DollarSign}
           label="Monthly Recurring Revenue"
           value={`$${mrr.toLocaleString()}`}
-          sub={`$${mrrAtRisk.toLocaleString()} at risk`}
+          sub="+0% MoM"
           dark
         />
         <BusinessMetricCard
@@ -104,7 +114,6 @@ function BusinessPage() {
           label="Active Clients"
           value={activeClients.length}
           sub={`${newClientsThisMonth} new this month`}
-          dark
         />
         <BusinessMetricCard
           icon={AlertTriangle}
@@ -118,7 +127,6 @@ function BusinessPage() {
           label="Avg. Client LTV"
           value={avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—'}
           sub="lifetime value estimate"
-          dark
         />
       </div>
 
