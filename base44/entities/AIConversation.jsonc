@@ -1,0 +1,36 @@
+{
+  "name": "AIConversation",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Client ID this conversation is about"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "description": "First user message truncated"
+    },
+    "messages": {
+      "type": "array",
+      "description": "Array of message objects",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": []
+}
