@@ -209,18 +209,18 @@ export default function Clients() {
   return (
     <div className="flex flex-col h-full">
       {/* ── Top bar ── */}
-      <div className="px-5 py-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: '#111827' }}>
+      <div className="px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between gap-3 flex-shrink-0" style={{ background: '#111827' }}>
         <div>
-          <h1 className="text-lg font-heading font-bold text-white leading-tight">Clients</h1>
+          <h1 className="text-base sm:text-lg font-heading font-bold text-white leading-tight">Clients</h1>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{counts.active || 0} active · {counts.at_risk || 0} at-risk · {counts.lead || 0} leads</p>
         </div>
         <button
           onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
           style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
         >
           {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {atLimit ? 'Limit Reached' : 'Add Client'}
+          {atLimit ? 'Limit' : 'Add Client'}
         </button>
       </div>
 
@@ -247,7 +247,7 @@ export default function Clients() {
       {/* ── Filters ── */}
       <div className="px-5 pt-3 pb-3 flex-shrink-0 space-y-2">
         {/* Lifecycle tabs */}
-        <div className="flex flex-wrap gap-1">
+        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide flex-nowrap">
           {[
             { key: 'all',       label: 'All',       active: 'bg-[#1F2A44] text-white border-[#1F2A44]',        count: 'bg-white/20 text-white' },
             { key: 'lead',      label: 'Lead',      active: 'bg-blue-500 text-white border-blue-500',           count: 'bg-white/20 text-white' },

@@ -161,11 +161,11 @@ export default function CheckInReview() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
 
       {/* ── Header ── */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl p-5" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl p-4 sm:p-5" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <div>
-          <h1 className="text-xl font-heading font-bold text-white tracking-tight">Check-in Dashboard</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {format(new Date(), 'EEEE, MMMM d, yyyy')} · {latestPerClient.length} client{latestPerClient.length !== 1 ? 's' : ''} checked in
+          <h1 className="text-base sm:text-xl font-heading font-bold text-white tracking-tight">Check-in Dashboard</h1>
+          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {format(new Date(), 'EEE, MMM d')} · {latestPerClient.length} checked in
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">

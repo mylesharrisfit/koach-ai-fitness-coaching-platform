@@ -119,7 +119,7 @@ export default function Nutrition() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 
       {/* ── HEADER ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111827] rounded-xl p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-5">
         <div>
           <h1 className="text-xl font-heading font-bold text-white tracking-tight">Nutrition System</h1>
           <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
@@ -197,7 +197,7 @@ export default function Nutrition() {
         </div>
 
         {/* Filter tabs */}
-        <div className="flex gap-1.5 bg-secondary/50 rounded-xl p-1 w-fit flex-wrap">
+        <div className="flex gap-1.5 bg-secondary/50 rounded-xl p-1 overflow-x-auto scrollbar-hide flex-nowrap w-full sm:w-fit">
           {FILTER_TABS.map(tab => (
             <button
               key={tab}

@@ -1,129 +1,98 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, Calendar, MessageSquare,
-  MoreHorizontal, Bell
+  LayoutDashboard, Users, ClipboardList, MessageSquare, MoreHorizontal
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import MoreSheet from './MoreSheet';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+
+function useUnreadMessages() {
+  const { data: messages = [] } = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => base44.entities.Message.list('-created_date', 200),
+    staleTime: 30000,
+  });
+  return messages.filter(m => m.sender === 'client' && !m.is_read).length;
+}
+
+function usePendingCheckIns() {
+  const { data: checkIns = [] } = useQuery({
+    queryKey: ['checkins-review'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 200),
+    staleTime: 30000,
+  });
+  return checkIns.filter(ci => !ci.coach_responded && !ci.review_status?.includes('reviewed')).length;
+}
 
 const PRIMARY_NAV = [
-  { icon: LayoutDashboard, label: 'Home', path: '/' },
-  { icon: Users, label: 'Clients', path: '/clients' },
-  { icon: Calendar, label: 'Calendar', path: '/schedule' },
-  { icon: MessageSquare, label: 'Messages', path: '/messages' },
-];
-
-const MORE_PATHS = [
-  '/programs', '/nutrition', '/checkin-review', '/progress', '/adherence',
-  '/sales', '/analytics', '/revenue', '/store', '/community',
-  '/assistant', '/automations', '/my-day', '/white-label',
-  '/subscription', '/settings', '/exercises', '/at-risk', '/business',
+  { icon: LayoutDashboard, label: 'Home',      path: '/' },
+  { icon: Users,           label: 'Clients',   path: '/clients' },
+  { icon: ClipboardList,   label: 'Check-ins', path: '/checkin-review' },
+  { icon: MessageSquare,   label: 'Messages',  path: '/messages' },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
-  const [bellOpen, setBellOpen] = useState(false);
-  const { unreadCount, notifications, markRead, markAllRead } = useNotifications();
+  const unreadMessages = useUnreadMessages();
+  const pendingCheckIns = usePendingCheckIns();
 
-  const isMoreActive = MORE_PATHS.some(
-    p => location.pathname === p || location.pathname.startsWith(p)
-  );
+  const isMoreActive = location.pathname !== '/' &&
+    !['/clients', '/checkin-review', '/messages'].some(p => location.pathname.startsWith(p));
 
   return (
     <>
       <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
 
-      {/* Mobile notification tray */}
-      {bellOpen && (
-        <>
-          <div className="fixed inset-0 z-50 bg-black/60" onClick={() => setBellOpen(false)} />
-          <div
-            className="fixed bottom-[60px] left-0 right-0 z-50 rounded-t-2xl max-h-[60vh] overflow-y-auto"
-            style={{ background: '#fff', border: '1px solid #E5E7EB' }}
-          >
-            <div
-              className="flex items-center justify-between px-4 py-3 sticky top-0 bg-white"
-              style={{ borderBottom: '1px solid #F3F4F6' }}
-            >
-              <span className="text-sm font-bold text-gray-900">Notifications</span>
-              {unreadCount > 0 && (
-                <button onClick={markAllRead} className="text-[11px] font-semibold" style={{ color: '#3B82F6' }}>
-                  Mark all read
-                </button>
-              )}
-            </div>
-            {notifications.length === 0 ? (
-              <div className="py-12 text-center text-sm text-gray-400">No notifications yet</div>
-            ) : notifications.map(n => (
-              <div
-                key={n.id}
-                onClick={() => { markRead(n.id); setBellOpen(false); }}
-                className="flex items-start gap-3 px-4 py-3 cursor-pointer"
-                style={{ borderBottom: '1px solid #F9FAFB', background: !n.is_read ? '#EFF6FF' : 'transparent' }}
-              >
-                <span className="text-lg mt-0.5">
-                  {{ checkin_received: '📋', feedback_sent: '💬', checkin_reminder: '⏰', general: '🔔' }[n.type] || '🔔'}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900" style={{ fontWeight: !n.is_read ? 600 : 400, opacity: n.is_read ? 0.6 : 1 }}>{n.title}</p>
-                  {n.body && <p className="text-xs mt-0.5 line-clamp-2 text-gray-500">{n.body}</p>}
-                </div>
-                {!n.is_read && <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: '#3B82F6' }} />}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden"
-        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)', background: '#fff', borderTop: '1px solid #E5E7EB' }}
+        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden bg-white border-t border-[#E5E7EB]"
+        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {PRIMARY_NAV.map(item => {
-          const isActive =
-            location.pathname === item.path ||
+          const isActive = location.pathname === item.path ||
             (item.path !== '/' && location.pathname.startsWith(item.path));
+          const badge = item.path === '/messages' ? unreadMessages
+            : item.path === '/checkin-review' ? pendingCheckIns : 0;
+
           return (
             <Link
               key={item.path}
               to={item.path}
-              className="flex flex-col items-center justify-center flex-1 gap-1 transition-colors"
-              style={{ color: isActive ? '#3B82F6' : '#9CA3AF' }}
+              className="flex flex-col items-center justify-center flex-1 gap-0.5 relative transition-colors"
             >
-              <item.icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium">{item.label}</span>
+              {isActive && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-[#2563EB]" />
+              )}
+              <div className="relative">
+                <item.icon className={cn('w-5 h-5', isActive ? 'text-[#111827]' : 'text-[#9CA3AF]')} />
+                {badge > 0 && (
+                  <span className={cn(
+                    'absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white',
+                    item.path === '/messages' ? 'bg-red-500' : 'bg-amber-500'
+                  )}>
+                    {badge > 9 ? '9+' : badge}
+                  </span>
+                )}
+              </div>
+              <span className={cn('text-[10px]', isActive ? 'text-[#111827] font-semibold' : 'text-[#9CA3AF] font-medium')}>
+                {item.label}
+              </span>
             </Link>
           );
         })}
 
-        {/* Notifications */}
-        <button
-          onClick={() => setBellOpen(o => !o)}
-          className="flex flex-col items-center justify-center flex-1 gap-1"
-          style={{ color: bellOpen ? '#3B82F6' : '#9CA3AF' }}
-        >
-          <div className="relative">
-            <Bell className="w-5 h-5" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[14px] h-3.5 bg-blue-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
-            )}
-          </div>
-          <span className="text-[10px] font-medium">Alerts</span>
-        </button>
-
         {/* More */}
         <button
           onClick={() => setMoreOpen(true)}
-          className="flex flex-col items-center justify-center flex-1 gap-1"
-          style={{ color: (moreOpen || isMoreActive) ? '#3B82F6' : '#9CA3AF' }}
+          className="flex flex-col items-center justify-center flex-1 gap-0.5 relative transition-colors"
         >
-          <MoreHorizontal className="w-5 h-5" />
-          <span className="text-[10px] font-medium">More</span>
+          {isMoreActive && (
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-[#2563EB]" />
+          )}
+          <MoreHorizontal className={cn('w-5 h-5', isMoreActive ? 'text-[#111827]' : 'text-[#9CA3AF]')} />
+          <span className={cn('text-[10px]', isMoreActive ? 'text-[#111827] font-semibold' : 'text-[#9CA3AF] font-medium')}>More</span>
         </button>
       </nav>
     </>

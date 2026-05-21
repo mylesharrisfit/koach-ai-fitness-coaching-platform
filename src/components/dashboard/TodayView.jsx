@@ -89,21 +89,21 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-5 py-8 sm:px-8 space-y-7 pb-24">
+    <div className="max-w-4xl mx-auto px-4 sm:px-8 py-4 sm:py-8 space-y-5 sm:space-y-7 pb-24">
 
       {/* ── Header ─────────────────────────────────── */}
-      <div className="flex items-center justify-between gap-4 bg-[#111827] rounded-xl p-6">
+      <div className="flex items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-6">
         <div>
-          <h1 className="text-xl font-semibold text-white" style={{ letterSpacing: '-0.02em' }}>
+          <h1 className="text-base sm:text-xl font-semibold text-white" style={{ letterSpacing: '-0.02em' }}>
             {greeting}, Coach
           </h1>
-          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {format(new Date(), 'EEEE, MMMM d')} · {activeCount} active client{activeCount !== 1 ? 's' : ''}
+          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {format(new Date(), 'EEE, MMM d')} · {activeCount} active client{activeCount !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={() => navigate('/clients')}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 border"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 border min-h-[44px]"
           style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
         >
           <UserPlus className="w-3.5 h-3.5" />
