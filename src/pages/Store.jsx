@@ -1,33 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, ShoppingBag, Star, MoreHorizontal, Edit, Trash2, Eye, EyeOff, Tag } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import PageHeader from '../components/shared/PageHeader';
+import { ShoppingBag, DollarSign, BarChart2, Star, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import StoreProductCard from '@/components/store/StoreProductCard';
+import ProductFormModal from '@/components/store/ProductFormModal';
+import ProductDetailSheet from '@/components/store/ProductDetailSheet';
+
+const FILTER_TABS = [
+  { key: 'all', label: 'All' },
+  { key: 'workout', label: 'Workout' },
+  { key: 'nutrition', label: 'Nutrition' },
+  { key: 'coaching', label: 'Coaching' },
+  { key: 'bundle', label: 'Bundle' },
+];
+
+function StatCard({ dark, title, value, icon: Icon, subtitle }) {
+  if (dark) {
+    return (
+      <div className="bg-[#111827] rounded-xl p-5">
+        <div className="flex items-start justify-between">
+          <p className="text-xs font-semibold uppercase tracking-wider text-white/50">{title}</p>
+          {Icon && <Icon className="w-4 h-4 text-white/30" />}
+        </div>
+        <p className="text-3xl font-bold mt-3 text-white leading-none">{value}</p>
+        {subtitle && <p className="text-xs text-white/40 mt-1.5">{subtitle}</p>}
+      </div>
+    );
+  }
+  return (
+    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+      <div className="flex items-start justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]">{title}</p>
+        {Icon && <div className="p-2 rounded-lg bg-[#F3F4F6]"><Icon className="w-4 h-4 text-[#374151]" /></div>}
+      </div>
+      <p className="text-3xl font-bold mt-3 text-[#111827] leading-none">{value}</p>
+      {subtitle && <p className="text-xs text-[#9CA3AF] mt-1.5">{subtitle}</p>}
+    </div>
+  );
+}
 
 export default function Store() {
+  const [filter, setFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({
-    title: '', description: '', long_description: '', price: '', original_price: '',
-    category: 'workout', difficulty: 'all_levels', duration_weeks: '', image_url: '',
-    features: [], is_published: true
-  });
-  const [featureInput, setFeatureInput] = useState('');
+  const [viewListing, setViewListing] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: listings = [], isLoading } = useQuery({
     queryKey: ['listings'],
     queryFn: () => base44.entities.PlanListing.list('-created_date'),
+  });
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ['clients'],
+    queryFn: () => base44.entities.Client.list('name'),
   });
 
   const createMutation = useMutation({
@@ -37,7 +64,7 @@ export default function Store() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.PlanListing.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['listings'] }); setShowForm(false); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['listings'] }); setShowForm(false); setEditing(null); },
   });
 
   const deleteMutation = useMutation({
@@ -45,187 +72,113 @@ export default function Store() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['listings'] }),
   });
 
-  const openCreate = () => {
-    setEditing(null);
-    setForm({ title: '', description: '', long_description: '', price: '', original_price: '', category: 'workout', difficulty: 'all_levels', duration_weeks: '', image_url: '', features: [], is_published: true });
-    setShowForm(true);
-  };
+  const stats = useMemo(() => {
+    const totalRevenue = listings.reduce((s, l) => s + (Number(l.price) * (l.sales_count || 0)), 0);
+    const totalSales = listings.reduce((s, l) => s + (l.sales_count || 0), 0);
+    const rated = listings.filter(l => l.rating);
+    const avgRating = rated.length ? (rated.reduce((s, l) => s + Number(l.rating), 0) / rated.length).toFixed(1) : '—';
+    return { totalRevenue, totalSales, avgRating };
+  }, [listings]);
 
-  const openEdit = (listing) => {
-    setEditing(listing);
-    setForm({ ...listing, price: listing.price || '', original_price: listing.original_price || '', duration_weeks: listing.duration_weeks || '' });
-    setShowForm(true);
-  };
+  const filtered = useMemo(() => filter === 'all' ? listings : listings.filter(l => l.category === filter), [listings, filter]);
 
-  const addFeature = () => {
-    if (featureInput.trim()) {
-      setForm({ ...form, features: [...(form.features || []), featureInput.trim()] });
-      setFeatureInput('');
-    }
-  };
-
-  const removeFeature = (idx) => {
-    setForm({ ...form, features: form.features.filter((_, i) => i !== idx) });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = { ...form, price: Number(form.price), original_price: Number(form.original_price) || undefined, duration_weeks: Number(form.duration_weeks) || undefined };
-    if (editing) updateMutation.mutate({ id: editing.id, data });
-    else createMutation.mutate(data);
-  };
-
-  const categoryColors = {
-    workout: 'bg-[#EEF4FF] text-primary',
-    nutrition: 'bg-emerald-50 text-emerald-600',
-    bundle: 'bg-violet-50 text-violet-600',
-    coaching: 'bg-amber-50 text-amber-600',
-  };
+  const openCreate = () => { setEditing(null); setShowForm(true); };
+  const openEdit = (listing) => { setEditing(listing); setShowForm(true); };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <PageHeader title="Plan Store" subtitle="Sell your training plans"
-        actions={<Button onClick={openCreate}><Plus className="w-4 h-4 mr-2" /> Create Listing</Button>}
-      />
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1,2,3].map(i => <div key={i} className="h-80 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse shadow-sm" />)}
+    <div className="p-4 lg:p-6 max-w-7xl mx-auto space-y-5">
+      {/* Dark header */}
+      <div className="bg-[#111827] rounded-xl p-5 text-white flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+            <ShoppingBag className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-white leading-tight">Plan Store</h1>
+            <p className="text-sm text-white/50 mt-0.5">Sell your training plans, nutrition programs, and coaching packages</p>
+          </div>
         </div>
-      ) : listings.length === 0 ? (
-        <div className="text-center py-16">
-          <ShoppingBag className="w-12 h-12 text-[#374151] mx-auto mb-4" />
-          <p className="text-[#374151]">No listings yet. Create your first plan to sell.</p>
+        <button onClick={openCreate} className="px-4 py-2 bg-white text-[#111827] rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
+          + Create Product
+        </button>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard dark title="Total Revenue" value={`$${stats.totalRevenue.toLocaleString()}`} icon={DollarSign} subtitle="All time earnings" />
+        <StatCard title="Products Listed" value={listings.length} icon={Package} subtitle={`${listings.filter(l => l.is_published).length} published`} />
+        <StatCard dark title="Total Sales" value={stats.totalSales} icon={BarChart2} subtitle="Across all products" />
+        <StatCard title="Avg Rating" value={stats.avgRating === '—' ? '—' : `★ ${stats.avgRating}`} icon={Star} subtitle={`${listings.filter(l => l.rating).length} rated`} />
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex gap-2 flex-wrap">
+        {FILTER_TABS.map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            className={cn(
+              'px-4 py-1.5 rounded-lg text-sm font-semibold transition-all',
+              filter === tab.key
+                ? 'bg-[#111827] text-white'
+                : 'bg-white border border-[#E5E7EB] text-[#374151] hover:border-[#111827] hover:text-[#111827]'
+            )}
+          >
+            {tab.label}
+            {tab.key !== 'all' && (
+              <span className={cn('ml-1.5 text-[10px]', filter === tab.key ? 'text-white/60' : 'text-[#9CA3AF]')}>
+                {listings.filter(l => l.category === tab.key).length}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Product grid */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1,2,3].map(i => <div key={i} className="h-72 bg-white rounded-xl border border-[#E5E7EB] animate-pulse" />)}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-[#E5E7EB] rounded-xl">
+          <ShoppingBag className="w-10 h-10 text-[#D1D5DB] mb-3" />
+          <p className="text-sm font-semibold text-[#374151]">No products {filter !== 'all' ? `in ${filter}` : 'yet'}</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">Create your first product to start selling</p>
+          <button onClick={openCreate} className="mt-4 px-4 py-2 bg-[#111827] text-white rounded-lg text-sm font-semibold hover:bg-black transition-colors">
+            + Create Product
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map(listing => (
-            <div key={listing.id} className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden hover:shadow-md hover:border-blue-200 transition-all group shadow-sm">
-              <div className="h-40 bg-[#F6F7FB] relative">
-                {listing.image_url && <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />}
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <Badge className={cn("text-xs", categoryColors[listing.category])}>
-                    {listing.category}
-                  </Badge>
-                  {!listing.is_published && (
-                    <Badge variant="outline" className="bg-white/90 text-xs"><EyeOff className="w-3 h-3 mr-1" /> Draft</Badge>
-                  )}
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="absolute top-3 right-3 h-8 w-8 bg-white/90 opacity-0 group-hover:opacity-100">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => openEdit(listing)}><Edit className="w-4 h-4 mr-2" /> Edit</DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive" onClick={() => deleteMutation.mutate(listing.id)}><Trash2 className="w-4 h-4 mr-2" /> Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              <div className="p-5">
-                <h3 className="font-heading font-bold text-lg text-[#1F2A44]">{listing.title}</h3>
-                {listing.description && <p className="text-sm text-[#374151] mt-1 line-clamp-2">{listing.description}</p>}
-                
-                {listing.features?.length > 0 && (
-                  <div className="mt-3 space-y-1">
-                    {listing.features.slice(0, 3).map((f, i) => (
-                      <p key={i} className="text-xs text-[#374151] flex items-center gap-1.5">
-                        <span className="w-1 h-1 rounded-full bg-primary" /> {f}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                <div className="mt-4 pt-4 border-t border-[#E7EAF3] flex items-center justify-between">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-heading font-bold text-primary">${listing.price}</span>
-                    {listing.original_price && listing.original_price > listing.price && (
-                      <span className="text-sm text-[#374151] line-through">${listing.original_price}</span>
-                    )}
-                  </div>
-                  {listing.rating && (
-                    <div className="flex items-center gap-1 text-sm">
-                      <Star className="w-4 h-4 text-chart-4 fill-chart-4" />
-                      <span className="font-medium">{listing.rating}</span>
-                    </div>
-                  )}
-                </div>
-                {listing.sales_count > 0 && (
-                  <p className="text-xs text-[#374151] mt-2">{listing.sales_count} sales</p>
-                )}
-              </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filtered.map(listing => (
+            <StoreProductCard
+              key={listing.id}
+              listing={listing}
+              onEdit={openEdit}
+              onView={setViewListing}
+            />
           ))}
         </div>
       )}
 
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="font-heading">{editing ? 'Edit Listing' : 'Create Listing'}</DialogTitle></DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            <div><Label>Title *</Label><Input value={form.title} onChange={e => setForm({...form, title: e.target.value})} required /></div>
-            <div><Label>Short Description</Label><Input value={form.description} onChange={e => setForm({...form, description: e.target.value})} /></div>
-            <div><Label>Full Description</Label><Textarea value={form.long_description} onChange={e => setForm({...form, long_description: e.target.value})} rows={3} /></div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><Label>Price ($) *</Label><Input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required /></div>
-              <div><Label>Original Price ($)</Label><Input type="number" value={form.original_price} onChange={e => setForm({...form, original_price: e.target.value})} /></div>
-              <div>
-                <Label>Category</Label>
-                <Select value={form.category} onValueChange={v => setForm({...form, category: v})}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="workout">Workout</SelectItem>
-                    <SelectItem value="nutrition">Nutrition</SelectItem>
-                    <SelectItem value="bundle">Bundle</SelectItem>
-                    <SelectItem value="coaching">Coaching</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Difficulty</Label>
-                <Select value={form.difficulty} onValueChange={v => setForm({...form, difficulty: v})}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="beginner">Beginner</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="advanced">Advanced</SelectItem>
-                    <SelectItem value="all_levels">All Levels</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div><Label>Duration (weeks)</Label><Input type="number" value={form.duration_weeks} onChange={e => setForm({...form, duration_weeks: e.target.value})} /></div>
-              <div><Label>Image URL</Label><Input value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} /></div>
-            </div>
-            
-            {/* Features */}
-            <div>
-              <Label>Features</Label>
-              <div className="flex gap-2 mb-2">
-                <Input value={featureInput} onChange={e => setFeatureInput(e.target.value)} placeholder="e.g., 5x per week training" onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())} />
-                <Button type="button" variant="outline" onClick={addFeature}>Add</Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {form.features?.map((f, i) => (
-                  <Badge key={i} variant="secondary" className="cursor-pointer" onClick={() => removeFeature(i)}>
-                    {f} ×
-                  </Badge>
-                ))}
-              </div>
-            </div>
+      {/* Create/Edit modal */}
+      <ProductFormModal
+        open={showForm}
+        onClose={() => { setShowForm(false); setEditing(null); }}
+        editing={editing}
+        onCreate={(data) => createMutation.mutate(data)}
+        onUpdate={(id, data) => updateMutation.mutate({ id, data })}
+      />
 
-            <div className="flex items-center gap-2">
-              <Switch checked={form.is_published} onCheckedChange={v => setForm({...form, is_published: v})} />
-              <Label>Published</Label>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-              <Button type="submit">{editing ? 'Update' : 'Create Listing'}</Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      {/* Product detail sheet */}
+      <ProductDetailSheet
+        listing={viewListing}
+        clients={clients}
+        open={!!viewListing}
+        onClose={() => setViewListing(null)}
+        onEdit={openEdit}
+        onDelete={(id) => deleteMutation.mutate(id)}
+      />
     </div>
   );
 }
