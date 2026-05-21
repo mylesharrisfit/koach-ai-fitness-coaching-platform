@@ -193,32 +193,70 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
         isDragging ? 'shadow-lg border-primary/30' : 'border-[#E7EAF3]',
         borderColor
       )}>
-      {/* Main row */}
-      <div className="flex items-center gap-2 px-3 py-2.5">
-        <div {...drag.dragHandleProps} className="flex-shrink-0 cursor-grab">
-          <GripVertical className="w-3.5 h-3.5 text-[#D1D5DB]" />
-        </div>
-
-        {/* Set type pill */}
-        {ex.set_type && ex.set_type !== 'straight' && (
-          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${setTypeInfo.color}`}>
-            {setTypeInfo.label.split(' ')[0].toUpperCase()}
-          </span>
-        )}
-        {ex.superset_group && (
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 bg-purple-100 text-purple-700">
-            {ex.superset_group}
-          </span>
-        )}
-
-        {/* Exercise name + library */}
-        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+      {/* Main rows */}
+      <div className="px-3 py-2.5 space-y-2">
+        {/* Row 1: drag + name + expand + delete */}
+        <div className="flex items-center gap-2">
+          <div {...drag.dragHandleProps} className="flex-shrink-0 cursor-grab">
+            <GripVertical className="w-3.5 h-3.5 text-[#D1D5DB]" />
+          </div>
+          {ex.set_type && ex.set_type !== 'straight' && (
+            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 ${setTypeInfo.color}`}>
+              {setTypeInfo.label.split(' ')[0].toUpperCase()}
+            </span>
+          )}
+          {ex.superset_group && (
+            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 bg-purple-100 text-purple-700">
+              {ex.superset_group}
+            </span>
+          )}
           <Input
-            className="h-8 text-sm border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white flex-1 min-w-0"
+            className="flex-1 h-8 text-sm border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white min-w-0"
             placeholder="Exercise name"
             value={ex.name}
             onChange={e => onUpdate('name', e.target.value)}
           />
+          <button onClick={() => setExpanded(v => !v)}
+            className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0',
+              hasExtra ? 'bg-amber-50 text-amber-500' : 'hover:bg-[#F6F7FB] text-[#9CA3AF] hover:text-[#374151]')}>
+            {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+          <button onClick={onRemove}
+            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-[#D1D5DB] hover:text-red-500 transition-colors flex-shrink-0">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Row 2: sets / reps / rest + library + demo */}
+        <div className="flex items-center gap-2 pl-5">
+          <div className="flex flex-col items-center">
+            <Input type="number" min="1" value={ex.sets}
+              onChange={e => onUpdate('sets', Number(e.target.value))}
+              className="h-8 w-14 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+            <span className="text-[9px] text-[#9CA3AF] mt-0.5">sets</span>
+          </div>
+          <div className="flex flex-col items-center">
+            {(ex.section === 'warmup' || ex.section === 'cooldown') ? (
+              <>
+                <Input type="number" value={ex.duration_seconds ?? 30} placeholder="30"
+                  onChange={e => onUpdate('duration_seconds', Number(e.target.value))}
+                  className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+                <span className="text-[9px] text-[#9CA3AF] mt-0.5">sec</span>
+              </>
+            ) : (
+              <>
+                <Input value={ex.reps} placeholder="10" onChange={e => onUpdate('reps', e.target.value)}
+                  className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+                <span className="text-[9px] text-[#9CA3AF] mt-0.5">reps</span>
+              </>
+            )}
+          </div>
+          <div className="flex flex-col items-center">
+            <Input type="number" value={ex.rest_seconds} placeholder="60"
+              onChange={e => onUpdate('rest_seconds', Number(e.target.value))}
+              className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+            <span className="text-[9px] text-[#9CA3AF] mt-0.5">rest s</span>
+          </div>
           <button onClick={onPickLibrary} title="Pick from library"
             className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#F6F7FB] text-[#9CA3AF] hover:text-primary transition-colors flex-shrink-0">
             <BookOpen className="w-3.5 h-3.5" />
@@ -229,51 +267,6 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
               <Play className="w-3 h-3" fill="currentColor" />
             </button>
           )}
-        </div>
-
-        {/* Sets / Reps / Rest */}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <div className="flex flex-col items-center">
-            <Input type="number" min="1" value={ex.sets}
-              onChange={e => onUpdate('sets', Number(e.target.value))}
-              className="h-8 w-10 sm:w-12 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
-            <span className="text-[9px] text-[#9CA3AF] mt-0.5">sets</span>
-          </div>
-          <div className="flex flex-col items-center">
-            {(ex.section === 'warmup' || ex.section === 'cooldown') ? (
-              <>
-                <Input type="number" value={ex.duration_seconds ?? 30} placeholder="30"
-                  onChange={e => onUpdate('duration_seconds', Number(e.target.value))}
-                  className="h-8 w-12 sm:w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
-                <span className="text-[9px] text-[#9CA3AF] mt-0.5">sec</span>
-              </>
-            ) : (
-              <>
-                <Input value={ex.reps} placeholder="10" onChange={e => onUpdate('reps', e.target.value)}
-                  className="h-8 w-12 sm:w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
-                <span className="text-[9px] text-[#9CA3AF] mt-0.5">reps</span>
-              </>
-            )}
-          </div>
-          <div className="flex flex-col items-center">
-            <Input type="number" value={ex.rest_seconds} placeholder="60"
-              onChange={e => onUpdate('rest_seconds', Number(e.target.value))}
-              className="h-8 w-12 sm:w-14 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
-            <span className="text-[9px] text-[#9CA3AF] mt-0.5">rest s</span>
-          </div>
-        </div>
-
-        {/* Expand / delete */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <button onClick={() => setExpanded(v => !v)}
-            className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors',
-              hasExtra ? 'bg-amber-50 text-amber-500' : 'hover:bg-[#F6F7FB] text-[#9CA3AF] hover:text-[#374151]')}>
-            {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-          </button>
-          <button onClick={onRemove}
-            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-[#D1D5DB] hover:text-red-500 transition-colors">
-            <X className="w-3.5 h-3.5" />
-          </button>
         </div>
       </div>
 
