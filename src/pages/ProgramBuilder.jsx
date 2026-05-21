@@ -236,7 +236,7 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
           <div className="flex flex-col items-center">
             <Input type="number" min="1" value={ex.sets}
               onChange={e => onUpdate('sets', Number(e.target.value))}
-              className="h-8 w-12 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+              className="h-8 w-10 sm:w-12 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
             <span className="text-[9px] text-[#9CA3AF] mt-0.5">sets</span>
           </div>
           <div className="flex flex-col items-center">
@@ -244,13 +244,13 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
               <>
                 <Input type="number" value={ex.duration_seconds ?? 30} placeholder="30"
                   onChange={e => onUpdate('duration_seconds', Number(e.target.value))}
-                  className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+                  className="h-8 w-12 sm:w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
                 <span className="text-[9px] text-[#9CA3AF] mt-0.5">sec</span>
               </>
             ) : (
               <>
                 <Input value={ex.reps} placeholder="10" onChange={e => onUpdate('reps', e.target.value)}
-                  className="h-8 w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+                  className="h-8 w-12 sm:w-16 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
                 <span className="text-[9px] text-[#9CA3AF] mt-0.5">reps</span>
               </>
             )}
@@ -258,7 +258,7 @@ function ExerciseRow({ ex, wIdx, eIdx, drag, isDragging, onUpdate, onRemove, onP
           <div className="flex flex-col items-center">
             <Input type="number" value={ex.rest_seconds} placeholder="60"
               onChange={e => onUpdate('rest_seconds', Number(e.target.value))}
-              className="h-8 w-14 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
+              className="h-8 w-12 sm:w-14 text-sm text-center border-[#E7EAF3] bg-[#F8F9FD] focus:bg-white p-1" />
             <span className="text-[9px] text-[#9CA3AF] mt-0.5">rest s</span>
           </div>
         </div>
@@ -725,17 +725,17 @@ export default function ProgramBuilder() {
                 <div className="ml-auto flex items-center gap-1.5">
                   <button onClick={() => duplicateWorkout(activeDay)}
                     className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#1F2A44] px-2.5 py-1.5 rounded-lg hover:bg-[#F6F7FB] transition-colors">
-                    <Copy className="w-3.5 h-3.5" /> Duplicate
+                    <Copy className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Duplicate</span>
                   </button>
                   <button onClick={() => removeWorkout(activeDay)}
                     className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
-                    <Trash2 className="w-3.5 h-3.5" /> Remove
+                    <Trash2 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Remove</span>
                   </button>
                 </div>
               </div>
 
-              {/* Column hints */}
-              <div className="flex items-center gap-2 px-4 sm:px-6 pt-3 pb-1">
+              {/* Column hints — hidden on mobile */}
+              <div className="hidden sm:flex items-center gap-2 px-4 sm:px-6 pt-3 pb-1">
                 <div className="flex-1 min-w-0">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Exercise</span>
                 </div>

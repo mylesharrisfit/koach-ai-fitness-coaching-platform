@@ -25,11 +25,11 @@ export default function ProgramBuilderHeader({
   }, [title]);
 
   return (
-    <div className="sticky top-0 z-20 bg-white border-b border-[#E7EAF3] flex items-center gap-4 px-4 sm:px-6 py-4 shadow-sm">
+    <div className="sticky top-0 z-20 bg-white border-b border-[#E7EAF3] flex items-center gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 shadow-sm">
       {/* Back button */}
       <button
         onClick={() => navigate('/programs')}
-        className="flex items-center gap-1.5 text-[#6B7280] hover:text-[#1F2A44] transition-colors flex-shrink-0"
+        className="flex items-center gap-1.5 text-[#6B7280] hover:text-[#1F2A44] transition-colors flex-shrink-0 w-8 h-8 sm:w-auto sm:h-auto justify-center"
       >
         <ArrowLeft className="w-4 h-4" />
         <span className="text-sm font-medium hidden sm:inline">Programs</span>
@@ -96,9 +96,8 @@ export default function ProgramBuilderHeader({
           size="sm"
           onClick={onSave}
           disabled={isSaving}
-          className="gap-1.5 h-9 text-xs bg-gradient-to-r from-primary to-blue-600 hover:opacity-90"
+          className="h-9 text-xs bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 px-3"
         >
-          <Save className="w-3.5 h-3.5" />
           {isSaving ? 'Saving...' : 'Save'}
         </Button>
       </div>

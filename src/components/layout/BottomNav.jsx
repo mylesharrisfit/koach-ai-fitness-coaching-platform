@@ -39,8 +39,10 @@ export default function BottomNav() {
   const unreadMessages = useUnreadMessages();
   const pendingCheckIns = usePendingCheckIns();
 
-  const isMoreActive = location.pathname !== '/' &&
-    !['/clients', '/checkin-review', '/messages'].some(p => location.pathname.startsWith(p));
+  const PRIMARY_PATHS = ['/', '/clients', '/checkin-review', '/messages'];
+  const isMoreActive = !PRIMARY_PATHS.some(p =>
+    p === '/' ? location.pathname === '/' : location.pathname.startsWith(p)
+  );
 
   return (
     <>

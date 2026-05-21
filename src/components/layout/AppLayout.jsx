@@ -34,7 +34,7 @@ export default function AppLayout() {
       <div className="min-h-screen bg-background">
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
         <main
-          className="md:ml-[210px] min-h-screen pb-20 md:pb-0 transition-all duration-200 bg-background overflow-x-hidden"
+          className="md:ml-[210px] min-h-screen pb-24 md:pb-0 transition-all duration-200 bg-background overflow-x-hidden"
         >
           <Outlet />
         </main>

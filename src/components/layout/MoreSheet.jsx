@@ -71,8 +71,8 @@ export default function MoreSheet({ open, onClose }) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed left-0 right-0 bottom-0 z-50 md:hidden flex flex-col rounded-t-2xl overflow-hidden bg-white"
-            style={{ maxHeight: '80dvh', borderTop: '1px solid #E5E7EB' }}
+            className="fixed left-0 right-0 z-50 md:hidden flex flex-col rounded-t-2xl overflow-hidden bg-white"
+            style={{ bottom: '60px', maxHeight: 'calc(80dvh - 60px)', borderTop: '1px solid #E5E7EB' }}
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-2.5 pb-1 flex-shrink-0">
