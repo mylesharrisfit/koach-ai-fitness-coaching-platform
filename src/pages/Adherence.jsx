@@ -19,6 +19,7 @@ import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { runAutoAwardForClient } from '@/lib/autoAward';
 import { showAchievementToast } from '@/components/achievements/AchievementToast';
 import { cn } from '@/lib/utils';
+import { sendZapierEvent } from '@/lib/zapier';
 
 const TIER_FILTERS = ['All', 'bronze', 'silver', 'gold', 'platinum', 'elite'];
 const CATEGORY_FILTERS = ['All', 'Milestones', 'Check-ins', 'Streaks', 'Compliance', 'Nutrition', 'Recovery', 'Mindset', 'Transformation', 'Performance', 'Special'];
@@ -146,6 +147,13 @@ export default function Adherence() {
       const client = clients.find(c => c.id === vars.client_id);
       setUnlockToast({ badgeKey: vars.badge_key, clientName: client?.name });
       showAchievementToast(toast, vars.badge_key, client?.name);
+      sendZapierEvent('badge.awarded', {
+        client_id: vars.client_id,
+        client_name: client?.name,
+        badge_key: vars.badge_key,
+        badge_label: BADGE_CONFIG[vars.badge_key]?.label,
+        earned_date: vars.earned_date,
+      });
     },
   });
 

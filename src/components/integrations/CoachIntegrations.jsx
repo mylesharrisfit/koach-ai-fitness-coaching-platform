@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { CheckCircle2, Info } from 'lucide-react';
+import { CheckCircle2, Info, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
+import ZapierSetupSheet from './ZapierSetupSheet';
 
 /* ── Letter-avatar icon helper ── */
 function LetterIcon({ letter, bg }) {
@@ -188,8 +192,32 @@ export default function CoachIntegrations() {
   const [connected, setConnected] = useState({});
   const [expandedNote, setExpandedNote] = useState(null);
   const [search, setSearch] = useState('');
+  const [zapierOpen, setZapierOpen] = useState(false);
+
+  const { data: coachSettings = [] } = useQuery({
+    queryKey: ['coach-settings'],
+    queryFn: () => base44.entities.CoachSettings.list(),
+  });
+  const { data: zapierLogs = [] } = useQuery({
+    queryKey: ['zapier-logs'],
+    queryFn: () => base44.entities.ZapierLog.list('-sent_at', 10),
+  });
+
+  const zapierSettings = coachSettings[0];
+  const zapierConnected = !!zapierSettings?.zapier_connected && !!zapierSettings?.zapier_webhook_url;
+  const zapierLastTriggered = zapierSettings?.zapier_last_triggered;
+  const todayLogs = zapierLogs.filter(l => {
+    if (!l.sent_at) return false;
+    const d = new Date(l.sent_at);
+    const now = new Date();
+    return d.toDateString() === now.toDateString();
+  });
 
   const handleConnect = (integration) => {
+    if (integration.id === 'zapier') {
+      setZapierOpen(true);
+      return;
+    }
     if (connected[integration.id]) {
       setConnected(c => ({ ...c, [integration.id]: false }));
       toast.success(`Disconnected from ${integration.name}`);
@@ -259,9 +287,19 @@ export default function CoachIntegrations() {
                           <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151]">
                             {integration.category}
                           </span>
-                          {isConnected && (
+                          {(isConnected || (integration.id === 'zapier' && zapierConnected)) && (
                             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                               <CheckCircle2 className="w-3 h-3" /> Connected
+                            </span>
+                          )}
+                          {integration.id === 'zapier' && zapierConnected && todayLogs.length > 0 && (
+                            <span className="text-[10px] text-[#6B7280] px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3]">
+                              {todayLogs.length} events today
+                            </span>
+                          )}
+                          {integration.id === 'zapier' && zapierConnected && zapierLastTriggered && (
+                            <span className="text-[10px] text-[#9CA3AF] flex items-center gap-1">
+                              <Clock className="w-3 h-3" /> Last triggered {formatDistanceToNow(new Date(zapierLastTriggered), { addSuffix: true })}
                             </span>
                           )}
                         </div>
@@ -275,17 +313,28 @@ export default function CoachIntegrations() {
                         >
                           <Info className="w-3.5 h-3.5" />
                         </button>
-                        <Button
-                          size="sm"
-                          variant={isConnected ? 'outline' : 'default'}
-                          onClick={() => handleConnect(integration)}
-                          className={cn(
-                            'text-xs h-8 px-3',
-                            isConnected && 'border-[#E7EAF3] text-[#374151] hover:border-red-200 hover:text-red-500 hover:bg-red-50'
-                          )}
-                        >
-                          {isConnected ? 'Disconnect' : 'Connect'}
-                        </Button>
+                        {integration.id === 'zapier' ? (
+                          <Button
+                            size="sm"
+                            variant={zapierConnected ? 'outline' : 'default'}
+                            onClick={() => setZapierOpen(true)}
+                            className="text-xs h-8 px-3"
+                          >
+                            {zapierConnected ? 'Manage' : 'Connect'}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant={isConnected ? 'outline' : 'default'}
+                            onClick={() => handleConnect(integration)}
+                            className={cn(
+                              'text-xs h-8 px-3',
+                              isConnected && 'border-[#E7EAF3] text-[#374151] hover:border-red-200 hover:text-red-500 hover:bg-red-50'
+                            )}
+                          >
+                            {isConnected ? 'Disconnect' : 'Connect'}
+                          </Button>
+                        )}
                       </div>
                     </div>
                     {showNote && (
@@ -304,6 +353,28 @@ export default function CoachIntegrations() {
           <p className="text-sm text-[#9CA3AF] text-center py-8">No integrations match "{search}"</p>
         )}
       </div>
+
+      {/* Zapier log panel */}
+      {zapierConnected && zapierLogs.length > 0 && (
+        <div className="mt-6">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">Recent Webhook Events</p>
+          <div className="bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden">
+            {zapierLogs.slice(0, 10).map((log, i) => (
+              <div key={log.id} className={cn('flex items-center gap-3 px-4 py-3', i !== 0 && 'border-t border-[#F6F7FB]')}>
+                <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-emerald-400' : 'bg-red-400')} />
+                <span className="text-xs font-mono text-[#374151] flex-1 truncate">{log.event_type}</span>
+                {log.client_name && <span className="text-xs text-[#6B7280] truncate max-w-[120px]">{log.client_name}</span>}
+                <span className="text-[10px] text-[#9CA3AF] flex items-center gap-1 flex-shrink-0">
+                  <Clock className="w-3 h-3" />
+                  {log.sent_at ? formatDistanceToNow(new Date(log.sent_at), { addSuffix: true }) : ''}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <ZapierSetupSheet open={zapierOpen} onClose={() => setZapierOpen(false)} />
     </div>
   );
 }

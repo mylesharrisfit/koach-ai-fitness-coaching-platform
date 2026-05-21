@@ -20,6 +20,7 @@ import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
+import { sendZapierEvent } from '@/lib/zapier';
 
 const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
 
@@ -96,16 +97,34 @@ export default function Clients() {
       }
       return client;
     },
-    onSuccess: (_, { sendInvite }) => {
+    onSuccess: (result, { sendInvite }) => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       toast.success(sendInvite ? 'Client added & invite sent!' : 'Client added');
+      if (result?.id) {
+        sendZapierEvent('client.created', {
+          client_id: result.id,
+          client_name: result.name,
+          client_email: result.email,
+          lifecycle_status: result.lifecycle_status,
+        });
+      }
     },
     onError: (err) => { if (!err.message?.includes('limit')) toast.error(err.message); },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Client.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['clients'] }); toast.success('Client updated'); },
+    onSuccess: (result, { data }) => {
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+      toast.success('Client updated');
+      if (data?.lifecycle_status) {
+        sendZapierEvent('client.status_changed', {
+          client_id: result?.id,
+          client_name: result?.name,
+          lifecycle_status: data.lifecycle_status,
+        });
+      }
+    },
   });
 
   const deleteMutation = useMutation({

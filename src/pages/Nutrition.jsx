@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Plus, Sparkles, BookOpen, Users, Lock, Search, SlidersHorizontal, Salad } from 'lucide-react';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
+import { sendZapierEvent } from '@/lib/zapier';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import LimitBanner from '@/components/subscription/LimitBanner';
@@ -94,7 +95,14 @@ export default function Nutrition() {
     setPendingMeals(null);
     setEditing(null);
     toast.success('Plan saved!');
-    return result; // NutritionForm uses the returned plan id to update clients
+    if (result?.id && !(editing && editing.id)) {
+      sendZapierEvent('nutrition_plan.created', {
+        plan_id: result.id,
+        plan_title: result.title,
+        calories: result.calories,
+      });
+    }
+    return result;
   };
 
   const handleAIApply = (result) => {

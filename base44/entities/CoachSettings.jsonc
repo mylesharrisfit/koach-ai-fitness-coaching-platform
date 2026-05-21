@@ -1,0 +1,28 @@
+{
+  "name": "CoachSettings",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string",
+      "description": "Coach user email"
+    },
+    "zapier_webhook_url": {
+      "type": "string"
+    },
+    "zapier_events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "zapier_connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "zapier_last_triggered": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": []
+}
