@@ -7,6 +7,8 @@ import StripeRevenueSummary from '@/components/stripe/StripeRevenueSummary';
 import StripeRevenueChart from '@/components/stripe/StripeRevenueChart';
 import StripeSubscriptionTable from '@/components/stripe/StripeSubscriptionTable';
 import CreateSubscriptionDialog from '@/components/stripe/CreateSubscriptionDialog';
+import PaymentLinksPanel from '@/components/stripe/PaymentLinksPanel';
+import SubscriptionPlansPanel from '@/components/stripe/SubscriptionPlansPanel';
 
 export default function RevenueDashboard() {
   const [showCreate, setShowCreate] = useState(false);
@@ -80,6 +82,10 @@ export default function RevenueDashboard() {
             </div>
           </div>
           <StripeSubscriptionTable subscriptions={dashData?.subscriptions || []} clients={clients} onRefresh={refetch} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PaymentLinksPanel />
+            <SubscriptionPlansPanel />
+          </div>
         </div>
       )}
 

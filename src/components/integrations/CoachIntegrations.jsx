@@ -10,6 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 import ZapierSetupSheet from './ZapierSetupSheet';
 import GoogleCalendarSettings from './GoogleCalendarSettings';
 import ZoomConnectModal from './ZoomConnectModal';
+import StripeConnectModal from './StripeConnectModal';
 
 /* ── Letter-avatar icon helper ── */
 function LetterIcon({ letter, bg }) {
@@ -197,6 +198,7 @@ export default function CoachIntegrations() {
   const [zapierOpen, setZapierOpen] = useState(false);
   const [gcalSettingsOpen, setGcalSettingsOpen] = useState(false);
   const [zoomModalOpen, setZoomModalOpen] = useState(false);
+  const [stripeModalOpen, setStripeModalOpen] = useState(false);
 
   // Google Calendar is authorized at the platform level (shared connector)
   const gcalConnected = true;
@@ -331,10 +333,15 @@ export default function CoachIntegrations() {
                             onClick={() => setGcalSettingsOpen(true)} className="text-xs h-8 px-3">
                             Settings
                           </Button>
-                        ) : integration.id === 'zoom' ? (
+                                        ) : integration.id === 'zoom' ? (
                           <Button size="sm" variant={zoomConnected ? 'outline' : 'default'}
                             onClick={() => setZoomModalOpen(true)} className="text-xs h-8 px-3">
                             {zoomConnected ? 'Settings' : 'Connect'}
+                          </Button>
+                        ) : integration.id === 'stripe' ? (
+                          <Button size="sm" variant="outline"
+                            onClick={() => setStripeModalOpen(true)} className="text-xs h-8 px-3">
+                            Configure
                           </Button>
                         ) : (
                           <Button size="sm" variant={isConnected ? 'outline' : 'default'}
@@ -387,6 +394,7 @@ export default function CoachIntegrations() {
       <ZapierSetupSheet open={zapierOpen} onClose={() => setZapierOpen(false)} />
       <GoogleCalendarSettings open={gcalSettingsOpen} onClose={() => setGcalSettingsOpen(false)} />
       <ZoomConnectModal open={zoomModalOpen} onClose={() => setZoomModalOpen(false)} settings={zapierSettings} />
+      <StripeConnectModal open={stripeModalOpen} onClose={() => setStripeModalOpen(false)} />
     </div>
   );
 }

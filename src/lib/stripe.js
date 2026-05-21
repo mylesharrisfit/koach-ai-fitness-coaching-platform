@@ -1,0 +1,29 @@
+/**
+ * Frontend Stripe helpers — all calls go through the stripeClientProxy backend function
+ * so the secret key is never exposed in the browser.
+ */
+import { base44 } from '@/api/base44Client';
+
+const invoke = (action, payload = {}) =>
+  base44.functions.invoke('stripeClientProxy', { action, payload }).then(r => r.data);
+
+export const testStripeConnection = () => invoke('testConnection');
+
+export const createStripeCustomer = (client) =>
+  invoke('createCustomer', { email: client.email, name: client.name, client_id: client.id });
+
+export const sendStripeInvoice = (customerId, amount, description, clientId, clientName) =>
+  invoke('sendInvoice', { customer_id: customerId, amount, description, client_id: clientId, client_name: clientName });
+
+export const getClientInvoices = (customerId) =>
+  invoke('getClientInvoices', { customer_id: customerId });
+
+export const createPaymentLink = (name, amount, description, clientId) =>
+  invoke('createPaymentLink', { name, amount, description, client_id: clientId });
+
+export const listProducts = () => invoke('listProducts');
+
+export const createProduct = (name, amount, description, interval) =>
+  invoke('createProduct', { name, amount, description, interval });
+
+export const getCharges = () => invoke('getCharges');

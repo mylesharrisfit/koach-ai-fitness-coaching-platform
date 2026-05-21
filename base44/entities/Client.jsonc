@@ -45,11 +45,10 @@
       "items": {
         "type": "string"
       },
-      "description": "Custom coach tags for filtering and grouping"
+      "description": "Custom coach tags"
     },
     "lifecycle_notes": {
-      "type": "string",
-      "description": "Notes about the client's journey and status changes"
+      "type": "string"
     },
     "goal": {
       "type": "string",
@@ -68,32 +67,41 @@
       "format": "date"
     },
     "current_weight": {
-      "type": "number",
-      "description": "Current weight in lbs"
+      "type": "number"
     },
     "target_weight": {
-      "type": "number",
-      "description": "Target weight in lbs"
+      "type": "number"
     },
     "height": {
-      "type": "string",
-      "description": "Height"
+      "type": "string"
     },
     "notes": {
-      "type": "string",
-      "description": "Coach notes about client"
+      "type": "string"
     },
     "assigned_program_id": {
-      "type": "string",
-      "description": "Current assigned workout program ID"
+      "type": "string"
     },
     "assigned_nutrition_id": {
-      "type": "string",
-      "description": "Current assigned nutrition plan ID"
+      "type": "string"
     },
     "monthly_rate": {
       "type": "number",
       "description": "Monthly coaching rate in dollars"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe customer ID (cus_...)"
+    },
+    "billing_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "cancelled",
+        "none"
+      ],
+      "default": "none",
+      "description": "Client billing status"
     }
   },
   "required": [
