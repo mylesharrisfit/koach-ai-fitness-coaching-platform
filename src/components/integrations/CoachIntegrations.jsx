@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import ZapierSetupSheet from './ZapierSetupSheet';
+import GoogleCalendarSettings from './GoogleCalendarSettings';
 
 /* ── Letter-avatar icon helper ── */
 function LetterIcon({ letter, bg }) {
@@ -193,6 +194,10 @@ export default function CoachIntegrations() {
   const [expandedNote, setExpandedNote] = useState(null);
   const [search, setSearch] = useState('');
   const [zapierOpen, setZapierOpen] = useState(false);
+  const [gcalSettingsOpen, setGcalSettingsOpen] = useState(false);
+
+  // Google Calendar is authorized at the platform level (shared connector)
+  const gcalConnected = true;
 
   const { data: coachSettings = [] } = useQuery({
     queryKey: ['coach-settings'],
@@ -287,7 +292,7 @@ export default function CoachIntegrations() {
                           <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151]">
                             {integration.category}
                           </span>
-                          {(isConnected || (integration.id === 'zapier' && zapierConnected)) && (
+                          {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected)) && (
                             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                               <CheckCircle2 className="w-3 h-3" /> Connected
                             </span>
@@ -314,24 +319,21 @@ export default function CoachIntegrations() {
                           <Info className="w-3.5 h-3.5" />
                         </button>
                         {integration.id === 'zapier' ? (
-                          <Button
-                            size="sm"
-                            variant={zapierConnected ? 'outline' : 'default'}
-                            onClick={() => setZapierOpen(true)}
-                            className="text-xs h-8 px-3"
-                          >
+                          <Button size="sm" variant={zapierConnected ? 'outline' : 'default'}
+                            onClick={() => setZapierOpen(true)} className="text-xs h-8 px-3">
                             {zapierConnected ? 'Manage' : 'Connect'}
                           </Button>
+                        ) : integration.id === 'google_calendar' ? (
+                          <Button size="sm" variant="outline"
+                            onClick={() => setGcalSettingsOpen(true)} className="text-xs h-8 px-3">
+                            Settings
+                          </Button>
                         ) : (
-                          <Button
-                            size="sm"
-                            variant={isConnected ? 'outline' : 'default'}
+                          <Button size="sm" variant={isConnected ? 'outline' : 'default'}
                             onClick={() => handleConnect(integration)}
-                            className={cn(
-                              'text-xs h-8 px-3',
+                            className={cn('text-xs h-8 px-3',
                               isConnected && 'border-[#E7EAF3] text-[#374151] hover:border-red-200 hover:text-red-500 hover:bg-red-50'
-                            )}
-                          >
+                            )}>
                             {isConnected ? 'Disconnect' : 'Connect'}
                           </Button>
                         )}
@@ -375,6 +377,7 @@ export default function CoachIntegrations() {
       )}
 
       <ZapierSetupSheet open={zapierOpen} onClose={() => setZapierOpen(false)} />
+      <GoogleCalendarSettings open={gcalSettingsOpen} onClose={() => setGcalSettingsOpen(false)} />
     </div>
   );
 }
