@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import ZapierSetupSheet from './ZapierSetupSheet';
 import GoogleCalendarSettings from './GoogleCalendarSettings';
+import ZoomConnectModal from './ZoomConnectModal';
 
 /* ── Letter-avatar icon helper ── */
 function LetterIcon({ letter, bg }) {
@@ -195,6 +196,7 @@ export default function CoachIntegrations() {
   const [search, setSearch] = useState('');
   const [zapierOpen, setZapierOpen] = useState(false);
   const [gcalSettingsOpen, setGcalSettingsOpen] = useState(false);
+  const [zoomModalOpen, setZoomModalOpen] = useState(false);
 
   // Google Calendar is authorized at the platform level (shared connector)
   const gcalConnected = true;
@@ -209,6 +211,7 @@ export default function CoachIntegrations() {
   });
 
   const zapierSettings = coachSettings[0];
+  const zoomConnected = !!zapierSettings?.zoom_connected && !!zapierSettings?.zoom_access_token;
   const zapierConnected = !!zapierSettings?.zapier_connected && !!zapierSettings?.zapier_webhook_url;
   const zapierLastTriggered = zapierSettings?.zapier_last_triggered;
   const todayLogs = zapierLogs.filter(l => {
@@ -292,7 +295,7 @@ export default function CoachIntegrations() {
                           <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151]">
                             {integration.category}
                           </span>
-                          {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected)) && (
+                          {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected) || (integration.id === 'zoom' && zoomConnected)) && (
                             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                               <CheckCircle2 className="w-3 h-3" /> Connected
                             </span>
@@ -327,6 +330,11 @@ export default function CoachIntegrations() {
                           <Button size="sm" variant="outline"
                             onClick={() => setGcalSettingsOpen(true)} className="text-xs h-8 px-3">
                             Settings
+                          </Button>
+                        ) : integration.id === 'zoom' ? (
+                          <Button size="sm" variant={zoomConnected ? 'outline' : 'default'}
+                            onClick={() => setZoomModalOpen(true)} className="text-xs h-8 px-3">
+                            {zoomConnected ? 'Settings' : 'Connect'}
                           </Button>
                         ) : (
                           <Button size="sm" variant={isConnected ? 'outline' : 'default'}
@@ -378,6 +386,7 @@ export default function CoachIntegrations() {
 
       <ZapierSetupSheet open={zapierOpen} onClose={() => setZapierOpen(false)} />
       <GoogleCalendarSettings open={gcalSettingsOpen} onClose={() => setGcalSettingsOpen(false)} />
+      <ZoomConnectModal open={zoomModalOpen} onClose={() => setZoomModalOpen(false)} settings={zapierSettings} />
     </div>
   );
 }

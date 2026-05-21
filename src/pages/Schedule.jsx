@@ -17,6 +17,7 @@ import SessionFormDialog from '../components/schedule/SessionFormDialog';
 import { useAuth } from '@/lib/AuthContext';
 import { buildSessionEvent } from '@/lib/googleCalendar';
 import { sendZapierEvent } from '@/lib/zapier';
+import { createZoomMeeting } from '@/lib/zoom';
 
 const SESSION_TYPE_COLORS = {
   check_in:  'bg-blue-500',
@@ -56,6 +57,7 @@ export default function Schedule() {
 
   const settings = coachSettings[0];
   const gcalConnected = !!settings?.google_calendar_connected;
+  const zoomConnected = !!settings?.zoom_connected && !!settings?.zoom_access_token;
 
   // Time range for Google Calendar fetch
   const monthStart = startOfMonth(currentDate).toISOString();
@@ -175,13 +177,58 @@ export default function Schedule() {
         }
       }
 
-      const finalData = { ...data, google_event_id: gcalEventId };
+      // Zoom meeting creation
+      let zoomData = {};
+      if (form.add_zoom && zoomConnected && !editing) {
+        const client = clients.find(c => c.id === form.client_id);
+        const startISO = form.date && form.time
+          ? new Date(`${form.date}T${form.time}:00`).toISOString()
+          : new Date().toISOString();
+        const zoomMeeting = await createZoomMeeting(settings.zoom_access_token, {
+          topic: form.title || `Coaching Session with ${client?.name}`,
+          start_time: startISO,
+          duration: Number(form.duration_minutes) || 60,
+          agenda: form.notes || '',
+          waiting_room: settings.zoom_waiting_room !== false,
+          auto_record: !!settings.zoom_auto_record,
+        });
+        if (zoomMeeting.join_url) {
+          zoomData = {
+            zoom_meeting_id: String(zoomMeeting.id),
+            zoom_join_url: zoomMeeting.join_url,
+            zoom_start_url: zoomMeeting.start_url,
+            zoom_password: zoomMeeting.password || '',
+          };
+          // Auto-message client with Zoom link
+          if (client) {
+            const dateStr = form.date ? new Date(form.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : form.date;
+            const timeStr = form.time || '';
+            await base44.entities.Message.create({
+              client_id: form.client_id,
+              client_name: client.name,
+              content: `Hi ${client.name}! Your coaching session is booked 🎉\n\n📅 ${dateStr}\n⏰ ${timeStr}\n\n🔗 Join Zoom: ${zoomMeeting.join_url}${zoomMeeting.password ? `\n\nPassword: ${zoomMeeting.password}` : ''}\n\nSee you then!`,
+              sender: 'coach',
+            });
+          }
+          // Zapier zoom created event
+          sendZapierEvent('session.zoom_created', {
+            client_id: form.client_id,
+            client_name: client?.name,
+            zoom_join_url: zoomMeeting.join_url,
+            start_time: startISO,
+          });
+          toast.success('Zoom meeting created & client notified!');
+        } else {
+          toast.error('Zoom: ' + (zoomMeeting.message || 'Failed to create meeting'));
+        }
+      }
+
+      const finalData = { ...data, google_event_id: gcalEventId, ...zoomData };
       let result;
       if (editing) {
         result = await updateMutation.mutateAsync({ id: editing.id, data: finalData });
       } else {
         result = await createMutation.mutateAsync(finalData);
-        // Zapier event
         const client = clients.find(c => c.id === form.client_id);
         sendZapierEvent('session.booked', {
           client_id: form.client_id,
@@ -304,6 +351,7 @@ export default function Schedule() {
         onSave={handleSave}
         onDelete={(id) => deleteMutation.mutate(id)}
         googleConnected={gcalConnected}
+        zoomConnected={zoomConnected}
         saving={savingSession}
       />
 

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle2, Calendar } from 'lucide-react';
+import { CheckCircle2, Calendar, Video } from 'lucide-react';
 import { format, addMinutes, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -23,11 +23,12 @@ const EMPTY = {
   time: '', end_time: '', type: 'check_in', duration_minutes: 60,
   notes: '', meeting_link: '', status: 'scheduled',
   send_invite: false, google_event_id: '',
+  add_zoom: false,
 };
 
 export default function SessionFormDialog({
   open, onOpenChange, editing, clients,
-  onSave, onDelete, googleConnected, saving
+  onSave, onDelete, googleConnected, zoomConnected, saving
 }) {
   const [form, setForm] = useState(EMPTY);
 
@@ -231,6 +232,25 @@ export default function SessionFormDialog({
                 </SelectContent>
               </Select>
             </div>
+          )}
+
+          {/* Zoom toggle */}
+          {zoomConnected && !editing && (
+            <label className="flex items-center gap-3 p-3 rounded-xl border border-[#E7EAF3] cursor-pointer hover:bg-[#F9FAFB] transition-colors">
+              <input
+                type="checkbox"
+                checked={form.add_zoom}
+                onChange={e => setForm(f => ({ ...f, add_zoom: e.target.checked }))}
+                className="w-4 h-4 rounded"
+              />
+              <div>
+                <p className="text-sm font-medium text-[#111827]">Create Zoom Meeting</p>
+                <p className="text-xs text-[#6B7280]">Auto-generate link & message client</p>
+              </div>
+              <div className="ml-auto w-6 h-6 rounded bg-[#2D8CFF]/10 flex items-center justify-center">
+                <Video className="w-3.5 h-3.5 text-[#2D8CFF]" />
+              </div>
+            </label>
           )}
 
           {/* Google Calendar toggle */}

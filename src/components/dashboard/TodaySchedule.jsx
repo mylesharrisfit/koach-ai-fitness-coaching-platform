@@ -164,13 +164,25 @@ function SessionCard({ session, clients, onMessage }) {
       {/* Actions */}
       {session.status !== 'completed' && session.status !== 'cancelled' && session.status !== 'no_show' && (
         <div className="flex gap-1.5 mt-auto">
-          <button
-            onClick={() => navigate(`/schedule`)}
-            className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
-            style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)', color: 'white' }}
-          >
-            <Play className="w-3 h-3" /> Start
-          </button>
+          {session.zoom_start_url ? (
+            <a
+              href={session.zoom_start_url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
+              style={{ background: '#2D8CFF', color: 'white' }}
+            >
+              <Video className="w-3 h-3" /> Start Zoom
+            </a>
+          ) : (
+            <button
+              onClick={() => navigate(`/schedule`)}
+              className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
+              style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)', color: 'white' }}
+            >
+              <Play className="w-3 h-3" /> Start
+            </button>
+          )}
           <button
             onClick={() => onMessage && onMessage(session.client_id)}
             className="flex items-center justify-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-all hover:bg-gray-50"

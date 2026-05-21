@@ -49,6 +49,28 @@
     "working_hours_end": {
       "type": "string",
       "default": "18:00"
+    },
+    "zoom_connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "zoom_access_token": {
+      "type": "string"
+    },
+    "zoom_user_email": {
+      "type": "string"
+    },
+    "zoom_default_duration": {
+      "type": "number",
+      "default": 60
+    },
+    "zoom_waiting_room": {
+      "type": "boolean",
+      "default": true
+    },
+    "zoom_auto_record": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": []

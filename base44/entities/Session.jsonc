@@ -18,7 +18,11 @@
     },
     "time": {
       "type": "string",
-      "description": "Session time"
+      "description": "Session time HH:MM"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "End time HH:MM"
     },
     "duration_minutes": {
       "type": "number",
@@ -30,7 +34,10 @@
         "video_call",
         "in_person",
         "check_in",
-        "consultation"
+        "consultation",
+        "strategy",
+        "assessment",
+        "custom"
       ],
       "default": "video_call"
     },
@@ -48,6 +55,21 @@
       "type": "string"
     },
     "meeting_link": {
+      "type": "string"
+    },
+    "google_event_id": {
+      "type": "string"
+    },
+    "zoom_meeting_id": {
+      "type": "string"
+    },
+    "zoom_join_url": {
+      "type": "string"
+    },
+    "zoom_start_url": {
+      "type": "string"
+    },
+    "zoom_password": {
       "type": "string"
     }
   },

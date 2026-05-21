@@ -10,10 +10,12 @@ import SummaryTab from './SummaryTab';
 import NotesTab from './NotesTab';
 import NutritionTab from './NutritionTab';
 import ProgramsTab from './ProgramsTab';
+import SessionsTab from './SessionsTab';
 import { motion } from 'framer-motion';
 
 const TABS_BASE = [
   { key: 'summary',       label: 'Summary' },
+  { key: 'sessions',      label: 'Sessions' },
   { key: 'notes',         label: 'Notes' },
   { key: 'consultation',  label: 'Consultation' },
   { key: 'nutrition',     label: 'Nutrition' },
@@ -184,6 +186,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
             />
           )}
 
+          {tab === 'sessions' && <SessionsTab client={client} />}
           {tab === 'notes' && <NotesTab client={client} />}
           {tab === 'nutrition' && <NutritionTab client={client} />}
           {tab === 'programs' && <ProgramsTab client={client} />}
