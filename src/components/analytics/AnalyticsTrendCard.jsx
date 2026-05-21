@@ -20,10 +20,10 @@ export default function AnalyticsTrendCard({ title, subtitle, data, unit, color,
               {badge}
             </span>
           )}
-          {delta != null && (
+          {delta != null && Math.abs(delta) >= 1 && (
             <span className={cn(
               'text-xs font-semibold px-2 py-0.5 rounded-full',
-              delta > 0 ? 'bg-emerald-50 text-emerald-600' : delta < 0 ? 'bg-red-50 text-red-500' : 'bg-[#F6F7FB] text-[#374151]'
+              delta > 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
             )}>
               {delta > 0 ? '+' : ''}{typeof formatter === 'function' ? formatter(delta) : `${Math.round(delta * 10) / 10}${unit || ''}`}
             </span>
