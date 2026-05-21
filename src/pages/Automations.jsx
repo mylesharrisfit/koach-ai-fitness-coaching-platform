@@ -1,103 +1,255 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
   Zap, Plus, Check, Pencil, Trash2, ToggleLeft, ToggleRight,
-  ChevronDown, ChevronUp, AlertTriangle, MessageSquare, Bell,
-  Flame, Flag, TrendingDown, Smile, Scale, ClipboardList, Dumbbell
+  AlertTriangle, Play, Clock, History, LayoutTemplate, List,
+  Bell, MessageSquare, Trophy, Flag, TrendingDown, Scale,
+  UserCheck, Activity, Target, Heart, Star, RefreshCw
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { runAutomations, AUTOMATION_TEMPLATES, CONDITION_META, ACTION_META } from '@/lib/automationEngine';
-import RuleFormModal from '@/components/automations/RuleFormModal';
 import { toast } from 'sonner';
+import { differenceInDays, parseISO, formatDistanceToNow, format } from 'date-fns';
+import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
+import RuleBuilderModal from '@/components/automations/RuleBuilderModal';
 
-/* ── Condition → icon map ── */
-const COND_ICONS = {
-  missed_checkin: <ClipboardList className="w-4 h-4" />,
-  missed_workouts: <Dumbbell className="w-4 h-4" />,
-  low_adherence: <TrendingDown className="w-4 h-4" />,
-  weight_plateau: <Scale className="w-4 h-4" />,
-  low_nutrition: <Flame className="w-4 h-4" />,
-  mood_low: <Smile className="w-4 h-4" />,
-  no_progress: <TrendingDown className="w-4 h-4" />,
-  declining_trend: <TrendingDown className="w-4 h-4" />,
-};
+// ── Template categories ────────────────────────────────────────────────────
+const TEMPLATE_CATEGORIES = [
+  {
+    label: 'Check-In',
+    icon: <Clock className="w-4 h-4" />,
+    color: 'text-blue-600',
+    templates: [
+      { name: 'Missed Check-in Alert', description: 'Auto-message clients who miss their weekly check-in', icon: <Clock className="w-5 h-5" />, trigger_type: 'no_checkin', trigger_value: 7, actions: [{ type: 'send_message', message: "Hey {client_name}! Just checking in — I noticed you missed your weekly check-in. How has training been going? Drop me a message when you get a chance 💪" }] },
+      { name: 'Low Compliance Alert', description: 'Flag at-risk + send motivation when compliance drops below 60%', icon: <TrendingDown className="w-5 h-5" />, trigger_type: 'low_compliance', trigger_value: 60, actions: [{ type: 'send_message', message: "Hey {client_name}, I noticed your compliance has been a bit low. Life gets busy — let's chat about adjusting things to work better for you! 🔥" }, { type: 'flag_at_risk' }] },
+      { name: 'Perfect Week Reward', description: 'Award badge + send congrats when compliance exceeds 90%', icon: <Trophy className="w-5 h-5" />, trigger_type: 'high_compliance', trigger_value: 90, actions: [{ type: 'award_badge', value: 'perfect_week' }, { type: 'send_message', message: "🎉 {client_name}, you absolutely crushed it this week! Perfect compliance — I'm so proud of you. Keep it up!" }] },
+      { name: 'Check-in Streak Badge', description: 'Auto-award streak badge when client hits 7-day streak', icon: <Star className="w-5 h-5" />, trigger_type: 'streak', trigger_value: 7, actions: [{ type: 'award_badge', value: 'streak_7' }, { type: 'send_message', message: "🔥 {client_name}, 7-day streak achieved! You're on fire. Keep this momentum going!" }] },
+    ],
+  },
+  {
+    label: 'Nutrition',
+    icon: <Activity className="w-4 h-4" />,
+    color: 'text-emerald-600',
+    templates: [
+      { name: 'Weight Plateau Calorie Adjust', description: 'Reduce calories by 100 when weight stalls for 3 check-ins', icon: <Scale className="w-5 h-5" />, trigger_type: 'weight_plateau', trigger_value: 3, actions: [{ type: 'adjust_calories', value: '-100' }, { type: 'notify_coach', message: "{client_name}'s weight has plateaued for 3 check-ins — calories reduced by 100 automatically." }] },
+      { name: 'Rapid Weight Loss Adjustment', description: 'Increase calories when losing more than 2 lbs/week', icon: <TrendingDown className="w-5 h-5" />, trigger_type: 'weight_loss_fast', trigger_value: 2, actions: [{ type: 'adjust_calories', value: '+150' }, { type: 'notify_coach', message: "{client_name} is losing weight too quickly — calories increased by 150." }] },
+      { name: 'Protein Target Miss', description: 'Send nutrition tip when nutrition compliance is low', icon: <Target className="w-5 h-5" />, trigger_type: 'low_compliance', trigger_value: 70, actions: [{ type: 'send_message', message: "Hey {client_name}! Quick nutrition tip — hitting your protein targets is the #1 driver of your results. Try adding a protein shake after training 🥤" }] },
+      { name: 'Calorie Goal Streak', description: 'Award badge when nutrition compliance hits 90%+ for 5 days', icon: <Trophy className="w-5 h-5" />, trigger_type: 'high_compliance', trigger_value: 90, actions: [{ type: 'award_badge', value: 'nutrition_star' }] },
+    ],
+  },
+  {
+    label: 'Progress',
+    icon: <Target className="w-4 h-4" />,
+    color: 'text-purple-600',
+    templates: [
+      { name: 'Monthly Progress Message', description: 'Send a monthly summary message after 30+ days in program', icon: <Activity className="w-5 h-5" />, trigger_type: 'streak', trigger_value: 30, actions: [{ type: 'send_message', message: "🎯 {client_name} — one month in! You're building incredible habits. Compliance: {compliance}%. Let's review your progress together!" }] },
+      { name: 'PR Achievement', description: 'Award PR badge and celebrate personal record', icon: <Star className="w-5 h-5" />, trigger_type: 'high_compliance', trigger_value: 95, actions: [{ type: 'award_badge', value: 'pr_hit' }, { type: 'send_message', message: "🏆 {client_name}, new personal record! This is what consistent effort looks like — amazing work!" }] },
+      { name: 'Halfway Milestone', description: 'Celebrate when client hits 14-day streak', icon: <Trophy className="w-5 h-5" />, trigger_type: 'streak', trigger_value: 14, actions: [{ type: 'award_badge', value: 'streak_14' }, { type: 'send_message', message: "🔥 Two weeks straight, {client_name}! You're halfway to a full month streak. The habit is forming — keep going!" }] },
+      { name: 'Momentum Builder', description: 'Award 30-day badge for sustained commitment', icon: <Heart className="w-5 h-5" />, trigger_type: 'streak', trigger_value: 30, actions: [{ type: 'award_badge', value: 'streak_30' }] },
+    ],
+  },
+  {
+    label: 'Engagement',
+    icon: <MessageSquare className="w-4 h-4" />,
+    color: 'text-orange-600',
+    templates: [
+      { name: 'Re-engagement Nudge', description: 'Send a nudge when client hasn\'t checked in for 14 days', icon: <Bell className="w-5 h-5" />, trigger_type: 'no_checkin', trigger_value: 14, actions: [{ type: 'send_message', message: "Hey {client_name}! It's been a while — missing you! How are things going? Let's reconnect and get back on track 💙" }, { type: 'flag_at_risk' }] },
+      { name: 'New Client Welcome', description: 'Auto-send welcome message when client becomes active', icon: <UserCheck className="w-5 h-5" />, trigger_type: 'new_client', actions: [{ type: 'send_message', message: "Welcome to the team, {client_name}! 🎉 I'm so excited to start this journey with you. Your first check-in is scheduled — let's crush your goals together!" }] },
+      { name: 'Low Mood Support', description: 'Send supportive message when client reports low mood', icon: <Heart className="w-5 h-5" />, trigger_type: 'no_checkin', trigger_value: 5, actions: [{ type: 'send_message', message: "Hey {client_name}, just thinking about you! Remember — progress isn't always linear. You've got this, and I'm here every step of the way 💙" }] },
+      { name: 'Coach At-Risk Alert', description: 'Notify yourself when a client needs immediate attention', icon: <Flag className="w-5 h-5" />, trigger_type: 'no_checkin', trigger_value: 10, actions: [{ type: 'flag_at_risk' }, { type: 'notify_coach', message: "{client_name} has missed check-ins for 10+ days and needs immediate outreach." }] },
+    ],
+  },
+];
 
-const ACTION_COLORS = {
-  send_message: 'bg-blue-50 border-blue-100 text-primary',
-  send_template: 'bg-blue-50 border-blue-100 text-primary',
-  notify_coach: 'bg-amber-50 border-amber-100 text-amber-600',
-  adjust_calories: 'bg-orange-50 border-orange-100 text-orange-600',
-  flag_client: 'bg-red-50 border-red-100 text-red-500',
-  suggest_adjustment: 'bg-purple-50 border-purple-100 text-purple-600',
-};
+// ── Execution engine ───────────────────────────────────────────────────────
+function useAutomationEngine(rules, clients, checkIns, plans, badges, queryClient) {
+  const executeAction = useCallback(async (action, client, lastCheckIn, allClientCheckIns) => {
+    const msg = (action.message || '')
+      .replace(/\{client_name\}/g, client.name)
+      .replace(/\{streak\}/g, calculateStreak(allClientCheckIns))
+      .replace(/\{compliance\}/g, lastCheckIn?.compliance_training ?? 0)
+      .replace(/\{weight\}/g, lastCheckIn?.weight ?? client.current_weight ?? '?');
 
-/* ── Single active rule card ── */
-function ActiveRuleCard({ rule, matchCount, onToggle, onEdit, onDelete }) {
-  const cMeta = CONDITION_META[rule.condition_type] || {};
-  const aMeta = ACTION_META[rule.action_type] || {};
-  const actionColor = ACTION_COLORS[rule.action_type] || 'bg-[#F6F7FB] border-[#E7EAF3] text-[#374151]';
+    switch (action.type) {
+      case 'send_message':
+        if (msg) await base44.entities.Message.create({ client_id: client.id, content: msg, sender: 'coach' });
+        break;
+      case 'notify_coach':
+        await base44.entities.Notification.create({ recipient_id: 'coach', title: `Automation: ${client.name}`, body: msg || `Rule triggered for ${client.name}`, type: 'general', related_client_id: client.id });
+        break;
+      case 'award_badge': {
+        if (!action.value) break;
+        const alreadyHas = badges.some(b => b.client_id === client.id && b.badge_key === action.value);
+        if (!alreadyHas) await base44.entities.ClientBadge.create({ client_id: client.id, client_name: client.name, badge_key: action.value, earned_date: new Date().toISOString().split('T')[0], notes: 'Auto-awarded by automation' });
+        break;
+      }
+      case 'update_status':
+        if (action.value) await base44.entities.Client.update(client.id, { lifecycle_status: action.value });
+        break;
+      case 'adjust_calories': {
+        const plan = plans.find(p => p.id === client.assigned_nutrition_id);
+        if (plan) {
+          const delta = Number(action.value) || 0;
+          await base44.entities.NutritionPlan.update(plan.id, { calories: (plan.calories || 2000) + delta });
+        }
+        break;
+      }
+      case 'flag_at_risk':
+        await base44.entities.Client.update(client.id, { lifecycle_status: 'at_risk' });
+        break;
+    }
+  }, [badges, plans]);
 
+  const runAutomations = useCallback(async () => {
+    const activeRules = rules.filter(r => r.is_active && r.trigger_type);
+    if (activeRules.length === 0) return;
+
+    let totalFired = 0;
+
+    for (const rule of activeRules) {
+      for (const client of clients) {
+        if (client.lifecycle_status === 'lead') continue;
+        const cis = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+        const lastCI = cis[0];
+
+        let triggered = false;
+        const tv = Number(rule.trigger_value) || 0;
+
+        switch (rule.trigger_type) {
+          case 'no_checkin': {
+            const daysSince = lastCI ? differenceInDays(new Date(), parseISO(lastCI.date)) : 999;
+            triggered = daysSince >= tv;
+            break;
+          }
+          case 'low_compliance': {
+            const score = averageAdherenceScore(cis.slice(0, 3));
+            triggered = score !== null && score < tv;
+            break;
+          }
+          case 'high_compliance': {
+            const score = averageAdherenceScore(cis.slice(0, 3));
+            triggered = score !== null && score >= tv;
+            break;
+          }
+          case 'streak': {
+            triggered = calculateStreak(cis) >= tv;
+            break;
+          }
+          case 'weight_plateau': {
+            const withW = cis.filter(ci => ci.weight != null).slice(0, tv + 1);
+            if (withW.length >= tv) {
+              const range = Math.max(...withW.map(c => c.weight)) - Math.min(...withW.map(c => c.weight));
+              triggered = range < 1;
+            }
+            break;
+          }
+          case 'weight_loss_fast': {
+            if (cis.length >= 2 && cis[0].weight && cis[1].weight) {
+              triggered = (cis[1].weight - cis[0].weight) > tv;
+            }
+            break;
+          }
+          case 'new_client':
+            triggered = client.lifecycle_status === 'active' && differenceInDays(new Date(), parseISO(client.created_date || new Date().toISOString())) <= 1;
+            break;
+        }
+
+        if (triggered) {
+          const actions = rule.actions?.length ? rule.actions : [{ type: rule.action_type, message: rule.action_message, value: rule.action_calorie_delta?.toString() }];
+          for (const action of actions) {
+            await executeAction(action, client, lastCI, cis);
+          }
+          await base44.entities.AutomationRule.update(rule.id, { last_triggered: new Date().toISOString(), trigger_count: (rule.trigger_count || 0) + 1 });
+          await base44.entities.AutomationLog.create({ rule_id: rule.id, rule_name: rule.name, client_id: client.id, client_name: client.name, triggered_at: new Date().toISOString(), actions_taken: actions.map(a => a.type).join(', ') });
+          totalFired++;
+          toast.success(`⚡ ${rule.name} triggered for ${client.name}`);
+        }
+      }
+    }
+
+    if (totalFired > 0) {
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+      queryClient.invalidateQueries({ queryKey: ['badges'] });
+      queryClient.invalidateQueries({ queryKey: ['automation-rules'] });
+      queryClient.invalidateQueries({ queryKey: ['automation-logs'] });
+      queryClient.invalidateQueries({ queryKey: ['nutrition-plans'] });
+    }
+
+    return totalFired;
+  }, [rules, clients, checkIns, executeAction, queryClient]);
+
+  return { runAutomations };
+}
+
+// ── Template card ──────────────────────────────────────────────────────────
+function TemplateCard({ template, isAdded, onUse, onCustomize }) {
+  const actionLabels = template.actions?.map(a => a.type.replace(/_/g, ' ')).join(' + ') || '';
   return (
-    <div className={cn(
-      'bg-white border rounded-2xl p-4 transition-all',
-      rule.is_active ? 'border-[#E7EAF3] shadow-sm' : 'border-[#E7EAF3] opacity-50'
-    )}>
+    <div className="bg-white border border-border rounded-xl p-4 flex flex-col gap-3 hover:shadow-sm transition-shadow">
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center text-[#6B7280] flex-shrink-0">
-          {COND_ICONS[rule.condition_type] || <Zap className="w-4 h-4" />}
+        <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary flex-shrink-0">{template.icon}</div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm text-foreground leading-tight">{template.name}</p>
+          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{template.description}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className="text-[10px] font-semibold bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
+          IF {template.trigger_type?.replace(/_/g, ' ')} {template.trigger_value ? `(${template.trigger_value})` : ''}
+        </span>
+        <span className="text-muted-foreground text-xs">→</span>
+        <span className="text-[10px] font-semibold bg-blue-100 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">
+          {actionLabels}
+        </span>
+      </div>
+      <div className="flex gap-2">
+        <button onClick={() => onUse(template)} disabled={isAdded}
+          className={cn('flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-semibold transition-all',
+            isAdded ? 'bg-emerald-50 border border-emerald-100 text-emerald-600 cursor-default' : 'bg-primary text-primary-foreground hover:bg-primary/90')}>
+          {isAdded ? <><Check className="w-3 h-3" /> Added</> : <><Plus className="w-3 h-3" /> Use Template</>}
+        </button>
+        <button onClick={() => onCustomize(template)} className="h-8 px-3 rounded-lg border border-border text-xs font-medium text-muted-foreground hover:bg-secondary transition-colors">
+          Customize
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Rule card ──────────────────────────────────────────────────────────────
+function RuleRow({ rule, onToggle, onEdit, onDelete }) {
+  const actions = rule.actions?.length ? rule.actions : [{ type: rule.action_type }];
+  return (
+    <div className={cn('bg-white border rounded-xl p-4 transition-all', rule.is_active ? 'border-border' : 'border-border opacity-60')}>
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5">
+          <span className={cn('w-2 h-2 rounded-full block', rule.is_active ? 'bg-emerald-500' : 'bg-gray-300')} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-2">
-            <p className="font-semibold text-sm text-[#1F2A44]">{rule.name}</p>
-            {matchCount > 0 && rule.is_active && (
-              <span className="flex items-center gap-1 text-[10px] font-bold bg-red-50 border border-red-100 text-red-500 px-1.5 py-0.5 rounded-full">
-                <AlertTriangle className="w-2.5 h-2.5" /> {matchCount} triggered
-              </span>
-            )}
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-semibold text-sm text-foreground">{rule.name}</p>
           </div>
-
-          {/* IF → THEN pill row */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-semibold bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] px-2.5 py-1 rounded-lg">
-              IF {cMeta.label || rule.condition_type?.replace(/_/g, ' ')}
-              {rule.condition_threshold != null && (
-                <span className="text-[#9CA3AF] ml-1">
-                  ({rule.condition_threshold}{cMeta.thresholdType === 'percent' ? '%' : cMeta.thresholdType === 'days' ? 'd' : '×'})
-                </span>
-              )}
+          <div className="flex items-center gap-1.5 flex-wrap mt-1.5">
+            <span className="text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-100 px-2 py-0.5 rounded-full">
+              IF {(rule.trigger_type || rule.condition_type || '').replace(/_/g, ' ')} {rule.trigger_value ?? rule.condition_threshold ? `(${rule.trigger_value ?? rule.condition_threshold})` : ''}
             </span>
-            <span className="text-[#9CA3AF] text-xs">→</span>
-            <span className={cn('text-[11px] font-semibold px-2.5 py-1 rounded-lg border', actionColor)}>
-              {aMeta.icon} {aMeta.label || rule.action_type?.replace(/_/g, ' ')}
+            <span className="text-muted-foreground text-[10px]">→</span>
+            <span className="text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded-full">
+              {actions.map(a => (a.type || '').replace(/_/g, ' ')).join(' + ')}
             </span>
           </div>
-
-          {rule.action_message && (
-            <p className="text-[11px] text-[#6B7280] mt-2 line-clamp-1 italic">"{rule.action_message}"</p>
-          )}
-
           <div className="flex items-center justify-between mt-3">
-            <span className="text-[10px] text-[#9CA3AF]">
-              {rule.trigger_count > 0 ? `Fired ${rule.trigger_count}×` : 'Never fired'}
-              {rule.last_triggered ? ` · last ${rule.last_triggered}` : ''}
-            </span>
+            <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> Fired {rule.trigger_count || 0}×</span>
+              {rule.last_triggered && <span>Last: {formatDistanceToNow(parseISO(rule.last_triggered), { addSuffix: true })}</span>}
+            </div>
             <div className="flex items-center gap-1">
-              <button onClick={() => onEdit(rule)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#F6F7FB] text-[#6B7280] transition-colors">
-                <Pencil className="w-3.5 h-3.5" />
-              </button>
-              <button onClick={() => onDelete(rule.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-[#9CA3AF] hover:text-red-500 transition-colors">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => onToggle(rule, !rule.is_active)}
-                className={cn('flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[11px] font-semibold border transition-all',
-                  rule.is_active
-                    ? 'bg-emerald-50 border-emerald-100 text-emerald-600 hover:bg-emerald-100'
-                    : 'bg-[#F6F7FB] border-[#E7EAF3] text-[#6B7280] hover:bg-[#ECEEF5]'
-                )}
-              >
+              <button onClick={() => onEdit(rule)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+              <button onClick={() => onDelete(rule.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+              <button onClick={() => onToggle(rule, !rule.is_active)}
+                className={cn('flex items-center gap-1 h-7 px-2.5 rounded-lg text-[10px] font-bold border transition-all',
+                  rule.is_active ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-secondary border-border text-muted-foreground')}>
                 {rule.is_active ? <><ToggleRight className="w-3.5 h-3.5" /> On</> : <><ToggleLeft className="w-3.5 h-3.5" /> Off</>}
               </button>
             </div>
@@ -108,140 +260,36 @@ function ActiveRuleCard({ rule, matchCount, onToggle, onEdit, onDelete }) {
   );
 }
 
-/* ── Template card (1-click add) ── */
-function TemplateCard({ template, isAdded, onAdd, onCustomize }) {
-  const actionColor = ACTION_COLORS[template.action_type] || 'bg-[#F6F7FB] border-[#E7EAF3]';
-  const cMeta = CONDITION_META[template.condition_type] || {};
-  const aMeta = ACTION_META[template.action_type] || {};
-
-  return (
-    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center text-xl flex-shrink-0">
-          {template.icon}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-[#1F2A44] leading-tight">{template.name}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5 leading-snug">{template.description}</p>
-        </div>
-      </div>
-
-      {/* IF → THEN pills */}
-      <div className="flex items-center gap-1.5 flex-wrap">
-        <span className="text-[11px] font-medium bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] px-2.5 py-1 rounded-lg">
-          IF {cMeta.label}
-        </span>
-        <span className="text-[#9CA3AF] text-xs">→</span>
-        <span className={cn('text-[11px] font-medium px-2.5 py-1 rounded-lg border', actionColor)}>
-          {aMeta.label}
-        </span>
-      </div>
-
-      <div className="flex gap-2 mt-1">
-        <button
-          onClick={() => onAdd(template)}
-          disabled={isAdded}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-1.5 h-9 rounded-xl text-sm font-semibold border transition-all active:scale-95',
-            isAdded
-              ? 'bg-emerald-50 border-emerald-100 text-emerald-600 cursor-default'
-              : 'bg-primary text-white border-transparent hover:bg-primary/90'
-          )}
-        >
-          {isAdded ? <><Check className="w-3.5 h-3.5" /> Added</> : <><Plus className="w-3.5 h-3.5" /> Use Template</>}
-        </button>
-        <button
-          onClick={() => onCustomize(template)}
-          className="h-9 px-3 rounded-xl border border-[#E7EAF3] text-xs font-medium text-[#374151] hover:bg-[#F6F7FB] transition-colors"
-        >
-          Customize
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ── Triggered clients panel ── */
-function TriggeredPanel({ results }) {
-  if (results.length === 0) {
-    return (
-      <div className="flex flex-col items-center py-12 text-center gap-2">
-        <Check className="w-8 h-8 text-emerald-400" />
-        <p className="text-sm font-semibold text-[#1F2A44]">All clear!</p>
-        <p className="text-xs text-[#6B7280]">No rules are triggering right now</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-2">
-      {results.map((r, i) => {
-        const aMeta = ACTION_META[r.rule.action_type] || {};
-        return (
-          <div key={i} className="flex items-start gap-3 bg-white border border-red-100 rounded-xl p-3">
-            <div className="w-8 h-8 rounded-full bg-red-50 border border-red-100 flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[#1F2A44]">{r.client.name}</p>
-              <p className="text-xs text-[#6B7280] mt-0.5">{r.detail}</p>
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] font-medium bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151] px-2 py-0.5 rounded-full">{r.rule.name}</span>
-                <span className="text-[10px] text-[#9CA3AF]">→ {aMeta.label || r.rule.action_type}</span>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ── Main page ── */
+// ── Main page ──────────────────────────────────────────────────────────────
 export default function Automations() {
   const [tab, setTab] = useState('templates');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRule, setEditingRule] = useState(null);
-  const [addedTemplates, setAddedTemplates] = useState(new Set());
+  const [running, setRunning] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: rules = [] } = useQuery({
-    queryKey: ['automation-rules'],
-    queryFn: () => base44.entities.AutomationRule.list('-created_date'),
-  });
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
-  });
-  const { data: checkIns = [] } = useQuery({
-    queryKey: ['checkins'],
-    queryFn: () => base44.entities.CheckIn.list('-date', 300),
-  });
+  const { data: rules = [] } = useQuery({ queryKey: ['automation-rules'], queryFn: () => base44.entities.AutomationRule.list('-created_date') });
+  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list() });
+  const { data: checkIns = [] } = useQuery({ queryKey: ['checkins'], queryFn: () => base44.entities.CheckIn.list('-date', 300) });
+  const { data: plans = [] } = useQuery({ queryKey: ['nutrition-plans'], queryFn: () => base44.entities.NutritionPlan.list() });
+  const { data: badges = [] } = useQuery({ queryKey: ['badges'], queryFn: () => base44.entities.ClientBadge.list('-earned_date', 300) });
+  const { data: logs = [] } = useQuery({ queryKey: ['automation-logs'], queryFn: () => base44.entities.AutomationLog.list('-triggered_at', 50) });
 
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.AutomationRule.create(data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['automation-rules'] }),
-  });
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.AutomationRule.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['automation-rules'] }),
-  });
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.AutomationRule.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['automation-rules'] }),
-  });
+  const { runAutomations } = useAutomationEngine(rules, clients, checkIns, plans, badges, queryClient);
 
-  const results = useMemo(() => runAutomations(rules, clients, checkIns), [rules, clients, checkIns]);
-  const matchCountByRule = useMemo(() => results.reduce((acc, r) => {
-    acc[r.rule.id] = (acc[r.rule.id] || 0) + 1;
-    return acc;
-  }, {}), [results]);
+  // Auto-run on load
+  useEffect(() => {
+    if (rules.length > 0 && clients.length > 0) {
+      runAutomations();
+    }
+  }, []); // eslint-disable-line
 
-  const activeCount = rules.filter(r => r.is_active).length;
-  const triggeredCount = results.length;
+  const createMutation = useMutation({ mutationFn: d => base44.entities.AutomationRule.create(d), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['automation-rules'] }) });
+  const updateMutation = useMutation({ mutationFn: ({ id, data }) => base44.entities.AutomationRule.update(id, data), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['automation-rules'] }) });
+  const deleteMutation = useMutation({ mutationFn: id => base44.entities.AutomationRule.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['automation-rules'] }) });
 
   const handleSave = async (form) => {
-    if (editingRule?.id && !editingRule?._isTemplate) {
+    if (editingRule?.id && !editingRule._isTemplate) {
       await updateMutation.mutateAsync({ id: editingRule.id, data: form });
       toast.success('Rule updated');
     } else {
@@ -251,142 +299,195 @@ export default function Automations() {
     setEditingRule(null);
   };
 
-  const handleAddTemplate = async (template) => {
-    const { icon, color, ...ruleData } = template;
-    await createMutation.mutateAsync({ ...ruleData, is_active: true });
-    setAddedTemplates(s => new Set([...s, template.name]));
+  const handleUseTemplate = async (template) => {
+    const { icon, ...rest } = template;
+    await createMutation.mutateAsync({ ...rest, is_active: true, run_once: false, apply_to: 'all' });
     toast.success(`"${template.name}" added!`);
   };
 
-  const handleCustomize = (template) => {
-    const { icon, color, ...ruleData } = template;
-    setEditingRule({ ...ruleData, _isTemplate: true });
-    setModalOpen(true);
+  const handleRunNow = async () => {
+    setRunning(true);
+    try {
+      const count = await runAutomations();
+      if (count === 0) toast.info('No rules triggered right now — all clients are on track!');
+      else toast.success(`${count} automation${count !== 1 ? 's' : ''} executed`);
+    } finally {
+      setRunning(false);
+    }
   };
 
-  const handleEdit = (rule) => {
-    setEditingRule(rule);
-    setModalOpen(true);
-  };
+  const activeCount = rules.filter(r => r.is_active).length;
+  const triggeredToday = logs.filter(l => l.triggered_at && differenceInDays(new Date(), parseISO(l.triggered_at)) < 1).length;
+  const timeSaved = `${Math.round((logs.length * 5) / 60 * 10) / 10}h`;
 
   const TABS = [
-    { key: 'templates', label: 'Templates' },
-    { key: 'rules', label: `My Rules${rules.length > 0 ? ` (${rules.length})` : ''}` },
-    { key: 'triggered', label: 'Triggered', badge: triggeredCount },
+    { key: 'templates', label: 'Templates', icon: <LayoutTemplate className="w-3.5 h-3.5" /> },
+    { key: 'rules', label: `My Rules (${rules.length})`, icon: <List className="w-3.5 h-3.5" /> },
+    { key: 'triggered', label: 'Triggered', icon: <Zap className="w-3.5 h-3.5" /> },
+    { key: 'history', label: 'History', icon: <History className="w-3.5 h-3.5" /> },
   ];
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
-
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-heading font-bold text-[#1F2A44] flex items-center gap-2">
-            <Zap className="w-5 h-5 text-primary" /> Automations
-          </h1>
-          <p className="text-sm text-[#6B7280] mt-0.5">IF/THEN rules that run automatically across your clients</p>
+    <div className="max-w-4xl mx-auto px-4 py-6 space-y-5">
+      {/* ── Dark header ── */}
+      <div className="bg-[#111827] rounded-xl p-5 text-white flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div>
+          <div>
+            <h1 className="text-lg font-bold leading-tight">Automations</h1>
+            <p className="text-xs text-white/60 mt-0.5">IF/THEN rules that run automatically across your clients</p>
+          </div>
         </div>
-        <Button size="sm" onClick={() => { setEditingRule(null); setModalOpen(true); }} className="gap-1.5">
-          <Plus className="w-4 h-4" /> New Rule
-        </Button>
+        <div className="flex items-center gap-2">
+          <button onClick={handleRunNow} disabled={running}
+            className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60">
+            <RefreshCw className={cn('w-3.5 h-3.5', running && 'animate-spin')} />
+            {running ? 'Running...' : 'Run Now'}
+          </button>
+          <button onClick={() => { setEditingRule(null); setModalOpen(true); }}
+            className="flex items-center gap-1.5 text-xs font-bold bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg transition-colors">
+            <Plus className="w-3.5 h-3.5" /> New Rule
+          </button>
+        </div>
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
         {[
-          { label: 'Active Rules', value: activeCount, color: 'text-emerald-600' },
-          { label: 'Total Rules', value: rules.length, color: 'text-[#1F2A44]' },
-          { label: 'Triggered Now', value: triggeredCount, color: triggeredCount > 0 ? 'text-red-500' : 'text-[#374151]' },
+          { label: 'Active Rules', value: activeCount, dark: true },
+          { label: 'Total Rules', value: rules.length, dark: false },
+          { label: 'Triggered Today', value: triggeredToday, dark: true },
+          { label: 'Time Saved', value: timeSaved, dark: false },
         ].map(s => (
-          <div key={s.label} className="bg-white border border-[#E7EAF3] rounded-xl p-3 text-center shadow-sm">
-            <p className={cn('text-2xl font-bold font-heading tabular-nums', s.color)}>{s.value}</p>
-            <p className="text-[11px] text-[#6B7280] mt-0.5">{s.label}</p>
+          <div key={s.label} className={cn('rounded-xl p-4 text-center', s.dark ? 'bg-[#111827] text-white' : 'bg-white border border-border text-foreground')}>
+            <p className="text-2xl font-black tabular-nums">{s.value}</p>
+            <p className={cn('text-xs mt-0.5', s.dark ? 'text-white/60' : 'text-muted-foreground')}>{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-1">
+      <div className="flex gap-1 bg-secondary border border-border rounded-xl p-1">
         {TABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-colors',
-              tab === t.key ? 'bg-white shadow-sm text-[#1F2A44]' : 'text-[#6B7280] hover:text-[#1F2A44]'
-            )}
-          >
-            {t.label}
-            {t.badge > 0 && (
-              <span className="text-[10px] font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                {t.badge}
-              </span>
-            )}
+          <button key={t.key} onClick={() => setTab(t.key)}
+            className={cn('flex-1 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-colors',
+              tab === t.key ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
+            {t.icon}{t.label}
           </button>
         ))}
       </div>
 
-      {/* ── Templates tab ── */}
+      {/* ── Templates ── */}
       {tab === 'templates' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {AUTOMATION_TEMPLATES.map((t, i) => {
-            const isAdded = addedTemplates.has(t.name) || rules.some(r => r.name === t.name);
-            return (
-              <TemplateCard
-                key={i}
-                template={t}
-                isAdded={isAdded}
-                onAdd={handleAddTemplate}
-                onCustomize={handleCustomize}
-              />
-            );
-          })}
+        <div className="space-y-6">
+          {TEMPLATE_CATEGORIES.map(cat => (
+            <div key={cat.label}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className={cat.color}>{cat.icon}</span>
+                <p className={cn('text-sm font-bold', cat.color)}>{cat.label} Automations</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {cat.templates.map((t, i) => {
+                  const isAdded = rules.some(r => r.name === t.name);
+                  return (
+                    <TemplateCard key={i} template={t} isAdded={isAdded}
+                      onUse={handleUseTemplate}
+                      onCustomize={(tpl) => { const { icon, ...rest } = tpl; setEditingRule({ ...rest, _isTemplate: true }); setModalOpen(true); }} />
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* ── My Rules tab ── */}
+      {/* ── My Rules ── */}
       {tab === 'rules' && (
         <div className="space-y-3">
           {rules.length === 0 ? (
             <div className="flex flex-col items-center py-16 gap-4 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center">
-                <Zap className="w-7 h-7 text-[#9CA3AF]" />
+              <div className="w-14 h-14 rounded-2xl bg-secondary border border-border flex items-center justify-center">
+                <Zap className="w-7 h-7 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#1F2A44]">No rules yet</p>
-                <p className="text-xs text-[#6B7280] mt-1">Start with a template or create a custom rule</p>
+                <p className="text-sm font-semibold">No rules yet</p>
+                <p className="text-xs text-muted-foreground mt-1">Start with a template or create a custom rule</p>
               </div>
-              <Button variant="outline" size="sm" onClick={() => setTab('templates')} className="gap-1.5">
-                Browse Templates
-              </Button>
+              <button onClick={() => setTab('templates')} className="text-sm text-primary font-semibold hover:underline">Browse Templates</button>
             </div>
           ) : (
             rules.map(rule => (
-              <ActiveRuleCard
-                key={rule.id}
-                rule={rule}
-                matchCount={matchCountByRule[rule.id] || 0}
-                onToggle={(rule, val) => updateMutation.mutate({ id: rule.id, data: { is_active: val } })}
-                onEdit={handleEdit}
-                onDelete={(id) => { deleteMutation.mutate(id); toast.success('Rule deleted'); }}
-              />
+              <RuleRow key={rule.id} rule={rule}
+                onToggle={(r, v) => updateMutation.mutate({ id: r.id, data: { is_active: v } })}
+                onEdit={(r) => { setEditingRule(r); setModalOpen(true); }}
+                onDelete={(id) => { deleteMutation.mutate(id); toast.success('Rule deleted'); }} />
             ))
           )}
         </div>
       )}
 
-      {/* ── Triggered tab ── */}
+      {/* ── Triggered ── */}
       {tab === 'triggered' && (
-        <TriggeredPanel results={results} />
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">Currently Triggered</p>
+            <button onClick={handleRunNow} disabled={running} className="flex items-center gap-1 text-xs text-primary font-semibold hover:underline">
+              <Play className="w-3 h-3" /> Run check
+            </button>
+          </div>
+          {logs.filter(l => differenceInDays(new Date(), parseISO(l.triggered_at || new Date().toISOString())) < 1).length === 0 ? (
+            <div className="flex flex-col items-center py-12 text-center gap-2">
+              <Check className="w-8 h-8 text-emerald-400" />
+              <p className="text-sm font-semibold">All clear!</p>
+              <p className="text-xs text-muted-foreground">No rules triggered today</p>
+            </div>
+          ) : (
+            logs.filter(l => differenceInDays(new Date(), parseISO(l.triggered_at || new Date().toISOString())) < 1).map((log, i) => (
+              <div key={i} className="flex items-start gap-3 bg-white border border-amber-100 rounded-xl p-3">
+                <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">{log.client_name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{log.rule_name} → {log.actions_taken}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{formatDistanceToNow(parseISO(log.triggered_at), { addSuffix: true })}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       )}
 
-      <RuleFormModal
+      {/* ── History ── */}
+      {tab === 'history' && (
+        <div className="space-y-2">
+          <p className="text-sm font-semibold">Execution History</p>
+          {logs.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground text-sm">No automations have run yet</div>
+          ) : (
+            logs.map((log, i) => (
+              <div key={i} className="flex items-center gap-3 bg-white border border-border rounded-xl px-4 py-3">
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Zap className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold">{log.rule_name} → {log.client_name}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{log.actions_taken}</p>
+                </div>
+                <span className="text-[10px] text-muted-foreground shrink-0">
+                  {log.triggered_at ? format(parseISO(log.triggered_at), 'MMM d, h:mm a') : ''}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      <RuleBuilderModal
         open={modalOpen}
         onClose={() => { setModalOpen(false); setEditingRule(null); }}
         onSave={handleSave}
-        initial={editingRule?._isTemplate
-          ? { ...editingRule, id: undefined, _isTemplate: undefined }
-          : editingRule}
+        initial={editingRule?._isTemplate ? { ...editingRule, id: undefined, _isTemplate: undefined } : editingRule}
       />
     </div>
   );
