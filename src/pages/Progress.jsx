@@ -139,7 +139,7 @@ export default function Progress() {
   return (
     <div className="flex flex-col h-full min-h-screen bg-[#F9FAFB]">
       {/* Header */}
-      <div className="mx-6 mt-6 mb-4 rounded-xl p-5 text-white flex items-center justify-between"
+      <div className="mx-3 sm:mx-6 mt-3 sm:mt-6 mb-4 rounded-xl p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3"
         style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <div>
           <h1 className="text-xl font-semibold text-white">Progress Tracking</h1>
@@ -183,12 +183,12 @@ export default function Progress() {
       </Sheet>
 
       {/* Two-column layout */}
-      <div className="flex flex-1 overflow-hidden mx-6 mb-6 rounded-xl border border-[#E5E7EB] bg-white" style={{ minHeight: 600 }}>
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden mx-3 sm:mx-6 mb-6 rounded-xl border border-[#E5E7EB] bg-white" style={{ minHeight: 600 }}>
         {/* Left sidebar */}
         <ProgressSidebar activeKey={selectedMetric.key} onSelect={setSelectedMetric} />
 
         {/* Right content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
           {/* Metric title */}
           <AnimatePresence mode="wait">
             <motion.div

@@ -24,7 +24,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
   const isHabits = plan.tracking_mode === 'habits';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
       <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
 
       <motion.div
@@ -32,7 +32,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97 }}
         transition={{ duration: 0.18 }}
-        className="relative w-full max-w-[90vw] h-[90vh] bg-white rounded-xl flex flex-col overflow-hidden border border-[#E5E7EB]"
+        className="relative w-full h-[95dvh] sm:h-[90vh] sm:max-w-[90vw] bg-white sm:rounded-xl rounded-t-2xl flex flex-col overflow-hidden border border-[#E5E7EB]"
         style={{ maxWidth: 1100 }}
       >
         {/* ── Clean header ── */}
@@ -113,8 +113,8 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
         </div>
 
         {/* ── Two-column body ── */}
-        <div className="flex-1 flex overflow-hidden min-h-0 bg-[#FAFAFA]">
-          <div className="flex-1 min-w-0 overflow-y-auto px-6 py-5">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 bg-[#FAFAFA]">
+        <div className="flex-1 min-w-0 overflow-y-auto px-4 sm:px-6 py-5">
             <AnimatePresence mode="wait">
               <motion.div
                 key={tab}
@@ -131,7 +131,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
             </AnimatePresence>
           </div>
 
-          <div className="flex-shrink-0 overflow-y-auto px-5 py-5 border-l border-[#E5E7EB] bg-white hidden md:block" style={{ width: 280 }}>
+          <div className="flex-shrink-0 overflow-y-auto px-5 py-5 border-t lg:border-t-0 lg:border-l border-[#E5E7EB] bg-white hidden lg:block" style={{ width: 280 }}>
             <PlanDetailSidebar plan={plan} onAssign={onAssign} />
           </div>
         </div>

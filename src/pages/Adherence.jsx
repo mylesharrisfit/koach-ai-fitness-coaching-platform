@@ -238,10 +238,10 @@ export default function Adherence() {
   };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
       {/* ── Header ── */}
       <div
-        className="rounded-2xl p-6 mb-6 flex items-center justify-between"
+        className="rounded-2xl p-4 sm:p-6 mb-5 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
         style={{
           background: 'linear-gradient(135deg, #111827 0%, #0D111E 100%)',
           border: '1px solid rgba(255,255,255,0.07)',
@@ -249,7 +249,7 @@ export default function Adherence() {
         }}
       >
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">Adherence</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Adherence</h1>
           <p className="text-sm mt-0.5 text-[#6B7280]">Track consistency · Award achievements · Build retention</p>
         </div>
         <div className="flex items-center gap-2">
@@ -305,7 +305,7 @@ export default function Adherence() {
         </div>
 
         {/* Tier tabs */}
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 flex-nowrap mb-3">
           {TIER_FILTERS.map(t => {
             const isActive = tierFilter === t;
             const ts = TIER_TAB_STYLES[t];
@@ -339,7 +339,7 @@ export default function Adherence() {
         </div>
 
         {/* Category tabs */}
-        <div className="flex flex-wrap gap-1.5 mb-5">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-1 flex-nowrap mb-5">
           {CATEGORY_FILTERS.map(cat => {
             const isActive = categoryFilter === cat;
             return (

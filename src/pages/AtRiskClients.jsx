@@ -222,9 +222,9 @@ export default function AtRiskClients() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
       {/* ── Header ── */}
-      <div className="bg-[#111827] rounded-xl p-5 mb-5">
-        <h1 className="text-xl font-semibold text-white">At-Risk Clients</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+      <div className="bg-[#111827] rounded-xl p-4 sm:p-5 mb-5">
+        <h1 className="text-lg sm:text-xl font-semibold text-white">At-Risk Clients</h1>
+        <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
           {atRisk.length} client{atRisk.length !== 1 ? 's' : ''} need{atRisk.length === 1 ? 's' : ''} immediate attention
         </p>
       </div>
@@ -253,7 +253,7 @@ export default function AtRiskClients() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 flex-nowrap mb-5">
         {['all', 'high', 'medium', 'low'].map(key => (
           <button
             key={key}

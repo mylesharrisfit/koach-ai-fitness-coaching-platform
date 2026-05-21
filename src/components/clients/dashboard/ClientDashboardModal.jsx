@@ -85,10 +85,10 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
       <div
-        className="relative w-full max-w-[90vw] h-[90vh] rounded-xl bg-white border border-[#E5E7EB] flex flex-col overflow-hidden"
+        className="relative w-full h-[95dvh] sm:h-[90vh] sm:max-w-[90vw] sm:rounded-xl rounded-t-2xl bg-white border border-[#E5E7EB] flex flex-col overflow-hidden"
         style={{ maxWidth: 1100 }}
         onClick={e => e.stopPropagation()}
       >

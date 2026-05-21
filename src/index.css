@@ -70,11 +70,12 @@
 }
 
 /* ── Mobile global fixes ── */
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body { overflow-x: hidden; }
 * { -webkit-tap-highlight-color: transparent; }
 
 /* Prevent iOS zoom on input focus */
-input, select, textarea { font-size: max(16px, 1em); }
+input, select, textarea, button { font-size: 16px; }
 
 /* Scrollbar hide utility */
 .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
