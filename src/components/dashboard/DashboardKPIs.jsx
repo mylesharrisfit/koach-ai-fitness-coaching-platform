@@ -50,20 +50,17 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
       }}
     >
       <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#EFF6FF' }}>
-          <Icon className="w-4 h-4" style={{ color: '#2563EB' }} />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#F9FAFB' }}>
+          <Icon className="w-4 h-4 text-[#D1D5DB]" />
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-wide text-[#6B7280]">{label}</p>
       </div>
       <div>
-        <p
-          className="text-3xl font-extrabold leading-none"
-          style={{ letterSpacing: '-0.03em', color: '#111827' }}
-        >
+        <p className="text-2xl font-bold leading-none text-[#111827]" style={{ letterSpacing: '-0.02em' }}>
           {value}
         </p>
         {sub && (
-          <p className="text-xs mt-1 font-medium" style={{ color: subColor || '#9ca3af' }}>{sub}</p>
+          <p className="text-xs mt-1" style={{ color: subColor || '#6B7280' }}>{sub}</p>
         )}
         {extra}
       </div>
@@ -164,9 +161,8 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
         extra={avgAdherence !== null ? <AdherenceBar pct={avgAdherence} /> : null}
       />
 
-      {/* Pending Reviews — dark */}
+      {/* Pending Reviews — light */}
       <KPICard
-        dark
         icon={ClipboardList}
         label="Pending Reviews"
         value={pendingReviews === 0 ? 'All clear' : pendingReviews}
