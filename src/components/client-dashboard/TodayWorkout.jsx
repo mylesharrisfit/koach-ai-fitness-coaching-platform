@@ -1,101 +1,98 @@
-import React, { useState } from 'react';
-import { Dumbbell, ChevronDown, ChevronUp, CheckCircle2, Circle, Play } from 'lucide-react';
+import React from 'react';
+import { Dumbbell, CheckCircle2, Clock, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 export default function TodayWorkout({ workout, program, done, onToggle }) {
-  const [expanded, setExpanded] = useState(false);
-
+  const navigate = useNavigate();
   const exercises = workout?.exercises || [];
   const isRestDay = !workout || workout.day_name?.toLowerCase().includes('rest');
+  const preview = exercises.slice(0, 3);
+
+  const dayIndex = program?.workouts ? program.workouts.findIndex(w => w.day_name === workout?.day_name) + 1 : null;
+  const totalDays = program?.workouts?.length || 0;
+
+  // Estimate duration: ~4 min per exercise
+  const estMinutes = exercises.length > 0 ? exercises.length * 4 : null;
 
   return (
-    <div className={cn(
-      'rounded-2xl border overflow-hidden transition-all',
-      done ? 'bg-blue-50 border-blue-100' : 'bg-white border-border shadow-sm'
-    )}>
+    <div className={cn('bg-white border rounded-xl p-4', done ? 'border-[#BBF7D0]' : 'border-[#E5E7EB]')}>
       {/* Header */}
-      <div className="px-5 pt-4 pb-3">
-        <div className="flex items-start gap-3">
-          {/* Icon */}
-          <div className={cn(
-            'w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
-            done ? 'bg-primary' : 'bg-blue-50'
-          )}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
+            done ? 'bg-[#DCFCE7]' : 'bg-[#F3F4F6]')}>
             {done
-              ? <CheckCircle2 className="w-6 h-6 text-white" />
-              : <Dumbbell className="w-5 h-5 text-blue-500" />
+              ? <CheckCircle2 className="w-5 h-5 text-[#16A34A]" />
+              : <Dumbbell className="w-5 h-5 text-[#6B7280]" />
             }
           </div>
-
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Today's Workout
+          <div>
+            <p className="text-xs text-[#6B7280]">{program?.title || "Today's Workout"}</p>
+            <p className="text-base font-semibold text-[#111827] leading-tight">
+              {isRestDay ? 'Rest Day' : (workout?.day_name || 'Your Workout')}
             </p>
-            <p className="font-heading font-bold text-base text-foreground leading-snug mt-0.5">
-              {isRestDay
-                ? 'Rest Day 😴'
-                : workout?.day_name || program?.title || 'Your Workout'}
-            </p>
-            {program && !isRestDay && (
-              <p className="text-xs text-muted-foreground mt-0.5">{program.title}</p>
-            )}
           </div>
-
-          {/* Complete toggle */}
-          {!isRestDay && (
-            <button
-              onClick={onToggle}
-              className={cn(
-                'shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all',
-                done
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
-              )}
-            >
-              {done ? '✓ Done' : 'Log it'}
-            </button>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {estMinutes && (
+            <div className="flex items-center gap-1 text-xs text-[#6B7280]">
+              <Clock className="w-3 h-3" />
+              {estMinutes}m
+            </div>
+          )}
+          {dayIndex && totalDays > 0 && (
+            <span className="text-xs text-[#9CA3AF]">Day {dayIndex}/{totalDays}</span>
           )}
         </div>
-
-        {/* Exercise count + expand */}
-        {!isRestDay && exercises.length > 0 && (
-          <button
-            onClick={() => setExpanded(e => !e)}
-            className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Play className="w-3 h-3" />
-            <span>{exercises.length} exercise{exercises.length !== 1 ? 's' : ''}</span>
-            {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-          </button>
-        )}
       </div>
 
-      {/* Exercise list */}
-      {expanded && exercises.length > 0 && (
-        <div className="border-t border-blue-100 divide-y divide-blue-50">
-          {exercises.map((ex, i) => (
-            <div key={i} className="flex items-center gap-3 px-5 py-3">
-              <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-[10px] font-bold flex items-center justify-center shrink-0">
+      {/* Exercise preview */}
+      {!isRestDay && preview.length > 0 && (
+        <div className="space-y-1.5 mb-3">
+          {preview.map((ex, i) => (
+            <div key={i} className="flex items-center gap-2.5 text-sm">
+              <span className="w-5 h-5 rounded-full bg-[#F3F4F6] text-[#374151] text-[10px] font-bold flex items-center justify-center flex-shrink-0">
                 {i + 1}
               </span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground">{ex.name}</p>
-                {(ex.sets || ex.reps) && (
-                  <p className="text-xs text-muted-foreground">
-                    {ex.sets && `${ex.sets} sets`}{ex.sets && ex.reps && ' · '}{ex.reps && `${ex.reps} reps`}
-                    {ex.rest_seconds && ` · ${ex.rest_seconds}s rest`}
-                  </p>
-                )}
-              </div>
+              <span className="text-[#374151] flex-1">{ex.name}</span>
+              {(ex.sets || ex.reps) && (
+                <span className="text-xs text-[#9CA3AF]">
+                  {ex.sets && `${ex.sets}×`}{ex.reps}
+                </span>
+              )}
             </div>
           ))}
+          {exercises.length > 3 && (
+            <p className="text-xs text-[#9CA3AF] pl-7">+{exercises.length - 3} more exercises</p>
+          )}
         </div>
       )}
 
-      {/* No program assigned */}
       {!program && !isRestDay && (
-        <div className="px-5 pb-4">
-          <p className="text-xs text-muted-foreground italic">No program assigned yet — check with your coach.</p>
+        <p className="text-xs text-[#9CA3AF] mb-3 italic">No program assigned — check with your coach.</p>
+      )}
+
+      {!isRestDay && (
+        <div className="flex gap-2">
+          <button
+            onClick={onToggle}
+            className={cn('flex-1 py-2.5 rounded-lg text-sm font-semibold transition-colors',
+              done
+                ? 'bg-[#DCFCE7] text-[#16A34A]'
+                : 'bg-[#111827] text-white hover:bg-[#1F2937]'
+            )}
+          >
+            {done ? 'Workout Logged' : 'Start Workout'}
+          </button>
+          {program && (
+            <button
+              onClick={() => navigate('/workout')}
+              className="w-10 h-10 rounded-lg border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#111827] transition-colors"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       )}
     </div>

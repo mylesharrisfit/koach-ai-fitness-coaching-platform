@@ -1,96 +1,67 @@
-import React from 'react';
-import { Footprints, Zap } from 'lucide-react';
+import React, { useState } from 'react';
+import { Footprints, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const QUICK_ADDS = [1000, 2500, 5000];
-
 export default function StepGoal({ steps = 0, goal = 10000, onChange }) {
+  const [adding, setAdding] = useState(false);
+  const [input, setInput] = useState('');
   const pct = Math.min(100, (steps / goal) * 100);
   const done = steps >= goal;
-  const remaining = Math.max(0, goal - steps);
 
-  // Milestone markers
-  const milestones = [25, 50, 75, 100];
+  const handleAdd = () => {
+    const n = parseInt(input, 10);
+    if (!isNaN(n) && n > 0) onChange(steps + n);
+    setInput('');
+    setAdding(false);
+  };
 
   return (
-    <div className={cn(
-      'rounded-2xl border overflow-hidden shadow-sm transition-all',
-      done ? 'bg-amber-50 border-amber-100' : 'bg-white border-border'
-    )}>
-      <div className="px-5 py-4">
-        {/* Top row */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className={cn(
-            'w-11 h-11 rounded-xl flex items-center justify-center shrink-0',
-            done ? 'bg-amber-400' : 'bg-amber-50'
-          )}>
-            <Footprints className={cn('w-5 h-5', done ? 'text-white' : 'text-amber-500')} />
+    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0', done ? 'bg-[#DCFCE7]' : 'bg-[#F3F4F6]')}>
+            <Footprints className={cn('w-5 h-5', done ? 'text-[#16A34A]' : 'text-[#6B7280]')} />
           </div>
-          <div className="flex-1">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Step Goal</p>
-            <p className="font-heading font-bold text-base text-foreground">
-              {steps.toLocaleString()}
-              <span className="text-sm font-normal text-muted-foreground"> / {goal.toLocaleString()}</span>
+          <div>
+            <p className="text-xs text-[#6B7280]">Step Goal</p>
+            <p className="text-base font-semibold text-[#111827]">
+              {steps.toLocaleString()} <span className="text-sm font-normal text-[#9CA3AF]">/ {goal.toLocaleString()}</span>
             </p>
           </div>
-          {done
-            ? <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-400 rounded-full">
-                <Zap className="w-3 h-3 text-white" />
-                <span className="text-[10px] font-bold text-white">Goal met!</span>
-              </div>
-            : <div className="text-right shrink-0">
-                <p className="text-sm font-bold text-amber-500">{Math.round(pct)}%</p>
-                <p className="text-[10px] text-muted-foreground">{remaining.toLocaleString()} left</p>
-              </div>
-          }
         </div>
-
-        {/* Progress bar with milestones */}
-        <div className="relative h-3 bg-secondary rounded-full overflow-visible mb-3">
-          <div
-            className="h-full bg-amber-400 rounded-full transition-all"
-            style={{ width: `${pct}%` }}
-          />
-          {milestones.map(m => (
-            <div
-              key={m}
-              className={cn(
-                'absolute top-0 bottom-0 w-px',
-                pct >= m ? 'bg-amber-600/30' : 'bg-border'
-              )}
-              style={{ left: `${m}%` }}
-            />
-          ))}
-        </div>
-
-        {/* Milestone labels */}
-        <div className="flex justify-between text-[9px] text-muted-foreground mb-4 px-0.5">
-          {milestones.map(m => (
-            <span key={m} className={cn(pct >= m && 'text-amber-500 font-semibold')}>
-              {(goal * m / 100 / 1000).toFixed(0)}k
-            </span>
-          ))}
-        </div>
-
-        {/* Quick add */}
-        <div className="flex gap-2">
-          {QUICK_ADDS.map(n => (
-            <button
-              key={n}
-              onClick={() => onChange(steps + n)}
-              className="flex-1 py-2.5 text-xs font-semibold rounded-xl bg-amber-50 text-amber-600 border border-amber-100 hover:bg-amber-100 transition-colors active:scale-95"
-            >
-              +{n.toLocaleString()}
-            </button>
-          ))}
-          <button
-            onClick={() => onChange(0)}
-            className="px-3 py-2.5 text-xs rounded-xl bg-secondary/60 text-muted-foreground hover:text-destructive hover:bg-secondary transition-colors"
-          >
-            Reset
-          </button>
+        <div className="text-right">
+          <p className="text-sm font-bold text-[#111827]">{Math.round(pct)}%</p>
+          {!done && <p className="text-xs text-[#9CA3AF]">{(goal - steps).toLocaleString()} left</p>}
+          {done && <p className="text-xs text-[#16A34A] font-semibold">Goal met!</p>}
         </div>
       </div>
+
+      <div className="h-2 bg-[#F3F4F6] rounded-full overflow-hidden mb-3">
+        <div className="h-full bg-[#2563EB] rounded-full transition-all" style={{ width: `${pct}%` }} />
+      </div>
+
+      {adding ? (
+        <div className="flex gap-2">
+          <input
+            autoFocus
+            type="number"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleAdd()}
+            placeholder="Steps to add..."
+            className="flex-1 h-9 px-3 text-sm border border-[#E5E7EB] rounded-lg outline-none focus:border-[#111827] text-[#111827]"
+          />
+          <button onClick={handleAdd} className="px-3 h-9 bg-[#111827] text-white text-sm font-semibold rounded-lg hover:bg-[#1F2937] transition-colors">Add</button>
+          <button onClick={() => setAdding(false)} className="px-3 h-9 border border-[#E5E7EB] text-sm text-[#6B7280] rounded-lg hover:bg-[#F9FAFB] transition-colors">Cancel</button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setAdding(true)}
+          className="w-full h-9 border border-[#E5E7EB] text-[#111827] text-sm font-medium rounded-lg flex items-center justify-center gap-1.5 hover:border-[#111827] transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" /> Add Steps
+        </button>
+      )}
     </div>
   );
 }
