@@ -3,8 +3,7 @@
   "type": "object",
   "properties": {
     "coach_id": {
-      "type": "string",
-      "description": "Coach user email"
+      "type": "string"
     },
     "zapier_webhook_url": {
       "type": "string"
@@ -22,6 +21,34 @@
     "zapier_last_triggered": {
       "type": "string",
       "format": "date-time"
+    },
+    "google_calendar_connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "google_calendar_id": {
+      "type": "string",
+      "default": "primary"
+    },
+    "default_session_duration": {
+      "type": "number",
+      "default": 60
+    },
+    "buffer_time": {
+      "type": "number",
+      "default": 0
+    },
+    "auto_send_invites": {
+      "type": "boolean",
+      "default": false
+    },
+    "working_hours_start": {
+      "type": "string",
+      "default": "09:00"
+    },
+    "working_hours_end": {
+      "type": "string",
+      "default": "18:00"
     }
   },
   "required": []

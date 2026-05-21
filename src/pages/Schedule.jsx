@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
   format, startOfWeek, addDays, addWeeks, addMonths,
-  subWeeks, subMonths, subDays, isSameDay, startOfMonth
+  subWeeks, subMonths, subDays, startOfMonth, endOfMonth,
 } from 'date-fns';
-import { Video, MapPin, ClipboardCheck, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 import CalendarHeader from '../components/schedule/CalendarHeader';
 import TimeGrid from '../components/schedule/TimeGrid';
 import MonthView from '../components/schedule/MonthView';
 import AvailabilityDrawer from '../components/schedule/AvailabilityDrawer';
+import GoogleCalendarBanner from '../components/schedule/GoogleCalendarBanner';
+import SessionFormDialog from '../components/schedule/SessionFormDialog';
 import { useAuth } from '@/lib/AuthContext';
+import { buildSessionEvent } from '@/lib/googleCalendar';
+import { sendZapierEvent } from '@/lib/zapier';
 
-const EMPTY_FORM = {
-  client_id: '', client_name: '', title: '', date: '',
-  time: '', type: 'video_call', duration_minutes: 60, notes: '', meeting_link: '', status: 'scheduled'
+const SESSION_TYPE_COLORS = {
+  check_in:  'bg-blue-500',
+  strategy:  'bg-[#111827]',
+  assessment:'bg-amber-500',
+  video_call:'bg-purple-500',
+  in_person: 'bg-emerald-500',
+  custom:    'bg-gray-400',
 };
 
 export default function Schedule() {
@@ -31,11 +33,12 @@ export default function Schedule() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState(EMPTY_FORM);
   const [showAvailability, setShowAvailability] = useState(false);
+  const [savingSession, setSavingSession] = useState(false);
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  // ── Data ────────────────────────────────────────────────────────────────
   const { data: sessions = [] } = useQuery({
     queryKey: ['sessions'],
     queryFn: () => base44.entities.Session.list('-date', 200),
@@ -46,22 +49,157 @@ export default function Schedule() {
     queryFn: () => base44.entities.Client.list('name'),
   });
 
+  const { data: coachSettings = [] } = useQuery({
+    queryKey: ['coach-settings'],
+    queryFn: () => base44.entities.CoachSettings.list(),
+  });
+
+  const settings = coachSettings[0];
+  const gcalConnected = !!settings?.google_calendar_connected;
+
+  // Time range for Google Calendar fetch
+  const monthStart = startOfMonth(currentDate).toISOString();
+  const monthEnd = endOfMonth(currentDate).toISOString();
+
+  const { data: googleEventsData, isFetching: gcalFetching } = useQuery({
+    queryKey: ['google-calendar-events', monthStart, monthEnd],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('googleCalendarProxy', {
+        action: 'getEvents',
+        payload: { timeMin: monthStart, timeMax: monthEnd },
+      });
+      return res.data?.events || [];
+    },
+    enabled: gcalConnected,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const googleEvents = googleEventsData || [];
+
+  // Merge: google events that are NOT already linked to a koach session
+  const linkedGCalIds = new Set(sessions.map(s => s.google_event_id).filter(Boolean));
+  const pureGoogleEvents = googleEvents
+    .filter(e => !linkedGCalIds.has(e.id))
+    .map(e => ({
+      id: `gcal-${e.id}`,
+      google_event_id: e.id,
+      title: e.summary || 'Google Event',
+      date: e.start?.date || (e.start?.dateTime ? e.start.dateTime.slice(0, 10) : ''),
+      time: e.start?.dateTime ? format(new Date(e.start.dateTime), 'HH:mm') : '',
+      duration_minutes: e.start?.dateTime && e.end?.dateTime
+        ? Math.round((new Date(e.end.dateTime) - new Date(e.start.dateTime)) / 60000)
+        : 60,
+      type: 'gcal',
+      status: 'scheduled',
+      _isGoogleEvent: true,
+    }));
+
+  const allEvents = [...sessions, ...pureGoogleEvents];
+
+  // ── Mutations ────────────────────────────────────────────────────────────
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Session.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['sessions'] }); setShowForm(false); },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sessions'] }),
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Session.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['sessions'] }); setShowForm(false); },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sessions'] }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Session.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['sessions'] }); setShowForm(false); },
+    mutationFn: async (id) => {
+      const session = sessions.find(s => s.id === id);
+      // Delete from Google Calendar if linked
+      if (session?.google_event_id && gcalConnected) {
+        await base44.functions.invoke('googleCalendarProxy', {
+          action: 'deleteEvent',
+          payload: { eventId: session.google_event_id },
+        });
+      }
+      return base44.entities.Session.delete(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      setShowForm(false);
+    },
   });
 
-  // Navigation
+  const settingsMutation = useMutation({
+    mutationFn: (data) =>
+      settings?.id
+        ? base44.entities.CoachSettings.update(settings.id, data)
+        : base44.entities.CoachSettings.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['coach-settings'] }),
+  });
+
+  // ── Google Calendar connect / disconnect ─────────────────────────────────
+  const handleConnectGoogle = () => {
+    settingsMutation.mutate({ google_calendar_connected: true });
+    queryClient.invalidateQueries({ queryKey: ['google-calendar-events'] });
+    toast.success('Google Calendar connected!');
+  };
+
+  const handleDisconnectGoogle = () => {
+    settingsMutation.mutate({ google_calendar_connected: false });
+    queryClient.invalidateQueries({ queryKey: ['google-calendar-events'] });
+    toast.success('Google Calendar disconnected');
+  };
+
+  // ── Save session ─────────────────────────────────────────────────────────
+  const handleSave = async (form) => {
+    setSavingSession(true);
+    try {
+      const data = { ...form, duration_minutes: Number(form.duration_minutes) };
+      let gcalEventId = form.google_event_id;
+
+      if ((form.send_invite || settings?.auto_send_invites) && gcalConnected && !editing) {
+        const client = clients.find(c => c.id === form.client_id);
+        if (client) {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const start = `${form.date}T${form.time || '09:00'}:00`;
+          const endDate = form.end_time
+            ? `${form.date}T${form.end_time}:00`
+            : `${form.date}T${form.time || '09:00'}:00`;
+          const gcalEvent = buildSessionEvent(client, {
+            start_time: new Date(start).toISOString(),
+            end_time: new Date(endDate).toISOString(),
+            notes: form.notes,
+          });
+          const res = await base44.functions.invoke('googleCalendarProxy', {
+            action: 'createEvent',
+            payload: { event: gcalEvent },
+          });
+          gcalEventId = res.data?.event?.id || '';
+          if (gcalEventId) toast.success('Session added to Google Calendar!');
+        }
+      }
+
+      const finalData = { ...data, google_event_id: gcalEventId };
+      let result;
+      if (editing) {
+        result = await updateMutation.mutateAsync({ id: editing.id, data: finalData });
+      } else {
+        result = await createMutation.mutateAsync(finalData);
+        // Zapier event
+        const client = clients.find(c => c.id === form.client_id);
+        sendZapierEvent('session.booked', {
+          client_id: form.client_id,
+          client_name: client?.name,
+          session_type: form.type,
+          date: form.date,
+          time: form.time,
+        });
+      }
+      setShowForm(false);
+    } catch (err) {
+      toast.error('Failed to save session: ' + err.message);
+    } finally {
+      setSavingSession(false);
+    }
+  };
+
+  // ── Navigation ────────────────────────────────────────────────────────────
   const handlePrev = () => {
     if (view === 'week') setCurrentDate(d => subWeeks(d, 1));
     else if (view === 'month') setCurrentDate(d => subMonths(d, 1));
@@ -72,21 +210,16 @@ export default function Schedule() {
     else if (view === 'month') setCurrentDate(d => addMonths(d, 1));
     else setCurrentDate(d => addDays(d, 1));
   };
-  const handleToday = () => setCurrentDate(new Date());
 
-  // Header title
   const headerTitle = (() => {
     if (view === 'month') return format(currentDate, 'MMMM yyyy');
     if (view === 'day') return format(currentDate, 'EEEE, MMMM d, yyyy');
     const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
     const weekEnd = addDays(weekStart, 6);
     const sameMonth = format(weekStart, 'MM') === format(weekEnd, 'MM');
-    const base = format(weekStart, 'MMM d');
-    const end = sameMonth ? format(weekEnd, 'd') : format(weekEnd, 'MMM d');
-    return `${base} – ${end}, ${format(weekEnd, 'yyyy')}`;
+    return `${format(weekStart, 'MMM d')} – ${sameMonth ? format(weekEnd, 'd') : format(weekEnd, 'MMM d')}, ${format(weekEnd, 'yyyy')}`;
   })();
 
-  // Days array for grid views
   const weekDays = (() => {
     if (view === 'day') return [currentDate];
     const start = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -95,45 +228,38 @@ export default function Schedule() {
 
   const openCreate = (date) => {
     setEditing(null);
-    setForm({ ...EMPTY_FORM, date: date ? format(date, 'yyyy-MM-dd') : '' });
     setShowForm(true);
   };
 
   const openEdit = (session) => {
+    if (session._isGoogleEvent) return; // can't edit pure google events here
     setEditing(session);
-    setForm({ ...EMPTY_FORM, ...session });
     setShowForm(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const data = { ...form, duration_minutes: Number(form.duration_minutes) };
-    if (editing) updateMutation.mutate({ id: editing.id, data });
-    else createMutation.mutate(data);
-  };
-
-  const handleClientSelect = (clientId) => {
-    const client = clients.find(c => c.id === clientId);
-    setForm(f => ({ ...f, client_id: clientId, client_name: client?.name || '' }));
-  };
-
-  const handleMonthDayClick = (day) => {
-    setCurrentDate(day);
-    setView('day');
   };
 
   return (
     <div className="p-4 sm:p-6 max-w-screen-2xl mx-auto">
       {/* ── Header ── */}
-      <div className="bg-[#111827] rounded-xl p-5 mb-5">
+      <div className="bg-[#111827] rounded-xl p-5 mb-4">
         <h1 className="text-xl font-semibold text-white">Calendar</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Schedule and upcoming sessions</p>
+        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Schedule and manage coaching sessions</p>
       </div>
+
+      {/* ── Google Calendar Banner ── */}
+      <div className="mb-4">
+        <GoogleCalendarBanner
+          connected={gcalConnected}
+          onConnect={handleConnectGoogle}
+          onDisconnect={handleDisconnectGoogle}
+          syncing={gcalFetching}
+        />
+      </div>
+
       <CalendarHeader
         title={headerTitle}
         onPrev={handlePrev}
         onNext={handleNext}
-        onToday={handleToday}
+        onToday={() => setCurrentDate(new Date())}
         view={view}
         onViewChange={setView}
         onNewSession={() => openCreate(view === 'day' ? currentDate : null)}
@@ -151,115 +277,38 @@ export default function Schedule() {
           {view === 'month' ? (
             <MonthView
               currentDate={currentDate}
-              sessions={sessions}
-              onDayClick={handleMonthDayClick}
+              sessions={allEvents}
+              onDayClick={(day) => { setCurrentDate(day); setView('day'); }}
               onEditSession={openEdit}
               clients={clients}
             />
           ) : (
             <TimeGrid
               days={weekDays}
-              sessions={sessions}
+              sessions={allEvents}
               onEdit={openEdit}
               onNewSession={openCreate}
               clients={clients}
-              onUpdate={({ id, data, isReschedule }) => {
-                if (isReschedule) {
-                  updateMutation.mutate({ id, data });
-                } else {
-                  updateMutation.mutate({ id, data });
-                }
-              }}
+              onUpdate={({ id, data }) => updateMutation.mutate({ id, data })}
             />
           )}
         </motion.div>
       </AnimatePresence>
 
-      {/* Session Form Dialog */}
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="font-heading">{editing ? 'Edit Session' : 'New Session'}</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-            <div>
-              <Label>Title *</Label>
-              <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required placeholder="e.g., Weekly Check-in" />
-            </div>
-            <div>
-              <Label>Client</Label>
-              <Select value={form.client_id} onValueChange={handleClientSelect}>
-                <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
-                <SelectContent>
-                  {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Date *</Label>
-                <Input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} required />
-              </div>
-              <div>
-                <Label>Time</Label>
-                <Input type="time" value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} />
-              </div>
-              <div>
-                <Label>Type</Label>
-                <Select value={form.type} onValueChange={v => setForm(f => ({ ...f, type: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="video_call">Video Call</SelectItem>
-                    <SelectItem value="in_person">In Person</SelectItem>
-                    <SelectItem value="check_in">Check-in</SelectItem>
-                    <SelectItem value="consultation">Consultation</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Duration (min)</Label>
-                <Input type="number" value={form.duration_minutes} onChange={e => setForm(f => ({ ...f, duration_minutes: e.target.value }))} />
-              </div>
-            </div>
-            <div>
-              <Label>Status</Label>
-              <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="scheduled">Scheduled</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                  <SelectItem value="no_show">No Show</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Meeting Link</Label>
-              <Input value={form.meeting_link} onChange={e => setForm(f => ({ ...f, meeting_link: e.target.value }))} placeholder="https://zoom.us/..." />
-            </div>
-            <div>
-              <Label>Notes</Label>
-              <Textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} />
-            </div>
-            <div className="flex justify-end gap-3 pt-2">
-              {editing && (
-                <Button type="button" variant="destructive" onClick={() => deleteMutation.mutate(editing.id)}>
-                  Delete
-                </Button>
-              )}
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-              <Button type="submit">{editing ? 'Update' : 'Book Session'}</Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      {/* Session Form */}
+      <SessionFormDialog
+        open={showForm}
+        onOpenChange={setShowForm}
+        editing={editing}
+        clients={clients}
+        onSave={handleSave}
+        onDelete={(id) => deleteMutation.mutate(id)}
+        googleConnected={gcalConnected}
+        saving={savingSession}
+      />
 
-      {/* Availability Drawer */}
       {showAvailability && (
-        <AvailabilityDrawer
-          coachId={user?.email}
-          onClose={() => setShowAvailability(false)}
-        />
+        <AvailabilityDrawer coachId={user?.email} onClose={() => setShowAvailability(false)} />
       )}
     </div>
   );
