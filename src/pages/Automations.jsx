@@ -354,14 +354,14 @@ export default function Automations() {
       {/* ── Stats ── */}
       <div className="grid grid-cols-4 gap-3">
         {[
-          { label: 'Active Rules', value: activeCount, dark: true },
-          { label: 'Total Rules', value: rules.length, dark: false },
-          { label: 'Triggered Today', value: triggeredToday, dark: true },
-          { label: 'Time Saved', value: timeSaved, dark: false },
+          { label: 'Active Rules', value: activeCount },
+          { label: 'Total Rules', value: rules.length },
+          { label: 'Triggered Today', value: triggeredToday },
+          { label: 'Time Saved', value: timeSaved },
         ].map(s => (
-          <div key={s.label} className={cn('rounded-xl p-4 text-center', s.dark ? 'bg-[#111827] text-white' : 'bg-white border border-border text-foreground')}>
-            <p className="text-2xl font-black tabular-nums">{s.value}</p>
-            <p className={cn('text-xs mt-0.5', s.dark ? 'text-white/60' : 'text-muted-foreground')}>{s.label}</p>
+          <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-[#111827] tabular-nums">{s.value}</p>
+            <p className="text-sm text-[#6B7280] mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
