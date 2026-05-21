@@ -1,84 +1,120 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Trophy, Footprints, Dumbbell, Flame } from 'lucide-react';
+import { Trophy, Dumbbell, Footprints, Flame, Target, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { subDays, format } from 'date-fns';
+import { calculateStreak, averageAdherenceScore } from '@/lib/adherence';
 
 const BOARDS = [
-  { key: 'workouts', icon: Dumbbell, label: 'Workouts', color: 'text-blue-400', description: 'This week' },
-  { key: 'steps', icon: Footprints, label: 'Steps', color: 'text-amber-400', description: 'This week' },
-  { key: 'streak', icon: Flame, label: 'Streak', color: 'text-orange-400', description: 'Current days' },
+  { key: 'workouts',  label: 'Workouts',  icon: Dumbbell,   unit: 'sessions' },
+  { key: 'steps',     label: 'Steps',     icon: Footprints, unit: 'steps' },
+  { key: 'streak',    label: 'Streak',    icon: Flame,      unit: 'days' },
+  { key: 'adherence', label: 'Adherence', icon: Target,     unit: '%' },
+  { key: 'weight',    label: 'Wt Lost',   icon: TrendingDown, unit: 'lbs' },
 ];
 
-const MEDALS = ['🥇', '🥈', '🥉'];
+function avatarColor(name) {
+  const colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700'];
+  return colors[(name?.charCodeAt(0) || 0) % colors.length];
+}
 
 export default function Leaderboard({ clients }) {
   const [active, setActive] = useState('workouts');
 
-  const { data: logs = [] } = useQuery({
-    queryKey: ['leaderboard-logs'],
-    queryFn: () => base44.entities.DailyLog.filter({ date: { $gte: format(subDays(new Date(), 7), 'yyyy-MM-dd') } }, '-date', 500),
+  const { data: checkIns = [] } = useQuery({
+    queryKey: ['checkins-leaderboard'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 500),
   });
 
-  const getScore = (clientId) => {
-    const clientLogs = logs.filter(l => l.client_id === clientId);
-    if (active === 'workouts') return clientLogs.filter(l => l.workout_done).length;
-    if (active === 'steps') return clientLogs.reduce((s, l) => s + (l.steps || 0), 0);
-    if (active === 'streak') return clientLogs[0]?.streak_days || 0;
-    return 0;
-  };
-
-  const ranked = [...clients]
-    .map(c => ({ ...c, score: getScore(c.id) }))
-    .filter(c => c.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+  const ranked = useMemo(() => {
+    return [...clients]
+      .map(c => {
+        const cis = checkIns.filter(ci => ci.client_id === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+        let score = 0;
+        if (active === 'workouts') score = cis.filter(ci => (ci.compliance_training || 0) > 0).length;
+        else if (active === 'streak') score = calculateStreak(cis);
+        else if (active === 'adherence') score = averageAdherenceScore(cis.slice(0, 4)) || 0;
+        else if (active === 'weight') {
+          const withW = cis.filter(ci => ci.weight != null);
+          if (withW.length >= 2) score = Math.max(0, withW[withW.length - 1].weight - withW[0].weight);
+        }
+        return { ...c, score: Math.round(score * 10) / 10 };
+      })
+      .filter(c => c.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+  }, [clients, checkIns, active]);
 
   const board = BOARDS.find(b => b.key === active);
+  const BoardIcon = board.icon;
+  const top3 = ranked.slice(0, 3);
+  const rest = ranked.slice(3);
 
   return (
-    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
-      <div className="flex items-center gap-2 mb-4">
-        <Trophy className="w-5 h-5 text-amber-400" />
-        <h3 className="font-heading font-semibold">Leaderboard</h3>
-      </div>
-
-      {/* Tab selector */}
-      <div className="flex gap-1.5 mb-5 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-1">
-        {BOARDS.map(b => (
-          <button key={b.key} onClick={() => setActive(b.key)} className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all", active === b.key ? "bg-white shadow-sm text-[#1F2A44]" : "text-[#374151] hover:text-[#1F2A44]")}>
-            <b.icon className={cn("w-3.5 h-3.5", active === b.key && b.color)} />
-            {b.label}
-          </button>
-        ))}
+    <div className="space-y-4">
+      {/* Filter tabs */}
+      <div className="flex gap-1.5 flex-wrap">
+        {BOARDS.map(b => {
+          const Icon = b.icon;
+          return (
+            <button key={b.key} onClick={() => setActive(b.key)}
+              className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
+                active === b.key ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-[#111827]')}>
+              <Icon className="w-3.5 h-3.5" /> {b.label}
+            </button>
+          );
+        })}
       </div>
 
       {ranked.length === 0 ? (
-        <div className="text-center py-8 text-[#374151] text-sm">
-          <p>No data logged yet this week.</p>
-          <p className="text-xs mt-1">Encourage clients to log daily!</p>
+        <div className="text-center py-14 bg-white border border-[#E5E7EB] rounded-xl">
+          <Trophy className="w-9 h-9 mx-auto mb-3 text-[#D1D5DB]" />
+          <p className="text-sm font-semibold text-[#374151]">No data yet</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">Encourage clients to log check-ins!</p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {ranked.map((client, idx) => (
+        <div className="space-y-3">
+          {/* Top 3 */}
+          {top3.map((client, idx) => (
             <div key={client.id} className={cn(
-              "flex items-center gap-3 p-3 rounded-xl transition-all",
-              idx === 0 ? "bg-amber-50 border border-amber-100" : "bg-[#F6F7FB]"
+              'flex items-center gap-3 p-4 rounded-xl border',
+              idx === 0 ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white border-[#E5E7EB]'
             )}>
-              <span className="text-lg w-6 text-center">{idx < 3 ? MEDALS[idx] : <span className="text-xs text-[#374151]">{idx + 1}</span>}</span>
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
+              <span className={cn('w-7 h-7 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0',
+                idx === 0 ? 'bg-white/20 text-white' : idx === 1 ? 'bg-[#F3F4F6] text-[#374151]' : 'bg-[#FEF3C7] text-[#D97706]')}>
+                {idx + 1}
+              </span>
+              <div className={cn('w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0',
+                idx === 0 ? 'bg-white/10 text-white' : avatarColor(client.name))}>
                 {client.name?.[0]?.toUpperCase()}
               </div>
-              <p className="flex-1 text-sm font-medium truncate">{client.name}</p>
-              <div className="flex items-center gap-1">
-                <board.icon className={cn("w-3.5 h-3.5", board.color)} />
-                <span className="text-sm font-bold">
-                  {active === 'steps' ? client.score.toLocaleString() : client.score}
-                </span>
+              <p className={cn('flex-1 text-sm font-semibold truncate', idx === 0 ? 'text-white' : 'text-[#111827]')}>{client.name}</p>
+              <div className={cn('flex items-center gap-1.5 font-bold text-sm', idx === 0 ? 'text-white' : 'text-[#111827]')}>
+                <BoardIcon className="w-4 h-4 opacity-70" />
+                {active === 'steps' ? client.score.toLocaleString() : client.score}
+                <span className={cn('text-xs font-normal', idx === 0 ? 'text-white/60' : 'text-[#9CA3AF]')}>{board.unit}</span>
               </div>
             </div>
           ))}
+
+          {/* Rest as table */}
+          {rest.length > 0 && (
+            <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+              {rest.map((client, i) => (
+                <div key={client.id} className={cn('flex items-center gap-3 px-4 py-2.5', i < rest.length - 1 && 'border-b border-[#F3F4F6]')}>
+                  <span className="w-6 text-xs text-[#9CA3AF] font-bold text-center">{i + 4}</span>
+                  <div className={cn('w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0', avatarColor(client.name))}>
+                    {client.name?.[0]?.toUpperCase()}
+                  </div>
+                  <p className="flex-1 text-sm text-[#374151] truncate">{client.name}</p>
+                  <span className="text-sm font-semibold text-[#111827]">
+                    {active === 'steps' ? client.score.toLocaleString() : client.score}
+                    <span className="text-xs font-normal text-[#9CA3AF] ml-1">{board.unit}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

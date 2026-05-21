@@ -3,16 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Users, MessageSquare, Trophy, Target, Settings2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import PageHeader from '../components/shared/PageHeader';
 import CommunityFeed from '../components/community/CommunityFeed';
 import Leaderboard from '../components/community/Leaderboard';
 import WeeklyChallenges from '../components/community/WeeklyChallenges';
 import CommunityToggle from '../components/community/CommunityToggle';
 
 const TABS = [
-  { key: 'feed', icon: MessageSquare, label: 'Feed', settingKey: 'feed_enabled' },
-  { key: 'leaderboard', icon: Trophy, label: 'Leaderboard', settingKey: 'leaderboard_enabled' },
-  { key: 'challenges', icon: Target, label: 'Challenges', settingKey: 'challenges_enabled' },
+  { key: 'feed',        icon: MessageSquare, label: 'Feed',        settingKey: 'feed_enabled' },
+  { key: 'leaderboard', icon: Trophy,        label: 'Leaderboard', settingKey: 'leaderboard_enabled' },
+  { key: 'challenges',  icon: Target,        label: 'Challenges',  settingKey: 'challenges_enabled' },
 ];
 
 export default function Community() {
@@ -40,10 +39,8 @@ export default function Community() {
 
   const settings = settingsArr[0] || { feed_enabled: true, leaderboard_enabled: true, challenges_enabled: true };
   const settingsId = settingsArr[0]?.id;
-
   const enabledTabs = TABS.filter(t => settings[t.settingKey] !== false);
 
-  // Redirect if active tab gets disabled
   React.useEffect(() => {
     const tab = TABS.find(t => t.key === activeTab);
     if (tab && settings[tab.settingKey] === false && enabledTabs.length > 0) {
@@ -52,50 +49,54 @@ export default function Community() {
   }, [settings]);
 
   return (
-    <div className="p-6 lg:p-8 max-w-6xl mx-auto">
-      <PageHeader
-        title="Community"
-        subtitle="Feed, leaderboards & challenges for your clients"
-        actions={isCoach && (
-          <button
-            onClick={() => setShowCoachSettings(!showCoachSettings)}
-            className={cn(
-              "flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all",
-              showCoachSettings ? "border-primary bg-[#EEF4FF] text-primary" : "border-[#E7EAF3] hover:border-primary/40 text-[#374151]"
-            )}
-          >
-            <Settings2 className="w-4 h-4" />
-            Manage Features
-          </button>
-        )}
-      />
+    <div className="p-4 lg:p-6 max-w-6xl mx-auto space-y-5">
+      {/* Dark header banner */}
+      <div className="bg-[#111827] rounded-xl p-5 text-white flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-white">Community</h1>
+          <p className="text-sm text-white/50 mt-0.5">Feed, leaderboards and challenges for your clients</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isCoach && (
+            <button
+              onClick={() => setShowCoachSettings(!showCoachSettings)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              <Settings2 className="w-4 h-4" /> Settings
+            </button>
+          )}
+          {isCoach && activeTab === 'challenges' && (
+            <button
+              onClick={() => {}} // WeeklyChallenges manages its own modal via New Challenge button
+              className="px-4 py-2 bg-white text-[#111827] rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors"
+            >
+              + New Challenge
+            </button>
+          )}
+        </div>
+      </div>
 
       {showCoachSettings && isCoach && (
-        <div className="mb-6 max-w-sm">
+        <div className="max-w-sm">
           <CommunityToggle settings={settings} settingsId={settingsId} />
         </div>
       )}
 
       {enabledTabs.length === 0 ? (
-        <div className="text-center py-20 text-[#374151]">
-          <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
-          <p className="font-semibold text-[#1F2A44]">Community features are disabled</p>
-          {isCoach && <p className="text-sm mt-1">Click "Manage Features" to enable them.</p>}
+        <div className="text-center py-20 bg-white border border-[#E5E7EB] rounded-xl">
+          <Users className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB]" />
+          <p className="font-semibold text-sm text-[#374151]">Community features are disabled</p>
+          {isCoach && <p className="text-xs text-[#9CA3AF] mt-1">Click "Settings" to enable them.</p>}
         </div>
       ) : (
         <>
           {/* Tabs */}
           {enabledTabs.length > 1 && (
-            <div className="flex gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-1 mb-6 w-fit">
+            <div className="flex gap-1 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl p-1 w-fit">
               {enabledTabs.map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                    activeTab === tab.key ? "bg-white shadow-sm text-[#1F2A44]" : "text-[#374151] hover:text-[#1F2A44]"
-                  )}
-                >
+                <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                  className={cn('flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                    activeTab === tab.key ? 'bg-white shadow-sm text-[#111827]' : 'text-[#6B7280] hover:text-[#111827]')}>
                   <tab.icon className="w-4 h-4" />
                   {tab.label}
                 </button>
@@ -103,18 +104,23 @@ export default function Community() {
             </div>
           )}
 
-          {/* Tab Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Tab content */}
+          <div className={cn(activeTab === 'feed' && 'grid grid-cols-1 lg:grid-cols-3 gap-6')}>
             {activeTab === 'feed' && (
               <>
                 <div className="lg:col-span-2">
                   <CommunityFeed currentUser={currentUser} />
                 </div>
                 <div className="space-y-5">
-                  {settings.leaderboard_enabled !== false && <Leaderboard clients={clients} />}
+                  {settings.leaderboard_enabled !== false && (
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider text-[#6B7280] mb-3">Leaderboard</p>
+                      <Leaderboard clients={clients} />
+                    </div>
+                  )}
                   {settings.challenges_enabled !== false && (
                     <div>
-                      <p className="text-xs font-semibold text-[#374151] uppercase tracking-wider mb-3">Active Challenges</p>
+                      <p className="text-xs font-bold uppercase tracking-wider text-[#6B7280] mb-3">Active Challenges</p>
                       <WeeklyChallenges isCoach={isCoach} compact />
                     </div>
                   )}
