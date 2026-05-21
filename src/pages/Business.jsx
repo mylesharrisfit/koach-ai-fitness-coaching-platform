@@ -107,7 +107,6 @@ function BusinessPage() {
           label="Monthly Recurring Revenue"
           value={`$${mrr.toLocaleString()}`}
           sub="+0% MoM"
-          dark
         />
         <BusinessMetricCard
           icon={Users}
@@ -120,7 +119,6 @@ function BusinessPage() {
           label="Churn Risk"
           value={churnRiskClients.length}
           sub={churnRiskClients.length > 0 ? 'clients need attention' : 'All clients engaged'}
-          dark
         />
         <BusinessMetricCard
           icon={TrendingUp}

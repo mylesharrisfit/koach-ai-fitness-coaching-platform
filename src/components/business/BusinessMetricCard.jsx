@@ -17,15 +17,15 @@ export default function BusinessMetricCard({ icon: Icon, label, value, sub, subC
     );
   }
   return (
-    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-primary/20 transition-all">
+    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
       <div className="flex items-start justify-between mb-3">
-        <span className="text-xs text-[#6B7280] font-medium leading-tight">{label}</span>
-        <div className={cn('w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0', iconBg)}>
-          <Icon className={cn('w-4 h-4', iconColor)} />
+        <span className="text-sm text-[#6B7280] leading-tight">{label}</span>
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#F3F4F6]">
+          <Icon className="w-4 h-4 text-[#D1D5DB]" />
         </div>
       </div>
-      <p className="stat-number text-2xl font-bold text-[#1F2A44] mb-1">{value}</p>
-      {sub && <p className={cn('text-xs', subColor || 'text-[#6B7280]')}>{sub}</p>}
+      <p className="text-3xl font-bold text-[#111827] mb-1">{value}</p>
+      {sub && <p className="text-xs text-[#6B7280]">{sub}</p>}
     </div>
   );
 }
