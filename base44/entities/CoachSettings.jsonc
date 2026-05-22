@@ -84,6 +84,32 @@
     },
     "calendly_username": {
       "type": "string"
+    },
+    "sendgrid_connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "sendgrid_from_email": {
+      "type": "string"
+    },
+    "sendgrid_from_name": {
+      "type": "string"
+    },
+    "sendgrid_auto_welcome": {
+      "type": "boolean",
+      "default": false
+    },
+    "sendgrid_auto_checkin_reminder": {
+      "type": "boolean",
+      "default": false
+    },
+    "sendgrid_auto_progress_report": {
+      "type": "boolean",
+      "default": false
+    },
+    "sendgrid_auto_badge_email": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": []

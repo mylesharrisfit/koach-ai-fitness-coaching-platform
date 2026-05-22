@@ -12,6 +12,7 @@ import GoogleCalendarSettings from './GoogleCalendarSettings';
 import ZoomConnectModal from './ZoomConnectModal';
 import StripeConnectModal from './StripeConnectModal';
 import CalendlyConnectModal from './CalendlyConnectModal';
+import SendGridConnectModal from './SendGridConnectModal';
 
 /* ── Letter-avatar icon helper ── */
 function LetterIcon({ letter, bg }) {
@@ -126,6 +127,12 @@ const INTEGRATION_GROUPS = [
     label: 'Business & Payments',
     items: [
       {
+        id: 'sendgrid', name: 'SendGrid', category: 'Email',
+        description: 'Send automated welcome emails, progress reports, check-in reminders, and badge notifications.',
+        note: 'Connect SendGrid to enable email automation for your clients. Requires a free SendGrid account.',
+        icon: <LetterIcon letter="SG" bg="#1A82E2" />,
+      },
+      {
         id: 'stripe', name: 'Stripe', category: 'Payments',
         description: 'Accept payments, manage subscriptions, and track revenue from clients.',
         note: 'Connect your Stripe account to enable payment links and auto-billing.',
@@ -201,6 +208,7 @@ export default function CoachIntegrations() {
   const [zoomModalOpen, setZoomModalOpen] = useState(false);
   const [stripeModalOpen, setStripeModalOpen] = useState(false);
   const [calendlyModalOpen, setCalendlyModalOpen] = useState(false);
+  const [sendgridModalOpen, setSendgridModalOpen] = useState(false);
 
   // Google Calendar is authorized at the platform level (shared connector)
   const gcalConnected = true;
@@ -217,6 +225,7 @@ export default function CoachIntegrations() {
   const zapierSettings = coachSettings[0];
   const zoomConnected = !!zapierSettings?.zoom_connected && !!zapierSettings?.zoom_access_token;
   const calendlyConnected = !!zapierSettings?.calendly_connected;
+  const sendgridConnected = !!zapierSettings?.sendgrid_connected;
   const zapierConnected = !!zapierSettings?.zapier_connected && !!zapierSettings?.zapier_webhook_url;
   const zapierLastTriggered = zapierSettings?.zapier_last_triggered;
   const todayLogs = zapierLogs.filter(l => {
@@ -300,7 +309,7 @@ export default function CoachIntegrations() {
                           <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151]">
                             {integration.category}
                           </span>
-                          {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected) || (integration.id === 'zoom' && zoomConnected) || (integration.id === 'calendly' && calendlyConnected)) && (
+                          {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected) || (integration.id === 'zoom' && zoomConnected) || (integration.id === 'calendly' && calendlyConnected) || (integration.id === 'sendgrid' && sendgridConnected)) && (
                             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                               <CheckCircle2 className="w-3 h-3" /> Connected
                             </span>
@@ -350,6 +359,11 @@ export default function CoachIntegrations() {
                           <Button size="sm" variant={calendlyConnected ? 'outline' : 'default'}
                             onClick={() => setCalendlyModalOpen(true)} className="text-xs h-8 px-3">
                             {calendlyConnected ? 'Settings' : 'Connect'}
+                          </Button>
+                        ) : integration.id === 'sendgrid' ? (
+                          <Button size="sm" variant={sendgridConnected ? 'outline' : 'default'}
+                            onClick={() => setSendgridModalOpen(true)} className="text-xs h-8 px-3">
+                            {sendgridConnected ? 'Settings' : 'Connect'}
                           </Button>
                         ) : (
                           <Button size="sm" variant={isConnected ? 'outline' : 'default'}
@@ -404,6 +418,7 @@ export default function CoachIntegrations() {
       <ZoomConnectModal open={zoomModalOpen} onClose={() => setZoomModalOpen(false)} settings={zapierSettings} />
       <StripeConnectModal open={stripeModalOpen} onClose={() => setStripeModalOpen(false)} />
       <CalendlyConnectModal open={calendlyModalOpen} onClose={() => setCalendlyModalOpen(false)} />
+      <SendGridConnectModal open={sendgridModalOpen} onClose={() => setSendgridModalOpen(false)} />
     </div>
   );
 }

@@ -49,6 +49,7 @@ import FoodLogPage from './pages/FoodLogPage';
 import PremiumOnboarding from './pages/PremiumOnboarding';
 import ClientPortal from './pages/ClientPortal';
 import ClientWorkoutView from './pages/ClientWorkoutView';
+import EmailCenter from './pages/EmailCenter';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -106,6 +107,7 @@ const AuthenticatedApp = () => {
         <Route path="/migration" element={<Migration />} />
         <Route path="/food-library" element={<FoodLibrary />} />
         <Route path="/food-log" element={<FoodLogPage />} />
+        <Route path="/email-center" element={<EmailCenter />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
         <Route path="/at-risk" element={<AtRiskClients />} />
