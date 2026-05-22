@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import CalendlyBookingWidget from './CalendlyBookingWidget';
 import { format } from 'date-fns';
 import { Video, Copy, ExternalLink, FileText, Check, Clock, X, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -160,6 +161,7 @@ export default function SessionsTab({ client }) {
 
   return (
     <div className="h-full overflow-y-auto p-5 space-y-5">
+      <CalendlyBookingWidget client={client} />
       {isLoading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-xl bg-gray-100 animate-pulse" />)}

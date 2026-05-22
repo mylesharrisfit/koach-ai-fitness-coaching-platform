@@ -71,6 +71,19 @@
     "zoom_auto_record": {
       "type": "boolean",
       "default": false
+    },
+    "calendly_connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "calendly_user_uri": {
+      "type": "string"
+    },
+    "calendly_scheduling_url": {
+      "type": "string"
+    },
+    "calendly_username": {
+      "type": "string"
     }
   },
   "required": []

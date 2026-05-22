@@ -14,10 +14,12 @@ import MonthView from '../components/schedule/MonthView';
 import AvailabilityDrawer from '../components/schedule/AvailabilityDrawer';
 import GoogleCalendarBanner from '../components/schedule/GoogleCalendarBanner';
 import SessionFormDialog from '../components/schedule/SessionFormDialog';
+import CalendlyBookingPages from '../components/schedule/CalendlyBookingPages';
 import { useAuth } from '@/lib/AuthContext';
 import { buildSessionEvent } from '@/lib/googleCalendar';
 import { sendZapierEvent } from '@/lib/zapier';
 import { createZoomMeeting } from '@/lib/zoom';
+import { getCalendlyUser, getEventTypes, getScheduledEvents, isCalendlyEnabled } from '@/lib/calendly';
 
 const SESSION_TYPE_COLORS = {
   check_in:  'bg-blue-500',
@@ -58,6 +60,31 @@ export default function Schedule() {
   const settings = coachSettings[0];
   const gcalConnected = !!settings?.google_calendar_connected;
   const zoomConnected = !!settings?.zoom_connected && !!settings?.zoom_access_token;
+  const calendlyConnected = !!settings?.calendly_connected && !!settings?.calendly_user_uri;
+
+  // ── Calendly data ────────────────────────────────────────────────────────
+  const { data: calendlyEventsData } = useQuery({
+    queryKey: ['calendly-scheduled', settings?.calendly_user_uri, monthStart, monthEnd],
+    queryFn: () => getScheduledEvents(settings.calendly_user_uri, monthStart, monthEnd),
+    enabled: calendlyConnected,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Map Calendly events into the same shape as KOACH sessions
+  const calendlyEvents = (calendlyEventsData?.collection || []).map(e => ({
+    id: `calendly-${e.uri?.split('/').pop()}`,
+    title: e.name || 'Calendly Booking',
+    date: e.start_time ? e.start_time.slice(0, 10) : '',
+    time: e.start_time ? format(new Date(e.start_time), 'HH:mm') : '',
+    duration_minutes: e.start_time && e.end_time
+      ? Math.round((new Date(e.end_time) - new Date(e.start_time)) / 60000)
+      : 60,
+    type: 'video_call',
+    status: 'scheduled',
+    meeting_link: e.location?.join_url || '',
+    _isCalendlyEvent: true,
+    _calendlyUri: e.uri,
+  }));
 
   // Time range for Google Calendar fetch
   const monthStart = startOfMonth(currentDate).toISOString();
@@ -96,7 +123,7 @@ export default function Schedule() {
       _isGoogleEvent: true,
     }));
 
-  const allEvents = [...sessions, ...pureGoogleEvents];
+  const allEvents = [...sessions, ...pureGoogleEvents, ...calendlyEvents];
 
   // ── Mutations ────────────────────────────────────────────────────────────
   const createMutation = useMutation({
@@ -301,6 +328,9 @@ export default function Schedule() {
           syncing={gcalFetching}
         />
       </div>
+
+      {/* ── Calendly Booking Pages ── */}
+      <CalendlyBookingPages />
 
       <CalendarHeader
         title={headerTitle}
