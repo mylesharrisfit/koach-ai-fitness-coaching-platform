@@ -5,9 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CheckCircle2, ExternalLink, Mail, Loader2, BarChart2 } from 'lucide-react';
+import { CheckCircle2, ExternalLink, Mail, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { sendEmail, getEmailStats, isSendGridEnabled } from '@/lib/sendgrid';
+import { sendEmail, isResendEnabled, testConnection } from '@/lib/sendgrid';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function SendGridConnectModal({ open, onClose }) {
@@ -21,31 +21,7 @@ export default function SendGridConnectModal({ open, onClose }) {
     queryFn: () => base44.entities.CoachSettings.list(),
   });
   const settings = settingsList[0];
-  const isConnected = !!settings?.sendgrid_connected;
-
-  const { data: statsData } = useQuery({
-    queryKey: ['sendgrid-stats'],
-    queryFn: getEmailStats,
-    enabled: isConnected && isSendGridEnabled(),
-    staleTime: 10 * 60 * 1000,
-  });
-
-  const stats = (() => {
-    if (!statsData || !Array.isArray(statsData)) return null;
-    const totals = statsData.reduce((acc, day) => {
-      const s = day.stats?.[0]?.metrics || {};
-      return {
-        delivered: (acc.delivered || 0) + (s.delivered || 0),
-        opens: (acc.opens || 0) + (s.opens || 0),
-        clicks: (acc.clicks || 0) + (s.clicks || 0),
-        unsubscribes: (acc.unsubscribes || 0) + (s.unsubscribes || 0),
-      };
-    }, {});
-    return totals;
-  })();
-
-  const openRate = stats?.delivered > 0 ? Math.round((stats.opens / stats.delivered) * 100) : 0;
-  const clickRate = stats?.delivered > 0 ? Math.round((stats.clicks / stats.delivered) * 100) : 0;
+  const isConnected = !!settings?.resend_connected;
 
   const saveMutation = useMutation({
     mutationFn: (data) =>
@@ -56,25 +32,22 @@ export default function SendGridConnectModal({ open, onClose }) {
   });
 
   const handleTest = async () => {
-    if (!isSendGridEnabled()) {
-      return toast.error('VITE_SENDGRID_API_KEY not set in secrets');
-    }
-    if (!import.meta.env.VITE_SENDGRID_FROM_EMAIL) {
-      return toast.error('VITE_SENDGRID_FROM_EMAIL not set in secrets');
+    if (!isResendEnabled()) {
+      return toast.error('VITE_RESEND_API_KEY not set in secrets');
     }
     setTesting(true);
     try {
       const result = await sendEmail({
         to: user?.email,
         toName: user?.full_name || 'Coach',
-        subject: 'SendGrid Test — KOACH AI ✅',
-        html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:#111827;border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">✅ SendGrid Connected!</h1><p style="color:rgba(255,255,255,0.6);margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
+        subject: 'Resend Test — KOACH AI ✅',
+        html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:#111827;border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">✅ Resend Connected!</h1><p style="color:rgba(255,255,255,0.6);margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
       });
-      if (result?.success || result?.errors === undefined) {
+      if (!result?.error) {
         setTestOk(true);
         toast.success('Test email sent! Check your inbox.');
       } else {
-        toast.error(result?.errors?.[0]?.message || 'Test failed');
+        toast.error(result.error || 'Test failed');
       }
     } catch (err) {
       toast.error(err.message);
@@ -85,17 +58,16 @@ export default function SendGridConnectModal({ open, onClose }) {
 
   const handleSave = async () => {
     await saveMutation.mutateAsync({
-      sendgrid_connected: true,
-      sendgrid_from_email: import.meta.env.VITE_SENDGRID_FROM_EMAIL || '',
-      sendgrid_from_name: import.meta.env.VITE_SENDGRID_FROM_NAME || 'KOACH AI',
-      sendgrid_auto_welcome: true,
+      resend_connected: true,
+      resend_from_email: import.meta.env.VITE_FROM_EMAIL || '',
+      resend_from_name: import.meta.env.VITE_FROM_NAME || 'KOACH AI',
     });
-    toast.success('SendGrid connected!');
+    toast.success('Resend connected!');
   };
 
   const handleDisconnect = async () => {
-    await saveMutation.mutateAsync({ sendgrid_connected: false });
-    toast.success('SendGrid disconnected');
+    await saveMutation.mutateAsync({ resend_connected: false });
+    toast.success('Resend disconnected');
   };
 
   return (
@@ -103,10 +75,8 @@ export default function SendGridConnectModal({ open, onClose }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#1A82E2]/10 flex items-center justify-center">
-              <Mail className="w-4 h-4 text-[#1A82E2]" />
-            </div>
-            Connect SendGrid
+            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-bold text-sm">R</div>
+            Connect Resend
           </DialogTitle>
         </DialogHeader>
 
@@ -117,31 +87,15 @@ export default function SendGridConnectModal({ open, onClose }) {
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-700">Connected</p>
-                  {settings?.sendgrid_from_email && (
-                    <p className="text-xs text-emerald-600">From: {settings.sendgrid_from_email}</p>
+                  {settings?.resend_from_email && (
+                    <p className="text-xs text-emerald-600">From: {settings.resend_from_email}</p>
                   )}
                 </div>
               </div>
-
-              {stats && (
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { label: 'Delivered', value: stats.delivered ?? 0 },
-                    { label: 'Open Rate', value: `${openRate}%` },
-                    { label: 'Click Rate', value: `${clickRate}%` },
-                  ].map(s => (
-                    <div key={s.label} className="p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl text-center">
-                      <p className="text-lg font-bold text-[#111827]">{s.value}</p>
-                      <p className="text-[10px] text-[#9CA3AF]">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
               <div className="flex gap-2">
-                <a href="https://app.sendgrid.com" target="_blank" rel="noreferrer" className="flex-1">
+                <a href="https://resend.com/emails" target="_blank" rel="noreferrer" className="flex-1">
                   <Button variant="outline" className="w-full gap-1.5 text-xs">
-                    <ExternalLink className="w-3.5 h-3.5" /> SendGrid Dashboard
+                    <ExternalLink className="w-3.5 h-3.5" /> Resend Dashboard
                   </Button>
                 </a>
                 <Button variant="outline" className="text-red-500 hover:bg-red-50 hover:border-red-200 text-xs"
@@ -152,16 +106,15 @@ export default function SendGridConnectModal({ open, onClose }) {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-[#EEF7FF] border border-[#1A82E2]/20 rounded-xl p-4">
-                <p className="text-xs font-semibold text-[#1A82E2] mb-2">Setup Instructions</p>
+              <div className="bg-[#F5F5F5] border border-[#E5E7EB] rounded-xl p-4">
+                <p className="text-xs font-semibold text-[#111827] mb-2">Setup Instructions</p>
                 <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
-                  <li>Create a free account at <a href="https://sendgrid.com" target="_blank" className="text-[#1A82E2] underline font-medium">sendgrid.com</a></li>
-                  <li>Verify your sender email address</li>
-                  <li>Create an API key with <strong>Mail Send</strong> permission</li>
-                  <li>Add to Base44 Secrets: <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_SENDGRID_API_KEY</code>, <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_SENDGRID_FROM_EMAIL</code>, <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_SENDGRID_FROM_NAME</code></li>
+                  <li>Get your free API key at <a href="https://resend.com" target="_blank" className="text-black underline font-medium">resend.com</a></li>
+                  <li>Add <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_RESEND_API_KEY</code> to your app secrets</li>
+                  <li>Optionally set <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_EMAIL</code> and <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_NAME</code></li>
                 </ol>
-                <a href="https://app.sendgrid.com/settings/api_keys" target="_blank"
-                  className="flex items-center gap-1 text-xs text-[#1A82E2] font-semibold mt-2.5 hover:underline">
+                <a href="https://resend.com/api-keys" target="_blank"
+                  className="flex items-center gap-1 text-xs text-black font-semibold mt-2.5 hover:underline">
                   Open API Keys <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
@@ -174,7 +127,7 @@ export default function SendGridConnectModal({ open, onClose }) {
               )}
 
               <div className="flex gap-2">
-                <Button className="flex-1 bg-[#1A82E2] hover:bg-[#1568C0]" onClick={handleTest} disabled={testing}>
+                <Button className="flex-1 bg-black hover:bg-[#222]" onClick={handleTest} disabled={testing}>
                   {testing ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> Sending test...</> : 'Test Connection'}
                 </Button>
                 {testOk && (

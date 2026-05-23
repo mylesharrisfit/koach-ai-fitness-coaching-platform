@@ -85,31 +85,48 @@
     "calendly_username": {
       "type": "string"
     },
-    "sendgrid_connected": {
+    "resend_connected": {
       "type": "boolean",
       "default": false
     },
-    "sendgrid_from_email": {
+    "resend_from_email": {
       "type": "string"
     },
-    "sendgrid_from_name": {
+    "resend_from_name": {
       "type": "string"
+    },
+    "sendgrid_connected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Legacy \u2014 migrated to resend_connected"
+    },
+    "sendgrid_from_email": {
+      "type": "string",
+      "description": "Legacy"
+    },
+    "sendgrid_from_name": {
+      "type": "string",
+      "description": "Legacy"
     },
     "sendgrid_auto_welcome": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Legacy"
     },
     "sendgrid_auto_checkin_reminder": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Legacy"
     },
     "sendgrid_auto_progress_report": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Legacy"
     },
     "sendgrid_auto_badge_email": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "Legacy"
     }
   },
   "required": []

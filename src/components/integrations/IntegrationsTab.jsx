@@ -129,12 +129,11 @@ function ZapierModal({ open, onClose, settings }) {
   );
 }
 
-// ── SendGrid Modal ────────────────────────────────────────────
-function SendGridModal({ open, onClose, settings }) {
+// ── Resend Modal ──────────────────────────────────────────────
+function ResendModal({ open, onClose, settings }) {
   const queryClient = useQueryClient();
-  const [apiKey, setApiKey] = useState('');
-  const [fromEmail, setFromEmail] = useState(settings?.sendgrid_from_email || '');
-  const [fromName, setFromName] = useState(settings?.sendgrid_from_name || '');
+  const [fromEmail, setFromEmail] = useState(settings?.resend_from_email || '');
+  const [fromName, setFromName] = useState(settings?.resend_from_name || 'Coach Myles | KOACH AI');
   const [testing, setTesting] = useState(false);
   const [tested, setTested] = useState(false);
 
@@ -145,20 +144,19 @@ function SendGridModal({ open, onClose, settings }) {
         : base44.entities.CoachSettings.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coach-settings'] });
-      toast.success('SendGrid connected!');
+      toast.success('Resend connected!');
       onClose();
     },
   });
 
   const handleTest = async () => {
-    if (!apiKey && !import.meta.env.VITE_SENDGRID_API_KEY) {
-      return toast.error('Add your API key first');
+    if (!import.meta.env.VITE_RESEND_API_KEY) {
+      return toast.error('Add VITE_RESEND_API_KEY to your app secrets first');
     }
     setTesting(true);
     try {
-      const key = apiKey || import.meta.env.VITE_SENDGRID_API_KEY;
-      const res = await fetch('https://api.sendgrid.com/v3/user/profile', {
-        headers: { Authorization: `Bearer ${key}` },
+      const res = await fetch('https://api.resend.com/domains', {
+        headers: { Authorization: `Bearer ${import.meta.env.VITE_RESEND_API_KEY}` },
       });
       if (res.ok) {
         setTested(true);
@@ -178,26 +176,22 @@ function SendGridModal({ open, onClose, settings }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#1A82E2] flex items-center justify-center text-white font-bold text-xs">SG</div>
-            Connect SendGrid
+            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-bold text-sm">R</div>
+            Connect Resend
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-[#EEF7FF] border border-[#1A82E2]/20 rounded-xl p-4">
-            <p className="text-xs font-semibold text-[#1A82E2] mb-2">Setup Instructions</p>
+          <div className="bg-[#F5F5F5] border border-[#E5E7EB] rounded-xl p-4">
+            <p className="text-xs font-semibold text-[#111827] mb-2">Setup Instructions</p>
             <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
-              <li>Create a free account at <a href="https://sendgrid.com" target="_blank" rel="noreferrer" className="text-[#1A82E2] underline font-medium">sendgrid.com</a></li>
-              <li>Verify your sender email address</li>
-              <li>Create an API key with <strong>Mail Send</strong> permission</li>
+              <li>Get your free API key at <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-black underline font-medium">resend.com</a></li>
+              <li>Add <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_RESEND_API_KEY</code> to your app secrets</li>
+              <li>Optionally add <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_EMAIL</code> and <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_NAME</code></li>
             </ol>
-            <a href="https://app.sendgrid.com/settings/api_keys" target="_blank" rel="noreferrer"
-              className="flex items-center gap-1 text-xs text-[#1A82E2] font-semibold mt-2 hover:underline">
+            <a href="https://resend.com/api-keys" target="_blank" rel="noreferrer"
+              className="flex items-center gap-1 text-xs text-black font-semibold mt-2 hover:underline">
               Open API Keys <ExternalLink className="w-3 h-3" />
             </a>
-          </div>
-          <div>
-            <Label className="text-xs mb-1 block">API Key (starts with SG.)</Label>
-            <Input value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="SG.xxxxxxxxxx" type="password" />
           </div>
           <div>
             <Label className="text-xs mb-1 block">From Email</Label>
@@ -220,10 +214,9 @@ function SendGridModal({ open, onClose, settings }) {
             <Button
               className="flex-1 bg-[#111827] hover:bg-[#1F2937]"
               onClick={() => saveMutation.mutate({
-                sendgrid_connected: true,
-                sendgrid_from_email: fromEmail,
-                sendgrid_from_name: fromName,
-                sendgrid_auto_welcome: true,
+                resend_connected: true,
+                resend_from_email: fromEmail,
+                resend_from_name: fromName,
               })}
               disabled={saveMutation.isPending}
             >
@@ -358,7 +351,7 @@ function CalendlyModal({ open, onClose, settings }) {
 // ── Main component ────────────────────────────────────────────
 export default function IntegrationsTab() {
   const navigate = useNavigate();
-  const [modal, setModal] = useState(null); // 'zapier' | 'sendgrid' | 'zoom' | 'calendly'
+  const [modal, setModal] = useState(null); // 'zapier' | 'resend' | 'zoom' | 'calendly'
 
   const { data: settingsList = [] } = useQuery({
     queryKey: ['coach-settings'],
@@ -368,7 +361,7 @@ export default function IntegrationsTab() {
 
   const stripeConnected = !!import.meta.env.VITE_STRIPE_SECRET_KEY || !!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
   const calendlyConnected = !!import.meta.env.VITE_CALENDLY_TOKEN || !!settings?.calendly_connected;
-  const sendgridConnected = !!import.meta.env.VITE_SENDGRID_API_KEY || !!settings?.sendgrid_connected;
+  const resendConnected = !!import.meta.env.VITE_RESEND_API_KEY || !!settings?.resend_connected;
   const zapierConnected = !!settings?.zapier_webhook_url;
   const zoomConnected = !!settings?.zoom_connected;
   const gcalConnected = !!settings?.google_calendar_connected;
@@ -402,13 +395,13 @@ export default function IntegrationsTab() {
       onManage: () => setModal('calendly'),
     },
     {
-      logo: <Logo text="SG" bg="bg-[#1A82E2]" textColor="text-white text-[11px]" />,
-      name: 'SendGrid',
+      logo: <Logo text="R" bg="bg-[#000000]" />,
+      name: 'Resend',
       tag: 'Email',
       description: 'Send automated emails — welcome messages, check-in reminders, progress reports, and badge alerts.',
-      connected: sendgridConnected,
-      onConnect: () => setModal('sendgrid'),
-      onManage: () => setModal('sendgrid'),
+      connected: resendConnected,
+      onConnect: () => setModal('resend'),
+      onManage: () => setModal('resend'),
     },
     {
       logo: <Logo text="Z" bg="bg-[#FF4A00]" />,
@@ -443,7 +436,7 @@ export default function IntegrationsTab() {
       </p>
 
       <ZapierModal open={modal === 'zapier'} onClose={() => setModal(null)} settings={settings} />
-      <SendGridModal open={modal === 'sendgrid'} onClose={() => setModal(null)} settings={settings} />
+      <ResendModal open={modal === 'resend'} onClose={() => setModal(null)} settings={settings} />
       <ZoomModal open={modal === 'zoom'} onClose={() => setModal(null)} settings={settings} />
       <CalendlyModal open={modal === 'calendly'} onClose={() => setModal(null)} settings={settings} />
     </div>

@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
 import { sendZapierEvent } from '@/lib/zapier';
-import { sendEmail, isSendGridEnabled } from '@/lib/sendgrid';
+import { sendEmail, isResendEnabled } from '@/lib/sendgrid';
 import { templates } from '@/lib/emailTemplates';
 
 const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
@@ -110,11 +110,11 @@ export default function Clients() {
           lifecycle_status: result.lifecycle_status,
         });
       }
-      // Auto send welcome email if SendGrid connected
-      if (result?.email && isSendGridEnabled()) {
+      // Auto send welcome email if Resend connected
+      if (result?.email && isResendEnabled()) {
         const settingsList = await base44.entities.CoachSettings.list();
-        const sgSettings = settingsList[0];
-        if (sgSettings?.sendgrid_connected && sgSettings?.sendgrid_auto_welcome) {
+        const rsSettings = settingsList[0];
+        if (rsSettings?.resend_connected) {
           const tpl = templates.welcome(result, currentUser);
           sendEmail({ to: result.email, toName: result.name, ...tpl }).catch(() => {});
         }

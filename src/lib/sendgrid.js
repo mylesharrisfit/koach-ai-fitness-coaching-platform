@@ -1,51 +1,56 @@
-const SENDGRID_API = 'https://api.sendgrid.com/v3';
+const RESEND_API = 'https://api.resend.com';
 
-const sgRequest = async (endpoint, method = 'GET', body = null) => {
-  const apiKey = import.meta.env.VITE_SENDGRID_API_KEY;
-  const response = await fetch(`${SENDGRID_API}${endpoint}`, {
+const resendRequest = async (endpoint, method = 'POST', body = null) => {
+  const apiKey = import.meta.env.VITE_RESEND_API_KEY;
+  const response = await fetch(`${RESEND_API}${endpoint}`, {
     method,
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: body ? JSON.stringify(body) : null,
+    body: body ? JSON.stringify(body) : null
   });
-  if (response.status === 202 || response.status === 204) return { success: true };
-  return response.json();
+  if (response.status === 200 || response.status === 201)
+    return response.json();
+  return { error: 'Failed to send email' };
 };
 
 export const sendEmail = async ({ to, toName, subject, html, text }) => {
-  const fromEmail = import.meta.env.VITE_SENDGRID_FROM_EMAIL;
-  const fromName = import.meta.env.VITE_SENDGRID_FROM_NAME || 'KOACH AI';
-  return sgRequest('/mail/send', 'POST', {
-    personalizations: [{ to: [{ email: to, name: toName }] }],
-    from: { email: fromEmail, name: fromName },
+  const fromEmail = import.meta.env.VITE_FROM_EMAIL || 'onboarding@resend.dev';
+  const fromName = import.meta.env.VITE_FROM_NAME || 'KOACH AI';
+
+  return resendRequest('/emails', 'POST', {
+    from: `${fromName} <${fromEmail}>`,
+    to: [to],
     subject,
-    content: [
-      { type: 'text/plain', value: text || subject },
-      { type: 'text/html', value: html },
-    ],
+    html,
+    text: text || subject
   });
 };
 
 export const sendBulkEmail = async (recipients, subject, html) => {
-  const fromEmail = import.meta.env.VITE_SENDGRID_FROM_EMAIL;
-  const fromName = import.meta.env.VITE_SENDGRID_FROM_NAME || 'KOACH AI';
-  return sgRequest('/mail/send', 'POST', {
-    personalizations: recipients.map(r => ({
-      to: [{ email: r.email, name: r.name }],
-      dynamic_template_data: { name: r.name, ...r.data },
-    })),
-    from: { email: fromEmail, name: fromName },
-    subject,
-    content: [{ type: 'text/html', value: html }],
+  const results = await Promise.allSettled(
+    recipients.map(r => sendEmail({
+      to: r.email,
+      toName: r.name,
+      subject,
+      html: html.replace('{name}', r.name)
+    }))
+  );
+  return results;
+};
+
+export const testConnection = async () => {
+  const apiKey = import.meta.env.VITE_RESEND_API_KEY;
+  if (!apiKey) return { success: false, error: 'No API key found' };
+  const response = await fetch(`${RESEND_API}/domains`, {
+    headers: { Authorization: `Bearer ${apiKey}` }
   });
+  return response.ok
+    ? { success: true }
+    : { success: false, error: 'Invalid API key' };
 };
 
-export const getEmailStats = async () => {
-  const end = new Date().toISOString().split('T')[0];
-  const start = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  return sgRequest(`/stats?start_date=${start}&end_date=${end}`);
-};
-
-export const isSendGridEnabled = () => !!import.meta.env.VITE_SENDGRID_API_KEY;
+// Keep legacy name for backward compat
+export const isResendEnabled = () => !!import.meta.env.VITE_RESEND_API_KEY;
+export const isSendGridEnabled = isResendEnabled;

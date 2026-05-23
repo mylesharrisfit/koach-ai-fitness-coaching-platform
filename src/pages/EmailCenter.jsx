@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { sendEmail, sendBulkEmail, getEmailStats, isSendGridEnabled } from '@/lib/sendgrid';
+import { sendEmail, sendBulkEmail, isResendEnabled } from '@/lib/sendgrid';
 import { templates, TEMPLATE_OPTIONS } from '@/lib/emailTemplates';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -31,25 +31,7 @@ export default function EmailCenter() {
     queryFn: () => base44.entities.Client.list('name'),
   });
 
-  const { data: statsData } = useQuery({
-    queryKey: ['sendgrid-stats'],
-    queryFn: getEmailStats,
-    enabled: isSendGridEnabled(),
-    staleTime: 10 * 60 * 1000,
-  });
-
-  const stats = (() => {
-    if (!Array.isArray(statsData)) return null;
-    return statsData.reduce((acc, day) => {
-      const s = day.stats?.[0]?.metrics || {};
-      return {
-        delivered: (acc.delivered || 0) + (s.delivered || 0),
-        opens: (acc.opens || 0) + (s.opens || 0),
-        clicks: (acc.clicks || 0) + (s.clicks || 0),
-        unsubscribes: (acc.unsubscribes || 0) + (s.unsubscribes || 0),
-      };
-    }, {});
-  })();
+  const stats = null; // Stats not available via Resend API in frontend
 
   const openRate = stats?.delivered > 0 ? Math.round((stats.opens / stats.delivered) * 100) : 0;
   const clickRate = stats?.delivered > 0 ? Math.round((stats.clicks / stats.delivered) * 100) : 0;
@@ -74,7 +56,7 @@ export default function EmailCenter() {
   };
 
   const handleSend = async () => {
-    if (!isSendGridEnabled()) return toast.error('SendGrid not configured. Add VITE_SENDGRID_API_KEY to secrets.');
+    if (!isResendEnabled()) return toast.error('Resend not configured. Add VITE_RESEND_API_KEY to secrets.');
     setSending(true);
     try {
       const resolvedSubject = subject || getPreviewSubject();
@@ -111,7 +93,7 @@ export default function EmailCenter() {
       {/* Header */}
       <div className="bg-[#111827] rounded-xl p-5">
         <h1 className="text-xl font-semibold text-white">Email Center</h1>
-        <p className="text-sm mt-0.5 text-white/50">Send automated and manual emails to clients via SendGrid</p>
+        <p className="text-sm mt-0.5 text-white/50">Send automated and manual emails to clients via Resend</p>
       </div>
 
       {/* Stats */}
