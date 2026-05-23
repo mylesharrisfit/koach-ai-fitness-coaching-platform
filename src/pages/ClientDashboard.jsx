@@ -3,18 +3,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, differenceInDays, parseISO, addDays } from 'date-fns';
 import { Settings } from 'lucide-react';
-import HeroStreak from '@/components/client-dashboard/HeroStreak';
+import DashboardHeader from '@/components/client-dashboard/DashboardHeader';
+import TodayProgressCard from '@/components/client-dashboard/TodayProgressCard';
 import TodayWorkout from '@/components/client-dashboard/TodayWorkout';
 import NutritionPanel from '@/components/client-dashboard/NutritionPanel';
 import StepGoal from '@/components/client-dashboard/StepGoal';
 import NextCheckIn from '@/components/client-dashboard/NextCheckIn';
-import DailyGoalRings from '@/components/client-dashboard/DailyGoalRings';
-import NotificationSettings from '@/components/client-dashboard/NotificationSettings';
 import ClientAchievements from '@/components/client-dashboard/ClientAchievements';
+import NotificationSettings from '@/components/client-dashboard/NotificationSettings';
 
 const today = format(new Date(), 'yyyy-MM-dd');
-const hour = new Date().getHours();
-const greeting = hour < 5 ? 'Good night' : hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
 const defaultLog = {
   workout_done: false, meals_logged: 0, water_glasses: 0, steps: 0,
@@ -120,11 +118,11 @@ export default function ClientDashboard() {
 
   if (showSettings) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB]">
+      <div className="min-h-screen bg-[#F4F5F7]">
         <div className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB] px-5 py-4">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <h2 className="font-semibold text-base text-[#111827]">Notifications</h2>
-            <button onClick={() => setShowSettings(false)} className="text-sm text-[#2563EB] font-medium">Done</button>
+            <button onClick={() => setShowSettings(false)} className="text-sm text-[#2563EB] font-semibold">Done</button>
           </div>
         </div>
         <div className="max-w-lg mx-auto px-5 py-6">
@@ -135,40 +133,51 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
-      <div className="max-w-lg mx-auto px-4 pt-4 pb-24 space-y-3">
+    <div className="min-h-screen bg-[#F4F5F7]">
+      <div className="max-w-lg mx-auto px-4 pt-4 pb-28 space-y-3">
 
-        {/* Dark header banner */}
-        <div className="bg-[#111827] rounded-xl p-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-              {user?.full_name?.[0]?.toUpperCase() || 'A'}
-            </div>
-            <div>
-              <p className="text-white/60 text-xs">{greeting}</p>
-              <p className="text-white font-semibold text-lg leading-tight">{user?.full_name?.split(' ')[0] || 'Athlete'}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="text-right">
-              <p className="text-white/40 text-xs">{format(new Date(), 'EEE, MMM d')}</p>
-              <p className="text-white/60 text-xs">{streak} day streak</p>
-            </div>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors ml-1"
-            >
-              <Settings className="w-3.5 h-3.5 text-white/60" />
-            </button>
-          </div>
-        </div>
+        <DashboardHeader
+          user={user}
+          streak={streak}
+          log={log}
+          onSettings={() => setShowSettings(true)}
+        />
 
-        <DailyGoalRings log={log} onChange={saveLog} completed={completed} total={goals.length} pct={pct} streak={streak} />
-        <HeroStreak streak={streak} recentLogs={recentLogs} />
-        <TodayWorkout workout={todayWorkout} program={myProgram} done={log.workout_done} onToggle={() => saveLog({ ...log, workout_done: !log.workout_done })} />
-        <NutritionPanel plan={myNutrition} mealsLogged={log.meals_logged} waterGlasses={log.water_glasses} onMealsChange={(v) => saveLog({ ...log, meals_logged: v })} onWaterChange={(v) => saveLog({ ...log, water_glasses: v })} />
-        <StepGoal steps={log.steps} goal={10000} onChange={(v) => saveLog({ ...log, steps: Math.max(0, v) })} />
-        <NextCheckIn daysUntil={daysUntilCheckIn} nextDate={nextCheckInDate} lastCheckIn={lastCheckIn} clientId={myClient?.id} />
+        <TodayProgressCard
+          log={log}
+          completed={completed}
+          total={goals.length}
+          pct={pct}
+        />
+
+        <TodayWorkout
+          workout={todayWorkout}
+          program={myProgram}
+          done={log.workout_done}
+          onToggle={() => saveLog({ ...log, workout_done: !log.workout_done })}
+        />
+
+        <NutritionPanel
+          plan={myNutrition}
+          mealsLogged={log.meals_logged}
+          waterGlasses={log.water_glasses}
+          onMealsChange={(v) => saveLog({ ...log, meals_logged: v })}
+          onWaterChange={(v) => saveLog({ ...log, water_glasses: v })}
+        />
+
+        <StepGoal
+          steps={log.steps}
+          goal={10000}
+          onChange={(v) => saveLog({ ...log, steps: Math.max(0, v) })}
+        />
+
+        <NextCheckIn
+          daysUntil={daysUntilCheckIn}
+          nextDate={nextCheckInDate}
+          lastCheckIn={lastCheckIn}
+          clientId={myClient?.id}
+        />
+
         <ClientAchievements clientId={myClient?.id} />
 
       </div>

@@ -16,31 +16,33 @@ export default function ClientAchievements({ clientId }) {
   });
 
   const recent = badges.slice(0, 3);
-
   if (recent.length === 0) return null;
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Trophy className="w-4 h-4 text-[#D97706]" />
-          <p className="text-base font-semibold text-[#111827]">Your Achievements</p>
+          <div className="w-8 h-8 rounded-xl bg-[#FEF3C7] flex items-center justify-center">
+            <Trophy className="w-4 h-4 text-[#D97706]" />
+          </div>
+          <p className="text-base font-bold text-[#111827]">Achievements</p>
         </div>
         <button
           onClick={() => navigate('/adherence')}
-          className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#111827] transition-colors"
+          className="flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] transition-colors"
         >
-          View All <ChevronRight className="w-3 h-3" />
+          View All <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2.5">
         {recent.map(b => {
           const config = BADGE_CONFIG[b.badge_key] || {};
           return (
-            <div key={b.id} className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg p-3 text-center">
-              <div className="text-2xl mb-1">{config.emoji || '🏅'}</div>
-              <p className="text-xs font-semibold text-[#111827] leading-tight">{config.label || b.badge_key}</p>
+            <div key={b.id}
+              className="flex flex-col items-center text-center p-3 rounded-xl border border-[#F3F4F6] bg-[#FAFAFA] hover:border-[#FDE68A] hover:bg-[#FFFBEB] transition-all cursor-default">
+              <div className="text-3xl mb-1.5">{config.emoji || '🏅'}</div>
+              <p className="text-xs font-bold text-[#111827] leading-tight">{config.label || b.badge_key}</p>
               {b.created_date && (
                 <p className="text-[10px] text-[#9CA3AF] mt-0.5">{format(new Date(b.created_date), 'MMM d')}</p>
               )}
