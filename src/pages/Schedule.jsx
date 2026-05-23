@@ -62,6 +62,10 @@ export default function Schedule() {
   const zoomConnected = !!settings?.zoom_connected && !!settings?.zoom_access_token;
   const calendlyConnected = !!settings?.calendly_connected && !!settings?.calendly_user_uri;
 
+  // Time range for Google Calendar / Calendly fetch
+  const monthStart = startOfMonth(currentDate).toISOString();
+  const monthEnd = endOfMonth(currentDate).toISOString();
+
   // ── Calendly data ────────────────────────────────────────────────────────
   const { data: calendlyEventsData } = useQuery({
     queryKey: ['calendly-scheduled', settings?.calendly_user_uri, monthStart, monthEnd],
@@ -85,10 +89,6 @@ export default function Schedule() {
     _isCalendlyEvent: true,
     _calendlyUri: e.uri,
   }));
-
-  // Time range for Google Calendar fetch
-  const monthStart = startOfMonth(currentDate).toISOString();
-  const monthEnd = endOfMonth(currentDate).toISOString();
 
   const { data: googleEventsData, isFetching: gcalFetching } = useQuery({
     queryKey: ['google-calendar-events', monthStart, monthEnd],
