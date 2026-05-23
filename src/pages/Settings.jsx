@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, Plug, Bell, Shield, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import CoachIntegrations from '../components/integrations/CoachIntegrations';
+import IntegrationsTab from '../components/integrations/IntegrationsTab';
 import DefaultAssignmentSettings from '../components/settings/DefaultAssignmentSettings';
 
 const TABS = [
@@ -77,7 +77,7 @@ export default function Settings() {
             <h2 className="text-base font-semibold text-[#1F2A44]">Coach Integrations</h2>
             <p className="text-sm text-[#374151] mt-0.5">Connect third-party services to power your coaching workflow</p>
           </div>
-          <CoachIntegrations />
+          <IntegrationsTab />
         </div>
       )}
       {activeTab === 'notifications' && <NotificationsTab />}
