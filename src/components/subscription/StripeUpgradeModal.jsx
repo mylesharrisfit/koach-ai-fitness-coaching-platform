@@ -2,19 +2,89 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { TIERS, TIER_ORDER, getUserTier } from '@/lib/subscription';
-import { Check, X, Zap, ArrowRight } from 'lucide-react';
+import { Check, X, Zap, ArrowRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
-const TIER_SELLING_POINTS = {
-  starter:    ['Up to 20 clients', 'Workout programs', 'Nutrition plans', 'Scheduling', 'Text messaging'],
-  pro:        ['Up to 75 clients', 'Progress analytics', 'Check-in reviews', 'Adherence scoring', 'Analytics graphs', 'Voice & video messages', 'Client mobile dashboard'],
-  elite:      ['Unlimited clients', 'Full AI assistant', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module'],
-  enterprise: ['Unlimited clients', 'All Elite features', 'API access', 'Priority support'],
+// Exact pricing
+const PLAN_PRICES = {
+  starter:    { monthly: 29,  annual: 23,  annualSave: 72 },
+  pro:        { monthly: 79,  annual: 63,  annualSave: 192 },
+  elite:      { monthly: 149, annual: 119, annualSave: 360 },
+  enterprise: { monthly: 299, annual: 239, annualSave: 720 },
 };
 
-const YEARLY_DISCOUNT = 0.20;
+const CLIENT_LIMIT = {
+  starter: 'Up to 20 clients',
+  pro: 'Up to 75 clients',
+  elite: 'Unlimited clients',
+  enterprise: 'Unlimited clients',
+};
+
+// inherited = shown normally, unique = shown bold/highlighted
+const TIER_FEATURES = {
+  starter: {
+    inherited: [],
+    unique: [
+      'Up to 20 clients',
+      'Workout program builder',
+      'Basic nutrition plans',
+      'Scheduling & calendar',
+      'In-app messaging',
+      'Client mobile app access',
+      'Basic progress tracking',
+      'Email support',
+    ],
+  },
+  pro: {
+    inherited: [
+      'Everything in Starter',
+    ],
+    unique: [
+      'Up to 75 clients',
+      'Progress analytics & graphs',
+      'Check-in review system',
+      'Adherence scoring',
+      'Voice & video messages',
+      'Client mobile dashboard',
+      'AI reply suggestions',
+      'Custom branding (logo)',
+      'Priority email support',
+    ],
+  },
+  elite: {
+    inherited: [
+      'Everything in Pro',
+    ],
+    unique: [
+      'Unlimited clients',
+      'Full AI assistant (program + meal plan generation)',
+      'Auto progression rules',
+      'Sales pipeline CRM',
+      'Revenue dashboard',
+      'White-label branding',
+      'Community module',
+      'Zapier integrations',
+      'Chat support',
+    ],
+  },
+  enterprise: {
+    inherited: [
+      'Everything in Elite',
+    ],
+    unique: [
+      'Unlimited clients',
+      'API access',
+      'Custom integrations',
+      'Dedicated account manager',
+      'Team accounts (multiple coaches)',
+      'Custom contract & invoicing',
+      'Priority phone support',
+      'Custom onboarding & training',
+    ],
+  },
+};
 
 export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }) {
   const [billing, setBilling] = useState('monthly');
@@ -22,11 +92,10 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
 
   const userTier = getUserTier(user);
   const currentTierIndex = TIER_ORDER.indexOf(userTier.key);
-  const recommendedKey = currentTierIndex >= TIER_ORDER.indexOf('pro') ? 'elite' : 'pro';
 
-  const getPrice = (tier) => {
-    const base = tier.price;
-    return billing === 'yearly' ? Math.round(base * (1 - YEARLY_DISCOUNT)) : base;
+  const getPrice = (tierKey) => {
+    const p = PLAN_PRICES[tierKey];
+    return billing === 'annual' ? p.annual : p.monthly;
   };
 
   const handleSelectTier = async (tierKey) => {
@@ -43,10 +112,8 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
     setLoading(null);
 
     if (res.data?.url) {
-      // New checkout session — redirect
       window.location.href = res.data.url;
     } else if (res.data?.upgraded) {
-      // Inline upgrade (existing subscription)
       const updated = await base44.auth.me();
       if (onUserUpdate) onUserUpdate(updated);
       toast.success(`Upgraded to ${TIERS[tierKey].name}!`);
@@ -71,12 +138,33 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
               <h2 className="text-xl font-heading font-bold">Choose your plan</h2>
               <p className="text-sm text-muted-foreground mt-0.5">Billed via Stripe · Cancel anytime · No setup fees</p>
             </div>
-            <div className="flex items-center gap-1 bg-secondary/40 rounded-lg p-1 text-xs font-semibold">
-              <button onClick={() => setBilling('monthly')} className={cn('px-3 py-1.5 rounded-md transition-all', billing === 'monthly' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
+            {/* Pill toggle */}
+            <div className="flex items-center bg-secondary/40 rounded-full p-1 text-xs font-semibold select-none">
+              <button
+                onClick={() => setBilling('monthly')}
+                className={cn(
+                  'px-4 py-1.5 rounded-full transition-all duration-200',
+                  billing === 'monthly'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
                 Monthly
               </button>
-              <button onClick={() => setBilling('yearly')} className={cn('px-3 py-1.5 rounded-md transition-all flex items-center gap-1.5', billing === 'yearly' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}>
-                Yearly <span className="text-[10px] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-full">-20%</span>
+              <button
+                onClick={() => setBilling('annual')}
+                className={cn(
+                  'px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5',
+                  billing === 'annual'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                Annual
+                <span className={cn(
+                  'text-[9px] font-bold px-1.5 py-0.5 rounded-full transition-colors',
+                  billing === 'annual' ? 'bg-white/20 text-white' : 'bg-accent/10 text-accent'
+                )}>-20%</span>
               </button>
             </div>
           </div>
@@ -84,24 +172,34 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
 
         {/* Plans Grid */}
         <div className="p-6 overflow-x-auto">
-          <div className="grid grid-cols-4 gap-3 min-w-[640px]">
+          <div className="grid grid-cols-4 gap-3 min-w-[700px]">
             {TIER_ORDER.map(tierKey => {
               const tier = TIERS[tierKey];
               const isCurrent = userTier.key === tierKey;
-              const isRecommended = tierKey === recommendedKey && !isCurrent;
               const isUpgrade = TIER_ORDER.indexOf(tierKey) > currentTierIndex;
-              const price = getPrice(tier);
+              const isElite = tierKey === 'elite';
+              const isPro = tierKey === 'pro';
+              const price = getPrice(tierKey);
+              const monthlyPrice = PLAN_PRICES[tierKey].monthly;
+              const annualSave = PLAN_PRICES[tierKey].annualSave;
+              const features = TIER_FEATURES[tierKey];
 
               return (
                 <div key={tierKey} className={cn(
                   'relative rounded-xl border flex flex-col transition-all',
                   isCurrent     ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20' :
-                  isRecommended ? 'border-accent/40 bg-accent/5 ring-1 ring-accent/20' :
+                  isElite       ? 'border-accent/40 bg-accent/5 ring-1 ring-accent/20' :
                                   'border-border/40 bg-secondary/10 hover:border-border/70'
                 )}>
-                  {isRecommended && (
+                  {/* Badges */}
+                  {isElite && !isCurrent && (
                     <div className="absolute -top-2.5 inset-x-0 flex justify-center">
-                      <span className="text-[9px] font-bold uppercase tracking-widest bg-accent text-accent-foreground px-3 py-0.5 rounded-full">Recommended</span>
+                      <span className="text-[9px] font-bold uppercase tracking-widest bg-accent text-accent-foreground px-3 py-0.5 rounded-full">⭐ Recommended</span>
+                    </div>
+                  )}
+                  {isPro && !isCurrent && (
+                    <div className="absolute -top-2.5 inset-x-0 flex justify-center">
+                      <span className="text-[9px] font-bold uppercase tracking-widest bg-emerald-500 text-white px-3 py-0.5 rounded-full">Most Popular</span>
                     </div>
                   )}
                   {isCurrent && (
@@ -111,21 +209,44 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                   )}
 
                   <div className="p-4 pb-3 border-b border-border/20">
-                    <p className={cn('font-heading font-bold text-sm mb-1', tier.color)}>{tier.name}</p>
-                    <div className="flex items-end gap-1">
-                      <span className="stat-number text-2xl font-heading font-bold">${price}</span>
+                    <p className={cn('font-heading font-bold text-sm mb-2', tier.color)}>{tier.name}</p>
+
+                    {/* Price display */}
+                    <div className="flex items-end gap-1.5">
+                      {billing === 'annual' && (
+                        <span className="text-sm text-muted-foreground/50 line-through mb-0.5">${monthlyPrice}</span>
+                      )}
+                      <span className="text-2xl font-heading font-bold text-foreground" style={{ transition: 'all 0.3s ease' }}>
+                        ${price}
+                      </span>
                       <span className="text-xs text-muted-foreground mb-0.5">/mo</span>
                     </div>
-                    {billing === 'yearly' && (
-                      <p className="text-[10px] text-accent mt-0.5">Save ${Math.round((tier.price - price) * 12)}/yr</p>
+
+                    {billing === 'annual' ? (
+                      <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                        Save ${annualSave}/year
+                      </span>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground/50 mt-1">or ${PLAN_PRICES[tierKey].annual}/mo billed annually</p>
                     )}
+
+                    {/* Client limit pill */}
+                    <p className="mt-2 text-[10px] font-semibold text-muted-foreground bg-secondary/40 rounded-md px-2 py-1 inline-block">
+                      {CLIENT_LIMIT[tierKey]}
+                    </p>
                   </div>
 
-                  <div className="p-4 flex-1 space-y-1.5">
-                    {TIER_SELLING_POINTS[tierKey].map(point => (
+                  <div className="p-3 flex-1 space-y-1">
+                    {features.inherited.map(point => (
+                      <div key={point} className="flex items-start gap-1.5">
+                        <Check className="w-3 h-3 text-muted-foreground/50 flex-shrink-0 mt-0.5" />
+                        <span className="text-[11px] text-muted-foreground/60 leading-tight">{point}</span>
+                      </div>
+                    ))}
+                    {features.unique.map(point => (
                       <div key={point} className="flex items-start gap-1.5">
                         <Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" />
-                        <span className="text-[11px] text-muted-foreground leading-tight">{point}</span>
+                        <span className="text-[11px] text-foreground/80 leading-tight font-medium">{point}</span>
                       </div>
                     ))}
                   </div>
@@ -134,7 +255,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                     <Button
                       size="sm"
                       className="w-full text-xs"
-                      variant={isCurrent ? 'secondary' : isRecommended ? 'default' : 'outline'}
+                      variant={isCurrent ? 'secondary' : isElite ? 'default' : 'outline'}
                       disabled={isCurrent || loading === tierKey}
                       onClick={() => handleSelectTier(tierKey)}
                     >

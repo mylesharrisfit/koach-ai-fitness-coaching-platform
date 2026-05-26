@@ -21,11 +21,15 @@ const BILLING_STATUS_CONFIG = {
   canceled:   { label: 'Canceled',    cls: 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3]',       icon: XCircle },
 };
 
+const PLAN_PRICES = {
+  starter: 29, pro: 79, elite: 149, enterprise: 299,
+};
+
 const TIER_HIGHLIGHTS = {
-  starter:    ['Up to 20 clients', 'Workout programs', 'Nutrition plans', 'Scheduling', 'Text messaging'],
-  pro:        ['Up to 75 clients', 'Progress analytics', 'Check-in reviews', 'Adherence scoring', 'Voice & video messaging', 'Client mobile dashboard'],
-  elite:      ['Unlimited clients', 'All Pro features', 'Full AI assistant', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module'],
-  enterprise: ['Unlimited clients', 'All Elite features', 'API access', 'Priority support'],
+  starter:    ['Up to 20 clients', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
+  pro:        ['Up to 75 clients', 'Everything in Starter', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+  elite:      ['Unlimited clients', 'Everything in Pro', 'Full AI assistant', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
+  enterprise: ['Unlimited clients', 'Everything in Elite', 'API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
 };
 
 export default function Subscription() {
@@ -163,7 +167,7 @@ export default function Subscription() {
           </div>
           <div className="flex flex-col items-end gap-2">
             <div className="flex items-end gap-1">
-              <span className="text-3xl font-heading font-bold stat-number">${userTier.price}</span>
+              <span className="text-3xl font-heading font-bold stat-number">${PLAN_PRICES[userTier.key] ?? userTier.price}</span>
               <span className="text-[#374151] text-sm mb-0.5">/mo</span>
             </div>
             {user?.stripe_price_id && (
