@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import TodayView from '@/components/dashboard/TodayView';
+import TrialBanner from '@/components/dashboard/TrialBanner';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -57,5 +58,13 @@ export default function Dashboard() {
     ),
   });
 
-  return <TodayView clients={clients} checkIns={checkIns} messages={messages} payments={payments} />;
+  const [dashUser, setDashUser] = useState(null);
+  useEffect(() => { base44.auth.me().then(setDashUser).catch(() => {}); }, []);
+
+  return (
+    <>
+      <TrialBanner user={dashUser} />
+      <TodayView clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
+    </>
+  );
 }

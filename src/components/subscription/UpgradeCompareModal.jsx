@@ -74,6 +74,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
     const res = await base44.functions.invoke('stripeCheckout', {
       action: 'checkout',
       tier: toTierKey,
+      billing_cycle: billing,
       success_url: `${window.location.origin}/subscription?success=1`,
       cancel_url: `${window.location.origin}/subscription`,
     });
