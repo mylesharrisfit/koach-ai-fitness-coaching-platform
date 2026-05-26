@@ -35,7 +35,7 @@ import WhiteLabel from './pages/WhiteLabel';
 import PageGuard from './components/subscription/PageGuard';
 import SubmitCheckIn from './pages/SubmitCheckIn';
 import CheckInDetail from './pages/CheckInDetail';
-import AtRiskClients from './pages/AtRiskClients';
+import AtRiskClients from './pages/AtRiskClients.jsx';
 import FastReview from './pages/FastReview';
 import ClientProfile from './pages/ClientProfile';
 import FocusLayout from './components/layout/FocusLayout';
