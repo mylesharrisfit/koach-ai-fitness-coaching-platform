@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import PricingCards from '@/components/subscription/PricingCards';
+import CancellationModal from '@/components/subscription/CancellationModal';
 
 const BILLING_STATUS_CONFIG = {
   active:     { label: 'Active',      cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: CheckCircle2 },
@@ -69,6 +70,7 @@ function FAQItem({ q, a }) {
 export default function Subscription() {
   const [user, setUser] = useState(null);
   const [openingPortal, setOpeningPortal] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -220,7 +222,7 @@ export default function Subscription() {
         </div>
 
         {/* Pricing Cards */}
-        <PricingCards user={user} onUserUpdate={setUser} />
+        <PricingCards user={user} onUserUpdate={setUser} clientCount={clients.length} />
 
         {/* Trust Bar */}
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -242,7 +244,7 @@ export default function Subscription() {
 
         {/* Billing management */}
         {user?.stripe_customer_id && (
-          <div className="mt-8 bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex items-center justify-between gap-4">
+          <div className="mt-8 bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center">
                 <CreditCard className="w-4 h-4 text-blue-400" />
@@ -252,12 +254,24 @@ export default function Subscription() {
                 <p className="text-xs text-slate-400">Update payment method, download invoices, or cancel</p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={handleOpenPortal} disabled={openingPortal}
-              className="border-white/20 text-white hover:bg-white/10 flex-shrink-0">
-              <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-              {openingPortal ? 'Opening...' : 'Manage Billing'}
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={handleOpenPortal} disabled={openingPortal}
+                className="border-white/20 text-white hover:bg-white/10">
+                <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                {openingPortal ? 'Opening...' : 'Manage Billing'}
+              </Button>
+              {user?.stripe_subscription_id && !cancelAtEnd && (
+                <Button variant="ghost" size="sm" onClick={() => setCancelModalOpen(true)}
+                  className="text-red-400/70 hover:text-red-400 hover:bg-red-500/10 text-xs">
+                  Cancel subscription
+                </Button>
+              )}
+            </div>
           </div>
+        )}
+
+        {cancelModalOpen && (
+          <CancellationModal user={user} onUserUpdate={setUser} onClose={() => setCancelModalOpen(false)} />
         )}
 
       </div>

@@ -1,0 +1,177 @@
+import React, { useState } from 'react';
+import { X, AlertTriangle, Check, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { TIERS, TIER_ORDER } from '@/lib/subscription';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
+
+const PLAN_PRICES = {
+  starter: { monthly: 29 },
+  pro:     { monthly: 79 },
+  elite:   { monthly: 149 },
+  enterprise: { monthly: 299 },
+};
+
+const CLIENT_LIMITS = { starter: 20, pro: 75, elite: -1, enterprise: -1 };
+
+const TIER_FEATURES = {
+  starter: ['Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Basic progress tracking', 'Email support'],
+  pro:     ['Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)'],
+  elite:   ['Full AI assistant', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations'],
+  enterprise: ['API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts', 'Custom contract & invoicing'],
+};
+
+export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0, renewalDate, user, onClose, onUserUpdate }) {
+  const [loading, setLoading] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const fromTier = TIERS[fromTierKey];
+  const toTier = TIERS[toTierKey];
+
+  // Features being lost (from tiers between toTierKey and fromTierKey)
+  const fromIdx = TIER_ORDER.indexOf(fromTierKey);
+  const toIdx = TIER_ORDER.indexOf(toTierKey);
+  const losingFeatures = TIER_ORDER
+    .slice(toIdx + 1, fromIdx + 1)
+    .flatMap(k => TIER_FEATURES[k]);
+
+  const newClientLimit = CLIENT_LIMITS[toTierKey];
+  const clientOverLimit = newClientLimit !== -1 && clientCount > newClientLimit;
+
+  const effectiveDate = renewalDate || (() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + 1);
+    return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  })();
+
+  const handleDowngrade = async () => {
+    setLoading(true);
+    const res = await base44.functions.invoke('stripeCheckout', {
+      action: 'checkout',
+      tier: toTierKey,
+      success_url: `${window.location.origin}/subscription?success=1`,
+      cancel_url: `${window.location.origin}/subscription`,
+    });
+    setLoading(false);
+
+    if (res.data?.url) {
+      window.location.href = res.data.url;
+    } else if (res.data?.upgraded) {
+      const updated = await base44.auth.me();
+      if (onUserUpdate) onUserUpdate(updated);
+      setConfirmed(true);
+    } else {
+      toast.error(res.data?.error || 'Something went wrong.');
+    }
+  };
+
+  const handleUndo = async () => {
+    setLoading(true);
+    await base44.functions.invoke('stripeCheckout', { action: 'reactivate' });
+    setLoading(false);
+    const updated = await base44.auth.me();
+    if (onUserUpdate) onUserUpdate(updated);
+    toast.success('Downgrade cancelled — your plan is unchanged.');
+    onClose();
+  };
+
+  if (confirmed) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0f1e] p-8 text-center shadow-2xl">
+          <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-6 h-6 text-amber-400" />
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">Downgrade Confirmed</h3>
+          <p className="text-slate-400 text-sm mb-1">
+            Your plan will change to <span className="text-white font-semibold">{toTier.name}</span> on <span className="text-white">{effectiveDate}</span>.
+          </p>
+          <p className="text-slate-500 text-sm mb-6">You'll keep all {fromTier.name} features until then.</p>
+          <button
+            onClick={handleUndo}
+            disabled={loading}
+            className="text-sm text-blue-400 hover:text-blue-300 transition-colors underline"
+          >
+            {loading ? 'Undoing...' : 'Changed your mind? Undo downgrade'}
+          </button>
+          <div className="mt-6">
+            <button
+              onClick={onClose}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold text-white border border-white/10 hover:bg-white/5 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] shadow-2xl">
+        <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <h2 className="text-lg font-bold text-white">Downgrade to {toTier.name}</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          {/* Client over-limit warning */}
+          {clientOverLimit && (
+            <div className="flex gap-3 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+              <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-amber-300">Client limit exceeded</p>
+                <p className="text-xs text-amber-400/80 mt-0.5">
+                  You have {clientCount} clients but {toTier.name} only allows {newClientLimit}. You'll need to reduce your client count before the downgrade takes effect.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Effective date */}
+          <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4">
+            <p className="text-xs text-slate-400">Effective date</p>
+            <p className="text-white font-semibold mt-0.5">{effectiveDate}</p>
+            <p className="text-xs text-slate-500 mt-1">You keep all {fromTier.name} features until then.</p>
+          </div>
+
+          {/* Features being lost */}
+          <div>
+            <p className="text-sm font-semibold text-slate-300 mb-3">Features you'll lose</p>
+            <div className="space-y-2">
+              {losingFeatures.map(f => (
+                <div key={f} className="flex items-center gap-2 bg-red-500/5 border border-red-500/20 rounded-lg px-3 py-2">
+                  <span className="text-red-400 text-sm flex-shrink-0">❌</span>
+                  <span className="text-xs text-slate-300">{f}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="space-y-3 pt-2">
+            {/* Keep current — prominent */}
+            <button
+              onClick={onClose}
+              className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
+              style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', boxShadow: '0 0 20px rgba(139,92,246,0.25)' }}
+            >
+              Keep {fromTier.name} Plan
+            </button>
+            {/* Confirm downgrade — less prominent */}
+            <button
+              onClick={handleDowngrade}
+              disabled={loading}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Processing...' : `Confirm Downgrade to ${toTier.name}`}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
