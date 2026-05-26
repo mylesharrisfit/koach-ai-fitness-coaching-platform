@@ -1,0 +1,178 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Plus, Edit2, Copy, Trash2, ClipboardList, Calendar, Users } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import CheckInFormEditor from './CheckInFormEditor';
+
+const FREQ_LABELS = {
+  daily: 'Daily', weekly: 'Weekly', bi_weekly: 'Bi-weekly',
+  monthly: 'Monthly', custom: 'Custom'
+};
+
+function FormCard({ form, clients, onEdit, onDuplicate, onDelete }) {
+  const assignedCount = form.assign_to === 'all'
+    ? clients.filter(c => c.lifecycle_status === 'active' || c.status === 'active').length
+    : (form.assigned_client_ids?.length || 0);
+
+  return (
+    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-sm hover:border-[#D1D5DB] hover:shadow-md transition-all">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-sm text-[#111827] truncate">{form.name}</h3>
+          {form.description && <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-2">{form.description}</p>}
+        </div>
+        <span className={cn(
+          'text-[10px] font-bold px-2 py-1 rounded-full border flex-shrink-0',
+          form.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]'
+        )}>
+          {form.is_active ? 'Active' : 'Inactive'}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+          <ClipboardList className="w-3.5 h-3.5 text-[#9CA3AF] mx-auto mb-1" />
+          <p className="text-sm font-bold text-[#111827]">{form.questions?.length || 0}</p>
+          <p className="text-[10px] text-[#6B7280]">Questions</p>
+        </div>
+        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+          <Users className="w-3.5 h-3.5 text-[#9CA3AF] mx-auto mb-1" />
+          <p className="text-sm font-bold text-[#111827]">{assignedCount}</p>
+          <p className="text-[10px] text-[#6B7280]">Clients</p>
+        </div>
+        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+          <Calendar className="w-3.5 h-3.5 text-[#9CA3AF] mx-auto mb-1" />
+          <p className="text-sm font-bold text-[#111827]">{FREQ_LABELS[form.frequency] || 'Weekly'}</p>
+          <p className="text-[10px] text-[#6B7280]">Frequency</p>
+        </div>
+      </div>
+
+      {form.last_submission_date && (
+        <p className="text-[10px] text-[#9CA3AF] mb-4">
+          Last submission: {format(parseISO(form.last_submission_date), 'MMM d, yyyy')}
+        </p>
+      )}
+
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" onClick={() => onEdit(form)} className="flex-1 gap-1.5">
+          <Edit2 className="w-3 h-3" /> Edit
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => onDuplicate(form)} className="gap-1.5">
+          <Copy className="w-3 h-3" />
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => onDelete(form)}
+          className="gap-1.5 border-red-100 text-red-500 hover:bg-red-50">
+          <Trash2 className="w-3 h-3" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default function FormBuilderTab({ clients }) {
+  const [editingForm, setEditingForm] = useState(null);
+  const [showEditor, setShowEditor] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: forms = [], isLoading } = useQuery({
+    queryKey: ['checkin-forms'],
+    queryFn: () => base44.entities.CheckInForm.list('-created_date'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.CheckInForm.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checkin-forms'] });
+      toast.success('Form deleted');
+    },
+  });
+
+  const duplicateMutation = useMutation({
+    mutationFn: (form) => base44.entities.CheckInForm.create({
+      ...form,
+      id: undefined,
+      name: `${form.name} (Copy)`,
+      created_date: undefined,
+      updated_date: undefined,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['checkin-forms'] });
+      toast.success('Form duplicated');
+    },
+  });
+
+  const handleNew = () => {
+    setEditingForm(null);
+    setShowEditor(true);
+  };
+
+  const handleEdit = (form) => {
+    setEditingForm(form);
+    setShowEditor(true);
+  };
+
+  const handleClose = () => {
+    setShowEditor(false);
+    setEditingForm(null);
+    queryClient.invalidateQueries({ queryKey: ['checkin-forms'] });
+  };
+
+  if (showEditor) {
+    return (
+      <CheckInFormEditor
+        form={editingForm}
+        clients={clients}
+        onClose={handleClose}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-5">
+        <p className="text-sm text-[#6B7280]">{forms.length} form{forms.length !== 1 ? 's' : ''}</p>
+        <Button onClick={handleNew} className="gap-2" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          <Plus className="w-4 h-4" /> New Form
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-20">
+          <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+        </div>
+      ) : forms.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-[#F3F4F6] flex items-center justify-center">
+            <ClipboardList className="w-8 h-8 text-[#9CA3AF]" />
+          </div>
+          <div className="text-center">
+            <p className="font-semibold text-[#111827] mb-1">No check-in forms yet</p>
+            <p className="text-sm text-[#6B7280]">Create your first form to start collecting client check-ins</p>
+          </div>
+          <Button onClick={handleNew} className="gap-2 mt-2" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            <Plus className="w-4 h-4" /> Create Your First Form
+          </Button>
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {forms.map(form => (
+            <FormCard
+              key={form.id}
+              form={form}
+              clients={clients}
+              onEdit={handleEdit}
+              onDuplicate={duplicateMutation.mutate}
+              onDelete={(f) => {
+                if (confirm(`Delete "${f.name}"?`)) deleteMutation.mutate(f.id);
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

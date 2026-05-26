@@ -68,11 +68,11 @@
     },
     "energy_level": {
       "type": "number",
-      "description": "Energy level 1\u201310"
+      "description": "Energy level 1-10"
     },
     "stress_level": {
       "type": "number",
-      "description": "Stress level 1\u201310"
+      "description": "Stress level 1-10"
     },
     "sleep_hours": {
       "type": "number"
@@ -91,11 +91,19 @@
     },
     "coach_notes": {
       "type": "string",
-      "description": "Coach private response / notes"
+      "description": "Coach response to client"
+    },
+    "internal_notes": {
+      "type": "string",
+      "description": "Private coach notes (not visible to client)"
     },
     "coach_responded": {
       "type": "boolean",
       "default": false
+    },
+    "form_id": {
+      "type": "string",
+      "description": "CheckInForm ID this was submitted for"
     }
   },
   "required": [
