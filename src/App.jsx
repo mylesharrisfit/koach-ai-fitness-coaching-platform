@@ -25,7 +25,7 @@ import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
 import Subscription from './pages/Subscription';
-import ExerciseLibrary from './pages/ExerciseLibrary.jsx';
+import ExerciseLibrary from './pages/ExerciseLibrary';
 import Automations from './pages/Automations';
 import Analytics from './pages/Analytics';
 import RevenueDashboard from './pages/RevenueDashboard';
@@ -50,6 +50,7 @@ import PremiumOnboarding from './pages/PremiumOnboarding';
 import ClientPortal from './pages/ClientPortal';
 import ClientWorkoutView from './pages/ClientWorkoutView';
 import EmailCenter from './pages/EmailCenter';
+import ClientInviteJoin from './pages/ClientInviteJoin';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -119,6 +120,8 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/start" element={<PremiumOnboarding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
+      <Route path="/join/:code" element={<ClientInviteJoin />} />
+      <Route path="/join" element={<ClientInviteJoin />} />
       <Route path="/workout" element={<ClientWorkoutView />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -6,34 +6,44 @@ Deno.serve(async (req) => {
   const user = await base44.auth.me();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { clientName, clientEmail } = await req.json();
+  const { clientName, clientEmail, welcomeMessage } = await req.json();
   if (!clientEmail) return Response.json({ error: 'Missing clientEmail' }, { status: 400 });
 
   const coachName = user.full_name || 'Your coach';
-  const appUrl = req.headers.get('origin') || 'https://app.fitforge.com';
+  const appUrl = req.headers.get('origin') || 'https://app.koach.ai';
 
-  const subject = `${coachName} has added you to FitForge — set up your profile`;
+  // Build invite link with coach info and pre-filled email embedded in URL
+  const inviteCode = btoa(`${clientEmail}:${user.id}:${Date.now()}`).replace(/=/g, '').slice(0, 24);
+  const params = new URLSearchParams({
+    coach: coachName,
+    email: clientEmail,
+    ...(welcomeMessage ? { welcome: welcomeMessage } : {}),
+  });
+  const joinUrl = `${appUrl}/join/${inviteCode}?${params.toString()}`;
+
+  const subject = `${coachName} invited you to KOACH AI — set up your profile`;
 
   const body = `
 Hi ${clientName || 'there'},
 
-${coachName} has added you as a client on FitForge and wants you to set up your profile so they can personalise your training and nutrition plan.
+${coachName} has added you as a client on KOACH AI and wants you to set up your profile so they can build your personalized training and nutrition plan.
 
 Click the link below to get started:
-${appUrl}/submit-checkin
+${joinUrl}
 
-What you'll be able to do:
-• Complete your initial check-in and goals
-• Track your daily progress and workouts
-• Stay connected with your coach
-• Access your personalised workout & nutrition plans
+What you'll set up:
+• Your account and personal profile
+• Fitness background and goals
+• Nutrition preferences
+• Notification settings
 
-If you have any questions, just reply to this email or reach out to your coach directly.
+This takes about 3 minutes and your coach will be notified when you're done.
 
+${welcomeMessage ? `\nA note from ${coachName}:\n"${welcomeMessage}"\n` : ''}
 Looking forward to working with you!
 
 ${coachName}
-(via FitForge)
+(via KOACH AI)
   `.trim();
 
   await base44.asServiceRole.integrations.Core.SendEmail({
@@ -43,5 +53,5 @@ ${coachName}
     from_name: coachName,
   });
 
-  return Response.json({ success: true });
+  return Response.json({ success: true, joinUrl });
 });
