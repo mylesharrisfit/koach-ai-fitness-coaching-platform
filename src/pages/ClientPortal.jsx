@@ -4,11 +4,11 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Home, Dumbbell, Salad, BarChart2, MessageSquare,
-  ChevronRight, ArrowLeft, Send
+  Home, Dumbbell, Salad, BarChart2, MessageSquare, Send
 } from 'lucide-react';
 import PortalNutritionPage from '@/pages/portal/PortalNutrition';
-import { format, parseISO } from 'date-fns';
+import PortalProgressPage from '@/pages/portal/PortalProgress';
+import { format } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
 
 /* ── Bottom Nav ── */
@@ -107,57 +107,9 @@ function PortalNutrition({ user }) {
   return <PortalNutritionPage user={user} />;
 }
 
-/* ── Progress ── */
+/* ── Progress → delegated to dedicated page ── */
 function PortalProgress({ user }) {
-  const { data: clients = [] } = useQuery({
-    queryKey: ['portal-client-pg', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
-  });
-  const myClient = clients[0];
-  const { data: checkIns = [] } = useQuery({
-    queryKey: ['portal-checkins-pg', myClient?.id],
-    queryFn: () => base44.entities.CheckIn.filter({ client_id: myClient.id }, '-date', 20),
-    enabled: !!myClient?.id,
-  });
-
-  return (
-    <div className="px-5 pt-12 pb-28 space-y-4">
-      <div className="mb-2">
-        <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">Progress</p>
-        <h1 className="text-white text-xl font-bold mt-0.5">Your Journey</h1>
-      </div>
-      {checkIns.length === 0 ? (
-        <div className="p-6 rounded-2xl text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <BarChart2 className="w-10 h-10 text-white/20 mx-auto mb-3" />
-          <p className="text-white/50 text-sm font-semibold">No check-ins yet</p>
-          <p className="text-white/25 text-xs mt-1">Submit your first check-in to start tracking progress.</p>
-        </div>
-      ) : (
-        checkIns.slice(0, 12).map((ci, i) => (
-          <motion.div key={ci.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-            className="flex items-center gap-4 p-4 rounded-2xl"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="text-center flex-shrink-0 w-12">
-              <p className="text-white/40 text-[9px]">{format(parseISO(ci.date), 'MMM')}</p>
-              <p className="text-white font-bold text-lg leading-none">{format(parseISO(ci.date), 'd')}</p>
-            </div>
-            <div className="flex-1 min-w-0">
-              {ci.weight && <p className="text-white/70 text-sm font-semibold">{ci.weight} lbs</p>}
-              <p className="text-white/30 text-xs capitalize">{ci.mood || ''}</p>
-            </div>
-            <span className="text-[10px] font-bold px-2 py-1 rounded-lg flex-shrink-0"
-              style={{
-                background: ci.review_status === 'reviewed' ? 'rgba(34,197,94,0.15)' : 'rgba(251,191,36,0.12)',
-                color: ci.review_status === 'reviewed' ? '#22C55E' : '#FBB724',
-              }}>
-              {ci.review_status === 'reviewed' ? '✓ Reviewed' : 'Pending'}
-            </span>
-          </motion.div>
-        ))
-      )}
-    </div>
-  );
+  return <PortalProgressPage user={user} />;
 }
 
 /* ── Messages ── */
