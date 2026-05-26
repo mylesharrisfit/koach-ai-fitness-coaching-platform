@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Home, Dumbbell, Salad, BarChart2, MessageSquare, ClipboardList
+  Home, Dumbbell, Salad, BarChart2, MessageSquare, ClipboardList, UserCircle
 } from 'lucide-react';
 import PortalNutritionPage from '@/pages/portal/PortalNutrition';
 import PortalCheckIn from '@/pages/portal/PortalCheckIn';
@@ -12,6 +12,7 @@ import PortalProgress from '@/pages/portal/PortalProgress';
 import PortalMessages from '@/pages/portal/PortalMessages';
 import { format, parseISO, addDays, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
+import PortalProfile from '@/pages/portal/PortalProfile';
 
 /* ── Bottom Nav ── */
 function BottomNav({ user }) {
@@ -46,10 +47,10 @@ function BottomNav({ user }) {
   const NAV = [
     { icon: Home, label: 'Home', path: '/portal' },
     { icon: Dumbbell, label: 'Workout', path: '/portal/workouts' },
-    { icon: Salad, label: 'Nutrition', path: '/portal/nutrition' },
     { icon: ClipboardList, label: 'Check-in', path: '/portal/checkin', badge: checkInDue ? '!' : null, badgeColor: '#EF4444' },
     { icon: BarChart2, label: 'Progress', path: '/portal/progress' },
     { icon: MessageSquare, label: 'Messages', path: '/portal/messages', badge: unreadMsgs > 0 ? unreadMsgs : null },
+    { icon: UserCircle, label: 'Profile', path: '/portal/profile' },
   ];
 
   return (
@@ -165,6 +166,7 @@ export default function ClientPortal() {
           <Route path="/checkin" element={<PortalCheckIn user={user} />} />
           <Route path="/progress" element={<PortalProgress user={user} />} />
           <Route path="/messages" element={<PortalMessages user={user} />} />
+          <Route path="/profile" element={<PortalProfile user={user} />} />
         </Routes>
       </div>
 

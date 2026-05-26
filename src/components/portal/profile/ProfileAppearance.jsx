@@ -1,0 +1,48 @@
+import React, { useState } from 'react';
+import ProfileSectionCard from './ProfileSectionCard';
+
+export default function ProfileAppearance() {
+  const [theme, setTheme] = useState('dark');
+  const [units, setUnits] = useState('imperial');
+  const [weekStart, setWeekStart] = useState('sunday');
+
+  const Row = ({ label, options, value, onChange }) => (
+    <div className="py-3 border-b border-white/5 last:border-0">
+      <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">{label}</p>
+      <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        {options.map(o => (
+          <button key={o.value} onClick={() => onChange(o.value)}
+            className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
+            style={{
+              background: value === o.value ? 'rgba(59,130,246,0.3)' : 'transparent',
+              color: value === o.value ? '#60A5FA' : 'rgba(255,255,255,0.3)',
+            }}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <ProfileSectionCard icon="🎨" title="Appearance & Preferences">
+      <div className="pt-1">
+        <Row label="Theme" value={theme} onChange={setTheme}
+          options={[{ label: 'Dark', value: 'dark' }, { label: 'Light', value: 'light' }, { label: 'System', value: 'system' }]} />
+        <Row label="Units" value={units} onChange={setUnits}
+          options={[{ label: 'Imperial', value: 'imperial' }, { label: 'Metric', value: 'metric' }]} />
+        <Row label="Week Starts On" value={weekStart} onChange={setWeekStart}
+          options={[{ label: 'Sunday', value: 'sunday' }, { label: 'Monday', value: 'monday' }]} />
+
+        <div className="py-3">
+          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">Language</p>
+          <div className="flex items-center justify-between">
+            <p className="text-white/60 text-sm">English</p>
+            <span className="text-[10px] px-2 py-1 rounded-full font-bold"
+              style={{ background: 'rgba(251,191,36,0.15)', color: '#FBB724' }}>Coming Soon</span>
+          </div>
+        </div>
+      </div>
+    </ProfileSectionCard>
+  );
+}

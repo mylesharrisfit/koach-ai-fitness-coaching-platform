@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, MessageSquare } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -14,6 +14,7 @@ function getGreeting(firstName) {
 export default function PortalHeader({ user, unreadCount, onMessagesTap }) {
   const firstName = user?.full_name?.split(' ')[0] || 'there';
   const greeting = getGreeting(firstName);
+  const navigate = useNavigate();
 
   return (
     <div className="px-5 pt-12 pb-4 flex items-start justify-between">
@@ -32,7 +33,7 @@ export default function PortalHeader({ user, unreadCount, onMessagesTap }) {
             </div>
           )}
         </button>
-        <button onClick={onMessagesTap}
+        <button onClick={() => navigate('/portal/profile')}
           className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold text-sm">
           {firstName[0]?.toUpperCase()}
         </button>
