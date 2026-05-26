@@ -25,7 +25,7 @@ import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
 import Subscription from './pages/Subscription';
-import ExerciseLibrary from './pages/ExerciseLibrary';
+import ExerciseLibrary from './pages/ExerciseLibrary.jsx';
 import Automations from './pages/Automations';
 import Analytics from './pages/Analytics';
 import RevenueDashboard from './pages/RevenueDashboard';
