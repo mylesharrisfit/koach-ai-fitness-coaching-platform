@@ -19,7 +19,7 @@ import Progress from './pages/Progress';
 import Store from './pages/Store';
 import Settings from './pages/Settings';
 import Assistant from './pages/Assistant';
-import Adherence from './pages/Adherence';
+import Adherence from './pages/Adherence.jsx';
 import CheckInReview from './pages/CheckInReview';
 import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
