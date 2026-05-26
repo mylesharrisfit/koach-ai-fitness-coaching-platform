@@ -25,7 +25,7 @@ import Sales from './pages/Sales';
 import ClientDashboard from './pages/ClientDashboard';
 import Community from './pages/Community';
 import Subscription from './pages/Subscription';
-import ExerciseLibrary from './pages/ExerciseLibrary.jsx';
+import ExerciseLibrary from './pages/ExerciseLibrary';
 import Automations from './pages/Automations';
 import Analytics from './pages/Analytics';
 import RevenueDashboard from './pages/RevenueDashboard';
@@ -47,8 +47,9 @@ import Migration from './pages/Migration';
 import FoodLibrary from './pages/FoodLibrary';
 import FoodLogPage from './pages/FoodLogPage';
 import PremiumOnboarding from './pages/PremiumOnboarding';
-import ClientPortal from './pages/ClientPortal.jsx';
+import ClientPortal from './pages/ClientPortal';
 import ClientWorkoutView from './pages/ClientWorkoutView';
+import ClientInviteJoin from './pages/ClientInviteJoin';
 import EmailCenter from './pages/EmailCenter';
 
 const AuthenticatedApp = () => {
@@ -119,7 +120,10 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/start" element={<PremiumOnboarding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
+      <Route path="/join/:code" element={<ClientInviteJoin />} />
+      <Route path="/join" element={<ClientInviteJoin />} />
       <Route path="/workout" element={<ClientWorkoutView />} />
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
