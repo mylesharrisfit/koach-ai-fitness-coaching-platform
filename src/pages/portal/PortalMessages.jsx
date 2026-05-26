@@ -222,15 +222,15 @@ function ConversationView({ myClient, onBack }) {
             className="absolute bottom-20 left-4 right-4 p-3 rounded-2xl grid grid-cols-4 gap-2"
             style={{ background: '#151B27', border: '1px solid rgba(255,255,255,0.1)' }}>
             {[
-              { icon: Paperclip, label: 'File' },
-              { icon: ImageIcon, label: 'Photo' },
-              { icon: BarChart2, label: 'Progress' },
-              { icon: ClipboardList, label: 'Check-in' },
-            ].map(({ icon: Icon, label }) => (
+              { icon: <Paperclip className="w-5 h-5 text-white/50" />, label: 'File' },
+              { icon: <ImageIcon className="w-5 h-5 text-white/50" />, label: 'Photo' },
+              { icon: <BarChart2 className="w-5 h-5 text-white/50" />, label: 'Progress' },
+              { icon: <ClipboardList className="w-5 h-5 text-white/50" />, label: 'Check-in' },
+            ].map(({ icon, label }) => (
               <button key={label} onClick={() => setShowAttach(false)}
                 className="flex flex-col items-center gap-1.5 p-3 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <Icon className="w-5 h-5 text-white/50" />
+                {icon}
                 <span className="text-white/40 text-[9px]">{label}</span>
               </button>
             ))}

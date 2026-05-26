@@ -160,12 +160,30 @@ export default function PortalHome({ user }) {
       return next;
     });
     if (id === 'workout') saveLog({ ...log, workout_done: !log.workout_done });
-    if (id === 'checkin') navigate('/submit-checkin');
+    if (id === 'checkin') navigate('/portal/checkin');
   };
 
   return (
     <div className="pb-28 space-y-5">
       <PortalHeader user={user} unreadCount={unreadCount} onMessagesTap={() => navigate('/portal/messages')} />
+
+      {/* Check-in Due Banner */}
+      {checkInDueToday && (
+        <motion.button
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          onClick={() => navigate('/portal/checkin')}
+          className="mx-5 w-[calc(100%-40px)] p-4 rounded-2xl flex items-center gap-3 text-left"
+          style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.22), rgba(99,102,241,0.18))', border: '1px solid rgba(59,130,246,0.35)' }}>
+          <div className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0 animate-pulse" />
+          <div className="flex-1">
+            <p className="text-blue-300 font-bold text-sm">📋 Check-in Due Today!</p>
+            <p className="text-white/35 text-xs mt-0.5">Takes just 2 minutes — tap to start</p>
+          </div>
+          <span className="text-blue-400 text-xs font-bold px-3 py-1.5 rounded-xl"
+            style={{ background: 'rgba(59,130,246,0.2)' }}>Start →</span>
+        </motion.button>
+      )}
 
       <TodayHeroCard
         program={myProgram}

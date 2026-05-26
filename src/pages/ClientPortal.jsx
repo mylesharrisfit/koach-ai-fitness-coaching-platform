@@ -4,24 +4,54 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Home, Dumbbell, Salad, BarChart2, MessageSquare, Send
+  Home, Dumbbell, Salad, BarChart2, MessageSquare, ClipboardList
 } from 'lucide-react';
 import PortalNutritionPage from '@/pages/portal/PortalNutrition';
-import PortalProgressPage from '@/pages/portal/PortalProgress';
-import { format } from 'date-fns';
+import PortalCheckIn from '@/pages/portal/PortalCheckIn';
+import PortalProgress from '@/pages/portal/PortalProgress';
+import PortalMessages from '@/pages/portal/PortalMessages';
+import { format, parseISO, addDays, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
 
 /* ── Bottom Nav ── */
-const NAV = [
-  { icon: Home,          label: 'Home',      path: '/portal' },
-  { icon: Dumbbell,      label: 'Workout',   path: '/portal/workouts' },
-  { icon: Salad,         label: 'Nutrition', path: '/portal/nutrition' },
-  { icon: BarChart2,     label: 'Progress',  path: '/portal/progress' },
-  { icon: MessageSquare, label: 'Messages',  path: '/portal/messages' },
-];
-
-function BottomNav() {
+function BottomNav({ user }) {
   const location = useLocation();
+
+  // Fetch unread messages count
+  const { data: clients = [] } = useQuery({
+    queryKey: ['portal-client-nav', user?.email],
+    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
+    enabled: !!user?.email,
+  });
+  const myClient = clients[0];
+
+  const { data: messages = [] } = useQuery({
+    queryKey: ['portal-msgs-nav', myClient?.id],
+    queryFn: () => base44.entities.Message.filter({ client_id: myClient.id }, '-created_date', 50),
+    enabled: !!myClient?.id,
+    refetchInterval: 30000,
+  });
+
+  const { data: checkIns = [] } = useQuery({
+    queryKey: ['portal-checkins-nav', myClient?.id],
+    queryFn: () => base44.entities.CheckIn.filter({ client_id: myClient.id }, '-date', 5),
+    enabled: !!myClient?.id,
+  });
+
+  const unreadMsgs = messages.filter(m => m.sender === 'coach' && !m.is_read).length;
+  const lastCI = [...checkIns].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+  const nextDue = lastCI ? addDays(parseISO(lastCI.date), 7) : null;
+  const checkInDue = !nextDue || differenceInDays(nextDue, new Date()) <= 0;
+
+  const NAV = [
+    { icon: Home, label: 'Home', path: '/portal' },
+    { icon: Dumbbell, label: 'Workout', path: '/portal/workouts' },
+    { icon: Salad, label: 'Nutrition', path: '/portal/nutrition' },
+    { icon: ClipboardList, label: 'Check-in', path: '/portal/checkin', badge: checkInDue ? '!' : null, badgeColor: '#EF4444' },
+    { icon: BarChart2, label: 'Progress', path: '/portal/progress' },
+    { icon: MessageSquare, label: 'Messages', path: '/portal/messages', badge: unreadMsgs > 0 ? unreadMsgs : null },
+  ];
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex"
       style={{
@@ -35,9 +65,18 @@ function BottomNav() {
           (item.path !== '/portal' && location.pathname.startsWith(item.path));
         return (
           <Link key={item.path} to={item.path}
-            className="flex flex-col items-center justify-center flex-1 py-3 gap-1 transition-colors"
+            className="flex flex-col items-center justify-center flex-1 py-3 gap-1 transition-colors relative"
             style={{ color: isActive ? '#3B82F6' : 'rgba(255,255,255,0.25)' }}>
-            <item.icon className="w-5 h-5" />
+            <div className="relative">
+              <item.icon className="w-5 h-5" />
+              {item.badge && (
+                <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }}
+                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
+                  style={{ background: item.badgeColor || '#3B82F6' }}>
+                  {item.badge}
+                </motion.div>
+              )}
+            </div>
             <span className="text-[9px] font-semibold">{item.label}</span>
           </Link>
         );
@@ -46,20 +85,18 @@ function BottomNav() {
   );
 }
 
-/* ── Workouts ── */
+/* ── Workouts (simple inline, full view is in PortalWorkouts page) ── */
 function PortalWorkouts({ user }) {
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-client-wk', user?.email],
     queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
     enabled: !!user?.email,
-    select: d => d,
   });
   const myClient = clients[0];
   const { data: programs = [] } = useQuery({
     queryKey: ['portal-program-wk', myClient?.assigned_program_id],
     queryFn: () => base44.entities.WorkoutProgram.filter({ id: myClient.assigned_program_id }, '-created_date', 1),
     enabled: !!myClient?.assigned_program_id,
-    select: d => d,
   });
   const program = programs[0];
 
@@ -102,95 +139,6 @@ function PortalWorkouts({ user }) {
   );
 }
 
-/* ── Nutrition → delegated to dedicated page ── */
-function PortalNutrition({ user }) {
-  return <PortalNutritionPage user={user} />;
-}
-
-/* ── Progress → delegated to dedicated page ── */
-function PortalProgress({ user }) {
-  return <PortalProgressPage user={user} />;
-}
-
-/* ── Messages ── */
-function PortalMessages({ user }) {
-  const [newMsg, setNewMsg] = useState('');
-  const navigate = useNavigate();
-
-  const { data: clients = [] } = useQuery({
-    queryKey: ['portal-client-msg', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
-  });
-  const myClient = clients[0];
-
-  const { data: messages = [], refetch } = useQuery({
-    queryKey: ['portal-messages-tab', myClient?.id],
-    queryFn: () => base44.entities.Message.filter({ client_id: myClient.id }, '-created_date', 50),
-    enabled: !!myClient?.id,
-  });
-
-  const sorted = [...messages].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
-
-  const sendMsg = async () => {
-    if (!newMsg.trim() || !myClient?.id) return;
-    await base44.entities.Message.create({ client_id: myClient.id, client_name: myClient.name, sender: 'client', content: newMsg });
-    setNewMsg('');
-    refetch();
-  };
-
-  return (
-    <div className="flex flex-col h-screen" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 60px)' }}>
-      {/* Header */}
-      <div className="px-5 pt-12 pb-4 flex-shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">Messages</p>
-        <h1 className="text-white text-xl font-bold mt-0.5">Coach Chat</h1>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
-        {sorted.length === 0 && (
-          <div className="text-center py-16">
-            <MessageSquare className="w-10 h-10 text-white/10 mx-auto mb-2" />
-            <p className="text-white/30 text-sm">No messages yet</p>
-          </div>
-        )}
-        {sorted.map(m => (
-          <div key={m.id} className={`flex ${m.sender === 'client' ? 'justify-end' : 'justify-start'}`}>
-            <div className="max-w-[80%] px-4 py-3 rounded-2xl"
-              style={{
-                background: m.sender === 'client' ? 'rgba(59,130,246,0.25)' : 'rgba(255,255,255,0.07)',
-                border: `1px solid ${m.sender === 'client' ? 'rgba(59,130,246,0.3)' : 'rgba(255,255,255,0.1)'}`,
-              }}>
-              <p className="text-white text-sm leading-relaxed">{m.content}</p>
-              <p className="text-white/25 text-[9px] mt-1">{m.created_date ? format(new Date(m.created_date), 'MMM d, h:mm a') : ''}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Input */}
-      <div className="flex-shrink-0 px-5 py-3 flex items-center gap-3"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.08)', background: 'rgba(13,17,28,0.95)' }}>
-        <input
-          value={newMsg}
-          onChange={e => setNewMsg(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && sendMsg()}
-          placeholder="Message your coach..."
-          className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm placeholder-white/20 focus:outline-none"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
-        />
-        <button onClick={sendMsg}
-          disabled={!newMsg.trim()}
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-30"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}>
-          <Send className="w-4 h-4 text-white" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 /* ── Main Export ── */
 export default function ClientPortal() {
   const [user, setUser] = useState(null);
@@ -201,10 +149,10 @@ export default function ClientPortal() {
 
   return (
     <div className="fixed inset-0" style={{ background: '#0A0F1A' }}>
-      {/* Sign out button — top left, subtle */}
+      {/* Sign out button — top right, subtle */}
       <button
         onClick={() => base44.auth.logout()}
-        className="absolute top-4 left-4 z-50 text-[10px] text-white/15 hover:text-white/40 transition-colors">
+        className="absolute top-4 right-4 z-50 text-[10px] text-white/15 hover:text-white/40 transition-colors">
         Sign out
       </button>
 
@@ -213,14 +161,15 @@ export default function ClientPortal() {
         <Routes>
           <Route path="/" element={<PortalHome user={user} />} />
           <Route path="/workouts" element={<PortalWorkouts user={user} />} />
-          <Route path="/nutrition" element={<PortalNutrition user={user} />} />
+          <Route path="/nutrition" element={<PortalNutritionPage user={user} />} />
+          <Route path="/checkin" element={<PortalCheckIn user={user} />} />
           <Route path="/progress" element={<PortalProgress user={user} />} />
           <Route path="/messages" element={<PortalMessages user={user} />} />
         </Routes>
       </div>
 
       {/* Bottom Nav */}
-      <BottomNav />
+      <BottomNav user={user} />
     </div>
   );
 }
