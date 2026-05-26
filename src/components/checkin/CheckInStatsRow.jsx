@@ -14,6 +14,21 @@ function calcStreak(clientCIs) {
   return streak;
 }
 
+function StatCard({ label, value, dot, iconBg, iconColor, children }) {
+  return (
+    <div className={cn('bg-white rounded-xl border p-4 shadow-sm', `border-${dot.split('-')[1]}-100`)}>
+      <div className="flex items-center justify-between mb-3">
+        <div className={cn('w-2 h-2 rounded-full', dot)} />
+        <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', iconBg)}>
+          {children}
+        </div>
+      </div>
+      <p className="text-2xl font-bold text-[#111827]">{value}</p>
+      <p className="text-xs text-[#6B7280] mt-0.5">{label}</p>
+    </div>
+  );
+}
+
 export default function CheckInStatsRow({ checkIns, clients, latestPerClient }) {
   const stats = useMemo(() => {
     const pending = latestPerClient.filter(ci =>
@@ -45,27 +60,51 @@ export default function CheckInStatsRow({ checkIns, clients, latestPerClient }) 
     return { pending, reviewedThisWeek, responseRate, streakLeaders };
   }, [checkIns, clients, latestPerClient]);
 
-  const cards = [
-    { label: 'Pending Reviews', value: stats.pending, icon: Clock, iconBg: 'bg-orange-50', iconColor: 'text-orange-500', dot: 'bg-orange-400', border: 'border-orange-100' },
-    { label: 'Reviewed This Week', value: stats.reviewedThisWeek, icon: CheckCircle2, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-500', dot: 'bg-emerald-400', border: 'border-emerald-100' },
-    { label: 'Avg Response Rate', value: `${stats.responseRate}%`, icon: TrendingUp, iconBg: 'bg-blue-50', iconColor: 'text-blue-500', dot: 'bg-blue-400', border: 'border-blue-100' },
-    { label: 'Streak Leaders', value: stats.streakLeaders, icon: Flame, iconBg: 'bg-purple-50', iconColor: 'text-purple-500', dot: 'bg-purple-400', border: 'border-purple-100' },
-  ];
-
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-      {cards.map(({ label, value, icon: Icon, iconBg, iconColor, dot, border }) => (
-        <div key={label} className={cn('bg-white rounded-xl border p-4 shadow-sm', border)}>
-          <div className="flex items-center justify-between mb-3">
-            <div className={cn('w-2 h-2 rounded-full', dot)} />
-            <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', iconBg)}>
-              <Icon className={cn('w-4 h-4', iconColor)} />
-            </div>
+      <div className="bg-white rounded-xl border border-orange-100 p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="w-2 h-2 rounded-full bg-orange-400" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50">
+            <Clock className="w-4 h-4 text-orange-500" />
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{value}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">{label}</p>
         </div>
-      ))}
+        <p className="text-2xl font-bold text-[#111827]">{stats.pending}</p>
+        <p className="text-xs text-[#6B7280] mt-0.5">Pending Reviews</p>
+      </div>
+
+      <div className="bg-white rounded-xl border border-emerald-100 p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="w-2 h-2 rounded-full bg-emerald-400" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-50">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          </div>
+        </div>
+        <p className="text-2xl font-bold text-[#111827]">{stats.reviewedThisWeek}</p>
+        <p className="text-xs text-[#6B7280] mt-0.5">Reviewed This Week</p>
+      </div>
+
+      <div className="bg-white rounded-xl border border-blue-100 p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="w-2 h-2 rounded-full bg-blue-400" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
+            <TrendingUp className="w-4 h-4 text-blue-500" />
+          </div>
+        </div>
+        <p className="text-2xl font-bold text-[#111827]">{stats.responseRate}%</p>
+        <p className="text-xs text-[#6B7280] mt-0.5">Avg Response Rate</p>
+      </div>
+
+      <div className="bg-white rounded-xl border border-purple-100 p-4 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="w-2 h-2 rounded-full bg-purple-400" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-50">
+            <Flame className="w-4 h-4 text-purple-500" />
+          </div>
+        </div>
+        <p className="text-2xl font-bold text-[#111827]">{stats.streakLeaders}</p>
+        <p className="text-xs text-[#6B7280] mt-0.5">Streak Leaders</p>
+      </div>
     </div>
   );
 }

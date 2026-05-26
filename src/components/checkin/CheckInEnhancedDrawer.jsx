@@ -22,7 +22,8 @@ const REACTIONS = [
   { emoji: '🔥', label: 'On fire!' },
 ];
 
-function MetricTile({ icon: Icon, label, value, unit, color }) {
+function MetricTile({ icon: IconComp, label, value, unit, color }) {
+  const Icon = IconComp;
   return (
     <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3 flex flex-col gap-1">
       <div className="flex items-center gap-1.5">

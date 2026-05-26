@@ -1,36 +1,54 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { differenceInDays, parseISO } from 'date-fns';
-import { Plus, Search, X, ClipboardList, Bell } from 'lucide-react';
+import { differenceInDays, parseISO, format } from 'date-fns';
+import { ClipboardList, Search, X, Plus, Bell, Send, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { checkInScore } from '@/lib/adherence';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
 
-import CheckInStatsCards from '@/components/checkin/CheckInStatsCards';
+import CheckInStatsRow from '@/components/checkin/CheckInStatsRow';
 import CheckInReviewRow from '@/components/checkin/CheckInReviewRow';
-import CheckInReviewDrawer from '@/components/checkin/CheckInReviewDrawer';
+import CheckInEnhancedDrawer from '@/components/checkin/CheckInEnhancedDrawer';
 import FormBuilderTab from '@/components/checkin/FormBuilderTab';
-import CheckInFormBuilderModal from '@/components/checkin/CheckInFormBuilderModal';
 
-const REVIEW_FILTERS = [
+/* ── helpers ── */
+function isPending(ci) {
+  return !ci.coach_responded && ci.review_status !== 'reviewed';
+}
+function isFlagged(ci) {
+  if (ci.review_status === 'flagged') return true;
+  const s = checkInScore(ci);
+  if (s !== null && s < 55) return true;
+  if (ci.compliance_training != null && ci.compliance_training < 60) return true;
+  if (ci.compliance_nutrition != null && ci.compliance_nutrition < 60) return true;
+  if (ci.sleep_hours != null && ci.sleep_hours < 6) return true;
+  if (ci.mood === 'stressed' || ci.mood === 'tired') return true;
+  return false;
+}
+function isOverdue(ci) { return differenceInDays(new Date(), parseISO(ci.date)) > 14; }
+
+const FILTERS = [
   { key: 'all', label: 'All' },
-  { key: 'new', label: 'New' },
   { key: 'pending', label: 'Pending' },
+  { key: 'flagged', label: 'Flagged' },
   { key: 'reviewed', label: 'Reviewed' },
-  { key: 'flagged', label: 'Needs Follow-up' },
+  { key: 'missed', label: 'Missed' },
+];
+
+const MAIN_TABS = [
+  { key: 'pending_review', label: 'Pending Review' },
+  { key: 'form_builder', label: 'Form Builder' },
 ];
 
 export default function CheckInReview() {
-  const [activeTab, setActiveTab] = useState('pending'); // pending | forms
+  const [mainTab, setMainTab] = useState('pending_review');
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [drawerCheckIn, setDrawerCheckIn] = useState(null);
   const [drawerIndex, setDrawerIndex] = useState(0);
-  const [newFormOpen, setNewFormOpen] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -49,7 +67,7 @@ export default function CheckInReview() {
 
   const { data: checkIns = [], isLoading } = useQuery({
     queryKey: ['checkins-review'],
-    queryFn: () => base44.entities.CheckIn.list('-date', 500),
+    queryFn: () => base44.entities.CheckIn.list('-date', 400),
   });
 
   const clientMap = useMemo(
@@ -57,7 +75,6 @@ export default function CheckInReview() {
     [clients]
   );
 
-  // Latest check-in per client
   const latestPerClient = useMemo(() => {
     const seen = new Map();
     for (const ci of checkIns) {
@@ -66,53 +83,53 @@ export default function CheckInReview() {
     return Array.from(seen.values());
   }, [checkIns]);
 
-  // All check-ins grouped by client
   const cisByClient = useMemo(() => {
     const map = {};
     for (const ci of checkIns) {
-      if (!map[ci.client_id]) map[ci.client_id] = [];
-      map[ci.client_id].push(ci);
+      (map[ci.client_id] = map[ci.client_id] || []).push(ci);
     }
     return map;
   }, [checkIns]);
 
-  // Filtered + sorted list for review tab
-  const visible = useMemo(() => {
-    let list = [...checkIns];
+  const missedClients = useMemo(() => {
+    const active = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active');
+    return active.filter(client => {
+      const cis = checkIns.filter(ci => ci.client_id === client.id);
+      if (!cis.length) return true;
+      const latest = cis.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+      return differenceInDays(new Date(), parseISO(latest.date)) >= 7;
+    }).map(client => {
+      const cis = checkIns.filter(ci => ci.client_id === client.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+      const lastCI = cis[0];
+      const daysAgo = lastCI ? differenceInDays(new Date(), parseISO(lastCI.date)) : null;
+      return { client, lastCI, daysAgo };
+    }).sort((a, b) => (b.daysAgo ?? 999) - (a.daysAgo ?? 999));
+  }, [clients, checkIns]);
 
+  const counts = useMemo(() => ({
+    pending: latestPerClient.filter(isPending).length,
+    flagged: latestPerClient.filter(isFlagged).length,
+    reviewed: latestPerClient.filter(ci => ci.coach_responded || ci.review_status === 'reviewed').length,
+    missed: missedClients.length,
+  }), [latestPerClient, missedClients]);
+
+  const visible = useMemo(() => {
+    let list = latestPerClient;
     if (search.trim()) {
       const q = search.toLowerCase();
-      list = list.filter(ci => {
-        const name = (clientMap[ci.client_id]?.name || ci.client_name || '').toLowerCase();
-        return name.includes(q);
-      });
+      list = list.filter(ci => (clientMap[ci.client_id]?.name || ci.client_name || '').toLowerCase().includes(q));
     }
-
-    if (filter === 'new') {
-      list = list.filter(ci => !ci.coach_responded && ci.review_status !== 'reviewed' && ci.review_status !== 'flagged');
-    } else if (filter === 'pending') {
-      list = list.filter(ci => !ci.coach_responded && ci.review_status !== 'reviewed');
-    } else if (filter === 'reviewed') {
-      list = list.filter(ci => ci.coach_responded || ci.review_status === 'reviewed');
-    } else if (filter === 'flagged') {
-      list = list.filter(ci => ci.review_status === 'flagged');
-    }
-
-    // Sort: unreviewed first, then by date desc
-    return list.sort((a, b) => {
-      const aReviewed = a.coach_responded || a.review_status === 'reviewed' ? 1 : 0;
-      const bReviewed = b.coach_responded || b.review_status === 'reviewed' ? 1 : 0;
-      if (aReviewed !== bReviewed) return aReviewed - bReviewed;
+    if (filter === 'pending') list = list.filter(isPending);
+    if (filter === 'flagged') list = list.filter(isFlagged);
+    if (filter === 'reviewed') list = list.filter(ci => ci.coach_responded || ci.review_status === 'reviewed');
+    if (filter === 'missed') return [];
+    return [...list].sort((a, b) => {
+      const aFlag = isFlagged(a) ? 1 : 0;
+      const bFlag = isFlagged(b) ? 1 : 0;
+      if (bFlag !== aFlag) return bFlag - aFlag;
       return new Date(b.date) - new Date(a.date);
     });
-  }, [checkIns, filter, search, clientMap]);
-
-  const filterCounts = useMemo(() => ({
-    new: checkIns.filter(ci => !ci.coach_responded && ci.review_status !== 'reviewed' && ci.review_status !== 'flagged').length,
-    pending: checkIns.filter(ci => !ci.coach_responded && ci.review_status !== 'reviewed').length,
-    reviewed: checkIns.filter(ci => ci.coach_responded || ci.review_status === 'reviewed').length,
-    flagged: checkIns.filter(ci => ci.review_status === 'flagged').length,
-  }), [checkIns]);
+  }, [latestPerClient, filter, search, clientMap]);
 
   const openDrawer = (ci, idx) => {
     setDrawerCheckIn(ci);
@@ -130,28 +147,26 @@ export default function CheckInReview() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
 
       {/* ── Header ── */}
-      <div
-        className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}
-      >
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
+        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight">Check-ins</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {checkIns.length} total · {filterCounts.pending} pending review
+          <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">Check-ins</h1>
+          <p className="text-xs sm:text-sm mt-0.5 text-white/50">
+            {format(new Date(), 'EEE, MMM d')} · {latestPerClient.length} total · {counts.pending} pending review
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
-            onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors"
             style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+            onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
           >
-            <Bell className="w-3.5 h-3.5" /> Bulk Reminder
+            <Bell className="w-3.5 h-3.5" /> Send Bulk Reminder
           </button>
           <button
-            onClick={() => setNewFormOpen(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff' }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white transition-colors"
+            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}
+            onClick={() => setMainTab('form_builder')}
           >
             <Plus className="w-3.5 h-3.5" /> New Check-in Form
           </button>
@@ -159,153 +174,140 @@ export default function CheckInReview() {
       </div>
 
       {/* ── Stat Cards ── */}
-      <CheckInStatsCards
-        checkIns={checkIns}
-        clients={clients}
-        latestPerClient={latestPerClient}
-      />
+      <CheckInStatsRow checkIns={checkIns} clients={clients} latestPerClient={latestPerClient} />
 
       {/* ── Main Tabs ── */}
-      <div className="flex border-b border-[#E5E7EB] mb-6">
-        {[
-          { key: 'pending', label: 'Pending Review', badge: filterCounts.pending },
-          { key: 'forms', label: 'Form Builder', badge: null },
-        ].map(({ key, label, badge }) => (
+      <div className="flex gap-1 mb-6 bg-[#F3F4F6] rounded-xl p-1 w-fit">
+        {MAIN_TABS.map(tab => (
           <button
-            key={key}
-            onClick={() => setActiveTab(key)}
+            key={tab.key}
+            onClick={() => setMainTab(tab.key)}
             className={cn(
-              'px-5 py-3 text-sm font-semibold transition-colors relative flex items-center gap-2',
-              activeTab === key
-                ? 'text-primary border-b-2 border-primary'
+              'px-5 py-2 rounded-lg text-sm font-semibold transition-all',
+              mainTab === tab.key
+                ? 'bg-white text-[#111827] shadow-sm'
                 : 'text-[#6B7280] hover:text-[#374151]'
             )}
           >
-            {label}
-            {badge != null && badge > 0 && (
+            {tab.label}
+            {tab.key === 'pending_review' && counts.pending > 0 && (
               <span className={cn(
-                'text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                activeTab === key ? 'bg-primary/10 text-primary' : 'bg-[#F3F4F6] text-[#6B7280]'
-              )}>
-                {badge}
-              </span>
+                'ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
+                mainTab === tab.key ? 'bg-orange-100 text-orange-600' : 'bg-[#E5E7EB] text-[#6B7280]'
+              )}>{counts.pending}</span>
             )}
           </button>
         ))}
       </div>
 
       {/* ── Pending Review Tab ── */}
-      {activeTab === 'pending' && (
+      {mainTab === 'pending_review' && (
         <div>
-          {/* Sub-filters + search */}
+          {/* Filter bar */}
           <div className="flex flex-col sm:flex-row gap-3 mb-5">
-            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide flex-shrink-0">
-              {REVIEW_FILTERS.map(f => (
-                <button
-                  key={f.key}
-                  onClick={() => setFilter(f.key)}
+            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+              {FILTERS.map(f => (
+                <button key={f.key} onClick={() => setFilter(f.key)}
                   className={cn(
-                    'flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap',
+                    'flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all',
                     filter === f.key
                       ? 'bg-primary text-white'
                       : 'bg-white border border-[#E5E7EB] text-[#374151] hover:border-[#D1D5DB]'
-                  )}
-                >
+                  )}>
                   {f.label}
-                  {f.key !== 'all' && filterCounts[f.key] > 0 && (
-                    <span className={cn(
-                      'ml-1.5 text-[10px] font-bold',
-                      filter === f.key ? 'opacity-70' : 'text-[#6B7280]'
-                    )}>
-                      {filterCounts[f.key]}
+                  {f.key !== 'all' && counts[f.key] > 0 && (
+                    <span className={cn('ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
+                      filter === f.key ? 'bg-white/20 text-white' : 'bg-[#F3F4F6]')}>
+                      {counts[f.key]}
                     </span>
                   )}
                 </button>
               ))}
             </div>
-
-            <div className="relative flex-1 max-w-sm ml-auto">
+            <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search clients..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="pl-9 h-9"
-              />
-              {search && (
-                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <X className="w-4 h-4 text-muted-foreground" />
-                </button>
-              )}
+              <Input placeholder="Search clients..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-9" />
+              {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X className="w-4 h-4 text-muted-foreground" /></button>}
             </div>
           </div>
 
-          {/* List */}
+          {/* Check-in list */}
           {isLoading ? (
             <div className="flex justify-center py-20">
               <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
             </div>
-          ) : visible.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mb-4">
-                <ClipboardList className="w-8 h-8 text-[#9CA3AF]" />
+          ) : filter === 'missed' ? (
+            /* Missed clients list */
+            missedClients.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
+                <ClipboardList className="w-12 h-12 opacity-30" />
+                <p className="text-sm font-medium">All active clients checked in this week 🎉</p>
               </div>
-              <p className="font-semibold text-[#374151] mb-1">
-                {filter === 'pending' ? 'All caught up! 🎉' :
+            ) : (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground mb-3">{missedClients.length} client{missedClients.length !== 1 ? 's' : ''} haven't submitted this week</p>
+                {missedClients.map(({ client, lastCI, daysAgo }) => (
+                  <div key={client.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-sm flex-shrink-0">
+                      {client.name?.[0]?.toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm truncate">{client.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {daysAgo !== null ? `Last check-in ${daysAgo}d ago` : 'No check-ins yet'}
+                      </p>
+                    </div>
+                    <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                      daysAgo === null || daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100')}>
+                      {daysAgo !== null ? `${daysAgo}d` : 'Never'}
+                    </span>
+                    <button
+                      onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors">
+                      <Send className="w-3 h-3" /> Remind
+                    </button>
+                    <button
+                      onClick={() => navigate(`/messages?clientId=${client.id}`)}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F3F4F6] border border-[#E5E7EB] text-[#374151] hover:bg-[#E5E7EB] transition-colors">
+                      <MessageSquare className="w-3 h-3" /> Chat
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )
+          ) : visible.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
+              <ClipboardList className="w-12 h-12 opacity-30" />
+              <p className="text-sm font-medium">
+                {filter === 'pending' ? 'All caught up! No pending check-ins 🎉' :
                  filter === 'flagged' ? 'No flagged check-ins' :
-                 filter === 'reviewed' ? 'No reviewed check-ins' :
-                 search ? 'No clients match your search' :
-                 'No check-ins yet'}
-              </p>
-              <p className="text-sm text-[#9CA3AF]">
-                {filter === 'pending' ? 'All check-ins have been reviewed' : 'Check-ins will appear here when clients submit them'}
+                 filter === 'reviewed' ? 'No reviewed check-ins yet' :
+                 search ? 'No clients found' : 'No check-ins submitted yet'}
               </p>
             </div>
           ) : (
             <div className="space-y-3">
               {visible.map((ci, i) => (
-                <motion.div
+                <CheckInReviewRow
                   key={ci.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: Math.min(i * 0.03, 0.2) }}
-                >
-                  <CheckInReviewRow
-                    checkIn={ci}
-                    client={clientMap[ci.client_id]}
-                    onClick={() => openDrawer(ci, i)}
-                  />
-                </motion.div>
+                  checkIn={ci}
+                  client={clientMap[ci.client_id]}
+                  onReview={() => openDrawer(ci, i)}
+                />
               ))}
-              <p className="text-center text-xs text-[#9CA3AF] pt-2">{visible.length} check-in{visible.length !== 1 ? 's' : ''}</p>
             </div>
           )}
         </div>
       )}
 
       {/* ── Form Builder Tab ── */}
-      {activeTab === 'forms' && (
-        <div>
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="font-semibold text-[#111827]">Check-in Forms</h2>
-              <p className="text-xs text-[#6B7280]">Build custom forms to collect structured data from clients</p>
-            </div>
-            <Button
-              onClick={() => setNewFormOpen(true)}
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}
-              size="sm"
-            >
-              <Plus className="w-4 h-4" /> New Form
-            </Button>
-          </div>
-          <FormBuilderTab />
-        </div>
+      {mainTab === 'form_builder' && (
+        <FormBuilderTab clients={clients} />
       )}
 
-      {/* ── Review Drawer ── */}
+      {/* ── Enhanced Review Drawer ── */}
       {drawerCheckIn && (
-        <CheckInReviewDrawer
+        <CheckInEnhancedDrawer
           checkIn={drawerCheckIn}
           client={clientMap[drawerCheckIn.client_id]}
           allCheckIns={cisByClient[drawerCheckIn.client_id] || []}
@@ -314,20 +316,6 @@ export default function CheckInReview() {
           onNavigate={navigateDrawer}
           open={!!drawerCheckIn}
           onOpenChange={(v) => { if (!v) setDrawerCheckIn(null); }}
-        />
-      )}
-
-      {/* ── New Form Modal (header button) ── */}
-      {newFormOpen && (
-        <CheckInFormBuilderModal
-          open={newFormOpen}
-          onOpenChange={setNewFormOpen}
-          editingForm={null}
-          onSaved={() => {
-            queryClient.invalidateQueries({ queryKey: ['checkin-forms'] });
-            setNewFormOpen(false);
-            toast.success('Form created! Switch to Form Builder tab to see it.');
-          }}
         />
       )}
     </div>
