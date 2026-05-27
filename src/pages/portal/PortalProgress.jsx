@@ -354,7 +354,7 @@ export default function PortalProgress({ user }) {
 
       {/* Stats Row */}
       <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-        <StatChip emoji="⚖️" value={lastCI?.weight ? `${lastCI.weight} lbs` : '—'} label="Current" sub={totalLost !== 0 ? `${totalLost > 0 ? '−' : '+'}${Math.abs(totalLost).toFixed(1)} lbs` : ''} />
+        <StatChip emoji="⚖️" value={lastCI?.weight && lastCI.weight < 999 ? `${Number(lastCI.weight).toFixed(1)} lbs` : '—'} label="Current" sub={totalLost !== 0 && Math.abs(totalLost) < 200 ? `${totalLost > 0 ? '−' : '+'}${Math.abs(totalLost).toFixed(1)} lbs` : ''} />
         <StatChip emoji="📉" value={totalLost > 0 ? `−${totalLost.toFixed(1)}` : totalLost < 0 ? `+${Math.abs(totalLost).toFixed(1)}` : '—'} label="lbs total" />
         <StatChip emoji="🔥" value={`${streak}d`} label="Streak" />
         <StatChip emoji="💪" value={sessions.length} label="Workouts" />

@@ -243,7 +243,7 @@ function ConversationView({ myClient, onBack }) {
 
 /* ── MAIN PAGE ── */
 export default function PortalMessages({ user }) {
-  const [view, setView] = useState('home'); // home | conversation
+  const [view, setView] = useState('conversation'); // auto-open conversation
 
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-client-msgs', user?.email],
