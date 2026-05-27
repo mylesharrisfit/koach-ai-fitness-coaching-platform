@@ -1,96 +1,119 @@
-const CACHE_NAME = 'koach-ai-v1';
-const OFFLINE_URL = '/offline.html';
-
-// Static assets to cache immediately on install
-const PRECACHE_ASSETS = [
+const CACHE_NAME = 'koach-v1';
+const urlsToCache = [
   '/',
-  '/portal',
+  '/index.html',
   '/offline.html',
-  '/manifest.json',
 ];
 
-// Install: precache critical assets
-self.addEventListener('install', (event) => {
+// Install event — cache assets
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS).catch(() => {
-        // Silently fail if some assets aren't available
-      });
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
+    })
   );
+  self.skipWaiting();
 });
 
-// Activate: clean up old caches
-self.addEventListener('activate', (event) => {
+// Activate event — clean old caches
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
+  self.clients.claim();
 });
 
-// Fetch: Cache First for static, Network First for API
-self.addEventListener('fetch', (event) => {
+// Fetch event — cache-first for assets, network-first for API
+self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET, cross-origin, and API calls (let them fail naturally)
+  // Skip non-GET requests
   if (request.method !== 'GET') return;
-  if (!url.origin.includes(self.location.origin) && !url.hostname.includes('base44')) return;
 
-  // API calls: Network First with short timeout
-  if (url.pathname.startsWith('/api/') || url.hostname.includes('base44.com')) {
+  // API requests — network first
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/invoke')) {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-          }
+        .then(response => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() => caches.match(request).catch(() => new Response('Offline', { status: 503 })))
     );
     return;
   }
 
-  // Static assets: Cache First
+  // Assets — cache first
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((response) => {
-        if (response.ok && response.type === 'basic') {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-        }
+    caches.match(request).then(response => {
+      if (response) return response;
+      return fetch(request).then(response => {
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, responseClone));
         return response;
-      }).catch(() => {
-        // For navigation requests, return offline page
-        if (request.mode === 'navigate') {
-          return caches.match(OFFLINE_URL);
-        }
-      });
+      }).catch(() => caches.match('/offline.html'));
     })
   );
 });
 
-// Background sync for queued offline actions
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-offline-actions') {
-    event.waitUntil(syncOfflineActions());
-  }
+// Push notification event
+self.addEventListener('push', event => {
+  const data = event.data?.json() || {};
+  const { title, body, icon, badge, tag, actions, vibrate, sound } = data;
+
+  const options = {
+    body,
+    icon: icon || '/icon-192x192.png',
+    badge: badge || '/icon-badge.png',
+    tag,
+    actions,
+    vibrate,
+    requireInteraction: false,
+    data: { url: data.url || '/' },
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title || 'KOACH AI', options)
+  );
 });
 
-async function syncOfflineActions() {
-  // Offline queue is managed by the app via IndexedDB
-  // This just notifies all clients to flush their queue
-  const clients = await self.clients.matchAll();
-  clients.forEach(client => client.postMessage({ type: 'SYNC_OFFLINE_QUEUE' }));
-}
+// Notification click event
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
 
-// Handle messages from app
-self.addEventListener('message', (event) => {
-  if (event.data?.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+  if (event.action) {
+    // Action button clicked
+    self.clients.matchAll({ type: 'window' }).then(clients => {
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'NOTIFICATION_ACTION',
+          action: event.action,
+          notificationData: event.notification.data,
+        });
+      });
+    });
+  } else {
+    // Notification body clicked
+    const url = event.notification.data?.url || '/';
+    self.clients.matchAll({ type: 'window' }).then(clients => {
+      for (let client of clients) {
+        if (client.url === url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(url);
+      }
+    });
   }
 });
