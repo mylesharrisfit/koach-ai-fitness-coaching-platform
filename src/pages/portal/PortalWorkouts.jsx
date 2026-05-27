@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, startOfWeek, addDays, subDays, isSameDay } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Settings } from 'lucide-react';
 import WorkoutProgramHeader from '@/components/portal/workout/WorkoutProgramHeader';
 import WeekScheduleSelector from '@/components/portal/workout/WeekScheduleSelector';
 import WorkoutCard from '@/components/portal/workout/WorkoutCard';
@@ -164,13 +165,15 @@ export default function PortalWorkouts({ user }) {
 
       <div className="pb-28 space-y-5" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
         {/* Page header */}
-        <div className="bg-white px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">My Program</p>
-          <h1 className="text-slate-900 font-black text-2xl leading-tight mt-0.5">{myProgram.title}</h1>
+        <div className="bg-white px-5 flex items-center justify-between" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 14px)', paddingBottom: 14, boxShadow: '0 1px 0 #F1F5F9' }}>
+          <h1 className="text-slate-900 font-black text-[28px] leading-tight">Train</h1>
+          <button className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#F8FAFC' }}>
+            <Settings className="w-5 h-5 text-slate-400" />
+          </button>
         </div>
 
         {/* Program progress header */}
-        <WorkoutProgramHeader program={myProgram} client={myClient} />
+        <WorkoutProgramHeader program={myProgram} client={myClient} sessions={sessions} />
 
         {/* Missed workout banner */}
         {missedYesterday && !isTodayDone && (

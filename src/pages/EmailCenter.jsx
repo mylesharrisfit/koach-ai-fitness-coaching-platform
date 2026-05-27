@@ -1,86 +1,163 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { sendEmail, sendBulkEmail, isResendEnabled } from '@/lib/sendgrid';
 import { templates, TEMPLATE_OPTIONS } from '@/lib/emailTemplates';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Mail, Send, BarChart2, Loader2, CheckCircle2, Users, Eye } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Mail, Send, Loader2, Eye, Users, ChevronRight,
+  Smartphone, Monitor, Search, CheckCircle2, X
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { sendZapierEvent } from '@/lib/zapier';
+
+const AUDIENCE_TABS = [
+  { id: 'all',    label: 'All' },
+  { id: 'client', label: 'Client Emails' },
+  { id: 'coach',  label: 'Coach Emails' },
+];
+
+function AudienceBadge({ audience }) {
+  return (
+    <span className={cn(
+      'px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide',
+      audience === 'client' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+    )}>{audience}</span>
+  );
+}
+
+function TemplateList({ templates: tpls, selected, onSelect, search }) {
+  const filtered = tpls.filter(t =>
+    t.label.toLowerCase().includes(search.toLowerCase()) ||
+    t.desc.toLowerCase().includes(search.toLowerCase())
+  );
+  return (
+    <div className="space-y-1">
+      {filtered.map(t => (
+        <button
+          key={t.key}
+          onClick={() => onSelect(t.key)}
+          className={cn(
+            'w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all group',
+            selected === t.key
+              ? 'border-blue-500 bg-blue-50'
+              : 'border-[#E5E7EB] hover:border-blue-300 bg-white hover:bg-slate-50'
+          )}
+        >
+          <span className="text-xl leading-none flex-shrink-0">{t.emoji}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className={cn('text-xs font-bold', selected === t.key ? 'text-blue-700' : 'text-[#111827]')}>{t.label}</p>
+              <AudienceBadge audience={t.audience} />
+            </div>
+            <p className="text-[11px] text-[#9CA3AF] mt-0.5 line-clamp-1">{t.desc}</p>
+          </div>
+          <ChevronRight className={cn('w-4 h-4 flex-shrink-0 transition-colors', selected === t.key ? 'text-blue-500' : 'text-slate-300')} />
+        </button>
+      ))}
+      {filtered.length === 0 && (
+        <p className="text-center py-8 text-sm text-slate-400">No templates match "{search}"</p>
+      )}
+    </div>
+  );
+}
 
 export default function EmailCenter() {
   const { user } = useAuth();
-  const [tab, setTab] = useState('compose');
-  const [toMode, setToMode] = useState('single'); // single | all | status
-  const [selectedClientId, setSelectedClientId] = useState('');
-  const [statusTarget, setStatusTarget] = useState('active');
+  const [audienceTab, setAudienceTab] = useState('all');
   const [selectedTemplate, setSelectedTemplate] = useState('welcome');
-  const [subject, setSubject] = useState('');
-  const [customHtml, setCustomHtml] = useState('');
-  const [preview, setPreview] = useState(false);
+  const [toMode, setToMode] = useState('single');
+  const [selectedClientId, setSelectedClientId] = useState('');
+  const [customSubject, setCustomSubject] = useState('');
+  const [previewDevice, setPreviewDevice] = useState('desktop');
   const [sending, setSending] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [testEmailAddress, setTestEmailAddress] = useState(user?.email || '');
+  const [sentSuccess, setSentSuccess] = useState(false);
 
   const { data: clients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list('name'),
   });
 
-  const stats = null; // Stats not available via Resend API in frontend
-
-  const openRate = stats?.delivered > 0 ? Math.round((stats.opens / stats.delivered) * 100) : 0;
-  const clickRate = stats?.delivered > 0 ? Math.round((stats.clicks / stats.delivered) * 100) : 0;
-
   const selectedClient = clients.find(c => c.id === selectedClientId);
 
-  const getPreviewHtml = () => {
-    if (selectedTemplate === 'custom') return customHtml;
-    const tplFn = templates[selectedTemplate];
-    if (!tplFn) return '';
-    const client = selectedClient || { name: 'Client Name', email: 'client@example.com' };
-    const result = tplFn(client, user, 75);
-    return result.html;
-  };
+  const filteredTemplates = useMemo(() =>
+    TEMPLATE_OPTIONS.filter(t => audienceTab === 'all' || t.audience === audienceTab),
+    [audienceTab]
+  );
 
-  const getPreviewSubject = () => {
-    if (selectedTemplate === 'custom') return subject;
-    const tplFn = templates[selectedTemplate];
-    if (!tplFn) return subject;
-    const client = selectedClient || { name: 'Client Name', email: 'client@example.com' };
-    return tplFn(client, user, 75).subject;
-  };
+  const currentTemplate = TEMPLATE_OPTIONS.find(t => t.key === selectedTemplate);
 
-  const handleSend = async () => {
-    if (!isResendEnabled()) return toast.error('Resend not configured. Add VITE_RESEND_API_KEY to secrets.');
-    setSending(true);
+  const getRendered = (clientOverride) => {
+    const tplFn = templates[selectedTemplate];
+    if (!tplFn) return { subject: '', html: '' };
+    const clientData = clientOverride || selectedClient || {
+      name: 'Alex Johnson',
+      email: 'alex@example.com',
+      goal: 'weight_loss',
+      id: 'demo',
+    };
+    // Some templates need extra args — pass sensible defaults
+    const extra = {
+      checkInSubmitted: { weight: 185, compliance_training: 88, mood: 'great', energy_level: 8 },
+      paymentReceived: { amount: 150, description: 'Monthly Coaching', invoice_number: 'INV-0042', payment_method: 'Card' },
+      paymentFailed: { amount: 200, failure_reason: 'Insufficient funds' },
+      badgeEarned: { label: '30-Day Warrior', emoji: '🏆', desc: '30 consecutive days of training' },
+      invoiceReceived: { amount: 150, due_date: 'June 1, 2026', invoice_number: 'INV-0042', description: 'Monthly Coaching' },
+      paymentConfirmation: { amount: 150, invoice_number: 'INV-0042', next_billing_date: 'July 1, 2026' },
+      paymentFailedClient: { amount: 200, failure_reason: 'Card declined' },
+      streakAtRisk: null, // streakAtRisk(client, coach, streak)
+      programComplete: { title: '12-Week Shred' },
+      sessionReminder: { date: 'June 3, 2026', time: '10:00 AM', type: 'video_call', duration_minutes: 60 },
+      missedCheckin: null,
+      lowCompliance: null,
+      weeklyDigest: { activeClients: 18, mrr: 2700, newClients: 2, checkIns: 14, unreadMessages: 3 },
+      newLead: { name: 'Sarah Miller', email: 'sarah@example.com', phone: '+1 555 0123' },
+      subscriptionCancelled: { effectiveDate: 'June 30, 2026', amount: 150, reason: 'Too expensive' },
+    };
     try {
-      const resolvedSubject = subject || getPreviewSubject();
-      const resolvedHtml = getPreviewHtml();
+      const arg3 = extra[selectedTemplate] !== undefined ? extra[selectedTemplate] : undefined;
+      const result = tplFn(clientData, user, arg3);
+      return result;
+    } catch {
+      return { subject: 'Preview', html: '<p>Preview not available</p>' };
+    }
+  };
 
-      if (toMode === 'single') {
-        if (!selectedClient) return toast.error('Select a client');
-        const tpl = selectedTemplate !== 'custom' ? templates[selectedTemplate]?.(selectedClient, user, 75) : { subject: resolvedSubject, html: resolvedHtml };
-        await sendEmail({ to: selectedClient.email, toName: selectedClient.name, ...tpl });
-        sendZapierEvent('email.sent', { client_id: selectedClient.id, client_name: selectedClient.name, template: selectedTemplate });
-        toast.success(`Email sent to ${selectedClient.name}!`);
-      } else {
-        const targetClients = toMode === 'all' ? clients : clients.filter(c => c.lifecycle_status === statusTarget);
-        if (targetClients.length === 0) return toast.error('No clients match this selection');
-        const recipients = targetClients.map(c => {
-          const tpl = selectedTemplate !== 'custom' ? templates[selectedTemplate]?.(c, user, 75) : { subject: resolvedSubject, html: resolvedHtml };
-          return { email: c.email, name: c.name, html: tpl?.html, subject: tpl?.subject };
-        }).filter(r => r.email);
-        // Send individually to use per-client templates
-        for (const r of recipients) {
-          await sendEmail({ to: r.email, toName: r.name, subject: r.subject || resolvedSubject, html: r.html || resolvedHtml });
-        }
-        toast.success(`Email sent to ${recipients.length} clients!`);
+  const rendered = getRendered();
+  const displaySubject = customSubject || rendered.subject || '';
+
+  const handleSendToClient = async () => {
+    if (toMode === 'single' && !selectedClient) {
+      toast.error('Please select a client first');
+      return;
+    }
+    setSending(true);
+    setSentSuccess(false);
+    try {
+      const targets = toMode === 'single'
+        ? [selectedClient]
+        : clients.filter(c => c.email);
+
+      for (const client of targets) {
+        const r = getRendered(client);
+        await base44.functions.invoke('sendEmailNotification', {
+          to: client.email,
+          toName: client.name,
+          subject: customSubject || r.subject,
+          html: r.html,
+          replyTo: user?.email,
+          templateKey: selectedTemplate,
+        });
       }
+      setSentSuccess(true);
+      setTimeout(() => setSentSuccess(false), 3000);
+      toast.success(toMode === 'single' ? `Email sent to ${selectedClient.name}!` : `Email sent to ${targets.length} clients!`);
     } catch (err) {
       toast.error(err.message || 'Failed to send email');
     } finally {
@@ -88,166 +165,197 @@ export default function EmailCenter() {
     }
   };
 
+  const handleSendTest = async () => {
+    if (!testEmailAddress) { toast.error('Enter a test email address'); return; }
+    setSending(true);
+    try {
+      await base44.functions.invoke('sendEmailNotification', {
+        to: testEmailAddress,
+        toName: 'Test User',
+        subject: `[TEST] ${displaySubject}`,
+        html: rendered.html,
+        templateKey: selectedTemplate,
+      });
+      toast.success(`Test email sent to ${testEmailAddress}`);
+    } catch (err) {
+      toast.error(err.message || 'Failed to send test');
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
-    <div className="p-4 sm:p-6 max-w-screen-xl mx-auto space-y-5">
+    <div className="p-4 sm:p-6 max-w-screen-xl mx-auto">
       {/* Header */}
-      <div className="bg-[#111827] rounded-xl p-5">
-        <h1 className="text-xl font-semibold text-white">Email Center</h1>
-        <p className="text-sm mt-0.5 text-white/50">Send automated and manual emails to clients via Resend</p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-black text-slate-900">Email Center</h1>
+        <p className="text-sm text-slate-500 mt-0.5">Send beautifully branded emails to your clients</p>
       </div>
 
-      {/* Stats */}
-      {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: 'Delivered (30d)', value: stats.delivered ?? 0, icon: Send },
-            { label: 'Open Rate', value: `${openRate}%`, icon: Eye },
-            { label: 'Click Rate', value: `${clickRate}%`, icon: BarChart2 },
-            { label: 'Unsubscribes', value: stats.unsubscribes ?? 0, icon: Users },
-          ].map(s => (
-            <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <s.icon className="w-4 h-4 text-[#6B7280]" />
-              </div>
-              <div>
-                <p className="text-lg font-bold text-[#111827]">{s.value}</p>
-                <p className="text-[10px] text-[#9CA3AF]">{s.label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-        {/* Compose */}
-        <div className="lg:col-span-3 bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-4">
-          <h2 className="text-sm font-bold text-[#111827] flex items-center gap-2">
-            <Mail className="w-4 h-4" /> Compose Email
-          </h2>
-
-          {/* To */}
-          <div>
-            <Label className="text-xs mb-1 block">To</Label>
-            <div className="flex gap-1.5 mb-2">
-              {[
-                { key: 'single', label: 'Single Client' },
-                { key: 'all', label: 'All Clients' },
-                { key: 'status', label: 'By Status' },
-              ].map(m => (
-                <button key={m.key} onClick={() => setToMode(m.key)}
-                  className={cn('px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all',
-                    toMode === m.key ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#111827]'
-                  )}>
-                  {m.label}
-                </button>
+        {/* ── Left: Template Picker ── */}
+        <div className="xl:col-span-4 bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden flex flex-col">
+          <div className="px-4 pt-4 pb-3 border-b border-[#F3F4F6]">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Templates</p>
+            {/* Audience tabs */}
+            <div className="flex gap-1 mb-3">
+              {AUDIENCE_TABS.map(t => (
+                <button key={t.id} onClick={() => setAudienceTab(t.id)}
+                  className={cn('px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
+                    audienceTab === t.id ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                  )}>{t.label}</button>
               ))}
             </div>
-            {toMode === 'single' && (
-              <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-                <SelectTrigger><SelectValue placeholder="Select a client..." /></SelectTrigger>
-                <SelectContent>
-                  {clients.filter(c => c.email).map(c => (
-                    <SelectItem key={c.id} value={c.id}>{c.name} — {c.email}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-            {toMode === 'status' && (
-              <Select value={statusTarget} onValueChange={setStatusTarget}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {['lead', 'active', 'at_risk', 'completed', 'alumni'].map(s => (
-                    <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)} clients</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-            {toMode === 'all' && (
-              <p className="text-xs text-[#6B7280] mt-1">{clients.filter(c => c.email).length} clients with email addresses</p>
-            )}
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+              <input
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search templates..."
+                className="w-full pl-8 pr-3 py-2 text-xs border border-[#E5E7EB] rounded-lg bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-400"
+              />
+            </div>
           </div>
-
-          {/* Template */}
-          <div>
-            <Label className="text-xs mb-1 block">Template</Label>
-            <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {TEMPLATE_OPTIONS.map(t => (
-                  <SelectItem key={t.key} value={t.key}>{t.emoji} {t.label}</SelectItem>
-                ))}
-                <SelectItem value="custom">✏️ Custom Email</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Subject (for custom) */}
-          {selectedTemplate === 'custom' && (
-            <>
-              <div>
-                <Label className="text-xs mb-1 block">Subject</Label>
-                <Input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Email subject..." />
-              </div>
-              <div>
-                <Label className="text-xs mb-1 block">HTML Body</Label>
-                <Textarea value={customHtml} onChange={e => setCustomHtml(e.target.value)}
-                  placeholder="<p>Your HTML content...</p>" rows={6} className="font-mono text-xs" />
-              </div>
-            </>
-          )}
-
-          <div className="flex gap-2 pt-1">
-            <Button variant="outline" className="gap-1.5 text-xs" onClick={() => setPreview(v => !v)}>
-              <Eye className="w-3.5 h-3.5" /> {preview ? 'Hide' : 'Preview'}
-            </Button>
-            <Button className="flex-1 bg-[#111827] hover:bg-[#1F2A44]" onClick={handleSend} disabled={sending}>
-              {sending ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> Sending...</> : <><Send className="w-3.5 h-3.5 mr-2" /> Send Email</>}
-            </Button>
+          <div className="p-3 overflow-y-auto flex-1" style={{ maxHeight: 520 }}>
+            <TemplateList
+              templates={filteredTemplates}
+              selected={selectedTemplate}
+              onSelect={(key) => { setSelectedTemplate(key); setCustomSubject(''); }}
+              search={searchQuery}
+            />
           </div>
         </div>
 
-        {/* Templates list / Preview */}
-        <div className="lg:col-span-2 space-y-4">
-          {preview ? (
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#E5E7EB] bg-[#F9FAFB]">
-                <p className="text-xs font-semibold text-[#374151]">Preview</p>
-                <p className="text-xs text-[#6B7280] truncate mt-0.5">{getPreviewSubject()}</p>
-              </div>
-              <div className="p-2 max-h-[500px] overflow-y-auto">
-                <iframe
-                  srcDoc={getPreviewHtml()}
-                  className="w-full min-h-[400px] border-0"
-                  title="Email Preview"
-                />
+        {/* ── Middle: Compose & Send ── */}
+        <div className="xl:col-span-4 space-y-4">
+          {/* Template info */}
+          {currentTemplate && (
+            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 flex items-center gap-3">
+              <span className="text-3xl">{currentTemplate.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-bold text-slate-900 text-sm">{currentTemplate.label}</p>
+                  <AudienceBadge audience={currentTemplate.audience} />
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5">{currentTemplate.desc}</p>
               </div>
             </div>
-          ) : (
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">Templates</h3>
-              <div className="space-y-2">
-                {TEMPLATE_OPTIONS.map(t => (
-                  <button
-                    key={t.key}
-                    onClick={() => setSelectedTemplate(t.key)}
-                    className={cn(
-                      'w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all',
-                      selectedTemplate === t.key
-                        ? 'border-[#111827] bg-[#111827] text-white'
-                        : 'border-[#E5E7EB] hover:border-[#111827] bg-white'
-                    )}
-                  >
-                    <span className="text-lg leading-none mt-0.5">{t.emoji}</span>
-                    <div>
-                      <p className={cn('text-xs font-semibold', selectedTemplate === t.key ? 'text-white' : 'text-[#111827]')}>{t.label}</p>
-                      <p className={cn('text-[11px] mt-0.5', selectedTemplate === t.key ? 'text-white/60' : 'text-[#9CA3AF]')}>{t.desc}</p>
-                    </div>
+          )}
+
+          {/* Compose */}
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-4">
+            <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <Mail className="w-4 h-4" /> Compose & Send
+            </h2>
+
+            {/* Recipients */}
+            <div>
+              <Label className="text-xs font-bold mb-1.5 block text-slate-600">Recipients</Label>
+              <div className="flex gap-1.5 mb-2">
+                {[
+                  { key: 'single', label: 'Single Client', icon: null },
+                  { key: 'all',    label: `All (${clients.filter(c => c.email).length})`, icon: Users },
+                ].map(m => (
+                  <button key={m.key} onClick={() => setToMode(m.key)}
+                    className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border transition-all',
+                      toMode === m.key ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 border-[#E5E7EB] hover:border-slate-400'
+                    )}>
+                    {m.icon && <m.icon className="w-3.5 h-3.5" />}
+                    {m.label}
                   </button>
                 ))}
               </div>
+              {toMode === 'single' && (
+                <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+                  <SelectTrigger className="text-sm"><SelectValue placeholder="Select a client..." /></SelectTrigger>
+                  <SelectContent>
+                    {clients.filter(c => c.email).map(c => (
+                      <SelectItem key={c.id} value={c.id}>{c.name} — {c.email}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
-          )}
+
+            {/* Subject */}
+            <div>
+              <Label className="text-xs font-bold mb-1.5 block text-slate-600">Subject</Label>
+              <Input
+                value={customSubject || rendered.subject || ''}
+                onChange={e => setCustomSubject(e.target.value)}
+                placeholder="Auto-generated from template..."
+                className="text-sm"
+              />
+            </div>
+
+            {/* Send button */}
+            <Button
+              className="w-full font-bold gap-2"
+              style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}
+              onClick={handleSendToClient}
+              disabled={sending || (toMode === 'single' && !selectedClient)}
+            >
+              {sending ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+              ) : sentSuccess ? (
+                <><CheckCircle2 className="w-4 h-4" /> Sent!</>
+              ) : (
+                <><Send className="w-4 h-4" /> Send Email</>
+              )}
+            </Button>
+          </div>
+
+          {/* Test email */}
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-3">
+            <h3 className="text-sm font-bold text-slate-700">Send Test Email</h3>
+            <div className="flex gap-2">
+              <Input
+                type="email"
+                value={testEmailAddress}
+                onChange={e => setTestEmailAddress(e.target.value)}
+                placeholder="your@email.com"
+                className="flex-1 text-sm"
+              />
+              <Button variant="outline" onClick={handleSendTest} disabled={sending} className="font-semibold text-xs whitespace-nowrap">
+                {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Send Test'}
+              </Button>
+            </div>
+            <p className="text-[11px] text-slate-400">Subject will be prefixed with [TEST]</p>
+          </div>
         </div>
+
+        {/* ── Right: Live Preview ── */}
+        <div className="xl:col-span-4 bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[#F3F4F6] bg-[#F9FAFB] flex-shrink-0">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-slate-600">Preview</p>
+              <p className="text-[11px] text-slate-400 truncate mt-0.5">{displaySubject}</p>
+            </div>
+            <div className="flex gap-1 ml-3 flex-shrink-0">
+              <button onClick={() => setPreviewDevice('desktop')}
+                className={cn('p-1.5 rounded-lg transition-colors', previewDevice === 'desktop' ? 'bg-slate-200 text-slate-800' : 'text-slate-400 hover:text-slate-600')}>
+                <Monitor className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => setPreviewDevice('mobile')}
+                className={cn('p-1.5 rounded-lg transition-colors', previewDevice === 'mobile' ? 'bg-slate-200 text-slate-800' : 'text-slate-400 hover:text-slate-600')}>
+                <Smartphone className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 overflow-auto bg-[#F3F4F6] p-3" style={{ minHeight: 400 }}>
+            <div className={cn('mx-auto transition-all', previewDevice === 'mobile' ? 'max-w-[375px]' : 'max-w-full')}>
+              <iframe
+                srcDoc={rendered.html || '<p style="padding:20px;color:#999;">Select a template to preview</p>'}
+                className="w-full border-0 rounded-xl shadow-sm"
+                style={{ minHeight: 520, background: 'white' }}
+                title="Email Preview"
+              />
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
