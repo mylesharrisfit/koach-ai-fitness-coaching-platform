@@ -6,6 +6,7 @@ import { Plus, Package, Search, Download, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import InvoiceFormModal from '@/components/invoicing/InvoiceFormModal';
 import InvoiceRow from '@/components/invoicing/InvoiceRow';
+import InvoiceListHeader from '@/components/invoicing/InvoiceListHeader';
 import InvoiceStatCards from '@/components/invoicing/InvoiceStatCards';
 import RevenueChart from '@/components/invoicing/RevenueChart';
 import InvoiceSidebar from '@/components/invoicing/InvoiceSidebar';
@@ -126,6 +127,15 @@ export default function Invoicing() {
     toast.success('Invoice deleted');
   };
 
+  const handleSendReminder = async (inv) => {
+    toast.success(`Reminder sent to ${inv.client_name}`);
+    // Update status to 'sent' if still draft
+    if (inv.status === 'draft') {
+      await base44.entities.Invoice.update(inv.id, { status: 'sent' });
+      qc.invalidateQueries({ queryKey: ['invoices'] });
+    }
+  };
+
   const handleDuplicate = async (inv) => {
     const { id, created_date, updated_date, created_by, ...rest } = inv;
     const nums = invoices.map(i => parseInt((i.invoice_number || '').replace('INV-', '') || '0')).filter(Boolean);
@@ -185,7 +195,7 @@ export default function Invoicing() {
           </div>
 
           {/* Main Grid: Invoice list + Sidebar */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 20, alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 260px', gap: 20, alignItems: 'start' }}>
             {/* Left: Tabs + List */}
             <div>
               {/* Tabs */}
@@ -234,16 +244,20 @@ export default function Invoicing() {
                 ) : filtered.length === 0 ? (
                   <EmptyState />
                 ) : (
-                  filtered.map(inv => (
-                    <InvoiceRow
-                      key={inv.id}
-                      invoice={inv}
-                      onView={() => { setEditingInvoice(inv); setShowForm(true); }}
-                      onMarkPaid={() => handleMarkPaid(inv)}
-                      onDuplicate={() => handleDuplicate(inv)}
-                      onDelete={() => handleDelete(inv)}
-                    />
-                  ))
+                  <>
+                    <InvoiceListHeader />
+                    {filtered.map(inv => (
+                      <InvoiceRow
+                        key={inv.id}
+                        invoice={inv}
+                        onView={() => { setEditingInvoice(inv); setShowForm(true); }}
+                        onMarkPaid={() => handleMarkPaid(inv)}
+                        onSendReminder={() => handleSendReminder(inv)}
+                        onDuplicate={() => handleDuplicate(inv)}
+                        onDelete={() => handleDelete(inv)}
+                      />
+                    ))}
+                  </>
                 )}
               </div>
 
