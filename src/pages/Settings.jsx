@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Plug, Bell, Shield, Zap, ChevronRight } from 'lucide-react';
+import { User, Plug, Bell, Shield, Zap, ChevronRight, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import IntegrationsTab from '../components/integrations/IntegrationsTab';
@@ -16,6 +16,19 @@ const TABS = [
 function ProfileTab() {
   return (
     <div className="space-y-3">
+      <Link to="/business-settings"
+        className="flex items-center justify-between bg-white border border-[#E7EAF3] rounded-2xl p-5 hover:border-blue-300 transition-colors group">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFF7ED, #FEF3C7)' }}>
+            <Briefcase className="w-5 h-5 text-amber-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-[#1F2A44] text-sm">Business Settings</h3>
+            <p className="text-xs text-[#6B7280] mt-0.5">Coaching preferences, onboarding, scheduling, leads & branding</p>
+          </div>
+        </div>
+        <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+      </Link>
       <Link to="/coach-profile"
         className="flex items-center justify-between bg-white border border-[#E7EAF3] rounded-2xl p-5 hover:border-blue-300 transition-colors group">
         <div className="flex items-center gap-4">
@@ -44,20 +57,9 @@ function NotificationsTab() {
 
 function SecurityTab() {
   return (
-    <div className="space-y-3">
-      <Link to="/account-settings"
-        className="flex items-center justify-between bg-white border border-[#E7EAF3] rounded-2xl p-5 hover:border-blue-300 transition-colors group">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)' }}>
-            <Shield className="w-5 h-5 text-amber-600" />
-          </div>
-          <div>
-            <h3 className="font-bold text-[#1F2A44] text-sm">Account Settings</h3>
-            <p className="text-xs text-[#6B7280] mt-0.5">Password, 2FA, sessions, privacy, data export & danger zone</p>
-          </div>
-        </div>
-        <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
-      </Link>
+    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-6">
+      <h3 className="font-semibold text-[#1F2A44] mb-1">Security</h3>
+      <p className="text-sm text-[#374151]">Manage your password and two-factor authentication.</p>
     </div>
   );
 }

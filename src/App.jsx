@@ -55,7 +55,7 @@ import Invoicing from './pages/Invoicing';
 import Packages from './pages/Packages';
 import PackageLanding from './pages/PackageLanding';
 import CoachProfile from './pages/CoachProfile';
-import AccountSettings from './pages/AccountSettings';
+import BusinessSettings from './pages/BusinessSettings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -117,7 +117,7 @@ const AuthenticatedApp = () => {
         <Route path="/invoicing" element={<Invoicing />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/coach-profile" element={<CoachProfile />} />
-        <Route path="/account-settings" element={<AccountSettings />} />
+        <Route path="/business-settings" element={<BusinessSettings />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
