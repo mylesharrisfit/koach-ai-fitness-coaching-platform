@@ -10,7 +10,7 @@ import {
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
   Lock, DollarSign, UserPlus, Zap, Trophy, ShoppingBag,
-  Globe, Smartphone, Activity, Apple, FileText,
+  Globe, Smartphone, Activity, Apple, FileText, Package,
   Shield, Palette, BookOpen, LayoutTemplate, ChevronDown, ChevronUp, Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
