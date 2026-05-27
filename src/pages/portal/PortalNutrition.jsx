@@ -1,279 +1,167 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format } from 'date-fns';
-import { motion } from 'framer-motion';
-import { Salad } from 'lucide-react';
-import MacroRings from '@/components/portal/nutrition/MacroRings';
+import { format, subDays } from 'date-fns';
+import { motion, AnimatePresence } from 'framer-motion';
+import MacroRing from '@/components/portal/nutrition/MacroRing';
 import MealCard from '@/components/portal/nutrition/MealCard';
+import FoodDetailModal from '@/components/portal/nutrition/FoodDetailModal';
+import FoodSearchSheet from '@/components/portal/nutrition/FoodSearchSheet';
 import WaterTracker from '@/components/portal/nutrition/WaterTracker';
-import HabitMode from '@/components/portal/nutrition/HabitMode';
-import FoodSearchDrawer from '@/components/portal/nutrition/FoodSearchDrawer';
-import AIAssistant from '@/components/portal/nutrition/AIAssistant';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const TODAY = format(new Date(), 'yyyy-MM-dd');
+const MEALS = [
+  { id: 'breakfast', name: 'Breakfast', time: '7:00 AM', target: 400 },
+  { id: 'lunch', name: 'Lunch', time: '12:30 PM', target: 600 },
+  { id: 'dinner', name: 'Dinner', time: '6:30 PM', target: 700 },
+  { id: 'snacks', name: 'Snacks', time: 'Anytime', target: 300 },
+];
+
+const DEMO_NUTRITION = {
+  breakfast: [
+    { name: 'Oatmeal', portion: '50g dry', calories: 190, protein: 5, carbs: 35, fats: 4 },
+  ],
+  lunch: [],
+  dinner: [],
+  snacks: [],
+};
 
 export default function PortalNutrition({ user }) {
-  const [activeTab, setActiveTab] = useState('today'); // 'today' | 'plan'
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchMeal, setSearchMeal] = useState('');
-  const [loggedHabits, setLoggedHabits] = useState(new Set());
-  const queryClient = useQueryClient();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedFood, setSelectedFood] = useState(null);
+  const [selectedMeal, setSelectedMeal] = useState(null);
+  const [showFoodSearch, setShowFoodSearch] = useState(false);
+  const [loggedFoods, setLoggedFoods] = useState(DEMO_NUTRITION);
+  const [waterIntake, setWaterIntake] = useState(5);
 
-  // Client profile
-  const { data: clients = [] } = useQuery({
-    queryKey: ['portal-client-nt2', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
-  });
-  const myClient = clients[0];
-
-  // Nutrition plan
-  const { data: plans = [] } = useQuery({
-    queryKey: ['portal-nutrition-plan', myClient?.assigned_nutrition_id],
-    queryFn: () => base44.entities.NutritionPlan.filter({ id: myClient.assigned_nutrition_id }, '-created_date', 1),
-    enabled: !!myClient?.assigned_nutrition_id,
-  });
-  const plan = plans[0];
-  const isHabitMode = plan?.tracking_mode === 'habits';
-
-  // Today's food logs
-  const { data: foodLogs = [], refetch: refetchLogs } = useQuery({
-    queryKey: ['portal-food-log', myClient?.id, TODAY],
-    queryFn: () => base44.entities.FoodLog.filter({ client_id: myClient.id, logged_date: TODAY }, '-created_date', 100),
-    enabled: !!myClient?.id,
-  });
-
-  // Recent foods (last 30 days for suggestions)
-  const { data: recentFoods = [] } = useQuery({
-    queryKey: ['portal-recent-foods', myClient?.id],
-    queryFn: () => base44.entities.FoodLog.filter({ client_id: myClient.id }, '-created_date', 30),
-    enabled: !!myClient?.id,
-  });
-
-  // Daily log (for water)
-  const [dailyLogId, setDailyLogId] = useState(null);
-  const [waterMl, setWaterMl] = useState(0);
-
-  const { data: existingLog } = useQuery({
-    queryKey: ['portal-daily-log-nt', TODAY],
-    queryFn: () => base44.entities.DailyLog.filter({ date: TODAY }, '-created_date', 1),
-    enabled: !!user,
-  });
-  useEffect(() => {
-    if (existingLog?.length > 0) {
-      const l = existingLog[0];
-      setDailyLogId(l.id);
-      setWaterMl((l.water_glasses || 0) * 250);
-    }
-  }, [existingLog]);
-
-  const waterMutation = useMutation({
-    mutationFn: (ml) => {
-      const glasses = Math.round(ml / 250);
-      return dailyLogId
-        ? base44.entities.DailyLog.update(dailyLogId, { water_glasses: glasses })
-        : base44.entities.DailyLog.create({ client_id: myClient?.id || 'me', date: TODAY, water_glasses: glasses });
-    },
-    onSuccess: (res) => {
-      if (!dailyLogId && res?.id) setDailyLogId(res.id);
-    },
-  });
-
-  const addWater = (ml) => {
-    const newTotal = waterMl + ml;
-    setWaterMl(newTotal);
-    waterMutation.mutate(newTotal);
+  // Nutrition target
+  const DAILY_TARGET = {
+    calories: 2000,
+    protein: 150,
+    carbs: 250,
+    fats: 65,
   };
 
-  // Log food mutation
-  const logFoodMutation = useMutation({
-    mutationFn: (foodData) => base44.entities.FoodLog.create({
-      client_id: myClient.id,
-      logged_date: TODAY,
-      logged_by: 'client',
-      ...foodData,
-    }),
-    onSuccess: () => {
-      refetchLogs();
-      queryClient.invalidateQueries({ queryKey: ['portal-food-log'] });
-    },
-  });
-
-  const handleLogFood = (mealName) => {
-    setSearchMeal(mealName);
-    setSearchOpen(true);
+  // Calculate totals
+  const calcTotals = () => {
+    const all = Object.values(loggedFoods).flat();
+    return {
+      calories: all.reduce((s, f) => s + (f.calories || 0), 0),
+      protein: all.reduce((s, f) => s + (f.protein || 0), 0),
+      carbs: all.reduce((s, f) => s + (f.carbs || 0), 0),
+      fats: all.reduce((s, f) => s + (f.fats || 0), 0),
+    };
   };
 
-  const handleAddFood = (food) => {
-    logFoodMutation.mutate(food);
-    setSearchOpen(false);
+  const totals = calcTotals();
+
+  const handleAddFood = (food, serving = 1, unit = 'serving') => {
+    const newFood = {
+      ...food,
+      serving: `${serving} ${unit}`,
+      calories: Math.round(food.calories * serving),
+      protein: (food.protein * serving).toFixed(1),
+      carbs: (food.carbs * serving).toFixed(1),
+      fats: (food.fats * serving).toFixed(1),
+    };
+
+    setLoggedFoods(prev => ({
+      ...prev,
+      [selectedMeal]: [...(prev[selectedMeal] || []), newFood],
+    }));
+
+    setShowFoodSearch(false);
+    setSelectedFood(null);
   };
 
-  // "Use Meal Plan" — log all foods in a meal at once
-  const handleUseMealPlan = (meal) => {
-    (meal.foods || []).forEach(food => {
-      logFoodMutation.mutate({
-        meal_name: meal.meal_name,
-        food_name: food.food_name,
-        serving_quantity: 1,
-        calories: food.calories || 0,
-        protein: food.protein || 0,
-        carbs: food.carbs || 0,
-        fats: food.fats || 0,
-      });
-    });
+  const handleDateChange = (days) => {
+    setSelectedDate(d => new Date(d.getTime() + days * 24 * 60 * 60 * 1000));
   };
-
-  // Aggregate logged macros for today
-  const todayLogged = foodLogs.reduce((acc, f) => ({
-    calories: acc.calories + (f.calories || 0),
-    protein: acc.protein + (f.protein || 0),
-    carbs: acc.carbs + (f.carbs || 0),
-    fats: acc.fats + (f.fats || 0),
-  }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
-  todayLogged.water = waterMl;
-
-  if (!myClient) {
-    return (
-      <div className="px-5 pt-12 pb-28 flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-white/20 border-t-blue-400 rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   return (
-    <div className="pb-28 space-y-4" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+    <div className="pb-32 bg-gradient-to-b from-white to-slate-50 min-h-screen">
+
       {/* Header */}
-      <div className="bg-white px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
-        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Nutrition</p>
-        <h1 className="text-slate-900 text-2xl font-black mt-0.5">{plan?.title || 'My Nutrition'}</h1>
-        <p className="text-slate-400 text-xs mt-0.5">{format(new Date(), 'EEEE, MMMM d')}</p>
-        <div className="flex gap-2 mt-4">
-          {[{ id: 'today', label: "Today's Log" }, { id: 'plan', label: 'My Plan' }].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className="px-5 py-2 rounded-2xl text-xs font-bold transition-all"
-              style={{
-                background: activeTab === tab.id ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F8FAFC',
-                color: activeTab === tab.id ? '#fff' : '#94A3B8',
-                border: activeTab === tab.id ? 'none' : '1.5px solid #F1F5F9',
-                boxShadow: activeTab === tab.id ? '0 4px 12px rgba(37,99,235,0.2)' : 'none',
-              }}>
-              {tab.label}
-            </button>
-          ))}
+      <div className="bg-white px-4 flex items-center justify-between"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)', paddingBottom: 12, boxShadow: '0 1px 0 #F1F5F9' }}>
+        <h1 className="text-slate-900 font-black text-[28px]">Nutrition</h1>
+        <div className="flex items-center gap-2">
+          <button onClick={() => handleDateChange(-1)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: '#F1F5F9' }}>
+            <ChevronLeft className="w-4 h-4 text-slate-500" />
+          </button>
+          <p className="text-slate-600 text-xs font-bold min-w-[90px] text-center">
+            {format(selectedDate, 'MMM d')}
+          </p>
+          <button onClick={() => handleDateChange(1)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: '#F1F5F9' }}>
+            <ChevronRight className="w-4 h-4 text-slate-500" />
+          </button>
         </div>
       </div>
 
-      {activeTab === 'today' ? (
-        <>
-          {!plan ? (
-            <div className="mx-4 bg-white p-8 rounded-3xl text-center" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-              <Salad className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-600 text-sm font-bold">No nutrition plan yet</p>
-              <p className="text-slate-400 text-xs mt-1">Ask your coach about setting up your nutrition plan 🥗</p>
-            </div>
-          ) : isHabitMode ? (
-            <HabitMode
-              meals={plan.meals || []}
-              loggedHabits={loggedHabits}
-              onToggleHabit={(id) => setLoggedHabits(prev => {
-                const next = new Set(prev);
-                next.has(id) ? next.delete(id) : next.add(id);
-                return next;
-              })}
-            />
-          ) : (
-            <>
-              {/* Macro Rings */}
-              <MacroRings logged={todayLogged} plan={plan} />
+      {/* Macro ring */}
+      <MacroRing
+        consumed={totals.calories}
+        target={DAILY_TARGET.calories}
+        breakdown={{
+          protein: { remaining: Math.max(0, DAILY_TARGET.protein - totals.protein) },
+          carbs: { remaining: Math.max(0, DAILY_TARGET.carbs - totals.carbs) },
+          fats: { remaining: Math.max(0, DAILY_TARGET.fats - totals.fats) },
+          water: { remaining: Math.max(0, 8 - waterIntake) },
+        }} />
 
-              {/* Meal Cards */}
-              {(plan.meals || []).map((meal, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
-                  <MealCard
-                    meal={meal}
-                    mealIndex={i}
-                    loggedFoods={foodLogs.filter(f => f.meal_name === meal.meal_name)}
-                    onLogFood={handleLogFood}
-                    onUseMealPlan={handleUseMealPlan}
-                  />
-                </motion.div>
-              ))}
+      {/* Meals */}
+      <div className="space-y-2">
+        {MEALS.map(meal => (
+          <MealCard
+            key={meal.id}
+            meal={meal}
+            loggedFoods={loggedFoods[meal.id] || []}
+            mealTarget={meal.target}
+            onAddFood={() => { setSelectedMeal(meal.id); setShowFoodSearch(true); }}
+            onUsePlan={() => {}}
+            onSwapFood={() => {}} />
+        ))}
+      </div>
 
-              {/* Water Tracker */}
-              <WaterTracker waterMl={waterMl} goalMl={3000} onAdd={addWater} />
-            </>
-          )}
-        </>
-      ) : (
-        /* My Plan tab */
-        <div className="px-4 space-y-4">
-          {!plan ? (
-            <div className="p-6 rounded-2xl text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-white/40 text-sm">No plan assigned yet</p>
-            </div>
-          ) : (
-            <>
-              {/* Plan info */}
-              <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <p className="text-white font-bold">{plan.title}</p>
-                {plan.description && <p className="text-white/40 text-xs mt-1">{plan.description}</p>}
-                <div className="grid grid-cols-4 gap-2 mt-3">
-                  {[
-                    { label: 'Cal', val: plan.calories, color: '#F59E0B' },
-                    { label: 'Protein', val: plan.protein_g ? `${plan.protein_g}g` : null, color: '#3B82F6' },
-                    { label: 'Carbs', val: plan.carbs_g ? `${plan.carbs_g}g` : null, color: '#F97316' },
-                    { label: 'Fats', val: plan.fats_g ? `${plan.fats_g}g` : null, color: '#EAB308' },
-                  ].filter(x => x.val).map(x => (
-                    <div key={x.label} className="p-2 rounded-xl text-center" style={{ background: `${x.color}10` }}>
-                      <p className="font-bold text-sm" style={{ color: x.color }}>{x.val}</p>
-                      <p className="text-white/30 text-[9px] mt-0.5">{x.label}</p>
-                    </div>
-                  ))}
-                </div>
-                {plan.notes && (
-                  <div className="mt-3 p-3 rounded-xl" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)' }}>
-                    <p className="text-blue-300 text-[10px] font-bold uppercase tracking-wider mb-1">Coach Notes</p>
-                    <p className="text-white/60 text-xs leading-relaxed">{plan.notes}</p>
-                  </div>
-                )}
-              </div>
+      {/* Water tracker */}
+      <WaterTracker
+        glasses={waterIntake}
+        goal={8}
+        onUpdate={setWaterIntake} />
 
-              {/* Full meals breakdown */}
-              {(plan.meals || []).map((m, i) => (
-                <div key={i} className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-white font-bold text-sm">{m.meal_name}</p>
-                    {m.time && <p className="text-white/30 text-xs">{m.time}</p>}
-                  </div>
-                  {(m.foods || []).map((f, fi) => (
-                    <div key={fi} className="flex items-center gap-2 py-2" style={{ borderTop: fi > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white/70 text-xs font-semibold">{f.food_name}</p>
-                        <p className="text-white/25 text-[10px]">{f.portion}</p>
-                      </div>
-                      {f.calories && <p className="text-white/30 text-[10px] flex-shrink-0">{f.calories} kcal</p>}
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-      )}
+      {/* Nutrition insight */}
+      <div className="mx-4 mb-5 p-4 rounded-2xl bg-blue-50 border border-blue-100">
+        <p className="text-blue-700 text-sm leading-relaxed">
+          ✨ <strong>You're 40g short on protein</strong> — try adding a Greek yogurt (100g = 10g protein) 🥛
+        </p>
+      </div>
 
-      {/* AI Assistant FAB */}
-      <AIAssistant plan={plan} todayLogged={todayLogged} />
+      {/* Food detail modal */}
+      <AnimatePresence>
+        {selectedFood && (
+          <FoodDetailModal
+            food={selectedFood}
+            mealName={MEALS.find(m => m.id === selectedMeal)?.name}
+            isOpen={!!selectedFood}
+            onClose={() => setSelectedFood(null)}
+            onAddToMeal={handleAddFood} />
+        )}
+      </AnimatePresence>
 
-      {/* Food Search Drawer */}
-      <FoodSearchDrawer
-        open={searchOpen}
-        mealName={searchMeal}
-        recentFoods={recentFoods.slice(0, 10)}
-        onAdd={handleAddFood}
-        onClose={() => setSearchOpen(false)}
-      />
+      {/* Food search sheet */}
+      <AnimatePresence>
+        {showFoodSearch && (
+          <FoodSearchSheet
+            isOpen={showFoodSearch}
+            onClose={() => setShowFoodSearch(false)}
+            onSelectFood={setSelectedFood}
+            mealName={MEALS.find(m => m.id === selectedMeal)?.name} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

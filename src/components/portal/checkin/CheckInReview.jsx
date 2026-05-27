@@ -1,79 +1,101 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Edit2, Send, Loader2 } from 'lucide-react';
+import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
 
-const MOOD_EMOJI = { stressed: '😫', tired: '😕', okay: '😐', good: '🙂', great: '😄' };
+export default function CheckInReview({ form, responses, onBack, onSubmit, submitting, lastCheckIn }) {
+  const scrollRef = useRef(null);
 
-function formatAnswer(q, val) {
-  if (val === null || val === undefined || val === '') return '—';
-  if (q.type === 'mood') return `${MOOD_EMOJI[val] || ''} ${val}`;
-  if (q.type === 'yes_no') return val === 'yes' ? '✅ Yes' : '❌ No';
-  if (q.type === 'scale' || q.type === 'number') return String(val);
-  if (q.type === 'multiple_choice' && Array.isArray(val)) return val.join(', ');
-  if (q.type === 'measurements' && typeof val === 'object') {
-    return Object.entries(val).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(' · ');
-  }
-  if (q.type === 'photo' && typeof val === 'object') {
-    const count = Object.keys(val).filter(k => val[k]).length;
-    return `${count} photo${count !== 1 ? 's' : ''} uploaded`;
-  }
-  return String(val);
-}
+  const getDisplayValue = (q, val) => {
+    if (q.type === 'mood') return { 'stressed': '😫 Stressed', 'tired': '😕 Tired', 'okay': '😐 Okay', 'good': '🙂 Good', 'great': '😄 Great' }[val] || '—';
+    if (q.type === 'scale') return `${val}/10`;
+    if (q.type === 'yes_no') return val ? 'Yes' : 'No';
+    if (Array.isArray(val)) return val.join(', ');
+    return val || '—';
+  };
 
-export default function CheckInReview({ questions, answers, onEdit, onSubmit, submitting, onBack }) {
-  const answeredCount = questions.filter(q => answers[q.id] !== undefined && answers[q.id] !== '').length;
+  const weight = responses[form?.questions?.find(q => q.type === 'number')?.id];
+  const mood = responses[form?.questions?.find(q => q.type === 'mood')?.id];
+  const trend = lastCheckIn?.weight && weight ? weight - lastCheckIn.weight : null;
 
   return (
-    <div className="fixed inset-0 flex flex-col" style={{ background: '#0A0F1A' }}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-slate-900 to-slate-950"
+      style={{ paddingTop: 'max(env(safe-area-inset-top), 14px)' }}>
+
       {/* Header */}
-      <div className="px-5 pt-12 pb-4 flex items-center gap-4 flex-shrink-0"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <button onClick={onBack}
-          className="w-9 h-9 flex items-center justify-center rounded-xl"
-          style={{ background: 'rgba(255,255,255,0.07)' }}>
-          <ArrowLeft className="w-4 h-4 text-white/50" />
+      <div className="flex items-center gap-3 px-5 py-4 flex-shrink-0">
+        <button onClick={onBack} className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)' }}>
+          <ArrowLeft className="w-5 h-5 text-white/60" />
         </button>
-        <div className="flex-1">
-          <h2 className="text-white font-bold text-lg">Review Answers</h2>
-          <p className="text-white/30 text-xs">{answeredCount}/{questions.length} answered</p>
-        </div>
+        <h2 className="text-white font-black text-lg">Review Your Answers</h2>
       </div>
 
-      {/* Answers list */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
-        {questions.map((q, i) => {
-          const val = answers[q.id];
-          const isEmpty = val === undefined || val === '' || val === null;
+      {/* Content */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 pb-28 space-y-3">
+        {/* Key highlights */}
+        {weight && (
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl p-5 mb-4"
+            style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(99,102,241,0.1))', border: '1px solid rgba(59,130,246,0.3)' }}>
+            <p className="text-white/50 text-xs font-bold mb-2">Weight Change</p>
+            <div className="flex items-center gap-3">
+              <p className="text-white font-black text-2xl">{weight} lbs</p>
+              {trend !== null && (
+                <span style={{ color: trend > 0 ? '#EF4444' : '#22C55E' }} className="font-bold">
+                  {trend > 0 ? '↑' : '↓'} {Math.abs(trend).toFixed(1)} lbs
+                </span>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {mood && (
+          <div className="rounded-2xl p-5 mb-4 flex items-center gap-4" style={{ background: 'rgba(255,255,255,0.05)' }}>
+            <p className="text-4xl">{{ 'stressed': '😫', 'tired': '😕', 'okay': '😐', 'good': '🙂', 'great': '😄' }[mood]}</p>
+            <div>
+              <p className="text-white/50 text-xs font-bold">Overall Mood</p>
+              <p className="text-white font-bold text-lg">{({ 'stressed': 'Stressed', 'tired': 'Tired', 'okay': 'Okay', 'good': 'Good', 'great': 'Great' }[mood])}</p>
+            </div>
+          </div>
+        )}
+
+        {/* All questions */}
+        <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mt-6 mb-2">All Answers</p>
+        {form?.questions?.map((q, i) => {
+          const val = responses[q.id];
+          const hasVal = val !== null && val !== undefined && val !== '';
           return (
-            <motion.div key={q.id}
-              initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-              className="flex items-start gap-3 p-4 rounded-2xl"
-              style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${isEmpty ? 'rgba(255,255,255,0.06)' : 'rgba(59,130,246,0.15)'}` }}>
-              <div className="flex-1 min-w-0">
-                <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-0.5">{q.label}</p>
-                <p className="text-white font-semibold text-sm" style={{ color: isEmpty ? 'rgba(255,255,255,0.2)' : 'white' }}>
-                  {isEmpty ? 'Skipped' : formatAnswer(q, val)}
-                </p>
+            <motion.div key={q.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className="rounded-2xl p-4 flex items-start justify-between"
+              style={{ background: hasVal ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.03)', border: hasVal ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="flex-1">
+                <p className="text-white/50 text-xs font-semibold">{q.label}</p>
+                <p className="text-white font-bold text-sm mt-1">{getDisplayValue(q, val)}</p>
               </div>
-              <button onClick={() => onEdit(i)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(59,130,246,0.15)' }}>
-                <Edit2 className="w-3.5 h-3.5 text-blue-400" />
-              </button>
+              {hasVal && <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-1" />}
             </motion.div>
           );
         })}
       </div>
 
-      {/* Submit */}
-      <div className="flex-shrink-0 px-5 py-4 space-y-3"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
+      {/* Submit button */}
+      <div className="px-5 py-4 flex-shrink-0" style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom))' }}>
         <button onClick={onSubmit} disabled={submitting}
-          className="w-full py-4 rounded-2xl font-bold text-base text-white flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)', boxShadow: '0 8px 32px rgba(59,130,246,0.3)' }}>
-          {submitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</> : <><Send className="w-5 h-5" /> Submit Check-in</>}
+          className="w-full py-4 rounded-2xl font-black text-base text-white flex items-center justify-center gap-2"
+          style={{ background: submitting ? '#64748B' : 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: !submitting ? '0 4px 20px rgba(37,99,235,0.4)' : 'none', transition: 'all 0.3s' }}>
+          {submitting ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              <Check className="w-5 h-5" />
+              Submit Check-in 🎉
+            </>
+          )}
         </button>
-        <p className="text-white/20 text-xs text-center">Your coach will be notified immediately</p>
+        <button onClick={onBack} disabled={submitting} className="w-full mt-2 py-3 text-white/50 font-semibold text-sm">
+          Edit Answers
+        </button>
       </div>
     </div>
   );

@@ -1,60 +1,77 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Droplets } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 
-const QUICK_ADD = [250, 500, 750, 1000];
+export default function WaterTracker({ glasses = 0, goal = 8, onUpdate }) {
+  const pct = Math.min(100, (glasses / goal) * 100);
 
-export default function WaterTracker({ waterMl, goalMl = 3000, onAdd }) {
-  const [customVal, setCustomVal] = useState('');
-  const pct = Math.min(waterMl / goalMl, 1);
-  const cups = Math.ceil(goalMl / 250);
-  const filledCups = Math.round(pct * cups);
+  const toggleGlass = (index) => {
+    if (index < glasses) {
+      onUpdate(index);
+    } else if (index === glasses) {
+      onUpdate(glasses + 1);
+    }
+  };
 
   return (
-    <div className="mx-4 bg-white p-5 rounded-3xl" style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid #CFFAFE' }}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center">
-            <Droplets className="w-4 h-4 text-cyan-500" />
-          </div>
-          <p className="text-slate-800 font-bold text-sm">Hydration</p>
-        </div>
-        <p className="font-black text-sm" style={{ color: '#06B6D4' }}>
-          {(waterMl / 1000).toFixed(1)}L <span className="text-slate-400 font-normal text-xs">/ {goalMl / 1000}L</span>
-        </p>
+    <div className="mx-4 bg-white rounded-[20px] p-5 mb-5"
+      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
+
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-slate-900 font-black text-lg">💧 Water Intake</h3>
+        <p className="text-slate-400 text-xs font-semibold">{glasses} of {goal} glasses</p>
       </div>
 
-      <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-4">
-        <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #06B6D4, #0EA5E9)' }}
-          initial={{ width: 0 }} animate={{ width: `${pct * 100}%` }} transition={{ duration: 0.5 }} />
-      </div>
-
-      <div className="flex gap-1.5 flex-wrap mb-4">
-        {Array.from({ length: Math.min(cups, 12) }).map((_, i) => (
-          <motion.button key={i} whileTap={{ scale: 0.9 }} onClick={() => onAdd(250)}
-            className="w-6 h-8 rounded-lg overflow-hidden border transition-all"
-            style={{ background: i < filledCups ? 'linear-gradient(180deg, #0EA5E9, #06B6D4)' : '#F0F9FF', borderColor: i < filledCups ? '#0EA5E9' : '#E0F2FE' }}>
-            {i < filledCups && <Droplets className="w-3 h-3 text-white mx-auto mt-1" />}
+      {/* Water drops visual */}
+      <div className="flex justify-center gap-2 mb-5">
+        {Array.from({ length: goal }).map((_, i) => (
+          <motion.button
+            key={i}
+            whileTap={{ scale: 0.85 }}
+            onClick={() => toggleGlass(i)}
+            className="w-12 h-14 rounded-full flex items-center justify-center text-2xl transition-all"
+            style={{
+              background: i < glasses
+                ? 'linear-gradient(135deg, #06B6D4, #0891B2)'
+                : 'rgba(0,0,0,0.05)',
+              border: i < glasses ? 'none' : '1.5px dashed #CBD5E1',
+              boxShadow: i < glasses ? '0 2px 8px rgba(6,182,212,0.25)' : 'none',
+            }}>
+            {i < glasses ? '💧' : '○'}
           </motion.button>
         ))}
       </div>
 
-      <div className="flex gap-2 flex-wrap">
-        {QUICK_ADD.map(ml => (
-          <button key={ml} onClick={() => onAdd(ml)}
-            className="flex-1 py-2.5 rounded-2xl text-xs font-bold transition-all"
-            style={{ background: '#F0F9FF', border: '1.5px solid #BAE6FD', color: '#0284C7', minWidth: 52 }}>
-            +{ml >= 1000 ? `${ml / 1000}L` : `${ml}ml`}
-          </button>
-        ))}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <input value={customVal} onChange={e => setCustomVal(e.target.value)} placeholder="ml"
-            type="number" className="w-14 px-2 py-2.5 rounded-xl text-xs text-center text-slate-700 bg-slate-50 border border-slate-200 focus:outline-none focus:border-blue-300" />
-          <button onClick={() => { if (customVal) { onAdd(Number(customVal)); setCustomVal(''); } }}
-            className="px-3 py-2.5 rounded-xl text-xs font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #06B6D4, #0EA5E9)' }}>+</button>
-        </div>
+      {/* Quick buttons */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => onUpdate(Math.max(0, glasses - 1))}
+          className="flex-1 py-3 rounded-xl font-bold text-sm text-slate-600 flex items-center justify-center gap-1.5"
+          style={{ background: '#F1F5F9', border: '1px solid #E5E7EB' }}>
+          <Minus className="w-4 h-4" /> Glass
+        </button>
+        <button
+          onClick={() => onUpdate(glasses + 1)}
+          className="flex-1 py-3 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-1.5"
+          style={{ background: 'linear-gradient(135deg, #06B6D4, #0891B2)', boxShadow: '0 2px 8px rgba(6,182,212,0.25)' }}>
+          <Plus className="w-4 h-4" /> Glass
+        </button>
       </div>
+
+      {/* Progress bar */}
+      <div className="mt-4 h-1.5 rounded-full" style={{ background: '#E5E7EB' }}>
+        <motion.div
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.5 }}
+          className="h-full rounded-full"
+          style={{ background: 'linear-gradient(90deg, #06B6D4, #0891B2)' }} />
+      </div>
+
+      {/* Goal text */}
+      <p className="text-slate-400 text-[10px] font-semibold mt-2 text-center">
+        Goal: {goal} glasses ({(goal * 250)}ml)
+      </p>
     </div>
   );
 }
