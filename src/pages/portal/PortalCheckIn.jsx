@@ -100,16 +100,15 @@ function StatusCard({ lastCheckIn, todayCheckIn, onStart }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      className="mx-5 p-5 rounded-2xl"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      className="mx-5 p-5 rounded-[20px] bg-white"
+      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(255,255,255,0.06)' }}>
-          <Clock className="w-6 h-6 text-white/30" />
+        <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-slate-100">
+          <Clock className="w-6 h-6 text-slate-400" />
         </div>
         <div>
-          <p className="text-white font-bold text-sm">Next Check-in in {daysUntil} day{daysUntil !== 1 ? 's' : ''}</p>
-          <p className="text-white/30 text-xs mt-0.5">
+          <p className="text-slate-900 font-bold text-sm">Next Check-in in {daysUntil} day{daysUntil !== 1 ? 's' : ''}</p>
+          <p className="text-slate-500 text-xs mt-0.5">
             {lastCheckIn ? `Last: ${format(parseISO(lastCheckIn.date), 'MMM d')}` : 'No check-ins yet'}
           </p>
         </div>
@@ -129,25 +128,25 @@ function CheckInHistoryItem({ checkIn, onTap }) {
 
   return (
     <motion.button onClick={onTap} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-      className="w-full p-4 rounded-2xl text-left flex items-center gap-4"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+      className="w-full p-4 rounded-2xl text-left flex items-center gap-4 bg-white"
+      style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}
       whileTap={{ scale: 0.98 }}>
       {/* Date block */}
       <div className="w-12 text-center flex-shrink-0">
-        <p className="text-white/30 text-[9px] uppercase">{format(parseISO(checkIn.date), 'MMM')}</p>
-        <p className="text-white font-bold text-xl leading-none">{format(parseISO(checkIn.date), 'd')}</p>
+        <p className="text-slate-400 text-[9px] uppercase font-bold">{format(parseISO(checkIn.date), 'MMM')}</p>
+        <p className="text-slate-900 font-bold text-xl leading-none">{format(parseISO(checkIn.date), 'd')}</p>
       </div>
       {/* Stats */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-base">{moodEmoji}</span>
-          {checkIn.weight && <span className="text-white/70 text-sm font-semibold">{checkIn.weight} lbs</span>}
-          {checkIn.energy_level && <span className="text-white/30 text-xs">⚡{checkIn.energy_level}/10</span>}
+          {checkIn.weight && <span className="text-slate-700 text-sm font-semibold">{checkIn.weight} lbs</span>}
+          {checkIn.energy_level && <span className="text-slate-500 text-xs">⚡{checkIn.energy_level}/10</span>}
         </div>
         {checkIn.coach_responded && (
           <div className="flex items-center gap-1 mt-1">
-            <MessageSquare className="w-3 h-3 text-blue-400" />
-            <span className="text-blue-400 text-[10px] font-semibold">Coach responded</span>
+            <MessageSquare className="w-3 h-3 text-blue-500" />
+            <span className="text-blue-600 text-[10px] font-semibold">Coach responded</span>
           </div>
         )}
       </div>
@@ -157,7 +156,7 @@ function CheckInHistoryItem({ checkIn, onTap }) {
           style={{ background: statusColor.bg, color: statusColor.text }}>
           {statusColor.label}
         </span>
-        <ChevronRight className="w-4 h-4 text-white/20" />
+        <ChevronRight className="w-4 h-4 text-slate-300" />
       </div>
     </motion.button>
   );
