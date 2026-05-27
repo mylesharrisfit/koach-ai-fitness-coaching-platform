@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, isToday, isYesterday, parseISO } from 'date-fns';
+import { format, isToday, isYesterday } from 'date-fns';
 import {
-  Send, ArrowLeft, MessageSquare, ChevronRight, Mic, Image as ImageIcon,
+  Send, ArrowLeft, MessageSquare, Mic, Image as ImageIcon, Camera,
   Paperclip, BarChart2, ClipboardList, Plus, X
 } from 'lucide-react';
 
@@ -82,12 +82,49 @@ function MessageBubble({ msg, coachInitial }) {
   );
 }
 
+/* ── Attachment Menu ── */
+function AttachMenu({ onClose, onAttach }) {
+  const options = [
+    { icon: <Camera className="w-5 h-5 text-blue-500" />, label: 'Camera', bg: '#EFF6FF', action: 'camera' },
+    { icon: <ImageIcon className="w-5 h-5 text-purple-500" />, label: 'Photo Library', bg: '#F5F3FF', action: 'photo' },
+    { icon: <BarChart2 className="w-5 h-5 text-emerald-500" />, label: 'Share Progress', bg: '#ECFDF5', action: 'progress' },
+    { icon: <ClipboardList className="w-5 h-5 text-amber-500" />, label: 'Share Check-in', bg: '#FFFBEB', action: 'checkin' },
+    { icon: <Paperclip className="w-5 h-5 text-slate-500" />, label: 'Attach File', bg: '#F8FAFC', action: 'file' },
+  ];
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end" style={{ background: 'rgba(0,0,0,0.3)' }}
+      onClick={onClose}>
+      <motion.div initial={{ y: 300 }} animate={{ y: 0 }} exit={{ y: 300 }}
+        className="w-full bg-white rounded-t-3xl px-5 pt-4 pb-10"
+        onClick={e => e.stopPropagation()}>
+        <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5" />
+        <p className="text-slate-800 font-black text-base mb-4">Add Attachment</p>
+        <div className="space-y-2">
+          {options.map(opt => (
+            <button key={opt.action} onClick={() => { onAttach(opt.action); onClose(); }}
+              className="w-full flex items-center gap-4 p-4 rounded-2xl text-left active:opacity-70 transition-opacity"
+              style={{ background: opt.bg }}>
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0"
+                style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+                {opt.icon}
+              </div>
+              <span className="text-slate-700 font-semibold text-sm">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 /* ── Conversation view ── */
 function ConversationView({ myClient, onBack }) {
   const [input, setInput] = useState('');
   const [showAttach, setShowAttach] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const bottomRef = useRef(null);
+  const textareaRef = useRef(null);
   const queryClient = useQueryClient();
 
   const { data: messages = [], refetch } = useQuery({
@@ -100,6 +137,10 @@ function ConversationView({ myClient, onBack }) {
   const sorted = [...messages].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
   const grouped = groupByDate(sorted);
 
+  // Show quick replies when empty or right after coach message
+  const lastMsg = sorted[sorted.length - 1];
+  const showChips = showQuickReplies && (sorted.length === 0 || lastMsg?.sender === 'coach');
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
@@ -110,11 +151,25 @@ function ConversationView({ myClient, onBack }) {
     unread.forEach(m => base44.entities.Message.update(m.id, { is_read: true }).catch(() => {}));
   }, [messages]);
 
-  const sendMessage = async (text) => {
-    const content = text || input.trim();
+  // Auto-resize textarea
+  const handleInput = (e) => {
+    setInput(e.target.value);
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 96) + 'px'; // max ~4 lines
+    }
+  };
+
+  const sendMessage = useCallback(async (text) => {
+    const content = (text !== undefined ? text : input).trim();
     if (!content || !myClient?.id) return;
     setInput('');
     setShowQuickReplies(false);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.focus();
+    }
     await base44.entities.Message.create({
       client_id: myClient.id,
       client_name: myClient.name,
@@ -122,14 +177,23 @@ function ConversationView({ myClient, onBack }) {
       content,
     });
     refetch();
+  }, [input, myClient, refetch]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   const coachInitial = 'C';
+  const hasText = input.trim().length > 0;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col bg-white" style={{ height: '100dvh' }}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-14 pb-4 flex-shrink-0 bg-white border-b border-slate-100" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+      <div className="flex items-center gap-3 px-4 pt-14 pb-4 flex-shrink-0 bg-white border-b border-slate-100"
+        style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
         <button onClick={onBack} className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
           <ArrowLeft className="w-4 h-4 text-slate-500" />
         </button>
@@ -146,9 +210,9 @@ function ConversationView({ myClient, onBack }) {
         </div>
       </div>
 
-      {/* Messages */}
+      {/* Messages — fills remaining space, scrollable */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-slate-50"
-        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 140px)' }}>
+        onClick={() => textareaRef.current?.blur()}>
         {sorted.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white mb-4"
@@ -159,7 +223,7 @@ function ConversationView({ myClient, onBack }) {
             <p className="text-slate-400 text-xs mb-6">They're here to help</p>
             <div className="space-y-2 w-full max-w-xs">
               {SUGGESTED_OPENERS.map(s => (
-                <button key={s} onClick={() => sendMessage(s)}
+                <button key={s} onClick={(e) => { e.stopPropagation(); sendMessage(s); }}
                   className="w-full p-3 rounded-2xl text-sm text-slate-600 text-left bg-white border border-slate-200 font-medium"
                   style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                   {s}
@@ -176,59 +240,88 @@ function ConversationView({ myClient, onBack }) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Quick Replies */}
-      {showQuickReplies && sorted.length > 0 && (
-        <div className="flex gap-2 px-4 pb-2 overflow-x-auto scrollbar-hide flex-shrink-0 bg-white border-t border-slate-100">
-          {QUICK_REPLIES.map(r => (
-            <button key={r} onClick={() => sendMessage(r)}
-              className="px-3 py-1.5 rounded-full text-xs text-slate-600 whitespace-nowrap flex-shrink-0 font-medium bg-slate-100 border border-slate-200 mt-2">
-              {r}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Compose area — sticks to bottom, lifts with keyboard via 100dvh */}
+      <div className="flex-shrink-0 bg-white" style={{ borderTop: '1px solid #F1F5F9', boxShadow: '0 -2px 16px rgba(0,0,0,0.05)' }}>
+        {/* Quick reply chips */}
+        <AnimatePresence>
+          {showChips && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+              className="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto scrollbar-hide">
+              {SUGGESTED_OPENERS.map(r => (
+                <button key={r} onClick={() => sendMessage(r)}
+                  className="px-3 py-2 rounded-full text-xs text-blue-600 whitespace-nowrap flex-shrink-0 font-semibold bg-blue-50 border border-blue-100">
+                  {r}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {/* Compose */}
-      <div className="flex-shrink-0 px-4 py-3 flex items-center gap-2 bg-white"
-        style={{ borderTop: '1px solid #F1F5F9', boxShadow: '0 -2px 12px rgba(0,0,0,0.04)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
-        <button onClick={() => setShowAttach(!showAttach)}
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100 border border-slate-200">
-          <Plus className="w-4 h-4 text-slate-400" />
-        </button>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && sendMessage()}
-          placeholder="Message Coach..."
-          className="flex-1 px-4 py-2.5 rounded-xl text-slate-800 text-sm placeholder-slate-300 focus:outline-none focus:border-blue-300 bg-slate-50 border border-slate-200"
-        />
-        <button onClick={() => sendMessage()}
-          disabled={!input.trim()}
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-30"
-          style={{ background: input.trim() ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9' }}>
-          <Send className="w-4 h-4 text-white" />
-        </button>
+        {/* Input row */}
+        <div className="flex items-end gap-2 px-3 py-3"
+          style={{ paddingBottom: 'max(12px, calc(env(safe-area-inset-bottom) + 80px))' }}>
+          {/* Attachment button */}
+          <button onClick={() => setShowAttach(true)}
+            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors bg-slate-100 active:bg-slate-200"
+            style={{ border: '1.5px solid #E2E8F0', marginBottom: 1 }}>
+            <Plus className="w-5 h-5 text-slate-400" />
+          </button>
+
+          {/* Textarea */}
+          <div className="flex-1 relative">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleInput}
+              onKeyDown={handleKeyDown}
+              placeholder="Message your coach..."
+              rows={1}
+              className="w-full px-4 py-2.5 rounded-3xl text-slate-800 text-base placeholder-slate-400 focus:outline-none resize-none overflow-hidden"
+              style={{
+                border: '1.5px solid #E2E8F0',
+                background: '#FFFFFF',
+                lineHeight: '1.5',
+                minHeight: '42px',
+                maxHeight: '96px',
+                overflowY: input.length > 80 ? 'auto' : 'hidden',
+                transition: 'border-color 0.15s',
+              }}
+              onFocus={e => e.target.style.borderColor = '#93C5FD'}
+              onBlur={e => e.target.style.borderColor = '#E2E8F0'}
+            />
+          </div>
+
+          {/* Send / Mic button */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={hasText ? () => sendMessage() : undefined}
+            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+            style={{
+              background: hasText ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9',
+              border: hasText ? 'none' : '1.5px solid #E2E8F0',
+              marginBottom: 1,
+            }}>
+            <AnimatePresence mode="wait">
+              {hasText ? (
+                <motion.div key="send" initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
+                  <Send className="w-4 h-4 text-white" />
+                </motion.div>
+              ) : (
+                <motion.div key="mic" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
+                  <Mic className="w-4 h-4 text-slate-400" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        </div>
       </div>
 
-      {/* Attach menu */}
+      {/* Attachment menu */}
       <AnimatePresence>
         {showAttach && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-20 left-4 right-4 p-3 rounded-3xl grid grid-cols-4 gap-2 bg-white"
-            style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: '1px solid #F1F5F9' }}>
-            {[
-              { icon: <Paperclip className="w-5 h-5 text-slate-400" />, label: 'File' },
-              { icon: <ImageIcon className="w-5 h-5 text-slate-400" />, label: 'Photo' },
-              { icon: <BarChart2 className="w-5 h-5 text-slate-400" />, label: 'Progress' },
-              { icon: <ClipboardList className="w-5 h-5 text-slate-400" />, label: 'Check-in' },
-            ].map(({ icon, label }) => (
-              <button key={label} onClick={() => setShowAttach(false)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                {icon}
-                <span className="text-slate-400 text-[9px] font-semibold">{label}</span>
-              </button>
-            ))}
-          </motion.div>
+          <AttachMenu onClose={() => setShowAttach(false)} onAttach={(action) => {
+            // Future: handle each attachment type
+          }} />
         )}
       </AnimatePresence>
     </div>
