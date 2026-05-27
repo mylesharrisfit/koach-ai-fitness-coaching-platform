@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Plug, Bell, Shield, Zap, ChevronRight, Briefcase } from 'lucide-react';
+import { User, Plug, Bell, Shield, Zap, ChevronRight, Briefcase, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import IntegrationsTab from '../components/integrations/IntegrationsTab';
@@ -7,6 +7,7 @@ import DefaultAssignmentSettings from '../components/settings/DefaultAssignmentS
 
 const TABS = [
   { id: 'profile', label: 'Profile', icon: User },
+  { id: 'referral', label: 'Refer & Earn', icon: Gift },
   { id: 'integrations', label: 'Integrations', icon: Plug },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'security', label: 'Security', icon: Shield },
@@ -107,6 +108,27 @@ export default function Settings() {
 
       {/* Tab Content */}
       {activeTab === 'profile' && <ProfileTab />}
+      {activeTab === 'referral' && (
+        <div>
+          <div className="mb-5">
+            <h2 className="text-base font-semibold text-[#1F2A44]">Refer & Earn</h2>
+            <p className="text-sm text-[#374151] mt-0.5">Earn commissions by referring other coaches to KOACH AI</p>
+          </div>
+          <Link to="/referral-program"
+            className="flex items-center justify-between bg-white border border-[#E7EAF3] rounded-2xl p-5 hover:border-blue-300 transition-colors group">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #DCFCE7, #BBF7D0)' }}>
+                <Gift className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-[#1F2A44] text-sm">View Referral Program</h3>
+                <p className="text-xs text-[#6B7280] mt-0.5">Check your earnings, referral links, and payout details</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+          </Link>
+        </div>
+      )}
       {activeTab === 'integrations' && (
         <div>
           <div className="mb-5">
