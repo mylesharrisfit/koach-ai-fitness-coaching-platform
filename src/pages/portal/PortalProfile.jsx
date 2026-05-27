@@ -1,61 +1,129 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useRef } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, User, CreditCard, ExternalLink, AlertCircle } from 'lucide-react';
-import ProfileHeader from '@/components/portal/profile/ProfileHeader';
-import ProfileQuickStats from '@/components/portal/profile/ProfileQuickStats';
-import ProfileMyInfo from '@/components/portal/profile/ProfileMyInfo';
-import ProfileBodyStats from '@/components/portal/profile/ProfileBodyStats';
-import ProfileFitnessProfile from '@/components/portal/profile/ProfileFitnessProfile';
-import ProfileNutritionPrefs from '@/components/portal/profile/ProfileNutritionPrefs';
-import ProfileNotifications from '@/components/portal/profile/ProfileNotifications';
-import ProfileAppearance from '@/components/portal/profile/ProfileAppearance';
-import ProfilePrivacy from '@/components/portal/profile/ProfilePrivacy';
-import ProfileSupport from '@/components/portal/profile/ProfileSupport';
-import ProfileCoachCard from '@/components/portal/profile/ProfileCoachCard';
-import ProfileConnectedApps from '@/components/portal/profile/ProfileConnectedApps';
-import ProfileSecurity from '@/components/portal/profile/ProfileSecurity';
-import ProfileCompletionCard from '@/components/portal/profile/ProfileCompletionCard';
-import SignOutModal from '@/components/portal/profile/SignOutModal';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ChevronLeft, ChevronRight, Camera, User, Target, Bell,
+  CreditCard, Lock, Smartphone, Star, HelpCircle, MessageSquare, LogOut
+} from 'lucide-react';
+import { format, parseISO } from 'date-fns';
 
-function BillingShortcut({ client, onNavigate }) {
-  const { data: invoices = [] } = useQuery({
-    queryKey: ['portal-unpaid-invoices', client?.id],
-    queryFn: () => base44.entities.Invoice.filter({ client_id: client.id }, '-issue_date', 50),
-    enabled: !!client?.id,
-  });
-  const unpaidCount = invoices.filter(i => ['sent', 'viewed', 'overdue', 'draft'].includes(i.status)).length;
+/* ── Sign Out Confirmation Modal ── */
+function SignOutModal({ onCancel }) {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end justify-center"
+      style={{ background: 'rgba(0,0,0,0.4)' }}
+      onClick={onCancel}>
+      <motion.div initial={{ y: 200 }} animate={{ y: 0 }} exit={{ y: 200 }}
+        className="w-full max-w-md bg-white rounded-t-3xl p-6 pb-10"
+        onClick={e => e.stopPropagation()}>
+        <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5" />
+        <div className="text-center mb-6">
+          <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3">
+            <LogOut className="w-7 h-7 text-red-500" />
+          </div>
+          <h3 className="text-slate-900 font-black text-lg">Sign Out?</h3>
+          <p className="text-slate-400 text-sm mt-1">You'll need to sign in again to access your account.</p>
+        </div>
+        <button
+          onClick={() => base44.auth.logout('/')}
+          className="w-full py-4 rounded-2xl font-black text-white text-base mb-3"
+          style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}>
+          Yes, Sign Out
+        </button>
+        <button onClick={onCancel}
+          className="w-full py-4 rounded-2xl font-bold text-slate-600 text-base bg-slate-100">
+          Cancel
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ── Completion Card ── */
+function CompletionCard({ client }) {
+  const [dismissed, setDismissed] = useState(false);
+  const items = [
+    { label: 'Add profile photo', done: !!client?.avatar_url },
+    { label: 'Set goal weight', done: !!client?.target_weight },
+    { label: 'Connect Apple Health', done: false },
+    { label: 'Set notification preferences', done: false },
+  ];
+  const done = items.filter(i => i.done).length;
+  const pct = Math.round((done / items.length) * 100);
+  if (pct === 100 || dismissed) return null;
 
   return (
-    <div className="px-5 mt-4">
-      <button onClick={onNavigate}
-        className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white text-left"
-        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: `1.5px solid ${unpaidCount > 0 ? '#FECACA' : '#F1F5F9'}` }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative bg-blue-50">
-          <CreditCard className="w-5 h-5 text-blue-600" />
-          {unpaidCount > 0 && (
-            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-              <span className="text-[9px] font-black text-white">{unpaidCount}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex-1">
-          <p className="text-slate-900 font-bold text-sm">Billing & Payments</p>
-          <p className={`text-xs mt-0.5 ${unpaidCount > 0 ? 'text-red-500 font-semibold' : 'text-slate-400'}`}>
-            {unpaidCount > 0 ? `${unpaidCount} invoice${unpaidCount > 1 ? 's' : ''} require payment` : 'Invoices, payment methods, history'}
-          </p>
-        </div>
-        <ExternalLink className="w-4 h-4 text-slate-300 flex-shrink-0" />
+    <div className="mx-5 mt-4 bg-white rounded-2xl p-4 relative"
+      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.07)', border: '1px solid #F1F5F9' }}>
+      <button onClick={() => setDismissed(true)}
+        className="absolute top-3 right-3 w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-bold">
+        ✕
       </button>
+      <p className="text-slate-900 font-black text-sm">Complete your profile</p>
+      <p className="text-slate-400 text-xs mt-0.5 mb-3">Get the most out of KOACH AI</p>
+      <div className="h-2 rounded-full bg-slate-100 mb-3">
+        <motion.div animate={{ width: `${pct}%` }} transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+      </div>
+      <div className="space-y-1.5">
+        {items.filter(i => !i.done).map(item => (
+          <div key={item.label} className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full border-2 border-slate-200 flex-shrink-0" />
+            <p className="text-slate-500 text-xs">{item.label}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-blue-600 text-xs mt-2 font-bold">{pct}% complete</p>
     </div>
   );
 }
 
+/* ── Stats Card ── */
+function StatCard({ icon: Icon, iconBg, iconColor, value, label, sublabel, onClick }) {
+  return (
+    <button onClick={onClick}
+      className="flex-1 bg-white rounded-2xl p-3 flex flex-col items-center gap-1 min-w-0"
+      style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
+        <Icon className="w-4.5 h-4.5" style={{ color: iconColor }} size={18} />
+      </div>
+      <p className="text-slate-900 font-black text-lg leading-none mt-1">{value}</p>
+      <p className="text-slate-400 text-[10px] font-semibold">{sublabel}</p>
+    </button>
+  );
+}
+
+/* ── Settings Row ── */
+function SettingsRow({ icon: Icon, iconBg, iconColor, label, subtitle, onClick, badge }) {
+  return (
+    <button onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-3.5 bg-white text-left active:bg-slate-50 transition-colors">
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
+        <Icon size={16} style={{ color: iconColor }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-slate-900 font-semibold text-sm">{label}</p>
+        <p className="text-slate-400 text-xs mt-0.5">{subtitle}</p>
+      </div>
+      {badge ? (
+        <span className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-[9px] font-black text-white flex-shrink-0">
+          {badge}
+        </span>
+      ) : (
+        <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />
+      )}
+    </button>
+  );
+}
+
+/* ── MAIN PAGE ── */
 export default function PortalProfile({ user }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const fileRef = useRef();
   const [showSignOut, setShowSignOut] = useState(false);
 
   const { data: clients = [] } = useQuery({
@@ -64,13 +132,6 @@ export default function PortalProfile({ user }) {
     enabled: !!user?.email,
   });
   const myClient = clients[0];
-
-  const { data: programs = [] } = useQuery({
-    queryKey: ['portal-program-profile', myClient?.assigned_program_id],
-    queryFn: () => base44.entities.WorkoutProgram.filter({ id: myClient.assigned_program_id }, '-created_date', 1),
-    enabled: !!myClient?.assigned_program_id,
-  });
-  const myProgram = programs[0];
 
   const { data: checkIns = [] } = useQuery({
     queryKey: ['portal-checkins-profile', myClient?.id],
@@ -90,7 +151,13 @@ export default function PortalProfile({ user }) {
     enabled: !!myClient?.id,
   });
 
-  // Streak calc
+  const { data: invoices = [] } = useQuery({
+    queryKey: ['portal-invoices-profile', myClient?.id],
+    queryFn: () => base44.entities.Invoice.filter({ client_id: myClient.id }, '-issue_date', 50),
+    enabled: !!myClient?.id,
+  });
+  const unpaidCount = invoices.filter(i => ['sent', 'viewed', 'overdue', 'draft'].includes(i.status)).length;
+
   const streak = (() => {
     let count = 0;
     const sorted = [...checkIns].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -101,70 +168,158 @@ export default function PortalProfile({ user }) {
     return count;
   })();
 
-  const sections = [
-    { id: 'info', label: 'My Information', icon: '👤' },
-    { id: 'body', label: 'Body Stats', icon: '⚖️' },
-    { id: 'fitness', label: 'Fitness Profile', icon: '💪' },
-    { id: 'nutrition', label: 'Nutrition Preferences', icon: '🥗' },
-    { id: 'apps', label: 'Connected Apps & Devices', icon: '📱' },
-    { id: 'notifications', label: 'Notifications', icon: '🔔' },
-    { id: 'appearance', label: 'Appearance & Preferences', icon: '🎨' },
-    { id: 'privacy', label: 'Privacy & Data', icon: '🔒' },
-    { id: 'security', label: 'Account Security', icon: '🛡️' },
-    { id: 'support', label: 'About & Support', icon: '💬' },
-  ];
+  const initials = (user?.full_name || myClient?.name || 'U')
+    .split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
+  const memberSince = myClient?.start_date
+    ? format(parseISO(myClient.start_date), 'MMMM yyyy')
+    : user?.created_date
+    ? format(new Date(user.created_date), 'MMMM yyyy')
+    : null;
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !myClient?.id) return;
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    await base44.entities.Client.update(myClient.id, { avatar_url: file_url });
+    queryClient.invalidateQueries({ queryKey: ['portal-client-profile'] });
+  };
 
   return (
     <div className="pb-32 min-h-screen" style={{ background: '#F8F9FA' }}>
-      {/* Back nav */}
+
+      {/* ── Top Nav ── */}
       <div className="flex items-center gap-3 px-5 pt-14 pb-4 bg-white" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
-        <button onClick={() => navigate('/portal')} className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
+        <button onClick={() => navigate('/portal')}
+          className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
           <ChevronLeft className="w-5 h-5 text-slate-500" />
         </button>
         <h1 className="text-slate-900 font-black text-lg">Profile & Settings</h1>
       </div>
 
-      {/* Completion card */}
-      <ProfileCompletionCard client={myClient} user={user} />
+      {/* ── SECTION 1: Profile Header ── */}
+      <div className="bg-white pt-8 pb-6 flex flex-col items-center text-center border-b border-slate-100">
+        {/* Avatar */}
+        <div className="relative mb-4">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            {myClient?.avatar_url
+              ? <img src={myClient.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+              : <span className="text-white font-black text-2xl">{initials}</span>
+            }
+          </div>
+          <button onClick={() => fileRef.current?.click()}
+            className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
+            style={{ background: '#2563EB', border: '2.5px solid white', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}>
+            <Camera className="w-3.5 h-3.5 text-white" />
+          </button>
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+        </div>
 
-      {/* Profile header */}
-      <ProfileHeader user={user} client={myClient} program={myProgram} checkIns={checkIns} />
+        {/* Name */}
+        <h2 className="text-slate-900 font-black text-2xl leading-tight">
+          {user?.full_name || myClient?.name || 'My Profile'}
+        </h2>
 
-      {/* Quick stats */}
-      <ProfileQuickStats
-        workouts={workoutSessions.length}
-        checkIns={checkIns.length}
-        streak={streak}
-        achievements={badges.length}
-        onNavigate={navigate}
-      />
+        {/* Member since */}
+        {memberSince && (
+          <p className="text-slate-400 text-xs mt-1 font-medium">Member since {memberSince}</p>
+        )}
 
-      {/* Billing & Payments shortcut */}
-      <BillingShortcut client={myClient} onNavigate={() => navigate('/portal/billing')} />
-
-      {/* Coach card */}
-      <ProfileCoachCard client={myClient} onMessage={() => navigate('/portal/messages')} />
-
-      {/* Sections */}
-      <div className="px-5 mt-5 space-y-3">
-        <ProfileMyInfo user={user} client={myClient} queryClient={queryClient} />
-        <ProfileBodyStats client={myClient} checkIns={checkIns} queryClient={queryClient} />
-        <ProfileFitnessProfile client={myClient} queryClient={queryClient} />
-        <ProfileNutritionPrefs client={myClient} queryClient={queryClient} />
-        <ProfileConnectedApps />
-        <ProfileNotifications user={user} />
-        <ProfileAppearance />
-        <ProfilePrivacy client={myClient} />
-        <ProfileSecurity />
-        <ProfileSupport />
+        {/* Edit Profile button */}
+        <button className="mt-3 px-5 py-2 rounded-xl text-sm font-bold text-blue-600 border-2 border-blue-200 bg-blue-50">
+          Edit Profile
+        </button>
       </div>
 
-      {/* Sign out */}
-      <div className="px-5 mt-8">
-        <button
-          onClick={() => setShowSignOut(true)}
-          className="w-full py-4 rounded-2xl font-bold text-red-500 text-base border border-red-100"
-          style={{ background: '#FEF2F2' }}>
+      {/* ── SECTION 2: Quick Stats ── */}
+      <div className="px-5 py-4 bg-white border-b border-slate-100">
+        <div className="flex gap-3">
+          <StatCard icon={User} iconBg="#EFF6FF" iconColor="#2563EB"
+            value={workoutSessions.length} sublabel="Workouts"
+            onClick={() => navigate('/portal/workouts')} />
+          <StatCard icon={Target} iconBg="#F0FDF4" iconColor="#16A34A"
+            value={checkIns.length} sublabel="Check-ins"
+            onClick={() => navigate('/portal/checkin')} />
+          <StatCard icon={Bell} iconBg="#FFFBEB" iconColor="#D97706"
+            value={`${streak}d`} sublabel="Streak"
+            onClick={() => navigate('/portal/progress')} />
+          <StatCard icon={Star} iconBg="#FDF4FF" iconColor="#9333EA"
+            value={badges.length} sublabel="Awards"
+            onClick={() => navigate('/portal/progress')} />
+        </div>
+      </div>
+
+      {/* ── SECTION 3: Complete Your Profile ── */}
+      <CompletionCard client={myClient} />
+
+      {/* ── SECTION 4: Settings List ── */}
+      <div className="mx-5 mt-4 bg-white rounded-2xl overflow-hidden"
+        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        <SettingsRow icon={User} iconBg="#EFF6FF" iconColor="#2563EB"
+          label="Personal Information" subtitle="Update your details"
+          onClick={() => {}} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={Target} iconBg="#F0FDF4" iconColor="#16A34A"
+          label="Goals & Fitness" subtitle="Your fitness profile"
+          onClick={() => {}} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={Bell} iconBg="#FFFBEB" iconColor="#D97706"
+          label="Notifications" subtitle="Manage your alerts"
+          onClick={() => {}} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={CreditCard} iconBg="#EFF6FF" iconColor="#2563EB"
+          label="Billing & Payments" subtitle="Invoices and payment methods"
+          badge={unpaidCount > 0 ? unpaidCount : null}
+          onClick={() => navigate('/portal/billing')} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={Lock} iconBg="#FFF1F2" iconColor="#E11D48"
+          label="Privacy & Security" subtitle="Password and account security"
+          onClick={() => {}} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={Smartphone} iconBg="#F0FDF4" iconColor="#16A34A"
+          label="Connected Apps" subtitle="Sync your devices"
+          onClick={() => {}} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={Star} iconBg="#FDF4FF" iconColor="#9333EA"
+          label="Rate KOACH AI" subtitle="Share your feedback"
+          onClick={() => {}} />
+        <div className="mx-4 h-px bg-slate-100" />
+        <SettingsRow icon={HelpCircle} iconBg="#F8FAFC" iconColor="#64748B"
+          label="Help & Support" subtitle="Get assistance"
+          onClick={() => {}} />
+      </div>
+
+      {/* ── SECTION 5: Coach Card ── */}
+      <div className="mx-5 mt-4 bg-white rounded-2xl p-4"
+        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Your Coach</p>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-base text-white flex-shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+              boxShadow: '0 0 0 3px white, 0 0 0 5px rgba(37,99,235,0.2)',
+            }}>
+            C
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-slate-900 font-bold text-sm">Your Coach</p>
+            <p className="text-slate-400 text-xs">KOACH AI Platform</p>
+          </div>
+          <button onClick={() => navigate('/portal/messages')}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 2px 10px rgba(37,99,235,0.25)' }}>
+            <MessageSquare className="w-3.5 h-3.5" />
+            Message
+          </button>
+        </div>
+      </div>
+
+      {/* ── SECTION 6: Sign Out ── */}
+      <div className="px-5 mt-6 mb-8">
+        <button onClick={() => setShowSignOut(true)}
+          className="w-full py-4 rounded-2xl font-bold text-red-500 text-base border-2 border-red-100 bg-white"
+          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
           Sign Out
         </button>
       </div>
