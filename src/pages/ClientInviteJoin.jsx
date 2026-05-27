@@ -17,7 +17,7 @@ const slideVariants = {
 const slideTrans = { type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.36 };
 
 const TOTAL_STEPS = 5;
-const STEP_ORDER = [1, 2, 3, 4, 5, 'complete'];
+const STEP_ORDER = [0, 1, 2, 3, 4, 5, 'complete'];
 
 /* ─────────────────────────────────────────
    Shared primitives
@@ -187,6 +187,63 @@ function BackBtn({ onClick }) {
       </svg>
       Back
     </button>
+  );
+}
+
+/* ─────────────────────────────────────────
+   STEP 0 — Welcome / Landing
+───────────────────────────────────────── */
+function Step0Welcome({ onNext, onSkip }) {
+  return (
+    <div className="fixed inset-0 flex flex-col bg-[#0A0A14] overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] pointer-events-none opacity-[0.08]"
+        style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 70%)', filter: 'blur(80px)' }} />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[300px] pointer-events-none opacity-[0.04]"
+        style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)', filter: 'blur(60px)' }} />
+
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-5 pt-6 pb-2 flex-shrink-0 relative z-10">
+        <KoachLogo size={32} rounded="rounded-xl" glow={false} bg />
+        <button onClick={onSkip} className="text-xs font-medium transition-colors"
+          style={{ color: '#374151' }}
+          onMouseEnter={e => e.target.style.color = '#9CA3AF'}
+          onMouseLeave={e => e.target.style.color = '#374151'}>
+          Skip setup
+        </button>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
+        <motion.div className="flex flex-col items-center text-center max-w-sm w-full gap-6"
+          initial="hidden" animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}>
+
+          <motion.div variants={{ hidden: { scale: 0.8, opacity: 0 }, show: { scale: 1, opacity: 1 } }}>
+            <KoachLogo size={80} rounded="rounded-3xl" glow bg />
+          </motion.div>
+
+          <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="space-y-3">
+            <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>KOACH AI</p>
+            <h1 className="text-3xl font-black text-white leading-tight" style={{ letterSpacing: '-0.03em' }}>
+              Build your coaching<br />business with AI.
+            </h1>
+            <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>
+              The all-in-one coaching OS to manage clients, deliver programs, and grow your business — powered by AI.
+            </p>
+          </motion.div>
+
+          <motion.div variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }} className="w-full space-y-3">
+            <motion.button type="button" onClick={onNext}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              className="w-full py-4 rounded-2xl font-bold text-base text-white"
+              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 0 28px rgba(37,99,235,0.3)' }}>
+              Get Started →
+            </motion.button>
+            <p className="text-xs" style={{ color: '#374151' }}>Takes about 3 minutes · 5 steps</p>
+          </motion.div>
+        </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -559,7 +616,7 @@ function StepComplete({ firstName, loading }) {
 ───────────────────────────────────────── */
 export default function ClientInviteJoin() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
   const [data, setData] = useState({});
   const [saving, setSaving] = useState(false);
@@ -628,6 +685,7 @@ export default function ClientInviteJoin() {
   const renderStep = () => {
     if (step === 'complete') return <StepComplete firstName={data.first_name} loading={saving} />;
     switch (step) {
+      case 0: return <Step0Welcome onNext={goNext} onSkip={onSkip} />;
       case 1: return <Step1Account {...sharedProps} />;
       case 2: return <Step2Business {...sharedProps} />;
       case 3: return <Step3Profile {...sharedProps} />;
