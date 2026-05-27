@@ -54,6 +54,7 @@ import AIInsightsPage from './pages/AIInsightsPage';
 import Invoicing from './pages/Invoicing';
 import Packages from './pages/Packages';
 import PackageLanding from './pages/PackageLanding';
+import CoachProfile from './pages/CoachProfile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -114,6 +115,7 @@ const AuthenticatedApp = () => {
         <Route path="/email-center" element={<EmailCenter />} />
         <Route path="/invoicing" element={<Invoicing />} />
         <Route path="/packages" element={<Packages />} />
+        <Route path="/coach-profile" element={<CoachProfile />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
