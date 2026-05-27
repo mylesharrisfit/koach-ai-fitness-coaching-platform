@@ -39,7 +39,6 @@ import AtRiskClients from './pages/AtRiskClients.jsx';
 import FastReview from './pages/FastReview';
 import ClientProfile from './pages/ClientProfile';
 import FocusLayout from './components/layout/FocusLayout';
-import Onboarding from './pages/Onboarding';
 import CoachingTemplates from './pages/CoachingTemplates';
 import ClientOnboarding from './pages/ClientOnboarding';
 import OnboardingManager from './pages/OnboardingManager';
@@ -119,7 +118,6 @@ const AuthenticatedApp = () => {
       <Route element={<FocusLayout />}>
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
-      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/start" element={<PremiumOnboarding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="/join/:code" element={<ClientInviteJoin />} />
