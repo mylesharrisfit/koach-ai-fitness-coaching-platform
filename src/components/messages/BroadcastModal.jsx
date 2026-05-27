@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users } from 'lucide-react';
+import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users, Sparkles, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { generateBroadcastMessage } from '@/lib/aiMessageAssistant';
 
 const FILTERS = [
   { key: 'all', label: 'All Clients' },
@@ -42,7 +43,7 @@ function previewMessage(message, sampleClient) {
     .replace(/\[Coach Name\]/g, 'Coach');
 }
 
-export default function BroadcastModal({ clients, onClose, onSend }) {
+export default function BroadcastModal({ clients, onClose, onSend, checkIns = [] }) {
   const [step, setStep] = useState(1);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -51,7 +52,27 @@ export default function BroadcastModal({ clients, onClose, onSend }) {
   const [sending, setSending] = useState(false);
   const [scheduleMode, setScheduleMode] = useState(false);
   const [scheduleDate, setScheduleDate] = useState('');
+  const [aiVersions, setAiVersions] = useState([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiVersionIdx, setAiVersionIdx] = useState(0);
   const textareaRef = useRef(null);
+
+  const generateAI = async () => {
+    if (selected.size === 0) return;
+    setAiLoading(true);
+    const selectedClients = clients.filter(c => selected.has(c.id));
+    const versions = await generateBroadcastMessage(selectedClients, clients, filter, checkIns);
+    setAiVersions(versions);
+    setAiVersionIdx(0);
+    if (versions[0]?.message) setMessage(versions[0].message);
+    setAiLoading(false);
+  };
+
+  const cyclAIVersion = (dir) => {
+    const next = (aiVersionIdx + dir + aiVersions.length) % aiVersions.length;
+    setAiVersionIdx(next);
+    setMessage(aiVersions[next]?.message || '');
+  };
 
   const filteredClients = useMemo(() => {
     let list = clients;

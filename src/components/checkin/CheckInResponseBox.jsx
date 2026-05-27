@@ -78,10 +78,21 @@ export default function CheckInResponseBox({ checkIn, client, allClientCIs = [],
   const generateAI = async () => {
     setAiLoading(true);
     setAiDraft('');
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: buildPrompt(client, checkIn, allClientCIs),
-    });
-    setAiDraft(result);
+    try {
+      const res = await base44.functions.invoke('aiMessageAssistant', {
+        action: 'generateCheckInResponse',
+        client,
+        checkIn,
+        recentCheckIns: allClientCIs,
+      });
+      setAiDraft(res.data?.message || '');
+    } catch (e) {
+      // fallback to built-in LLM
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: buildPrompt(client, checkIn, allClientCIs),
+      });
+      setAiDraft(result);
+    }
     setAiLoading(false);
   };
 

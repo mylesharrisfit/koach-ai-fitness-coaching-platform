@@ -1,0 +1,446 @@
+import React, { useState, useCallback } from 'react';
+import { base44 } from '@/api/base44Client';
+import { differenceInWeeks, differenceInDays, format, parseISO } from 'date-fns';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Sparkles, TrendingUp, TrendingDown, AlertTriangle, Trophy,
+  Target, Loader2, RefreshCw, ChevronDown, ChevronUp, Brain,
+  Zap, Shield, BarChart2, Clock
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+/* ── Compute local stats to feed the AI ── */
+function buildContext(client, checkIns, workoutSessions, program) {
+  const sorted = [...checkIns].filter(ci => ci.date).sort((a, b) => new Date(a.date) - new Date(b.date));
+  const recent = sorted.slice(-8);
+  const first = sorted[0];
+  const last = sorted[sorted.length - 1];
+
+  const weeks = first ? Math.max(1, differenceInWeeks(new Date(), parseISO(first.date)) + 1) : 1;
+  const weightChange = first?.weight && last?.weight ? +(last.weight - first.weight).toFixed(1) : null;
+  const weeklyWeightRate = weightChange && weeks ? +(weightChange / weeks).toFixed(2) : null;
+
+  // Weight trend direction: last 4 check-ins
+  const last4Weights = recent.slice(-4).filter(ci => ci.weight).map(ci => ci.weight);
+  let weightTrend = 'stable';
+  if (last4Weights.length >= 3) {
+    const diffs = last4Weights.slice(1).map((w, i) => w - last4Weights[i]);
+    const allDown = diffs.every(d => d < -0.1);
+    const allUp = diffs.every(d => d > 0.1);
+    if (allDown) weightTrend = 'consistently declining';
+    else if (allUp) weightTrend = 'consistently increasing';
+    else weightTrend = 'fluctuating';
+  }
+
+  // Mood trend
+  const moodMap = { great: 5, good: 4, okay: 3, tired: 2, stressed: 1 };
+  const recentMoods = recent.slice(-4).filter(ci => ci.mood).map(ci => moodMap[ci.mood]);
+  const avgMood = recentMoods.length ? (recentMoods.reduce((s, m) => s + m, 0) / recentMoods.length).toFixed(1) : null;
+
+  const avgTraining = recent.length ? Math.round(recent.reduce((s, ci) => s + (ci.compliance_training || 0), 0) / recent.length) : null;
+  const avgNutrition = recent.length ? Math.round(recent.reduce((s, ci) => s + (ci.compliance_nutrition || 0), 0) / recent.length) : null;
+  const avgEnergy = recent.length ? +(recent.filter(ci => ci.energy_level).reduce((s, ci) => s + ci.energy_level, 0) / Math.max(1, recent.filter(ci => ci.energy_level).length)).toFixed(1) : null;
+  const avgStress = recent.length ? +(recent.filter(ci => ci.stress_level).reduce((s, ci) => s + ci.stress_level, 0) / Math.max(1, recent.filter(ci => ci.stress_level).length)).toFixed(1) : null;
+  const avgSleep = recent.length ? +(recent.filter(ci => ci.sleep_hours).reduce((s, ci) => s + ci.sleep_hours, 0) / Math.max(1, recent.filter(ci => ci.sleep_hours).length)).toFixed(1) : null;
+
+  // Workout completions this week
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+  const workoutsThisWeek = workoutSessions.filter(s => new Date(s.completed_at) >= weekAgo).length;
+
+  // Goal pace
+  let paceStatus = null;
+  let weeksToGoal = null;
+  if (client?.target_weight && last?.weight && weeklyWeightRate && weeklyWeightRate !== 0) {
+    const remaining = last.weight - client.target_weight;
+    weeksToGoal = Math.abs(Math.round(remaining / weeklyWeightRate));
+    paceStatus = weeksToGoal <= 14 ? 'ahead' : weeksToGoal <= 20 ? 'on_track' : 'behind';
+  }
+
+  // Plateau detection
+  const isWeightPlateau = last4Weights.length >= 4 && Math.max(...last4Weights) - Math.min(...last4Weights) < 0.5;
+
+  // Churn risk factors
+  const daysSinceLastCI = last ? differenceInDays(new Date(), parseISO(last.date)) : 999;
+  const churnRisk = daysSinceLastCI > 14 ? 'high' : daysSinceLastCI > 7 ? 'moderate' : avgTraining !== null && avgTraining < 50 ? 'moderate' : 'low';
+
+  return {
+    weeks, weightChange, weeklyWeightRate, weightTrend, avgMood, avgTraining, avgNutrition,
+    avgEnergy, avgStress, avgSleep, workoutsThisWeek, paceStatus, weeksToGoal,
+    isWeightPlateau, churnRisk, checkInCount: sorted.length, daysSinceLastCI,
+    currentWeight: last?.weight, startWeight: first?.weight,
+    programTitle: program?.title, programWeeks: program?.duration_weeks,
+    programPhase: weeks <= 4 ? 'early' : weeks <= 8 ? 'middle' : 'advanced',
+  };
+}
+
+function buildPrompt(client, ctx, isClientFacing) {
+  if (isClientFacing) {
+    return `You are a motivational AI fitness coach. Generate encouraging, positive insights for a client viewing their own progress.
+NEVER show risk data, churn probability, or negative predictions to the client. Be uplifting and celebratory.
+
+Client: ${client?.name?.split(' ')[0] || 'there'}
+Goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
+Weeks active: ${ctx.weeks}
+Total check-ins: ${ctx.checkInCount}
+Weight change: ${ctx.weightChange ? `${ctx.weightChange} lbs` : 'not tracked'}
+Weekly rate: ${ctx.weeklyWeightRate ? `${ctx.weeklyWeightRate} lbs/wk` : 'n/a'}
+Avg training: ${ctx.avgTraining ?? 'n/a'}%
+Avg nutrition: ${ctx.avgNutrition ?? 'n/a'}%
+Workouts this week: ${ctx.workoutsThisWeek}
+Pace to goal: ${ctx.paceStatus || 'not set'}
+Weeks to goal: ${ctx.weeksToGoal ?? 'calculating'}
+
+Generate a JSON response with:
+{
+  "headline": "short celebratory headline (1 line)",
+  "summary": "2-3 sentence positive progress summary, data-driven",
+  "insights": ["insight 1 (specific, encouraging)", "insight 2", "insight 3"],
+  "prediction": "positive goal achievement message",
+  "tip": "one actionable tip for next week"
+}`;
+  }
+
+  return `You are an elite fitness coach AI generating an intelligent progress analysis for a coach dashboard.
+Be specific, data-driven, and clinically insightful. Surface patterns the coach might miss.
+
+CLIENT: ${client?.name || 'Client'}
+GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
+START WEIGHT: ${ctx.startWeight ?? 'unknown'} lbs | CURRENT: ${ctx.currentWeight ?? 'unknown'} lbs
+WEIGHT CHANGE: ${ctx.weightChange ?? 'n/a'} lbs over ${ctx.weeks} weeks (${ctx.weeklyWeightRate ?? 'n/a'} lbs/wk)
+WEIGHT TREND: ${ctx.weightTrend}
+TARGET WEIGHT: ${client?.target_weight ?? 'not set'} lbs | WEEKS TO GOAL: ${ctx.weeksToGoal ?? 'n/a'} | PACE: ${ctx.paceStatus ?? 'n/a'}
+PLATEAU DETECTED: ${ctx.isWeightPlateau ? 'YES' : 'no'}
+
+RECENT AVERAGES (last 8 check-ins):
+- Training compliance: ${ctx.avgTraining ?? 'n/a'}%
+- Nutrition compliance: ${ctx.avgNutrition ?? 'n/a'}%
+- Energy: ${ctx.avgEnergy ?? 'n/a'}/10
+- Stress: ${ctx.avgStress ?? 'n/a'}/10
+- Sleep: ${ctx.avgSleep ?? 'n/a'} hrs
+- Mood: ${ctx.avgMood ?? 'n/a'}/5
+
+PROGRAM: ${ctx.programTitle ?? 'none'} | Phase: ${ctx.programPhase} | ${ctx.weeks} weeks in
+WORKOUTS THIS WEEK: ${ctx.workoutsThisWeek}
+DAYS SINCE LAST CHECK-IN: ${ctx.daysSinceLastCI}
+CHURN RISK: ${ctx.churnRisk}
+
+Generate a JSON response with exactly this structure:
+{
+  "summary": "3-4 sentence plain English coaching summary covering key metrics, trends, and what stands out",
+  "coaching_priority": "One sentence: the single most important coaching focus this week",
+  "trends": [
+    {"type": "positive|negative|neutral", "text": "specific trend observation"},
+    {"type": "positive|negative|neutral", "text": "another trend"}
+  ],
+  "pace_analysis": "1-2 sentences on goal pace and whether client is ahead/on track/behind",
+  "recommendations": ["recommendation 1", "recommendation 2", "recommendation 3"],
+  "readiness": "progress|maintain|deload|switch_program",
+  "readiness_reason": "why you chose that readiness status",
+  "churn_insight": "insight about engagement risk if relevant, or empty string",
+  "plateau_warning": "plateau prediction or warning, or empty string"
+}`;
+}
+
+/* ── Trend Badge ── */
+function TrendBadge({ type, text }) {
+  const config = {
+    positive: { bg: 'bg-emerald-50 border-emerald-200 text-emerald-700', icon: TrendingUp, iconColor: 'text-emerald-600' },
+    negative: { bg: 'bg-red-50 border-red-200 text-red-700', icon: AlertTriangle, iconColor: 'text-red-500' },
+    neutral: { bg: 'bg-blue-50 border-blue-200 text-blue-700', icon: BarChart2, iconColor: 'text-blue-500' },
+  }[type] || { bg: 'bg-gray-50 border-gray-200 text-gray-600', icon: BarChart2, iconColor: 'text-gray-400' };
+  const Icon = config.icon;
+  return (
+    <div className={cn('flex items-start gap-2 px-3 py-2 rounded-xl border text-xs leading-relaxed', config.bg)}>
+      <Icon className={cn('w-3.5 h-3.5 flex-shrink-0 mt-0.5', config.iconColor)} />
+      <span>{text}</span>
+    </div>
+  );
+}
+
+/* ── Readiness Badge ── */
+function ReadinessBadge({ readiness }) {
+  const config = {
+    progress: { label: '↑ Ready to Progress', bg: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+    maintain: { label: '→ Maintain Current', bg: 'bg-blue-100 text-blue-700 border-blue-300' },
+    deload: { label: '↓ Recommend Deload', bg: 'bg-amber-100 text-amber-700 border-amber-300' },
+    switch_program: { label: '⟳ Time for New Program', bg: 'bg-purple-100 text-purple-700 border-purple-300' },
+  }[readiness] || { label: '— Unknown', bg: 'bg-gray-100 text-gray-600 border-gray-200' };
+  return (
+    <span className={cn('text-xs font-bold px-3 py-1 rounded-full border', config.bg)}>{config.label}</span>
+  );
+}
+
+/* ── Coach-facing full analysis panel ── */
+function CoachAnalysisPanel({ analysis, ctx }) {
+  const [showRecs, setShowRecs] = useState(false);
+  return (
+    <div className="space-y-3">
+      {/* Summary */}
+      <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Brain className="w-4 h-4 text-primary" />
+          <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">AI Summary</p>
+        </div>
+        <p className="text-sm text-[#374151] leading-relaxed">{analysis.summary}</p>
+        {analysis.coaching_priority && (
+          <div className="mt-3 flex items-start gap-2 bg-primary/5 rounded-xl p-3">
+            <Target className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+            <p className="text-xs font-semibold text-primary">{analysis.coaching_priority}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Readiness + Pace */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+          <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-2">Program Readiness</p>
+          {analysis.readiness && <ReadinessBadge readiness={analysis.readiness} />}
+          {analysis.readiness_reason && (
+            <p className="text-[11px] text-[#6B7280] mt-2 leading-snug">{analysis.readiness_reason}</p>
+          )}
+        </div>
+        <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+          <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-2">Goal Pace</p>
+          <div className={cn('text-xs font-bold px-2.5 py-1 rounded-full inline-block',
+            ctx.paceStatus === 'ahead' ? 'bg-emerald-100 text-emerald-700' :
+            ctx.paceStatus === 'on_track' ? 'bg-blue-100 text-blue-700' :
+            ctx.paceStatus === 'behind' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'
+          )}>
+            {ctx.paceStatus === 'ahead' ? '🟢 Ahead of Pace' :
+             ctx.paceStatus === 'on_track' ? '🔵 On Pace' :
+             ctx.paceStatus === 'behind' ? '🟡 Behind Pace' : '— No goal set'}
+          </div>
+          <p className="text-[11px] text-[#6B7280] mt-2 leading-snug">{analysis.pace_analysis}</p>
+        </div>
+      </div>
+
+      {/* Trends */}
+      {analysis.trends?.length > 0 && (
+        <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+          <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide mb-3">Detected Trends</p>
+          <div className="space-y-2">
+            {analysis.trends.map((t, i) => <TrendBadge key={i} type={t.type} text={t.text} />)}
+          </div>
+        </div>
+      )}
+
+      {/* Warnings */}
+      {(analysis.plateau_warning || analysis.churn_insight) && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-2">
+          <p className="text-xs font-bold text-amber-700 uppercase tracking-wide flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5" /> Alerts
+          </p>
+          {analysis.plateau_warning && <p className="text-xs text-amber-700">{analysis.plateau_warning}</p>}
+          {analysis.churn_insight && <p className="text-xs text-amber-700">{analysis.churn_insight}</p>}
+        </div>
+      )}
+
+      {/* Recommendations */}
+      {analysis.recommendations?.length > 0 && (
+        <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+          <button className="flex items-center justify-between w-full" onClick={() => setShowRecs(s => !s)}>
+            <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">Recommendations</p>
+            {showRecs ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+          </button>
+          <AnimatePresence>
+            {showRecs && (
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                <div className="space-y-2 mt-3">
+                  {analysis.recommendations.map((r, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs text-[#374151]">
+                      <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center flex-shrink-0 text-[10px]">{i + 1}</span>
+                      {r}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Client-facing simplified panel ── */
+function ClientAnalysisPanel({ analysis }) {
+  return (
+    <div className="space-y-3">
+      {analysis.headline && (
+        <div className="text-center py-2">
+          <p className="text-white font-bold text-base">{analysis.headline}</p>
+        </div>
+      )}
+      <p className="text-white/70 text-sm leading-relaxed">{analysis.summary}</p>
+      {analysis.insights?.map((ins, i) => (
+        <div key={i} className="flex items-start gap-2.5 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          <span className="text-base flex-shrink-0">{'💡🎯🏆✨'[i] || '⭐'}</span>
+          <p className="text-white/70 text-sm leading-relaxed">{ins}</p>
+        </div>
+      ))}
+      {analysis.prediction && (
+        <div className="px-3 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.1))', border: '1px solid rgba(34,197,94,0.25)' }}>
+          <p className="text-emerald-400 text-sm font-semibold">🎯 {analysis.prediction}</p>
+        </div>
+      )}
+      {analysis.tip && (
+        <div className="px-3 py-2.5 rounded-xl" style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
+          <p className="text-blue-400 text-xs font-semibold">💡 This week: {analysis.tip}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── MAIN EXPORT ── */
+export default function AIProgressAnalyzer({
+  client, checkIns = [], workoutSessions = [], program = null,
+  isClientFacing = false, autoGenerate = false, compact = false
+}) {
+  const [analysis, setAnalysis] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [generated, setGenerated] = useState(false);
+  const [expanded, setExpanded] = useState(!compact);
+
+  const ctx = buildContext(client, checkIns, workoutSessions, program);
+  const hasEnoughData = checkIns.length >= 3;
+
+  const generate = useCallback(async () => {
+    if (!hasEnoughData) return;
+    setLoading(true);
+    setAnalysis(null);
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: buildPrompt(client, ctx, isClientFacing),
+      response_json_schema: {
+        type: 'object',
+        properties: isClientFacing ? {
+          headline: { type: 'string' },
+          summary: { type: 'string' },
+          insights: { type: 'array', items: { type: 'string' } },
+          prediction: { type: 'string' },
+          tip: { type: 'string' },
+        } : {
+          summary: { type: 'string' },
+          coaching_priority: { type: 'string' },
+          trends: { type: 'array', items: { type: 'object', properties: { type: { type: 'string' }, text: { type: 'string' } } } },
+          pace_analysis: { type: 'string' },
+          recommendations: { type: 'array', items: { type: 'string' } },
+          readiness: { type: 'string' },
+          readiness_reason: { type: 'string' },
+          churn_insight: { type: 'string' },
+          plateau_warning: { type: 'string' },
+        }
+      },
+    });
+    setAnalysis(result);
+    setGenerated(true);
+    setLoading(false);
+  }, [client, checkIns, workoutSessions, program, isClientFacing]);
+
+  // Client-facing wrapper
+  if (isClientFacing) {
+    return (
+      <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.12), rgba(59,130,246,0.1))', border: '1px solid rgba(124,58,237,0.2)' }}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <p className="text-white font-bold text-sm">AI Progress Insights</p>
+          </div>
+          {generated && (
+            <button onClick={generate} disabled={loading} className="text-white/30 hover:text-white/60 transition-colors">
+              <RefreshCw className={cn('w-3.5 h-3.5', loading && 'animate-spin')} />
+            </button>
+          )}
+        </div>
+
+        {!hasEnoughData && (
+          <p className="text-white/30 text-xs text-center py-4">Submit at least 3 check-ins to unlock AI insights 📊</p>
+        )}
+
+        {hasEnoughData && !generated && !loading && (
+          <div className="text-center py-4">
+            <p className="text-white/30 text-xs mb-3">Get personalized AI insights based on your data</p>
+            <button onClick={generate} className="px-5 py-2 rounded-xl text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, #7C3AED, #3B82F6)' }}>
+              ✨ Get My Insights
+            </button>
+          </div>
+        )}
+
+        {loading && (
+          <div className="flex items-center gap-2 py-4 justify-center">
+            <div className="w-4 h-4 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" />
+            <p className="text-white/40 text-xs">Analyzing your progress...</p>
+          </div>
+        )}
+
+        {analysis && !loading && <ClientAnalysisPanel analysis={analysis} />}
+      </div>
+    );
+  }
+
+  // Coach-facing wrapper
+  return (
+    <div className="bg-gradient-to-br from-[#F0F4FF] to-[#F5F3FF] border border-primary/20 rounded-2xl overflow-hidden">
+      <button
+        className="w-full flex items-center justify-between px-4 py-3"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+            <Sparkles className="w-3.5 h-3.5 text-white" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-bold text-[#1F2A44]">AI Progress Analyzer</p>
+            {analysis?.coaching_priority && (
+              <p className="text-[10px] text-primary truncate max-w-xs">{analysis.coaching_priority}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {generated && (
+            <button onClick={e => { e.stopPropagation(); generate(); }} disabled={loading}
+              className="p-1 rounded-lg hover:bg-white/50 transition-colors text-[#6B7280]">
+              <RefreshCw className={cn('w-3.5 h-3.5', loading && 'animate-spin')} />
+            </button>
+          )}
+          {expanded ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+        </div>
+      </button>
+
+      <AnimatePresence>
+        {expanded && (
+          <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
+            <div className="px-4 pb-4 space-y-3">
+              {!hasEnoughData && (
+                <div className="text-center py-6">
+                  <Clock className="w-8 h-8 text-[#D1D5DB] mx-auto mb-2" />
+                  <p className="text-sm font-semibold text-[#374151]">Not enough data yet</p>
+                  <p className="text-xs text-[#9CA3AF] mt-1">AI insights appear after 3+ check-ins (currently {checkIns.length})</p>
+                </div>
+              )}
+
+              {hasEnoughData && !generated && !loading && (
+                <div className="text-center py-4">
+                  <p className="text-xs text-[#6B7280] mb-3">Generate an intelligent analysis of this client's full progress data</p>
+                  <button onClick={generate}
+                    className="flex items-center gap-2 mx-auto px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+                    <Sparkles className="w-4 h-4" /> Analyze Progress
+                  </button>
+                </div>
+              )}
+
+              {loading && (
+                <div className="flex items-center gap-2 py-6 justify-center">
+                  <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                  <p className="text-sm text-[#6B7280]">Analyzing {checkIns.length} check-ins...</p>
+                </div>
+              )}
+
+              {analysis && !loading && <CoachAnalysisPanel analysis={analysis} ctx={ctx} />}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

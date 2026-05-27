@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, Minus, Scale, Moon, Zap, Brain, Footprints, Heart, Camera, BarChart2, Ruler } from 'lucide-react';
+import AIProgressAnalyzer from '@/components/progress/AIProgressAnalyzer';
 import { format } from 'date-fns';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -64,7 +65,7 @@ function MetricChart({ data, dataKey, label, unit, color, domain }) {
 }
 
 export default function ProfileProgressTab({ client, checkIns }) {
-  const [activeSection, setActiveSection] = useState('body');
+  const [activeSection, setActiveSection] = useState('ai');
 
   const sorted = [...checkIns].filter(ci => ci.date).sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -111,12 +112,15 @@ export default function ProfileProgressTab({ client, checkIns }) {
   const avgNutrition = nutritionData.length ? Math.round(nutritionData.reduce((s, d) => s + d.compliance_nutrition, 0) / nutritionData.length) : null;
 
   const SECTIONS = [
+    { key: 'ai',          label: '✨ AI Analysis' },
     { key: 'body',        label: 'Body' },
     { key: 'wellness',    label: 'Wellness' },
     { key: 'compliance',  label: 'Compliance' },
     { key: 'measurements', label: 'Measurements' },
     { key: 'photos',      label: 'Photos' },
   ];
+
+  const [aiSection] = useState('ai');
 
   if (checkIns.length === 0) return (
     <div className="bg-white rounded-2xl border border-[#E7EAF3] flex flex-col items-center justify-center py-14 text-center px-6">
@@ -149,6 +153,18 @@ export default function ProfileProgressTab({ client, checkIns }) {
           ))}
         </div>
       </div>
+
+      {/* ── AI ANALYSIS ── */}
+      {activeSection === 'ai' && (
+        <AIProgressAnalyzer
+          client={client}
+          checkIns={checkIns}
+          workoutSessions={[]}
+          program={null}
+          isClientFacing={false}
+          compact={false}
+        />
+      )}
 
       {/* ── BODY ── */}
       {activeSection === 'body' && (

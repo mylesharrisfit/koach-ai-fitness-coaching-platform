@@ -12,6 +12,7 @@ import ConversationEmpty from '../components/messages/ConversationEmpty';
 import ComposeBar from '../components/messages/ComposeBar.jsx';
 import BroadcastModal from '../components/messages/BroadcastModal';
 import ClientInfoSidebar from '../components/messages/ClientInfoSidebar';
+import FollowUpReminders from '../components/messages/FollowUpReminders';
 
 export default function Messages() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -37,6 +38,9 @@ export default function Messages() {
     queryKey: ['messages'],
     queryFn: () => base44.entities.Message.list('-created_date', 500),
   });
+
+  const [user, setUser] = useState(null);
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
   const { data: checkIns = [] } = useQuery({
     queryKey: ['checkins-messages'],
@@ -163,6 +167,13 @@ export default function Messages() {
           onSelectClient={handleSelectClient}
           onBroadcast={() => setShowBroadcast(true)}
         />
+        <FollowUpReminders
+          clients={clients}
+          allMessages={allMessages}
+          checkIns={checkIns}
+          onSelectClient={handleSelectClient}
+          onInsertMessage={(text) => setNewMessage(text)}
+        />
       </div>
 
       {/* ── Center: Chat area ── */}
@@ -221,6 +232,7 @@ export default function Messages() {
             <ComposeBar
               client={selectedClient}
               allMessages={allMessages}
+              checkIns={clientCheckIns}
               onSend={handleSend}
               selectedTag={selectedTag}
               setSelectedTag={setSelectedTag}

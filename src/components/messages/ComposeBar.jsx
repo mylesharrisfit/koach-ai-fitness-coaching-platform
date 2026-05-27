@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import FeatureLock from '@/components/subscription/FeatureLock';
 import { TAG_COLORS } from './MessageTemplates';
 import { differenceInDays } from 'date-fns';
+import AIMessageAssistant from './AIMessageAssistant';
 
 const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
 
@@ -292,6 +293,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   const [aiSuggestion, setAiSuggestion] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [showNewAI, setShowNewAI] = useState(false);
   const textareaRef = useRef(null);
   const isEmpty = !value.trim();
 
@@ -341,6 +343,18 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
 
   return (
     <div className="border-t border-[#E7EAF3] bg-white flex-shrink-0">
+      {showNewAI && (
+        <div className="px-3 pt-3">
+          <AIMessageAssistant
+            client={client}
+            allMessages={allMessages}
+            checkIns={checkIns}
+            onUse={(text) => { onChange(text); setShowNewAI(false); textareaRef.current?.focus(); }}
+            onEditFirst={(text) => { onChange(text); setShowNewAI(false); textareaRef.current?.focus(); }}
+          />
+        </div>
+      )}
+
       {showAI && (
         <div className="px-3 pt-3">
           <AIReplyPreview
@@ -394,7 +408,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
           </button>
 
           <FeatureLock feature="ai_suggestions" className="rounded-lg">
-            <button onClick={generateAIReply} className={cn('flex items-center gap-1 text-[11px] px-2 py-1 rounded-lg transition-colors', showAI ? 'text-primary bg-primary/10 font-semibold' : 'text-[#6B7280] hover:text-primary hover:bg-secondary')}>
+            <button onClick={() => setShowNewAI(s => !s)} className={cn('flex items-center gap-1 text-[11px] px-2 py-1 rounded-lg transition-colors', showNewAI ? 'text-primary bg-primary/10 font-semibold' : 'text-[#6B7280] hover:text-primary hover:bg-secondary')}>
               <Sparkles className="w-3.5 h-3.5" /> AI Reply
             </button>
           </FeatureLock>

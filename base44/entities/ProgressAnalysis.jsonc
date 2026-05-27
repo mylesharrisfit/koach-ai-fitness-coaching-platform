@@ -1,0 +1,169 @@
+{
+  "name": "ProgressAnalysis",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "check_in_id": {
+      "type": "string",
+      "description": "Trigger check-in if auto-generated"
+    },
+    "weeks_of_data": {
+      "type": "number"
+    },
+    "summary": {
+      "type": "string",
+      "description": "3-4 sentence plain English summary"
+    },
+    "coaching_priority": {
+      "type": "string",
+      "description": "One-sentence focus for this week"
+    },
+    "trends": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "positive",
+              "concerning",
+              "neutral"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "metric": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "goal_pace": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ahead",
+            "on_track",
+            "behind",
+            "significantly_behind",
+            "no_goal"
+          ]
+        },
+        "current_rate": {
+          "type": "number"
+        },
+        "required_rate": {
+          "type": "number"
+        },
+        "weeks_to_goal": {
+          "type": "number"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "scenarios": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "predictions": {
+      "type": "object",
+      "properties": {
+        "goal_date": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "churn_probability": {
+          "type": "number"
+        },
+        "plateau_risk": {
+          "type": "string"
+        },
+        "program_readiness": {
+          "type": "string",
+          "enum": [
+            "progress",
+            "maintain",
+            "deload",
+            "switch"
+          ]
+        },
+        "program_readiness_reason": {
+          "type": "string"
+        }
+      }
+    },
+    "correlations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "strength": {
+            "type": "string",
+            "enum": [
+              "strong",
+              "moderate",
+              "weak"
+            ]
+          }
+        }
+      }
+    },
+    "client_insights": {
+      "type": "array",
+      "description": "Positive, motivating insights for client-facing view",
+      "items": {
+        "type": "string"
+      }
+    },
+    "week_comparison": {
+      "type": "object",
+      "properties": {
+        "vs_last_week": {
+          "type": "string",
+          "enum": [
+            "better",
+            "same",
+            "worse"
+          ]
+        },
+        "differences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "client_id",
+    "generated_at"
+  ]
+}
