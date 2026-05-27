@@ -1,0 +1,75 @@
+{
+  "name": "ClientReferral",
+  "type": "object",
+  "properties": {
+    "referrer_client_id": {
+      "type": "string",
+      "description": "Client who is referring"
+    },
+    "referrer_client_name": {
+      "type": "string"
+    },
+    "coach_id": {
+      "type": "string",
+      "description": "Coach being referred to"
+    },
+    "referred_client_id": {
+      "type": "string",
+      "description": "New client who was referred (if signed up)"
+    },
+    "referred_email": {
+      "type": "string",
+      "description": "Email of referred friend"
+    },
+    "referred_name": {
+      "type": "string",
+      "description": "Name of referred friend (once signed up)"
+    },
+    "referral_code": {
+      "type": "string",
+      "description": "Unique code like MYLES-SARAH"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "link_clicked",
+        "signed_up",
+        "active",
+        "reward_earned",
+        "expired"
+      ],
+      "default": "link_clicked"
+    },
+    "date_referred": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_link_clicked": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_signed_up": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reward_earned_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reward_applied_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "description": "How referred: direct_link, instagram, email, etc"
+    }
+  },
+  "required": [
+    "referrer_client_id",
+    "referrer_client_name",
+    "coach_id",
+    "referred_email",
+    "referral_code"
+  ]
+}

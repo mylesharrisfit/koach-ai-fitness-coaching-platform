@@ -58,6 +58,7 @@ import CoachProfile from './pages/CoachProfile';
 import BusinessSettings from './pages/BusinessSettings';
 import AccountSettings from './pages/AccountSettings';
 import NotificationSettings from './pages/NotificationSettings';
+import ReferralProgram from './pages/ReferralProgram';
 import InstallPrompt from './components/pwa/InstallPrompt';
 
 const AuthenticatedApp = () => {
@@ -123,6 +124,7 @@ const AuthenticatedApp = () => {
         <Route path="/business-settings" element={<BusinessSettings />} />
         <Route path="/account-settings" element={<AccountSettings />} />
         <Route path="/notification-settings" element={<NotificationSettings />} />
+        <Route path="/referral-program" element={<ReferralProgram />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />

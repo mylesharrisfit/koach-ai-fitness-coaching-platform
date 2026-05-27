@@ -1,423 +1,416 @@
 # Push Notifications Setup Guide
 
-## Overview
+## Quick Start
 
-This guide covers setting up Web Push notifications for KOACH AI across iOS, Android, and desktop browsers.
+### 1. Generate VAPID Keys
 
-## Architecture
-
-```
-User Device
-    ↓
-Service Worker (receives push)
-    ↓
-Push Event Handler
-    ↓
-Display Notification
-    ↓
-User Interaction → Click Handler → Open Portal
-```
-
----
-
-## Part 1: VAPID Keys
-
-VAPID (Voluntary Application Server Identification) keys are required for Web Push.
-
-### Generate VAPID Keys
+VAPID (Voluntary Application Server Identification) keys are required for web push notifications.
 
 ```bash
+# Install web-push CLI globally
 npm install -g web-push
+
+# Generate keys (do this once)
 web-push generate-vapid-keys
+
+# Output will look like:
+# Public Key: BFfx...
+# Private Key: 3Ks...
 ```
 
-Output:
+### 2. Store Keys as Secrets
+
+Store in your app's secrets (Environment Variables):
+
 ```
-Public Key: B...
-Private Key: S...
+VAPID_PUBLIC_KEY = "BFfx..."
+VAPID_PRIVATE_KEY = "3Ks..."
 ```
 
-### Store Securely
+**IMPORTANT:** 
+- Public key is sent to clients (safe to expose)
+- Private key is ONLY server-side (keep secure!)
+- Keep a backup of these keys — regenerating requires updating all existing subscriptions
 
-1. **Public Key** → `VITE_VAPID_PUBLIC_KEY` (client-side, safe to expose)
-2. **Private Key** → `VAPID_PRIVATE_KEY` (server-side only, never expose)
+### 3. Service Worker
 
-Add to `.env`:
+The service worker is already set up at `public/sw.js` and handles:
+- Push notification reception
+- Notification display
+- Click and action button handling
+- Offline caching
+
+### 4. Backend Functions
+
+Two functions are already created:
+
+**`getPushPublicKey`** — Returns public VAPID key to client
+- Called by frontend to enable push subscription
+
+**`storePushSubscription`** — Stores push subscription in database
+- Called after user enables notifications
+- Subscription stored per device
+
+### 5. Frontend Integration
+
+The notification prompt is integrated into `pages/ClientPortal`:
+
+```javascript
+<NotificationPrompt
+  isOpen={showNotifPrompt}
+  onEnable={handleEnableNotifications}
+  onDismiss={() => setShowNotifPrompt(false)}
+/>
 ```
-VITE_VAPID_PUBLIC_KEY=B...
-VAPID_PRIVATE_KEY=S...
-```
+
+Timing:
+- Triggered after 3rd portal visit (iOS) 
+- Triggered after onboarding completion (iOS + Android)
+- Never on first app open
+- Won't ask again for 14 days if user denies
 
 ---
 
-## Part 2: Service Worker Setup
+## Sending Push Notifications
 
-The service worker (`public/sw.js`) includes:
-
-### Push Event Listener
-```javascript
-self.addEventListener('push', (event) => {
-  const data = event.data.json();
-  self.registration.showNotification(data.title, {
-    body: data.body,
-    icon: '/icon-192x192.png',
-    actions: data.actions, // Action buttons
-    vibrate: data.vibrate, // Haptic feedback
-  });
-});
-```
-
-### Notification Click Handler
-```javascript
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const url = event.notification.data.url;
-  event.waitUntil(
-    clients.matchAll().then(clients => {
-      for (const client of clients) {
-        if (client.url === url && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      return clients.openWindow(url);
-    })
-  );
-});
-```
-
----
-
-## Part 3: Permission Request Flow
-
-### Step 1: Trigger Permission Prompt
-
-Show `PushPermissionPrompt` component after onboarding:
-
-```jsx
-import PushPermissionPrompt from '@/components/pwa/PushPermissionPrompt';
-
-<PushPermissionPrompt onDismiss={handleDismiss} />
-```
-
-### Step 2: Request Notification Permission
-
-```javascript
-const permission = await Notification.requestPermission();
-// 'granted' | 'denied' | 'default'
-```
-
-### Step 3: Subscribe to Push
-
-```javascript
-const registration = await navigator.serviceWorker.ready;
-const subscription = await registration.pushManager.subscribe({
-  userVisibleOnly: true,
-  applicationServerKey: process.env.VITE_VAPID_PUBLIC_KEY,
-});
-```
-
-### Step 4: Send Subscription to Backend
-
-```javascript
-await base44.functions.invoke('savePushSubscription', {
-  subscription: JSON.stringify(subscription),
-});
-```
-
----
-
-## Part 4: Sending Notifications from Backend
-
-### Function: Send Push Notification
-
-Create `functions/sendPushNotification.js`:
+### From a Backend Function
 
 ```javascript
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import webpush from 'npm:web-push@3.6.7';
-
-webpush.setVapidDetails(
-  'mailto:support@koachai.com',
-  Deno.env.get('VITE_VAPID_PUBLIC_KEY'),
-  Deno.env.get('VAPID_PRIVATE_KEY')
-);
 
 Deno.serve(async (req) => {
-  const { subscription, title, body, url, actions, icon } = await req.json();
+  const { clientId, title, body } = await req.json();
   
-  try {
-    await webpush.sendNotification(
-      JSON.parse(subscription),
-      JSON.stringify({
-        title,
-        body,
-        icon: icon || '/icon-192x192.png',
-        badge: '/badge-72x72.png',
-        url,
-        actions: actions || [],
-        vibrate: [200],
-      })
-    );
-    return Response.json({ success: true });
-  } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+  // 1. Get push subscriptions for this client
+  const subscriptions = await base44.asServiceRole.entities.PushSubscription.filter({
+    client_id: clientId
+  });
+
+  // 2. Send to each subscription
+  const privateKey = Deno.env.get('VAPID_PRIVATE_KEY');
+  const publicKey = Deno.env.get('VAPID_PUBLIC_KEY');
+
+  for (const sub of subscriptions) {
+    const subscription = JSON.parse(sub.subscription_json);
+    
+    await sendWebPush(subscription, {
+      title,
+      body,
+      icon: '/icon-192x192.png',
+      badge: '/icon-badge.png',
+      tag: 'notification',
+      data: { url: '/portal' },
+    }, {
+      vapidDetails: {
+        subject: 'mailto:noreply@koachai.com',
+        publicKey,
+        privateKey,
+      },
+    });
   }
+
+  return Response.json({ sent: subscriptions.length });
 });
 ```
 
-### Usage Examples
+### Notification Payload Structure
 
-**Check-in Reminder**:
 ```javascript
-await base44.functions.invoke('sendPushNotification', {
-  subscription: userSubscription,
-  title: '📋 Weekly Check-in Due',
-  body: 'Submit your check-in to stay accountable',
-  url: '/portal/checkin',
-  actions: [
-    { action: 'start_checkin', title: 'Start Check-in' },
-    { action: 'snooze', title: 'Remind in 1 hour' },
+{
+  title: "Coach Message",           // Notification title
+  body: "Alex replied to your...",  // Notification body
+  icon: "/icon-192x192.png",        // Large icon
+  badge: "/icon-badge.png",         // Small badge icon
+  tag: "messages",                  // Group similar notifications
+  vibrate: [100, 50, 100],          // Vibration pattern
+  sound: "notification.mp3",        // Sound file
+  requireInteraction: false,        // Keep on screen
+  data: {                           // Custom data
+    url: "/portal/messages",
+    id: "msg_123",
+  },
+  actions: [                        // Action buttons
+    {
+      action: "reply",
+      title: "Reply",
+      icon: "/icon-reply.png",
+    },
+    {
+      action: "view",
+      title: "View",
+      icon: "/icon-view.png",
+    }
   ],
-});
+}
 ```
 
-**Coach Message**:
+---
+
+## Notification Types & Configuration
+
+### Message Notification
 ```javascript
-await base44.functions.invoke('sendPushNotification', {
-  subscription: userSubscription,
-  title: '💬 Coach sent you a message',
-  body: message.content.substring(0, 80),
-  url: '/portal/messages',
+{
+  title: `${coachName} replied to your message`,
+  body: message.content.substring(0, 100),
+  tag: 'messages',
+  vibrate: [100, 50, 100],  // Double pulse
+  data: { url: '/portal/messages' },
   actions: [
     { action: 'reply', title: 'Reply' },
+    { action: 'view', title: 'View' }
   ],
-});
+  requireInteraction: true,  // Keep until interacted
+}
 ```
 
-**Achievement Unlocked**:
+### Check-in Reminder
 ```javascript
-await base44.functions.invoke('sendPushNotification', {
-  subscription: userSubscription,
+{
+  title: 'Weekly Check-in Due',
+  body: 'Your coach is waiting for your check-in',
+  tag: 'checkin',
+  vibrate: [50, 30, 50],  // Single pulse
+  data: { url: '/portal/checkin' },
+  actions: [
+    { action: 'start', title: 'Start Check-in' },
+    { action: 'snooze', title: 'Remind in 1h' }
+  ],
+}
+```
+
+### Achievement Unlocked
+```javascript
+{
   title: '🏆 Achievement Unlocked!',
-  body: 'You completed your 30-day check-in streak',
-  url: '/portal/progress',
+  body: '30-day streak — Consistency Master',
+  tag: 'achievement',
+  vibrate: [200, 100, 50, 100, 200],  // Celebration pulse
+  data: { url: '/portal/progress' },
   actions: [
     { action: 'view', title: 'View Achievement' },
+    { action: 'share', title: 'Share' }
   ],
-});
+}
 ```
 
----
-
-## Part 5: iOS-Specific Setup
-
-### Requirements
-- iOS 16.4+ (push support for PWA)
-- App must be installed to home screen
-- Browser: Safari only
-
-### Implementation
-
-1. **Detect iOS**:
+### Workout Reminder
 ```javascript
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+{
+  title: 'Time to Train',
+  body: 'Push Day is ready — tap to start',
+  tag: 'workout',
+  vibrate: [50, 30, 50],
+  data: { url: '/portal/workouts' },
+  actions: [
+    { action: 'start', title: 'Start Workout' },
+    { action: 'rest', title: 'Rest Day' }
+  ],
+}
 ```
 
-2. **Prompt to Add to Home Screen**:
-```jsx
-import AddToHomeScreenPrompt from '@/components/pwa/AddToHomeScreenPrompt';
-
-{isIOS && <AddToHomeScreenPrompt onDismiss={handleDismiss} />}
-```
-
-3. **iOS Push Permissions**:
-After adding to home screen, request notification permission using standard flow (see Part 3).
-
-### iOS Limitations
-- Push notifications only work in PWA mode (added to home screen)
-- Not available in Safari tab
-- Requires iOS 16.4+
-
----
-
-## Part 6: Android-Specific Setup
-
-### Requirements
-- Android 5+
-- Chrome 54+ (or compatible browser)
-- Service Worker support
-
-### Notification Channels
-
-For Android 8+, configure notification channels:
-
+### Payment Due
 ```javascript
-// In service worker or main app
-const channels = [
-  { id: 'messages', importance: 4, sound: 'default' },      // High
-  { id: 'reminders', importance: 3, sound: 'default' },      // Default
-  { id: 'payments', importance: 4, vibration: [300] },       // High
-  { id: 'achievements', importance: 2, sound: 'default' },   // Low
-];
-```
-
-### Notification Icons
-
-Create Android notification icons:
-
-- **Small Icon** (notification bar): `public/icon-72x72.png`
-  - White logo on transparent background
-  - 72×72px PNG
-  
-- **Large Icon** (expanded notification): `public/icon-192x192.png`
-  - Colored app icon
-  - 192×192px PNG
-
----
-
-## Part 7: Testing
-
-### Test on Desktop (Chrome)
-
-1. Open DevTools → Application → Service Workers
-2. Check "Offline" to simulate offline push
-3. In Service Worker console, test:
-
-```javascript
-// Simulate push event
-self.dispatchEvent(new PushEvent('push', {
-  data: new Blob([JSON.stringify({
-    title: 'Test Notification',
-    body: 'This is a test',
-  })]),
-}));
-```
-
-### Test on Android
-
-1. Install on Chrome mobile
-2. Bookmark to home screen
-3. Request notification permission
-4. Use backend function to send test push
-
-### Test on iOS
-
-1. Open in Safari
-2. Share → Add to Home Screen
-3. Launch from home screen
-4. Request notification permission
-5. Test via backend function
-
----
-
-## Part 8: Notification Sending Automation
-
-### Entity Automation: Check-in Reminder
-
-Create automation in platform:
-- **Type**: Scheduled
-- **Schedule**: Every Sunday at 9:00 AM
-- **Function**: `sendCheckInReminders`
-- **Condition**: Client has push subscription
-
-### Function: Send Check-in Reminders
-
-```javascript
-// functions/sendCheckInReminders.js
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-
-Deno.serve(async (req) => {
-  const base44 = createClientFromRequest(req);
-  
-  // Get all active clients
-  const clients = await base44.asServiceRole.entities.Client
-    .filter({ lifecycle_status: 'active' }, '', 1000);
-  
-  for (const client of clients) {
-    if (!client.push_subscriptions) continue;
-    
-    // Check if check-in is due
-    const lastCheckIn = await base44.asServiceRole.entities.CheckIn
-      .filter({ client_id: client.id }, '-date', 1);
-    
-    if (lastCheckIn.length === 0 || /* due logic */) {
-      await base44.asServiceRole.functions.invoke('sendPushNotification', {
-        subscription: client.push_subscriptions,
-        title: '📋 Weekly Check-in Due',
-        body: 'Submit your check-in to stay accountable',
-        url: '/portal/checkin',
-        actions: [
-          { action: 'start_checkin', title: 'Start Now' },
-        ],
-      });
-    }
-  }
-  
-  return Response.json({ sent: clients.length });
-});
+{
+  title: 'Invoice Due Today',
+  body: 'Your monthly coaching fee is due',
+  tag: 'payment',
+  vibrate: [100, 50, 100, 50, 100],  // Triple pulse (urgent)
+  data: { url: '/portal/billing' },
+  actions: [
+    { action: 'pay', title: 'Pay Now' },
+  ],
+  requireInteraction: true,
+}
 ```
 
 ---
 
-## Part 9: Permission Handling Edge Cases
+## Testing Push Notifications
 
-### Denied Permissions
+### Test in Browser DevTools
 
-After user denies:
-1. Wait 14 days before asking again
-2. After 2nd denial, show in-app banner
-3. Provide "Settings" button to re-enable
+1. Open DevTools (F12)
+2. Go to Application tab
+3. Find Service Workers section
+4. Your service worker should be listed
+5. Click "Inspect" to see logs
 
-### Revoked Permissions
+### Test with curl (development)
 
-User can revoke in device settings:
-- Store permission status in localStorage
-- Check on app load
-- Don't ask repeatedly
+```bash
+# First, get a subscription from browser console:
+# navigator.serviceWorker.ready.then(sw => {
+#   sw.pushManager.getSubscription().then(sub => {
+#     console.log(JSON.stringify(sub));
+#   });
+# });
+
+curl -X POST http://localhost:8080/api/test-push \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subscription": { ... },
+    "title": "Test Notification",
+    "body": "This is a test"
+  }'
+```
+
+### Android Testing
+
+1. Open Chrome DevTools
+2. Go to Notifications section
+3. See list of active subscriptions
+4. Click "Send test notification" (if available)
+
+### iOS Testing
+
+Since iOS PWA push requires the app to be installed to home screen:
+
+1. Open Safari on iOS 16.4+
+2. Navigate to your app
+3. Tap Share > Add to Home Screen
+4. Install as app
+5. Launch app from home screen
+6. Grant notification permission when prompted
+7. Test push notifications via your backend
+
+---
+
+## Push Notification Limits
+
+### Android Chrome
+- Max 5,000 concurrent subscriptions per origin
+- Notifications expire after 4 weeks if not delivered
+- Some Android manufacturers (Samsung, Xiaomi) have their own restrictions
+
+### iOS Safari PWA
+- Requires iOS 16.4 or later
+- App must be installed to home screen (not just browser)
+- Subscriptions are more volatile (can be revoked by OS)
+- Background notification delivery less reliable than native apps
+
+### Frequency Limits
+- No official limit, but sending too many (>10/day) will hurt retention
+- Recommended: 1-3 notifications per day max
+- Always provide easy "disable" option
 
 ---
 
 ## Troubleshooting
 
-### Notifications Not Showing
+### Push notifications not showing
 
-**Checklist**:
-- [ ] Service Worker registered and active
-- [ ] Notification permission granted
-- [ ] `Notification.permission === 'granted'`
-- [ ] VAPID keys correct
-- [ ] Push subscription valid (not expired)
-- [ ] Payload is valid JSON
+**Browser console shows errors?**
+- Check that service worker is registered: `navigator.serviceWorker.getRegistrations()`
+- Check manifest.json is linked in HTML
+- Check VAPID keys are correct and stored as secrets
 
-### iOS Push Not Working
+**iOS push not working?**
+- App must be installed to home screen (not just bookmarked)
+- iOS 16.4+ required
+- Check Settings > Safari > Notifications is enabled for your domain
+- Push may not show if app is already open (in focus)
 
-- [ ] iOS 16.4+
-- [ ] App installed to home screen (not in Safari tab)
-- [ ] Notification permission granted
-- [ ] Test with Safari browser push first
+**Android push not working?**
+- Check Chrome version (must support Push API)
+- Verify notification permission granted
+- Check Android Vitals in Play Console for crash logs
 
-### Android Push Not Working
+### Service worker not updating
 
-- [ ] Chrome 54+ or compatible browser
-- [ ] Notification permission granted
-- [ ] Service Worker running
-- [ ] Notification channels configured (Android 8+)
+Service workers are cached aggressively. To force update:
+
+1. **Dev:** Hard refresh (Cmd+Shift+R or Ctrl+Shift+R)
+2. **Production:** Update version in CACHE_NAME constant
+3. **Users:** Will auto-update on next visit
+
+### Subscriptions lost after update
+
+If you change VAPID keys, existing subscriptions become invalid. Plan key rotation carefully:
+1. Gradually deprecate old key over 2-4 weeks
+2. Continue accepting old subscriptions briefly
+3. Clear old subscriptions from database
+4. Enable new key
 
 ---
 
-## Security Best Practices
+## Monitoring & Analytics
 
-1. **Store VAPID Private Key securely** — Never expose in client code
-2. **Validate subscriptions** — Check expiry before sending
-3. **Rate limit** — Don't spam users with notifications
-4. **Respect notification settings** — Honor user preferences
-5. **Test before deploy** — Use internal testing track first
+### Track Notification Engagement
+
+Store notification events in database:
+
+```javascript
+await base44.asServiceRole.entities.NotificationLog.create({
+  client_id: user.id,
+  type: 'notification_sent',
+  notification_type: 'message',
+  recipient_id: recipientId,
+  timestamp: new Date().toISOString(),
+});
+```
+
+Then calculate:
+- **Delivery rate** = delivered / sent
+- **Click-through rate** = clicked / delivered
+- **Engagement rate** = clicked / sent
+
+### App Store & Play Console Monitoring
+
+**iOS:**
+- App Store Connect > Analytics > Usage
+- Monitor notification-related crashes
+- Track user retention by notification frequency
+
+**Android:**
+- Google Play Console > User Reviews
+- Monitor for complaints about notifications
+- Track ANRs (Application Not Responding) related to push
 
 ---
 
-## Further Reading
+## Privacy & User Control
 
-- [Web Push Protocol (RFC 8030)](https://tools.ietf.org/html/rfc8030)
-- [Push API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)
-- [Service Workers (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
-- [iOS PWA Support](https://webkit.org/blog/12445/updates-to-web-push-notifications-in-ios-and-ipados/)
+### Always Provide Easy Opt-out
+
+In-app Settings page:
+```
+Notifications
+  - Messages: [Toggle ON/OFF]
+  - Reminders: [Toggle ON/OFF]
+  - Achievements: [Toggle ON/OFF]
+  - Manage in Device Settings [Link]
+```
+
+### Unsubscribe from Push
+
+```javascript
+const registration = await navigator.serviceWorker.ready;
+const subscription = await registration.pushManager.getSubscription();
+if (subscription) {
+  await subscription.unsubscribe();
+}
+```
+
+### Respect Quiet Hours
+
+```javascript
+const notificationTime = new Date(notification.timestamp);
+const hour = notificationTime.getHours();
+
+// Don't send between 10pm - 7am
+if (hour >= 22 || hour < 7) {
+  // Either don't send, or set requireInteraction: false
+}
+```
+
+---
+
+## Resources
+
+- [Web Push Protocol](https://tools.ietf.org/html/draft-thomson-webpush-protocol)
+- [Push API Spec](https://w3c.github.io/push-api/)
+- [Notification API](https://developer.mozilla.org/en-US/docs/Web/API/Notification_API)
+- [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
+- [web-push npm package](https://www.npmjs.com/package/web-push)
+- [iOS PWA Push Guide](https://developer.apple.com/documentation/usernotifications)

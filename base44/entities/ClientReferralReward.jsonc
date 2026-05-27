@@ -1,0 +1,70 @@
+{
+  "name": "ClientReferralReward",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "coach_id": {
+      "type": "string"
+    },
+    "referral_id": {
+      "type": "string"
+    },
+    "reward_type": {
+      "type": "string",
+      "enum": [
+        "discount_dollar",
+        "discount_percent",
+        "free_days",
+        "free_addon",
+        "custom"
+      ],
+      "default": "discount_dollar"
+    },
+    "reward_amount": {
+      "type": "number",
+      "description": "Dollar amount, percentage, or number of days"
+    },
+    "reward_description": {
+      "type": "string",
+      "description": "Human-readable reward text"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "applied",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "date_earned": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_applied": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "applied_to_invoice_id": {
+      "type": "string"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "client_id",
+    "coach_id",
+    "referral_id",
+    "reward_type",
+    "reward_amount",
+    "reward_description"
+  ]
+}

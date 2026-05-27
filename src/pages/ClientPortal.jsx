@@ -15,6 +15,9 @@ import PortalProgress from '@/pages/portal/PortalProgress';
 import PortalMessages from '@/pages/portal/PortalMessages';
 import PortalNotifications from '@/pages/portal/PortalNotifications';
 import PortalCommunity from '@/pages/portal/PortalCommunity';
+import NotificationPrompt from '@/components/pwa/NotificationPrompt';
+import AddToHomeScreenPrompt from '@/components/pwa/AddToHomeScreenPrompt';
+import { pushNotificationManager } from '@/lib/pushNotificationManager';
 
 const NAV = [
   { icon: Home,          label: 'Home',      path: '/portal' },
@@ -120,10 +123,46 @@ function BottomNav({ user }) {
 
 export default function ClientPortal() {
   const [user, setUser] = useState(null);
+  const [showNotifPrompt, setShowNotifPrompt] = useState(false);
+  const [showAddToHomePrompt, setShowAddToHomePrompt] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
+
+  // Track portal visits and show prompts
+  useEffect(() => {
+    pushNotificationManager.trackPortalVisit();
+    
+    // Show add-to-home prompt after 3 visits
+    if (pushNotificationManager.shouldShowAddToHomeScreen()) {
+      setShowAddToHomePrompt(true);
+      pushNotificationManager.recordAddToHomeScreenShown();
+    }
+
+    // Show notification prompt (after onboarding)
+    if (pushNotificationManager.shouldAskPermission()) {
+      const timer = setTimeout(() => setShowNotifPrompt(true), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  // Register service worker
+  useEffect(() => {
+    pushNotificationManager.registerServiceWorker();
+  }, []);
+
+  const handleEnableNotifications = async () => {
+    try {
+      const swReg = await navigator.serviceWorker.ready;
+      await pushNotificationManager.subscribeToPush(swReg);
+      setShowNotifPrompt(false);
+    } catch (err) {
+      console.error('Failed to enable notifications:', err);
+      pushNotificationManager.recordDenial();
+      setShowNotifPrompt(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0" style={{ background: '#F8F9FA' }}>
@@ -142,6 +181,23 @@ export default function ClientPortal() {
         </Routes>
       </div>
       <BottomNav user={user} />
+
+      {/* Notification permission prompt */}
+      <NotificationPrompt
+        isOpen={showNotifPrompt}
+        onEnable={handleEnableNotifications}
+        onDismiss={() => {
+          pushNotificationManager.recordDenial();
+          setShowNotifPrompt(false);
+        }}
+      />
+
+      {/* iOS add-to-home screen prompt */}
+      <AddToHomeScreenPrompt
+        isOpen={showAddToHomePrompt}
+        onDismiss={() => setShowAddToHomePrompt(false)}
+        isIOS={pushNotificationManager.isIOS()}
+      />
     </div>
   );
 }
