@@ -11,6 +11,7 @@ import TodaySchedule from './TodaySchedule';
 import WeeklySnapshot from './WeeklySnapshot';
 import FirstTimeBanner from './FirstTimeBanner';
 import AIInsightsFeed from './AIInsightsFeed';
+import BIDashboardCard from '@/components/business/bi/BIDashboardCard';
 
 function ActionCenterSection({ clients, checkIns, messages, payments }) {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -128,6 +129,9 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
 
       {/* ── Action Center ──────────────────────────── */}
       <ActionCenterSection clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
+
+      {/* ── Business Intelligence Summary ───────────── */}
+      {clients.length > 0 && <BIDashboardCard />}
 
       {/* ── AI Client Insights ─────────────────────── */}
       {clients.length > 0 && (

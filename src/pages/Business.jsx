@@ -1,142 +1,166 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { differenceInDays, differenceInMonths, subMonths, format, startOfMonth, parseISO } from 'date-fns';
-import MRROverview from '@/components/business/MRROverview';
-import AcquisitionTrends from '@/components/business/AcquisitionTrends';
-import ChurnRiskTable from '@/components/business/ChurnRiskTable';
-import BusinessMetricCard from '@/components/business/BusinessMetricCard';
-import { DollarSign, Users, TrendingUp, TrendingDown, UserCheck, AlertTriangle } from 'lucide-react';
 import PageGuard from '@/components/subscription/PageGuard';
+import BIKPIRow from '@/components/business/bi/BIKPIRow';
+import BIRevenueChart from '@/components/business/bi/BIRevenueChart';
+import BIClientGrowthChart from '@/components/business/bi/BIClientGrowthChart';
+import BIRevenueBreakdown from '@/components/business/bi/BIRevenueBreakdown';
+import BILeadPipeline from '@/components/business/bi/BILeadPipeline';
+import BIForecast from '@/components/business/bi/BIForecast';
+import BIHealthScore from '@/components/business/bi/BIHealthScore';
+import BIAIInsights from '@/components/business/bi/BIAIInsights';
+import BICapacity from '@/components/business/bi/BICapacity';
+import BIGoals from '@/components/business/bi/BIGoals';
+import BIBenchmarks from '@/components/business/bi/BIBenchmarks';
+import { BarChart2, Rocket } from 'lucide-react';
+
+const TABS = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'revenue', label: 'Revenue' },
+  { key: 'clients', label: 'Clients' },
+  { key: 'growth', label: 'Growth' },
+  { key: 'insights', label: '✨ AI Insights' },
+];
+
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 text-center px-6">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mb-4">
+        <Rocket className="w-8 h-8 text-primary" />
+      </div>
+      <h2 className="text-lg font-bold text-gray-900 mb-2">Your business insights will appear here</h2>
+      <p className="text-sm text-gray-400 max-w-xs">As you grow your client base, KOACH AI will surface revenue trends, retention analytics, and growth recommendations. Keep going! 🚀</p>
+    </div>
+  );
+}
 
 function BusinessPage() {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => {});
+  }, []);
+
   const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
+    queryKey: ['clients-bi'],
+    queryFn: () => base44.entities.Client.list('-created_date', 200),
   });
 
   const { data: checkIns = [] } = useQuery({
-    queryKey: ['check-ins'],
-    queryFn: () => base44.entities.CheckIn.list('-date', 200),
+    queryKey: ['checkins-bi'],
+    queryFn: () => base44.entities.CheckIn.list('-date', 500),
   });
 
   const { data: payments = [] } = useQuery({
-    queryKey: ['payments'],
+    queryKey: ['payments-bi'],
     queryFn: () => base44.entities.Payment.list('-created_date', 200),
   });
 
-  // ── MRR from active clients with monthly_rate ──
-  const activeClients = useMemo(() => clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active'), [clients]);
-  const mrr = useMemo(() => activeClients.reduce((sum, c) => sum + (c.monthly_rate || 0), 0), [activeClients]);
+  const { data: leads = [] } = useQuery({
+    queryKey: ['leads-bi'],
+    queryFn: () => base44.entities.Lead.list('-created_date', 200),
+  });
 
-  // ── Month-over-month client acquisition ──
-  const acquisitionData = useMemo(() => {
-    const months = Array.from({ length: 6 }, (_, i) => {
-      const d = subMonths(new Date(), 5 - i);
-      return { month: format(d, 'MMM'), start: startOfMonth(d) };
-    });
-    return months.map(({ month, start }) => {
-      const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
-      const count = clients.filter(c => {
-        const sd = c.start_date ? parseISO(c.start_date) : c.created_date ? new Date(c.created_date) : null;
-        return sd && sd >= start && sd <= end;
-      }).length;
-      return { month, count };
-    });
-  }, [clients]);
+  const isEmpty = clients.length === 0;
 
-  // ── Churn risk: active clients with no check-in in 14+ days or at_risk lifecycle ──
-  const churnRiskClients = useMemo(() => {
-    return activeClients
-      .map(client => {
-        const clientCheckIns = checkIns.filter(ci => ci.client_id === client.id);
-        const lastCheckIn = clientCheckIns.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-        const daysSinceCheckIn = lastCheckIn ? differenceInDays(new Date(), new Date(lastCheckIn.date)) : null;
-        const isAtRisk = client.lifecycle_status === 'at_risk';
-        const noRecentCheckIn = daysSinceCheckIn === null || daysSinceCheckIn > 14;
-        const riskScore = isAtRisk ? 100 : noRecentCheckIn ? Math.min(50 + (daysSinceCheckIn || 30), 90) : 20;
-        return { ...client, daysSinceCheckIn, lastCheckIn, riskScore, isAtRisk };
-      })
-      .filter(c => c.riskScore >= 50)
-      .sort((a, b) => b.riskScore - a.riskScore);
-  }, [activeClients, checkIns]);
-
-  // ── MRR at risk from churn clients ──
-  const mrrAtRisk = useMemo(() => churnRiskClients.reduce((sum, c) => sum + (c.monthly_rate || 0), 0), [churnRiskClients]);
-
-  // ── New clients this month ──
-  const thisMonthStart = startOfMonth(new Date());
-  const newClientsThisMonth = clients.filter(c => {
-    const sd = c.start_date ? parseISO(c.start_date) : c.created_date ? new Date(c.created_date) : null;
-    return sd && sd >= thisMonthStart;
-  }).length;
-
-  // ── Client lifetime value (avg months active * monthly rate) ──
-  const avgLTV = useMemo(() => {
-    const withRate = activeClients.filter(c => c.monthly_rate > 0);
-    if (!withRate.length) return 0;
-    const avg = withRate.reduce((sum, c) => {
-      const months = c.start_date ? Math.max(1, differenceInMonths(new Date(), parseISO(c.start_date))) : 1;
-      return sum + (c.monthly_rate * months);
-    }, 0) / withRate.length;
-    return Math.round(avg);
-  }, [activeClients]);
+  const sharedProps = { clients, checkIns, payments, leads };
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
-      <div className="rounded-xl p-5 text-white mb-6" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
-        <div>
-          <h1 className="text-xl font-semibold text-white">Business Overview</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>MRR, client acquisition, and churn risk analytics</p>
+      <div className="px-5 py-4 flex-shrink-0" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div>
+            <h1 className="text-lg font-bold text-white flex items-center gap-2">
+              <BarChart2 className="w-5 h-5 text-blue-400" />
+              Business Intelligence
+            </h1>
+            <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Revenue, growth &amp; client analytics
+            </p>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-lg text-sm font-semibold hover:bg-white/20 transition-colors">
-            Last 30 days
-          </button>
-          <button className="px-4 py-2 bg-white text-[#111827] rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
-            Export
-          </button>
+
+        {/* Tabs */}
+        <div className="flex gap-1 mt-4 max-w-7xl mx-auto overflow-x-auto scrollbar-hide">
+          {TABS.map(tab => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${activeTab === tab.key ? 'bg-white text-gray-900' : 'text-white/50 hover:text-white/80'}`}>
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* KPI Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 fade-up">
-        <BusinessMetricCard
-          icon={DollarSign}
-          label="Monthly Recurring Revenue"
-          value={`$${mrr.toLocaleString()}`}
-          sub="+0% MoM"
-        />
-        <BusinessMetricCard
-          icon={Users}
-          label="Active Clients"
-          value={activeClients.length}
-          sub={`${newClientsThisMonth} new this month`}
-        />
-        <BusinessMetricCard
-          icon={AlertTriangle}
-          label="Churn Risk"
-          value={churnRiskClients.length}
-          sub={churnRiskClients.length > 0 ? 'clients need attention' : 'All clients engaged'}
-        />
-        <BusinessMetricCard
-          icon={TrendingUp}
-          label="Avg. Client LTV"
-          value={avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—'}
-          sub="lifetime value estimate"
-        />
-      </div>
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-5">
+          {isEmpty && activeTab !== 'insights' ? (
+            <EmptyState />
+          ) : (
+            <>
+              {/* ── OVERVIEW ── */}
+              {activeTab === 'overview' && (
+                <>
+                  <BIKPIRow {...sharedProps} />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <BIRevenueChart {...sharedProps} />
+                    <BIHealthScore {...sharedProps} />
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    <BIGoals {...sharedProps} />
+                    <BICapacity clients={clients} user={user} />
+                    <BIBenchmarks {...sharedProps} />
+                  </div>
+                </>
+              )}
 
-      {/* MRR + Acquisition */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 fade-up fade-up-delay-1">
-        <MRROverview clients={clients} payments={payments} />
-        <AcquisitionTrends data={acquisitionData} totalActive={activeClients.length} />
-      </div>
+              {/* ── REVENUE ── */}
+              {activeTab === 'revenue' && (
+                <>
+                  <BIKPIRow {...sharedProps} />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <BIRevenueChart {...sharedProps} />
+                    <BIRevenueBreakdown {...sharedProps} />
+                  </div>
+                  <BIForecast clients={clients} leads={leads} />
+                </>
+              )}
 
-      {/* Churn Risk Table */}
-      <div className="fade-up fade-up-delay-2">
-        <ChurnRiskTable clients={churnRiskClients} mrr={mrr} />
+              {/* ── CLIENTS ── */}
+              {activeTab === 'clients' && (
+                <>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <BIClientGrowthChart clients={clients} />
+                    <BIBenchmarks {...sharedProps} />
+                  </div>
+                  <BICapacity clients={clients} user={user} />
+                </>
+              )}
+
+              {/* ── GROWTH ── */}
+              {activeTab === 'growth' && (
+                <>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <BILeadPipeline leads={leads} />
+                    <BIForecast clients={clients} leads={leads} />
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <BIGoals {...sharedProps} />
+                    <BICapacity clients={clients} user={user} />
+                  </div>
+                </>
+              )}
+
+              {/* ── AI INSIGHTS ── */}
+              {activeTab === 'insights' && (
+                <BIAIInsights {...sharedProps} />
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
