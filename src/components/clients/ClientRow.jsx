@@ -3,6 +3,7 @@ import { MoreHorizontal, Edit, Trash2, ArrowRight, CheckSquare, Square } from 'l
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import LifecycleBadge, { LIFECYCLE_CONFIG } from './LifecycleBadge';
+import PriorityScoreBadge from '@/components/intelligence/PriorityScoreBadge';
 import { cn } from '@/lib/utils';
 
 const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
@@ -83,7 +84,7 @@ function AdherenceBar({ score }) {
   );
 }
 
-export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0, compact = false, onEdit, onDelete, onStatusChange, onView, selected, onSelect }) {
+export default function ClientRow({ client, score, priorityScore, lastCheckIn, checkInCount = 0, compact = false, onEdit, onDelete, onStatusChange, onView, selected, onSelect }) {
   const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
   const [avatarBg, avatarText] = getAvatarColor(client.name);
   const scoreColor = score === null ? '' : score >= 80 ? 'text-[#16A34A]' : score >= 60 ? 'text-[#D97706]' : 'text-[#DC2626]';
@@ -121,6 +122,7 @@ export default function ClientRow({ client, score, lastCheckIn, checkInCount = 0
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <p className={cn('font-bold text-[#1F2A44] truncate leading-tight', compact ? 'text-xs' : 'text-sm')}>{client.name}</p>
+          {priorityScore !== null && priorityScore !== undefined && <PriorityScoreBadge score={priorityScore} />}
           {!compact && <OnboardingDots client={client} checkIns={checkInCount} />}
           {isLead && client.pipeline_stage && client.pipeline_stage !== 'new_lead' && (
             <span className={cn('text-[10px] font-bold flex-shrink-0', STAGE_COLORS[client.pipeline_stage])}>

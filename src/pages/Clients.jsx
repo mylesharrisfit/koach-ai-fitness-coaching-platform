@@ -6,6 +6,8 @@ import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
 import { compositeAdherenceScore } from '@/lib/adherence';
+import { coachingPriorityScore } from '@/lib/insightEngine';
+import PriorityScoreBadge from '@/components/intelligence/PriorityScoreBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -187,6 +189,11 @@ export default function Clients() {
         const da = checkInMap[a.id]?.[0] ? new Date(checkInMap[a.id][0].date) : new Date(0);
         const db = checkInMap[b.id]?.[0] ? new Date(checkInMap[b.id][0].date) : new Date(0);
         return db - da;
+      }
+      if (sortBy === 'priority') {
+        const pa = coachingPriorityScore(a, checkInMap[a.id] || []);
+        const pb = coachingPriorityScore(b, checkInMap[b.id] || []);
+        return pb - pa;
       }
       return new Date(b.created_date) - new Date(a.created_date);
     });
@@ -374,6 +381,7 @@ export default function Clients() {
                   { key: 'last_checkin', label: 'Last Check-in' },
                   { key: 'adherence_high', label: 'Adherence ↓' },
                   { key: 'adherence_low', label: 'Adherence ↑' },
+                  { key: 'priority', label: '🧠 Priority Score' },
                 ].map(({ key, label }) => (
                   <button key={key} onClick={() => setSortBy(key)}
                     className={cn('px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all',
@@ -469,11 +477,13 @@ export default function Clients() {
           filteredClients.map(client => {
             const cis = checkInMap[client.id] || [];
             const score = compositeAdherenceScore(cis);
+            const priorityScore = sortBy === 'priority' ? coachingPriorityScore(client, cis) : null;
             return (
               <ClientRow
                 key={client.id}
                 client={client}
                 score={score}
+                priorityScore={priorityScore}
                 lastCheckIn={cis[0]}
                 checkInCount={cis.length}
                 compact={isMobile || viewMode === 'compact'}

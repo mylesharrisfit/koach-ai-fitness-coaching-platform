@@ -10,6 +10,7 @@ import DashboardKPIs from './DashboardKPIs';
 import TodaySchedule from './TodaySchedule';
 import WeeklySnapshot from './WeeklySnapshot';
 import FirstTimeBanner from './FirstTimeBanner';
+import AIInsightsFeed from './AIInsightsFeed';
 
 function ActionCenterSection({ clients, checkIns, messages, payments }) {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -128,12 +129,9 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
       {/* ── Action Center ──────────────────────────── */}
       <ActionCenterSection clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
 
-      {/* ── AI Recommendations ─────────────────────── */}
-      {checkIns.length > 0 && clients.length > 0 && (
-        <div>
-          <h2 className="text-sm font-bold text-gray-900 tracking-tight mb-4">AI Recommendations</h2>
-          <RecommendationsWidget clients={clients} checkIns={checkIns} />
-        </div>
+      {/* ── AI Client Insights ─────────────────────── */}
+      {clients.length > 0 && (
+        <AIInsightsFeed clients={clients} checkIns={checkIns} messages={messages} />
       )}
     </div>
   );
