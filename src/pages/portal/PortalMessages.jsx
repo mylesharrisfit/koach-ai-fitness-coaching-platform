@@ -47,37 +47,36 @@ function MessageBubble({ msg, coachInitial }) {
   return (
     <div className={`flex gap-2 ${isClient ? 'justify-end' : 'justify-start'}`}>
       {!isClient && (
-        <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-auto"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)', color: 'white' }}>
+        <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-auto text-white"
+          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
           {coachInitial}
         </div>
       )}
-      <div className={`max-w-[78%] ${isClient ? '' : ''}`}>
+      <div className="max-w-[78%]">
         <div className={`px-4 py-3 rounded-2xl ${isClient ? 'rounded-br-sm' : 'rounded-bl-sm'}`}
           style={{
             background: isClient
-              ? 'linear-gradient(135deg, #3B82F6, #1D4ED8)'
-              : isSystem
-                ? 'rgba(99,102,241,0.15)'
-                : 'rgba(255,255,255,0.09)',
-            border: isSystem ? '1px solid rgba(99,102,241,0.3)' : 'none',
+              ? 'linear-gradient(135deg, #2563EB, #7C3AED)'
+              : isSystem ? '#EEF2FF' : '#F1F5F9',
+            border: isSystem ? '1px solid #C7D2FE' : 'none',
           }}>
-          {isSystem && <p className="text-indigo-400 text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>}
+          {isSystem && <p className="text-indigo-600 text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>}
           {msg.media_type === 'voice' && msg.media_url ? (
             <div className="flex items-center gap-3">
-              <button className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs">▶</span>
+              <button className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ background: isClient ? 'rgba(255,255,255,0.25)' : '#E2E8F0' }}>
+                <span className="text-xs">▶</span>
               </button>
-              <div className="flex-1 h-1 rounded-full bg-white/20">
-                <div className="w-1/3 h-full bg-white/60 rounded-full" />
+              <div className="flex-1 h-1 rounded-full" style={{ background: isClient ? 'rgba(255,255,255,0.3)' : '#CBD5E1' }}>
+                <div className="w-1/3 h-full rounded-full" style={{ background: isClient ? 'white' : '#94A3B8' }} />
               </div>
-              <span className="text-white/60 text-xs">0:15</span>
+              <span className="text-xs" style={{ color: isClient ? 'rgba(255,255,255,0.7)' : '#94A3B8' }}>0:15</span>
             </div>
           ) : (
-            <p className="text-white text-sm leading-relaxed">{msg.content}</p>
+            <p className="text-sm leading-relaxed" style={{ color: isClient ? 'white' : '#1E293B' }}>{msg.content}</p>
           )}
         </div>
-        <p className={`text-white/20 text-[9px] mt-1 ${isClient ? 'text-right' : 'text-left'}`}>{time}</p>
+        <p className={`text-slate-300 text-[9px] mt-1 ${isClient ? 'text-right' : 'text-left'}`}>{time}</p>
       </div>
     </div>
   );
@@ -128,42 +127,41 @@ function ConversationView({ myClient, onBack }) {
   const coachInitial = 'C';
 
   return (
-    <div className="flex flex-col h-screen" style={{ background: '#0A0F1A' }}>
+    <div className="flex flex-col h-screen bg-white">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-12 pb-4 flex-shrink-0"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-        <button onClick={onBack} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.07)' }}>
-          <ArrowLeft className="w-4 h-4 text-white/70" />
+      <div className="flex items-center gap-3 px-4 pt-14 pb-4 flex-shrink-0 bg-white border-b border-slate-100" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
+          <ArrowLeft className="w-4 h-4 text-slate-500" />
         </button>
-        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
           {coachInitial}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-white font-bold text-sm">Your Coach</p>
+          <p className="text-slate-900 font-bold text-sm">Your Coach</p>
           <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            <p className="text-emerald-400 text-[10px]">Active</p>
+            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+            <p className="text-emerald-500 text-[10px] font-semibold">Active</p>
           </div>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2"
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-slate-50"
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 140px)' }}>
         {sorted.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white mb-4"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
               {coachInitial}
             </div>
-            <p className="text-white/50 text-sm font-semibold mb-1">Start a conversation</p>
-            <p className="text-white/25 text-xs mb-6">Your coach is ready to help!</p>
+            <p className="text-slate-600 text-sm font-bold mb-1">Say hi to your coach! 👋</p>
+            <p className="text-slate-400 text-xs mb-6">They're here to help</p>
             <div className="space-y-2 w-full max-w-xs">
               {SUGGESTED_OPENERS.map(s => (
                 <button key={s} onClick={() => sendMessage(s)}
-                  className="w-full p-3 rounded-xl text-sm text-white/60 text-left"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  className="w-full p-3 rounded-2xl text-sm text-slate-600 text-left bg-white border border-slate-200 font-medium"
+                  style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                   {s}
                 </button>
               ))}
@@ -172,7 +170,7 @@ function ConversationView({ myClient, onBack }) {
         )}
         {grouped.map((item, i) => (
           item.type === 'separator'
-            ? <p key={i} className="text-center text-white/20 text-[9px] font-semibold uppercase tracking-wider py-2">{item.label}</p>
+            ? <p key={i} className="text-center text-slate-300 text-[9px] font-bold uppercase tracking-wider py-2">{item.label}</p>
             : <MessageBubble key={item.data.id} msg={item.data} coachInitial={coachInitial} />
         ))}
         <div ref={bottomRef} />
@@ -180,11 +178,10 @@ function ConversationView({ myClient, onBack }) {
 
       {/* Quick Replies */}
       {showQuickReplies && sorted.length > 0 && (
-        <div className="flex gap-2 px-4 pb-2 overflow-x-auto scrollbar-hide flex-shrink-0">
+        <div className="flex gap-2 px-4 pb-2 overflow-x-auto scrollbar-hide flex-shrink-0 bg-white border-t border-slate-100">
           {QUICK_REPLIES.map(r => (
             <button key={r} onClick={() => sendMessage(r)}
-              className="px-3 py-1.5 rounded-full text-xs text-white/60 whitespace-nowrap flex-shrink-0 transition-all active:scale-95"
-              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              className="px-3 py-1.5 rounded-full text-xs text-slate-600 whitespace-nowrap flex-shrink-0 font-medium bg-slate-100 border border-slate-200 mt-2">
               {r}
             </button>
           ))}
@@ -192,25 +189,23 @@ function ConversationView({ myClient, onBack }) {
       )}
 
       {/* Compose */}
-      <div className="flex-shrink-0 px-4 py-3 flex items-center gap-2"
-        style={{ background: 'rgba(13,17,28,0.97)', borderTop: '1px solid rgba(255,255,255,0.07)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
+      <div className="flex-shrink-0 px-4 py-3 flex items-center gap-2 bg-white"
+        style={{ borderTop: '1px solid #F1F5F9', boxShadow: '0 -2px 12px rgba(0,0,0,0.04)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}>
         <button onClick={() => setShowAttach(!showAttach)}
-          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(255,255,255,0.07)' }}>
-          <Plus className="w-4 h-4 text-white/50" />
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100 border border-slate-200">
+          <Plus className="w-4 h-4 text-slate-400" />
         </button>
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && sendMessage()}
           placeholder="Message Coach..."
-          className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm placeholder-white/20 focus:outline-none"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
+          className="flex-1 px-4 py-2.5 rounded-xl text-slate-800 text-sm placeholder-slate-300 focus:outline-none focus:border-blue-300 bg-slate-50 border border-slate-200"
         />
         <button onClick={() => sendMessage()}
           disabled={!input.trim()}
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-30"
-          style={{ background: input.trim() ? 'linear-gradient(135deg, #3B82F6, #1D4ED8)' : 'rgba(255,255,255,0.07)' }}>
+          style={{ background: input.trim() ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9' }}>
           <Send className="w-4 h-4 text-white" />
         </button>
       </div>
@@ -219,19 +214,18 @@ function ConversationView({ myClient, onBack }) {
       <AnimatePresence>
         {showAttach && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-20 left-4 right-4 p-3 rounded-2xl grid grid-cols-4 gap-2"
-            style={{ background: '#151B27', border: '1px solid rgba(255,255,255,0.1)' }}>
+            className="absolute bottom-20 left-4 right-4 p-3 rounded-3xl grid grid-cols-4 gap-2 bg-white"
+            style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: '1px solid #F1F5F9' }}>
             {[
-              { icon: <Paperclip className="w-5 h-5 text-white/50" />, label: 'File' },
-              { icon: <ImageIcon className="w-5 h-5 text-white/50" />, label: 'Photo' },
-              { icon: <BarChart2 className="w-5 h-5 text-white/50" />, label: 'Progress' },
-              { icon: <ClipboardList className="w-5 h-5 text-white/50" />, label: 'Check-in' },
+              { icon: <Paperclip className="w-5 h-5 text-slate-400" />, label: 'File' },
+              { icon: <ImageIcon className="w-5 h-5 text-slate-400" />, label: 'Photo' },
+              { icon: <BarChart2 className="w-5 h-5 text-slate-400" />, label: 'Progress' },
+              { icon: <ClipboardList className="w-5 h-5 text-slate-400" />, label: 'Check-in' },
             ].map(({ icon, label }) => (
               <button key={label} onClick={() => setShowAttach(false)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.06)' }}>
+                className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-50 border border-slate-100">
                 {icon}
-                <span className="text-white/40 text-[9px]">{label}</span>
+                <span className="text-slate-400 text-[9px] font-semibold">{label}</span>
               </button>
             ))}
           </motion.div>

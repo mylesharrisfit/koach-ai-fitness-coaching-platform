@@ -115,13 +115,13 @@ export default function PortalProfile({ user }) {
   ];
 
   return (
-    <div className="pb-32 min-h-screen" style={{ background: '#0A0F1A' }}>
+    <div className="pb-32 min-h-screen" style={{ background: '#F8F9FA' }}>
       {/* Back nav */}
-      <div className="flex items-center gap-3 px-5 pt-12 pb-2">
-        <button onClick={() => navigate('/portal')} className="text-white/40 hover:text-white/70 transition-colors">
-          <ChevronLeft className="w-5 h-5" />
+      <div className="flex items-center gap-3 px-5 pt-14 pb-4 bg-white" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+        <button onClick={() => navigate('/portal')} className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
+          <ChevronLeft className="w-5 h-5 text-slate-500" />
         </button>
-        <h1 className="text-white font-bold text-lg">Profile & Settings</h1>
+        <h1 className="text-slate-900 font-black text-lg">Profile & Settings</h1>
       </div>
 
       {/* Completion card */}
@@ -163,8 +163,8 @@ export default function PortalProfile({ user }) {
       <div className="px-5 mt-8">
         <button
           onClick={() => setShowSignOut(true)}
-          className="w-full py-4 rounded-2xl font-bold text-red-400 text-base"
-          style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+          className="w-full py-4 rounded-2xl font-bold text-red-500 text-base border border-red-100"
+          style={{ background: '#FEF2F2' }}>
           Sign Out
         </button>
       </div>

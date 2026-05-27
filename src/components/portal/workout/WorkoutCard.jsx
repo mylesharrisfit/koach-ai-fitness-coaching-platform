@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, Moon } from 'lucide-react';
-import { isSameDay, subDays, format } from 'date-fns';
+import { Play, Moon, Check } from 'lucide-react';
 
 function getEquipment(exercises) {
   const eq = new Set();
@@ -16,19 +15,18 @@ function getEquipment(exercises) {
 
 export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart }) {
   if (!workout) {
-    // Rest day
     return (
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-        className="mx-4 p-5 rounded-2xl text-center"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
-          <Moon className="w-6 h-6 text-white/30" />
+        className="mx-4 bg-white p-6 rounded-3xl text-center"
+        style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3">
+          <Moon className="w-7 h-7 text-slate-400" />
         </div>
-        <p className="text-white font-bold text-lg">Rest Day 🛌</p>
-        <p className="text-white/40 text-sm mt-1">Recovery is part of the process</p>
-        <div className="mt-4 p-3 rounded-xl text-left space-y-1.5" style={{ background: 'rgba(255,255,255,0.04)' }}>
-          {['💧 Stay hydrated — aim for 8+ glasses', '😴 Prioritize 7-9 hours of sleep', '🧘 Light stretching or mobility work', '🍽️ Keep nutrition on point'].map((tip, i) => (
-            <p key={i} className="text-white/40 text-xs">{tip}</p>
+        <p className="text-slate-800 font-bold text-lg">Rest Day 🛌</p>
+        <p className="text-slate-500 text-sm mt-1 mb-4">Recovery is part of the process</p>
+        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-left space-y-2">
+          {['💧 Stay hydrated — aim for 8+ glasses', '😴 Prioritize 7–9 hours of sleep', '🧘 Light stretching or mobility work', '🍽️ Keep nutrition on point'].map((tip, i) => (
+            <p key={i} className="text-slate-500 text-xs">{tip}</p>
           ))}
         </div>
       </motion.div>
@@ -41,53 +39,51 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      className="mx-4 rounded-2xl overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #1E3A5F 0%, #111827 100%)', border: '1px solid rgba(59,130,246,0.2)' }}>
-      <div className="p-5">
-        {/* Header */}
+      className="mx-4 rounded-3xl overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)', boxShadow: '0 8px 32px rgba(37,99,235,0.25)' }}>
+      <div className="p-5" style={{ background: 'rgba(0,0,0,0.12)' }}>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-white font-bold text-xl leading-tight">{workout.day_name}</p>
-            <p className="text-white/40 text-sm mt-0.5">{exercises.length} exercises · ~{estMin} min</p>
+            {isDone && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold mb-2"
+                style={{ background: 'rgba(16,185,129,0.25)', color: '#6EE7B7' }}>
+                <Check className="w-3 h-3" strokeWidth={3} /> Done
+              </span>
+            )}
+            <p className="text-white font-black text-2xl leading-tight">{workout.day_name}</p>
+            <p className="text-white/60 text-sm mt-0.5">{exercises.length} exercises · ~{estMin} min</p>
           </div>
-          {isDone && (
-            <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: 'rgba(34,197,94,0.2)', color: '#4ADE80' }}>
-              ✓ Done
-            </span>
-          )}
         </div>
 
-        {/* Equipment */}
         {equipment.length > 0 && (
           <div className="flex gap-1.5 flex-wrap mb-4">
             {equipment.map(eq => (
-              <span key={eq} className="px-2.5 py-1 rounded-lg text-[10px] font-semibold text-white/50"
-                style={{ background: 'rgba(255,255,255,0.07)' }}>{eq}</span>
+              <span key={eq} className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white/70"
+                style={{ background: 'rgba(255,255,255,0.15)' }}>{eq}</span>
             ))}
           </div>
         )}
 
-        {/* Exercise preview */}
         <div className="space-y-2 mb-4">
           {exercises.slice(0, 3).map((ex, i) => (
             <div key={i} className="flex items-center gap-2.5">
-              <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <span className="text-white/40 text-[9px] font-bold">{i + 1}</span>
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(255,255,255,0.2)' }}>
+                <span className="text-white text-[9px] font-bold">{i + 1}</span>
               </div>
-              <p className="text-white/60 text-sm flex-1 truncate">{ex.name}</p>
-              <p className="text-white/30 text-xs">{ex.sets}×{ex.reps}</p>
+              <p className="text-white/80 text-sm flex-1 truncate">{ex.name}</p>
+              <p className="text-white/50 text-xs">{ex.sets}×{ex.reps}</p>
             </div>
           ))}
           {exercises.length > 3 && (
-            <p className="text-white/30 text-xs ml-7">+{exercises.length - 3} more exercises</p>
+            <p className="text-white/40 text-xs ml-7">+{exercises.length - 3} more exercises</p>
           )}
         </div>
 
-        {/* Start button */}
         <button onClick={onStart}
-          className="w-full py-4 rounded-xl font-bold text-base text-white flex items-center justify-center gap-2"
-          style={{ background: isDone ? 'rgba(34,197,94,0.2)' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: isDone ? 'none' : '0 0 24px rgba(59,130,246,0.35)' }}>
-          <Play className="w-5 h-5" fill="white" />
+          className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 transition-all"
+          style={{ background: 'rgba(255,255,255,0.95)', color: '#2563EB', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+          <Play className="w-5 h-5" fill="#2563EB" />
           {isDone ? 'Do Again' : isToday ? 'Start Workout' : 'Preview Workout'}
         </button>
       </div>

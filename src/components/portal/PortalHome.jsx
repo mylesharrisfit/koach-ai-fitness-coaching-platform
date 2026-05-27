@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { format, differenceInDays, parseISO, addDays } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, ChevronRight, Play, Check, Droplets, Utensils, Dumbbell, ClipboardList, User } from 'lucide-react';
+import { Bell, ChevronRight, Play, Check, User } from 'lucide-react';
 
 const TODAY = format(new Date(), 'yyyy-MM-dd');
 const DEFAULT_LOG = { workout_done: false, meals_logged: 0, water_glasses: 0 };
@@ -18,97 +18,100 @@ function getGreeting() {
 
 function getWorkoutGradient(name) {
   const n = (name || '').toLowerCase();
-  if (n.includes('push') || n.includes('chest') || n.includes('shoulder')) return 'linear-gradient(135deg, #1D4ED8 0%, #3B82F6 50%, #1E40AF 100%)';
-  if (n.includes('pull') || n.includes('back') || n.includes('bicep')) return 'linear-gradient(135deg, #065F46 0%, #10B981 50%, #047857 100%)';
-  if (n.includes('leg') || n.includes('squat') || n.includes('glute')) return 'linear-gradient(135deg, #991B1B 0%, #EF4444 50%, #B91C1C 100%)';
-  if (n.includes('rest') || n.includes('recover')) return 'linear-gradient(135deg, #1F2937 0%, #374151 50%, #111827 100%)';
-  return 'linear-gradient(135deg, #312E81 0%, #6366F1 50%, #1E1B4B 100%)';
+  if (n.includes('push') || n.includes('chest') || n.includes('shoulder')) return 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)';
+  if (n.includes('pull') || n.includes('back') || n.includes('bicep')) return 'linear-gradient(135deg, #0F766E 0%, #2563EB 100%)';
+  if (n.includes('leg') || n.includes('squat') || n.includes('glute')) return 'linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)';
+  if (n.includes('rest') || n.includes('recover')) return 'linear-gradient(135deg, #475569 0%, #334155 100%)';
+  return 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)';
 }
 
 /* ── Daily Rings ── */
 function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterGoal, navigate }) {
   const rings = [
-    { label: 'Workout', pct: workoutDone ? 100 : 0, color: '#3B82F6', bg: 'rgba(59,130,246,0.15)', icon: '💪', path: '/portal/workouts' },
-    { label: 'Nutrition', pct: Math.min(100, Math.round((mealsLogged / Math.max(totalMeals, 1)) * 100)), color: '#22C55E', bg: 'rgba(34,197,94,0.15)', icon: '🥗', path: '/portal/nutrition' },
-    { label: 'Water', pct: Math.min(100, Math.round((waterGlasses / waterGoal) * 100)), color: '#F97316', bg: 'rgba(249,115,22,0.15)', icon: '💧', path: '/portal/nutrition' },
+    { label: 'Move', pct: workoutDone ? 100 : 0, color: '#2563EB', trackColor: '#DBEAFE', icon: '💪', path: '/portal/workouts' },
+    { label: 'Eat', pct: Math.min(100, Math.round((mealsLogged / Math.max(totalMeals, 1)) * 100)), color: '#10B981', trackColor: '#D1FAE5', icon: '🥗', path: '/portal/nutrition' },
+    { label: 'Hydrate', pct: Math.min(100, Math.round((waterGlasses / waterGoal) * 100)), color: '#06B6D4', trackColor: '#CFFAFE', icon: '💧', path: '/portal/nutrition' },
   ];
-  const allDone = rings.every(r => r.pct >= 100);
+  const doneCount = rings.filter(r => r.pct >= 100).length;
+  const allDone = doneCount === 3;
 
   return (
-    <div className="px-5">
-      <div className="p-4 rounded-2xl flex items-center justify-around" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        {rings.map((ring, i) => {
-          const r = 22; const circ = 2 * Math.PI * r;
-          return (
-            <motion.button key={ring.label} onClick={() => navigate(ring.path)}
-              whileTap={{ scale: 0.93 }} className="flex flex-col items-center gap-2">
-              <div className="relative w-16 h-16">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 52 52">
-                  <circle cx="26" cy="26" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="5" />
-                  <motion.circle cx="26" cy="26" r={r} fill="none" stroke={ring.color} strokeWidth="5"
-                    strokeLinecap="round" strokeDasharray={circ}
-                    initial={{ strokeDashoffset: circ }}
-                    animate={{ strokeDashoffset: circ - (ring.pct / 100) * circ }}
-                    transition={{ duration: 1, delay: i * 0.15, ease: 'easeOut' }} />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center text-xl">{ring.icon}</div>
-                {ring.pct >= 100 && (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{ background: ring.color }}>
-                    <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                  </motion.div>
-                )}
-              </div>
-              <div className="text-center">
-                <p className="text-white/60 text-[10px] font-semibold">{ring.label}</p>
-                <p className="font-bold text-xs" style={{ color: ring.pct >= 100 ? ring.color : 'rgba(255,255,255,0.5)' }}>
-                  {ring.pct}%
-                </p>
-              </div>
-            </motion.button>
-          );
-        })}
+    <div className="px-4">
+      <div className="bg-white rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Daily Goals</p>
+          <p className="text-xs font-semibold text-slate-400">{doneCount} of 3 complete</p>
+        </div>
+        <div className="flex items-center justify-around">
+          {rings.map((ring, i) => {
+            const r = 26; const circ = 2 * Math.PI * r;
+            return (
+              <motion.button key={ring.label} onClick={() => navigate(ring.path)} whileTap={{ scale: 0.93 }}
+                className="flex flex-col items-center gap-2">
+                <div className="relative w-20 h-20">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r={r} fill="none" stroke={ring.trackColor} strokeWidth="6" />
+                    <motion.circle cx="32" cy="32" r={r} fill="none" stroke={ring.color} strokeWidth="6"
+                      strokeLinecap="round" strokeDasharray={circ}
+                      initial={{ strokeDashoffset: circ }}
+                      animate={{ strokeDashoffset: circ - (ring.pct / 100) * circ }}
+                      transition={{ duration: 1, delay: i * 0.15, ease: 'easeOut' }} />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center text-2xl">{ring.icon}</div>
+                  {ring.pct >= 100 && (
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ background: ring.color }}>
+                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                    </motion.div>
+                  )}
+                </div>
+                <div className="text-center">
+                  <p className="text-slate-700 text-xs font-bold">{ring.label}</p>
+                  <p className="text-xs font-semibold" style={{ color: ring.pct >= 100 ? ring.color : '#94A3B8' }}>{ring.pct}%</p>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+        <AnimatePresence>
+          {allDone && (
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              className="mt-4 py-2.5 rounded-2xl text-center"
+              style={{ background: 'linear-gradient(135deg, #ECFDF5, #EFF6FF)', border: '1px solid #A7F3D0' }}>
+              <p className="text-emerald-600 font-bold text-sm">🎉 Perfect Day! All goals complete!</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-      <AnimatePresence>
-        {allDone && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="mt-3 py-3 rounded-xl text-center"
-            style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.15), rgba(59,130,246,0.15))', border: '1px solid rgba(34,197,94,0.3)' }}>
-            <p className="text-emerald-400 font-bold text-sm">🎉 Perfect Day! All rings complete!</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
 
 /* ── Stats Chips ── */
 function StatsChips({ streak, weight, weeklyWorkouts, daysUntilCheckIn, navigate }) {
-  const checkInColor = daysUntilCheckIn !== null && daysUntilCheckIn <= 0 ? '#EF4444' : daysUntilCheckIn !== null && daysUntilCheckIn <= 2 ? '#F59E0B' : 'rgba(255,255,255,0.4)';
+  const checkInColor = daysUntilCheckIn !== null && daysUntilCheckIn <= 0 ? '#EF4444' : daysUntilCheckIn !== null && daysUntilCheckIn <= 2 ? '#F59E0B' : '#0F172A';
   const checkInLabel = daysUntilCheckIn === null ? '—' : daysUntilCheckIn <= 0 ? 'Due today!' : `in ${daysUntilCheckIn}d`;
-
-  // Fix weight display — clamp to realistic range
-  const displayWeight = weight && weight > 0 && weight < 999 ? `${weight} lbs` : '—';
+  const displayWeight = weight && weight > 0 && weight < 999 ? `${Number(weight).toFixed(1)} lbs` : '—';
 
   const chips = [
-    { emoji: '🔥', value: `${streak}d`, label: 'Streak', path: '/portal/progress' },
-    { emoji: '⚖️', value: displayWeight, label: 'Weight', path: '/portal/progress' },
-    { emoji: '💪', value: weeklyWorkouts, label: 'This week', path: '/portal/workouts' },
+    { emoji: '🔥', value: `${streak}d`, label: 'Streak', path: '/portal/progress', valueColor: streak > 0 ? '#F59E0B' : '#0F172A' },
+    { emoji: '⚖️', value: displayWeight, label: 'Weight', path: '/portal/progress', valueColor: '#0F172A' },
+    { emoji: '💪', value: weeklyWorkouts, label: 'This week', path: '/portal/workouts', valueColor: '#2563EB' },
     { emoji: '📋', value: checkInLabel, label: 'Check-in', path: '/portal/checkin', valueColor: checkInColor },
   ];
 
   return (
-    <div className="px-5">
-      <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
+    <div className="px-4">
+      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
         {chips.map(chip => (
           <motion.button key={chip.label} whileTap={{ scale: 0.95 }} onClick={() => navigate(chip.path)}
-            className="flex-shrink-0 flex items-center gap-2 px-3 py-2.5 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <span className="text-base">{chip.emoji}</span>
+            className="flex-shrink-0 bg-white flex items-center gap-3 px-4 py-3 rounded-2xl"
+            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+            <span className="text-lg">{chip.emoji}</span>
             <div className="text-left">
-              <p className="font-bold text-sm leading-none" style={{ color: chip.valueColor || '#fff' }}>{chip.value}</p>
-              <p className="text-white/30 text-[10px] mt-0.5">{chip.label}</p>
+              <p className="font-extrabold text-sm leading-none" style={{ color: chip.valueColor }}>{chip.value}</p>
+              <p className="text-slate-400 text-[10px] mt-0.5">{chip.label}</p>
             </div>
           </motion.button>
         ))}
@@ -118,41 +121,39 @@ function StatsChips({ streak, weight, weeklyWorkouts, daysUntilCheckIn, navigate
 }
 
 /* ── Today's Focus Card ── */
-function TodayFocusCard({ workout, program, workoutDone, onStart, navigate }) {
+function TodayFocusCard({ workout, program, workoutDone, onStart }) {
   const gradient = getWorkoutGradient(workout?.day_name);
   const exercises = workout?.exercises || [];
-  const isRest = !workout || workout?.day_name?.toLowerCase().includes('rest');
+  const isRest = !workout || (workout?.day_name || '').toLowerCase().includes('rest');
 
   if (workoutDone) {
     return (
-      <div className="px-5">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-          className="p-5 rounded-3xl overflow-hidden relative"
-          style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,185,129,0.1))', border: '1px solid rgba(34,197,94,0.3)' }}>
+      <div className="px-4">
+        <div className="rounded-3xl p-5 overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)', border: '1px solid #A7F3D0', boxShadow: '0 4px 24px rgba(16,185,129,0.12)' }}>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-              style={{ background: 'rgba(34,197,94,0.2)' }}>🎉</div>
-            <div className="flex-1">
-              <p className="text-emerald-400 font-black text-base">Workout Complete!</p>
-              <p className="text-white/50 text-sm mt-0.5">{workout?.day_name || 'Great work today'}</p>
-              <p className="text-emerald-300 text-xs mt-1 font-semibold">Keep the momentum going 🔥</p>
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-2xl flex-shrink-0">🎉</div>
+            <div>
+              <p className="text-emerald-700 font-black text-lg">Workout Complete!</p>
+              <p className="text-emerald-600 text-sm mt-0.5">{workout?.day_name || 'Great work today'}</p>
+              <p className="text-emerald-500 text-xs mt-1 font-semibold">Keep the momentum going 🔥</p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   if (isRest) {
     return (
-      <div className="px-5">
-        <div className="p-5 rounded-3xl" style={{ background: 'linear-gradient(135deg, #1F2937, #111827)', border: '1px solid rgba(255,255,255,0.07)' }}>
-          <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2">TODAY</p>
+      <div className="px-4">
+        <div className="rounded-3xl p-5" style={{ background: 'linear-gradient(135deg, #F8FAFC, #F1F5F9)', border: '1px solid #E2E8F0', boxShadow: '0 2px 20px rgba(0,0,0,0.05)' }}>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">TODAY</p>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0" style={{ background: 'rgba(255,255,255,0.07)' }}>🛌</div>
+            <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center text-3xl flex-shrink-0">🛌</div>
             <div>
-              <p className="text-white font-black text-xl">Rest & Recover</p>
-              <p className="text-white/40 text-sm mt-0.5">Recovery is where progress is made</p>
+              <p className="text-slate-800 font-black text-xl">Rest & Recover</p>
+              <p className="text-slate-500 text-sm mt-0.5">Recovery is where progress happens</p>
             </div>
           </div>
         </div>
@@ -161,48 +162,48 @@ function TodayFocusCard({ workout, program, workoutDone, onStart, navigate }) {
   }
 
   return (
-    <div className="px-5">
+    <div className="px-4">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-3xl overflow-hidden"
-        style={{ background: gradient, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
-        <div className="p-5 pb-4" style={{ background: 'rgba(0,0,0,0.25)' }}>
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <p className="text-white/60 text-[10px] font-black uppercase tracking-widest">TODAY'S WORKOUT</p>
-              <h2 className="text-white font-black text-2xl leading-tight mt-0.5">{workout.day_name}</h2>
-              {program && <p className="text-white/50 text-xs mt-1">{program.title}{program.duration_weeks ? ` · ${program.duration_weeks}wk Program` : ''}</p>}
-            </div>
+        style={{ background: gradient, boxShadow: '0 8px 32px rgba(37,99,235,0.3)' }}>
+        <div className="p-5" style={{ background: 'rgba(0,0,0,0.12)' }}>
+          <div className="mb-4">
+            <span className="inline-block px-3 py-1 rounded-full text-[10px] font-black text-white/80 uppercase tracking-widest mb-3"
+              style={{ background: 'rgba(255,255,255,0.18)' }}>
+              TODAY'S WORKOUT
+            </span>
+            <h2 className="text-white font-black text-3xl leading-tight">{workout.day_name}</h2>
+            {program && <p className="text-white/60 text-sm mt-1">{program.title}</p>}
           </div>
 
           <div className="flex items-center gap-3 text-white/60 text-xs mb-4">
-            <span className="flex items-center gap-1"><Dumbbell className="w-3 h-3" />{exercises.length} exercises</span>
+            <span>🏋️ {exercises.length} exercises</span>
             <span>·</span>
-            <span>~{Math.max(30, exercises.length * 4)} min</span>
+            <span>⏱ ~{Math.max(30, exercises.length * 4)} min</span>
           </div>
 
-          {/* Exercise preview chips */}
           {exercises.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-5">
               {exercises.slice(0, 3).map((ex, i) => (
-                <span key={i} className="flex-shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-white/80"
-                  style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <span key={i} className="flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold text-white"
+                  style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.25)' }}>
                   {ex.name}
                 </span>
               ))}
               {exercises.length > 3 && (
-                <span className="flex-shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-white/50"
-                  style={{ background: 'rgba(255,255,255,0.08)' }}>
-                  +{exercises.length - 3} more
+                <span className="flex-shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold text-white/60"
+                  style={{ background: 'rgba(255,255,255,0.1)' }}>
+                  +{exercises.length - 3}
                 </span>
               )}
             </div>
           )}
 
           <motion.button whileTap={{ scale: 0.97 }} onClick={onStart}
-            className="w-full py-4 rounded-2xl font-black text-white text-base flex items-center justify-center gap-2"
-            style={{ background: 'rgba(255,255,255,0.95)', color: '#111' }}>
-            <Play className="w-5 h-5" fill="#111" />
-            START WORKOUT
+            className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2"
+            style={{ background: 'rgba(255,255,255,0.95)', color: '#2563EB', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+            <Play className="w-5 h-5" fill="#2563EB" />
+            Start Workout →
           </motion.button>
         </div>
       </motion.div>
@@ -218,27 +219,23 @@ function CoachMsgCard({ msg, navigate }) {
   const timeStr = msg.created_date ? format(new Date(msg.created_date), 'h:mm a') : '';
 
   return (
-    <div className="px-5">
+    <div className="px-4">
       <motion.button whileTap={{ scale: 0.98 }} onClick={() => navigate('/portal/messages')}
-        className="w-full p-4 rounded-2xl text-left relative overflow-hidden"
-        style={{ background: 'rgba(59,130,246,0.1)', border: '1.5px solid rgba(59,130,246,0.3)' }}
-        animate={{ borderColor: ['rgba(59,130,246,0.3)', 'rgba(59,130,246,0.55)', 'rgba(59,130,246,0.3)'] }}
-        transition={{ duration: 2.5, repeat: Infinity }}>
-        <div className="flex items-center gap-3">
-          <div className="relative flex-shrink-0">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>C</div>
-            <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-[#080A12]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <p className="text-white font-bold text-sm">Your Coach</p>
-              <p className="text-white/30 text-[10px]">{timeStr}</p>
-            </div>
-            <p className="text-white/50 text-xs mt-0.5 line-clamp-1">{msg.content}</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-blue-400 flex-shrink-0" />
+        className="w-full bg-white rounded-2xl p-4 text-left flex items-center gap-3"
+        style={{ boxShadow: '0 2px 20px rgba(37,99,235,0.08)', border: '1px solid #DBEAFE', borderLeft: '4px solid #2563EB' }}>
+        <div className="relative flex-shrink-0">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
+            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>C</div>
+          <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white" />
         </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <p className="text-slate-800 font-bold text-sm">Your Coach</p>
+            <p className="text-slate-400 text-[10px]">{timeStr}</p>
+          </div>
+          <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">{msg.content}</p>
+        </div>
+        <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
       </motion.button>
     </div>
   );
@@ -250,32 +247,38 @@ function DailyTasks({ tasks, onToggle }) {
   const pct = tasks.length ? (done / tasks.length) * 100 : 0;
 
   return (
-    <div className="px-5">
-      <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-white font-bold text-sm">Today's Tasks</p>
-          <p className="text-white/40 text-xs">{done} of {tasks.length}</p>
-        </div>
-        <div className="h-1 rounded-full mb-4 overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+    <div className="px-4">
+      <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        <div className="h-1 w-full" style={{ background: '#F1F5F9' }}>
           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }}
-            className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #3B82F6, #7C3AED)' }} />
+            className="h-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
         </div>
-        <div className="space-y-2">
+        <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+          <p className="text-slate-800 font-bold text-sm">Today's Tasks</p>
+          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold text-white"
+            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            {done} of {tasks.length}
+          </span>
+        </div>
+        <div className="px-4 pb-4 space-y-2">
           {tasks.map(task => (
             <motion.button key={task.id} whileTap={{ scale: 0.98 }} onClick={() => onToggle(task.id)}
-              className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
-              style={{ background: task.completed ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.04)' }}>
-              <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
-                style={{ background: task.completed ? '#22C55E' : 'rgba(255,255,255,0.07)', border: task.completed ? 'none' : '1.5px solid rgba(255,255,255,0.15)' }}>
+              className="w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all"
+              style={{ background: task.completed ? '#F0FDF4' : '#F8FAFC', border: `1px solid ${task.completed ? '#BBF7D0' : '#F1F5F9'}` }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                style={task.completed
+                  ? { background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }
+                  : { background: '#F1F5F9', border: '2px solid #E2E8F0' }}>
                 {task.completed
                   ? <Check className="w-4 h-4 text-white" strokeWidth={3} />
                   : <span className="text-sm">{task.emoji}</span>
                 }
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-semibold transition-all ${task.completed ? 'line-through text-white/30' : 'text-white/80'}`}>{task.label}</p>
-                {task.sublabel && <p className="text-white/25 text-[10px] mt-0.5">{task.sublabel}</p>}
+                <p className={`text-sm font-semibold ${task.completed ? 'line-through text-slate-400' : 'text-slate-800'}`}>{task.label}</p>
+                {task.sublabel && <p className="text-slate-400 text-[10px] mt-0.5">{task.sublabel}</p>}
               </div>
+              {!task.completed && <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />}
             </motion.button>
           ))}
         </div>
@@ -301,38 +304,36 @@ function WeeklyDots({ recentLogs, checkIns, streak }) {
     return 'missed';
   });
 
-  const statusStyle = {
-    done: { bg: '#22C55E', shadow: '0 0 8px rgba(34,197,94,0.5)' },
-    missed: { bg: '#EF4444', shadow: 'none' },
-    upcoming: { bg: 'rgba(255,255,255,0.1)', shadow: 'none' },
-  };
-
   return (
-    <div className="px-5">
-      <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-white font-bold text-sm">This Week</p>
-          {streak > 0 && <p className="text-orange-400 text-xs font-bold">🔥 {streak} day streak</p>}
+    <div className="px-4">
+      <div className="bg-white rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-slate-800 font-bold text-sm">This Week</p>
+          {streak > 0 && (
+            <p className="text-amber-500 text-xs font-bold">🔥 {streak} day streak</p>
+          )}
         </div>
         <div className="flex items-center justify-between">
           {days.map((day, i) => {
             const status = weekLogs[i];
             const isToday = i === todayIdx;
-            const style = statusStyle[status] || statusStyle.upcoming;
+            const bg = status === 'done' ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : status === 'missed' ? '#FEE2E2' : '#F1F5F9';
+            const iconColor = status === 'done' ? 'text-white' : status === 'missed' ? 'text-red-400' : 'text-slate-300';
             return (
               <div key={i} className="flex flex-col items-center gap-1.5">
-                <motion.div
-                  animate={isToday ? { scale: [1, 1.15, 1] } : {}}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="rounded-full transition-all"
+                <motion.div animate={isToday ? { scale: [1, 1.12, 1] } : {}} transition={{ repeat: Infinity, duration: 2 }}
+                  className="flex items-center justify-center rounded-full transition-all"
                   style={{
-                    width: isToday ? 14 : 10,
-                    height: isToday ? 14 : 10,
-                    background: style.bg,
-                    boxShadow: isToday ? `0 0 12px ${style.bg}88` : style.shadow,
-                    border: isToday ? '2px solid rgba(255,255,255,0.3)' : 'none',
-                  }} />
-                <p className={`text-[9px] font-bold ${isToday ? 'text-white' : 'text-white/25'}`}>{day}</p>
+                    width: isToday ? 36 : 28, height: isToday ? 36 : 28,
+                    background: isToday ? 'transparent' : bg,
+                    border: isToday ? '2.5px solid #2563EB' : status === 'done' ? 'none' : '1.5px solid #E2E8F0',
+                    boxShadow: isToday ? '0 0 0 3px rgba(37,99,235,0.15)' : 'none',
+                  }}>
+                  {status === 'done' && !isToday && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
+                  {status === 'missed' && !isToday && <span className="text-red-400 text-[9px] font-bold">✕</span>}
+                  {isToday && <span style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 900 }}>{format(new Date(), 'd')}</span>}
+                </motion.div>
+                <p className={`text-[9px] font-bold ${isToday ? 'text-blue-600' : 'text-slate-400'}`}>{day}</p>
               </div>
             );
           })}
@@ -383,9 +384,7 @@ export default function PortalHome({ user }) {
     enabled: !!user,
   });
   useEffect(() => {
-    if (existingLog?.length > 0) {
-      const l = existingLog[0]; setLog({ ...DEFAULT_LOG, ...l }); setLogId(l.id);
-    }
+    if (existingLog?.length > 0) { const l = existingLog[0]; setLog({ ...DEFAULT_LOG, ...l }); setLogId(l.id); }
   }, [existingLog]);
 
   const { data: recentLogs = [] } = useQuery({
@@ -408,37 +407,22 @@ export default function PortalHome({ user }) {
       : base44.entities.DailyLog.create({ ...data, client_id: user?.id || 'me', date: TODAY }),
     onSuccess: (res) => { if (!logId && res?.id) setLogId(res.id); },
   });
+  const saveLog = useCallback((updated) => { setLog(updated); saveMutation.mutate(updated); }, [logId]);
 
-  const saveLog = useCallback((updated) => {
-    setLog(updated); saveMutation.mutate(updated);
-  }, [logId]);
-
-  // Today's workout
   const dayOfWeek = new Date().getDay();
   const workouts = myProgram?.workouts || [];
   const todayWorkout = workouts.length > 0 ? workouts[dayOfWeek % workouts.length] : null;
 
-  // Streak
-  const streak = (() => {
-    let count = 0;
-    for (const l of recentLogs) { if (l.workout_done || l.meals_logged >= 2) count++; else break; }
-    return count;
-  })();
-
-  // Check-in
+  const streak = (() => { let c = 0; for (const l of recentLogs) { if (l.workout_done || l.meals_logged >= 2) c++; else break; } return c; })();
   const lastCheckIn = checkIns[0];
   const nextCheckInDate = lastCheckIn ? addDays(parseISO(lastCheckIn.date), 7) : null;
   const daysUntilCheckIn = nextCheckInDate ? differenceInDays(nextCheckInDate, new Date()) : null;
   const checkInDueToday = daysUntilCheckIn !== null && daysUntilCheckIn <= 0;
 
-  // Motivation line
-  const motivLine = checkInDueToday
-    ? "Check-in day! Your coach is waiting 📋"
-    : log.workout_done
-      ? "Workout crushed today 🔥 Keep the momentum!"
-      : "Let's make today count 💪";
+  const motivLine = checkInDueToday ? "Check-in day! Your coach is waiting 📋"
+    : log.workout_done ? "Workout crushed today 🔥 Keep the momentum!"
+    : "Let's make today count 💪";
 
-  // Tasks
   const allTasks = [
     { id: 'workout', emoji: '💪', label: "Complete today's workout", sublabel: todayWorkout?.day_name, completed: log.workout_done || tasksDone.has('workout') },
     { id: 'meals', emoji: '🥗', label: 'Log your meals', sublabel: `${log.meals_logged} of ${myNutrition?.meals?.length || 3} logged`, completed: log.meals_logged >= (myNutrition?.meals?.length || 3) || tasksDone.has('meals') },
@@ -449,48 +433,41 @@ export default function PortalHome({ user }) {
   const handleToggleTask = (id) => {
     if (id === 'checkin') { navigate('/portal/checkin'); return; }
     if (id === 'workout') { navigate('/portal/workouts'); return; }
-    setTasksDone(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
+    setTasksDone(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
     if (id === 'meals') saveLog({ ...log, meals_logged: log.meals_logged >= 3 ? 0 : log.meals_logged + 1 });
     if (id === 'water') saveLog({ ...log, water_glasses: log.water_glasses >= 8 ? 0 : log.water_glasses + 1 });
   };
 
   const firstName = user?.full_name?.split(' ')[0] || 'there';
+  const safeWeight = myClient?.current_weight && myClient.current_weight > 0 && myClient.current_weight < 999 ? myClient.current_weight : null;
   const weeklyWorkouts = `${recentLogs.filter(l => l.workout_done).slice(0, 7).length}/7`;
 
-  // Safe weight display
-  const rawWeight = myClient?.current_weight;
-  const safeWeight = rawWeight && rawWeight > 0 && rawWeight < 999 ? rawWeight : null;
-
   return (
-    <div className="pb-32 space-y-4" style={{ background: '#080A12', minHeight: '100vh' }}>
-      {/* Hero Header */}
-      <div className="px-5 pt-14 pb-2">
-        <div className="flex items-start justify-between mb-1">
-          <div className="flex-1">
-            <p className="text-white/40 text-xs font-semibold">{format(new Date(), 'EEEE, MMMM d')}</p>
-            <h1 className="text-white font-black text-2xl leading-tight mt-0.5">
+    <div className="pb-32 space-y-4" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+      {/* Header */}
+      <div className="bg-white px-5 pt-14 pb-5" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-slate-400 text-xs font-semibold">{format(new Date(), 'EEEE, MMMM d')}</p>
+            <h1 className="text-slate-900 font-black text-2xl leading-tight mt-0.5">
               {getGreeting()}, {firstName}! 👋
             </h1>
-            <p className="text-blue-400 text-sm font-semibold mt-1">{motivLine}</p>
+            <p className="text-blue-600 text-sm font-semibold mt-1">{motivLine}</p>
           </div>
           <div className="flex items-center gap-2 ml-4">
             {unreadCount > 0 && (
               <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/messages')}
                 className="relative w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)' }}>
-                <Bell className="w-5 h-5 text-blue-400" />
+                style={{ background: '#EFF6FF', border: '1px solid #DBEAFE' }}>
+                <Bell className="w-5 h-5 text-blue-600" />
                 <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
                   <span className="text-[9px] font-black text-white">{unreadCount}</span>
                 </div>
               </motion.button>
             )}
             <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/profile')}
-              className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #7C3AED)' }}>
+              className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
               {user?.full_name
                 ? <span className="text-white font-bold text-sm">{user.full_name[0]}</span>
                 : <User className="w-5 h-5 text-white" />
@@ -500,50 +477,17 @@ export default function PortalHome({ user }) {
         </div>
       </div>
 
-      {/* Today's Focus */}
-      <TodayFocusCard
-        workout={todayWorkout}
-        program={myProgram}
-        workoutDone={log.workout_done}
-        onStart={() => navigate('/portal/workouts')}
-        navigate={navigate}
-      />
-
-      {/* Daily Rings */}
-      <DailyRings
-        workoutDone={log.workout_done}
-        mealsLogged={log.meals_logged}
-        totalMeals={myNutrition?.meals?.length || 3}
-        waterGlasses={log.water_glasses}
-        waterGoal={8}
-        navigate={navigate}
-      />
-
-      {/* Stats Chips */}
-      <StatsChips
-        streak={streak}
-        weight={safeWeight}
-        weeklyWorkouts={weeklyWorkouts}
-        daysUntilCheckIn={daysUntilCheckIn}
-        navigate={navigate}
-      />
-
-      {/* Coach message */}
+      <TodayFocusCard workout={todayWorkout} program={myProgram} workoutDone={log.workout_done} onStart={() => navigate('/portal/workouts')} />
+      <DailyRings workoutDone={log.workout_done} mealsLogged={log.meals_logged} totalMeals={myNutrition?.meals?.length || 3} waterGlasses={log.water_glasses} waterGoal={8} navigate={navigate} />
+      <StatsChips streak={streak} weight={safeWeight} weeklyWorkouts={weeklyWorkouts} daysUntilCheckIn={daysUntilCheckIn} navigate={navigate} />
       <CoachMsgCard msg={latestCoachMsg} navigate={navigate} />
-
-      {/* Daily Tasks */}
       <DailyTasks tasks={allTasks} onToggle={handleToggleTask} />
-
-      {/* Weekly Dots */}
       <WeeklyDots recentLogs={recentLogs} checkIns={checkIns} streak={streak} />
 
-      {/* Motivational quote */}
-      <div className="px-5 pb-4">
-        <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest mb-1.5">Daily Motivation</p>
-          <p className="text-white/50 text-sm leading-relaxed italic">
-            "The pain you feel today will be the strength you feel tomorrow."
-          </p>
+      <div className="px-4 pb-4">
+        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Daily Motivation</p>
+          <p className="text-slate-600 text-sm leading-relaxed italic">"The pain you feel today will be the strength you feel tomorrow."</p>
         </div>
       </div>
     </div>

@@ -128,10 +128,10 @@ export default function PortalWorkouts({ user }) {
 
   if (!myProgram) {
     return (
-      <div className="pb-24 pt-12 px-5 text-center">
-        <p className="text-white/20 text-5xl mb-4">🏋️</p>
-        <p className="text-white font-bold text-lg">No program assigned yet</p>
-        <p className="text-white/40 text-sm mt-2">Your coach is setting up your training plan — check back soon!</p>
+      <div className="pb-24 pt-16 px-5 text-center" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+        <p className="text-5xl mb-4">🏋️</p>
+        <p className="text-slate-800 font-bold text-lg">No program assigned yet</p>
+        <p className="text-slate-400 text-sm mt-2">Your coach is building something great for you 💪</p>
       </div>
     );
   }
@@ -162,11 +162,11 @@ export default function PortalWorkouts({ user }) {
         )}
       </AnimatePresence>
 
-      <div className="pb-28 pt-12 space-y-5">
+      <div className="pb-28 space-y-5" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
         {/* Page header */}
-        <div className="px-5">
-          <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">My Program</p>
-          <h1 className="text-white font-bold text-2xl leading-tight mt-0.5">{myProgram.title}</h1>
+        <div className="bg-white px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">My Program</p>
+          <h1 className="text-slate-900 font-black text-2xl leading-tight mt-0.5">{myProgram.title}</h1>
         </div>
 
         {/* Program progress header */}
@@ -185,11 +185,12 @@ export default function PortalWorkouts({ user }) {
         <div className="px-4 flex gap-2">
           {['schedule', 'history'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={cn('flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all capitalize')}
+              className={cn('flex-1 py-3 rounded-2xl text-sm font-bold transition-all capitalize')}
               style={{
-                background: activeTab === tab ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)',
-                color: activeTab === tab ? '#60A5FA' : 'rgba(255,255,255,0.3)',
-                border: activeTab === tab ? '1px solid rgba(59,130,246,0.3)' : '1px solid rgba(255,255,255,0.06)',
+                background: activeTab === tab ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#FFFFFF',
+                color: activeTab === tab ? '#FFFFFF' : '#94A3B8',
+                border: activeTab === tab ? 'none' : '1.5px solid #F1F5F9',
+                boxShadow: activeTab === tab ? '0 4px 12px rgba(37,99,235,0.25)' : '0 1px 4px rgba(0,0,0,0.04)',
               }}>
               {tab === 'schedule' ? '📅 Schedule' : '📋 History'}
             </button>

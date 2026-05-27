@@ -143,39 +143,35 @@ export default function PortalNutrition({ user }) {
   }
 
   return (
-    <div className="pb-28 space-y-4">
+    <div className="pb-28 space-y-4" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="px-5 pt-12 pb-2">
-        <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">Nutrition</p>
-        <h1 className="text-white text-xl font-bold mt-0.5">{plan?.title || 'My Nutrition'}</h1>
-        <p className="text-white/30 text-xs mt-0.5">{format(new Date(), 'EEEE, MMMM d')}</p>
-      </div>
-
-      {/* Tabs */}
-      <div className="px-5 flex gap-2">
-        {[
-          { id: 'today', label: "Today's Log" },
-          { id: 'plan', label: 'My Plan' },
-        ].map(tab => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
-            style={{
-              background: activeTab === tab.id ? 'rgba(59,130,246,0.25)' : 'rgba(255,255,255,0.06)',
-              color: activeTab === tab.id ? '#60A5FA' : 'rgba(255,255,255,0.35)',
-              border: activeTab === tab.id ? '1px solid rgba(59,130,246,0.35)' : '1px solid rgba(255,255,255,0.08)',
-            }}>
-            {tab.label}
-          </button>
-        ))}
+      <div className="bg-white px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Nutrition</p>
+        <h1 className="text-slate-900 text-2xl font-black mt-0.5">{plan?.title || 'My Nutrition'}</h1>
+        <p className="text-slate-400 text-xs mt-0.5">{format(new Date(), 'EEEE, MMMM d')}</p>
+        <div className="flex gap-2 mt-4">
+          {[{ id: 'today', label: "Today's Log" }, { id: 'plan', label: 'My Plan' }].map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+              className="px-5 py-2 rounded-2xl text-xs font-bold transition-all"
+              style={{
+                background: activeTab === tab.id ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F8FAFC',
+                color: activeTab === tab.id ? '#fff' : '#94A3B8',
+                border: activeTab === tab.id ? 'none' : '1.5px solid #F1F5F9',
+                boxShadow: activeTab === tab.id ? '0 4px 12px rgba(37,99,235,0.2)' : 'none',
+              }}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {activeTab === 'today' ? (
         <>
           {!plan ? (
-            <div className="mx-4 p-6 rounded-2xl text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <Salad className="w-10 h-10 text-white/20 mx-auto mb-3" />
-              <p className="text-white/50 text-sm font-semibold">No nutrition plan yet</p>
-              <p className="text-white/25 text-xs mt-1">Ask your coach about setting up your nutrition plan 🥗</p>
+            <div className="mx-4 bg-white p-8 rounded-3xl text-center" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+              <Salad className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-slate-600 text-sm font-bold">No nutrition plan yet</p>
+              <p className="text-slate-400 text-xs mt-1">Ask your coach about setting up your nutrition plan 🥗</p>
             </div>
           ) : isHabitMode ? (
             <HabitMode
