@@ -6,6 +6,30 @@ import { format, differenceInDays, parseISO, addDays } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, ChevronRight, Play, Check, User } from 'lucide-react';
 
+function PortalBellButton({ navigate, userEmail }) {
+  const { data: notifs = [] } = useQuery({
+    queryKey: ['portal-notifications', userEmail],
+    queryFn: () => base44.entities.Notification.filter({ recipient_id: userEmail, is_dismissed: false }, '-created_date', 30),
+    enabled: !!userEmail,
+    refetchInterval: 30000,
+  });
+  const unread = notifs.filter(n => !n.is_read).length;
+  return (
+    <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/notifications')}
+      className="relative w-10 h-10 rounded-xl flex items-center justify-center"
+      style={{ background: unread > 0 ? '#EFF6FF' : '#F8FAFC', border: `1px solid ${unread > 0 ? '#DBEAFE' : '#E2E8F0'}` }}>
+      <Bell className="w-5 h-5" style={{ color: unread > 0 ? '#2563EB' : '#94A3B8' }} />
+      {unread > 0 && (
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+          className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center"
+          style={{ boxShadow: '0 0 0 2px white' }}>
+          <span className="text-[9px] font-black text-white">{unread > 9 ? '9+' : unread}</span>
+        </motion.div>
+      )}
+    </motion.button>
+  );
+}
+
 const TODAY = format(new Date(), 'yyyy-MM-dd');
 const DEFAULT_LOG = { workout_done: false, meals_logged: 0, water_glasses: 0 };
 
@@ -455,16 +479,7 @@ export default function PortalHome({ user }) {
             <p className="text-blue-600 text-sm font-semibold mt-1">{motivLine}</p>
           </div>
           <div className="flex items-center gap-2 ml-4">
-            {unreadCount > 0 && (
-              <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/messages')}
-                className="relative w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: '#EFF6FF', border: '1px solid #DBEAFE' }}>
-                <Bell className="w-5 h-5 text-blue-600" />
-                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
-                  <span className="text-[9px] font-black text-white">{unreadCount}</span>
-                </div>
-              </motion.button>
-            )}
+            <PortalBellButton navigate={navigate} userEmail={user?.email} />
             <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/profile')}
               className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>

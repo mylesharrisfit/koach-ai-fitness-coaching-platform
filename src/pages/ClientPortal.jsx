@@ -13,6 +13,7 @@ import PortalNutritionPage from '@/pages/portal/PortalNutrition';
 import PortalCheckIn from '@/pages/portal/PortalCheckIn';
 import PortalProgress from '@/pages/portal/PortalProgress';
 import PortalMessages from '@/pages/portal/PortalMessages';
+import PortalNotifications from '@/pages/portal/PortalNotifications';
 import PortalCommunity from '@/pages/portal/PortalCommunity';
 
 const NAV = [
@@ -135,6 +136,7 @@ export default function ClientPortal() {
           <Route path="/progress"  element={<PortalProgress user={user} />} />
           <Route path="/community" element={<PortalCommunity user={user} />} />
           <Route path="/messages"  element={<PortalMessages user={user} />} />
+          <Route path="/notifications" element={<PortalNotifications user={user} />} />
           <Route path="/profile"   element={<PortalProfile user={user} />} />
           <Route path="/billing"   element={<PortalBilling user={user} />} />
         </Routes>
