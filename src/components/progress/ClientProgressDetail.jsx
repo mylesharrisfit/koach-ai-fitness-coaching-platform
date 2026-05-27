@@ -3,12 +3,14 @@ import { X } from 'lucide-react';
 import { differenceInWeeks, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 import ProgressOverviewTab from './tabs/ProgressOverviewTab';
+import AIProgressAnalyzer from './AIProgressAnalyzer';
 import ProgressBodyStatsTab from './tabs/ProgressBodyStatsTab';
 import ProgressMeasurementsTab from './tabs/ProgressMeasurementsTab';
 import ProgressPhotosTab from './tabs/ProgressPhotosTab';
 import ProgressPerformanceTab from './tabs/ProgressPerformanceTab';
 
 const TABS = [
+  { key: 'ai', label: '✨ AI Analysis' },
   { key: 'overview', label: 'Overview' },
   { key: 'body_stats', label: 'Body Stats' },
   { key: 'measurements', label: 'Measurements' },
@@ -37,7 +39,7 @@ function calcProgressScore(client, checkIns) {
 }
 
 export default function ClientProgressDetail({ client, checkIns, sessions, allClients, onClose }) {
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState('ai');
 
   const sorted = [...checkIns].sort((a, b) => new Date(a.date) - new Date(b.date));
   const first = sorted[0];
@@ -100,6 +102,11 @@ export default function ClientProgressDetail({ client, checkIns, sessions, allCl
 
         {/* Tab Content */}
         <div className="flex-1 overflow-y-auto">
+          {tab === 'ai' && (
+            <div className="p-6">
+              <AIProgressAnalyzer client={client} checkIns={checkIns} workoutSessions={sessions} isClientFacing={false} compact={false} />
+            </div>
+          )}
           {tab === 'overview' && (
             <ProgressOverviewTab client={client} checkIns={checkIns} sessions={sessions} score={score} weeksActive={weeksActive} first={first} last={last} />
           )}

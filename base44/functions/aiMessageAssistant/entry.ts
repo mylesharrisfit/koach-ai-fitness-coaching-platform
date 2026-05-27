@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import Anthropic from 'npm:@anthropic-ai/sdk@0.27.3';
 
 Deno.serve(async (req) => {
   try {
@@ -8,30 +7,17 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { action, clientId, tone, conversationMessages, checkIn, client, recentCheckIns, selectedClientIds, clients, broadcastContext } = body;
-
-    const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') });
-
-    // ── COACH TONE PROFILE (analyze last 50 coach messages) ──
-    const buildToneProfile = async () => {
-      const msgs = await base44.asServiceRole.entities.Message.filter({ sender: 'coach' }, '-created_date', 50);
-      if (msgs.length < 5) return 'Warm, motivational, casual, uses emojis occasionally.';
-      const sample = msgs.slice(0, 15).map(m => m.content).join('\n---\n');
-      const r = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyze these coach messages and summarize their communication style in 1-2 sentences (tone, formality, emoji usage, vocabulary). Messages:\n${sample}`,
-      });
-      return r;
-    };
+    const { action, client, tone, conversationMessages, checkIn, recentCheckIns, selectedClientIds, clients, broadcastContext } = body;
 
     // ── ACTION: generateReply ──
     if (action === 'generateReply') {
       const toneInstruction = {
-        motivational: 'Be highly energetic, celebratory, use fire/muscle emojis, pump up the client.',
-        empathetic: 'Be gentle, understanding, validate feelings, show genuine care.',
+        motivational: 'Be highly energetic, celebratory, use fire/muscle emojis, pump the client up.',
+        empathetic: 'Be gentle, understanding, validate feelings, show genuine care and warmth.',
         direct: 'Be concise and actionable, skip fluff, get straight to the point.',
-        casual: 'Be relaxed and friendly, like a text from a friend, natural language.',
+        casual: 'Be relaxed and friendly, like texting a friend, use natural language.',
         professional: 'Be polished and structured, minimal emojis, clear coaching language.',
-      }[tone] || 'Match the coach\'s natural style.';
+      }[tone] || 'Be warm, motivational, and human.';
 
       const convo = (conversationMessages || [])
         .slice(-6)
@@ -47,12 +33,12 @@ Deno.serve(async (req) => {
 - Client notes: ${lastCI.notes || 'None'}`
         : '';
 
-      const prompt = `You are an elite personal fitness coach. Write ONE short, human, personalized reply to your client "${client?.name || 'your client'}".
+      const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt: `You are an elite personal fitness coach. Write ONE short, human, personalized reply to your client "${client?.name || 'your client'}".
 
 CLIENT CONTEXT:
 - Goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-- Status: ${client?.lifecycle_status || 'active'}
-- Tags: ${(client?.tags || []).join(', ') || 'none'}${ciCtx}
+- Status: ${client?.lifecycle_status || 'active'}${ciCtx}
 
 RECENT CONVERSATION (most recent last):
 ${convo || 'No previous messages.'}
@@ -64,56 +50,58 @@ RULES:
 - Use client's first name (${client?.name?.split(' ')[0] || 'there'})
 - Sound like a real human coach, not a corporate bot
 - Do NOT use em-dashes or bullet points
-- Return JSON with: { "message": "...", "tone": "Motivational|Empathetic|Informative|Casual|Direct" }`;
-
-      const response = await anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 300,
-        messages: [{ role: 'user', content: prompt }],
+- Return ONLY valid JSON in this format: { "message": "...", "tone": "Motivational" }
+- The "tone" field must be one of: Motivational, Empathetic, Informative, Casual, Direct`,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            message: { type: 'string' },
+            tone: { type: 'string' }
+          }
+        }
       });
 
-      const text = response.content[0].text;
-      try {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return Response.json(JSON.parse(jsonMatch[0]));
-      } catch (_) {}
-      return Response.json({ message: text.trim(), tone: 'Motivational' });
+      return Response.json(result);
     }
 
     // ── ACTION: generateBroadcast ──
     if (action === 'generateBroadcast') {
       const ctx = broadcastContext || {};
-      const recipientSummary = ctx.filter || 'all clients';
-      const count = ctx.count || selectedClientIds?.length || 0;
-      const sampleNames = (clients || [])
-        .filter(c => (selectedClientIds || []).includes(c.id))
-        .slice(0, 3)
-        .map(c => c.name?.split(' ')[0]);
+      const count = ctx.count || (selectedClientIds || []).length || 0;
+      const sampleNames = (clients || []).slice(0, 3).map(c => c.name?.split(' ')[0]).join(', ');
 
-      const prompt = `You are a fitness coach. Write 3 different broadcast messages for ${count} ${recipientSummary}.
-Sample recipients: ${sampleNames.join(', ') || 'various clients'}.
-Context: ${ctx.reason || 'general check-in'}, ${new Date().toLocaleDateString('en-US', { weekday: 'long' })}.
+      const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt: `You are a fitness coach. Write 3 different broadcast messages for ${count} ${ctx.filter || 'clients'}.
+Sample recipients: ${sampleNames || 'various clients'}.
+Context: ${ctx.reason || 'general check-in'}, today is ${new Date().toLocaleDateString('en-US', { weekday: 'long' })}.
 
 Each message should:
 - Use [First Name] token for personalization
 - Be 30-50 words
-- Have a distinct tone/angle: 1) Motivational, 2) Informative/reminder, 3) Casual/friendly
-- NOT use em-dashes or bullet points
+- Version 1: Motivational/energetic tone
+- Version 2: Informative/reminder tone  
+- Version 3: Casual/friendly tone
+- Do NOT use em-dashes
 
-Return JSON: { "versions": [{ "message": "...", "tone": "..." }, ...] }`;
-
-      const response = await anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 600,
-        messages: [{ role: 'user', content: prompt }],
+Return ONLY valid JSON: { "versions": [{ "message": "...", "tone": "..." }, { "message": "...", "tone": "..." }, { "message": "...", "tone": "..." }] }`,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            versions: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                  tone: { type: 'string' }
+                }
+              }
+            }
+          }
+        }
       });
 
-      const text = response.content[0].text;
-      try {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return Response.json(JSON.parse(jsonMatch[0]));
-      } catch (_) {}
-      return Response.json({ versions: [{ message: text.trim(), tone: 'Motivational' }] });
+      return Response.json(result);
     }
 
     // ── ACTION: generateCheckInResponse ──
@@ -122,17 +110,15 @@ Return JSON: { "versions": [{ "message": "...", "tone": "..." }, ...] }`;
       const weights = allCIs.filter(c => c.weight).slice(0, 5).map(c => c.weight);
       const weightTrend = weights.length >= 2
         ? (weights[0] < weights[weights.length - 1]
-          ? `down ${(weights[weights.length - 1] - weights[0]).toFixed(1)} lbs`
-          : weights[0] > weights[weights.length - 1]
-          ? `up ${(weights[0] - weights[weights.length - 1]).toFixed(1)} lbs`
-          : 'stable')
+            ? `up ${(weights[weights.length - 1] - weights[0]).toFixed(1)} lbs recently`
+            : `down ${(weights[0] - weights[weights.length - 1]).toFixed(1)} lbs recently`)
         : 'insufficient data';
-
       const avgTraining = allCIs.length
         ? Math.round(allCIs.reduce((s, c) => s + (c.compliance_training || 0), 0) / allCIs.length)
         : null;
 
-      const prompt = `You are an elite personal fitness coach writing a check-in response.
+      const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt: `You are an elite personal fitness coach writing a check-in response.
 
 CLIENT: ${client?.name || 'Client'} | GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
 
@@ -146,26 +132,20 @@ THIS WEEK'S CHECK-IN:
 - Nutrition: ${checkIn.compliance_nutrition != null ? checkIn.compliance_nutrition + '%' : 'N/A'}
 - Client notes: ${checkIn.notes || 'None'}
 
-TRENDS (last ${allCIs.length} check-ins):
-- Weight trend: ${weightTrend}
-- Average training compliance: ${avgTraining != null ? avgTraining + '%' : 'N/A'}
+TRENDS (last ${allCIs.length} check-ins): Weight trend ${weightTrend}, avg training ${avgTraining != null ? avgTraining + '%' : 'N/A'}
 
 Write a 80-120 word coaching response that:
 1. Acknowledges 2 specific data points from this check-in
 2. Addresses any red flags (low mood/sleep/compliance) with empathy but action-focused
 3. Gives ONE clear priority for next week
 4. Ends with brief encouragement
-- Tone: warm, direct, results-focused coach
-- No bullet points, no em-dashes, plain paragraphs
-- First name only (${client?.name?.split(' ')[0] || 'there'}), no "Hi" opener`;
-
-      const response = await anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: prompt }],
+Tone: warm, direct, results-focused. No bullet points, no em-dashes, plain paragraphs.
+Use first name only (${client?.name?.split(' ')[0] || 'there'}), no greeting opener.
+Return ONLY the message text as a plain string.`,
       });
 
-      return Response.json({ message: response.content[0].text.trim() });
+      const message = typeof result === 'string' ? result : JSON.stringify(result);
+      return Response.json({ message: message.trim() });
     }
 
     // ── ACTION: followUpSuggestions ──
@@ -173,25 +153,20 @@ Write a 80-120 word coaching response that:
       const daysSince = body.daysSince || 7;
       const lastCI = checkIn;
 
-      const prompt = `Client "${client?.name}" hasn't been messaged in ${daysSince} days.
+      const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt: `Client "${client?.name}" hasn't been messaged in ${daysSince} days.
 ${lastCI ? `Last check-in: mood ${lastCI.mood}, training ${lastCI.compliance_training}%, nutrition ${lastCI.compliance_nutrition}%` : 'No recent check-in.'}
 Goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
 
-Write ONE short (under 50 words) follow-up message. Warm, caring, curious. Use their first name (${client?.name?.split(' ')[0] || 'there'}).
-Return JSON: { "message": "..." }`;
-
-      const response = await anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: prompt }],
+Write ONE short (under 50 words) follow-up message. Warm, caring, curious. Use first name (${client?.name?.split(' ')[0] || 'there'}).
+Return ONLY valid JSON: { "message": "..." }`,
+        response_json_schema: {
+          type: 'object',
+          properties: { message: { type: 'string' } }
+        }
       });
 
-      const text = response.content[0].text;
-      try {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return Response.json(JSON.parse(jsonMatch[0]));
-      } catch (_) {}
-      return Response.json({ message: text.trim() });
+      return Response.json(result);
     }
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });

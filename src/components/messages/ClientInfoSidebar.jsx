@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { ExternalLink, ClipboardList, Salad, FileText } from 'lucide-react';
 import { BADGE_CONFIG } from '@/lib/badges';
+import AIFollowUpChip from './AIFollowUpChip';
 
 const AVATAR_COLORS = [
   ['bg-blue-100', 'text-blue-700'],
@@ -31,7 +32,7 @@ const GOAL_LABELS = {
   endurance: 'Endurance', general_fitness: 'General Fitness',
 };
 
-export default function ClientInfoSidebar({ client, checkIns = [], badges = [] }) {
+export default function ClientInfoSidebar({ client, checkIns = [], badges = [], allMessages = [], onInsertMessage }) {
   const navigate = useNavigate();
   const [note, setNote] = useState('');
 
@@ -93,6 +94,18 @@ export default function ClientInfoSidebar({ client, checkIns = [], badges = [] }
           </div>
         )}
       </div>
+
+      {/* AI Follow-up Chip */}
+      {onInsertMessage && (
+        <div className="pt-3">
+          <AIFollowUpChip
+            client={client}
+            allMessages={allMessages}
+            checkIns={checkIns}
+            onInsert={onInsertMessage}
+          />
+        </div>
+      )}
 
       {/* Quick actions */}
       <div className="p-4 border-b border-[#E5E7EB] space-y-2">

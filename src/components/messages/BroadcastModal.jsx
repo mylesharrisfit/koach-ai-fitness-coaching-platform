@@ -257,6 +257,39 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
           {/* ── Step 2: Compose ── */}
           {step === 2 && (
             <div className="p-5 space-y-4">
+              {/* AI Generate button */}
+              <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-[#EEF4FF] to-[#F5F3FF] p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <p className="text-[11px] font-bold text-primary">AI Write Message</p>
+                  {aiVersions.length > 0 && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold ml-auto">
+                      {aiVersions[aiVersionIdx]?.tone_label}
+                    </span>
+                  )}
+                </div>
+                {aiVersions.length > 0 && (
+                  <p className="text-[11px] text-[#6B7280] mb-2">{aiVersions[aiVersionIdx]?.description}</p>
+                )}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={generateAI}
+                    disabled={aiLoading || selected.size === 0}
+                    className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-primary text-white rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                  >
+                    {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                    {aiLoading ? 'Generating…' : aiVersions.length > 0 ? 'Regenerate' : '✨ AI Write'}
+                  </button>
+                  {aiVersions.length > 1 && (
+                    <>
+                      <button onClick={() => cyclAIVersion(-1)} className="text-[11px] font-semibold px-2 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50">← Prev</button>
+                      <span className="text-[10px] text-[#9CA3AF]">{aiVersionIdx + 1}/{aiVersions.length}</span>
+                      <button onClick={() => cyclAIVersion(1)} className="text-[11px] font-semibold px-2 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50">Next →</button>
+                    </>
+                  )}
+                </div>
+              </div>
+
               {/* Token bar */}
               <div>
                 <p className="text-[11px] font-semibold text-[#6B7280] mb-2">Personalization tokens — click to insert:</p>

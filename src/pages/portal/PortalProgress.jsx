@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +7,7 @@ import {
   TrendingUp, TrendingDown, Minus, Scale, Flame, Dumbbell,
   ClipboardList, Trophy, Plus, X, BarChart2, Camera, ChevronRight, Star
 } from 'lucide-react';
+import AIProgressAnalyzer from '@/components/progress/AIProgressAnalyzer';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
 
 /* ── Score helpers ── */
@@ -419,6 +420,15 @@ export default function PortalProgress({ user }) {
           </div>
         </div>
       )}
+
+      {/* AI Progress Insights */}
+      <AIProgressAnalyzer
+        client={myClient}
+        checkIns={sorted}
+        workoutSessions={sessions}
+        program={myProgram}
+        isClientFacing={true}
+      />
 
       {/* Achievements */}
       <div>

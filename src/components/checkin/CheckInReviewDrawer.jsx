@@ -12,6 +12,7 @@ import { scoreColor, checkInScore } from '@/lib/adherence';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import CheckInResponseGenerator from './CheckInResponseGenerator';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
 
@@ -416,16 +417,29 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                     </button>
                   </div>
 
+                  {/* AI Response Generator */}
+                  <CheckInResponseGenerator
+                   client={client}
+                   checkIn={checkIn}
+                   previousCheckIns={allCheckIns?.filter(ci => ci.id !== checkIn.id) || []}
+                   onInsert={(text, editMode) => {
+                     setCoachResponse(text);
+                     if (!editMode) {
+                       // Auto-save if "Use This" (not "Edit First")
+                     }
+                   }}
+                  />
+
                   {/* Text response */}
                   <div>
-                    <p className="text-[10px] font-semibold text-[#6B7280] mb-1.5">Text response</p>
-                    <textarea
-                      rows={4}
-                      value={coachResponse}
-                      onChange={e => setCoachResponse(e.target.value)}
-                      placeholder="Type your coaching feedback..."
-                      className="w-full rounded-xl border border-[#E7EAF3] bg-[#F6F7FB] px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40 focus:bg-white transition-colors"
-                    />
+                   <p className="text-[10px] font-semibold text-[#6B7280] mb-1.5">Text response</p>
+                   <textarea
+                     rows={4}
+                     value={coachResponse}
+                     onChange={e => setCoachResponse(e.target.value)}
+                     placeholder="Type your coaching feedback..."
+                     className="w-full rounded-xl border border-[#E7EAF3] bg-[#F6F7FB] px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40 focus:bg-white transition-colors"
+                   />
                     <Button
                       size="sm"
                       onClick={handleSendResponse}

@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TrendingDown, TrendingUp, Minus, Image, Star, Scale, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ClientProgressDetail from '@/components/progress/ClientProgressDetail';
+import AIProgressAnalyzer from '@/components/progress/AIProgressAnalyzer';
 
 /* ── helpers ── */
 function calcProgressScore(client, checkIns) {
