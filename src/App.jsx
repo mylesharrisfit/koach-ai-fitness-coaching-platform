@@ -52,6 +52,8 @@ import ClientInviteJoin from './pages/ClientInviteJoin';
 import EmailCenter from './pages/EmailCenter';
 import AIInsightsPage from './pages/AIInsightsPage';
 import Invoicing from './pages/Invoicing';
+import Packages from './pages/Packages';
+import PackageLanding from './pages/PackageLanding';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -111,6 +113,7 @@ const AuthenticatedApp = () => {
         <Route path="/food-log" element={<FoodLogPage />} />
         <Route path="/email-center" element={<EmailCenter />} />
         <Route path="/invoicing" element={<Invoicing />} />
+        <Route path="/packages" element={<Packages />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
@@ -121,6 +124,7 @@ const AuthenticatedApp = () => {
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
       <Route path="/start" element={<PremiumOnboarding />} />
+      <Route path="/packages/:slug" element={<PackageLanding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="/join/:code" element={<ClientInviteJoin />} />
       <Route path="/join" element={<ClientInviteJoin />} />

@@ -53,6 +53,7 @@ const NAV_GROUPS = [
     label: 'BUSINESS',
     items: [
       { icon: FileText, label: 'Invoicing', path: '/invoicing' },
+      { icon: Package, label: 'Packages', path: '/packages' },
       { icon: DollarSign, label: 'Payments', path: '/revenue' },
       { icon: Mail, label: 'Email Center', path: '/email-center' },
       { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },

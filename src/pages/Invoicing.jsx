@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, parseISO, isPast } from 'date-fns';
 import { Plus, Package, Search, Download, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import InvoiceFormModal from '@/components/invoicing/InvoiceFormModal';
 import InvoiceRow from '@/components/invoicing/InvoiceRow';
@@ -39,6 +40,7 @@ function EmptyState() {
 
 export default function Invoicing() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('all');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('newest');
@@ -178,7 +180,7 @@ export default function Invoicing() {
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
               <Plus size={16} /> New Invoice
             </button>
-            <button style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: '#fff', color: '#374151', border: '1.5px solid #E5E7EB', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/packages')} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: '#fff', color: '#374151', border: '1.5px solid #E5E7EB', cursor: 'pointer' }}>
               <Package size={15} /> Manage Packages
             </button>
           </div>
