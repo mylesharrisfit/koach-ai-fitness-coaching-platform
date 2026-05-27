@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
 import {
-  Send, Sparkles, LayoutTemplate, Tag, ChevronDown, Plus, X,
+  Send, LayoutTemplate, Tag, ChevronDown, Plus, X,
   Paperclip, Image, ClipboardList, Salad, CheckSquare, BarChart2,
   Mic, Video, Check, Link
 } from 'lucide-react';
@@ -9,8 +9,7 @@ import { cn } from '@/lib/utils';
 import FeatureLock from '@/components/subscription/FeatureLock';
 import { TAG_COLORS } from './MessageTemplates';
 import { differenceInDays } from 'date-fns';
-import AIReplyPanel from './AIReplyPanel';
-import { generateAIReply } from '@/lib/aiMessageAssistant';
+import AIReplyAssistant from './AIReplyAssistant';
 
 const TAGS = ['general', 'check_in', 'urgent', 'nutrition', 'training', 'motivation'];
 
@@ -99,7 +98,6 @@ function getContextualChips(client, messages, checkIns = []) {
     { label: '🤝 How are you doing?', text: "Hey! Just checking in — how are you feeling this week?" },
   ];
 }
-
 
 
 function TemplatesDrawer({ onSelect, onClose }) {
@@ -253,13 +251,17 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   const [showVideo, setShowVideo] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
-  const [aiResult, setAiResult] = useState(null);  // { message, tone_label, context_reason }
-  const [aiLoading, setAiLoading] = useState(false);
   const [showAI, setShowAI] = useState(false);
-  const [aiTone, setAiTone] = useState('auto');
-  const [aiRetryCount, setAiRetryCount] = useState(0);
   const textareaRef = useRef(null);
   const isEmpty = !value.trim();
+
+  // Detect if last message is from client (show AI chip)
+  const clientMessages = allMessages.filter(m => m.client_id === client?.id);
+  const lastMsg = [...clientMessages].sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+  const lastIsFromClient = lastMsg?.sender === 'client';
+  const recentCheckIn = checkIns?.length > 0
+    ? [...checkIns].sort((a, b) => new Date(b.date) - new Date(a.date))[0]
+    : null;
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -285,49 +287,38 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
     textareaRef.current?.focus();
   };
 
-  const triggerAIGenerate = useCallback(async (tone = aiTone, retry = 0) => {
-    if (!client) return;
-    setShowAI(true);
-    setAiLoading(true);
-    setAiResult(null);
-    const result = await generateAIReply(client, allMessages, checkIns, tone, retry);
-    setAiResult(result);
-    setAiLoading(false);
-  }, [client, allMessages, checkIns, aiTone]);
+  const sortedConversation = [...clientMessages].sort((a, b) => new Date(a.created_date) - new Date(b.created_date)).slice(-8);
 
   const chips = getContextualChips(client, allMessages, checkIns);
 
   return (
     <div className="border-t border-[#E7EAF3] bg-white flex-shrink-0">
-      {showAI && (
-        <AIReplyPanel
-          suggestion={aiResult}
-          loading={aiLoading}
-          currentTone={aiTone}
-          onUse={(text) => { onChange(text); setShowAI(false); setAiResult(null); textareaRef.current?.focus(); }}
-          onEditFirst={(text) => { onChange(text); setShowAI(false); setAiResult(null); textareaRef.current?.focus(); }}
-          onRetry={() => { setAiRetryCount(r => r + 1); triggerAIGenerate(aiTone, aiRetryCount + 1); }}
-          onDismiss={() => { setShowAI(false); setAiResult(null); }}
-          onChangeTone={(tone) => { setAiTone(tone); triggerAIGenerate(tone, 0); }}
-        />
-      )}
+      {/* AI Reply Assistant */}
+      <div className="px-3 pt-2.5">
+        {(lastIsFromClient || showAI) && (
+          <AIReplyAssistant
+            client={client}
+            conversationMessages={sortedConversation}
+            checkIn={recentCheckIn}
+            onUse={(text) => { onChange(text); textareaRef.current?.focus(); }}
+            onEditFirst={(text) => { onChange(text); textareaRef.current?.focus(); }}
+            onDismiss={() => setShowAI(false)}
+          />
+        )}
+        {!lastIsFromClient && !showAI && (
+          <div className="flex gap-1.5 pb-1">
+            <button
+              onClick={() => setShowAI(true)}
+              className="flex items-center gap-1 text-[11px] text-[#9CA3AF] hover:text-primary transition-colors"
+            >
+              ✨ AI Reply
+            </button>
+          </div>
+        )}
+      </div>
 
       {showQuickReplies && !isRecording && (
         <div className="flex gap-1.5 flex-wrap px-4 pt-3 pb-1">
-          {/* AI Suggest chip — shown when last message is from client */}
-          {(() => {
-            const clientMsgs = allMessages.filter(m => m.client_id === client?.id);
-            const lastMsg = [...clientMsgs].sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
-            const lastIsFromClient = lastMsg?.sender === 'client';
-            return lastIsFromClient ? (
-              <button
-                onClick={() => triggerAIGenerate()}
-                className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-gradient-to-r from-primary to-violet-600 text-white border-0 hover:opacity-90 transition-opacity whitespace-nowrap shadow-sm"
-              >
-                <Sparkles className="w-3 h-3" /> ✨ AI Suggest Reply
-              </button>
-            ) : null;
-          })()}
           {chips.map((r, i) => (
             <button key={i} onClick={() => { onChange(r.text); setShowQuickReplies(false); textareaRef.current?.focus(); }}
               className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F0F4FF] border border-[#D6E2FF] text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors whitespace-nowrap">
@@ -366,11 +357,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
             <LayoutTemplate className="w-3.5 h-3.5" /> Templates
           </button>
 
-          <FeatureLock feature="ai_suggestions" className="rounded-lg">
-            <button onClick={() => triggerAIGenerate()} className={cn('flex items-center gap-1 text-[11px] px-2 py-1 rounded-lg transition-colors', showAI ? 'text-primary bg-primary/10 font-semibold' : 'text-[#6B7280] hover:text-primary hover:bg-secondary')}>
-              <Sparkles className="w-3.5 h-3.5" /> AI Reply
-            </button>
-          </FeatureLock>
+
 
           <div className="flex-1" />
 
