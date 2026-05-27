@@ -13,6 +13,7 @@ import PortalMessages from '@/pages/portal/PortalMessages';
 import { format, parseISO, addDays, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
 import PortalProfile from '@/pages/portal/PortalProfile';
+import PortalBilling from '@/pages/portal/PortalBilling';
 
 /* ── Bottom Nav ── */
 function BottomNav({ user }) {
@@ -167,6 +168,7 @@ export default function ClientPortal() {
           <Route path="/progress" element={<PortalProgress user={user} />} />
           <Route path="/messages" element={<PortalMessages user={user} />} />
           <Route path="/profile" element={<PortalProfile user={user} />} />
+          <Route path="/billing" element={<PortalBilling user={user} />} />
         </Routes>
       </div>
 
