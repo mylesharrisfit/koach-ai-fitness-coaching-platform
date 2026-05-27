@@ -56,6 +56,8 @@ import Packages from './pages/Packages';
 import PackageLanding from './pages/PackageLanding';
 import CoachProfile from './pages/CoachProfile';
 import BusinessSettings from './pages/BusinessSettings';
+import AccountSettings from './pages/AccountSettings';
+import NotificationSettings from './pages/NotificationSettings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -118,6 +120,8 @@ const AuthenticatedApp = () => {
         <Route path="/packages" element={<Packages />} />
         <Route path="/coach-profile" element={<CoachProfile />} />
         <Route path="/business-settings" element={<BusinessSettings />} />
+        <Route path="/account-settings" element={<AccountSettings />} />
+        <Route path="/notification-settings" element={<NotificationSettings />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
