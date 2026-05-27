@@ -58,6 +58,7 @@ import CoachProfile from './pages/CoachProfile';
 import BusinessSettings from './pages/BusinessSettings';
 import AccountSettings from './pages/AccountSettings';
 import NotificationSettings from './pages/NotificationSettings';
+import InstallPrompt from './components/pwa/InstallPrompt';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -85,7 +86,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       {/* ── CLIENT PORTAL (role=client) ── */}
-      <Route path="/portal/*" element={<ClientPortal />} />
+      <Route path="/portal/*" element={<><ClientPortal /><InstallPrompt /></>} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/clients" element={<Clients />} />

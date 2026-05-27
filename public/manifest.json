@@ -1,0 +1,49 @@
+{
+  "name": "KOACH AI",
+  "short_name": "KOACH AI",
+  "description": "Your personal AI coaching app — workouts, nutrition, check-ins, and progress all in one place.",
+  "start_url": "/portal",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#2563EB",
+  "background_color": "#FFFFFF",
+  "categories": ["health", "fitness"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "https://media.base44.com/images/public/69e2a436330b5bde8cea6d84/5fcf73373_ChatGPTImageMay12202609_18_33PM.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://media.base44.com/images/public/69e2a436330b5bde8cea6d84/5fcf73373_ChatGPTImageMay12202609_18_33PM.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://media.base44.com/images/public/69e2a436330b5bde8cea6d84/5fcf73373_ChatGPTImageMay12202609_18_33PM.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Workout",
+      "short_name": "Workout",
+      "description": "Start today's training session",
+      "url": "/portal/workouts",
+      "icons": [{ "src": "https://media.base44.com/images/public/69e2a436330b5bde8cea6d84/5fcf73373_ChatGPTImageMay12202609_18_33PM.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Check-in",
+      "short_name": "Check-in",
+      "description": "Submit your weekly check-in",
+      "url": "/portal/checkin",
+      "icons": [{ "src": "https://media.base44.com/images/public/69e2a436330b5bde8cea6d84/5fcf73373_ChatGPTImageMay12202609_18_33PM.png", "sizes": "96x96" }]
+    }
+  ]
+}
