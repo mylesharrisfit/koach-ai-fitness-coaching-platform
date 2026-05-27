@@ -8,6 +8,7 @@ import DefaultAssignmentSettings from '../components/settings/DefaultAssignmentS
 const TABS = [
   { id: 'profile', label: 'Profile', icon: User },
   { id: 'referral', label: 'Refer & Earn', icon: Gift },
+  { id: 'affiliate', label: 'Affiliate Program', icon: Gift },
   { id: 'integrations', label: 'Integrations', icon: Plug },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'security', label: 'Security', icon: Shield },
@@ -123,6 +124,27 @@ export default function Settings() {
               <div>
                 <h3 className="font-bold text-[#1F2A44] text-sm">View Referral Program</h3>
                 <p className="text-xs text-[#6B7280] mt-0.5">Check your earnings, referral links, and payout details</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+          </Link>
+        </div>
+      )}
+      {activeTab === 'affiliate' && (
+        <div>
+          <div className="mb-5">
+            <h2 className="text-base font-semibold text-[#1F2A44]">Affiliate Program</h2>
+            <p className="text-sm text-[#374151] mt-0.5">Earn 30% recurring commissions at scale with dedicated support</p>
+          </div>
+          <Link to="/affiliate-application"
+            className="flex items-center justify-between bg-white border border-[#E7EAF3] rounded-2xl p-5 hover:border-blue-300 transition-colors group">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FEF3C7, #FCD34D)' }}>
+                <Gift className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-[#1F2A44] text-sm">Join Our Affiliate Program</h3>
+                <p className="text-xs text-[#6B7280] mt-0.5">Apply to become a power partner earning 30% recurring commissions</p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />

@@ -1,0 +1,61 @@
+{
+  "name": "AffiliatePayout",
+  "type": "object",
+  "properties": {
+    "affiliate_id": {
+      "type": "string"
+    },
+    "coach_email": {
+      "type": "string"
+    },
+    "payout_month": {
+      "type": "string",
+      "description": "YYYY-MM"
+    },
+    "gross_earnings": {
+      "type": "number"
+    },
+    "fees": {
+      "type": "number",
+      "default": 0
+    },
+    "net_amount": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "paid",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "stripe_transfer_id": {
+      "type": "string"
+    },
+    "paid_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "statement_url": {
+      "type": "string",
+      "description": "PDF statement URL"
+    },
+    "commission_breakdown": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Array of {coach_id, monthly_value, rate, commission}"
+    }
+  },
+  "required": [
+    "affiliate_id",
+    "coach_email",
+    "payout_month",
+    "gross_earnings",
+    "net_amount"
+  ]
+}
