@@ -3,7 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Home, Dumbbell, Salad, BarChart2, MessageSquare } from 'lucide-react';
+import { Home, Dumbbell, Salad, BarChart2, MessageSquare, Users } from 'lucide-react';
 import { addDays, parseISO, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
 import PortalProfile from '@/pages/portal/PortalProfile';
@@ -13,12 +13,14 @@ import PortalNutritionPage from '@/pages/portal/PortalNutrition';
 import PortalCheckIn from '@/pages/portal/PortalCheckIn';
 import PortalProgress from '@/pages/portal/PortalProgress';
 import PortalMessages from '@/pages/portal/PortalMessages';
+import PortalCommunity from '@/pages/portal/PortalCommunity';
 
 const NAV = [
   { icon: Home,          label: 'Home',      path: '/portal' },
   { icon: Dumbbell,      label: 'Train',     path: '/portal/workouts' },
   { icon: Salad,         label: 'Nutrition', path: '/portal/nutrition' },
   { icon: BarChart2,     label: 'Progress',  path: '/portal/progress' },
+  { icon: Users,         label: 'Community', path: '/portal/community' },
   { icon: MessageSquare, label: 'Coach',     path: '/portal/messages' },
 ];
 
@@ -45,14 +47,25 @@ function BottomNav({ user }) {
     enabled: !!myClient?.id,
   });
 
+  const { data: communityPosts = [] } = useQuery({
+    queryKey: ['portal-community-nav'],
+    queryFn: () => base44.entities.CommunityPost.filter({ is_announcement: true, is_hidden: false }, '-created_date', 5),
+    refetchInterval: 60000,
+  });
+
   const unreadMsgs = messages.filter(m => m.sender === 'coach' && !m.is_read).length;
   const lastCI = [...checkIns].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
   const nextDue = lastCI ? addDays(parseISO(lastCI.date), 7) : null;
   const checkInDue = !nextDue || differenceInDays(nextDue, new Date()) <= 0;
+  const newCommunityPosts = communityPosts.filter(p => {
+    if (!p.created_date) return false;
+    return differenceInDays(new Date(), new Date(p.created_date)) < 1;
+  }).length;
 
   const badges = {
     '/portal/messages': unreadMsgs > 0 ? unreadMsgs : null,
     '/portal/workouts': checkInDue ? '!' : null,
+    '/portal/community': newCommunityPosts > 0 ? newCommunityPosts : null,
   };
 
   const hiddenPaths = ['/portal/profile', '/portal/billing'];
@@ -120,6 +133,7 @@ export default function ClientPortal() {
           <Route path="/nutrition" element={<PortalNutritionPage user={user} />} />
           <Route path="/checkin"   element={<PortalCheckIn user={user} />} />
           <Route path="/progress"  element={<PortalProgress user={user} />} />
+          <Route path="/community" element={<PortalCommunity user={user} />} />
           <Route path="/messages"  element={<PortalMessages user={user} />} />
           <Route path="/profile"   element={<PortalProfile user={user} />} />
           <Route path="/billing"   element={<PortalBilling user={user} />} />

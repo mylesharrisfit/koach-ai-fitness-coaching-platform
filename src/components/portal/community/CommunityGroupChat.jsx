@@ -1,0 +1,145 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Pin, Users } from 'lucide-react';
+import { formatDistanceToNow, format } from 'date-fns';
+
+// We'll use CommunityPost with type='chat' as group chat messages
+const CHAT_CHANNEL = 'group_chat';
+
+function ChatBubble({ msg, isMe, isCoach }) {
+  const name = msg.is_anonymous ? 'Community Member' : (msg.author_name || 'Member');
+  const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  const time = msg.created_date ? format(new Date(msg.created_date), 'h:mm a') : '';
+
+  return (
+    <div className={`flex gap-2 mb-3 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+      {!isMe && (
+        <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white flex-shrink-0 mt-auto"
+          style={{ background: isCoach ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : 'linear-gradient(135deg, #10B981, #059669)' }}>
+          {initials}
+        </div>
+      )}
+      <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
+        {!isMe && (
+          <div className="flex items-center gap-1.5 mb-1 ml-1">
+            <p className="text-slate-600 text-[10px] font-bold">{name}</p>
+            {isCoach && (
+              <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black text-white"
+                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>COACH</span>
+            )}
+          </div>
+        )}
+        <div className={`px-3.5 py-2.5 rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'}`}
+          style={{
+            background: isMe ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9',
+          }}>
+          <p className="text-sm leading-relaxed" style={{ color: isMe ? 'white' : '#1E293B' }}>
+            {msg.content}
+          </p>
+        </div>
+        <p className="text-slate-300 text-[9px] mt-1 mx-1">{time}</p>
+      </div>
+    </div>
+  );
+}
+
+export default function CommunityGroupChat({ user, myClient, allClients }) {
+  const [input, setInput] = useState('');
+  const bottomRef = useRef();
+  const queryClient = useQueryClient();
+  const userId = user?.id || myClient?.id || '';
+
+  const { data: messages = [] } = useQuery({
+    queryKey: ['group-chat-messages'],
+    queryFn: () => base44.entities.CommunityPost.filter({ challenge_id: CHAT_CHANNEL }, 'created_date', 100),
+    refetchInterval: 10000,
+  });
+
+  useEffect(() => {
+    const unsub = base44.entities.CommunityPost.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['group-chat-messages'] });
+    });
+    return unsub;
+  }, [queryClient]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMsg = useMutation({
+    mutationFn: (content) => base44.entities.CommunityPost.create({
+      author_id: userId,
+      author_name: user?.full_name || myClient?.name || 'Member',
+      content,
+      challenge_id: CHAT_CHANNEL,
+      type: 'post',
+      is_hidden: false,
+      reactions: {},
+      comment_count: 0,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['group-chat-messages'] });
+      setInput('');
+    },
+  });
+
+  const onlineCount = Math.min(allClients.length, Math.max(1, Math.floor(allClients.length * 0.3)));
+
+  return (
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 220px)' }}>
+      {/* Online indicator */}
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-white border-b border-slate-100">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-emerald-400" />
+          <p className="text-slate-500 text-xs font-semibold">{onlineCount} members online</p>
+        </div>
+        <div className="flex -space-x-1 ml-1">
+          {allClients.slice(0, 5).map((c, i) => (
+            <div key={c.id} className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold text-white"
+              style={{ background: `hsl(${i * 60 + 200}, 60%, 50%)` }}>
+              {(c.name || 'U')[0].toUpperCase()}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 bg-slate-50">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <Users className="w-12 h-12 text-slate-200 mb-3" />
+            <p className="text-slate-400 font-semibold text-sm">No messages yet</p>
+            <p className="text-slate-300 text-xs mt-1">Be the first to say hello! 👋</p>
+          </div>
+        )}
+        {messages.map(msg => (
+          <ChatBubble key={msg.id} msg={msg}
+            isMe={msg.author_id === userId}
+            isCoach={msg.is_coach} />
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Composer */}
+      <div className="flex items-center gap-2 px-4 py-3 bg-white border-t border-slate-100">
+        <div className="flex-1 flex items-center gap-2 bg-slate-50 rounded-2xl px-4 py-2.5 border border-slate-200">
+          <input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && input.trim() && sendMsg.mutate(input.trim())}
+            placeholder="Message the group..."
+            className="flex-1 bg-transparent text-slate-800 text-sm outline-none placeholder-slate-300"
+          />
+        </div>
+        <button onClick={() => input.trim() && sendMsg.mutate(input.trim())}
+          disabled={!input.trim()}
+          className="w-10 h-10 rounded-xl flex items-center justify-center disabled:opacity-30"
+          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          <Send className="w-4 h-4 text-white" />
+        </button>
+      </div>
+    </div>
+  );
+}

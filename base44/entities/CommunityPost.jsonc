@@ -11,31 +11,55 @@
     "author_avatar": {
       "type": "string"
     },
+    "is_anonymous": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_coach": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_announcement": {
+      "type": "boolean",
+      "default": false
+    },
     "content": {
       "type": "string"
     },
-    "media_url": {
-      "type": "string"
-    },
-    "likes": {
+    "media_urls": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "Array of user IDs who liked"
+      }
     },
     "type": {
       "type": "string",
       "enum": [
         "post",
-        "win",
+        "milestone",
         "challenge_update",
-        "milestone"
+        "announcement"
       ],
       "default": "post"
     },
     "challenge_id": {
       "type": "string"
+    },
+    "reactions": {
+      "type": "object",
+      "description": "Map of emoji to array of user IDs: { fire: ['uid1'], muscle: ['uid2'] }"
+    },
+    "comment_count": {
+      "type": "number",
+      "default": 0
+    },
+    "is_hidden": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

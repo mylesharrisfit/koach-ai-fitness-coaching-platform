@@ -11,8 +11,22 @@
     "author_name": {
       "type": "string"
     },
+    "is_coach": {
+      "type": "boolean",
+      "default": false
+    },
     "content": {
       "type": "string"
+    },
+    "likes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parent_comment_id": {
+      "type": "string",
+      "description": "For one-level replies"
     }
   },
   "required": [
