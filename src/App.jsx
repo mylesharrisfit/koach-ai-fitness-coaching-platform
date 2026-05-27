@@ -51,6 +51,7 @@ import ClientWorkoutView from './pages/ClientWorkoutView';
 import ClientInviteJoin from './pages/ClientInviteJoin';
 import EmailCenter from './pages/EmailCenter';
 import AIInsightsPage from './pages/AIInsightsPage';
+import Invoicing from './pages/Invoicing';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -109,6 +110,7 @@ const AuthenticatedApp = () => {
         <Route path="/food-library" element={<FoodLibrary />} />
         <Route path="/food-log" element={<FoodLogPage />} />
         <Route path="/email-center" element={<EmailCenter />} />
+        <Route path="/invoicing" element={<Invoicing />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
