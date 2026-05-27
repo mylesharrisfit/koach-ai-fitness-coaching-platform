@@ -1,0 +1,66 @@
+{
+  "name": "MarketingLink",
+  "type": "object",
+  "properties": {
+    "coach_id": {
+      "type": "string"
+    },
+    "link_name": {
+      "type": "string",
+      "description": "e.g. Instagram Bio, Email Signature"
+    },
+    "destination_type": {
+      "type": "string",
+      "enum": [
+        "package_page",
+        "coach_profile",
+        "specific_package",
+        "booking",
+        "signup"
+      ],
+      "default": "coach_profile"
+    },
+    "destination_url": {
+      "type": "string",
+      "description": "Where the link points to"
+    },
+    "custom_slug": {
+      "type": "string",
+      "description": "koachai.com/coach/myles/insta"
+    },
+    "full_url": {
+      "type": "string",
+      "description": "Complete short URL with UTM parameters"
+    },
+    "utm_source": {
+      "type": "string"
+    },
+    "utm_medium": {
+      "type": "string"
+    },
+    "utm_campaign": {
+      "type": "string"
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0
+    },
+    "conversions": {
+      "type": "number",
+      "default": 0
+    },
+    "conversion_rate": {
+      "type": "number"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "coach_id",
+    "link_name",
+    "destination_url",
+    "full_url"
+  ]
+}
