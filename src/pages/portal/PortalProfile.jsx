@@ -31,23 +31,23 @@ function BillingShortcut({ client, onNavigate }) {
   return (
     <div className="px-5 mt-4">
       <button onClick={onNavigate}
-        className="w-full flex items-center gap-4 p-4 rounded-2xl"
-        style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.1))', border: `1px solid ${unpaidCount > 0 ? 'rgba(239,68,68,0.35)' : 'rgba(37,99,235,0.25)'}` }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative" style={{ background: 'rgba(37,99,235,0.2)' }}>
-          <CreditCard className="w-5 h-5 text-blue-400" />
+        className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white text-left"
+        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: `1.5px solid ${unpaidCount > 0 ? '#FECACA' : '#F1F5F9'}` }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative bg-blue-50">
+          <CreditCard className="w-5 h-5 text-blue-600" />
           {unpaidCount > 0 && (
             <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
               <span className="text-[9px] font-black text-white">{unpaidCount}</span>
             </div>
           )}
         </div>
-        <div className="flex-1 text-left">
-          <p className="text-white font-bold text-sm">Billing & Payments</p>
-          <p className={`text-xs mt-0.5 ${unpaidCount > 0 ? 'text-orange-400 font-semibold' : 'text-white/40'}`}>
+        <div className="flex-1">
+          <p className="text-slate-900 font-bold text-sm">Billing & Payments</p>
+          <p className={`text-xs mt-0.5 ${unpaidCount > 0 ? 'text-red-500 font-semibold' : 'text-slate-400'}`}>
             {unpaidCount > 0 ? `${unpaidCount} invoice${unpaidCount > 1 ? 's' : ''} require payment` : 'Invoices, payment methods, history'}
           </p>
         </div>
-        <ExternalLink className="w-4 h-4 text-white/25" />
+        <ExternalLink className="w-4 h-4 text-slate-300 flex-shrink-0" />
       </button>
     </div>
   );
