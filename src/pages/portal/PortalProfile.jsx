@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, User, CreditCard, ExternalLink } from 'lucide-react';
+import { ChevronRight, ChevronLeft, User, CreditCard, ExternalLink, AlertCircle } from 'lucide-react';
 import ProfileHeader from '@/components/portal/profile/ProfileHeader';
 import ProfileQuickStats from '@/components/portal/profile/ProfileQuickStats';
 import ProfileMyInfo from '@/components/portal/profile/ProfileMyInfo';
@@ -19,6 +19,39 @@ import ProfileConnectedApps from '@/components/portal/profile/ProfileConnectedAp
 import ProfileSecurity from '@/components/portal/profile/ProfileSecurity';
 import ProfileCompletionCard from '@/components/portal/profile/ProfileCompletionCard';
 import SignOutModal from '@/components/portal/profile/SignOutModal';
+
+function BillingShortcut({ client, onNavigate }) {
+  const { data: invoices = [] } = useQuery({
+    queryKey: ['portal-unpaid-invoices', client?.id],
+    queryFn: () => base44.entities.Invoice.filter({ client_id: client.id }, '-issue_date', 50),
+    enabled: !!client?.id,
+  });
+  const unpaidCount = invoices.filter(i => ['sent', 'viewed', 'overdue', 'draft'].includes(i.status)).length;
+
+  return (
+    <div className="px-5 mt-4">
+      <button onClick={onNavigate}
+        className="w-full flex items-center gap-4 p-4 rounded-2xl"
+        style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.1))', border: `1px solid ${unpaidCount > 0 ? 'rgba(239,68,68,0.35)' : 'rgba(37,99,235,0.25)'}` }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 relative" style={{ background: 'rgba(37,99,235,0.2)' }}>
+          <CreditCard className="w-5 h-5 text-blue-400" />
+          {unpaidCount > 0 && (
+            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+              <span className="text-[9px] font-black text-white">{unpaidCount}</span>
+            </div>
+          )}
+        </div>
+        <div className="flex-1 text-left">
+          <p className="text-white font-bold text-sm">Billing & Payments</p>
+          <p className={`text-xs mt-0.5 ${unpaidCount > 0 ? 'text-orange-400 font-semibold' : 'text-white/40'}`}>
+            {unpaidCount > 0 ? `${unpaidCount} invoice${unpaidCount > 1 ? 's' : ''} require payment` : 'Invoices, payment methods, history'}
+          </p>
+        </div>
+        <ExternalLink className="w-4 h-4 text-white/25" />
+      </button>
+    </div>
+  );
+}
 
 export default function PortalProfile({ user }) {
   const navigate = useNavigate();
@@ -107,20 +140,7 @@ export default function PortalProfile({ user }) {
       />
 
       {/* Billing & Payments shortcut */}
-      <div className="px-5 mt-4">
-        <button onClick={() => navigate('/portal/billing')}
-          className="w-full flex items-center gap-4 p-4 rounded-2xl"
-          style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.1))', border: '1px solid rgba(37,99,235,0.25)' }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.2)' }}>
-            <CreditCard className="w-5 h-5 text-blue-400" />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-white font-bold text-sm">Billing & Payments</p>
-            <p className="text-white/40 text-xs mt-0.5">Invoices, payment methods, history</p>
-          </div>
-          <ExternalLink className="w-4 h-4 text-white/25" />
-        </button>
-      </div>
+      <BillingShortcut client={myClient} onNavigate={() => navigate('/portal/billing')} />
 
       {/* Coach card */}
       <ProfileCoachCard client={myClient} onMessage={() => navigate('/portal/messages')} />
