@@ -97,9 +97,9 @@ export default function Packages() {
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <button onClick={() => navigate('/invoicing')}
+              <button onClick={() => navigate('/business?tab=invoicing')}
                 style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                <ArrowLeft size={14} /> Invoicing
+                <ArrowLeft size={14} /> Business
               </button>
               <span style={{ color: '#D1D5DB' }}>›</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

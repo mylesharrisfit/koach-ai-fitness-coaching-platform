@@ -9,9 +9,9 @@ import {
   Dumbbell, Salad, ClipboardList, TrendingUp,
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
-  Lock, DollarSign, UserPlus, Zap, Trophy, ShoppingBag,
-  Globe, Smartphone, Activity, Apple, FileText, Package,
-  Shield, Palette, BookOpen, LayoutTemplate, ChevronDown, ChevronUp, Mail
+  Lock, UserPlus, Trophy, ShoppingBag,
+  Globe, Smartphone, Activity, Apple,
+  Shield, Palette, BookOpen, LayoutTemplate, Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -52,14 +52,11 @@ const NAV_GROUPS = [
   {
     label: 'BUSINESS',
     items: [
-      { icon: FileText, label: 'Invoicing', path: '/invoicing' },
-      { icon: Package, label: 'Packages', path: '/packages' },
-      { icon: DollarSign, label: 'Payments', path: '/revenue' },
+      { icon: BarChart3, label: 'Business', path: '/business' },
       { icon: Mail, label: 'Email Center', path: '/email-center' },
       { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },
       { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
       { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
-      { icon: BarChart3, label: 'Business', path: '/business' },
     ],
   },
   {
