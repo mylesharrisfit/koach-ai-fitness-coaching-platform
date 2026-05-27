@@ -80,7 +80,7 @@ export default function AffiliateApplication() {
   };
 
   // Show status if already applied
-  if (existingApp) {
+  if (existingApp && existingApp.length > 0) {
     const app = existingApp[0];
     const statusConfig = {
       pending: {
