@@ -5,21 +5,26 @@ export function useNotifications() {
   const [notifications, setNotifications] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 50;
 
-  const fetchNotifications = useCallback(async (currentUser) => {
+  const fetchNotifications = useCallback(async (currentUser, reset = false) => {
     if (!currentUser) return;
     const data = await base44.entities.Notification.filter(
-      { recipient_id: currentUser.email },
+      { recipient_id: currentUser.email, is_dismissed: false },
       '-created_date',
-      30
+      PAGE_SIZE
     );
-    setNotifications(data);
+    setNotifications(reset ? data : prev => {
+      const ids = new Set(prev.map(n => n.id));
+      return [...prev, ...data.filter(n => !ids.has(n.id))];
+    });
   }, []);
 
   useEffect(() => {
     base44.auth.me().then(u => {
       setUser(u);
-      fetchNotifications(u).finally(() => setLoading(false));
+      fetchNotifications(u, true).finally(() => setLoading(false));
     }).catch(() => setLoading(false));
   }, [fetchNotifications]);
 
@@ -29,7 +34,7 @@ export function useNotifications() {
     const unsub = base44.entities.Notification.subscribe((event) => {
       if (event.data?.recipient_id !== user.email) return;
       if (event.type === 'create') {
-        setNotifications(prev => [event.data, ...prev].slice(0, 30));
+        setNotifications(prev => [event.data, ...prev]);
       } else if (event.type === 'update') {
         setNotifications(prev => prev.map(n => n.id === event.id ? event.data : n));
       } else if (event.type === 'delete') {
@@ -50,7 +55,17 @@ export function useNotifications() {
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
   }, [notifications]);
 
+  const dismiss = useCallback(async (id) => {
+    await base44.entities.Notification.update(id, { is_dismissed: true, is_read: true });
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  }, []);
+
+  const dismissAll = useCallback(async () => {
+    await Promise.all(notifications.map(n => base44.entities.Notification.update(n.id, { is_dismissed: true, is_read: true })));
+    setNotifications([]);
+  }, [notifications]);
+
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
-  return { notifications, unreadCount, loading, markRead, markAllRead };
+  return { notifications, unreadCount, loading, markRead, markAllRead, dismiss, dismissAll };
 }

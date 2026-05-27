@@ -1,102 +1,136 @@
-import React, { useState } from 'react';
-import { Bell, CheckCheck, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import React, { useState, useEffect, useRef } from 'react';
+import { Bell } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useNotifications } from '@/hooks/useNotifications';
+import NotificationCenter from './NotificationCenter';
 
-const TYPE_ICON = {
-  checkin_received: '📋',
-  feedback_sent: '💬',
-  checkin_reminder: '⏰',
-  general: '🔔',
-};
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return mobile;
+}
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, markRead, markAllRead } = useNotifications();
-  const navigate = useNavigate();
+  const [pulse, setPulse] = useState(false);
+  const { notifications, unreadCount, loading, markRead, markAllRead, dismiss } = useNotifications();
+  const isMobile = useIsMobile();
+  const prevCountRef = useRef(unreadCount);
+  const wrapperRef = useRef(null);
 
-  const handleClick = (n) => {
-    if (!n.is_read) markRead(n.id);
-    if (n.link) {
-      navigate(n.link);
-      setOpen(false);
+  // Pulse when new notification arrives
+  useEffect(() => {
+    if (unreadCount > prevCountRef.current) {
+      setPulse(true);
+      setTimeout(() => setPulse(false), 2000);
     }
-  };
+    prevCountRef.current = unreadCount;
+  }, [unreadCount]);
+
+  // Keyboard shortcut: N
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+        setOpen(o => !o);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
+
+  // Close on outside click (desktop)
+  useEffect(() => {
+    if (!open || isMobile) return;
+    const handler = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open, isMobile]);
+
+  const displayCount = unreadCount > 99 ? '99+' : unreadCount > 0 ? String(unreadCount) : null;
 
   return (
-    <div className="relative">
+    <div className="relative" ref={wrapperRef}>
+      {/* Bell Button */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="relative flex items-center justify-center w-9 h-9 rounded-xl hover:bg-sidebar-accent transition-colors"
+        className="relative flex items-center justify-center w-9 h-9 rounded-xl hover:bg-white/10 transition-colors"
+        title="Notifications (N)"
       >
-        <Bell className="w-4 h-4 text-sidebar-foreground/70" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 bg-destructive text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </span>
+        {/* Pulse ring */}
+        {pulse && (
+          <motion.span
+            initial={{ scale: 1, opacity: 0.6 }}
+            animate={{ scale: 2.2, opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
+            className="absolute inset-0 rounded-xl bg-blue-400"
+          />
+        )}
+        <motion.div
+          animate={pulse ? { rotate: [0, -15, 15, -10, 10, 0] } : {}}
+          transition={{ duration: 0.5 }}
+        >
+          <Bell className="w-4 h-4 text-white/70" />
+        </motion.div>
+
+        {/* Badge */}
+        {displayCount && (
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1 min-w-[17px] h-[17px] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 leading-none"
+            style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)', boxShadow: '0 0 0 2px #0D0D0D' }}
+          >
+            {displayCount}
+          </motion.span>
         )}
       </button>
 
-      {open && (
+      {/* Mobile: full page overlay */}
+      {isMobile && (
+        <AnimatePresence>
+          {open && (
+            <NotificationCenter
+              notifications={notifications}
+              unreadCount={unreadCount}
+              loading={loading}
+              markRead={markRead}
+              markAllRead={markAllRead}
+              dismiss={dismiss}
+              onClose={() => setOpen(false)}
+              isMobile={true}
+            />
+          )}
+        </AnimatePresence>
+      )}
+
+      {/* Desktop: dropdown panel */}
+      {!isMobile && (
         <>
-          {/* Backdrop */}
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-
-          {/* Panel */}
-          <div className="absolute left-0 top-full mt-2 w-80 bg-card border border-border rounded-2xl shadow-card-luxury z-50 overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-              <span className="text-sm font-bold">Notifications</span>
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllRead}
-                  className="flex items-center gap-1 text-[11px] text-primary font-semibold hover:text-primary/80 transition-colors"
-                >
-                  <CheckCheck className="w-3.5 h-3.5" /> Mark all read
-                </button>
-              )}
-            </div>
-
-            {/* List */}
-            <div className="max-h-[360px] overflow-y-auto">
-              {notifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 gap-2 text-muted-foreground">
-                  <Bell className="w-8 h-8 opacity-20" />
-                  <p className="text-sm">No notifications yet</p>
-                </div>
-              ) : (
-                notifications.map(n => (
-                  <button
-                    key={n.id}
-                    onClick={() => handleClick(n)}
-                    className={cn(
-                      'w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-secondary/40 transition-colors border-b border-border/50 last:border-0',
-                      !n.is_read && 'bg-primary/4'
-                    )}
-                  >
-                    <span className="text-lg mt-0.5 flex-shrink-0">{TYPE_ICON[n.type] || '🔔'}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <p className={cn('text-sm leading-tight', !n.is_read ? 'font-semibold text-foreground' : 'font-medium text-muted-foreground')}>
-                          {n.title}
-                        </p>
-                        {n.link && <ExternalLink className="w-3 h-3 text-muted-foreground flex-shrink-0 mt-0.5" />}
-                      </div>
-                      {n.body && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.body}</p>}
-                      <p className="text-[10px] text-muted-foreground/60 mt-1">
-                        {formatDistanceToNow(parseISO(n.created_date), { addSuffix: true })}
-                      </p>
-                    </div>
-                    {!n.is_read && (
-                      <div className="w-2 h-2 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                    )}
-                  </button>
-                ))
-              )}
-            </div>
-          </div>
+          {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
+          <AnimatePresence>
+            {open && (
+              <NotificationCenter
+                notifications={notifications}
+                unreadCount={unreadCount}
+                loading={loading}
+                markRead={markRead}
+                markAllRead={markAllRead}
+                dismiss={dismiss}
+                onClose={() => setOpen(false)}
+                isMobile={false}
+              />
+            )}
+          </AnimatePresence>
         </>
       )}
     </div>

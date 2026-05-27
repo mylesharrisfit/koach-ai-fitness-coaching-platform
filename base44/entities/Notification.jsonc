@@ -4,16 +4,25 @@
   "properties": {
     "recipient_id": {
       "type": "string",
-      "description": "User email or client ID this notification is for"
+      "description": "User email this notification is for"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "client",
+        "message",
+        "payment",
+        "ai",
+        "schedule",
+        "system",
+        "checkin",
+        "atrisk"
+      ],
+      "default": "system"
     },
     "type": {
       "type": "string",
-      "enum": [
-        "checkin_received",
-        "feedback_sent",
-        "checkin_reminder",
-        "general"
-      ],
+      "description": "Specific notification type slug",
       "default": "general"
     },
     "title": {
@@ -22,19 +31,40 @@
     "body": {
       "type": "string"
     },
+    "client_name": {
+      "type": "string"
+    },
+    "action_label": {
+      "type": "string",
+      "description": "CTA button label e.g. Review, Reply, View"
+    },
+    "link": {
+      "type": "string",
+      "description": "Deep link path e.g. /checkin-review"
+    },
     "is_read": {
       "type": "boolean",
       "default": false
     },
-    "link": {
-      "type": "string",
-      "description": "Optional deep link path e.g. /checkin-review"
+    "is_dismissed": {
+      "type": "boolean",
+      "default": false
     },
     "related_client_id": {
       "type": "string"
     },
     "related_checkin_id": {
       "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "default": "normal"
     }
   },
   "required": [
