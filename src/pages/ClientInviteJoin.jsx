@@ -195,7 +195,7 @@ function BackBtn({ onClick }) {
 ───────────────────────────────────────── */
 function Step0Welcome({ onNext, onSkip }) {
   return (
-    <div className="fixed inset-0 flex flex-col bg-[#0A0A14] overflow-hidden">
+    <div className="w-full h-full flex flex-col bg-[#0A0A14] overflow-hidden relative">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] pointer-events-none opacity-[0.08]"
         style={{ background: 'radial-gradient(circle, #2563EB 0%, transparent 70%)', filter: 'blur(80px)' }} />
       <div className="absolute bottom-0 right-0 w-[400px] h-[300px] pointer-events-none opacity-[0.04]"
