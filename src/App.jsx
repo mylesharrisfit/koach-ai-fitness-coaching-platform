@@ -22,7 +22,7 @@ import Assistant from './pages/Assistant';
 import Adherence from './pages/Adherence.jsx';
 import CheckInReview from './pages/CheckInReview';
 import Sales from './pages/Sales';
-import ClientDashboard from './pages/ClientDashboard';
+
 import Community from './pages/Community';
 import Subscription from './pages/Subscription';
 import ExerciseLibrary from './pages/ExerciseLibrary';
@@ -105,7 +105,7 @@ const AuthenticatedApp = () => {
         <Route path="/adherence" element={<PageGuard feature="adherence"><Adherence /></PageGuard>} />
         <Route path="/checkin-review" element={<PageGuard feature="checkin_review"><CheckInReview /></PageGuard>} />
         <Route path="/sales" element={<PageGuard feature="sales"><Sales /></PageGuard>} />
-        <Route path="/my-day" element={<PageGuard feature="client_dashboard"><ClientDashboard /></PageGuard>} />
+
         <Route path="/community" element={<PageGuard feature="community"><Community /></PageGuard>} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/exercises" element={<ExerciseLibrary />} />

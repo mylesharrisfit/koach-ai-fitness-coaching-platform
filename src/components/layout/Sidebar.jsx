@@ -60,12 +60,11 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'TOOLS',
-    items: [
-      { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
-      { icon: Palette, label: 'White Label', path: '/white-label' },
-      { icon: Smartphone, label: 'Client View', path: '/my-day', feature: 'client_dashboard' },
-    ],
+   label: 'TOOLS',
+   items: [
+     { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
+     { icon: Palette, label: 'White Label', path: '/white-label' },
+   ],
   },
 ];
 
