@@ -59,7 +59,11 @@ export default function Store() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.PlanListing.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['listings'] }); setShowForm(false); },
+    onSuccess: (created) => {
+      queryClient.invalidateQueries({ queryKey: ['listings'] });
+      setShowForm(false);
+      return created;
+    },
   });
 
   const updateMutation = useMutation({
@@ -166,7 +170,7 @@ export default function Store() {
         open={showForm}
         onClose={() => { setShowForm(false); setEditing(null); }}
         editing={editing}
-        onCreate={(data) => createMutation.mutate(data)}
+        onCreate={(data) => createMutation.mutateAsync(data)}
         onUpdate={(id, data) => updateMutation.mutate({ id, data })}
       />
 

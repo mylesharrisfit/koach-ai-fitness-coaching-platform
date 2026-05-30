@@ -6,26 +6,33 @@
       "type": "string"
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "description": "Short description (shown on card)"
     },
     "long_description": {
       "type": "string"
     },
-    "price": {
-      "type": "number",
-      "description": "Price in dollars"
-    },
-    "original_price": {
-      "type": "number",
-      "description": "Original price for showing discount"
+    "product_type": {
+      "type": "string",
+      "enum": [
+        "workout_program",
+        "nutrition_plan",
+        "coaching_package",
+        "guide_ebook",
+        "video_course",
+        "bundle",
+        "custom"
+      ],
+      "default": "workout_program"
     },
     "category": {
       "type": "string",
       "enum": [
         "workout",
         "nutrition",
+        "coaching",
         "bundle",
-        "coaching"
+        "other"
       ],
       "default": "workout"
     },
@@ -43,13 +50,99 @@
       "type": "number"
     },
     "image_url": {
-      "type": "string"
+      "type": "string",
+      "description": "Primary product image URL"
+    },
+    "additional_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Up to 3 additional image URLs"
+    },
+    "preview_file_url": {
+      "type": "string",
+      "description": "Free preview PDF/doc URL"
     },
     "features": {
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Feature bullets (up to 8)"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price in dollars"
+    },
+    "original_price": {
+      "type": "number",
+      "description": "Original price for showing discount"
+    },
+    "is_free": {
+      "type": "boolean",
+      "default": false
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "subscription"
+      ],
+      "default": "one_time"
+    },
+    "billing_frequency": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "quarterly",
+        "annual"
+      ],
+      "default": "monthly"
+    },
+    "delivery_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "downloadable_file, app_access, coaching_messages, scheduled_calls, custom"
+    },
+    "download_file_url": {
+      "type": "string",
+      "description": "Secure download file URL"
+    },
+    "access_duration": {
+      "type": "string",
+      "enum": [
+        "lifetime",
+        "30_days",
+        "60_days",
+        "90_days",
+        "6_months",
+        "1_year"
+      ],
+      "default": "lifetime"
+    },
+    "scheduled_calls_count": {
+      "type": "number",
+      "default": 0
+    },
+    "delivery_instructions": {
+      "type": "string",
+      "description": "Shown to buyer after purchase"
+    },
+    "stripe_product_id": {
+      "type": "string"
+    },
+    "stripe_price_id": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug for public page"
+    },
+    "coach_id": {
+      "type": "string"
     },
     "program_id": {
       "type": "string",
@@ -67,8 +160,16 @@
       "type": "number",
       "default": 0
     },
+    "views_count": {
+      "type": "number",
+      "default": 0
+    },
     "rating": {
       "type": "number"
+    },
+    "rating_count": {
+      "type": "number",
+      "default": 0
     },
     "testimonials": {
       "type": "array",
