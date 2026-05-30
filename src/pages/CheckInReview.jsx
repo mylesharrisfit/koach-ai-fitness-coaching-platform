@@ -144,7 +144,7 @@ export default function CheckInReview() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-5 lg:p-8 max-w-7xl mx-auto overflow-x-hidden">
 
       {/* ── Header ── */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
@@ -177,7 +177,7 @@ export default function CheckInReview() {
       <CheckInStatsRow checkIns={checkIns} clients={clients} latestPerClient={latestPerClient} />
 
       {/* ── Main Tabs ── */}
-      <div className="flex gap-1 mb-6 bg-[#F3F4F6] rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-[#F3F4F6] rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
         {MAIN_TABS.map(tab => (
           <button
             key={tab.key}
@@ -261,16 +261,18 @@ export default function CheckInReview() {
                       daysAgo === null || daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100')}>
                       {daysAgo !== null ? `${daysAgo}d` : 'Never'}
                     </span>
-                    <button
-                      onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors">
-                      <Send className="w-3 h-3" /> Remind
-                    </button>
-                    <button
-                      onClick={() => navigate(`/messages?clientId=${client.id}`)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F3F4F6] border border-[#E5E7EB] text-[#374151] hover:bg-[#E5E7EB] transition-colors">
-                      <MessageSquare className="w-3 h-3" /> Chat
-                    </button>
+                    <div className="flex gap-1.5 flex-shrink-0">
+                      <button
+                        onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors min-h-[36px]">
+                        <Send className="w-3 h-3" /> <span className="hidden sm:inline">Remind</span>
+                      </button>
+                      <button
+                        onClick={() => navigate(`/messages?clientId=${client.id}`)}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F3F4F6] border border-[#E5E7EB] text-[#374151] hover:bg-[#E5E7EB] transition-colors min-h-[36px]">
+                        <MessageSquare className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

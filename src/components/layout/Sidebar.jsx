@@ -94,7 +94,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
     return (
       <button
         onClick={() => onUpgrade?.(item.feature)}
-        className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors"
+        className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors min-h-[40px]"
         style={{ color: 'rgba(255,255,255,0.2)' }}
         title={collapsed ? item.label : undefined}
       >
@@ -114,7 +114,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
       to={item.path}
       title={collapsed ? item.label : undefined}
       className={cn(
-        'relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150',
+        'relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[40px]',
         isActive
           ? 'text-white'
           : 'hover:text-white'
@@ -141,8 +141,54 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
   );
 }
 
-export default function Sidebar({ user, onUpgrade }) {
+export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClick }) {
   const [collapsed, setCollapsed] = useState(false);
+
+  // Mobile mode: render just the nav content (no fixed positioning, shown inside overlay)
+  if (mobileMode) {
+    return (
+      <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4 h-full">
+        {NAV_GROUPS.map((group, gi) => (
+          <div key={gi}>
+            {group.label && (
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                {group.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {group.items.map(item => (
+                <div key={item.path} onClick={onNavClick}>
+                  <NavItem item={item} collapsed={false} onUpgrade={onUpgrade} user={user} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+        <div className="pt-2 border-t border-white/5 space-y-0.5">
+          {BOTTOM_ITEMS.map(item => (
+            <div key={item.path} onClick={onNavClick}>
+              <Link
+                to={item.path}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all min-h-[44px]"
+                style={{ color: 'rgba(255,255,255,0.35)' }}
+              >
+                <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
+                <span>{item.label}</span>
+              </Link>
+            </div>
+          ))}
+          <button
+            onClick={() => base44.auth.logout()}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all w-full min-h-[44px]"
+            style={{ color: 'rgba(255,255,255,0.25)' }}
+          >
+            <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <aside

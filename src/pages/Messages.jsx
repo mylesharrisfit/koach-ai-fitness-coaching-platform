@@ -148,7 +148,7 @@ export default function Messages() {
   const clientCheckIns = checkIns.filter(ci => ci.client_id === selectedClientId);
 
   return (
-    <div className="h-[calc(100dvh-56px)] md:h-screen flex overflow-hidden bg-[#F9FAFB]">
+    <div className="h-[calc(100dvh-56px-64px)] md:h-[calc(100dvh-0px)] flex overflow-hidden bg-[#F9FAFB]">
       {/* ── Left: Conversation list (280px) ── */}
       <div className={cn(
         'flex-shrink-0 flex-col border-r border-[#E5E7EB]',

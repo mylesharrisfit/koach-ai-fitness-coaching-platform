@@ -5,6 +5,9 @@ import BottomNav from './BottomNav';
 import { base44 } from '@/api/base44Client';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { isClientRole } from '@/lib/useRoleGuard';
+import { Menu, X } from 'lucide-react';
+import KoachLogo from '@/components/brand/KoachLogo';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export const SubscriptionContext = createContext({
   user: null,
@@ -19,6 +22,7 @@ export function useUpgradeModal() {
 export default function AppLayout() {
   const [user, setUser] = useState(null);
   const [upgradeFeature, setUpgradeFeature] = useState(null);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -32,12 +36,69 @@ export default function AppLayout() {
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
       <div className="min-h-screen bg-background">
+        {/* Desktop sidebar */}
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
+
+        {/* Mobile top bar */}
+        <div className="fixed top-0 left-0 right-0 z-30 flex md:hidden items-center justify-between px-4 h-14 bg-[#0D0D0D] border-b border-white/5">
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            aria-label="Open menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <KoachLogo size={28} rounded="rounded-xl" glow={false} bg={true} />
+          <div className="flex items-center gap-1">
+            <NotificationBell />
+          </div>
+        </div>
+
+        {/* Mobile sidebar overlay */}
+        {mobileSidebarOpen && (
+          <div className="fixed inset-0 z-50 flex md:hidden">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setMobileSidebarOpen(false)}
+            />
+            {/* Sidebar panel */}
+            <div className="relative w-72 max-w-[85vw] h-full flex flex-col" style={{ background: '#0D0D0D' }}>
+              <div className="flex items-center justify-between px-4 h-14 border-b border-white/5 flex-shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <KoachLogo size={28} rounded="rounded-xl" glow={true} bg={true} />
+                  <div>
+                    <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
+                    <span className="block text-[9px] tracking-[0.12em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>Coaching OS</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setMobileSidebarOpen(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              {/* Reuse the Sidebar content by rendering it inside the overlay */}
+              <div className="flex-1 overflow-hidden">
+                <Sidebar
+                  user={user}
+                  onUpgrade={setUpgradeFeature}
+                  mobileMode={true}
+                  onNavClick={() => setMobileSidebarOpen(false)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Main content */}
         <main
-          className="md:ml-[210px] min-h-screen pb-24 md:pb-0 transition-all duration-200 bg-background overflow-x-hidden"
+          className="md:ml-[210px] min-h-screen pb-24 md:pb-0 pt-14 md:pt-0 transition-all duration-200 bg-background overflow-x-hidden"
         >
           <Outlet />
         </main>
+
         <BottomNav />
       </div>
       <UpgradeModal

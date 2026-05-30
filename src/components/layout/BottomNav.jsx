@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, ClipboardList, MessageSquare, MoreHorizontal
+  LayoutDashboard, Users, MessageSquare, Calendar, BarChart3, MoreHorizontal
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import MoreSheet from './MoreSheet';
@@ -17,29 +17,21 @@ function useUnreadMessages() {
   return messages.filter(m => m.sender === 'client' && !m.is_read).length;
 }
 
-function usePendingCheckIns() {
-  const { data: checkIns = [] } = useQuery({
-    queryKey: ['checkins-review'],
-    queryFn: () => base44.entities.CheckIn.list('-date', 200),
-    staleTime: 30000,
-  });
-  return checkIns.filter(ci => !ci.coach_responded && !ci.review_status?.includes('reviewed')).length;
-}
-
+// The 5 most used pages as specified
 const PRIMARY_NAV = [
   { icon: LayoutDashboard, label: 'Home',      path: '/' },
   { icon: Users,           label: 'Clients',   path: '/clients' },
-  { icon: ClipboardList,   label: 'Check-ins', path: '/checkin-review' },
   { icon: MessageSquare,   label: 'Messages',  path: '/messages' },
+  { icon: Calendar,        label: 'Calendar',  path: '/schedule' },
+  { icon: BarChart3,       label: 'Business',  path: '/business' },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
   const unreadMessages = useUnreadMessages();
-  const pendingCheckIns = usePendingCheckIns();
 
-  const PRIMARY_PATHS = ['/', '/clients', '/checkin-review', '/messages'];
+  const PRIMARY_PATHS = PRIMARY_NAV.map(n => n.path);
   const isMoreActive = !PRIMARY_PATHS.some(p =>
     p === '/' ? location.pathname === '/' : location.pathname.startsWith(p)
   );
@@ -50,35 +42,31 @@ export default function BottomNav() {
 
       <nav
         className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden bg-white border-t border-[#E5E7EB]"
-        style={{ height: '60px', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        style={{ height: '64px', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {PRIMARY_NAV.map(item => {
           const isActive = location.pathname === item.path ||
             (item.path !== '/' && location.pathname.startsWith(item.path));
-          const badge = item.path === '/messages' ? unreadMessages
-            : item.path === '/checkin-review' ? pendingCheckIns : 0;
+          const badge = item.path === '/messages' ? unreadMessages : 0;
 
           return (
             <Link
               key={item.path}
               to={item.path}
-              className="flex flex-col items-center justify-center flex-1 gap-0.5 relative transition-colors"
+              className="flex flex-col items-center justify-center flex-1 gap-0.5 relative min-h-[44px]"
             >
               {isActive && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-[#2563EB]" />
               )}
               <div className="relative">
-                <item.icon className={cn('w-5 h-5', isActive ? 'text-[#111827]' : 'text-[#9CA3AF]')} />
+                <item.icon className={cn('w-5 h-5', isActive ? 'text-[#2563EB]' : 'text-[#9CA3AF]')} />
                 {badge > 0 && (
-                  <span className={cn(
-                    'absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white',
-                    item.path === '/messages' ? 'bg-red-500' : 'bg-amber-500'
-                  )}>
+                  <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white bg-red-500">
                     {badge > 9 ? '9+' : badge}
                   </span>
                 )}
               </div>
-              <span className={cn('text-[10px]', isActive ? 'text-[#111827] font-semibold' : 'text-[#9CA3AF] font-medium')}>
+              <span className={cn('text-[9px] font-medium leading-tight', isActive ? 'text-[#2563EB] font-bold' : 'text-[#9CA3AF]')}>
                 {item.label}
               </span>
             </Link>
@@ -88,13 +76,13 @@ export default function BottomNav() {
         {/* More */}
         <button
           onClick={() => setMoreOpen(true)}
-          className="flex flex-col items-center justify-center flex-1 gap-0.5 relative transition-colors"
+          className="flex flex-col items-center justify-center flex-1 gap-0.5 relative min-h-[44px]"
         >
           {isMoreActive && (
             <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-[#2563EB]" />
           )}
-          <MoreHorizontal className={cn('w-5 h-5', isMoreActive ? 'text-[#111827]' : 'text-[#9CA3AF]')} />
-          <span className={cn('text-[10px]', isMoreActive ? 'text-[#111827] font-semibold' : 'text-[#9CA3AF] font-medium')}>More</span>
+          <MoreHorizontal className={cn('w-5 h-5', isMoreActive ? 'text-[#2563EB]' : 'text-[#9CA3AF]')} />
+          <span className={cn('text-[9px] font-medium', isMoreActive ? 'text-[#2563EB] font-bold' : 'text-[#9CA3AF]')}>More</span>
         </button>
       </nav>
     </>

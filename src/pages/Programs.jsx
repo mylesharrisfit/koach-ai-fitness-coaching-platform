@@ -329,14 +329,14 @@ export default function Programs() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between bg-[#111827] rounded-xl p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-5">
         <div>
           <h1 className="text-xl font-semibold text-white">Programs</h1>
           <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{programs.length} program{programs.length !== 1 ? 's' : ''} · Training programs and workout plans</p>
         </div>
         <button
           onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openBuilder(); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors min-h-[44px] self-start sm:self-auto"
           style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
         >
           {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}

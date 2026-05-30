@@ -146,7 +146,7 @@ export default function Progress() {
   }, [activeClients, selectedClientId, cisByClient, sessionsByClient]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-3 sm:p-5 lg:p-8 max-w-7xl mx-auto overflow-x-hidden">
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
         style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
@@ -253,76 +253,60 @@ function ClientProgressRow({ row, onViewProgress }) {
   const goalLabel = { weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength', endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness' }[client.goal] || 'General';
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        {/* Avatar + info */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-sm"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
-            {client.avatar_url
-              ? <img src={client.avatar_url} alt={client.name} className="w-11 h-11 rounded-full object-cover" />
-              : client.name?.[0]?.toUpperCase()}
-          </div>
-          <div className="min-w-0">
-            <p className="font-semibold text-[#111827] truncate">{client.name}</p>
-            <p className="text-xs text-[#6B7280]">{goalLabel}</p>
-          </div>
+    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+      {/* Row 1: Avatar + Score + CTA */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-sm"
+          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          {client.avatar_url
+            ? <img src={client.avatar_url} alt={client.name} className="w-10 h-10 rounded-full object-cover" />
+            : client.name?.[0]?.toUpperCase()}
         </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-[#111827] truncate text-sm">{client.name}</p>
+          <p className="text-xs text-[#6B7280]">{goalLabel}</p>
+        </div>
+        {score !== null && (
+          <div className="text-center flex-shrink-0">
+            <div className={cn('text-base font-bold', score >= 70 ? 'text-emerald-600' : score >= 50 ? 'text-orange-500' : 'text-red-400')}>{score}</div>
+            <div className="text-[9px] text-[#9CA3AF] uppercase tracking-wide">Score</div>
+          </div>
+        )}
+        <button onClick={onViewProgress}
+          className="px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors whitespace-nowrap min-h-[36px] flex-shrink-0">
+          View →
+        </button>
+      </div>
 
-        {/* Weight progression */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <WeightPill label="Start" value={startWeight} />
-          <div className="flex items-center gap-1">
-            <div className="h-px w-5 bg-[#E5E7EB]" />
-            <div className={cn('flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold', trendBg, trendColor)}>
-              <TrendIcon className="w-3 h-3" />
-            </div>
-            <div className="h-px w-5 bg-[#E5E7EB]" />
-          </div>
-          <WeightPill label="Now" value={currentWeight} highlight />
-          <div className="flex items-center gap-1">
-            <div className="h-px w-5 bg-[#E5E7EB]" />
-            <span className="text-[#D1D5DB] text-xs">→</span>
-            <div className="h-px w-5 bg-[#E5E7EB]" />
-          </div>
-          <WeightPill label="Goal" value={goalWeight} goal />
+      {/* Row 2: Weight pills */}
+      <div className="flex items-center gap-2 mb-3 overflow-x-auto scrollbar-hide">
+        <WeightPill label="Start" value={startWeight} />
+        <div className={cn('flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0', trendBg, trendColor)}>
+          <TrendIcon className="w-3 h-3" />
         </div>
+        <WeightPill label="Now" value={currentWeight} highlight />
+        <span className="text-[#D1D5DB] text-xs flex-shrink-0">→</span>
+        <WeightPill label="Goal" value={goalWeight} goal />
+      </div>
 
-        {/* Progress bar */}
-        <div className="flex-1 min-w-[120px] max-w-[180px]">
-          <div className="flex justify-between text-[10px] text-[#9CA3AF] mb-1">
-            <span>Goal Progress</span>
-            <span>{goalPct !== null ? `${goalPct}%` : 'N/A'}</span>
-          </div>
-          <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all"
-              style={{ width: `${goalPct ?? 0}%` }} />
-          </div>
+      {/* Row 3: Progress bar */}
+      <div className="mb-2">
+        <div className="flex justify-between text-[10px] text-[#9CA3AF] mb-1">
+          <span>Goal Progress</span>
+          <span>{goalPct !== null ? `${goalPct}%` : 'N/A'}</span>
         </div>
+        <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all"
+            style={{ width: `${goalPct ?? 0}%` }} />
+        </div>
+      </div>
 
-        {/* Quick stat chips */}
-        <div className="flex gap-2 flex-wrap">
-          {weeksActive && <Chip label={`${weeksActive}w active`} />}
-          <Chip label={`${cis.length} check-ins`} />
-          <Chip label={`${sessions.length} workouts`} />
-          {lastDate && <Chip label={`Updated ${format(parseISO(lastDate), 'MMM d')}`} />}
-        </div>
-
-        {/* Score + CTA */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          {score !== null && (
-            <div className="text-center">
-              <div className={cn('text-lg font-bold', score >= 70 ? 'text-emerald-600' : score >= 50 ? 'text-orange-500' : 'text-red-400')}>
-                {score}
-              </div>
-              <div className="text-[9px] text-[#9CA3AF] uppercase tracking-wide">Score</div>
-            </div>
-          )}
-          <button onClick={onViewProgress}
-            className="px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors whitespace-nowrap">
-            View Progress
-          </button>
-        </div>
+      {/* Row 4: Chips */}
+      <div className="flex gap-1.5 flex-wrap">
+        {weeksActive && <Chip label={`${weeksActive}w active`} />}
+        <Chip label={`${cis.length} check-ins`} />
+        <Chip label={`${sessions.length} workouts`} />
+        {lastDate && <Chip label={`Updated ${format(parseISO(lastDate), 'MMM d')}`} />}
       </div>
     </div>
   );
