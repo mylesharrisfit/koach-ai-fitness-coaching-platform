@@ -11,12 +11,21 @@
     "phone": {
       "type": "string"
     },
+    "instagram": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
     "source": {
       "type": "string",
       "enum": [
         "instagram",
         "referral",
+        "store_purchase",
         "website",
+        "cold_outreach",
+        "dm",
         "tiktok",
         "youtube",
         "other"
@@ -26,12 +35,18 @@
     "stage": {
       "type": "string",
       "enum": [
+        "new_lead",
+        "dmd",
+        "call_booked",
+        "proposal_sent",
+        "closed_won",
+        "lost",
         "lead",
         "booked",
         "closed",
         "active_client"
       ],
-      "default": "lead"
+      "default": "new_lead"
     },
     "offer_tier": {
       "type": "string",
@@ -56,6 +71,9 @@
       "type": "number",
       "description": "Potential or closed deal value in USD"
     },
+    "goal": {
+      "type": "string"
+    },
     "notes": {
       "type": "string"
     },
@@ -63,8 +81,52 @@
       "type": "string"
     },
     "converted_client_id": {
+      "type": "string"
+    },
+    "lead_score": {
+      "type": "number",
+      "default": 50
+    },
+    "last_contact_date": {
       "type": "string",
-      "description": "Client ID if converted"
+      "format": "date-time"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "follow_up_note": {
+      "type": "string"
+    },
+    "stage_changed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "activity_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pinned_note": {
+      "type": "string"
     }
   },
   "required": [

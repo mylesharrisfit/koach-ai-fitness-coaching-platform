@@ -1,23 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, TrendingUp, DollarSign, Target, Users } from 'lucide-react';
+import { Plus, TrendingUp, DollarSign, Target, Users, LayoutGrid, List, BarChart2, Search, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import FunnelView from '../components/sales/FunnelView';
-import LeadCard from '../components/sales/LeadCard';
-import LeadForm from '../components/sales/LeadForm';
 import PaymentTracker from '../components/sales/PaymentTracker';
 import OfferTiers from '../components/sales/OfferTiers';
 import UpsellPrompts from '../components/sales/UpsellPrompts';
+import KanbanBoard from '../components/sales/KanbanBoard';
+import LeadListView from '../components/sales/LeadListView';
+import LeadDetailDrawer from '../components/sales/LeadDetailDrawer';
+import AddLeadModal from '../components/sales/AddLeadModal';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+
+const PIPELINE_VIEWS = [
+  { key: 'funnel',  label: 'Funnel',  icon: BarChart2 },
+  { key: 'kanban',  label: 'Kanban',  icon: LayoutGrid },
+  { key: 'list',    label: 'List',    icon: List },
+];
 
 export default function Sales() {
-  const [showForm, setShowForm] = useState(false);
+  const [activeTab, setActiveTab] = useState('pipeline');
+  const [pipelineView, setPipelineView] = useState(() => {
+    const saved = localStorage.getItem('sales_pipeline_view');
+    // Mobile defaults to list
+    const isMobile = window.innerWidth < 768;
+    return saved || (isMobile ? 'list' : 'kanban');
+  });
+  const [showAddLead, setShowAddLead] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
+  const [viewingLead, setViewingLead] = useState(null);
+  const [initialStage, setInitialStage] = useState('new_lead');
   const [selectedStage, setSelectedStage] = useState(null);
   const [search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState('pipeline'); // 'pipeline' | 'payments'
   const queryClient = useQueryClient();
+
+  // Remember view preference
+  useEffect(() => {
+    localStorage.setItem('sales_pipeline_view', pipelineView);
+  }, [pipelineView]);
+
+  // Real-time updates
+  useEffect(() => {
+    const unsub = base44.entities.Lead.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+    });
+    return unsub;
+  }, [queryClient]);
 
   const { data: leads = [] } = useQuery({
     queryKey: ['leads'],
@@ -41,7 +71,13 @@ export default function Sales() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['leads'] }),
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      // Keep viewing drawer in sync
+      if (viewingLead && updated?.id === viewingLead.id) {
+        setViewingLead(updated);
+      }
+    },
   });
 
   const deleteMutation = useMutation({
@@ -55,51 +91,55 @@ export default function Sales() {
     setEditingLead(null);
   };
 
-  const handleAdvance = (lead, nextStage) => {
-    updateMutation.mutate({ id: lead.id, data: { ...lead, stage: nextStage } });
-    const labels = { booked: 'Booked!', closed: 'Closed!', active_client: 'Converted to Active Client!' };
-    toast.success(`${lead.name} → ${labels[nextStage]}`);
+  const handleUpdate = (id, data) => {
+    updateMutation.mutate({ id, data });
   };
 
-  const openEdit = (lead) => { setEditingLead(lead); setShowForm(true); };
+  const openAddLead = (stage = 'new_lead') => {
+    setEditingLead(null);
+    setInitialStage(stage);
+    setShowAddLead(true);
+  };
 
+  const openView = (lead) => setViewingLead(lead);
+
+  // Stats
+  const activeLeads = leads.filter(l => !['closed_won', 'lost', 'active_client'].includes(l.stage));
+  const pipelineValue = activeLeads.reduce((s, l) => s + (l.deal_value || 0), 0);
+  const closedValue = leads.filter(l => l.stage === 'closed_won' || l.stage === 'active_client').reduce((s, l) => s + (l.deal_value || 0), 0);
+  const conversionRate = leads.length ? Math.round((leads.filter(l => l.stage === 'closed_won' || l.stage === 'active_client').length / leads.length) * 100) : 0;
+
+  // Filtered leads for funnel/list
   const filteredLeads = leads.filter(l => {
     const matchStage = !selectedStage || l.stage === selectedStage;
     const matchSearch = !search || l.name.toLowerCase().includes(search.toLowerCase()) || l.email?.toLowerCase().includes(search.toLowerCase());
     return matchStage && matchSearch;
   });
 
-  // Stats
-  const pipelineValue = leads.filter(l => l.stage !== 'active_client').reduce((s, l) => s + (l.deal_value || 0), 0);
-  const closedValue = leads.filter(l => l.stage === 'active_client').reduce((s, l) => s + (l.deal_value || 0), 0);
-  const conversionRate = leads.length ? Math.round((leads.filter(l => l.stage === 'active_client').length / leads.length) * 100) : 0;
-
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      {/* ── Header ── */}
-      <div className="rounded-xl p-5 text-white mb-6 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+    <div className="p-4 lg:p-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="rounded-2xl p-5 text-white mb-5 flex items-center justify-between flex-wrap gap-3" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
         <div>
-          <h1 className="text-xl font-semibold text-white">Sales & Revenue</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Track leads, calls, payments and upsell opportunities</p>
+          <h1 className="text-xl font-bold text-white">Sales & Pipeline</h1>
+          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Track leads, manage your pipeline and close more clients</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="flex rounded-lg p-1" style={{ background: 'rgba(255,255,255,0.1)' }}>
             {['pipeline', 'payments'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all"
-                style={activeTab === tab
-                  ? { background: '#fff', color: '#111827' }
-                  : { color: 'rgba(255,255,255,0.6)' }}
+                className="px-4 py-1.5 rounded-md text-sm font-semibold capitalize transition-all"
+                style={activeTab === tab ? { background: '#fff', color: '#111827' } : { color: 'rgba(255,255,255,0.6)' }}
               >
                 {tab}
               </button>
             ))}
           </div>
           <button
-            onClick={() => { setEditingLead(null); setShowForm(true); }}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold"
+            onClick={() => openAddLead()}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold"
             style={{ background: '#fff', color: '#111827' }}
           >
             <Plus className="w-4 h-4" /> Add Lead
@@ -107,21 +147,21 @@ export default function Sales() {
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
         {[
           { label: 'Total Leads', value: leads.length, icon: Users },
           { label: 'Pipeline Value', value: `$${pipelineValue.toLocaleString()}`, icon: TrendingUp },
           { label: 'Closed Revenue', value: `$${closedValue.toLocaleString()}`, icon: DollarSign },
           { label: 'Close Rate', value: `${conversionRate}%`, icon: Target },
         ].map(s => (
-          <div key={s.label} className="bg-[#111827] rounded-xl p-5 flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
-              <s.icon className="w-5 h-5 text-white/30" />
+          <div key={s.label} className="bg-[#111827] rounded-xl p-4 flex items-center gap-4">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <s.icon className="w-4 h-4 text-white/40" />
             </div>
             <div>
-              <p className="text-2xl font-bold leading-none text-white">{s.value}</p>
-              <p className="text-sm mt-1 text-white/50">{s.label}</p>
+              <p className="text-xl font-black leading-none text-white">{s.value}</p>
+              <p className="text-xs mt-1 text-white/50">{s.label}</p>
             </div>
           </div>
         ))}
@@ -129,49 +169,104 @@ export default function Sales() {
 
       {activeTab === 'pipeline' ? (
         <>
-          <FunnelView leads={leads} onStageClick={setSelectedStage} selectedStage={selectedStage} />
-
-          {/* Upsell Prompts */}
-          <div className="mb-6">
-            <UpsellPrompts clients={clients} programs={programs} />
-          </div>
-
-          {/* Lead Cards */}
-          <div className="flex items-center gap-4 mb-4">
-            <Input
-              placeholder="Search leads..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="max-w-xs"
-            />
-            {selectedStage && (
-              <button onClick={() => setSelectedStage(null)} className="text-xs text-muted-foreground hover:text-foreground underline">
-                Clear filter
-              </button>
-            )}
-            <span className="text-xs text-muted-foreground ml-auto">{filteredLeads.length} leads shown</span>
-          </div>
-
-          {filteredLeads.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Target className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p>No leads yet. Add your first lead to get started.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {filteredLeads.map(lead => (
-                <LeadCard
-                  key={lead.id}
-                  lead={lead}
-                  onEdit={openEdit}
-                  onDelete={(id) => deleteMutation.mutate(id)}
-                  onAdvance={handleAdvance}
-                />
+          {/* View toggle */}
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-1 p-1 bg-white border border-[#E5E7EB] rounded-xl">
+              {PIPELINE_VIEWS.map(v => (
+                <button
+                  key={v.key}
+                  onClick={() => setPipelineView(v.key)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
+                    pipelineView === v.key
+                      ? 'bg-[#111827] text-white shadow-sm'
+                      : 'text-[#374151] hover:bg-[#F3F4F6]'
+                  )}
+                >
+                  <v.icon className="w-3.5 h-3.5" />
+                  <span className={v.key === 'kanban' ? 'hidden sm:inline' : ''}>{v.label}</span>
+                </button>
               ))}
             </div>
+
+            {/* Search (list/funnel) */}
+            {pipelineView !== 'kanban' && (
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+                <Input
+                  placeholder="Search leads..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="pl-8 h-9 text-sm w-52"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Pipeline views */}
+          {pipelineView === 'funnel' && (
+            <>
+              <FunnelView leads={leads} onStageClick={setSelectedStage} selectedStage={selectedStage} />
+              {selectedStage && (
+                <button onClick={() => setSelectedStage(null)} className="text-xs text-[#6B7280] hover:text-[#374151] underline mb-3 block">
+                  Clear stage filter
+                </button>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
+                {filteredLeads.length === 0 ? (
+                  <div className="col-span-full text-center py-12 text-[#9CA3AF]">
+                    <Target className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                    <p className="text-sm">No leads. Add your first lead to get started.</p>
+                  </div>
+                ) : filteredLeads.map(lead => (
+                  <div
+                    key={lead.id}
+                    onClick={() => openView(lead)}
+                    className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md hover:border-blue-200 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                        style={{ background: ['#6366F1', '#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EC4899'][lead.name.charCodeAt(0) % 6] }}
+                      >
+                        {lead.name.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="font-bold text-[#111827] text-sm">{lead.name}</p>
+                        {lead.email && <p className="text-xs text-[#9CA3AF]">{lead.email}</p>}
+                      </div>
+                    </div>
+                    {lead.deal_value > 0 && <p className="text-sm font-bold text-emerald-600">${lead.deal_value.toLocaleString()}/mo</p>}
+                    {lead.notes && <p className="text-xs text-[#6B7280] mt-1 line-clamp-2">{lead.notes}</p>}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
 
-          <div className="mt-8">
+          {pipelineView === 'kanban' && (
+            <KanbanBoard
+              leads={leads}
+              onUpdate={handleUpdate}
+              onView={openView}
+              onAddLead={openAddLead}
+            />
+          )}
+
+          {pipelineView === 'list' && (
+            <LeadListView
+              leads={leads}
+              onView={openView}
+              onUpdate={handleUpdate}
+              onDelete={(id) => deleteMutation.mutate(id)}
+              search={search}
+              onSearchChange={setSearch}
+            />
+          )}
+
+          {/* Upsell & Offer sections */}
+          <div className="mt-6 space-y-5">
+            <UpsellPrompts clients={clients} programs={programs} />
             <OfferTiers leads={leads} />
           </div>
         </>
@@ -179,11 +274,22 @@ export default function Sales() {
         <PaymentTracker clients={clients} />
       )}
 
-      <LeadForm
-        open={showForm}
-        onOpenChange={setShowForm}
+      {/* Lead detail drawer */}
+      <LeadDetailDrawer
+        lead={viewingLead}
+        open={!!viewingLead}
+        onClose={() => setViewingLead(null)}
+        onUpdate={handleUpdate}
+        onDelete={(id) => { deleteMutation.mutate(id); setViewingLead(null); }}
+      />
+
+      {/* Add/Edit lead modal */}
+      <AddLeadModal
+        open={showAddLead}
+        onOpenChange={setShowAddLead}
         onSubmit={handleSubmit}
         lead={editingLead}
+        initialStage={initialStage}
       />
     </div>
   );

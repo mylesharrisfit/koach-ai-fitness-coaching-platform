@@ -43,12 +43,18 @@ export default function UpsellPrompts({ clients, programs }) {
               <p className="text-sm font-medium">{client.name}</p>
               <p className="text-xs text-muted-foreground">Nearing program end · perfect time to re-enroll</p>
             </div>
-            <div className="flex gap-1 flex-wrap justify-end">
+            <div className="flex gap-2 flex-wrap justify-end">
               {UPSELL_OFFERS.map(offer => (
                 <span key={offer.tier} className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
                   {offer.label} {offer.value}
                 </span>
               ))}
+              <Link to={`/messages?client=${client.id}`} className="text-[10px] bg-[#111827] text-white px-2 py-0.5 rounded-full font-medium hover:bg-black transition-colors whitespace-nowrap">
+                Message
+              </Link>
+              <Link to={`/client-profile?id=${client.id}`} className="text-[10px] bg-white border border-[#E5E7EB] text-[#374151] px-2 py-0.5 rounded-full font-medium hover:bg-[#F9FAFB] transition-colors whitespace-nowrap">
+                View Profile
+              </Link>
             </div>
           </div>
         ))}
