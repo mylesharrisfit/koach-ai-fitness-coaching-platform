@@ -1166,7 +1166,7 @@ function MealCard({ meal }) {
 }
 
 // ── Step 4 — Result ───────────────────────────────────────────────────────────
-function Step4Result({ result, onApply, onRegenerate }) {
+function Step4Result({ result }) {
   const [copied, setCopied] = useState(false);
   const [dayTab, setDayTab] = useState('training');
   const goalMeta = GOALS.find(g => g.id === result.goal);
@@ -1194,7 +1194,7 @@ function Step4Result({ result, onApply, onRegenerate }) {
   }
 
   return (
-    <div className="max-h-[65vh] overflow-y-auto pr-1 space-y-4">
+    <div className="pr-1 space-y-4">
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-bold font-heading mb-1">Your AI Plan is Ready ✨</h2>
@@ -1406,14 +1406,6 @@ function Step4Result({ result, onApply, onRegenerate }) {
         </div>
       )}
 
-      <div className="flex gap-3 pt-1">
-        <Button variant="outline" onClick={onRegenerate} className="gap-2 flex-shrink-0">
-          <RotateCcw className="w-3.5 h-3.5" /> Regenerate
-        </Button>
-        <Button onClick={onApply} className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0">
-          <Sparkles className="w-4 h-4" /> Use This Plan
-        </Button>
-      </div>
     </div>
   );
 }
@@ -1606,65 +1598,77 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
     return true;
   }
 
-  // Steps 0 & 1 have nav; step 2 = generating (no nav); step 3 = result (has Regenerate + Use This Plan inside Step4Result)
-  const showNav = step === 0 || step === 1;
-  const isLastInputStep = step === 1;
+  // step 2 = generating (no footer); all other steps show footer
+  const showFooter = step !== 2;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) reset(); }}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden flex flex-col" style={{ maxHeight: '92vh' }}>
-        {/* Header — step dots */}
-        <div className="px-8 pt-7 pb-3 shrink-0">
+      <DialogContent
+        className="max-w-2xl p-0 overflow-hidden"
+        style={{ display: 'flex', flexDirection: 'column', height: '90vh', maxHeight: '90vh' }}
+      >
+        {/* Fixed header — step dots */}
+        <div className="px-8 pt-6 pb-3 shrink-0 border-b border-border/50">
           <StepDots current={step} total={4} />
         </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-8 pb-4">
+        {/* Scrollable content — flex:1 + min-height:0 forces it to shrink */}
+        <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }} className="px-8 py-5">
           <AnimatePresence custom={dir} mode="wait">
             <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }}>
               {step === 0 && <Step1Goal goal={goal} setGoal={setGoal} details={details} setDetails={setDetails} />}
               {step === 1 && <Step2Details details={details} setDetails={setDetails} goal={goal} />}
               {step === 2 && <Step3Generating onDone={handleGeneratingDone} macroPayload={macroPayload} />}
-              {step === 3 && result && <Step4Result result={result} onApply={handleApply} onRegenerate={() => go(2)} />}
+              {step === 3 && result && <Step4Result result={result} />}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Sticky footer nav — steps 0 & 1 only */}
-        {showNav && (
+        {/* Fixed footer — always visible, never scrolls */}
+        {showFooter && (
           <div className="shrink-0 border-t border-border bg-secondary/30 px-8 py-4">
-            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
-              {/* Back / Cancel */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={step === 0 ? () => onOpenChange(false) : () => go(step - 1)}
-                className="gap-1.5 sm:w-auto w-full"
-              >
-                {step === 0 ? 'Cancel' : <><ChevronLeft className="w-4 h-4" /> Back</>}
-              </Button>
-
-              {/* Next / Generate */}
-              {isLastInputStep ? (
-                <Button
-                  size="sm"
-                  disabled={!canNext()}
-                  onClick={handleStartGenerating}
-                  className="gap-2 flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
-                >
-                  <Sparkles className="w-4 h-4" /> Generate Plan ✨
+            {step === 3 ? (
+              /* Result step — Regenerate + Use This Plan */
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button variant="outline" onClick={() => go(2)} className="gap-2 sm:w-auto w-full">
+                  <RotateCcw className="w-3.5 h-3.5" /> Regenerate
                 </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  disabled={!canNext()}
-                  onClick={() => go(step + 1)}
-                  className="gap-1.5 flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
-                >
-                  Next <ChevronRight className="w-4 h-4" />
+                <Button onClick={handleApply} className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold">
+                  <Sparkles className="w-4 h-4" /> Use This Plan
                 </Button>
-              )}
-            </div>
+              </div>
+            ) : (
+              /* Steps 0 & 1 — Back + Next/Generate */
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={step === 0 ? () => onOpenChange(false) : () => go(step - 1)}
+                  className="sm:w-auto w-full gap-1.5"
+                >
+                  {step === 0 ? 'Cancel' : <><ChevronLeft className="w-4 h-4" /> Back</>}
+                </Button>
+                {step === 1 ? (
+                  <Button
+                    size="sm"
+                    disabled={!canNext()}
+                    onClick={handleStartGenerating}
+                    className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
+                  >
+                    <Sparkles className="w-4 h-4" /> Generate Plan ✨
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    disabled={!canNext()}
+                    onClick={() => go(step + 1)}
+                    className="flex-1 sm:flex-none gap-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
+                  >
+                    Next <ChevronRight className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </DialogContent>
