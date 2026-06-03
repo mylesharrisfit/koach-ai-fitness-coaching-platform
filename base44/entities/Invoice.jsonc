@@ -15,52 +15,13 @@
     "client_email": {
       "type": "string"
     },
-    "billing_address": {
-      "type": "string"
-    },
     "description": {
-      "type": "string"
-    },
-    "currency": {
       "type": "string",
-      "default": "USD"
-    },
-    "line_items": {
-      "type": "array",
-      "description": "Invoice line items",
-      "items": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          },
-          "qty": {
-            "type": "number"
-          },
-          "price": {
-            "type": "number"
-          }
-        }
-      }
+      "description": "e.g. Monthly Coaching \u2014 June 2026"
     },
     "amount": {
       "type": "number",
-      "description": "Total amount in selected currency"
-    },
-    "discount": {
-      "type": "number"
-    },
-    "discount_type": {
-      "type": "string",
-      "enum": [
-        "pct",
-        "fixed"
-      ],
-      "default": "pct"
-    },
-    "tax": {
-      "type": "number",
-      "description": "Tax percentage"
+      "description": "Amount in USD"
     },
     "status": {
       "type": "string",
@@ -95,67 +56,27 @@
       "type": "string",
       "format": "date"
     },
-    "scheduled_send": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "payment_method": {
-      "type": "string"
-    },
-    "installments": {
-      "type": "boolean",
-      "default": false
-    },
-    "installment_count": {
-      "type": "number"
-    },
-    "is_recurring": {
-      "type": "boolean",
-      "default": false
-    },
-    "recurring_interval": {
-      "type": "string",
-      "enum": [
-        "weekly",
-        "bi_weekly",
-        "monthly",
-        "quarterly",
-        "annually"
-      ]
-    },
-    "recurring_start": {
-      "type": "string",
-      "format": "date"
-    },
-    "recurring_end": {
-      "type": "string",
-      "format": "date"
-    },
-    "auto_charge": {
-      "type": "boolean",
-      "default": false
-    },
-    "notes": {
-      "type": "string"
-    },
-    "internal_notes": {
-      "type": "string"
-    },
-    "payment_terms": {
-      "type": "string"
-    },
-    "late_fee_enabled": {
-      "type": "boolean",
-      "default": false
-    },
-    "late_fee_pct": {
-      "type": "number"
-    },
     "stripe_invoice_id": {
       "type": "string"
     },
     "stripe_payment_url": {
       "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "recurring_interval": {
+      "type": "string",
+      "enum": [
+        "weekly",
+        "monthly",
+        "quarterly",
+        "yearly"
+      ]
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "card, bank_transfer, manual, etc."
     }
   },
   "required": [

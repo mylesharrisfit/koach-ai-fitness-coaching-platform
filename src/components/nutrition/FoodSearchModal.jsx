@@ -1,14 +1,28 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Plus, Loader2, UtensilsCrossed, X } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { Search, Plus, Loader2, UtensilsCrossed, X, BookmarkPlus, ChevronDown, ChevronUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+
+// ── Local search cache (last 50) ──────────────────────────────────────────
+const CACHE_KEY = 'usda_search_cache';
+const CACHE_MAX = 50;
+
+function readCache() {
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '{}'); } catch { return {}; }
+}
+function writeCache(key, value) {
+  const cache = readCache();
+  const keys = Object.keys(cache);
+  if (keys.length >= CACHE_MAX) delete cache[keys[0]];
+  cache[key] = value;
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); } catch {}
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────
 const FILTER_CHIPS = ['All', 'Protein', 'Carbs', 'Fats', 'Dairy', 'Vegetables', 'Snacks'];
-
 const FILTER_KEYWORDS = {
   Protein:    ['chicken', 'beef', 'fish', 'salmon', 'tuna', 'turkey', 'egg', 'whey', 'protein', 'pork', 'shrimp', 'steak'],
   Carbs:      ['rice', 'pasta', 'bread', 'oat', 'potato', 'cereal', 'wheat', 'grain', 'tortilla', 'quinoa'],
@@ -17,11 +31,6 @@ const FILTER_KEYWORDS = {
   Vegetables: ['broccoli', 'spinach', 'kale', 'carrot', 'pepper', 'tomato', 'lettuce', 'cucumber', 'zucchini', 'vegetable'],
   Snacks:     ['chip', 'cookie', 'cracker', 'bar', 'snack', 'candy', 'chocolate', 'pretzel', 'popcorn'],
 };
-
-const POPULAR_FOODS_LIST = [
-  'Chicken Breast', 'Oats', 'Brown Rice', 'Eggs', 'Salmon',
-  'Greek Yogurt', 'Broccoli', 'Sweet Potato', 'Almonds', 'Banana',
-];
 
 const FOOD_EMOJI = (name = '') => {
   const n = name.toLowerCase();
@@ -36,73 +45,35 @@ const FOOD_EMOJI = (name = '') => {
   return '🍽️';
 };
 
-// ── API Helpers ────────────────────────────────────────────────────────────
-const searchOpenFoodFacts = async (query) => {
-  const response = await fetch(
-    `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,brands,nutriments,image_thumb_url,serving_size`
-  );
-  const data = await response.json();
-  return (data.products || [])
-    .filter(p => p.product_name)
-    .map(p => ({
-      id: `off_${p.product_name}_${Math.random()}`,
-      name: p.product_name,
-      brand: p.brands || '',
-      image: p.image_thumb_url || null,
-      calories: Math.round(p.nutriments?.['energy-kcal_100g'] || 0),
-      protein: Math.round(p.nutriments?.['proteins_100g'] || 0),
-      carbs: Math.round(p.nutriments?.['carbohydrates_100g'] || 0),
-      fats: Math.round(p.nutriments?.['fat_100g'] || 0),
-      serving_size: p.serving_size || '100g',
-      source: 'off',
-    }));
-};
+// ── USDA search via backend function ──────────────────────────────────────
+async function searchUSDA(query, pageSize = 25) {
+  const cacheKey = `${query.toLowerCase()}_${pageSize}`;
+  const cached = readCache()[cacheKey];
+  if (cached) return cached;
 
-const getUSDAFood = async (name) => {
-  const res = await fetch(
-    `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(name)}&pageSize=1&api_key=DEMO_KEY`
-  );
-  const data = await res.json();
-  const food = data.foods?.[0];
-  if (!food) return null;
-  const getNutrient = (nutrients, nutrientName) => {
-    const n = nutrients.find(x => x.nutrientName === nutrientName);
-    return n ? Math.round(n.value) : 0;
-  };
-  return {
-    id: `usda_${name}`,
-    name: food.description,
-    brand: food.brandOwner || 'Generic',
-    image: null,
-    calories: getNutrient(food.foodNutrients, 'Energy'),
-    protein: getNutrient(food.foodNutrients, 'Protein'),
-    carbs: getNutrient(food.foodNutrients, 'Carbohydrate, by difference'),
-    fats: getNutrient(food.foodNutrients, 'Total lipid (fat)'),
-    serving_size: '100g',
+  const res = await base44.functions.invoke('searchFoods', {
+    query,
+    pageSize,
+    dataType: 'Survey (FNDDS),SR Legacy,Foundation',
+  });
+  const foods = (res.data?.foods || []).map(f => ({
+    id: f.usda_fdc_id,
+    name: f.name,
+    brand: f.brand || '',
+    calories: f.calories || 0,
+    protein: f.protein_g || 0,
+    carbs: f.carbs_g || 0,
+    fats: f.fats_g || 0,
+    serving_size: f.serving_size || '100g',
+    category: f.category || '',
     source: 'usda',
-  };
-};
-
-// ── Sub-components ─────────────────────────────────────────────────────────
-function FoodPhoto({ src, name }) {
-  const [failed, setFailed] = useState(false);
-  if (!src || failed) {
-    return (
-      <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-xl shrink-0">
-        {FOOD_EMOJI(name)}
-      </div>
-    );
-  }
-  return (
-    <img
-      src={src}
-      alt={name}
-      className="w-10 h-10 rounded-lg object-cover shrink-0 bg-secondary"
-      onError={() => setFailed(true)}
-    />
-  );
+    image: null,
+  }));
+  writeCache(cacheKey, foods);
+  return foods;
 }
 
+// ── Sub-components ─────────────────────────────────────────────────────────
 function MacroChips({ calories, protein, carbs, fats }) {
   return (
     <div className="flex gap-1 mt-1 flex-wrap">
@@ -117,12 +88,12 @@ function MacroChips({ calories, protein, carbs, fats }) {
 function SkeletonRows() {
   return (
     <div className="divide-y divide-border">
-      {[1, 2, 3].map(i => (
+      {[1, 2, 3, 4].map(i => (
         <div key={i} className="flex items-center gap-3 px-4 py-3 animate-pulse">
           <div className="w-10 h-10 rounded-lg bg-secondary shrink-0" />
           <div className="flex-1 space-y-2">
             <div className="h-3 bg-secondary rounded w-2/3" />
-            <div className="h-2.5 bg-secondary rounded w-1/3" />
+            <div className="h-2.5 bg-secondary rounded w-1/4" />
             <div className="flex gap-1">
               {[1,2,3,4].map(j => <div key={j} className="h-4 w-12 bg-secondary rounded" />)}
             </div>
@@ -134,142 +105,219 @@ function SkeletonRows() {
   );
 }
 
-function FoodRow({ food, onAdd }) {
+function FoodRow({ food, onAdd, onSave }) {
   const [qty, setQty] = useState(100);
+  const [saving, setSaving] = useState(false);
 
-  const displayCalories = Math.round(food.calories * qty / 100);
-  const displayProtein  = Math.round(food.protein  * qty / 100);
-  const displayCarbs    = Math.round(food.carbs    * qty / 100);
-  const displayFats     = Math.round(food.fats     * qty / 100);
+  const scale = qty / 100;
+  const cal  = Math.round(food.calories * scale);
+  const prot = Math.round(food.protein  * scale * 10) / 10;
+  const carb = Math.round(food.carbs    * scale * 10) / 10;
+  const fat  = Math.round(food.fats     * scale * 10) / 10;
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave(food);
+    setSaving(false);
+  };
 
   return (
-    <li className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/40 transition-colors">
-      <FoodPhoto src={food.image} name={food.name} />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-foreground truncate leading-snug">{food.name}</p>
-        {food.brand && (
-          <p className="text-[10px] text-muted-foreground truncate">{food.brand}</p>
-        )}
-        <MacroChips
-          calories={displayCalories}
-          protein={displayProtein}
-          carbs={displayCarbs}
-          fats={displayFats}
-        />
+    <li className="px-4 py-3 hover:bg-secondary/40 transition-colors">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-xl shrink-0">
+          {FOOD_EMOJI(food.name)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-foreground leading-snug">{food.name}</p>
+          {food.category && (
+            <p className="text-[10px] text-muted-foreground truncate">{food.category}</p>
+          )}
+          <MacroChips calories={cal} protein={prot} carbs={carb} fats={fat} />
+        </div>
       </div>
-      <div className="flex flex-col items-end gap-1.5 shrink-0">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2 mt-2.5 pl-13">
+        <div className="flex items-center gap-1.5 flex-1">
+          <span className="text-xs text-muted-foreground shrink-0">Serving:</span>
           <input
             type="number"
-            min={10}
+            min={1}
             step={10}
             value={qty}
-            onChange={e => setQty(Math.max(10, Number(e.target.value)))}
-            className="w-14 h-6 text-xs text-center border border-input rounded-md bg-background"
+            onChange={e => setQty(Math.max(1, Number(e.target.value)))}
+            className="w-16 h-7 text-xs text-center border border-input rounded-md bg-background"
           />
           <span className="text-xs text-muted-foreground">g</span>
         </div>
         <button
-          onClick={() => onAdd(food, qty)}
-          className="flex items-center gap-1 h-7 px-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
+          onClick={handleSave}
+          disabled={saving}
+          title="Save to My Foods"
+          className="h-7 w-7 flex items-center justify-center rounded-lg border border-border hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
         >
-          <Plus className="w-3 h-3" /> Add
+          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <BookmarkPlus className="w-3.5 h-3.5" />}
+        </button>
+        <button
+          onClick={() => onAdd(food, qty)}
+          className="flex items-center gap-1 h-7 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
+        >
+          <Plus className="w-3 h-3" /> Add to Log
         </button>
       </div>
     </li>
   );
 }
 
+// ── Custom Food Form ───────────────────────────────────────────────────────
+function CustomFoodForm({ onAdd, onSave }) {
+  const [form, setForm] = useState({ name: '', serving_size: '100g', calories: '', protein: '', carbs: '', fats: '' });
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const valid = form.name.trim() && form.calories !== '';
+
+  const food = {
+    id: `custom_${Date.now()}`,
+    name: form.name,
+    brand: '',
+    calories: Number(form.calories) || 0,
+    protein:  Number(form.protein)  || 0,
+    carbs:    Number(form.carbs)    || 0,
+    fats:     Number(form.fats)     || 0,
+    serving_size: form.serving_size || '100g',
+    category: 'Custom',
+    source: 'custom',
+  };
+
+  return (
+    <div className="px-4 py-4 space-y-3">
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Custom Food</p>
+      <Input placeholder="Food name *" value={form.name} onChange={e => set('name', e.target.value)} />
+      <Input placeholder="Serving size (e.g. 100g, 1 cup)" value={form.serving_size} onChange={e => set('serving_size', e.target.value)} />
+      <div className="grid grid-cols-2 gap-2">
+        <Input placeholder="Calories (kcal) *" type="number" value={form.calories} onChange={e => set('calories', e.target.value)} />
+        <Input placeholder="Protein (g)" type="number" value={form.protein} onChange={e => set('protein', e.target.value)} />
+        <Input placeholder="Carbs (g)" type="number" value={form.carbs} onChange={e => set('carbs', e.target.value)} />
+        <Input placeholder="Fats (g)" type="number" value={form.fats} onChange={e => set('fats', e.target.value)} />
+      </div>
+      <div className="flex gap-2">
+        <button
+          disabled={!valid}
+          onClick={() => valid && onSave(food)}
+          className="flex-1 h-9 rounded-lg border border-border text-xs font-semibold hover:bg-secondary transition-colors disabled:opacity-40"
+        >
+          Save to My Foods
+        </button>
+        <button
+          disabled={!valid}
+          onClick={() => valid && onAdd(food, 100)}
+          className="flex-1 h-9 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors disabled:opacity-40"
+        >
+          Add to Log
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFood }) {
-  const [tab, setTab]           = useState('popular');
+  const [tab, setTab]           = useState('search');
   const [search, setSearch]     = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [filter, setFilter]     = useState('All');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState(false);
+  const [showCustom, setShowCustom] = useState(false);
   const debounceRef = useRef(null);
 
-  // Debounce search
+  // My Library
+  const [libraryFoods, setLibraryFoods] = useState([]);
+  const [libraryLoading, setLibraryLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setLibraryLoading(true);
+    base44.entities.FoodItem.list()
+      .then(setLibraryFoods)
+      .catch(() => {})
+      .finally(() => setLibraryLoading(false));
+  }, [open]);
+
+  // Debounce
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
+    debounceRef.current = setTimeout(() => setDebouncedSearch(search), 450);
     return () => clearTimeout(debounceRef.current);
   }, [search]);
 
-  // Fetch Open Food Facts when debounced search changes
+  // USDA search
   useEffect(() => {
     if (tab !== 'search') return;
-    if (debouncedSearch.length < 2) { setSearchResults([]); return; }
+    if (debouncedSearch.length < 2) { setSearchResults([]); setSearchError(false); return; }
     setIsSearching(true);
-    searchOpenFoodFacts(debouncedSearch)
-      .then(setSearchResults)
+    setSearchError(false);
+    searchUSDA(debouncedSearch)
+      .then(r => { setSearchResults(r); if (r.length === 0) setShowCustom(true); })
+      .catch(() => { setSearchError(true); setShowCustom(true); })
       .finally(() => setIsSearching(false));
   }, [debouncedSearch, tab]);
 
-  // Popular foods from USDA
-  const { data: popularFoods = [], isLoading: popularLoading } = useQuery({
-    queryKey: ['usda-popular'],
-    queryFn: () => Promise.all(POPULAR_FOODS_LIST.map(getUSDAFood)).then(r => r.filter(Boolean)),
-    staleTime: 60 * 60 * 1000,
-    enabled: open,
-  });
-
-  // My Library
-  const { data: libraryFoods = [], isLoading: libraryLoading } = useQuery({
-    queryKey: ['food-items-all'],
-    queryFn: () => base44.entities.FoodItem.list(),
-    staleTime: 60_000,
-    enabled: open,
-  });
-
   const applyFilter = (items) => {
     if (filter === 'All') return items;
-    const keywords = FILTER_KEYWORDS[filter] || [];
-    return items.filter(f => keywords.some(kw => f.name?.toLowerCase().includes(kw)));
+    const kw = FILTER_KEYWORDS[filter] || [];
+    return items.filter(f => kw.some(k => f.name?.toLowerCase().includes(k)));
   };
 
   const handleAdd = (food, qty) => {
+    const scale = qty / 100;
     onAddFood({
-      food_name:    food.name,
-      calories:     Math.round(food.calories * qty / 100),
-      protein:      Math.round(food.protein  * qty / 100),
-      carbs:        Math.round(food.carbs    * qty / 100),
-      fats:         Math.round(food.fats     * qty / 100),
+      food_name:        food.name,
+      calories:         Math.round(food.calories * scale),
+      protein:          Math.round(food.protein  * scale * 10) / 10,
+      carbs:            Math.round(food.carbs    * scale * 10) / 10,
+      fats:             Math.round(food.fats     * scale * 10) / 10,
       serving_quantity: qty,
-      serving_unit: 'g',
+      serving_unit:     'g',
     });
     onOpenChange(false);
   };
 
-  // Library foods mapped to same shape
+  const handleSave = async (food) => {
+    try {
+      await base44.entities.FoodItem.create({
+        name:         food.name,
+        brand:        food.brand || '',
+        calories:     food.calories,
+        protein:      food.protein,
+        carbs:        food.carbs,
+        fats:         food.fats,
+        serving_size: food.serving_size || '100g',
+        source:       food.source || 'usda',
+        category:     food.category || '',
+      });
+      toast.success(`"${food.name}" saved to My Foods`);
+      base44.entities.FoodItem.list().then(setLibraryFoods).catch(() => {});
+    } catch {
+      toast.error('Failed to save food');
+    }
+  };
+
   const mappedLibrary = libraryFoods.map(f => ({
-    id: f.id,
-    name: f.name,
-    brand: f.brand || '',
-    image: null,
-    calories: f.calories || 0,
-    protein: f.protein || 0,
-    carbs: f.carbs || 0,
-    fats: f.fats || 0,
-    serving_size: f.serving_size,
-    source: 'library',
+    id: f.id, name: f.name, brand: f.brand || '', calories: f.calories || 0,
+    protein: f.protein || 0, carbs: f.carbs || 0, fats: f.fats || 0,
+    serving_size: f.serving_size, category: f.category || '', source: 'library', image: null,
   }));
 
   const filteredLibrary = applyFilter(
     mappedLibrary.filter(f =>
-      !search || f.name?.toLowerCase().includes(search.toLowerCase()) || f.brand?.toLowerCase().includes(search.toLowerCase())
+      !search || f.name?.toLowerCase().includes(search.toLowerCase())
     )
   );
 
   const filteredSearch = applyFilter(searchResults);
 
   const TABS = [
-    { id: 'popular', label: 'Popular' },
-    { id: 'search',  label: 'Search' },
-    { id: 'library', label: 'My Library' },
+    { id: 'search',  label: 'USDA Search' },
+    { id: 'library', label: 'My Foods' },
   ];
 
   return (
@@ -285,51 +333,39 @@ export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFoo
           {/* Tabs */}
           <div className="flex gap-0 mt-3 bg-secondary rounded-lg p-0.5">
             {TABS.map(t => (
-              <button
-                key={t.id}
-                onClick={() => { setTab(t.id); setSearch(''); setFilter('All'); }}
-                className={cn(
-                  'flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors',
+              <button key={t.id} onClick={() => { setTab(t.id); setSearch(''); setFilter('All'); setShowCustom(false); }}
+                className={cn('flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors',
                   tab === t.id ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
+                )}>
                 {t.label}
               </button>
             ))}
           </div>
 
-          {/* Search bar (Search + Library tabs) */}
-          {(tab === 'search' || tab === 'library') && (
-            <div className="relative mt-3">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                autoFocus
-                placeholder={tab === 'search' ? 'Search 3M+ foods...' : 'Filter library...'}
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="pl-9 pr-9"
-              />
-              {search && (
-                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <X className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
-              )}
-            </div>
-          )}
+          {/* Search bar */}
+          <div className="relative mt-3">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              autoFocus
+              placeholder={tab === 'search' ? 'Search USDA food database...' : 'Filter my foods...'}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-9 pr-9"
+            />
+            {search && (
+              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                <X className="w-3.5 h-3.5 text-muted-foreground" />
+              </button>
+            )}
+          </div>
 
           {/* Filter chips */}
           <div className="flex gap-1.5 overflow-x-auto pb-0.5 mt-2 scrollbar-none">
             {FILTER_CHIPS.map(chip => (
-              <button
-                key={chip}
-                onClick={() => setFilter(chip)}
-                className={cn(
-                  'shrink-0 px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
-                  filter === chip
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background text-muted-foreground border-border hover:bg-secondary'
-                )}
-              >
+              <button key={chip} onClick={() => setFilter(chip)}
+                className={cn('shrink-0 px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
+                  filter === chip ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-muted-foreground border-border hover:bg-secondary'
+                )}>
                 {chip}
               </button>
             ))}
@@ -339,42 +375,56 @@ export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFoo
         {/* Body */}
         <div className="flex-1 overflow-y-auto">
 
-          {/* POPULAR TAB */}
-          {tab === 'popular' && (
-            popularLoading ? <SkeletonRows /> : (
-              <ul className="divide-y divide-border">
-                {applyFilter(popularFoods).map(food => (
-                  <FoodRow key={food.id} food={food} onAdd={handleAdd} />
-                ))}
-              </ul>
-            )
-          )}
-
-          {/* SEARCH TAB */}
+          {/* USDA SEARCH TAB */}
           {tab === 'search' && (
             <>
               {!search || search.length < 2 ? (
                 <div className="flex flex-col items-center gap-3 py-14 px-6 text-center">
                   <Search className="w-8 h-8 text-muted-foreground/30" />
-                  <p className="text-sm font-semibold text-foreground">Search the Open Food Facts database</p>
-                  <p className="text-xs text-muted-foreground">3 million+ products with real photos. Type at least 2 characters.</p>
+                  <p className="text-sm font-semibold text-foreground">Search the USDA FoodData Central</p>
+                  <p className="text-xs text-muted-foreground">Accurate nutrient data for 900k+ foods. Type at least 2 characters.</p>
                 </div>
               ) : isSearching ? (
                 <SkeletonRows />
-              ) : filteredSearch.length === 0 ? (
-                <div className="flex flex-col items-center gap-2 py-14 text-center px-6">
+              ) : searchError ? (
+                <div className="flex flex-col items-center gap-2 py-8 text-center px-6">
                   <UtensilsCrossed className="w-8 h-8 text-muted-foreground/30" />
-                  <p className="text-sm font-semibold">No results found for "{search}"</p>
-                  <p className="text-xs text-muted-foreground">Try a different search term or check My Library.</p>
+                  <p className="text-sm font-semibold">Couldn't reach the food database</p>
+                  <p className="text-xs text-muted-foreground mb-2">Add your food manually instead.</p>
+                  <CustomFoodForm onAdd={handleAdd} onSave={handleSave} />
+                </div>
+              ) : filteredSearch.length === 0 ? (
+                <div className="flex flex-col items-center gap-2 py-8 text-center px-6">
+                  <UtensilsCrossed className="w-8 h-8 text-muted-foreground/30" />
+                  <p className="text-sm font-semibold">No results for "{search}"</p>
+                  <p className="text-xs text-muted-foreground mb-1">Try a different search or add a custom food.</p>
+                  <button
+                    onClick={() => setShowCustom(v => !v)}
+                    className="flex items-center gap-1 text-xs font-semibold text-primary mt-1"
+                  >
+                    Add Custom Food {showCustom ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                  </button>
+                  {showCustom && <CustomFoodForm onAdd={handleAdd} onSave={handleSave} />}
                 </div>
               ) : (
                 <>
-                  <p className="text-xs text-muted-foreground px-4 py-2 border-b border-border">
-                    {filteredSearch.length} results for <strong>"{search}"</strong>
-                  </p>
+                  <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+                    <p className="text-xs text-muted-foreground">
+                      {filteredSearch.length} results · <span className="text-[10px]">USDA FoodData Central</span>
+                    </p>
+                    <button onClick={() => setShowCustom(v => !v)}
+                      className="flex items-center gap-1 text-[11px] font-semibold text-primary">
+                      + Custom {showCustom ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                    </button>
+                  </div>
+                  {showCustom && (
+                    <div className="border-b border-border bg-secondary/30">
+                      <CustomFoodForm onAdd={handleAdd} onSave={handleSave} />
+                    </div>
+                  )}
                   <ul className="divide-y divide-border">
                     {filteredSearch.map(food => (
-                      <FoodRow key={food.id} food={food} onAdd={handleAdd} />
+                      <FoodRow key={food.id} food={food} onAdd={handleAdd} onSave={handleSave} />
                     ))}
                   </ul>
                 </>
@@ -382,21 +432,25 @@ export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFoo
             </>
           )}
 
-          {/* MY LIBRARY TAB */}
+          {/* MY FOODS TAB */}
           {tab === 'library' && (
             libraryLoading ? <SkeletonRows /> :
             libraryFoods.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-14 px-6 text-center">
                 <UtensilsCrossed className="w-10 h-10 text-muted-foreground/40" />
-                <p className="text-sm font-semibold">No foods in your library yet</p>
-                <p className="text-xs text-muted-foreground">Go to Food Library to add custom foods.</p>
+                <p className="text-sm font-semibold">No saved foods yet</p>
+                <p className="text-xs text-muted-foreground">Search USDA and tap the bookmark icon to save foods here, or add a custom food.</p>
+                <button onClick={() => setShowCustom(v => !v)} className="text-xs font-semibold text-primary mt-1">
+                  + Add Custom Food
+                </button>
+                {showCustom && <CustomFoodForm onAdd={handleAdd} onSave={handleSave} />}
               </div>
             ) : filteredLibrary.length === 0 ? (
               <p className="text-xs text-muted-foreground text-center py-12">No foods match.</p>
             ) : (
               <ul className="divide-y divide-border">
                 {filteredLibrary.map(food => (
-                  <FoodRow key={food.id} food={food} onAdd={handleAdd} />
+                  <FoodRow key={food.id} food={food} onAdd={handleAdd} onSave={handleSave} />
                 ))}
               </ul>
             )
