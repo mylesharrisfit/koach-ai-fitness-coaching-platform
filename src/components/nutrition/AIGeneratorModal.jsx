@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, ChevronLeft, ChevronRight, RotateCcw, Check, Flame, Zap, Leaf,
   Dumbbell, Scale, UtensilsCrossed, Pill, FileText, ChevronDown, Copy, ClipboardCheck,
+  UserPlus,
 } from 'lucide-react';
+import Step4Assign from './Step4Assign';
 import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -1418,6 +1420,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   const [details, setDetails]     = useState(INITIAL_DETAILS);
   const [result, setResult]       = useState(null);
   const [macroPayload, setMacroPayload] = useState(null);
+  // step 4 = assign — no separate state needed; Step4Assign handles internally
 
   function go(next) { setDir(next > step ? 1 : -1); setStep(next); }
 
@@ -1592,14 +1595,16 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
     setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS, supplementDosages: {} }); setResult(null); setMacroPayload(null);
   }
 
+  function goToAssign() { setDir(1); setStep(4); }
+
   function canNext() {
     if (step === 0) return !!goal;
     if (step === 1) return !!details.weight && !!details.activity;
     return true;
   }
 
-  // step 2 = generating (no footer); all other steps show footer
-  const showFooter = step !== 2;
+  // step 2 = generating (no footer); step 4 = assign (footer is handled inside)
+  const showFooter = step !== 2 && step !== 4;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) reset(); }}>
@@ -1609,10 +1614,10 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       >
         {/* Fixed header — step dots */}
         <div className="px-8 pt-6 pb-3 shrink-0 border-b border-border/50">
-          <StepDots current={step} total={4} />
+          <StepDots current={step} total={5} />
         </div>
 
-        {/* Scrollable content — flex:1 + min-height:0 forces it to shrink */}
+        {/* Scrollable content */}
         <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }} className="px-8 py-5">
           <AnimatePresence custom={dir} mode="wait">
             <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }}>
@@ -1620,22 +1625,42 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
               {step === 1 && <Step2Details details={details} setDetails={setDetails} goal={goal} />}
               {step === 2 && <Step3Generating onDone={handleGeneratingDone} macroPayload={macroPayload} />}
               {step === 3 && result && <Step4Result result={result} />}
+              {step === 4 && result && (
+                <Step4Assign
+                  result={result}
+                  onRegenerate={() => go(2)}
+                  onOpenChange={onOpenChange}
+                  onReset={reset}
+                />
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Fixed footer — always visible, never scrolls */}
+        {/* Fixed footer */}
         {showFooter && (
           <div className="shrink-0 border-t border-border bg-secondary/30 px-8 py-4">
             {step === 3 ? (
-              /* Result step — Regenerate + Use This Plan */
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button variant="outline" onClick={() => go(2)} className="gap-2 sm:w-auto w-full">
-                  <RotateCcw className="w-3.5 h-3.5" /> Regenerate
-                </Button>
-                <Button onClick={handleApply} className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold">
-                  <Sparkles className="w-4 h-4" /> Use This Plan
-                </Button>
+              /* Result step — Regenerate + Save & Assign + quick-use */
+              <div className="flex flex-col gap-2.5">
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => go(2)} className="gap-1.5 shrink-0">
+                    <RotateCcw className="w-3.5 h-3.5" /> Regenerate
+                  </Button>
+                  <Button
+                    onClick={goToAssign}
+                    className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
+                  >
+                    <UserPlus className="w-4 h-4" /> Save & Assign
+                  </Button>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleApply}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center"
+                >
+                  or just open in plan editor →
+                </button>
               </div>
             ) : (
               /* Steps 0 & 1 — Back + Next/Generate */
