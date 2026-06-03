@@ -47,7 +47,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
     setSaving(true);
     // Update the client's assigned_nutrition_id
     await base44.entities.Client.update(clientId, { assigned_nutrition_id: selected });
-    await qc.invalidateQueries({ queryKey: ['nutrition-client', clientId] });
+    await qc.invalidateQueries({ queryKey: ['client-nutrition', clientId] });
     await qc.invalidateQueries({ queryKey: ['nutrition'] });
     await qc.invalidateQueries({ queryKey: ['clients'] });
     setSaving(false);
@@ -448,14 +448,17 @@ function WeeklyAdherenceGrid({ client }) {
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function NutritionTab({ client }) {
   const { data: allPlans = [], isLoading, refetch } = useQuery({
-    queryKey: ['nutrition-client', client.id],
-    queryFn: () => base44.entities.NutritionPlan.list('-created_date'),
+    queryKey: ['client-nutrition', client.id],
+    queryFn: () => base44.entities.NutritionPlan.filter({ client_id: client.id }),
     staleTime: 0,
     refetchOnMount: true,
   });
 
-  // Look up the plan by the client's assigned_nutrition_id (source of truth)
-  const assignedPlan = allPlans.find(p => p.id === client.assigned_nutrition_id) || null;
+  // Active plan = the one explicitly assigned to this client with status 'active'
+  // Fall back to matching assigned_nutrition_id if status field not set yet
+  const assignedPlan = allPlans.find(p => p.status === 'active') 
+    || allPlans.find(p => p.id === client.assigned_nutrition_id) 
+    || null;
 
   if (isLoading) return (
     <div className="p-5 space-y-3">

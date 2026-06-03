@@ -275,35 +275,51 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
     ? plans.find(p => p.id === selectedClient.nutrition_plan_id)
     : null;
 
-  const buildPlanData = (asTemplate = false, templateCategory = '') => ({
+  const buildMeals = (meals) => (meals || []).map(meal => ({
+    name: meal.name,
+    meal_name: meal.name,
+    time: meal.time,
+    calories: meal.calories,
+    protein: meal.protein,
+    carbs: meal.carbs,
+    fats: meal.fats,
+    instructions: meal.instructions,
+    why_this_meal: meal.why_this_meal,
+    option_b: meal.option_b,
+    option_c: meal.option_c,
+    foods: (meal.foods || []).map(f => ({
+      name: f.name,
+      food_name: f.name,
+      amount: f.amount || f.amount_household || f.portion,
+      amount_household: f.amount_household || f.amount,
+      amount_grams: f.amount_grams || null,
+      portion: f.amount || f.amount_household || f.portion,
+      prep_method: f.prep_method || '',
+      calories: Number(f.calories) || 0,
+      protein: Number(f.protein) || 0,
+      carbs: Number(f.carbs) || 0,
+      fats: Number(f.fats) || 0,
+    })),
+  }));
+
+  const buildPlanData = (overrides = {}) => ({
     title: planName,
     tracking_mode: 'macros',
     calories: result.calories,
     protein_g: result.protein,
     carbs_g: result.carbs,
     fats_g: result.fats,
-    meals: (result.meals || []).map(meal => ({
-      name: meal.name,
-      meal_name: meal.name,
-      time: meal.time,
-      calories: meal.calories,
-      protein: meal.protein,
-      carbs: meal.carbs,
-      fats: meal.fats,
-      instructions: meal.instructions,
-      notes: meal.instructions,
-      foods: (meal.foods || []).map(f => ({
-        name: f.name, food_name: f.name,
-        amount: f.amount, portion: f.amount,
-        calories: f.calories, protein: f.protein, carbs: f.carbs, fats: f.fats,
-      })),
-    })),
+    meals: buildMeals(result.meals),
+    rest_day_meals: buildMeals(result.rest_day_meals),
+    hydration: result.hydration || null,
+    coach_notes: result.coach_notes || null,
+    client_notes: result.client_notes || '',
+    shopping_list: result.shopping_list || [],
     supplements: (result.supplements || []).filter(s => s !== 'None').map(s => ({ name: s, category: 'supplement' })),
-    is_template: asTemplate,
-    ...(asTemplate && { template_category: templateCategory }),
     ai_generated: true,
     goal: result.goal,
     diet: result.diet,
+    ...overrides,
   });
 
   const handleAssign = async () => {
@@ -315,16 +331,28 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
     setAssigning(true);
 
     try {
-      // 1. Create the plan
-      const plan = await base44.entities.NutritionPlan.create(buildPlanData());
+      // 1. Deactivate any existing active plan for this client
+      const existingPlans = await base44.entities.NutritionPlan.filter({
+        client_id: selectedClientId,
+        status: 'active',
+      });
+      await Promise.all(
+        existingPlans.map(p => base44.entities.NutritionPlan.update(p.id, { status: 'inactive' }))
+      );
 
-      // 2. Assign to client — update client's nutrition_plan_id
+      // 2. Create the new active plan with client_id + status
+      const plan = await base44.entities.NutritionPlan.create(buildPlanData({
+        client_id: selectedClientId,
+        status: 'active',
+        start_date: startDate,
+      }));
+
+      // 3. Update client's assigned_nutrition_id
       await base44.entities.Client.update(selectedClientId, {
-        nutrition_plan_id: plan.id,
-        nutrition_plan_start: startDate,
+        assigned_nutrition_id: plan.id,
       });
 
-      // 3. Send message notification if personal note exists
+      // 4. Send personal note as a message if provided
       if (personalNote.trim()) {
         await base44.entities.Message.create({
           client_id: selectedClientId,
@@ -334,7 +362,7 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
         });
       }
 
-      // 4. Create a system notification for the client
+      // 5. Create in-app notification for the client
       await base44.entities.Notification.create({
         recipient_id: selectedClient?.email || selectedClientId,
         category: 'ai',
@@ -348,6 +376,7 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
 
       queryClient.invalidateQueries({ queryKey: ['nutrition'] });
       queryClient.invalidateQueries({ queryKey: ['clients'] });
+      queryClient.invalidateQueries({ queryKey: ['client-nutrition', selectedClientId] });
 
       setSuccess({
         clientName: selectedClient?.full_name || selectedClient?.name || 'Client',
@@ -364,11 +393,16 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
     }
   };
 
-  const handleSaveTemplate = async (name, category) => {
+  const handleSaveTemplate = async (templateName, category) => {
     try {
-      await base44.entities.NutritionPlan.create(buildPlanData(true, category));
+      await base44.entities.NutritionPlan.create(buildPlanData({
+        title: templateName || planName,
+        is_template: true,
+        status: 'template',
+        template_category: category,
+      }));
       queryClient.invalidateQueries({ queryKey: ['nutrition'] });
-      toast.success(`Template "${name || planName}" saved to library!`);
+      toast.success(`Template "${templateName || planName}" saved to library!`);
       setShowTemplateForm(false);
     } catch (err) {
       toast.error('Failed to save template: ' + err.message);
@@ -377,9 +411,12 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
 
   const handleSaveDraft = async () => {
     try {
-      await base44.entities.NutritionPlan.create({ ...buildPlanData(), is_draft: true });
+      await base44.entities.NutritionPlan.create(buildPlanData({
+        status: 'draft',
+        is_draft: true,
+      }));
       queryClient.invalidateQueries({ queryKey: ['nutrition'] });
-      toast.success('Saved as draft — find it in Nutrition plans');
+      toast.success('Saved as draft — find it in Nutrition → Drafts');
       onOpenChange(false);
     } catch (err) {
       toast.error('Failed to save draft: ' + err.message);

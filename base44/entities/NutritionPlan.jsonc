@@ -17,6 +17,21 @@
       ],
       "default": "macros"
     },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "draft",
+        "template"
+      ],
+      "default": "active",
+      "description": "active = assigned and live, inactive = replaced, draft = not yet assigned, template = reusable template"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "ID of the client this plan is assigned to"
+    },
     "calories": {
       "type": "number"
     },
@@ -29,6 +44,10 @@
     "fats_g": {
       "type": "number"
     },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
     "meals": {
       "type": "array",
       "items": {
@@ -37,10 +56,37 @@
           "meal_name": {
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "time": {
             "type": "string"
           },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fats": {
+            "type": "number"
+          },
+          "instructions": {
+            "type": "string"
+          },
           "habit_description": {
+            "type": "string"
+          },
+          "why_this_meal": {
+            "type": "string"
+          },
+          "option_b": {
+            "type": "string"
+          },
+          "option_c": {
             "type": "string"
           },
           "foods": {
@@ -51,7 +97,22 @@
                 "food_name": {
                   "type": "string"
                 },
+                "name": {
+                  "type": "string"
+                },
                 "portion": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "amount_grams": {
+                  "type": "number"
+                },
+                "amount_household": {
+                  "type": "string"
+                },
+                "prep_method": {
                   "type": "string"
                 },
                 "calories": {
@@ -78,9 +139,100 @@
         }
       }
     },
+    "rest_day_meals": {
+      "type": "array",
+      "description": "Meals for rest days (different from training days)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "meal_name": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "calories": {
+            "type": "number"
+          },
+          "protein": {
+            "type": "number"
+          },
+          "carbs": {
+            "type": "number"
+          },
+          "fats": {
+            "type": "number"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "foods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "food_name": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "portion": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "amount_grams": {
+                  "type": "number"
+                },
+                "amount_household": {
+                  "type": "string"
+                },
+                "prep_method": {
+                  "type": "string"
+                },
+                "calories": {
+                  "type": "number"
+                },
+                "protein": {
+                  "type": "number"
+                },
+                "carbs": {
+                  "type": "number"
+                },
+                "fats": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "hydration": {
+      "type": "object",
+      "description": "Hydration protocol from AI"
+    },
+    "coach_notes": {
+      "type": "object",
+      "description": "Coach notes from AI generation"
+    },
+    "client_notes": {
+      "type": "string",
+      "description": "Plain English summary for client"
+    },
+    "shopping_list": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "supplements": {
       "type": "array",
-      "description": "Assigned supplements, vitamins, and minerals",
       "items": {
         "type": "object",
         "properties": {
@@ -109,7 +261,7 @@
     },
     "assigned_clients": {
       "type": "array",
-      "description": "List of client IDs assigned to this plan",
+      "description": "Legacy: list of client IDs (use client_id instead for single assignment)",
       "items": {
         "type": "string"
       }
@@ -120,6 +272,23 @@
     "is_template": {
       "type": "boolean",
       "default": false
+    },
+    "template_category": {
+      "type": "string"
+    },
+    "is_draft": {
+      "type": "boolean",
+      "default": false
+    },
+    "ai_generated": {
+      "type": "boolean",
+      "default": false
+    },
+    "goal": {
+      "type": "string"
+    },
+    "diet": {
+      "type": "string"
     }
   },
   "required": [
