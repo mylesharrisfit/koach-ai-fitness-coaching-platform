@@ -21,7 +21,8 @@ function getSwaps(foodName) {
 
 function FoodRow({ food }) {
   const name     = food.name     || food.food_name || 'Unknown food';
-  const portion  = food.amount   || food.portion   || '';
+  // Prefer household measure for display; fall back to grams, then legacy portion/amount
+  const portion  = food.amount_household || food.portion || (food.amount_grams ? `${food.amount_grams}g` : '') || food.amount || '';
   const calories = food.calories || 0;
   const protein  = food.protein  || 0;
   const carbs    = food.carbs    || 0;

@@ -1004,6 +1004,7 @@ function Step2Details({ details, setDetails, goal }) {
 function Step3Generating({ onDone, macroPayload }) {
   const [progress, setProgress] = useState(0);
   const [msgIndex, setMsgIndex] = useState(0);
+  const [error, setError] = useState(null);
   const doneRef = useRef(false);
   const apiCalledRef = useRef(false);
 
@@ -1028,19 +1029,42 @@ function Step3Generating({ onDone, macroPayload }) {
       base44.functions.invoke('generateMealPlan', macroPayload)
         .then(res => {
           clearInterval(interval);
+          const body = res.data;
+          if (body?.error) {
+            setProgress(0);
+            setError(body.error);
+            return;
+          }
           setProgress(100);
-          const fullData = { plan: res.data?.plan, meals: res.data?.meals };
+          const fullData = { plan: body?.plan, meals: body?.meals };
           setTimeout(() => { if (!doneRef.current) { doneRef.current = true; onDone(fullData); } }, 400);
         })
-        .catch(() => {
+        .catch(err => {
           clearInterval(interval);
-          setProgress(100);
-          setTimeout(() => { if (!doneRef.current) { doneRef.current = true; onDone({ plan: null, meals: [] }); } }, 400);
+          setProgress(0);
+          setError(err?.message || 'Generation failed. Please try again.');
         });
     }
 
     return () => { clearInterval(interval); clearInterval(msgTimer); };
   }, []);
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center">
+          <span className="text-2xl">❌</span>
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-foreground mb-1">Generation Failed</h2>
+          <p className="text-sm text-muted-foreground max-w-sm">{error}</p>
+        </div>
+        <Button variant="outline" onClick={() => { setError(null); doneRef.current = false; apiCalledRef.current = false; onDone({ plan: null, meals: [] }); }}>
+          ← Go Back & Try Again
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center py-10 gap-6">
@@ -1121,9 +1145,9 @@ function MealCard({ meal }) {
                     </div>
                     <div className="flex flex-wrap gap-2 mt-0.5">
                       {food.amount_grams ? (
-                        <span className="text-[10px] text-muted-foreground">{food.amount_grams}g ({food.amount})</span>
+                        <span className="text-[10px] text-muted-foreground">{food.amount_grams}g {food.amount_household ? `(${food.amount_household})` : ''}</span>
                       ) : (
-                        <span className="text-[10px] text-muted-foreground">{food.amount}</span>
+                        <span className="text-[10px] text-muted-foreground">{food.amount_household || food.amount}</span>
                       )}
                       {food.prep_method && <span className="text-[10px] text-purple-500 italic">{food.prep_method}</span>}
                     </div>
@@ -1510,19 +1534,25 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       why_this_meal: meal.why_this_meal || '',
       option_b:      meal.option_b || '',
       option_c:      meal.option_c || '',
-      foods: (meal.foods || []).map(food => ({
-        name:             food.name || food.food_name || food.item || '',
-        food_name:        food.name || food.food_name || food.item || '',
-        amount_grams:     Number(food.amount_grams) || null,
-        amount_household: food.amount_household || food.amount || food.serving || food.portion || '',
-        amount:           food.amount_household || food.amount || food.serving || food.portion || '',
-        portion:          food.amount_household || food.amount || food.serving || food.portion || '',
-        prep_method:      food.prep_method || food.prep || '',
-        calories:         Number(food.calories) || 0,
-        protein:          Number(food.protein)  || 0,
-        carbs:            Number(food.carbs)    || 0,
-        fats:             Number(food.fats)     || Number(food.fat) || 0,
-      })),
+      foods: (meal.foods || []).map(food => {
+        // AI returns amount as grams (number) and amount_household as string
+        const amountGrams = Number(food.amount_grams ?? food.amount) || null;
+        const household = food.amount_household || food.serving || food.portion || (amountGrams ? `${amountGrams}g` : '');
+        return {
+          name:             food.name || food.food_name || food.item || '',
+          food_name:        food.name || food.food_name || food.item || '',
+          amount_grams:     amountGrams,
+          amount_household: household,
+          amount:           household, // for display in MealPlanTab FoodRow
+          portion:          household,
+          unit:             food.unit || 'g',
+          prep_method:      food.prep_method || food.prep || '',
+          calories:         Number(food.calories) || 0,
+          protein:          Number(food.protein)  || 0,
+          carbs:            Number(food.carbs)    || 0,
+          fats:             Number(food.fats)     || Number(food.fat) || 0,
+        };
+      }),
     }));
   }
 
@@ -1577,18 +1607,26 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
         meal_name:         meal.name,
         time:              meal.time,
         calories:          meal.calories,
+        protein:           meal.protein,
+        carbs:             meal.carbs,
+        fats:              meal.fats,
         instructions:      meal.instructions,
-        notes:             meal.instructions,
-        habit_description: meal.instructions,
+        why_this_meal:     meal.why_this_meal,
+        option_b:          meal.option_b,
+        option_c:          meal.option_c,
         foods: (meal.foods || []).map(f => ({
-          name:      f.name,
-          food_name: f.name,
-          amount:    f.amount,
-          portion:   f.amount,
-          calories:  f.calories,
-          protein:   f.protein,
-          carbs:     f.carbs,
-          fats:      f.fats,
+          name:             f.name,
+          food_name:        f.name,
+          amount:           f.amount,
+          amount_grams:     f.amount_grams,
+          amount_household: f.amount_household,
+          unit:             f.unit || 'g',
+          portion:          f.amount,
+          prep_method:      f.prep_method,
+          calories:         f.calories,
+          protein:          f.protein,
+          carbs:            f.carbs,
+          fats:             f.fats,
         })),
       })),
       supplements: (result.supplements || []).filter(s => s !== 'None').map(s => ({ name: s, category: 'supplement' })),
