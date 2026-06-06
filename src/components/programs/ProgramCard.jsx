@@ -1,245 +1,180 @@
 import React, { useState } from 'react';
 import {
-  Clock, BarChart3, Dumbbell, MoreVertical, Users, Eye,
-  Flame, Zap, Layers, Target
+  Clock, BarChart3, Dumbbell, MoreVertical, Users,
+  Flame, Zap, Layers, Target, Calendar,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-const DIFFICULTY_CONFIG = {
-  beginner: {
-    gradient: 'from-emerald-50 to-emerald-100/50',
-    border: 'border-t-emerald-400',
-    badge: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  },
-  intermediate: {
-    gradient: 'from-blue-50 to-blue-100/50',
-    border: 'border-t-blue-400',
-    badge: 'bg-blue-50 text-blue-700 border-blue-100',
-  },
-  advanced: {
-    gradient: 'from-purple-50 to-purple-100/50',
-    border: 'border-t-purple-400',
-    badge: 'bg-purple-50 text-purple-700 border-purple-100',
-  },
-  elite: {
-    gradient: 'from-red-50 to-red-100/50',
-    border: 'border-t-red-400',
-    badge: 'bg-red-50 text-red-600 border-red-100',
-  },
+/* ── Goal-based colour palette ── */
+const CATEGORY_CONFIG = {
+  strength:    { bg: '#E6F1FB', icon: '#185FA5', Icon: Zap,     label: 'Strength'    },
+  hypertrophy: { bg: '#EEEDFE', icon: '#3C3489', Icon: Layers,  label: 'Hypertrophy' },
+  fat_loss:    { bg: '#FAECE7', icon: '#993C1D', Icon: Flame,   label: 'Fat Loss'    },
+  athletic:    { bg: '#E6FBF3', icon: '#1A6B4A', Icon: Target,  label: 'Athletic'    },
+  mobility:    { bg: '#F0FBE6', icon: '#3A6B1A', Icon: Target,  label: 'Mobility'    },
+  custom:      { bg: '#F3F4F6', icon: '#6B7280', Icon: Dumbbell, label: 'Custom'     },
 };
 
-const CATEGORY_ICONS = {
-  strength: Zap,
-  hypertrophy: Layers,
-  fat_loss: Flame,
-  athletic: Target,
-  mobility: Target,
-  custom: Dumbbell,
+const DIFFICULTY_BADGE = {
+  beginner:     'bg-emerald-50 text-emerald-700',
+  intermediate: 'bg-blue-50 text-blue-700',
+  advanced:     'bg-purple-50 text-purple-700',
+  elite:        'bg-red-50 text-red-600',
 };
-
-function estSessionMins(program) {
-  if (!program.workouts?.length) return null;
-  const avgExercises = program.workouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0) / program.workouts.length;
-  return Math.round(avgExercises * 5 + (program.workouts[0]?.exercises?.reduce((s, e) => s + (e.sets || 3) * ((e.rest_seconds || 60) / 60 + 1), 0) || 30));
-}
 
 export default function ProgramCard({
   program,
   clientsAssigned = [],
-  clientsInProgress = [],
   onEdit,
   onDuplicate,
   onAssign,
   onPreview,
   onArchive,
   onDelete,
-  allClients = [],
 }) {
-  const [hovered, setHovered] = useState(false);
-  const [showClientList, setShowClientList] = useState(false);
+  const [showClients, setShowClients] = useState(false);
 
-  const config = DIFFICULTY_CONFIG[program.difficulty] || DIFFICULTY_CONFIG.beginner;
-  const CatIcon = CATEGORY_ICONS[program.category] || CATEGORY_ICONS.custom;
-  const estMins = estSessionMins(program);
-  const workoutCount = program.workouts?.length || 0;
-  const restDays = 7 - (program.days_per_week || 0);
+  const cat = CATEGORY_CONFIG[program.category] || CATEGORY_CONFIG.custom;
+  const CatIcon = cat.Icon;
+  const diffBadge = DIFFICULTY_BADGE[program.difficulty] || 'bg-gray-50 text-gray-600';
+  const MAX_AVATARS = 3;
+  const shown = clientsAssigned.slice(0, MAX_AVATARS);
+  const extra = clientsAssigned.length - MAX_AVATARS;
 
   return (
     <div
-      className={cn(
-        'relative bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden transition-all duration-200',
-        'hover:border-blue-300 hover:shadow-lg hover:-translate-y-1',
-        hovered && 'border-blue-300 shadow-lg -translate-y-1'
-      )}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="bg-white rounded-xl flex flex-col transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
+      style={{ border: '0.5px solid #E2E5EC' }}
     >
-      {/* Top border with difficulty color */}
-      <div className={cn('absolute top-0 left-0 right-0 h-1', config.border)} />
+      <div className="p-4 flex flex-col gap-3 flex-1">
 
-      {/* Gradient background */}
-      <div className={cn('absolute inset-0 bg-gradient-to-br pointer-events-none', config.gradient)} />
-
-      {/* Content */}
-      <div className="relative p-5 space-y-4">
-        {/* Header: Title + Category Icon + Menu */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-[#1F2A44] text-base leading-snug line-clamp-2">
-              {program.title}
-            </h3>
-            {program.description && (
-              <p className="text-xs text-[#6B7280] line-clamp-2 mt-1 leading-relaxed">
-                {program.description}
-              </p>
-            )}
-          </div>
-
-          {/* Category icon in top right */}
-          <div className="w-8 h-8 rounded-lg bg-white border border-[#E7EAF3] flex items-center justify-center flex-shrink-0">
-            <CatIcon className="w-4 h-4 text-[#6B7280]" />
-          </div>
-        </div>
-
-        {/* Difficulty + Category tags */}
-        <div className="flex flex-wrap gap-1.5">
-          <span className={cn('text-[10px] font-semibold px-2 py-1 rounded-lg border capitalize', config.badge)}>
-            {program.difficulty || 'custom'}
-          </span>
-          <span className={cn('text-[10px] font-semibold px-2 py-1 rounded-lg border flex items-center gap-1', 
-            program.category === 'strength' ? 'bg-purple-50 text-purple-700 border-purple-100' :
-            program.category === 'hypertrophy' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-            program.category === 'fat_loss' ? 'bg-orange-50 text-orange-700 border-orange-100' :
-            program.category === 'athletic' ? 'bg-teal-50 text-teal-700 border-teal-100' :
-            program.category === 'mobility' ? 'bg-lime-50 text-lime-700 border-lime-100' :
-            'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3]'
-          )}>
-            {program.category?.charAt(0).toUpperCase() + program.category?.slice(1).replace('_', ' ')}
-          </span>
-        </div>
-
-        {/* Stats row */}
-        <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] flex-wrap">
-          {program.duration_weeks && (
-            <div className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
-              <span>{program.duration_weeks} weeks</span>
-            </div>
-          )}
-          {program.days_per_week && (
-            <div className="flex items-center gap-1">
-              <BarChart3 className="w-3.5 h-3.5" />
-              <span>{program.days_per_week}x/week</span>
-            </div>
-          )}
-          {estMins && (
-            <div className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
-              <span>~{estMins}min/session</span>
-            </div>
-          )}
-          {program.days_per_week && (
-            <div className="flex items-center gap-1">
-              <Dumbbell className="w-3.5 h-3.5" />
-              <span>{restDays} rest {restDays === 1 ? 'day' : 'days'}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Progress indicator if clients in progress */}
-        {clientsInProgress.length > 0 && (
-          <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280] bg-blue-50 border border-blue-100 rounded-lg px-2 py-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            {clientsInProgress.length} client{clientsInProgress.length !== 1 ? 's' : ''} in progress
-          </div>
-        )}
-
-        {/* Clients assigned chip + popover */}
-        {clientsAssigned.length > 0 && (
-          <Popover open={showClientList} onOpenChange={setShowClientList}>
-            <PopoverTrigger asChild>
-              <button className="flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] hover:bg-[#ECEEF5] transition-colors text-[#374151]">
-                <Users className="w-3 h-3" />
-                {clientsAssigned.length} client{clientsAssigned.length !== 1 ? 's' : ''}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-48 p-2" align="start">
-              <div className="space-y-1">
-                {clientsAssigned.map(client => (
-                  <div key={client.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F6F7FB]">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                      {client.name?.[0]?.toUpperCase()}
-                    </div>
-                    <span className="text-xs text-[#374151] truncate">{client.name}</span>
-                  </div>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-        )}
-
-        {/* Action buttons - hidden on desktop until hover, always visible on mobile */}
-        <div className={cn(
-          'flex gap-2 transition-all duration-200',
-          'opacity-100 md:opacity-0 md:group-hover:opacity-100',
-          hovered && 'md:opacity-100'
-        )}>
-          <Button
-            onClick={onAssign}
-            size="sm"
-            className="flex-1 text-[11px] h-8 bg-primary hover:bg-primary/90"
+        {/* ── Top row: icon tile + menu ── */}
+        <div className="flex items-start justify-between">
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: cat.bg }}
           >
-            Assign
-          </Button>
-          <Button
-            onClick={onPreview}
-            size="sm"
-            variant="outline"
-            className="flex-1 text-[11px] h-8"
-          >
-            <Eye className="w-3 h-3 mr-1" />
-            Preview
-          </Button>
+            <CatIcon className="w-5 h-5" style={{ color: cat.icon }} />
+          </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
-                className="w-8 h-8 p-0"
-              >
+              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
                 <MoreVertical className="w-3.5 h-3.5" />
-              </Button>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-44">
-              <DropdownMenuItem onClick={onEdit}>
-                Edit Program
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDuplicate}>
-                Duplicate Program
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onArchive}>
-                Archive Program
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={onDelete}
-                className="text-destructive focus:text-destructive"
-              >
-                Delete Program
+              <DropdownMenuItem onClick={onPreview}>Preview</DropdownMenuItem>
+              <DropdownMenuItem onClick={onEdit}>Edit Program</DropdownMenuItem>
+              <DropdownMenuItem onClick={onDuplicate}>Duplicate</DropdownMenuItem>
+              <DropdownMenuItem onClick={onArchive}>Archive</DropdownMenuItem>
+              <DropdownMenuItem onClick={onDelete} className="text-destructive focus:text-destructive">
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+
+        {/* ── Title + goal pill ── */}
+        <div>
+          <h3 className="text-sm font-bold text-[#0E1525] leading-snug line-clamp-2 mb-1.5">
+            {program.title}
+          </h3>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span
+              className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+              style={{ background: cat.bg, color: cat.icon }}
+            >
+              {cat.label}
+            </span>
+            {program.difficulty && (
+              <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize', diffBadge)}>
+                {program.difficulty}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* ── Meta row ── */}
+        <div className="flex items-center gap-3 text-[11px] text-[#9CA3AF]">
+          {program.duration_weeks && (
+            <div className="flex items-center gap-1">
+              <Calendar className="w-3 h-3" />
+              <span>{program.duration_weeks}w</span>
+            </div>
+          )}
+          {program.days_per_week && (
+            <div className="flex items-center gap-1">
+              <BarChart3 className="w-3 h-3" />
+              <span>{program.days_per_week}×/wk</span>
+            </div>
+          )}
+          {program.difficulty && (
+            <div className="flex items-center gap-1">
+              <Dumbbell className="w-3 h-3" />
+              <span className="capitalize">{program.difficulty}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Divider + Footer ── */}
+      <div style={{ borderTop: '0.5px solid #F3F4F6' }}>
+        <div className="px-4 py-3 flex items-center justify-between gap-2">
+
+          {/* Client avatar stack or Unassigned pill */}
+          {clientsAssigned.length === 0 ? (
+            <span className="text-[10px] font-medium text-[#9CA3AF] bg-[#F3F4F6] px-2.5 py-1 rounded-full">
+              Unassigned
+            </span>
+          ) : (
+            <Popover open={showClients} onOpenChange={setShowClients}>
+              <PopoverTrigger asChild>
+                <button className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                  {/* Overlapping avatars */}
+                  <div className="flex -space-x-1.5">
+                    {shown.map(c => (
+                      <div
+                        key={c.id}
+                        className="w-6 h-6 rounded-full bg-[#EEF4FF] text-[#2563EB] text-[9px] font-bold flex items-center justify-center ring-2 ring-white flex-shrink-0"
+                      >
+                        {c.name?.[0]?.toUpperCase()}
+                      </div>
+                    ))}
+                  </div>
+                  <span className="text-[11px] font-medium text-[#6B7280]">
+                    {clientsAssigned.length} client{clientsAssigned.length !== 1 ? 's' : ''}
+                    {extra > 0 && ` +${extra}`}
+                  </span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-44 p-2" align="start">
+                <div className="space-y-1">
+                  {clientsAssigned.map(c => (
+                    <div key={c.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F6F7FB]">
+                      <div className="w-6 h-6 rounded-full bg-[#EEF4FF] text-[#2563EB] text-[9px] font-bold flex items-center justify-center flex-shrink-0">
+                        {c.name?.[0]?.toUpperCase()}
+                      </div>
+                      <span className="text-xs text-[#374151] truncate">{c.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+
+          {/* Assign button */}
+          <button
+            onClick={onAssign}
+            className="flex items-center gap-1 text-[11px] font-semibold text-white px-3 py-1.5 rounded-lg transition-opacity hover:opacity-90 flex-shrink-0"
+            style={{ background: '#2563EB' }}
+          >
+            <Users className="w-3 h-3" /> Assign
+          </button>
         </div>
       </div>
     </div>

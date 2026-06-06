@@ -2,16 +2,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Plus, Dumbbell, Clock, BarChart3, Edit, Trash2, Copy,
-  Users, Lock, Zap, Target, Flame, ChevronRight, Layers
+  Plus, Dumbbell, Lock, Zap, Search, SlidersHorizontal,
+  LayoutGrid, List, ChevronDown, X, Flame, Layers, Target,
 } from 'lucide-react';
 import { hasFeature, getLimit } from '@/lib/subscription';
-import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import CloneToClientDialog from '../components/programs/CloneToClientDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ProgramCard from '../components/programs/ProgramCard';
 import ProgramListRow from '../components/programs/ProgramListRow';
-import ProgramSearchFilter from '../components/programs/ProgramSearchFilter';
 import ProgramDetailModal from '../components/programs/ProgramDetailModal';
 import ProgramCreationModal from '../components/programs/ProgramCreationModal';
 import ProgramAssignmentModal from '../components/programs/ProgramAssignmentModal';
@@ -23,122 +22,97 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { AnimatePresence } from 'framer-motion';
 
-/* ── Config ── */
-const DIFFICULTY_STYLES = {
-  beginner:     'bg-emerald-50 text-emerald-700 border-emerald-100',
-  intermediate: 'bg-blue-50 text-blue-700 border-blue-100',
-  advanced:     'bg-amber-50 text-amber-700 border-amber-100',
-  elite:        'bg-red-50 text-red-600 border-red-100',
-};
+/* ── Filter options ── */
+const DIFFICULTIES  = ['beginner', 'intermediate', 'advanced', 'elite'];
+const CATEGORIES    = ['strength', 'hypertrophy', 'fat_loss', 'athletic', 'mobility', 'custom'];
+const DURATIONS     = [{ value: '1-4', label: '1–4 weeks' }, { value: '5-8', label: '5–8 weeks' }, { value: '9-12', label: '9–12 weeks' }, { value: '12+', label: '12+ weeks' }];
+const FREQUENCIES   = [{ value: '2-3', label: '2–3×/week' }, { value: '4-5', label: '4–5×/week' }, { value: '6', label: '6×/week' }];
+const SESSION_LENS  = [{ value: '0-30', label: '< 30 min' }, { value: '30-45', label: '30–45 min' }, { value: '45-60', label: '45–60 min' }, { value: '60+', label: '60+ min' }];
+const STATUSES      = [{ value: 'active', label: 'Assigned' }, { value: 'unassigned', label: 'Unassigned' }, { value: 'archived', label: 'Archived' }];
+const SORTS         = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'alphabetical-az', label: 'A → Z' },
+  { value: 'alphabetical-za', label: 'Z → A' },
+  { value: 'duration-short', label: 'Shortest' },
+  { value: 'duration-long', label: 'Longest' },
+  { value: 'most-assigned', label: 'Most assigned' },
+];
 
-const CATEGORY_META = {
-  strength:    { label: 'Strength',       icon: Zap,    color: 'bg-purple-50 text-purple-700 border-purple-100' },
-  hypertrophy: { label: 'Hypertrophy',    icon: Layers, color: 'bg-blue-50 text-blue-700 border-blue-100' },
-  fat_loss:    { label: 'Fat Loss',       icon: Flame,  color: 'bg-orange-50 text-orange-700 border-orange-100' },
-  athletic:    { label: 'Athletic',       icon: Target, color: 'bg-teal-50 text-teal-700 border-teal-100' },
-  mobility:    { label: 'Mobility',       icon: Target, color: 'bg-lime-50 text-lime-700 border-lime-100' },
-  custom:      { label: 'Custom',         icon: Dumbbell, color: 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3]' },
-};
+const CAT_LABELS = { strength: 'Strength', hypertrophy: 'Hypertrophy', fat_loss: 'Fat Loss', athletic: 'Athletic', mobility: 'Mobility', custom: 'Custom' };
 
-// Estimate session time based on workouts/exercises
 function estSessionMins(program) {
   if (!program.workouts?.length) return null;
-  const avgExercises = program.workouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0) / program.workouts.length;
-  return Math.round(avgExercises * 5 + (program.workouts[0]?.exercises?.reduce((s, e) => s + (e.sets || 3) * ((e.rest_seconds || 60) / 60 + 1), 0) || 30));
+  const avgEx = program.workouts.reduce((s, w) => s + (w.exercises?.length || 0), 0) / program.workouts.length;
+  return Math.round(avgEx * 5 + (program.workouts[0]?.exercises?.reduce((s, e) => s + (e.sets || 3) * ((e.rest_seconds || 60) / 60 + 1), 0) || 30));
 }
 
-/* ── Assign to Client Modal — 1-click ── */
-function AssignModal({ program, onClose }) {
-  const [assigning, setAssigning] = useState(null);
-  const queryClient = useQueryClient();
+/* ── Filter popover content ── */
+function FiltersPanel({ filters, onChange }) {
+  const { difficulty, categories, duration, frequency, sessionLength, status } = filters;
 
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => base44.entities.Client.list(),
-  });
-
-  const assignMutation = useMutation({
-    mutationFn: (clientId) => base44.entities.Client.update(clientId, { assigned_program_id: program.id }),
-    onSuccess: (_, clientId) => {
-      queryClient.invalidateQueries({ queryKey: ['clients'] });
-      const name = clients.find(c => c.id === clientId)?.name || 'Client';
-      toast.success(`Assigned to ${name}`);
-      onClose();
-    },
-  });
-
-  const handlePick = (clientId) => {
-    setAssigning(clientId);
-    assignMutation.mutate(clientId);
+  const toggle = (key, val, multi = false) => {
+    if (multi) {
+      const arr = filters[key] || [];
+      onChange({ [key]: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
+    } else {
+      onChange({ [key]: filters[key] === val ? 'all' : val });
+    }
   };
 
-  return (
-    <Dialog open onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-xs p-0 overflow-hidden rounded-xl">
-        <div className="px-4 pt-4 pb-3 border-b border-border">
-          <DialogTitle className="text-sm font-semibold">Assign to client</DialogTitle>
-          <p className="text-xs text-muted-foreground mt-0.5 truncate">"{program.title}"</p>
-        </div>
-        <div className="p-2 max-h-64 overflow-y-auto">
-          {clients.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-6">No clients found</p>
-          ) : (
-            clients.map(c => (
-              <button
-                key={c.id}
-                onClick={() => handlePick(c.id)}
-                disabled={assignMutation.isPending}
-                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg hover:bg-secondary text-left transition-colors disabled:opacity-50"
-              >
-                <div className="w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
-                  {c.name?.[0]?.toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
-                  {c.goal && <p className="text-[11px] text-muted-foreground capitalize">{c.goal.replace(/_/g, ' ')}</p>}
-                </div>
-                {assigning === c.id && assignMutation.isPending && (
-                  <div className="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin flex-shrink-0" />
-                )}
-              </button>
-            ))
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+  const Section = ({ label, children }) => (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">{label}</p>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
+    </div>
   );
-}
 
-
-
-/* ── Suggested Card (horizontal strip) ── */
-function SuggestedCard({ program, onAssign, onEdit }) {
-  const catMeta = CATEGORY_META[program.category] || CATEGORY_META.custom;
-  const CatIcon = catMeta.icon;
-  const estMins = estSessionMins(program);
+  const Chip = ({ label, active, onClick }) => (
+    <button
+      onClick={onClick}
+      className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors"
+      style={{
+        background: active ? '#2563EB' : '#F3F4F6',
+        color: active ? '#fff' : '#6B7280',
+        border: active ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+      }}
+    >
+      {label}
+    </button>
+  );
 
   return (
-    <div className="flex-shrink-0 w-64 bg-white border border-[#E7EAF3] rounded-2xl p-4 hover:border-blue-200 hover:shadow-md transition-all group">
-      <div className="flex items-center gap-2 mb-2.5">
-        <div className={cn('w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0', catMeta.color, 'border')}>
-          <CatIcon className="w-3.5 h-3.5" />
-        </div>
-        <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-lg border capitalize', DIFFICULTY_STYLES[program.difficulty] || 'bg-[#F6F7FB] text-[#374151] border-[#E7EAF3]')}>
-          {program.difficulty}
-        </span>
-        {estMins && <span className="text-[10px] text-[#9CA3AF] ml-auto">~{estMins}min</span>}
-      </div>
-      <h4 className="text-sm font-semibold text-[#1F2A44] leading-snug mb-3 line-clamp-2">{program.title}</h4>
-      <div className="flex gap-1.5">
-        <button onClick={onAssign}
-          className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold text-primary bg-[#EEF4FF] hover:bg-blue-100 py-1.5 rounded-lg transition-colors">
-          <Users className="w-3 h-3" /> Assign
-        </button>
-        <button onClick={onEdit}
-          className="w-7 h-7 flex items-center justify-center rounded-lg text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F6F7FB] transition-colors flex-shrink-0">
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
+    <div className="space-y-4 p-4 w-72">
+      <Section label="Difficulty">
+        {DIFFICULTIES.map(d => (
+          <Chip key={d} label={d.charAt(0).toUpperCase() + d.slice(1)} active={difficulty === d} onClick={() => toggle('difficulty', d)} />
+        ))}
+      </Section>
+      <Section label="Category">
+        {CATEGORIES.map(c => (
+          <Chip key={c} label={CAT_LABELS[c]} active={(categories || []).includes(c)} onClick={() => toggle('categories', c, true)} />
+        ))}
+      </Section>
+      <Section label="Duration">
+        {DURATIONS.map(d => (
+          <Chip key={d.value} label={d.label} active={duration === d.value} onClick={() => toggle('duration', d.value)} />
+        ))}
+      </Section>
+      <Section label="Frequency">
+        {FREQUENCIES.map(f => (
+          <Chip key={f.value} label={f.label} active={frequency === f.value} onClick={() => toggle('frequency', f.value)} />
+        ))}
+      </Section>
+      <Section label="Session Length">
+        {SESSION_LENS.map(s => (
+          <Chip key={s.value} label={s.label} active={sessionLength === s.value} onClick={() => toggle('sessionLength', s.value)} />
+        ))}
+      </Section>
+      <Section label="Status">
+        {STATUSES.map(s => (
+          <Chip key={s.value} label={s.label} active={status === s.value} onClick={() => toggle('status', s.value)} />
+        ))}
+      </Section>
     </div>
   );
 }
@@ -146,26 +120,25 @@ function SuggestedCard({ program, onAssign, onEdit }) {
 /* ── Main Page ── */
 export default function Programs() {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [assigningProgram, setAssigningProgram] = useState(null);
-  const [cloningProgram, setCloningProgram] = useState(null);
+  const [assigningProgram, setAssigningProgram]   = useState(null);
   const [previewingProgram, setPreviewingProgram] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [difficulty, setDifficulty] = useState('all');
-  const [categories, setCategories] = useState([]);
-  const [duration, setDuration] = useState('all');
-  const [frequency, setFrequency] = useState('all');
+  const [searchQuery, setSearchQuery]   = useState('');
+  const [difficulty, setDifficulty]     = useState('all');
+  const [categories, setCategories]     = useState([]);
+  const [duration, setDuration]         = useState('all');
+  const [frequency, setFrequency]       = useState('all');
   const [sessionLength, setSessionLength] = useState('all');
-  const [status, setStatus] = useState('all');
-  const [sort, setSort] = useState('newest');
-  const [layout, setLayout] = useState('grid');
+  const [status, setStatus]             = useState('all');
+  const [sort, setSort]                 = useState('newest');
+  const [layout, setLayout]             = useState('grid');
+  const [filterOpen, setFilterOpen]     = useState(false);
+
   const queryClient = useQueryClient();
   const { openUpgradeModal } = useUpgradeModal();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
-  }, []);
+  useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
 
   const canUseTemplates = hasFeature(currentUser, 'program_templates');
 
@@ -173,12 +146,10 @@ export default function Programs() {
     queryKey: ['programs'],
     queryFn: () => base44.entities.WorkoutProgram.list('-created_date'),
   });
-
   const { data: allClients = [] } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list(),
   });
-
   const { data: allCheckIns = [] } = useQuery({
     queryKey: ['checkins-prog'],
     queryFn: () => base44.entities.CheckIn.list('-date', 200),
@@ -191,21 +162,13 @@ export default function Programs() {
     mutationFn: (data) => base44.entities.WorkoutProgram.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['programs'] }),
   });
-
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.WorkoutProgram.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['programs'] });
-      toast.success('Program deleted');
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['programs'] }); toast.success('Program deleted'); },
   });
-
   const archiveMutation = useMutation({
     mutationFn: (id) => base44.entities.WorkoutProgram.update(id, { is_archived: true }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['programs'] });
-      toast.success('Program archived');
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['programs'] }); toast.success('Program archived'); },
   });
 
   const duplicateProgram = (program) => {
@@ -216,276 +179,328 @@ export default function Programs() {
 
   const openBuilder = (program = null) => navigate('/program-builder', { state: { program } });
 
-  // Calculate clients assigned to each program + who is in progress
   const getClientsForProgram = (programId) => {
     const assigned = allClients.filter(c => c.assigned_program_id === programId);
-    const inProgress = assigned.filter(c => {
-      const clientCheckIns = allCheckIns.filter(ci => ci.client_id === c.id);
-      return clientCheckIns.length > 0;
-    });
+    const inProgress = assigned.filter(c => allCheckIns.some(ci => ci.client_id === c.id));
     return { assigned, inProgress };
   };
 
-  // Filter and sort programs
-  const filteredAndSortedPrograms = useMemo(() => {
-    let filtered = [...programs];
+  // Active filter count
+  const activeFilterCount = [
+    difficulty !== 'all',
+    categories.length > 0,
+    duration !== 'all',
+    frequency !== 'all',
+    sessionLength !== 'all',
+    status !== 'all',
+  ].filter(Boolean).length;
 
-    // Search
+  // Active filter chips for display
+  const activeChips = [
+    ...(difficulty !== 'all' ? [{ key: 'difficulty', label: difficulty.charAt(0).toUpperCase() + difficulty.slice(1), onRemove: () => setDifficulty('all') }] : []),
+    ...categories.map(c => ({ key: `cat-${c}`, label: CAT_LABELS[c], onRemove: () => setCategories(cs => cs.filter(x => x !== c)) })),
+    ...(duration !== 'all'      ? [{ key: 'duration',      label: DURATIONS.find(d => d.value === duration)?.label,            onRemove: () => setDuration('all') }] : []),
+    ...(frequency !== 'all'     ? [{ key: 'frequency',     label: FREQUENCIES.find(f => f.value === frequency)?.label,          onRemove: () => setFrequency('all') }] : []),
+    ...(sessionLength !== 'all' ? [{ key: 'sessionLength', label: SESSION_LENS.find(s => s.value === sessionLength)?.label,     onRemove: () => setSessionLength('all') }] : []),
+    ...(status !== 'all'        ? [{ key: 'status',        label: STATUSES.find(s => s.value === status)?.label,               onRemove: () => setStatus('all') }] : []),
+  ];
+
+  const clearAll = () => {
+    setSearchQuery(''); setDifficulty('all'); setCategories([]); setDuration('all');
+    setFrequency('all'); setSessionLength('all'); setStatus('all');
+  };
+
+  const filteredPrograms = useMemo(() => {
+    let f = [...programs];
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(p =>
-        p.title?.toLowerCase().includes(query) ||
-        p.description?.toLowerCase().includes(query) ||
-        p.category?.toLowerCase().includes(query) ||
-        p.workouts?.some(w => w.exercises?.some(e => e.name?.toLowerCase().includes(query)))
-      );
+      const q = searchQuery.toLowerCase();
+      f = f.filter(p => p.title?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q) || p.category?.toLowerCase().includes(q));
     }
-
-    // Difficulty
-    if (difficulty !== 'all') {
-      filtered = filtered.filter(p => p.difficulty === difficulty);
-    }
-
-    // Categories
-    if (categories.length > 0) {
-      filtered = filtered.filter(p => categories.includes(p.category));
-    }
-
-    // Duration
-    if (duration !== 'all') {
-      filtered = filtered.filter(p => {
-        const weeks = p.duration_weeks || 0;
-        if (duration === '1-4') return weeks >= 1 && weeks <= 4;
-        if (duration === '5-8') return weeks >= 5 && weeks <= 8;
-        if (duration === '9-12') return weeks >= 9 && weeks <= 12;
-        if (duration === '12+') return weeks > 12;
-        return true;
-      });
-    }
-
-    // Frequency
-    if (frequency !== 'all') {
-      filtered = filtered.filter(p => {
-        const days = p.days_per_week || 0;
-        if (frequency === '2-3') return days >= 2 && days <= 3;
-        if (frequency === '4-5') return days >= 4 && days <= 5;
-        if (frequency === '6') return days === 6;
-        return true;
-      });
-    }
-
-    // Session Length
-    if (sessionLength !== 'all') {
-      filtered = filtered.filter(p => {
-        const mins = (() => {
-          if (!p.workouts?.length) return 0;
-          const avgExercises = p.workouts.reduce((sum, w) => sum + (w.exercises?.length || 0), 0) / p.workouts.length;
-          return Math.round(avgExercises * 5 + (p.workouts[0]?.exercises?.reduce((s, e) => s + (e.sets || 3) * ((e.rest_seconds || 60) / 60 + 1), 0) || 30));
-        })();
-        if (sessionLength === '0-30') return mins < 30;
-        if (sessionLength === '30-45') return mins >= 30 && mins <= 45;
-        if (sessionLength === '45-60') return mins > 45 && mins <= 60;
-        if (sessionLength === '60+') return mins > 60;
-        return true;
-      });
-    }
-
-    // Status
-    if (status !== 'all') {
-      filtered = filtered.filter(p => {
-        const clientsForProgram = getClientsForProgram(p.id);
-        if (status === 'active') return clientsForProgram.assigned.length > 0;
-        if (status === 'unassigned') return clientsForProgram.assigned.length === 0;
-        if (status === 'archived') return p.is_archived;
-        return true;
-      });
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
+    if (difficulty !== 'all') f = f.filter(p => p.difficulty === difficulty);
+    if (categories.length > 0) f = f.filter(p => categories.includes(p.category));
+    if (duration !== 'all') f = f.filter(p => {
+      const w = p.duration_weeks || 0;
+      if (duration === '1-4') return w >= 1 && w <= 4;
+      if (duration === '5-8') return w >= 5 && w <= 8;
+      if (duration === '9-12') return w >= 9 && w <= 12;
+      if (duration === '12+') return w > 12;
+      return true;
+    });
+    if (frequency !== 'all') f = f.filter(p => {
+      const d = p.days_per_week || 0;
+      if (frequency === '2-3') return d >= 2 && d <= 3;
+      if (frequency === '4-5') return d >= 4 && d <= 5;
+      if (frequency === '6') return d === 6;
+      return true;
+    });
+    if (sessionLength !== 'all') f = f.filter(p => {
+      const m = estSessionMins(p) || 0;
+      if (sessionLength === '0-30') return m < 30;
+      if (sessionLength === '30-45') return m >= 30 && m <= 45;
+      if (sessionLength === '45-60') return m > 45 && m <= 60;
+      if (sessionLength === '60+') return m > 60;
+      return true;
+    });
+    if (status !== 'all') f = f.filter(p => {
+      const a = getClientsForProgram(p.id).assigned.length;
+      if (status === 'active') return a > 0;
+      if (status === 'unassigned') return a === 0;
+      if (status === 'archived') return p.is_archived;
+      return true;
+    });
+    f.sort((a, b) => {
       if (sort === 'newest') return new Date(b.created_date) - new Date(a.created_date);
       if (sort === 'oldest') return new Date(a.created_date) - new Date(b.created_date);
       if (sort === 'alphabetical-az') return a.title.localeCompare(b.title);
       if (sort === 'alphabetical-za') return b.title.localeCompare(a.title);
       if (sort === 'duration-short') return (a.duration_weeks || 0) - (b.duration_weeks || 0);
       if (sort === 'duration-long') return (b.duration_weeks || 0) - (a.duration_weeks || 0);
-      if (sort === 'most-assigned') {
-        const aCount = getClientsForProgram(a.id).assigned.length;
-        const bCount = getClientsForProgram(b.id).assigned.length;
-        return bCount - aCount;
-      }
+      if (sort === 'most-assigned') return getClientsForProgram(b.id).assigned.length - getClientsForProgram(a.id).assigned.length;
       return 0;
     });
-
-    return filtered;
+    return f;
   }, [programs, searchQuery, difficulty, categories, duration, frequency, sessionLength, status, sort, allClients, allCheckIns]);
 
-  // "Suggested" = top 4 programs, prioritising recently created + templates
-  const suggested = [...programs]
-    .sort((a, b) => (b.is_template ? 1 : 0) - (a.is_template ? 1 : 0))
-    .slice(0, 4);
+  const assignedClientCount = allClients.filter(c => c.assigned_program_id).length;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen" style={{ background: '#F6F7FB' }}>
 
-      {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-5">
+      {/* ── NAVY HEADER ── */}
+      <div className="px-6 py-5 flex items-center justify-between" style={{ background: '#0E1525' }}>
         <div>
-          <h1 className="text-xl font-semibold text-white">Programs</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{programs.length} program{programs.length !== 1 ? 's' : ''} · Training programs and workout plans</p>
+          <h1 className="text-lg font-bold text-white">Programs</h1>
+          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            {programs.length} program{programs.length !== 1 ? 's' : ''} · {assignedClientCount} client{assignedClientCount !== 1 ? 's' : ''} assigned
+          </p>
         </div>
         <button
           onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openBuilder(); }}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors min-h-[44px] self-start sm:self-auto"
-          style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-[#0E1525] bg-white transition-opacity hover:opacity-90"
         >
           {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {atLimit ? `Limit (${programs.length}/${programLimit})` : '+ New Program'}
+          {atLimit ? `Limit (${programs.length}/${programLimit})` : 'New program'}
         </button>
       </div>
 
-      <LimitBanner limitKey="max_programs" currentCount={programs.length} label="programs" featureKey="clients" />
+      <div className="px-6 py-5 space-y-5 max-w-7xl mx-auto">
 
-      {/* ── Search & Filter Bar ── */}
-      <ProgramSearchFilter
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        difficulty={difficulty}
-        onDifficultyChange={setDifficulty}
-        categories={categories}
-        onCategoriesChange={setCategories}
-        duration={duration}
-        onDurationChange={setDuration}
-        frequency={frequency}
-        onFrequencyChange={setFrequency}
-        sessionLength={sessionLength}
-        onSessionLengthChange={setSessionLength}
-        status={status}
-        onStatusChange={setStatus}
-        sort={sort}
-        onSortChange={setSort}
-        layout={layout}
-        onLayoutChange={setLayout}
-        resultCount={filteredAndSortedPrograms.length}
-      />
+        <LimitBanner limitKey="max_programs" currentCount={programs.length} label="programs" featureKey="clients" />
 
-      {/* ── Intelligence Bar ── */}
-      {allClients.length > 0 && !searchQuery && categories.length === 0 && difficulty === 'all' && duration === 'all' && frequency === 'all' && sessionLength === 'all' && status === 'all' && (
-        <div className="-mx-4 sm:-mx-6 lg:-mx-8">
-          <IntelligenceBar clients={allClients} checkIns={allCheckIns} />
-          <div className="mt-4" />
-        </div>
-      )}
-
-      {/* ── Suggested to assign today ── */}
-      {!isLoading && suggested.length > 0 && (
-        <section>
-          <div className="flex items-center gap-2 mb-3">
-            <Zap className="w-4 h-4 text-amber-500" />
-            <h2 className="text-sm font-bold text-[#1F2A44]">Suggested to assign today</h2>
-            <span className="text-xs text-[#9CA3AF] ml-1">Based on your library</span>
+        {/* ── ONE-ROW TOOLBAR ── */}
+        <div className="flex items-center gap-2">
+          {/* Search */}
+          <div className="relative flex-1 min-w-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search programs..."
+              className="w-full h-9 pl-8 pr-3 text-sm rounded-xl bg-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-[#374151] placeholder:text-[#C4C9D4]"
+              style={{ border: '0.5px solid #E2E5EC' }}
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#C4C9D4] hover:text-[#374151]">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: 'none' }}>
-            {suggested.map(p => (
-              <SuggestedCard
-                key={p.id}
-                program={p}
-                onAssign={(e) => { e?.stopPropagation?.(); setAssigningProgram(p); }}
-                onEdit={() => openBuilder(p)}
+
+          {/* Filters button */}
+          <Popover open={filterOpen} onOpenChange={setFilterOpen}>
+            <PopoverTrigger asChild>
+              <button
+                className="flex items-center gap-1.5 h-9 px-3 rounded-xl text-sm font-medium transition-colors relative"
+                style={{
+                  background: activeFilterCount > 0 ? '#EFF6FF' : '#fff',
+                  color: activeFilterCount > 0 ? '#2563EB' : '#374151',
+                  border: activeFilterCount > 0 ? '0.5px solid #BFDBFE' : '0.5px solid #E2E5EC',
+                }}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="w-4 h-4 rounded-full text-[9px] font-bold bg-[#2563EB] text-white flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="p-0 w-auto" sideOffset={4}>
+              <FiltersPanel
+                filters={{ difficulty, categories, duration, frequency, sessionLength, status }}
+                onChange={patch => {
+                  if ('difficulty'    in patch) setDifficulty(patch.difficulty);
+                  if ('categories'    in patch) setCategories(patch.categories);
+                  if ('duration'      in patch) setDuration(patch.duration);
+                  if ('frequency'     in patch) setFrequency(patch.frequency);
+                  if ('sessionLength' in patch) setSessionLength(patch.sessionLength);
+                  if ('status'        in patch) setStatus(patch.status);
+                }}
               />
-            ))}
-            {/* CTA card */}
-            <div
-              onClick={() => setShowCreateModal(true)}
-              className="flex-shrink-0 w-56 border-2 border-dashed border-[#D1D5DB] rounded-2xl flex flex-col items-center justify-center p-5 text-center cursor-pointer hover:border-primary hover:bg-[#EEF4FF]/30 transition-all group"
-            >
-              <div className="w-8 h-8 rounded-xl bg-[#F6F7FB] group-hover:bg-[#EEF4FF] flex items-center justify-center mb-2 transition-colors">
-                <Plus className="w-4 h-4 text-[#9CA3AF] group-hover:text-primary" />
-              </div>
-              <p className="text-xs font-semibold text-[#9CA3AF] group-hover:text-primary transition-colors">Build new program</p>
-            </div>
-          </div>
-        </section>
-      )}
+              {activeFilterCount > 0 && (
+                <div className="px-4 pb-3">
+                  <button onClick={() => { clearAll(); setFilterOpen(false); }} className="text-xs text-[#EF4444] font-medium hover:underline">
+                    Clear all filters
+                  </button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
 
-      {/* ── All Programs ── */}
-      <section>
-        {isLoading ? (
-          <div className={layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-2'}>
-            {[1, 2, 3].map(i => (
-              <div key={i} className={layout === 'grid' ? 'h-52 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse' : 'h-16 bg-white rounded-lg border border-[#E7EAF3] animate-pulse'} />
+          {/* Sort */}
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger
+              className="h-9 w-36 text-sm bg-white"
+              style={{ border: '0.5px solid #E2E5EC', borderRadius: 12 }}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORTS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+
+          {/* Layout toggle */}
+          <div className="flex rounded-xl overflow-hidden flex-shrink-0" style={{ border: '0.5px solid #E2E5EC' }}>
+            {[{ v: 'grid', Icon: LayoutGrid }, { v: 'list', Icon: List }].map(({ v, Icon }) => (
+              <button
+                key={v}
+                onClick={() => setLayout(v)}
+                className="w-9 h-9 flex items-center justify-center transition-colors"
+                style={{
+                  background: layout === v ? '#0E1525' : '#fff',
+                  color: layout === v ? '#fff' : '#9CA3AF',
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" />
+              </button>
             ))}
           </div>
-        ) : programs.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-[#E7EAF3]">
-            <div className="w-14 h-14 rounded-2xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center mx-auto mb-4">
-              <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
-            </div>
-            <p className="font-semibold text-[#1F2A44]">No programs yet</p>
-            <p className="text-sm text-[#6B7280] mt-1 mb-5">Create your first workout program to get started.</p>
-            <Button onClick={() => setShowCreateModal(true)}><Plus className="w-4 h-4" /> Create Program</Button>
-          </div>
-        ) : filteredAndSortedPrograms.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-[#E7EAF3]">
-            <div className="w-14 h-14 rounded-2xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center mx-auto mb-4">
-              <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
-            </div>
-            <p className="font-semibold text-[#1F2A44]">No programs match your search</p>
-            <p className="text-sm text-[#6B7280] mt-1 mb-5">Try different keywords or create a new program.</p>
-            <Button onClick={() => { setSearchQuery(''); setDifficulty('all'); setCategories([]); setDuration('all'); setFrequency('all'); setSessionLength('all'); setStatus('all'); }}>
-              Clear Filters
-            </Button>
-          </div>
-        ) : layout === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredAndSortedPrograms.map(program => {
-              const { assigned, inProgress } = getClientsForProgram(program.id);
-              return (
-                <ProgramCard
-                  key={program.id}
-                  program={program}
-                  clientsAssigned={assigned}
-                  clientsInProgress={inProgress}
-                  onEdit={() => openBuilder(program)}
-                  onDuplicate={() => {
-                    if (!canUseTemplates) { openUpgradeModal('program_templates'); return; }
-                    duplicateProgram(program);
-                  }}
-                  onAssign={() => setAssigningProgram(program)}
-                  onPreview={() => setPreviewingProgram(program)}
-                  onArchive={() => archiveMutation.mutate(program.id)}
-                  onDelete={() => deleteMutation.mutate(program.id)}
-                  allClients={allClients}
-                />
-              );
-            })}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {filteredAndSortedPrograms.map(program => {
-              const { assigned, inProgress } = getClientsForProgram(program.id);
-              return (
-                <ProgramListRow
-                  key={program.id}
-                  program={program}
-                  clientsAssigned={assigned}
-                  clientsInProgress={inProgress}
-                  onEdit={() => openBuilder(program)}
-                  onDuplicate={() => {
-                    if (!canUseTemplates) { openUpgradeModal('program_templates'); return; }
-                    duplicateProgram(program);
-                  }}
-                  onAssign={() => setAssigningProgram(program)}
-                  onPreview={() => setPreviewingProgram(program)}
-                  onArchive={() => archiveMutation.mutate(program.id)}
-                  onDelete={() => deleteMutation.mutate(program.id)}
-                  allClients={allClients}
-                />
-              );
-            })}
+        </div>
+
+        {/* ── Active filter chips ── */}
+        {activeChips.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap -mt-1">
+            {activeChips.map(chip => (
+              <span
+                key={chip.key}
+                className="flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#EFF6FF] text-[#2563EB]"
+                style={{ border: '0.5px solid #BFDBFE' }}
+              >
+                {chip.label}
+                <button onClick={chip.onRemove} className="ml-0.5 hover:opacity-70">
+                  <X className="w-2.5 h-2.5" />
+                </button>
+              </span>
+            ))}
+            <button onClick={clearAll} className="text-[11px] text-[#9CA3AF] hover:text-[#374151] transition-colors">
+              Clear all
+            </button>
           </div>
         )}
-      </section>
+
+        {/* ── PROGRAM GRID (centerpiece) ── */}
+        <section>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="h-52 bg-white rounded-xl animate-pulse" style={{ border: '0.5px solid #E2E5EC' }} />
+              ))}
+            </div>
+          ) : programs.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
+              <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
+                <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
+              </div>
+              <p className="font-semibold text-[#0E1525]">No programs yet</p>
+              <p className="text-sm text-[#6B7280] mt-1 mb-5">Create your first workout program to get started.</p>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                style={{ background: '#2563EB' }}
+              >
+                <Plus className="w-4 h-4 inline mr-1" />Create program
+              </button>
+            </div>
+          ) : filteredPrograms.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
+              <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
+                <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
+              </div>
+              <p className="font-semibold text-[#0E1525]">No programs match</p>
+              <p className="text-sm text-[#6B7280] mt-1 mb-5">Try adjusting your search or filters.</p>
+              <button onClick={clearAll} className="px-4 py-2 rounded-xl text-sm font-semibold border text-[#374151]" style={{ border: '0.5px solid #E2E5EC' }}>
+                Clear filters
+              </button>
+            </div>
+          ) : layout === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredPrograms.map(program => {
+                const { assigned } = getClientsForProgram(program.id);
+                return (
+                  <ProgramCard
+                    key={program.id}
+                    program={program}
+                    clientsAssigned={assigned}
+                    onEdit={() => openBuilder(program)}
+                    onDuplicate={() => { if (!canUseTemplates) { openUpgradeModal('program_templates'); return; } duplicateProgram(program); }}
+                    onAssign={() => setAssigningProgram(program)}
+                    onPreview={() => setPreviewingProgram(program)}
+                    onArchive={() => archiveMutation.mutate(program.id)}
+                    onDelete={() => deleteMutation.mutate(program.id)}
+                    allClients={allClients}
+                  />
+                );
+              })}
+
+              {/* Dashed "New program" tile */}
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="rounded-xl flex flex-col items-center justify-center gap-3 py-10 transition-all hover:border-[#2563EB] hover:bg-[#EFF6FF]/40 group"
+                style={{ border: '1.5px dashed #D1D5DB', background: 'transparent' }}
+              >
+                <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] group-hover:bg-[#EFF6FF] flex items-center justify-center transition-colors">
+                  <Plus className="w-5 h-5 text-[#9CA3AF] group-hover:text-[#2563EB] transition-colors" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs font-semibold text-[#9CA3AF] group-hover:text-[#2563EB] transition-colors">New program</p>
+                  <p className="text-[10px] text-[#C4C9D4] mt-0.5">Build from scratch or AI</p>
+                </div>
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {filteredPrograms.map(program => {
+                const { assigned, inProgress } = getClientsForProgram(program.id);
+                return (
+                  <ProgramListRow
+                    key={program.id}
+                    program={program}
+                    clientsAssigned={assigned}
+                    clientsInProgress={inProgress}
+                    onEdit={() => openBuilder(program)}
+                    onDuplicate={() => { if (!canUseTemplates) { openUpgradeModal('program_templates'); return; } duplicateProgram(program); }}
+                    onAssign={() => setAssigningProgram(program)}
+                    onPreview={() => setPreviewingProgram(program)}
+                    onArchive={() => archiveMutation.mutate(program.id)}
+                    onDelete={() => deleteMutation.mutate(program.id)}
+                    allClients={allClients}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* ── INTELLIGENCE & SUGGESTED (below the grid) ── */}
+        {allClients.length > 0 && !searchQuery && activeFilterCount === 0 && (
+          <div className="-mx-6">
+            <IntelligenceBar clients={allClients} checkIns={allCheckIns} />
+          </div>
+        )}
+      </div>
 
       {/* ── Modals ── */}
       <ProgramAssignmentModal
@@ -493,26 +508,17 @@ export default function Programs() {
         onOpenChange={(open) => !open && setAssigningProgram(null)}
         program={assigningProgram}
         allClients={allClients}
-        onAssign={async (assignmentData) => {
-          const { selectedClients, startDate, notifyClient, kickoffSession } = assignmentData;
-          
+        onAssign={async ({ selectedClients }) => {
           for (const clientId of selectedClients) {
             await base44.entities.Client.update(clientId, { assigned_program_id: assigningProgram.id });
           }
-          
           queryClient.invalidateQueries({ queryKey: ['clients'] });
-          
-          const clientNames = selectedClients
-            .map((id) => allClients.find((c) => c.id === id)?.name || 'Client')
-            .join(', ');
-          
-          toast.success(`${assigningProgram.title} assigned to ${clientNames} ✓`);
+          const names = selectedClients.map(id => allClients.find(c => c.id === id)?.name || 'Client').join(', ');
+          toast.success(`${assigningProgram.title} assigned to ${names} ✓`);
           setAssigningProgram(null);
         }}
       />
 
-
-      {/* Program Detail Modal */}
       <AnimatePresence>
         {previewingProgram && (
           <ProgramDetailModal
@@ -520,23 +526,16 @@ export default function Programs() {
             assignedClients={getClientsForProgram(previewingProgram.id).assigned}
             allClients={allClients}
             onClose={() => setPreviewingProgram(null)}
-            onAssign={() => {
-              setAssigningProgram(previewingProgram);
-              setPreviewingProgram(null);
-            }}
-            onEdit={() => {
-              openBuilder(previewingProgram);
-              setPreviewingProgram(null);
-            }}
+            onAssign={() => { setAssigningProgram(previewingProgram); setPreviewingProgram(null); }}
+            onEdit={() => { openBuilder(previewingProgram); setPreviewingProgram(null); }}
           />
         )}
       </AnimatePresence>
 
-      {/* Program Creation Modal */}
       <ProgramCreationModal
         open={showCreateModal}
         onOpenChange={setShowCreateModal}
-        onProgramCreated={(program) => {
+        onProgramCreated={() => {
           queryClient.invalidateQueries({ queryKey: ['programs'] });
           toast.success('Program created successfully!');
         }}
