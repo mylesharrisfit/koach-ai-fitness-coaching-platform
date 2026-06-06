@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Save, Eye, Users } from 'lucide-react';
+import { ArrowLeft, Save, Users, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 
 export default function ProgramBuilderHeader({
   title,
@@ -18,87 +17,78 @@ export default function ProgramBuilderHeader({
   lastSaved
 }) {
   const navigate = useNavigate();
-  const [charCount, setCharCount] = useState(title.length);
-
-  useEffect(() => {
-    setCharCount(title.length);
-  }, [title]);
 
   return (
-    <div className="sticky top-0 z-20 bg-white border-b border-[#E7EAF3] flex items-center gap-2 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 shadow-sm">
-      {/* Back button */}
+    <div
+      className="sticky top-0 z-20 flex items-center gap-3 px-5 py-3 flex-shrink-0"
+      style={{ background: '#0E1525', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+    >
+      {/* Back */}
       <button
         onClick={() => navigate('/programs')}
-        className="flex items-center gap-1.5 text-[#6B7280] hover:text-[#1F2A44] transition-colors flex-shrink-0 w-8 h-8 sm:w-auto sm:h-auto justify-center"
+        className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors flex-shrink-0"
       >
         <ArrowLeft className="w-4 h-4" />
         <span className="text-sm font-medium hidden sm:inline">Programs</span>
       </button>
 
-      <span className="text-[#D1D5DB] hidden sm:inline">/</span>
+      <span className="text-white/20 hidden sm:inline">/</span>
 
-      {/* Program name input */}
+      {/* Title input */}
       <div className="flex-1 min-w-0">
         <Input
           value={title}
           onChange={e => onTitleChange(e.target.value)}
           placeholder="Program name..."
-          className="border-0 bg-transparent font-bold text-xl h-auto p-0 focus-visible:ring-0 placeholder:text-[#D1D5DB]"
+          className="border-0 bg-transparent text-white font-semibold text-lg h-auto p-0 focus-visible:ring-0 placeholder:text-white/30"
+          style={{ fontSize: 17 }}
         />
-        <p className="text-xs text-[#9CA3AF] mt-0.5">{charCount} characters</p>
       </div>
 
-      {/* Template toggle + Save info */}
-      <div className="flex items-center gap-3 ml-auto flex-shrink-0">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg bg-[#F6F7FB]">
+      {/* Right actions */}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Template checkbox */}
+        <label className="hidden sm:flex items-center gap-1.5 cursor-pointer mr-1">
           <input
             type="checkbox"
             checked={isTemplate}
             onChange={e => onTemplateChange(e.target.checked)}
-            className="w-4 h-4 cursor-pointer"
+            className="w-3.5 h-3.5 cursor-pointer accent-blue-500"
           />
-          <label className="text-xs text-[#6B7280] font-medium cursor-pointer">
-            Save as Template
-          </label>
-        </div>
+          <span className="text-xs text-white/50">Template</span>
+        </label>
 
-        {/* Saved timestamp */}
         {lastSaved && (
-          <div className="text-xs text-[#9CA3AF] hidden sm:block">
-            Saved {lastSaved}
-          </div>
+          <span className="text-xs text-white/30 hidden sm:block">Saved {lastSaved}</span>
         )}
 
-        {/* Action buttons */}
         {canAssign && (
-          <Button
-            size="sm"
-            variant="outline"
+          <button
             onClick={onAssign}
-            className="gap-1.5 border-[#E7EAF3] text-xs h-9 hidden sm:flex"
+            className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white px-3 py-1.5 rounded-lg transition-colors"
+            style={{ border: '0.5px solid rgba(255,255,255,0.2)' }}
           >
-            <Users className="w-3.5 h-3.5" />
-            Assign
-          </Button>
+            <Users className="w-3.5 h-3.5" /> Assign
+          </button>
         )}
 
-        <Button
-          size="sm"
-          variant="outline"
+        <button
           onClick={onPreview}
-          className="gap-1.5 border-[#E7EAF3] text-xs h-9 hidden sm:flex"
+          className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white px-3 py-1.5 rounded-lg transition-colors"
+          style={{ border: '0.5px solid rgba(255,255,255,0.2)' }}
         >
-          <Eye className="w-3.5 h-3.5" />
-          Preview
-        </Button>
+          <Eye className="w-3.5 h-3.5" /> Preview
+        </button>
 
         <Button
           size="sm"
           onClick={onSave}
           disabled={isSaving}
-          className="h-9 text-xs bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 px-3"
+          className="h-8 text-xs font-semibold px-4 gap-1.5"
+          style={{ background: '#2563EB', color: '#fff', border: 'none' }}
         >
-          {isSaving ? 'Saving...' : 'Save'}
+          <Save className="w-3.5 h-3.5" />
+          {isSaving ? 'Saving...' : 'Save Program'}
         </Button>
       </div>
     </div>
