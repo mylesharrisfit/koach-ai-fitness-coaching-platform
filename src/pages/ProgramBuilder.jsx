@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -10,6 +10,7 @@ import {
   Plus, Trash2, GripVertical, ChevronDown, ChevronUp, Copy,
   Check, X, Dumbbell, ArrowLeft, Save, Eye, Users,
   Calendar, Repeat, BarChart2, Clock, Wrench, Settings2,
+  Play, AlignLeft, Zap, Type,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
@@ -39,12 +40,19 @@ const DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'elite'];
 const CATEGORIES = ['strength','hypertrophy','fat_loss','athletic','mobility','custom'];
 const SESSION_LENGTHS = ['30','45','60','75','90+'];
 
+const EQUIP_CHIPS = ['Barbell','Dumbbell','Cable','Machine','Body weight','Kettlebell','Resistance band','TRX'];
+
 const newExercise = (section = 'main') => ({
   name: '', sets: 3, reps: '10', rest_seconds: 60, tempo: '', notes: '', video_url: '',
   set_type: 'straight', rpe: '', rir: '', superset_group: '', dropset_scheme: '',
   stretch_type: 'static', duration_seconds: 30, section,
   progression_type: 'none', progression_value: 5,
+  prescription: '',
 });
+
+const newSectionLabel = (title = 'Warmup') => ({ _type: 'section_label', title });
+const newNoteBlock = () => ({ _type: 'note', text: '' });
+const newSupersetGroup = () => ({ _type: 'superset_header', label: 'A', rest_note: 'Rest 2 min between supersets' });
 
 const newDay = (idx) => ({ day_name: `Day ${idx + 1}`, day_number: idx + 1, exercises: [] });
 
@@ -278,11 +286,12 @@ function AssignClientModal({ open, onClose, programId, programTitle }) {
 }
 
 /* ─────────────────────────────────────────────────
-   Exercise Row
+   Exercise Row (rich)
 ───────────────────────────────────────────────── */
-function ExerciseRow({ ex, dragProvided, isDragging, isSelected, onClick, onRemove }) {
-  const hasGroup = ex.superset_group && ex.superset_group.trim();
-  const badgeClass = SET_TYPE_BADGE[ex.set_type] || '';
+function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onClick, onRemove, onPrescriptionChange }) {
+  const libEntry = exLibMap?.[ex.name?.toLowerCase()] || null;
+  const thumb = libEntry?.image_url || null;
+  const hasVideo = !!(libEntry?.video_url || ex.video_url);
 
   return (
     <div
@@ -290,32 +299,48 @@ function ExerciseRow({ ex, dragProvided, isDragging, isSelected, onClick, onRemo
       {...dragProvided.draggableProps}
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2.5 px-3 py-2.5 rounded-xl border cursor-pointer transition-all group',
-        isSelected ? 'border-[#2563EB] bg-blue-50/50' : isDragging ? 'border-blue-200 bg-white shadow-lg' : 'border-[#EBEDF2] bg-white hover:border-blue-200 hover:bg-[#F8FBFF]'
+        'flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-pointer transition-all group',
+        isSelected ? 'border-[#2563EB] bg-[#F0F6FF]' : isDragging ? 'border-blue-200 bg-white shadow-lg' : 'border-[#EBEDF2] bg-white hover:border-blue-200 hover:bg-[#F8FBFF]'
       )}
-      style={{ borderLeftWidth: hasGroup ? 2 : undefined, borderLeftColor: hasGroup ? '#2563EB' : undefined }}
     >
-      <div {...dragProvided.dragHandleProps} className="cursor-grab flex-shrink-0 text-[#D1D5DB] hover:text-[#9CA3AF]">
+      {/* Drag handle */}
+      <div {...dragProvided.dragHandleProps} onClick={e => e.stopPropagation()} className="cursor-grab flex-shrink-0 text-[#D1D5DB] hover:text-[#9CA3AF]">
         <GripVertical className="w-3.5 h-3.5" />
       </div>
 
-      {ex.set_type && ex.set_type !== 'straight' && badgeClass && (
-        <span className={cn('text-[9px] font-bold px-1.5 py-0.5 rounded flex-shrink-0', badgeClass)}>
-          {ex.set_type.slice(0, 3).toUpperCase()}
-        </span>
-      )}
+      {/* Thumbnail */}
+      <div className="w-10 h-10 rounded-lg flex-shrink-0 overflow-hidden relative"
+        style={{ background: '#0E1525' }}>
+        {thumb ? (
+          <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Dumbbell className="w-4 h-4 text-[#4B5563]" />
+          </div>
+        )}
+        {hasVideo && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <Play className="w-3 h-3 text-white fill-white" />
+          </div>
+        )}
+      </div>
 
-      <p className="flex-1 text-sm font-medium text-[#0E1525] truncate min-w-0">
-        {ex.name || <span className="text-[#C4C9D4] font-normal">Unnamed exercise</span>}
+      {/* Name */}
+      <p className="w-28 flex-shrink-0 text-sm font-medium text-[#0E1525] truncate">
+        {ex.name || <span className="text-[#C4C9D4] font-normal">Unnamed</span>}
       </p>
 
-      <span className="text-xs font-semibold text-[#374151] tabular-nums flex-shrink-0 bg-[#F3F4F6] px-2 py-0.5 rounded-md">
-        {ex.sets}×{ex.reps}
-      </span>
-      <span className="text-[11px] text-[#9CA3AF] flex-shrink-0 w-10 text-right">
-        {ex.rest_seconds}s
-      </span>
+      {/* Free-text prescription */}
+      <input
+        type="text"
+        value={ex.prescription || (ex.sets && ex.reps ? `${ex.sets} × ${ex.reps}` : '')}
+        onClick={e => e.stopPropagation()}
+        onChange={e => onPrescriptionChange(e.target.value)}
+        placeholder="3 × 8–12 reps"
+        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-[#E7EAF3] bg-[#F8F9FB] text-[#374151] placeholder:text-[#C4C9D4] focus:outline-none focus:border-[#2563EB] focus:bg-white transition-colors"
+      />
 
+      {/* Remove */}
       <button
         onClick={e => { e.stopPropagation(); onRemove(); }}
         className="w-6 h-6 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 text-[#D1D5DB] hover:text-red-400 transition-all flex-shrink-0"
@@ -327,146 +352,326 @@ function ExerciseRow({ ex, dragProvided, isDragging, isSelected, onClick, onRemo
 }
 
 /* ─────────────────────────────────────────────────
-   Day Card
+   Day Card (full Trainerize-depth version)
 ───────────────────────────────────────────────── */
-function DayCard({ day, globalDayIdx, isActiveDayForEx, selectedExIdx, onSelectExercise, onAddExercise, onRemoveExercise, onRemoveDay, onDuplicateDay }) {
+function DayCard({
+  day, globalDayIdx, isActiveDayForEx, selectedExIdx,
+  onSelectExercise, onAddExercise, onRemoveExercise, onRemoveDay, onDuplicateDay,
+  onUpdateDay, exLibMap,
+}) {
   const [collapsed, setCollapsed] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const titleRef = useRef(null);
 
-  const exercisesBySection = () => {
-    const order = ['warmup', 'main', 'finisher', 'cooldown'];
-    const grouped = {};
-    order.forEach(s => { grouped[s] = []; });
-    (day.exercises || []).forEach((ex, origIdx) => {
-      const sec = ex.section || 'main';
-      if (!grouped[sec]) grouped[sec] = [];
-      grouped[sec].push({ ex, origIdx });
+  // Auto-derive equipment from exercises
+  const derivedEquipment = React.useMemo(() => {
+    const seen = new Set();
+    (day.exercises || []).forEach(ex => {
+      if (!ex._type) {
+        const lib = exLibMap?.[ex.name?.toLowerCase()];
+        if (lib?.equipment) {
+          const label = lib.equipment.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+          seen.add(label);
+        }
+      }
     });
-    return order.filter(s => grouped[s].length > 0).map(s => ({ section: s, items: grouped[s] }));
+    return [...seen];
+  }, [day.exercises, exLibMap]);
+
+  const exCount = (day.exercises || []).filter(e => !e._type && e.name).length;
+  const sessionTime = day.session_time || '';
+  const workoutType = day.workout_type || 'Regular workout';
+
+  // Render the items array (exercises + section labels + notes + superset headers)
+  const renderItems = (items) => {
+    const rows = [];
+    let i = 0;
+    while (i < items.length) {
+      const item = items[i];
+
+      // Section label
+      if (item._type === 'section_label') {
+        rows.push(
+          <div key={`sl-${i}`} className="flex items-center gap-2 my-2">
+            <div className="h-px flex-1" style={{ background: '#E7EAF3' }} />
+            <div className="flex items-center gap-1.5 group/sl">
+              <input
+                type="text"
+                value={item.title || ''}
+                onChange={e => {
+                  const updated = [...(day.exercises || [])];
+                  updated[items[i].__origIdx] = { ...item, title: e.target.value };
+                  onUpdateDay({ exercises: updated });
+                }}
+                className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] bg-transparent border-none focus:outline-none text-center w-20"
+              />
+              <button onClick={() => {
+                const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
+                onUpdateDay({ exercises: updated });
+              }} className="opacity-0 group-hover/sl:opacity-100 text-[#D1D5DB] hover:text-red-400 transition-all">
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </div>
+            <div className="h-px flex-1" style={{ background: '#E7EAF3' }} />
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Note block
+      if (item._type === 'note') {
+        rows.push(
+          <div key={`note-${i}`} className="rounded-xl px-3 py-2.5 my-1.5 relative group/note"
+            style={{ background: '#FFFBEB', border: '1px solid #FAC775' }}>
+            <textarea
+              rows={2}
+              value={item.text || ''}
+              onChange={e => {
+                const updated = [...(day.exercises || [])];
+                updated[items[i].__origIdx] = { ...item, text: e.target.value };
+                onUpdateDay({ exercises: updated });
+              }}
+              placeholder="Add a coaching note, form cue, or instruction..."
+              className="w-full text-xs bg-transparent border-none focus:outline-none resize-none"
+              style={{ color: '#854f0b' }}
+            />
+            <button onClick={() => {
+              const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
+              onUpdateDay({ exercises: updated });
+            }} className="absolute top-2 right-2 opacity-0 group-hover/note:opacity-100 text-[#D1D5DB] hover:text-red-400 transition-all">
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Superset header
+      if (item._type === 'superset_header') {
+        // collect exercises until next non-superset item
+        const ssItems = [];
+        let j = i + 1;
+        while (j < items.length && items[j]._type !== 'section_label' && items[j]._type !== 'note' && items[j]._type !== 'superset_header') {
+          if (!items[j]._type) ssItems.push({ ex: items[j], origIdx: items[j].__origIdx });
+          j++;
+        }
+        rows.push(
+          <div key={`ss-${i}`} className="mb-2">
+            <div className="flex items-center gap-2 mb-1.5 group/ssh">
+              <div className="w-0.5 h-4 rounded-full flex-shrink-0" style={{ background: '#2563EB' }} />
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: '#2563EB' }}>
+                Superset {item.label || 'A'}
+              </span>
+              <input
+                type="text"
+                value={item.rest_note || ''}
+                onChange={e => {
+                  const updated = [...(day.exercises || [])];
+                  updated[items[i].__origIdx] = { ...item, rest_note: e.target.value };
+                  onUpdateDay({ exercises: updated });
+                }}
+                placeholder="Rest note..."
+                className="ml-2 flex-1 text-[10px] text-[#9CA3AF] bg-transparent border-none focus:outline-none"
+              />
+              <button onClick={() => {
+                const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
+                onUpdateDay({ exercises: updated });
+              }} className="opacity-0 group-hover/ssh:opacity-100 text-[#D1D5DB] hover:text-red-400 transition-all">
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </div>
+            <div className="pl-3 space-y-1.5" style={{ borderLeft: '2px solid #2563EB' }}>
+              {ssItems.map(({ ex, origIdx }) => (
+                <Draggable key={`ex-${globalDayIdx}-${origIdx}`} draggableId={`ex-${globalDayIdx}-${origIdx}`} index={origIdx}>
+                  {(drag, snap) => (
+                    <ExerciseRow
+                      ex={ex} exLibMap={exLibMap} dragProvided={drag} isDragging={snap.isDragging}
+                      isSelected={isActiveDayForEx && selectedExIdx === origIdx}
+                      onClick={() => onSelectExercise(origIdx)}
+                      onRemove={() => onRemoveExercise(origIdx)}
+                      onPrescriptionChange={val => {
+                        const updated = [...(day.exercises || [])];
+                        updated[origIdx] = { ...ex, prescription: val };
+                        onUpdateDay({ exercises: updated });
+                      }}
+                    />
+                  )}
+                </Draggable>
+              ))}
+            </div>
+          </div>
+        );
+        i = j;
+        continue;
+      }
+
+      // Regular exercise
+      const origIdx = item.__origIdx;
+      rows.push(
+        <Draggable key={`ex-${globalDayIdx}-${origIdx}`} draggableId={`ex-${globalDayIdx}-${origIdx}`} index={origIdx}>
+          {(drag, snap) => (
+            <ExerciseRow
+              ex={item} exLibMap={exLibMap} dragProvided={drag} isDragging={snap.isDragging}
+              isSelected={isActiveDayForEx && selectedExIdx === origIdx}
+              onClick={() => onSelectExercise(origIdx)}
+              onRemove={() => onRemoveExercise(origIdx)}
+              onPrescriptionChange={val => {
+                const updated = [...(day.exercises || [])];
+                updated[origIdx] = { ...item, prescription: val };
+                onUpdateDay({ exercises: updated });
+              }}
+            />
+          )}
+        </Draggable>
+      );
+      i++;
+    }
+    return rows;
   };
 
-  const sections = exercisesBySection();
-  const exCount = (day.exercises || []).filter(e => e.name).length;
+  // Build flat items list with original indexes
+  const allItems = (day.exercises || []).map((ex, origIdx) => ({ ...ex, __origIdx: origIdx }));
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden mb-3" style={{ border: '0.5px solid #E2E5EC', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: collapsed ? 'none' : '1px solid #F3F4F6' }}>
-        <div {...{}} className="flex items-center gap-3 flex-1 min-w-0">
-          <GripVertical className="w-3.5 h-3.5 text-[#D1D5DB] cursor-grab flex-shrink-0" />
-          <button onClick={() => setCollapsed(v => !v)} className="flex-shrink-0 text-[#9CA3AF] hover:text-[#374151] transition-colors">
+    <div className="bg-white rounded-2xl overflow-hidden mb-4" style={{ border: '0.5px solid #E2E5EC', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+
+      {/* ── HEADER ── */}
+      <div className="px-4 pt-4 pb-3" style={{ borderBottom: '1px solid #F3F4F6' }}>
+        <div className="flex items-start gap-2">
+          <GripVertical className="w-3.5 h-3.5 text-[#D1D5DB] cursor-grab flex-shrink-0 mt-1" />
+          <button onClick={() => setCollapsed(v => !v)} className="flex-shrink-0 text-[#9CA3AF] hover:text-[#374151] transition-colors mt-0.5">
             {collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
           </button>
+
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[#0E1525] truncate">{day.day_name}</p>
+            {/* Editable title */}
+            {editingTitle ? (
+              <input
+                ref={titleRef}
+                autoFocus
+                type="text"
+                value={day.day_name || ''}
+                onChange={e => onUpdateDay({ day_name: e.target.value })}
+                onBlur={() => setEditingTitle(false)}
+                onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
+                className="w-full text-sm font-bold text-[#0E1525] bg-transparent border-none focus:outline-none"
+              />
+            ) : (
+              <button onClick={() => setEditingTitle(true)} className="text-left group/title flex items-center gap-1">
+                <span className="text-sm font-bold text-[#0E1525]">{day.day_name || 'Untitled Day'}</span>
+                <span className="text-[10px] text-[#C4C9D4] opacity-0 group-hover/title:opacity-100 transition-opacity ml-1">edit</span>
+              </button>
+            )}
+
+            {/* Meta line */}
+            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+              {/* Session time — editable inline */}
+              <div className="flex items-center gap-1">
+                <Clock className="w-3 h-3 text-[#9CA3AF]" />
+                <input
+                  type="text"
+                  value={sessionTime}
+                  onChange={e => onUpdateDay({ session_time: e.target.value })}
+                  placeholder="45 min"
+                  className="text-[11px] text-[#6B7280] bg-transparent border-none focus:outline-none w-14"
+                />
+              </div>
+              <span className="text-[#E2E5EC] text-[10px]">·</span>
+              <span className="text-[11px] text-[#6B7280]">{exCount} {exCount === 1 ? 'exercise' : 'exercises'}</span>
+              <span className="text-[#E2E5EC] text-[10px]">·</span>
+              <span className="text-[10px] font-medium text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded-full">{workoutType}</span>
+            </div>
+
+            {/* Equipment chips */}
+            {derivedEquipment.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {derivedEquipment.map(eq => (
+                  <span key={eq} className="text-[10px] font-medium text-[#6B7280] bg-[#F8F9FB] border border-[#E7EAF3] px-2 py-0.5 rounded-full">{eq}</span>
+                ))}
+              </div>
+            )}
           </div>
-          <span className="text-[11px] text-[#9CA3AF] bg-[#F3F4F6] px-2 py-0.5 rounded-full flex-shrink-0">
-            {exCount} {exCount === 1 ? 'exercise' : 'exercises'}
-          </span>
-        </div>
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <button onClick={onDuplicateDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
-            <Copy className="w-3.5 h-3.5" />
-          </button>
-          <button onClick={onRemoveDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-red-400 hover:bg-red-50 transition-colors">
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <button onClick={onDuplicateDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
+              <Copy className="w-3.5 h-3.5" />
+            </button>
+            <button onClick={onRemoveDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-red-400 hover:bg-red-50 transition-colors">
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 
       {!collapsed && (
-        <div className="px-4 pb-3 pt-3">
+        <div className="px-4 pb-4 pt-3">
+
+          {/* Workout notes */}
+          <div className="mb-3">
+            <textarea
+              rows={2}
+              value={day.workout_notes || ''}
+              onChange={e => onUpdateDay({ workout_notes: e.target.value })}
+              placeholder="Workout notes / bio — warmup intent, focus, coaching cues for the client..."
+              className="w-full text-xs px-3 py-2.5 rounded-xl border border-[#E7EAF3] bg-[#F8F9FB] text-[#374151] placeholder:text-[#C4C9D4] focus:outline-none focus:border-[#93C5FD] resize-none transition-colors"
+            />
+          </div>
+
+          {/* Exercises */}
           <Droppable droppableId={`ex-${globalDayIdx}`}>
             {(prov) => (
-              <div ref={prov.innerRef} {...prov.droppableProps} className="space-y-1">
-                {sections.length === 0 ? (
-                  <p className="text-xs text-[#C4C9D4] text-center py-3">No exercises yet</p>
-                ) : (
-                  sections.map(({ section, items }) => {
-                    const sStyle = SECTION_STYLES[section] || SECTION_STYLES.main;
-                    return (
-                      <div key={section} className="mb-2.5">
-                        {/* Section label */}
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <div className="w-1 h-3 rounded-full flex-shrink-0" style={{ background: sStyle.bar }} />
-                          <span className="text-[10px] font-bold uppercase tracking-wide" style={{ color: sStyle.bar }}>{sStyle.label}</span>
-                          <button onClick={() => onAddExercise(section)}
-                            className="ml-auto text-[10px] font-semibold hover:opacity-70 transition-opacity"
-                            style={{ color: sStyle.bar }}>+ Add</button>
-                        </div>
-
-                        {/* Superset grouping */}
-                        {(() => {
-                          // Group consecutive exercises by superset_group
-                          const rows = [];
-                          let i = 0;
-                          while (i < items.length) {
-                            const cur = items[i];
-                            const grp = cur.ex.superset_group?.trim();
-                            if (grp) {
-                              // collect all in this group
-                              const groupItems = [cur];
-                              let j = i + 1;
-                              while (j < items.length && items[j].ex.superset_group?.trim() === grp) {
-                                groupItems.push(items[j++]);
-                              }
-                              rows.push({ type: 'superset', label: `Superset ${grp}`, items: groupItems });
-                              i = j;
-                            } else {
-                              rows.push({ type: 'single', item: cur });
-                              i++;
-                            }
-                          }
-                          return rows.map((row, rIdx) => {
-                            if (row.type === 'superset') {
-                              return (
-                                <div key={`ss-${rIdx}`} className="mb-1.5">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <div className="w-0.5 h-3 rounded-full" style={{ background: '#2563EB' }} />
-                                    <span className="text-[10px] font-bold text-[#2563EB]">Superset {row.label.replace('Superset ', '')}</span>
-                                  </div>
-                                  <div className="pl-3 space-y-1" style={{ borderLeft: '2px solid #2563EB' }}>
-                                    {row.items.map(({ ex, origIdx }) => (
-                                      <Draggable key={`ex-${globalDayIdx}-${origIdx}`} draggableId={`ex-${globalDayIdx}-${origIdx}`} index={origIdx}>
-                                        {(drag, snap) => (
-                                          <ExerciseRow ex={ex} dragProvided={drag} isDragging={snap.isDragging}
-                                            isSelected={isActiveDayForEx && selectedExIdx === origIdx}
-                                            onClick={() => onSelectExercise(origIdx)} onRemove={() => onRemoveExercise(origIdx)} />
-                                        )}
-                                      </Draggable>
-                                    ))}
-                                  </div>
-                                </div>
-                              );
-                            }
-                            const { ex, origIdx } = row.item;
-                            return (
-                              <Draggable key={`ex-${globalDayIdx}-${origIdx}`} draggableId={`ex-${globalDayIdx}-${origIdx}`} index={origIdx}>
-                                {(drag, snap) => (
-                                  <ExerciseRow ex={ex} dragProvided={drag} isDragging={snap.isDragging}
-                                    isSelected={isActiveDayForEx && selectedExIdx === origIdx}
-                                    onClick={() => onSelectExercise(origIdx)} onRemove={() => onRemoveExercise(origIdx)} />
-                                )}
-                              </Draggable>
-                            );
-                          });
-                        })()}
-                      </div>
-                    );
-                  })
-                )}
+              <div ref={prov.innerRef} {...prov.droppableProps} className="space-y-1.5">
+                {allItems.length === 0 ? (
+                  <p className="text-xs text-[#C4C9D4] text-center py-4">No exercises yet — add one below</p>
+                ) : renderItems(allItems)}
                 {prov.placeholder}
               </div>
             )}
           </Droppable>
 
-          {/* Add exercise */}
-          <button
-            onClick={() => onAddExercise('main')}
-            className="w-full mt-2.5 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
-            style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
-          >
-            <Plus className="w-3.5 h-3.5" /> Add exercise
-          </button>
+          {/* Action buttons */}
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={() => onAddExercise('main')}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
+              style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+            >
+              <Plus className="w-3.5 h-3.5" /> Add exercise
+            </button>
+            <button
+              onClick={() => {
+                const grpLabel = String.fromCharCode(65 + (day.exercises || []).filter(e => e._type === 'superset_header').length);
+                const updated = [...(day.exercises || []), newSupersetGroup(), { ...newExercise('main'), superset_group: grpLabel }];
+                onUpdateDay({ exercises: updated });
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2563EB] transition-all"
+              style={{ border: '1.5px dashed #BFDBFE', background: 'transparent' }}
+            >
+              <Zap className="w-3.5 h-3.5" /> Superset
+            </button>
+            <button
+              onClick={() => {
+                const updated = [...(day.exercises || []), newNoteBlock()];
+                onUpdateDay({ exercises: updated });
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#6B7280] transition-all"
+              style={{ border: '1.5px dashed #E7EAF3', background: 'transparent' }}
+            >
+              <AlignLeft className="w-3.5 h-3.5" /> Note
+            </button>
+            <button
+              onClick={() => {
+                const updated = [...(day.exercises || []), newSectionLabel('Section')];
+                onUpdateDay({ exercises: updated });
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#6B7280] transition-all"
+              style={{ border: '1.5px dashed #E7EAF3', background: 'transparent' }}
+            >
+              <Type className="w-3.5 h-3.5" /> Label
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -616,6 +821,23 @@ export default function ProgramBuilder() {
     const [moved] = exs.splice(source.index, 1);
     exs.splice(destination.index, 0, moved);
     setWorkouts(w => w.map((wk, i) => i !== dayIdx ? wk : { ...wk, exercises: exs }));
+    trackChange();
+  };
+
+  // Exercise library for thumbnails
+  const { data: exLibrary = [] } = useQuery({
+    queryKey: ['exercise-library-map'],
+    queryFn: () => base44.entities.ExerciseLibrary.list(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const exLibMap = useMemo(() => {
+    const m = {};
+    exLibrary.forEach(e => { if (e.name) m[e.name.toLowerCase()] = e; });
+    return m;
+  }, [exLibrary]);
+
+  const updateDay = (globalIdx, patch) => {
+    setWorkouts(w => w.map((wk, i) => i !== globalIdx ? wk : { ...wk, ...patch }));
     trackChange();
   };
 
@@ -770,6 +992,8 @@ export default function ProgramBuilder() {
                       onRemoveExercise={(exIdx) => removeExercise(gIdx, exIdx)}
                       onRemoveDay={() => removeDay(gIdx)}
                       onDuplicateDay={() => duplicateDay(gIdx)}
+                      onUpdateDay={(patch) => updateDay(gIdx, patch)}
+                      exLibMap={exLibMap}
                     />
                   );
                 })}
