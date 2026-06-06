@@ -210,6 +210,11 @@
     },
     "onboarding_subtitle": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about these white label settings",
+      "maxLength": 1000
     }
   },
   "required": []
