@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const USDA_API_KEY = Deno.env.get('USDA_API_KEY') || 'DEMO_KEY';
+const USDA_API_KEY = Deno.env.get('USDA_API_KEY');
+if (!USDA_API_KEY) throw new Error('USDA_API_KEY environment variable is not set.');
 
 function mapUsdaFood(food) {
   const get = (name) => {
