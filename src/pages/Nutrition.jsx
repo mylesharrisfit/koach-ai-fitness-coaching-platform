@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Sparkles, BookOpen, Users, Lock, Search, SlidersHorizontal, Salad } from 'lucide-react';
+import { Plus, Sparkles, BookOpen, Users, Lock, Search, SlidersHorizontal, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
 import { toast } from 'sonner';
 import { getLimit } from '@/lib/subscription';
 import { sendZapierEvent } from '@/lib/zapier';
@@ -14,9 +14,20 @@ import NutritionInsightCards from '../components/nutrition/NutritionInsightCards
 import NutritionPlanCard from '../components/nutrition/NutritionPlanCard';
 import AIGeneratorModal from '../components/nutrition/AIGeneratorModal';
 import NewPlanLaunchModal from '../components/nutrition/NewPlanLaunchModal';
+import SupplementsTab from '../components/nutrition/reference/SupplementsTab';
+import VitaminsTab from '../components/nutrition/reference/VitaminsTab';
+import SaucesTab from '../components/nutrition/reference/SaucesTab';
+import SeasoningsTab from '../components/nutrition/reference/SeasoningsTab';
 import { motion } from 'framer-motion';
 
-const FILTER_TABS = ['All', 'Macro Tracking', 'Habit Mode', 'Templates'];
+const PLAN_FILTER_TABS = ['All', 'Macro Tracking', 'Habit Mode', 'Templates'];
+const MAIN_TABS = [
+  { id: 'plans',       label: 'Meal Plans',   icon: Salad },
+  { id: 'supplements', label: 'Supplements',  icon: Pill },
+  { id: 'vitamins',    label: 'Vitamins',     icon: FlaskConical },
+  { id: 'sauces',      label: 'Sauces',       icon: Droplets },
+  { id: 'seasonings',  label: 'Seasonings',   icon: Leaf },
+];
 
 export default function Nutrition() {
   const [showForm, setShowForm] = useState(false);
@@ -26,6 +37,7 @@ export default function Nutrition() {
   const [currentUser, setCurrentUser] = useState(null);
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState('All');
+  const [mainTab, setMainTab] = useState('plans');
   const [pendingMeals, setPendingMeals] = useState(null);
   const queryClient = useQueryClient();
   const { openUpgradeModal } = useUpgradeModal();
@@ -157,6 +169,30 @@ export default function Nutrition() {
 
       <LimitBanner limitKey="max_nutrition_plans" currentCount={plans.length} label="nutrition plans" featureKey="clients" />
 
+      {/* ── MAIN TAB SWITCHER ── */}
+      <div className="flex gap-1 bg-secondary/50 rounded-xl p-1 overflow-x-auto scrollbar-hide flex-nowrap">
+        {MAIN_TABS.map(tab => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setMainTab(tab.id)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${mainTab === tab.id ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── REFERENCE TABS ── */}
+      {mainTab === 'supplements' && <SupplementsTab />}
+      {mainTab === 'vitamins'    && <VitaminsTab />}
+      {mainTab === 'sauces'      && <SaucesTab />}
+      {mainTab === 'seasonings'  && <SeasoningsTab />}
+
+      {mainTab !== 'plans' ? null : <>
 
       {/* ── AI INSIGHT CARDS ── */}
       <div>
@@ -204,7 +240,7 @@ export default function Nutrition() {
 
         {/* Filter tabs */}
         <div className="flex gap-1.5 bg-secondary/50 rounded-xl p-1 overflow-x-auto scrollbar-hide flex-nowrap w-full sm:w-fit">
-          {FILTER_TABS.map(tab => (
+          {PLAN_FILTER_TABS.map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -266,6 +302,8 @@ export default function Nutrition() {
           </div>
         )}
       </div>
+
+      </> /* end plans tab */ }
 
       {/* ── MODALS ── */}
       <NutritionForm

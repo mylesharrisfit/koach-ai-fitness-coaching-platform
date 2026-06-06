@@ -2,7 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { format, subDays, parseISO } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Copy, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
+import SupplementsTab from '@/components/nutrition/reference/SupplementsTab';
+import VitaminsTab from '@/components/nutrition/reference/VitaminsTab';
+import SaucesTab from '@/components/nutrition/reference/SaucesTab';
+import SeasoningsTab from '@/components/nutrition/reference/SeasoningsTab';
 import { toast } from 'sonner';
 
 import DailyMacroHeader from '@/components/portal/nutrition/DailyMacroHeader';
@@ -19,7 +23,16 @@ import { MEAL_DEFINITIONS, calcDayTotals } from '@/lib/nutritionUtils';
 
 const DEFAULT_TARGETS = { calories: 2000, protein: 150, carbs: 250, fats: 65 };
 
+const PORTAL_TABS = [
+  { id: 'log',         label: 'Meal Log',    icon: Salad },
+  { id: 'supplements', label: 'Supplements', icon: Pill },
+  { id: 'vitamins',    label: 'Vitamins',    icon: FlaskConical },
+  { id: 'sauces',      label: 'Sauces',      icon: Droplets },
+  { id: 'seasonings',  label: 'Seasonings',  icon: Leaf },
+];
+
 export default function PortalNutrition({ user }) {
+  const [portalTab, setPortalTab]         = useState('log');
   const [selectedDate, setSelectedDate]   = useState(new Date());
   const [selectedMeal, setSelectedMeal]   = useState(null);
   const [showSearch, setShowSearch]       = useState(false);
@@ -191,6 +204,35 @@ export default function PortalNutrition({ user }) {
         </div>
       </div>
 
+      {/* Tab switcher */}
+      <div className="px-4 mt-3 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
+        {PORTAL_TABS.map(tab => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setPortalTab(tab.id)}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
+                portalTab === tab.id
+                  ? 'bg-slate-900 text-white border-slate-900'
+                  : 'bg-white text-slate-600 border-slate-200'
+              }`}
+            >
+              <Icon className="w-3 h-3" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Reference tabs */}
+      {portalTab === 'supplements' && <div className="px-4 mt-3"><SupplementsTab isPortal /></div>}
+      {portalTab === 'vitamins'    && <div className="px-4 mt-3"><VitaminsTab isPortal /></div>}
+      {portalTab === 'sauces'      && <div className="px-4 mt-3"><SaucesTab isPortal /></div>}
+      {portalTab === 'seasonings'  && <div className="px-4 mt-3"><SeasoningsTab isPortal /></div>}
+
+      {portalTab !== 'log' ? null : <>
+
       {/* Daily macro summary */}
       <div className="mt-3">
         <DailyMacroHeader totals={totals} targets={targets} />
@@ -258,6 +300,7 @@ export default function PortalNutrition({ user }) {
           />
         )}
       </AnimatePresence>
+      </> /* end log tab */ }
     </div>
   );
 }
