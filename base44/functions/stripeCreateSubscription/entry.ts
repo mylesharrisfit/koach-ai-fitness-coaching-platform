@@ -10,6 +10,15 @@ Deno.serve(async (req) => {
 
   const { client_id, price_amount, interval, client_email, client_name, description } = await req.json();
 
+  // Verify caller is admin OR owns the client record
+  if (user.role !== 'admin') {
+    const clients = await base44.asServiceRole.entities.Client.filter({ id: client_id });
+    const client = clients[0];
+    if (!client || client.created_by_id !== user.id) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  }
+
   // Create or retrieve Stripe customer
   const existing = await stripe.customers.search({ query: `email:'${client_email}'`, limit: 1 });
   let customer;
