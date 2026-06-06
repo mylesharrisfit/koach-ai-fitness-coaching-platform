@@ -1298,36 +1298,62 @@ function Step4Result({ result }) {
         <div className="text-xs text-muted-foreground text-center py-4">No meal data available</div>
       )}
 
-      {/* Supplements */}
-      {result.supplements?.filter(s => s !== 'None').length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">💊 Supplement Protocol</p>
-          <div className="space-y-2">
-            {result.supplements.filter(s => s !== 'None').map(s => {
-              const def = SUPPLEMENT_DEFAULTS[s] || {};
-              const dosage = result.supplementDosages?.[s] || def.dosage || '';
-              const reason = (SUPPLEMENT_GOAL_REASONS[result.goal] || {})[s] || 'Support overall health and performance';
-              return (
-                <div key={s} className="flex items-start gap-3 p-3 rounded-xl bg-secondary/40 border border-border">
-                  <span className="text-xl shrink-0 mt-0.5">{def.emoji || '💊'}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-bold text-foreground">{s}</span>
-                      {def.timing && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
-                          {def.timing}
-                        </span>
-                      )}
-                    </div>
-                    {dosage && <p className="text-xs text-foreground font-medium mt-0.5">{dosage}</p>}
-                    <p className="text-[11px] text-muted-foreground mt-0.5 italic">{reason}</p>
-                  </div>
+      {/* Supplement Protocol — Morning & Night stacks */}
+      {(() => {
+        const sups = (result.supplements || []).filter(s => s !== 'None');
+        const hasTiming = sups.some(s => typeof s === 'object' && s.timing);
+        const morning = hasTiming
+          ? sups.filter(s => typeof s === 'object' && ['Morning','morning'].includes(s.timing))
+          : sups.filter(s => typeof s === 'object').length === 0 ? [] : sups; // fallback
+        const night = hasTiming
+          ? sups.filter(s => typeof s === 'object' && ['Night','night','Before Bed'].includes(s.timing))
+          : [];
+
+        const renderRow = (s, badge, badgeColor) => {
+          const name = typeof s === 'object' ? s.name : s;
+          const dosage = typeof s === 'object' ? (s.dosage || s.dose || '') : (SUPPLEMENT_DEFAULTS[s]?.dosage || '');
+          const purpose = typeof s === 'object' ? (s.purpose || s.why || '') : ((SUPPLEMENT_GOAL_REASONS[result.goal] || {})[s] || '');
+          return (
+            <div key={name} className="flex items-start gap-3 p-3 rounded-xl bg-secondary/40 border border-border">
+              <span className="text-lg shrink-0 mt-0.5">💊</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-bold text-foreground">{name}</span>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
                 </div>
-              );
-            })}
+                {dosage && <p className="text-xs text-foreground font-medium mt-0.5">{dosage}</p>}
+                {purpose && <p className="text-[11px] text-muted-foreground mt-0.5 italic">{purpose}</p>}
+              </div>
+            </div>
+          );
+        };
+
+        if (morning.length === 0 && night.length === 0 && sups.length === 0) return null;
+
+        return (
+          <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">💊 Supplement Protocol</p>
+            {morning.length > 0 && (
+              <div>
+                <p className="text-[11px] font-bold text-amber-600 uppercase tracking-wide mb-2">☀️ Morning Stack</p>
+                <div className="space-y-2">{morning.map(s => renderRow(s, 'Morning', 'bg-amber-100 text-amber-700'))}</div>
+              </div>
+            )}
+            {night.length > 0 && (
+              <div>
+                <p className="text-[11px] font-bold text-indigo-600 uppercase tracking-wide mb-2 mt-3">🌙 Night Stack</p>
+                <div className="space-y-2">{night.map(s => renderRow(s, 'Before Bed', 'bg-indigo-100 text-indigo-700'))}</div>
+              </div>
+            )}
+            {!hasTiming && sups.length > 0 && (
+              <div className="space-y-2">{sups.map(s => renderRow(s, 'Daily', 'bg-purple-100 text-purple-700'))}</div>
+            )}
+            <p className="text-[11px] text-amber-600 bg-amber-50 rounded-xl px-3 py-2">
+              ⚠️ General recommendations. Coach may adjust based on your specific needs.
+            </p>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Hydration protocol */}
       {result.hydration && (
@@ -1570,7 +1596,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       mealsPerDay:       details.mealsPerDay || 4,
       preWorkout:        details.preWorkout,
       postWorkout:       details.postWorkout,
-      supplements:       details.supplements,
+      supplements:       plan?.supplements || details.supplements,
       supplementDosages: details.supplementDosages || {},
       allergies:         details.allergies,
       weightLossRate:    details.weightLossRate || 1,
@@ -1629,7 +1655,9 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
           fats:             f.fats,
         })),
       })),
-      supplements: (result.supplements || []).filter(s => s !== 'None').map(s => ({ name: s, category: 'supplement' })),
+      supplements: (result.supplements || []).filter(s => s !== 'None' && typeof s === 'object' ? s : s).map(s =>
+        typeof s === 'object' ? s : { name: s, category: 'supplement' }
+      ),
       notes: condimentLabels.length > 0 ? `Seasonings: ${condimentLabels.join(', ')}` : '',
     });
     onOpenChange(false);

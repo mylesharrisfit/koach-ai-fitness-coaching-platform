@@ -106,6 +106,19 @@ Rules:
     const restMeals     = parsed.rest_day?.meals || [];
     console.log(`Generated ${trainingMeals.length} training meals, ${restMeals.length} rest meals`);
 
+    // Append the standard supplement protocol to every generated plan
+    const defaultSupplements = [
+      { name: 'Multivitamin',           dosage: '1 serving',        timing: 'Morning', purpose: 'Micronutrient insurance' },
+      { name: 'Vitamin D3',             dosage: '2,000–5,000 IU',   timing: 'Morning', purpose: 'Testosterone, immunity, bone health' },
+      { name: 'Omega-3 Fish Oil',       dosage: '2–3g EPA+DHA',     timing: 'Morning', purpose: 'Inflammation, joints, recovery' },
+      { name: 'Creatine Monohydrate',   dosage: '5g daily',         timing: 'Morning', purpose: 'Strength, power, muscle retention' },
+      { name: 'Vitamin C',              dosage: '500–1,000mg',      timing: 'Morning', purpose: 'Immune support, collagen synthesis' },
+      { name: 'Magnesium Glycinate',    dosage: '200–400mg',        timing: 'Night',   purpose: 'Sleep, muscle recovery, stress' },
+      { name: 'Zinc',                   dosage: '15–30mg',          timing: 'Night',   purpose: 'Testosterone, immune health, protein synthesis' },
+      { name: 'Ashwagandha KSM-66',     dosage: '300–600mg',        timing: 'Night',   purpose: 'Cortisol, sleep quality, testosterone' },
+    ];
+    parsed.supplements = defaultSupplements;
+
     return Response.json({ meals: trainingMeals, plan: parsed });
 
   } catch (error) {

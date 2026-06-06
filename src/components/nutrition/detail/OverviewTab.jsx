@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { Droplets, CheckCircle2, XCircle, Clock, Pill, Flame, Dumbbell, Zap, Leaf } from 'lucide-react';
+import { Droplets, CheckCircle2, XCircle, Clock, Pill, Flame, Dumbbell, Zap, Leaf, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const GOAL_META = {
   fat_loss:    { emoji: '🔥', label: 'Fat Loss',    color: 'text-red-600',    bg: 'bg-red-50',    border: 'border-red-100',   icon: Flame },
@@ -63,6 +64,106 @@ function DonutChart({ protein, carbs, fats }) {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+const DEFAULT_MORNING = [
+  { name: 'Multivitamin',         dosage: '1 serving',       timing: 'Morning', purpose: 'Micronutrient insurance' },
+  { name: 'Vitamin D3',           dosage: '2,000–5,000 IU',  timing: 'Morning', purpose: 'Testosterone, immunity, bone health' },
+  { name: 'Omega-3 Fish Oil',     dosage: '2–3g EPA+DHA',    timing: 'Morning', purpose: 'Inflammation, joints, recovery' },
+  { name: 'Creatine Monohydrate', dosage: '5g daily',        timing: 'Morning', purpose: 'Strength, power, muscle retention' },
+  { name: 'Vitamin C',            dosage: '500–1,000mg',     timing: 'Morning', purpose: 'Immune support, collagen synthesis' },
+];
+const DEFAULT_NIGHT = [
+  { name: 'Magnesium Glycinate',  dosage: '200–400mg',       timing: 'Night', purpose: 'Sleep, muscle recovery, stress' },
+  { name: 'Zinc',                 dosage: '15–30mg',         timing: 'Night', purpose: 'Testosterone, immune health, protein synthesis' },
+  { name: 'Ashwagandha KSM-66',   dosage: '300–600mg',       timing: 'Night', purpose: 'Cortisol, sleep quality, testosterone' },
+];
+
+function SupStack({ title, emoji, items, badgeColor }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="border border-[#E7EAF3] rounded-xl overflow-hidden">
+      <button onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+        <span className="text-base">{emoji}</span>
+        <span className="text-xs font-bold text-foreground flex-1">{title}</span>
+        <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
+          <ChevronDown className="w-4 h-4 text-muted-foreground" />
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}
+            transition={{ duration: 0.18 }} className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-[#E7EAF3] bg-white">
+                    <th className="text-left px-4 py-2 text-muted-foreground font-semibold">Supplement</th>
+                    <th className="text-left px-3 py-2 text-muted-foreground font-semibold">Dose</th>
+                    <th className="text-left px-3 py-2 text-muted-foreground font-semibold hidden sm:table-cell">Why it matters</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((s, i) => (
+                    <tr key={i} className="border-b border-[#F3F4F6] last:border-0 bg-white">
+                      <td className="px-4 py-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${badgeColor}`}>
+                            {s.timing || title.split(' ')[0]}
+                          </span>
+                          <span className="font-semibold text-foreground">{s.name}</span>
+                        </div>
+                        <p className="text-muted-foreground mt-0.5 sm:hidden">{s.purpose}</p>
+                      </td>
+                      <td className="px-3 py-2.5 text-primary font-bold whitespace-nowrap">{s.dosage}</td>
+                      <td className="px-3 py-2.5 text-muted-foreground hidden sm:table-cell">{s.purpose}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function SupplementSection({ supplements }) {
+  // Split by timing or fall back to default stacks
+  const hasTiming = supplements.some(s => s.timing);
+  const morning = hasTiming
+    ? supplements.filter(s => s.timing === 'Morning' || s.timing === 'morning')
+    : DEFAULT_MORNING;
+  const night = hasTiming
+    ? supplements.filter(s => s.timing === 'Night' || s.timing === 'night' || s.timing === 'Before Bed')
+    : DEFAULT_NIGHT;
+  const other = hasTiming
+    ? supplements.filter(s => !['Morning','morning','Night','night','Before Bed'].includes(s.timing))
+    : [];
+
+  return (
+    <div>
+      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+        <Pill className="w-3.5 h-3.5" /> Supplement Protocol
+      </h4>
+      <div className="space-y-3">
+        {morning.length > 0 && (
+          <SupStack title="Morning Stack" emoji="☀️" items={morning} badgeColor="bg-amber-100 text-amber-700" />
+        )}
+        {night.length > 0 && (
+          <SupStack title="Night Stack" emoji="🌙" items={night} badgeColor="bg-indigo-100 text-indigo-700" />
+        )}
+        {other.length > 0 && (
+          <SupStack title="Other Supplements" emoji="💊" items={other} badgeColor="bg-slate-100 text-slate-600" />
+        )}
+        <p className="text-[11px] text-amber-600 bg-amber-50 rounded-xl px-3 py-2">
+          ⚠️ General recommendations. Coach may adjust based on your specific needs.
+        </p>
       </div>
     </div>
   );
@@ -198,27 +299,9 @@ export default function OverviewTab({ plan }) {
         </div>
       )}
 
-      {/* Supplements */}
-      {supplements.length > 0 && (
-        <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-            <Pill className="w-3.5 h-3.5" /> Supplements
-          </h4>
-          <div className="space-y-2">
-            {supplements.map((s, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-white border border-[#E7EAF3] rounded-xl text-sm">
-                <div>
-                  <p className="font-semibold text-foreground">{s.name}</p>
-                  {s.purpose && <p className="text-xs text-muted-foreground">{s.purpose}</p>}
-                </div>
-                <div className="text-right">
-                  {s.dosage && <p className="text-xs font-bold text-primary">{s.dosage}</p>}
-                  {s.timing && <p className="text-xs text-muted-foreground">{s.timing}</p>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Supplements — always show default stacks for macro plans */}
+      {(!plan.tracking_mode || plan.tracking_mode !== 'habits') && (
+        <SupplementSection supplements={supplements} />
       )}
     </div>
   );

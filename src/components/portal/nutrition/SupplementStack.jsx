@@ -2,40 +2,66 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Pill } from 'lucide-react';
 
-const MORNING_STACK = [
-  { name: 'Multivitamin', dose: '1 serving with breakfast', why: 'Fills micronutrient gaps from reduced food intake' },
-  { name: 'Vitamin D3', dose: '2,000–5,000 IU', why: 'Testosterone, immune function, bone health' },
-  { name: 'Omega-3 Fish Oil', dose: '2–3g EPA+DHA', why: 'Inflammation, joints, brain health, recovery' },
-  { name: 'Creatine Monohydrate', dose: '5g daily (any time)', why: 'Strength, power output, muscle retention' },
-  { name: 'Vitamin C', dose: '500–1,000mg', why: 'Immune support, antioxidant, collagen synthesis' },
+const DEFAULT_MORNING = [
+  { name: 'Multivitamin',           dose: '1 serving with breakfast',    why: 'Fills micronutrient gaps from reduced food intake' },
+  { name: 'Vitamin D3',             dose: '2,000–5,000 IU',              why: 'Testosterone, immune function, bone health' },
+  { name: 'Omega-3 Fish Oil',       dose: '2–3g EPA+DHA',                why: 'Inflammation, joints, brain health, recovery' },
+  { name: 'Creatine Monohydrate',   dose: '5g daily (any time)',         why: 'Strength, power output, muscle retention' },
+  { name: 'Vitamin C',              dose: '500–1,000mg',                 why: 'Immune support, antioxidant, collagen synthesis' },
 ];
 
-const NIGHT_STACK = [
-  { name: 'Magnesium Glycinate', dose: '200–400mg before bed', why: 'Sleep quality, muscle recovery, stress reduction' },
-  { name: 'Zinc', dose: '15–30mg with food', why: 'Testosterone, immune health, protein synthesis' },
-  { name: 'Ashwagandha KSM-66', dose: '300–600mg before bed', why: 'Cortisol reduction, sleep quality, testosterone support' },
+const DEFAULT_NIGHT = [
+  { name: 'Magnesium Glycinate',    dose: '200–400mg before bed',        why: 'Sleep quality, muscle recovery, stress reduction' },
+  { name: 'Zinc',                   dose: '15–30mg with food',           why: 'Testosterone, immune health, protein synthesis' },
+  { name: 'Ashwagandha KSM-66',     dose: '300–600mg before bed',        why: 'Cortisol reduction, sleep quality, testosterone support' },
 ];
 
-function SupRow({ item, badge, badgeColor }) {
+function normalizeSupplements(raw) {
+  if (!raw || raw.length === 0) return { morning: DEFAULT_MORNING, night: DEFAULT_NIGHT };
+  const hasTiming = raw.some(s => s.timing || s.time_of_day);
+  if (!hasTiming) return { morning: DEFAULT_MORNING, night: DEFAULT_NIGHT };
+
+  const morning = raw
+    .filter(s => ['Morning','morning'].includes(s.timing || s.time_of_day))
+    .map(s => ({ name: s.name, dose: s.dosage || s.dose || '', why: s.purpose || s.why || '' }));
+  const night = raw
+    .filter(s => ['Night','night','Before Bed'].includes(s.timing || s.time_of_day))
+    .map(s => ({ name: s.name, dose: s.dosage || s.dose || '', why: s.purpose || s.why || '' }));
+
+  return {
+    morning: morning.length > 0 ? morning : DEFAULT_MORNING,
+    night:   night.length > 0   ? night   : DEFAULT_NIGHT,
+  };
+}
+
+function StackSection({ title, emoji, items, badgeColor }) {
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-slate-100 last:border-0">
-      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <Pill className="w-4 h-4 text-slate-500" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-slate-900 font-bold text-sm">{item.name}</span>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
+    <div className="mb-3">
+      <p className={`text-xs font-bold uppercase tracking-wide mb-2`}>
+        {emoji} {title}
+      </p>
+      {items.map(item => (
+        <div key={item.name} className="flex items-start gap-3 py-2.5 border-b border-slate-100 last:border-0">
+          <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Pill className="w-3.5 h-3.5 text-slate-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-slate-900 font-bold text-sm">{item.name}</span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>{title.split(' ')[0]}</span>
+            </div>
+            <p className="text-slate-500 text-xs mt-0.5">{item.dose}</p>
+            <p className="text-slate-400 text-xs mt-0.5 italic">{item.why}</p>
+          </div>
         </div>
-        <p className="text-slate-500 text-xs mt-0.5">{item.dose}</p>
-        <p className="text-slate-400 text-xs mt-0.5 italic">{item.why}</p>
-      </div>
+      ))}
     </div>
   );
 }
 
 export default function SupplementStack({ customSupplements }) {
   const [open, setOpen] = useState(false);
+  const { morning, night } = normalizeSupplements(customSupplements);
 
   return (
     <div className="mx-4 mb-3 bg-white rounded-[18px] overflow-hidden"
@@ -62,15 +88,8 @@ export default function SupplementStack({ customSupplements }) {
               ⚠️ These are general recommendations. Your coach may adjust these based on your specific needs.
             </p>
 
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">☀️ Morning Stack</p>
-            {MORNING_STACK.map(s => (
-              <SupRow key={s.name} item={s} badge="Morning" badgeColor="bg-amber-100 text-amber-700" />
-            ))}
-
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mt-4 mb-1">🌙 Night Stack</p>
-            {NIGHT_STACK.map(s => (
-              <SupRow key={s.name} item={s} badge="Before Bed" badgeColor="bg-indigo-100 text-indigo-700" />
-            ))}
+            <StackSection title="Morning Stack" emoji="☀️" items={morning} badgeColor="bg-amber-100 text-amber-700" />
+            <StackSection title="Night Stack"   emoji="🌙" items={night}   badgeColor="bg-indigo-100 text-indigo-700" />
           </motion.div>
         )}
       </AnimatePresence>

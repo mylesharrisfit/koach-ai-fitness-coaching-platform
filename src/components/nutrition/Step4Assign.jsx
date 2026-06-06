@@ -315,7 +315,9 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
     coach_notes: result.coach_notes || null,
     client_notes: result.client_notes || '',
     shopping_list: result.shopping_list || [],
-    supplements: (result.supplements || []).filter(s => s !== 'None').map(s => ({ name: s, category: 'supplement' })),
+    supplements: (result.supplements || []).filter(s => s !== 'None').map(s =>
+      typeof s === 'object' ? s : { name: s, category: 'supplement' }
+    ),
     ai_generated: true,
     goal: result.goal,
     diet: result.diet,
