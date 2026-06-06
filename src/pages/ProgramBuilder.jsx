@@ -10,8 +10,9 @@ import {
   Plus, Trash2, GripVertical, ChevronDown, ChevronUp, Copy,
   Check, X, Dumbbell, ArrowLeft, Save, Eye, Users,
   Calendar, Repeat, BarChart2, Clock, Wrench, Settings2,
-  Play, AlignLeft, Zap, Type,
+  Play, AlignLeft, Zap, Type, RefreshCw, Layers,
 } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -782,6 +783,15 @@ export default function ProgramBuilder() {
   const [lastSaved, setLastSaved] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  // Schedule mode: 'repeat' = one template week, 'progress' = per-week editing
+  const [scheduleMode, setScheduleMode] = useState(
+    existingProgram?.schedule_mode || 'repeat'
+  );
+  // In repeat mode, only the first dpw workouts are the "template"
+  // templateWorkouts = first week of workouts
+  const [copyWeekOpen, setCopyWeekOpen] = useState(null); // weekIdx being copied
+  const [copyTargets, setCopyTargets] = useState([]); // selected target week indices
+
   useEffect(() => {
     const handler = (e) => { if (hasUnsavedChanges) { e.preventDefault(); e.returnValue = ''; } };
     window.addEventListener('beforeunload', handler);
@@ -803,10 +813,57 @@ export default function ProgramBuilder() {
 
   const handleSave = () => {
     if (!meta.title.trim()) { toast.error('Enter a program name'); return; }
-    saveMutation.mutate({ ...meta, workouts, duration_weeks: Number(meta.duration_weeks), days_per_week: Number(meta.days_per_week) });
+    // In repeat mode, expand all weeks before saving
+    let finalWorkouts = workouts;
+    if (scheduleMode === 'repeat' && workouts.length > 0) {
+      const durationWeeks = Number(meta.duration_weeks) || 8;
+      const template = workouts.slice(0, dpw);
+      finalWorkouts = [];
+      for (let w = 0; w < durationWeeks; w++) {
+        template.forEach(day => {
+          finalWorkouts.push({ ...day, exercises: day.exercises.map(e => ({ ...e })) });
+        });
+      }
+    }
+    saveMutation.mutate({ ...meta, workouts: finalWorkouts, schedule_mode: scheduleMode, duration_weeks: Number(meta.duration_weeks), days_per_week: Number(meta.days_per_week) });
   };
 
   const trackChange = () => setHasUnsavedChanges(true);
+
+  // Switch schedule mode
+  const switchScheduleMode = (newMode) => {
+    if (newMode === scheduleMode) return;
+    if (newMode === 'progress') {
+      // Seed all weeks from template (first week)
+      const dpw = Number(meta.days_per_week) || 4;
+      const durationWeeks = Number(meta.duration_weeks) || 8;
+      const template = workouts.slice(0, dpw);
+      if (template.length === 0) {
+        setScheduleMode(newMode);
+        return;
+      }
+      // Build all weeks as deep copies of the template
+      const allWeeks = [];
+      for (let w = 0; w < durationWeeks; w++) {
+        template.forEach((day, d) => {
+          allWeeks.push({
+            ...day,
+            day_name: day.day_name,
+            exercises: day.exercises.map(e => ({ ...e })),
+          });
+        });
+      }
+      setWorkouts(allWeeks);
+      setActiveWeek(0);
+    } else {
+      // switching back to repeat — just keep first week as template
+      const dpw = Number(meta.days_per_week) || 4;
+      setWorkouts(w => w.slice(0, dpw));
+      setActiveWeek(0);
+    }
+    setScheduleMode(newMode);
+    trackChange();
+  };
 
   const dpw = Number(meta.days_per_week) || 4;
 
@@ -839,6 +896,29 @@ export default function ProgramBuilder() {
     setActiveWeek(weeks.length);
     trackChange();
     toast.success(`Week ${src.weekNum} duplicated!`);
+  };
+
+  const copyWeekToTargets = (srcIdx, targetIdxs) => {
+    const src = weeks[srcIdx];
+    if (!src) return;
+    setWorkouts(w => {
+      const next = [...w];
+      targetIdxs.forEach(tIdx => {
+        const tw = weeks[tIdx];
+        if (!tw) return;
+        src.days.forEach((day, d) => {
+          const globalIdx = tw.startIdx + d;
+          if (next[globalIdx]) {
+            next[globalIdx] = { ...day, day_name: next[globalIdx].day_name, exercises: day.exercises.map(e => ({ ...e })) };
+          }
+        });
+      });
+      return next;
+    });
+    trackChange();
+    toast.success(`Week ${srcIdx + 1} copied to ${targetIdxs.length} week${targetIdxs.length !== 1 ? 's' : ''}`);
+    setCopyWeekOpen(null);
+    setCopyTargets([]);
   };
 
   const addDay = () => {
@@ -991,37 +1071,151 @@ export default function ProgramBuilder() {
         </div>
       </div>
 
-      {/* ── WEEK SELECTOR ── */}
-      <div className="bg-white flex-shrink-0 px-6 py-3 flex items-center gap-2 overflow-x-auto scrollbar-hide" style={{ borderBottom: '0.5px solid #E2E5EC' }}>
-        {weeks.map((w, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveWeek(i)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all"
-            style={{
-              background: safeWeek === i ? '#0E1525' : '#F3F4F6',
-              color: safeWeek === i ? '#fff' : '#6B7280',
-            }}
-          >
-            Week {w.weekNum}
-            {safeWeek === i && (
-              <button
-                onClick={e => { e.stopPropagation(); duplicateWeek(i); }}
-                className="ml-1 opacity-60 hover:opacity-100"
-                title="Duplicate week"
-              >
-                <Copy className="w-3 h-3" />
-              </button>
-            )}
-          </button>
-        ))}
-        <button
-          onClick={addWeek}
-          className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all"
-          style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
-        >
-          <Plus className="w-3 h-3" /> Week
-        </button>
+      {/* ── SCHEDULE MODE + WEEK TABS ── */}
+      <div className="bg-white flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E5EC' }}>
+
+        {/* Schedule control row */}
+        <div className="px-6 pt-3 pb-2 flex items-center gap-4">
+          {/* Segmented toggle */}
+          <div className="flex rounded-xl overflow-hidden flex-shrink-0" style={{ border: '0.5px solid #E2E5EC' }}>
+            {[
+              { mode: 'repeat',   label: 'Repeat weekly',   Icon: RefreshCw },
+              { mode: 'progress', label: 'Progress weekly',  Icon: Layers },
+            ].map(({ mode, label, Icon }) => {
+              const active = scheduleMode === mode;
+              return (
+                <button
+                  key={mode}
+                  onClick={() => switchScheduleMode(mode)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold transition-colors"
+                  style={{
+                    background: active ? '#2563EB' : '#fff',
+                    color: active ? '#fff' : '#9CA3AF',
+                    borderRight: mode === 'repeat' ? '0.5px solid #E2E5EC' : 'none',
+                  }}
+                >
+                  <Icon className="w-3 h-3" />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Helper text */}
+          {scheduleMode === 'repeat' ? (
+            <p className="text-[11px] text-[#9CA3AF] flex-1 min-w-0 truncate">
+              Build one week — it repeats for all <strong className="text-[#374151]">{meta.duration_weeks}</strong> weeks. Edit once, applies everywhere.
+            </p>
+          ) : (
+            <p className="text-[11px] text-[#9CA3AF] flex-1 min-w-0 truncate">
+              Each week is independent — perfect for progressive overload.
+            </p>
+          )}
+        </div>
+
+        {/* Week tabs (progress mode only) or "Weekly template" pill (repeat mode) */}
+        {scheduleMode === 'repeat' ? (
+          <div className="px-6 pb-3 flex items-center gap-2">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold text-white flex-shrink-0" style={{ background: '#0E1525' }}>
+              <RefreshCw className="w-3 h-3" />
+              Weekly template
+            </div>
+            <span className="text-[10px] text-[#9CA3AF]">repeats × {meta.duration_weeks}</span>
+          </div>
+        ) : (
+          <div className="px-6 pb-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            {weeks.map((w, i) => (
+              <div key={i} className="flex items-center flex-shrink-0">
+                <button
+                  onClick={() => setActiveWeek(i)}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all"
+                  style={{
+                    background: safeWeek === i ? '#0E1525' : '#F3F4F6',
+                    color: safeWeek === i ? '#fff' : '#6B7280',
+                  }}
+                >
+                  Week {w.weekNum}
+                </button>
+                {/* Copy week to... popover */}
+                <Popover
+                  open={copyWeekOpen === i}
+                  onOpenChange={open => { setCopyWeekOpen(open ? i : null); setCopyTargets([]); }}
+                >
+                  <PopoverTrigger asChild>
+                    <button
+                      onClick={e => e.stopPropagation()}
+                      className="ml-0.5 w-5 h-5 flex items-center justify-center rounded-full text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors"
+                      title="Copy week to…"
+                    >
+                      <Copy className="w-2.5 h-2.5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" sideOffset={6} className="p-0 w-52">
+                    <div className="px-3 pt-3 pb-1">
+                      <p className="text-xs font-bold text-[#0E1525] mb-2">Copy Week {w.weekNum} to…</p>
+                      {/* Select all */}
+                      <button
+                        onClick={() => {
+                          const others = weeks.map((_, idx) => idx).filter(idx => idx !== i);
+                          setCopyTargets(copyTargets.length === others.length ? [] : others);
+                        }}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F3F4F6] transition-colors mb-1"
+                      >
+                        <div className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0"
+                          style={{
+                            background: copyTargets.length === weeks.length - 1 ? '#2563EB' : '#fff',
+                            borderColor: copyTargets.length === weeks.length - 1 ? '#2563EB' : '#D1D5DB',
+                          }}>
+                          {copyTargets.length === weeks.length - 1 && <Check className="w-2.5 h-2.5 text-white" />}
+                        </div>
+                        <span className="text-xs text-[#374151] font-medium">Select all weeks</span>
+                      </button>
+                      <div className="space-y-0.5 max-h-36 overflow-y-auto">
+                        {weeks.filter((_, idx) => idx !== i).map((tw, _) => {
+                          const tIdx = weeks.findIndex(x => x.weekNum === tw.weekNum);
+                          const checked = copyTargets.includes(tIdx);
+                          return (
+                            <button
+                              key={tIdx}
+                              onClick={() => setCopyTargets(ct => checked ? ct.filter(x => x !== tIdx) : [...ct, tIdx])}
+                              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F3F4F6] transition-colors"
+                            >
+                              <div className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0"
+                                style={{
+                                  background: checked ? '#2563EB' : '#fff',
+                                  borderColor: checked ? '#2563EB' : '#D1D5DB',
+                                }}>
+                                {checked && <Check className="w-2.5 h-2.5 text-white" />}
+                              </div>
+                              <span className="text-xs text-[#374151]">Week {tw.weekNum}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="px-3 py-2.5" style={{ borderTop: '0.5px solid #E7EAF3' }}>
+                      <button
+                        onClick={() => copyWeekToTargets(i, copyTargets)}
+                        disabled={copyTargets.length === 0}
+                        className="w-full py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity disabled:opacity-40"
+                        style={{ background: '#2563EB' }}
+                      >
+                        Copy to {copyTargets.length > 0 ? `${copyTargets.length} week${copyTargets.length !== 1 ? 's' : ''}` : 'weeks'}
+                      </button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            ))}
+            <button
+              onClick={addWeek}
+              className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all"
+              style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+            >
+              <Plus className="w-3 h-3" /> Week
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ── MAIN BODY ── */}
@@ -1029,22 +1223,66 @@ export default function ProgramBuilder() {
 
         {/* Canvas */}
         <div className="flex-1 overflow-y-auto">
-          {weeks.length === 0 ? (
+          {workouts.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-5 text-center py-24 px-8">
               <div className="w-14 h-14 rounded-2xl bg-[#EEF2FF] flex items-center justify-center">
                 <Dumbbell className="w-7 h-7 text-[#3730a3]" />
               </div>
               <div>
                 <h2 className="font-bold text-[17px] text-[#0E1525]">Start building</h2>
-                <p className="text-sm text-[#9CA3AF] mt-1">Add your first week to get started</p>
+                <p className="text-sm text-[#9CA3AF] mt-1">
+                  {scheduleMode === 'repeat'
+                    ? 'Add your weekly template to get started'
+                    : 'Add your first week to get started'}
+                </p>
               </div>
-              <button onClick={addWeek}
+              <button
+                onClick={() => {
+                  if (scheduleMode === 'repeat') {
+                    // seed template with dpw days
+                    const days = Array.from({ length: dpw }, (_, i) => newDay(i));
+                    setWorkouts(days);
+                    trackChange();
+                  } else {
+                    addWeek();
+                  }
+                }}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
                 style={{ background: '#2563EB' }}>
-                <Plus className="w-4 h-4" /> Add Week 1
+                <Plus className="w-4 h-4" /> {scheduleMode === 'repeat' ? 'Build template' : 'Add Week 1'}
               </button>
             </div>
+          ) : scheduleMode === 'repeat' ? (
+            /* ── REPEAT MODE: show the template week (first dpw workouts) ── */
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div className="px-6 py-5 max-w-2xl">
+                {workouts.slice(0, dpw).map((day, i) => (
+                  <DayCard
+                    key={`tpl-${i}`}
+                    day={day}
+                    globalDayIdx={i}
+                    isActiveDayForEx={selectedEx?.dayIdx === i}
+                    selectedExIdx={selectedEx?.exIdx}
+                    onSelectExercise={(exIdx) => setSelectedEx({ dayIdx: i, exIdx })}
+                    onAddExercise={(section) => addExercise(i, section)}
+                    onRemoveExercise={(exIdx) => removeExercise(i, exIdx)}
+                    onRemoveDay={() => removeDay(i)}
+                    onDuplicateDay={() => duplicateDay(i)}
+                    onUpdateDay={(patch) => updateDay(i, patch)}
+                    exLibMap={exLibMap}
+                  />
+                ))}
+                <button
+                  onClick={() => { const days = [...workouts, newDay(workouts.length)]; setWorkouts(days); trackChange(); }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all mb-10"
+                  style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+                >
+                  <Plus className="w-4 h-4" /> Add training day
+                </button>
+              </div>
+            </DragDropContext>
           ) : currentWeek ? (
+            /* ── PROGRESS MODE: per-week editing ── */
             <DragDropContext onDragEnd={onDragEnd}>
               <div className="px-6 py-5 max-w-2xl">
                 {currentWeek.days.map((day, i) => {
@@ -1066,8 +1304,6 @@ export default function ProgramBuilder() {
                     />
                   );
                 })}
-
-                {/* Add day */}
                 <button
                   onClick={addDay}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all mb-10"
