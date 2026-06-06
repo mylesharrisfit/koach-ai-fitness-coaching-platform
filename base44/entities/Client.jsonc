@@ -102,6 +102,11 @@
       ],
       "default": "none",
       "description": "Client billing status"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this client",
+      "maxLength": 1000
     }
   },
   "required": [
