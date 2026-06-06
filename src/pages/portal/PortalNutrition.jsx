@@ -10,6 +10,11 @@ import MealCard from '@/components/portal/nutrition/MealCard';
 import FoodSearchSheet from '@/components/portal/nutrition/FoodSearchSheet';
 import FoodDetailSheet from '@/components/nutrition/usda/FoodDetailSheet';
 import WaterTracker from '@/components/portal/nutrition/WaterTracker';
+import SupplementStack from '@/components/portal/nutrition/SupplementStack';
+import HydrationProtocol from '@/components/portal/nutrition/HydrationProtocol';
+import SaucesSeasonings from '@/components/portal/nutrition/SaucesSeasonings';
+import GroceryList from '@/components/portal/nutrition/GroceryList';
+import CoachNote from '@/components/portal/nutrition/CoachNote';
 import { MEAL_DEFINITIONS, calcDayTotals } from '@/lib/nutritionUtils';
 
 const DEFAULT_TARGETS = { calories: 2000, protein: 150, carbs: 250, fats: 65 };
@@ -24,6 +29,7 @@ export default function PortalNutrition({ user }) {
   const [copyingYesterday, setCopyingYesterday] = useState(false);
   const [waterIntake, setWaterIntake]     = useState(5);
   const [nutritionPlan, setNutritionPlan] = useState(null);
+  const [coachName, setCoachName]         = useState(null);
 
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
   const clientId = user?.id;
@@ -36,6 +42,11 @@ export default function PortalNutrition({ user }) {
       if (client?.assigned_nutrition_id) {
         base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id }).then(plans => {
           if (plans[0]) setNutritionPlan(plans[0]);
+        }).catch(() => {});
+        // Fetch coach name
+        base44.entities.User.list().then(users => {
+          const coach = users.find(u => u.role === 'admin');
+          if (coach) setCoachName(coach.full_name);
         }).catch(() => {});
       }
     }).catch(() => {});
@@ -213,6 +224,27 @@ export default function PortalNutrition({ user }) {
       <div className="mt-2">
         <WaterTracker glasses={waterIntake} goal={8} onUpdate={setWaterIntake} />
       </div>
+
+      {/* Coach note */}
+      {nutritionPlan?.notes && (
+        <div className="mt-2">
+          <CoachNote note={nutritionPlan.notes} coachName={coachName} />
+        </div>
+      )}
+
+      {/* Supplement stack */}
+      <div className="mt-2">
+        <SupplementStack customSupplements={nutritionPlan?.supplements} />
+      </div>
+
+      {/* Hydration protocol */}
+      <HydrationProtocol weightLbs={null} />
+
+      {/* Sauces & seasonings */}
+      <SaucesSeasonings />
+
+      {/* Grocery list */}
+      <GroceryList nutritionPlan={nutritionPlan} />
 
       {/* Food search sheet */}
       <AnimatePresence>
