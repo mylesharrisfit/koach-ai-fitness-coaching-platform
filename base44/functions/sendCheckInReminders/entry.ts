@@ -2,14 +2,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 // Scheduled weekly — finds active clients who haven't checked in for 8+ days
 Deno.serve(async (req) => {
-  // Only allow internal scheduled calls — block all direct HTTP access
-  const isScheduled = req.headers.get('x-base44-scheduled') === 'true';
-  if (!isScheduled) {
-    return Response.json({ error: 'Forbidden: This endpoint is for scheduled jobs only.' }, { status: 403 });
-  }
-
   try {
     const base44 = createClientFromRequest(req);
+
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    }
 
     const clients = await base44.asServiceRole.entities.Client.filter({ lifecycle_status: 'active' });
     const checkIns = await base44.asServiceRole.entities.CheckIn.list('-date', 500);
