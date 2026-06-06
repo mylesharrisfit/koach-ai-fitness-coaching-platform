@@ -64,92 +64,127 @@ const defaultMeta = {
 };
 
 /* ─────────────────────────────────────────────────
-   Settings Modal
+   Settings Modal — KOACH design system
 ───────────────────────────────────────────────── */
 function SettingsModal({ open, onClose, meta, onMetaChange }) {
-  const u = (k, v) => onMetaChange({ ...meta, [k]: v });
+  // Local draft so changes only persist on Save
+  const [draft, setDraft] = useState(meta);
+  useEffect(() => { if (open) setDraft(meta); }, [open]);
+
+  const u = (k, v) => setDraft(d => ({ ...d, [k]: v }));
   const toggleEquip = (eq) => {
-    const list = meta.equipment || [];
+    const list = draft.equipment || [];
     u('equipment', list.includes(eq) ? list.filter(e => e !== eq) : [...list, eq]);
   };
+  const handleSave = () => { onMetaChange(draft); onClose(); };
+
+  const FieldLabel = ({ children }) => (
+    <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">{children}</p>
+  );
+
+  const Stepper = ({ label, value, min = 1, max = 99, onChange }) => (
+    <div>
+      <FieldLabel>{label}</FieldLabel>
+      <div className="flex items-center rounded-xl overflow-hidden" style={{ border: '0.5px solid #E2E5EC' }}>
+        <button
+          onClick={() => onChange(Math.max(min, value - 1))}
+          className="w-10 h-9 flex items-center justify-center text-base font-medium text-[#6B7280] hover:bg-[#F3F4F6] transition-colors flex-shrink-0"
+          style={{ borderRight: '0.5px solid #E2E5EC' }}
+        >−</button>
+        <span className="flex-1 text-center text-sm font-semibold text-[#0E1525]">{value}</span>
+        <button
+          onClick={() => onChange(Math.min(max, value + 1))}
+          className="w-10 h-9 flex items-center justify-center text-base font-medium text-[#6B7280] hover:bg-[#F3F4F6] transition-colors flex-shrink-0"
+          style={{ borderLeft: '0.5px solid #E2E5EC' }}
+        >+</button>
+      </div>
+    </div>
+  );
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-lg rounded-2xl p-0 overflow-hidden">
-        <div className="px-6 pt-5 pb-4" style={{ borderBottom: '1px solid #F3F4F6' }}>
-          <DialogTitle className="text-base font-bold text-[#0E1525]">Program Settings</DialogTitle>
+      <DialogContent className="max-w-lg p-0 overflow-hidden gap-0" style={{ borderRadius: 16 }}>
+
+        {/* ── HEADER ── */}
+        <div className="flex items-center gap-3 px-5 py-4" style={{ background: '#0E1525' }}>
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(133,183,235,0.15)' }}>
+            <Settings2 className="w-4 h-4" style={{ color: '#85B7EB' }} />
+          </div>
+          <DialogTitle className="flex-1 text-sm font-semibold text-white tracking-tight">Program settings</DialogTitle>
+          <button
+            onClick={onClose}
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+            style={{ background: 'rgba(255,255,255,0.08)' }}
+          >
+            <X className="w-3.5 h-3.5 text-white/70" />
+          </button>
         </div>
-        <div className="px-6 py-5 space-y-5 max-h-[75vh] overflow-y-auto">
+
+        {/* ── BODY ── */}
+        <div className="px-5 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 120px)', background: '#fff' }}>
 
           {/* Description */}
           <div>
-            <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Description</label>
+            <FieldLabel>Description</FieldLabel>
             <textarea
               rows={2}
-              value={meta.description || ''}
+              value={draft.description || ''}
               onChange={e => u('description', e.target.value)}
               placeholder="What's this program about?"
-              className="w-full text-sm px-3 py-2 rounded-xl border border-[#E7EAF3] bg-[#F8F9FB] resize-none focus:outline-none focus:border-blue-400"
+              className="w-full text-sm px-3 py-2.5 rounded-xl resize-none focus:outline-none transition-colors placeholder:text-[#C4C9D4] text-[#374151]"
+              style={{ border: '0.5px solid #E2E5EC', background: '#F8F9FB' }}
             />
           </div>
 
-          {/* Duration + Sessions per week */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Duration (weeks)</label>
-              <div className="flex items-center gap-2">
-                <button onClick={() => u('duration_weeks', Math.max(1, Number(meta.duration_weeks) - 1))}
-                  className="w-8 h-8 rounded-lg border border-[#E7EAF3] text-[#374151] hover:bg-[#F3F4F6] flex items-center justify-center text-lg">−</button>
-                <span className="flex-1 text-center text-sm font-semibold text-[#0E1525]">{meta.duration_weeks}</span>
-                <button onClick={() => u('duration_weeks', Number(meta.duration_weeks) + 1)}
-                  className="w-8 h-8 rounded-lg border border-[#E7EAF3] text-[#374151] hover:bg-[#F3F4F6] flex items-center justify-center text-lg">+</button>
-              </div>
-            </div>
-            <div>
-              <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Sessions / week</label>
-              <div className="flex items-center gap-2">
-                <button onClick={() => u('days_per_week', Math.max(1, Number(meta.days_per_week) - 1))}
-                  className="w-8 h-8 rounded-lg border border-[#E7EAF3] text-[#374151] hover:bg-[#F3F4F6] flex items-center justify-center text-lg">−</button>
-                <span className="flex-1 text-center text-sm font-semibold text-[#0E1525]">{meta.days_per_week}</span>
-                <button onClick={() => u('days_per_week', Math.min(7, Number(meta.days_per_week) + 1))}
-                  className="w-8 h-8 rounded-lg border border-[#E7EAF3] text-[#374151] hover:bg-[#F3F4F6] flex items-center justify-center text-lg">+</button>
-              </div>
-            </div>
+          {/* Duration + Sessions per week — steppers */}
+          <div className="grid grid-cols-2 gap-3">
+            <Stepper label="Duration (weeks)" value={Number(draft.duration_weeks)} min={1} max={52} onChange={v => u('duration_weeks', v)} />
+            <Stepper label="Sessions / week" value={Number(draft.days_per_week)} min={1} max={7} onChange={v => u('days_per_week', v)} />
           </div>
 
-          {/* Difficulty */}
+          {/* Difficulty — segmented control */}
           <div>
-            <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Difficulty</label>
-            <div className="flex gap-2">
-              {DIFFICULTIES.map(d => (
-                <button key={d} onClick={() => u('difficulty', d)}
-                  className="flex-1 py-1.5 rounded-lg text-xs font-semibold border-2 capitalize transition-all"
-                  style={{
-                    borderColor: meta.difficulty === d ? '#2563EB' : '#E7EAF3',
-                    background: meta.difficulty === d ? '#EFF6FF' : '#F8F9FB',
-                    color: meta.difficulty === d ? '#2563EB' : '#9CA3AF',
-                  }}>
-                  {d}
-                </button>
-              ))}
+            <FieldLabel>Difficulty</FieldLabel>
+            <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E2E5EC' }}>
+              {DIFFICULTIES.map((d, idx) => {
+                const active = draft.difficulty === d;
+                return (
+                  <button
+                    key={d}
+                    onClick={() => u('difficulty', d)}
+                    className="flex-1 py-2 text-xs font-semibold capitalize transition-colors"
+                    style={{
+                      background: active ? '#2563EB' : '#fff',
+                      color: active ? '#fff' : '#9CA3AF',
+                      borderRight: idx < DIFFICULTIES.length - 1 ? '0.5px solid #E2E5EC' : 'none',
+                    }}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Category + Session length */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Category</label>
-              <Select value={meta.category} onValueChange={v => u('category', v)}>
-                <SelectTrigger className="h-9 text-sm border-[#E7EAF3] bg-[#F8F9FB]"><SelectValue /></SelectTrigger>
+              <FieldLabel>Category</FieldLabel>
+              <Select value={draft.category} onValueChange={v => u('category', v)}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c.replace('_', ' ')}</SelectItem>)}
+                  {CATEGORIES.map(c => <SelectItem key={c} value={c} className="capitalize">{c.replace(/_/g, ' ')}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Session length</label>
-              <Select value={meta.estimated_session_length || '60'} onValueChange={v => u('estimated_session_length', v)}>
-                <SelectTrigger className="h-9 text-sm border-[#E7EAF3] bg-[#F8F9FB]"><SelectValue /></SelectTrigger>
+              <FieldLabel>Session length</FieldLabel>
+              <Select value={draft.estimated_session_length || '60'} onValueChange={v => u('estimated_session_length', v)}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {SESSION_LENGTHS.map(m => <SelectItem key={m} value={m}>{m} min</SelectItem>)}
                 </SelectContent>
@@ -157,68 +192,102 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             </div>
           </div>
 
-          {/* Equipment */}
+          {/* Equipment — toggle pills */}
           <div>
-            <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Equipment</label>
+            <FieldLabel>Equipment</FieldLabel>
             <div className="flex flex-wrap gap-2">
-              {EQUIPMENT_OPTIONS.map(eq => (
-                <button key={eq} onClick={() => toggleEquip(eq)}
-                  className="px-3 py-1.5 rounded-full text-xs font-medium border transition-all"
-                  style={{
-                    background: (meta.equipment || []).includes(eq) ? '#2563EB' : '#F8F9FB',
-                    color: (meta.equipment || []).includes(eq) ? '#fff' : '#6B7280',
-                    borderColor: (meta.equipment || []).includes(eq) ? '#2563EB' : '#E7EAF3',
-                  }}>
-                  {eq}
-                </button>
-              ))}
+              {EQUIPMENT_OPTIONS.map(eq => {
+                const on = (draft.equipment || []).includes(eq);
+                return (
+                  <button
+                    key={eq}
+                    onClick={() => toggleEquip(eq)}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+                    style={{
+                      background: on ? '#2563EB' : '#F8F9FB',
+                      color: on ? '#fff' : '#6B7280',
+                      border: on ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+                    }}
+                  >
+                    {eq}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Advanced */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Progression model + Deload frequency */}
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Progression Model</label>
-              <Select value={meta.progression_model || 'linear'} onValueChange={v => u('progression_model', v)}>
-                <SelectTrigger className="h-9 text-sm border-[#E7EAF3] bg-[#F8F9FB]"><SelectValue /></SelectTrigger>
+              <FieldLabel>Progression Model</FieldLabel>
+              <Select value={draft.progression_model || 'linear'} onValueChange={v => u('progression_model', v)}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {['linear','undulating','block'].map(m => <SelectItem key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</SelectItem>)}
+                  {['linear', 'undulating', 'block'].map(m => (
+                    <SelectItem key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider block mb-1.5">Deload Frequency</label>
-              <Select value={meta.deload_frequency || 'never'} onValueChange={v => u('deload_frequency', v)}>
-                <SelectTrigger className="h-9 text-sm border-[#E7EAF3] bg-[#F8F9FB]"><SelectValue /></SelectTrigger>
+              <FieldLabel>Deload Frequency</FieldLabel>
+              <Select value={draft.deload_frequency || 'never'} onValueChange={v => u('deload_frequency', v)}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {['never','every_4_weeks','every_6_weeks','every_8_weeks'].map(f => (
-                    <SelectItem key={f} value={f}>{f.replace(/_/g,' ')}</SelectItem>
+                  {['never', 'every_4_weeks', 'every_6_weeks', 'every_8_weeks'].map(f => (
+                    <SelectItem key={f} value={f}>{f.replace(/_/g, ' ')}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
+        </div>
 
-          {/* Template toggle */}
-          <label className="flex items-center gap-2.5 cursor-pointer">
+        {/* ── FOOTER ── */}
+        <div
+          className="flex items-center justify-between px-5 py-3.5"
+          style={{ background: '#F8F9FB', borderTop: '0.5px solid #E2E5EC' }}
+        >
+          {/* Save as template toggle */}
+          <button
+            onClick={() => u('is_template', !draft.is_template)}
+            className="flex items-center gap-2.5 cursor-pointer"
+          >
             <div
-              onClick={() => u('is_template', !meta.is_template)}
-              className="w-9 h-5 rounded-full transition-colors flex items-center px-0.5"
-              style={{ background: meta.is_template ? '#2563EB' : '#D1D5DB' }}
+              className="w-9 h-5 rounded-full transition-colors flex items-center px-0.5 flex-shrink-0"
+              style={{ background: draft.is_template ? '#2563EB' : '#D1D5DB' }}
             >
-              <div className="w-4 h-4 rounded-full bg-white shadow transition-transform"
-                style={{ transform: meta.is_template ? 'translateX(16px)' : 'translateX(0)' }} />
+              <div
+                className="w-4 h-4 rounded-full bg-white shadow transition-transform"
+                style={{ transform: draft.is_template ? 'translateX(16px)' : 'translateX(0)' }}
+              />
             </div>
-            <span className="text-sm text-[#374151] font-medium">Save as template</span>
-          </label>
-        </div>
-        <div className="px-6 py-4 flex justify-end" style={{ borderTop: '1px solid #F3F4F6' }}>
-          <button onClick={onClose}
-            className="px-5 py-2 rounded-xl text-sm font-semibold text-white transition-colors"
-            style={{ background: '#2563EB' }}>
-            Done
+            <span className="text-xs font-medium text-[#374151]">Save as template</span>
           </button>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-[#374151] transition-colors hover:bg-[#F3F4F6]"
+              style={{ border: '0.5px solid #E2E5EC', background: '#fff' }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-5 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90"
+              style={{ background: '#2563EB' }}
+            >
+              Save
+            </button>
+          </div>
         </div>
+
       </DialogContent>
     </Dialog>
   );
