@@ -23,35 +23,39 @@ const MUSCLE_COLORS = {
   cardio: 'text-accent bg-accent/10',
 };
 
-function VideoThumbnail({ url, thumbnailUrl, name }) {
+function MediaThumbnail({ url, imageUrl, thumbnailUrl, name }) {
   const isYoutube = url && (url.includes('youtube.com') || url.includes('youtu.be'));
-  const isVimeo = url && url.includes('vimeo.com');
 
   let thumb = thumbnailUrl;
   if (!thumb && isYoutube) {
-    const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+    const match = url?.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
     if (match) thumb = `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg`;
   }
+  // Fall back to exercise photo
+  const displayImg = thumb || imageUrl;
 
-  if (thumb) {
+  if (displayImg) {
     return (
       <div className="relative w-full h-full">
-        <img src={thumb} alt={name} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-            <Play className="w-4 h-4 text-gray-900 ml-0.5" fill="currentColor" />
+        <img src={displayImg} alt={name} className="w-full h-full object-cover"
+          onError={e => { e.target.style.display = 'none'; }} />
+        {url && (
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+              <Play className="w-4 h-4 text-gray-900 ml-0.5" fill="currentColor" />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full bg-[#F6F7FB] flex flex-col items-center justify-center gap-2">
+    <div className="w-full h-full bg-[#F3F4F6] flex flex-col items-center justify-center gap-2">
       <div className="w-10 h-10 rounded-full bg-[#EEF4FF] flex items-center justify-center">
         <Play className="w-4 h-4 text-primary ml-0.5" />
       </div>
-      <span className="text-xs text-[#374151]">{url ? 'Video' : 'No demo'}</span>
+      <span className="text-xs text-[#9CA3AF]">{url ? 'Video' : 'No demo'}</span>
     </div>
   );
 }
@@ -108,7 +112,7 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
     >
       {!compact && (
         <div className="relative h-44 bg-[#F6F7FB] overflow-hidden">
-          <VideoThumbnail url={exercise.video_url} thumbnailUrl={exercise.thumbnail_url} name={exercise.name} />
+          <MediaThumbnail url={exercise.video_url} imageUrl={exercise.image_url} thumbnailUrl={exercise.thumbnail_url} name={exercise.name} />
           {exercise.is_coach_branded && (
             <div className="absolute top-2 left-2 flex items-center gap-1 bg-chart-4/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
               <Star className="w-2.5 h-2.5" fill="currentColor" /> Coach

@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Edit, Star, Target, Zap, AlertTriangle, Clock, Timer, ChevronRight, Play } from 'lucide-react';
+import { Edit, Star, AlertTriangle, Clock, Timer, Play, X, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const MUSCLE_COLORS = {
-  chest: 'text-chart-1 bg-chart-1/10',
-  back: 'text-chart-2 bg-chart-2/10',
-  shoulders: 'text-chart-3 bg-chart-3/10',
-  biceps: 'text-primary bg-primary/10',
-  triceps: 'text-primary bg-primary/10',
-  legs: 'text-chart-5 bg-chart-5/10',
-  glutes: 'text-chart-5 bg-chart-5/10',
-  core: 'text-chart-4 bg-chart-4/10',
-  full_body: 'text-accent bg-accent/10',
-  cardio: 'text-accent bg-accent/10',
+const MUSCLE_TAG_COLORS = {
+  chest:     'bg-red-50 text-red-600',
+  back:      'bg-emerald-50 text-emerald-700',
+  shoulders: 'bg-purple-50 text-purple-700',
+  biceps:    'bg-blue-50 text-blue-700',
+  triceps:   'bg-blue-50 text-blue-700',
+  legs:      'bg-orange-50 text-orange-700',
+  glutes:    'bg-pink-50 text-pink-700',
+  core:      'bg-amber-50 text-amber-700',
+  full_body: 'bg-indigo-50 text-indigo-700',
+  cardio:    'bg-teal-50 text-teal-700',
 };
 
-function VideoPlayer({ url, thumbnailUrl, name }) {
+function VideoPlayer({ url, imageUrl, thumbnailUrl, name }) {
   const [playing, setPlaying] = useState(false);
 
   const isYoutube = url && (url.includes('youtube.com/watch') || url.includes('youtu.be/'));
@@ -39,60 +38,54 @@ function VideoPlayer({ url, thumbnailUrl, name }) {
 
   let thumb = thumbnailUrl;
   if (!thumb && isYoutube) {
-    const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
+    const match = url?.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
     if (match) thumb = `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`;
   }
 
-  if (!url) {
+  // If has a video URL
+  if (url) {
+    if (isDirect) {
+      return (
+        <video className="w-full aspect-video rounded-xl bg-black object-contain"
+          src={url} controls playsInline preload="metadata" poster={thumb || imageUrl} />
+      );
+    }
+    if (playing) {
+      return (
+        <iframe className="w-full aspect-video rounded-xl"
+          src={getEmbedUrl()} allow="autoplay; fullscreen" allowFullScreen title={name} />
+      );
+    }
+    const displayThumb = thumb || imageUrl;
     return (
-      <div className="w-full aspect-video bg-secondary/50 rounded-xl flex items-center justify-center">
-        <div className="text-center">
-          <Play className="w-10 h-10 text-[#374151]/40 mx-auto mb-2" />
-          <p className="text-sm text-[#374151]/60">No demo video added</p>
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden cursor-pointer group" onClick={() => setPlaying(true)}>
+        {displayThumb
+          ? <img src={displayThumb} alt={name} className="w-full h-full object-cover" />
+          : <div className="w-full h-full bg-[#F3F4F6]" />}
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-white/95 shadow-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Play className="w-6 h-6 text-[#0E1525] ml-1" fill="currentColor" />
+          </div>
         </div>
       </div>
     );
   }
 
-  if (isDirect) {
+  // No video — show image if available
+  if (imageUrl) {
     return (
-      <video
-        className="w-full aspect-video rounded-xl bg-black object-contain"
-        src={url}
-        controls
-        playsInline
-        preload="metadata"
-        poster={thumb}
-      />
+      <div className="w-full rounded-xl overflow-hidden bg-[#F3F4F6]">
+        <img src={imageUrl} alt={name} className="w-full object-cover max-h-64" onError={e => { e.target.style.display = 'none'; }} />
+      </div>
     );
   }
 
-  if (playing) {
-    return (
-      <iframe
-        className="w-full aspect-video rounded-xl"
-        src={getEmbedUrl()}
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowFullScreen
-        title={name}
-      />
-    );
-  }
-
+  // Nothing at all
   return (
-    <div
-      className="relative w-full aspect-video rounded-xl overflow-hidden cursor-pointer group"
-      onClick={() => setPlaying(true)}
-    >
-      {thumb ? (
-        <img src={thumb} alt={name} className="w-full h-full object-cover" />
-      ) : (
-        <div className="w-full h-full bg-secondary/60" />
-      )}
-      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full bg-white/95 shadow-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-          <Play className="w-7 h-7 text-gray-900 ml-1" fill="currentColor" />
-        </div>
+    <div className="w-full aspect-video bg-[#F3F4F6] rounded-xl flex items-center justify-center">
+      <div className="text-center">
+        <Play className="w-10 h-10 text-[#9CA3AF] mx-auto mb-2" />
+        <p className="text-sm text-[#9CA3AF]">No demo available</p>
       </div>
     </div>
   );
@@ -101,105 +94,122 @@ function VideoPlayer({ url, thumbnailUrl, name }) {
 export default function ExerciseDetailModal({ exercise, open, onClose, onEdit }) {
   if (!exercise) return null;
 
-  const muscleColor = MUSCLE_COLORS[exercise.muscle_group] || 'text-[#374151] bg-secondary';
+  const muscleTagClass = MUSCLE_TAG_COLORS[exercise.muscle_group] || 'bg-gray-100 text-gray-600';
+  // Use instructions if present, fall back to form_cues
+  const steps = (exercise.instructions?.length > 0 ? exercise.instructions : exercise.form_cues) || [];
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto p-0">
-        {/* Video Section */}
+      <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto p-0 rounded-2xl">
+
+        {/* Media */}
         <div className="p-5 pb-0">
-          <VideoPlayer url={exercise.video_url} thumbnailUrl={exercise.thumbnail_url} name={exercise.name} />
+          <VideoPlayer
+            url={exercise.video_url}
+            imageUrl={exercise.image_url}
+            thumbnailUrl={exercise.thumbnail_url}
+            name={exercise.name}
+          />
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-5">
+
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                {exercise.is_coach_branded && (
-                  <Badge className="text-[10px] bg-chart-4/15 text-chart-4 border-chart-4/20 gap-1">
-                    <Star className="w-2.5 h-2.5" fill="currentColor" /> Coach-Branded
-                  </Badge>
-                )}
-              </div>
-              <h2 className="text-xl font-heading font-bold">{exercise.name}</h2>
+            <div className="flex-1 min-w-0">
+              {exercise.is_coach_branded && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 mb-1">
+                  <Star className="w-2.5 h-2.5" fill="currentColor" /> Coach-Branded
+                </span>
+              )}
+              <h2 className="text-xl font-bold text-[#0E1525]">{exercise.name}</h2>
               {exercise.description && (
-                <p className="text-sm text-[#374151] mt-1">{exercise.description}</p>
+                <p className="text-sm text-[#6B7280] mt-1 leading-relaxed">{exercise.description}</p>
               )}
             </div>
-            <Button variant="outline" size="sm" onClick={onEdit} className="flex-shrink-0">
-              <Edit className="w-4 h-4 mr-1.5" /> Edit
-            </Button>
+            {onEdit && (
+              <Button variant="outline" size="sm" onClick={onEdit} className="flex-shrink-0 text-xs h-8">
+                <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit
+              </Button>
+            )}
           </div>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
             {exercise.muscle_group && (
-              <Badge className={cn("border-0", muscleColor)}>
+              <span className={cn('text-xs font-semibold px-2.5 py-1 rounded-full', muscleTagClass)}>
                 {exercise.muscle_group.replace('_', ' ')}
-              </Badge>
+              </span>
             )}
             {exercise.equipment && (
-              <Badge variant="outline">{exercise.equipment.replace('_', ' ')}</Badge>
-            )}
-            {exercise.movement_pattern && (
-              <Badge variant="outline">{exercise.movement_pattern}</Badge>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#374151]">
+                {exercise.equipment.replace('_', ' ')}
+              </span>
             )}
             {exercise.difficulty && (
-              <Badge variant="outline">{exercise.difficulty}</Badge>
+              <span className={cn('text-xs font-semibold px-2.5 py-1 rounded-full capitalize',
+                exercise.difficulty === 'beginner' ? 'bg-emerald-50 text-emerald-700' :
+                exercise.difficulty === 'advanced' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-700')}>
+                {exercise.difficulty}
+              </span>
+            )}
+            {exercise.category && (
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#EEF2FF] text-[#3730a3]">
+                {exercise.category}
+              </span>
             )}
           </div>
 
           {/* Secondary muscles */}
           {exercise.secondary_muscles?.length > 0 && (
             <div>
-              <p className="text-xs text-[#374151] uppercase tracking-wider mb-2 font-semibold">Also Works</p>
+              <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">Also Works</p>
               <div className="flex flex-wrap gap-1.5">
                 {exercise.secondary_muscles.map(m => (
-                  <Badge key={m} variant="secondary" className="text-xs">{m}</Badge>
+                  <span key={m} className="text-xs px-2 py-0.5 rounded-full bg-[#F3F4F6] text-[#6B7280]">{m}</span>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 gap-3">
-            {exercise.tempo && (
-              <div className="bg-secondary/50 rounded-xl p-3">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Timer className="w-3.5 h-3.5 text-primary" />
-                  <span className="text-xs text-[#374151] uppercase tracking-wider font-semibold">Tempo</span>
+          {/* Stats */}
+          {(exercise.tempo || exercise.default_rest_seconds) && (
+            <div className="grid grid-cols-2 gap-3">
+              {exercise.tempo && (
+                <div className="bg-[#F8F9FB] rounded-xl p-3" style={{ border: '0.5px solid #E2E5EC' }}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Timer className="w-3.5 h-3.5 text-[#2563EB]" />
+                    <span className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Tempo</span>
+                  </div>
+                  <p className="font-bold text-lg text-[#0E1525]">{exercise.tempo}</p>
+                  <p className="text-[10px] text-[#9CA3AF] mt-0.5">ecc–pause–con–pause</p>
                 </div>
-                <p className="font-heading font-bold text-lg">{exercise.tempo}</p>
-                <p className="text-[10px] text-[#374151] mt-0.5">ecc–pause–con–pause</p>
-              </div>
-            )}
-            {exercise.default_rest_seconds && (
-              <div className="bg-secondary/50 rounded-xl p-3">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Clock className="w-3.5 h-3.5 text-accent" />
-                  <span className="text-xs text-[#374151] uppercase tracking-wider font-semibold">Rest Time</span>
+              )}
+              {exercise.default_rest_seconds && (
+                <div className="bg-[#F8F9FB] rounded-xl p-3" style={{ border: '0.5px solid #E2E5EC' }}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Clock className="w-3.5 h-3.5 text-[#2563EB]" />
+                    <span className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider">Rest Time</span>
+                  </div>
+                  <p className="font-bold text-lg text-[#0E1525]">{exercise.default_rest_seconds}s</p>
+                  <p className="text-[10px] text-[#9CA3AF] mt-0.5">between sets</p>
                 </div>
-                <p className="font-heading font-bold text-lg">{exercise.default_rest_seconds}s</p>
-                <p className="text-[10px] text-[#374151] mt-0.5">between sets</p>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
-          {/* Form Cues */}
-          {exercise.form_cues?.length > 0 && (
+          {/* Instructions / Form Cues */}
+          {steps.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Zap className="w-4 h-4 text-primary" />
-                <h3 className="font-heading font-semibold">Form Cues</h3>
-              </div>
-              <div className="space-y-2">
-                {exercise.form_cues.map((cue, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 bg-secondary/40 rounded-xl">
-                    <div className="w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[10px] font-bold text-primary">{i + 1}</span>
+              <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">How to Perform</p>
+              <div className="space-y-2.5">
+                {steps.map((step, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC' }}>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-bold"
+                      style={{ background: '#2563EB', minWidth: 24 }}>
+                      {i + 1}
                     </div>
-                    <p className="text-sm leading-relaxed">{cue}</p>
+                    <p className="text-sm text-[#374151] leading-relaxed">{step}</p>
                   </div>
                 ))}
               </div>
@@ -209,15 +219,12 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {/* Common Mistakes */}
           {exercise.common_mistakes?.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="w-4 h-4 text-chart-4" />
-                <h3 className="font-heading font-semibold">Common Mistakes</h3>
-              </div>
+              <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Common Mistakes</p>
               <div className="space-y-2">
-                {exercise.common_mistakes.map((mistake, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 bg-chart-4/5 border border-chart-4/15 rounded-xl">
-                    <AlertTriangle className="w-3.5 h-3.5 text-chart-4 flex-shrink-0 mt-0.5" />
-                    <p className="text-sm leading-relaxed">{mistake}</p>
+                {exercise.common_mistakes.map((m, i) => (
+                  <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50" style={{ border: '0.5px solid #FECACA' }}>
+                    <AlertTriangle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-[#374151] leading-relaxed">{m}</p>
                   </div>
                 ))}
               </div>
@@ -226,8 +233,8 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
 
           {/* Coach notes */}
           {exercise.notes && (
-            <div className="p-3 bg-primary/5 border border-primary/15 rounded-xl">
-              <p className="text-xs text-primary font-semibold uppercase tracking-wider mb-1">Coach Notes</p>
+            <div className="p-3 rounded-xl bg-blue-50" style={{ border: '0.5px solid #BFDBFE' }}>
+              <p className="text-[10px] font-bold text-[#2563EB] uppercase tracking-wider mb-1">Coach Notes</p>
               <p className="text-sm text-[#374151]">{exercise.notes}</p>
             </div>
           )}

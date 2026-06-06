@@ -44,6 +44,10 @@
       ],
       "default": "barbell"
     },
+    "category": {
+      "type": "string",
+      "description": "Exercise category (e.g. Strength, Stretching, Plyometrics)"
+    },
     "movement_pattern": {
       "type": "string",
       "enum": [
@@ -67,9 +71,20 @@
       ],
       "default": "intermediate"
     },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Step-by-step instructions for performing the exercise"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Photo/GIF URL demonstrating the exercise"
+    },
     "video_url": {
       "type": "string",
-      "description": "Hosted video URL or embed URL (YouTube, Vimeo, direct MP4)"
+      "description": "Demo video URL (YouTube, Vimeo, or direct MP4)"
     },
     "thumbnail_url": {
       "type": "string",

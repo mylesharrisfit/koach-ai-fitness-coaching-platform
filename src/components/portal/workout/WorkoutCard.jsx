@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Moon, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Play, ChevronDown, ChevronUp, Check, Info } from 'lucide-react';
+import ExerciseInfoSheet from './ExerciseInfoSheet';
 
 const MUSCLE_COLORS = {
   chest: { bg: '#FEE2E2', text: '#DC2626' },
@@ -41,10 +44,17 @@ function getEquipment(exercises = []) {
   return [...eq].slice(0, 3);
 }
 
-function ExerciseRow({ ex, idx }) {
+function ExerciseRow({ ex, idx, libraryExercises, onInfoClick }) {
   const muscle = getMuscleTag(ex.name);
   const key = muscle.toLowerCase();
   const color = MUSCLE_COLORS[key] || { bg: '#F1F5F9', text: '#64748B' };
+
+  // Check if there's library data (photo/instructions)
+  const libraryEx = libraryExercises?.find(le =>
+    le.name?.toLowerCase().trim() === (ex.name || '').toLowerCase().trim()
+  );
+  const hasInfo = libraryEx && ((libraryEx.instructions?.length > 0) || libraryEx.image_url || libraryEx.video_url || (libraryEx.form_cues?.length > 0));
+
   return (
     <div className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
       <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-black text-slate-500 bg-slate-100">{idx + 1}</div>
@@ -52,12 +62,28 @@ function ExerciseRow({ ex, idx }) {
       <span className="text-slate-400 text-xs font-semibold whitespace-nowrap">{ex.sets}×{ex.reps}</span>
       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap"
         style={{ background: color.bg, color: color.text }}>{muscle}</span>
+      {hasInfo && (
+        <button
+          onClick={e => { e.stopPropagation(); onInfoClick(libraryEx); }}
+          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ background: '#EEF2FF' }}
+        >
+          <Info className="w-3.5 h-3.5 text-blue-600" />
+        </button>
+      )}
     </div>
   );
 }
 
 export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart }) {
   const [showAll, setShowAll] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState(null);
+
+  const { data: libraryExercises = [] } = useQuery({
+    queryKey: ['exercise-library'],
+    queryFn: () => base44.entities.ExerciseLibrary.list('name', 200),
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (!workout || workout.day_name?.toLowerCase().includes('rest')) {
     return (
@@ -86,52 +112,70 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
   const previewExs = showAll ? exercises : exercises.slice(0, 3);
 
   return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-      className="mx-4 bg-white rounded-[20px] overflow-hidden"
-      style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #F1F5F9' }}>
+    <>
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+        className="mx-4 bg-white rounded-[20px] overflow-hidden"
+        style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #F1F5F9' }}>
 
-      {/* Gradient header */}
-      <div className="p-5" style={{ background: 'linear-gradient(135deg, #1D4ED8 0%, #7C3AED 100%)' }}>
-        {isDone && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
-            style={{ background: 'rgba(16,185,129,0.25)', color: '#6EE7B7' }}>
-            <Check className="w-3 h-3" strokeWidth={3} /> Completed Today
-          </span>
-        )}
-        <h2 className="text-white font-black text-2xl leading-tight">{workout.day_name}</h2>
-
-        {/* Stats row */}
-        <div className="flex items-center gap-4 mt-2 flex-wrap">
-          <span className="text-white/70 text-sm font-semibold">{exercises.length} exercises</span>
-          <span className="text-white/30 text-sm">·</span>
-          <span className="text-white/70 text-sm font-semibold">~{estMin} min</span>
-          {equipment.length > 0 && <>
+        {/* Gradient header */}
+        <div className="p-5" style={{ background: 'linear-gradient(135deg, #1D4ED8 0%, #7C3AED 100%)' }}>
+          {isDone && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
+              style={{ background: 'rgba(16,185,129,0.25)', color: '#6EE7B7' }}>
+              <Check className="w-3 h-3" strokeWidth={3} /> Completed Today
+            </span>
+          )}
+          <h2 className="text-white font-black text-2xl leading-tight">{workout.day_name}</h2>
+          <div className="flex items-center gap-4 mt-2 flex-wrap">
+            <span className="text-white/70 text-sm font-semibold">{exercises.length} exercises</span>
             <span className="text-white/30 text-sm">·</span>
-            <span className="text-white/70 text-sm font-semibold">{equipment[0]}</span>
-          </>}
+            <span className="text-white/70 text-sm font-semibold">~{estMin} min</span>
+            {equipment.length > 0 && <>
+              <span className="text-white/30 text-sm">·</span>
+              <span className="text-white/70 text-sm font-semibold">{equipment[0]}</span>
+            </>}
+          </div>
         </div>
-      </div>
 
-      {/* Exercise list */}
-      <div className="px-5 pt-3">
-        {previewExs.map((ex, i) => <ExerciseRow key={i} ex={ex} idx={i} />)}
-        {exercises.length > 3 && (
-          <button onClick={() => setShowAll(v => !v)}
-            className="w-full py-3 flex items-center justify-center gap-1.5 text-sm font-bold text-blue-600">
-            {showAll ? <><ChevronUp className="w-4 h-4" /> Show less</> : <><ChevronDown className="w-4 h-4" /> +{exercises.length - 3} more exercises</>}
+        {/* Exercise list */}
+        <div className="px-5 pt-3">
+          {libraryExercises.length > 0 && (
+            <p className="text-[10px] text-slate-400 font-medium mb-2 flex items-center gap-1">
+              <Info className="w-3 h-3" /> Tap <Info className="w-3 h-3 text-blue-500" /> to see how to perform an exercise
+            </p>
+          )}
+          {previewExs.map((ex, i) => (
+            <ExerciseRow
+              key={i} ex={ex} idx={i}
+              libraryExercises={libraryExercises}
+              onInfoClick={setSelectedExercise}
+            />
+          ))}
+          {exercises.length > 3 && (
+            <button onClick={() => setShowAll(v => !v)}
+              className="w-full py-3 flex items-center justify-center gap-1.5 text-sm font-bold text-blue-600">
+              {showAll ? <><ChevronUp className="w-4 h-4" /> Show less</> : <><ChevronDown className="w-4 h-4" /> +{exercises.length - 3} more exercises</>}
+            </button>
+          )}
+        </div>
+
+        {/* Start button */}
+        <div className="px-5 pb-5 pt-2">
+          <button onClick={onStart}
+            className="w-full flex items-center justify-center gap-2 font-black text-base text-white rounded-2xl transition-transform active:scale-[0.97]"
+            style={{ height: 56, background: isDone ? 'linear-gradient(135deg, #059669, #10B981)' : 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: isDone ? '0 4px 16px rgba(5,150,105,0.3)' : '0 4px 20px rgba(37,99,235,0.35)' }}>
+            <Play className="w-5 h-5 fill-white" />
+            {isDone ? 'Do Again' : isToday ? 'Start Workout' : 'Preview Workout'}
           </button>
-        )}
-      </div>
+        </div>
+      </motion.div>
 
-      {/* Start button */}
-      <div className="px-5 pb-5 pt-2">
-        <button onClick={onStart}
-          className="w-full flex items-center justify-center gap-2 font-black text-base text-white rounded-2xl transition-transform active:scale-[0.97]"
-          style={{ height: 56, background: isDone ? 'linear-gradient(135deg, #059669, #10B981)' : 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: isDone ? '0 4px 16px rgba(5,150,105,0.3)' : '0 4px 20px rgba(37,99,235,0.35)' }}>
-          <Play className="w-5 h-5 fill-white" />
-          {isDone ? 'Do Again' : isToday ? 'Start Workout' : 'Preview Workout'}
-        </button>
-      </div>
-    </motion.div>
+      {/* Exercise info sheet */}
+      <ExerciseInfoSheet
+        exercise={selectedExercise}
+        open={!!selectedExercise}
+        onClose={() => setSelectedExercise(null)}
+      />
+    </>
   );
 }

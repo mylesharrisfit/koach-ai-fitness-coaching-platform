@@ -141,6 +141,21 @@ export default function ExerciseLibrary() {
     onError: (err) => { toast.error('Import failed: ' + err.message); setImportProgress(null); },
   });
 
+  const seedMutation = useMutation({
+    mutationFn: () => base44.functions.invoke('seedExerciseLibrary', {}),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['exercises'] });
+      if (res.data?.message) {
+        toast.info(res.data.message);
+      } else {
+        toast.success(`✅ Seeded ${res.data?.count || 'exercises'} from public exercise database!`);
+      }
+      setImportOpen(false);
+      setImportProgress(null);
+    },
+    onError: (err) => { toast.error('Seed failed: ' + err.message); setImportProgress(null); },
+  });
+
   // Stats
   const stats = useMemo(() => {
     const custom = exercises.filter(e => e.is_coach_branded || e.created_by);
@@ -373,29 +388,52 @@ export default function ExerciseLibrary() {
         <DialogContent className="max-w-md">
           <DialogHeader><DialogTitle>Import Exercise Library</DialogTitle></DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
-              <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-900">
-                <p className="font-semibold">Generate 50+ exercises via AI</p>
-                <p className="text-xs mt-1 opacity-75">Includes descriptions, muscle groups, equipment tags, and difficulty levels</p>
-              </div>
-            </div>
-            {importProgress !== null && (
-              <div className="space-y-2">
-                <div className="w-full bg-[#F3F4F6] rounded-full h-2 overflow-hidden">
-                  <div className="bg-primary h-full animate-pulse w-2/3 rounded-full" />
+            {/* Option 1: Public DB seed */}
+            <div className="rounded-xl border border-[#E5E7EB] p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <Download className="w-4 h-4 text-emerald-600" />
                 </div>
-                <p className="text-xs text-[#9CA3AF] text-center">Importing exercises...</p>
+                <div>
+                  <p className="text-sm font-bold text-[#111827]">Free Exercise Database (200+ exercises)</p>
+                  <p className="text-xs text-[#6B7280] mt-0.5">Real photos, step-by-step instructions, muscle groups, equipment. No AI credits used.</p>
+                </div>
               </div>
-            )}
-            <div className="flex gap-2">
-              <button onClick={() => setImportOpen(false)} disabled={importMutation.isPending}
-                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold border border-[#E5E7EB] hover:bg-[#F9FAFB]">Cancel</button>
-              <button onClick={() => { setImportProgress(0); importMutation.mutate(); }} disabled={importMutation.isPending}
-                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 disabled:opacity-60">
-                {importMutation.isPending ? 'Importing...' : 'Start Import'}
+              <button
+                onClick={() => { setImportProgress(0); seedMutation.mutate(); }}
+                disabled={seedMutation.isPending || importMutation.isPending}
+                className="w-full px-4 py-2 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60"
+              >
+                {seedMutation.isPending ? 'Seeding...' : '⚡ Seed from Public Database'}
               </button>
             </div>
+
+            {/* Option 2: AI generation */}
+            <div className="rounded-xl border border-[#E5E7EB] p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-[#111827]">AI-Generated Library (50 exercises)</p>
+                  <p className="text-xs text-[#6B7280] mt-0.5">Uses AI to generate exercises with YouTube video links, form cues, and common mistakes.</p>
+                </div>
+              </div>
+              {importProgress !== null && (importMutation.isPending) && (
+                <div className="space-y-1">
+                  <div className="w-full bg-[#F3F4F6] rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-primary h-full animate-pulse w-2/3 rounded-full" />
+                  </div>
+                  <p className="text-xs text-[#9CA3AF] text-center">Generating...</p>
+                </div>
+              )}
+              <button onClick={() => { setImportProgress(0); importMutation.mutate(); }} disabled={importMutation.isPending || seedMutation.isPending}
+                className="w-full px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 disabled:opacity-60">
+                {importMutation.isPending ? 'Generating...' : '✨ Generate with AI'}
+              </button>
+            </div>
+
+            <button onClick={() => setImportOpen(false)} className="w-full text-sm text-[#6B7280] hover:text-[#374151]">Cancel</button>
           </div>
         </DialogContent>
       </Dialog>
