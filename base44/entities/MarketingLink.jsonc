@@ -55,6 +55,11 @@
     "created_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this marketing link",
+      "maxLength": 1000
     }
   },
   "required": [

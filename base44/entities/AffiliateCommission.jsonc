@@ -62,6 +62,11 @@
     "last_paid_month": {
       "type": "string",
       "description": "YYYY-MM of last commission payout"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this commission record",
+      "maxLength": 1000
     }
   },
   "required": [

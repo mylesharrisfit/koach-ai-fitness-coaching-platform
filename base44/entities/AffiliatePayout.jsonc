@@ -49,6 +49,11 @@
         "type": "object"
       },
       "description": "Array of {coach_id, monthly_value, rate, commission}"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this payout",
+      "maxLength": 1000
     }
   },
   "required": [

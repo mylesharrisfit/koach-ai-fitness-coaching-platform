@@ -238,6 +238,11 @@
     },
     "reply_to_email": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about these business settings",
+      "maxLength": 1000
     }
   },
   "required": []

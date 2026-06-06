@@ -127,6 +127,11 @@
       "type": "boolean",
       "default": false,
       "description": "Legacy"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about these coach settings",
+      "maxLength": 1000
     }
   },
   "required": []

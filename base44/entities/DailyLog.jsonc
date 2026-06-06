@@ -59,6 +59,11 @@
     "streak_days": {
       "type": "number",
       "default": 0
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this daily log entry",
+      "maxLength": 1000
     }
   },
   "required": [

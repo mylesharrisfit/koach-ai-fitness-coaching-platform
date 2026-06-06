@@ -88,6 +88,11 @@
       "items": {
         "type": "string"
       }
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about these notification settings",
+      "maxLength": 1000
     }
   },
   "required": []

@@ -32,6 +32,11 @@
       ],
       "default": "weekly",
       "description": "Default check-in reminder frequency"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about these coach defaults",
+      "maxLength": 1000
     }
   },
   "required": []

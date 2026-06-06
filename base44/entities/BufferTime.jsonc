@@ -17,6 +17,11 @@
       ],
       "default": 0,
       "description": "Buffer time between sessions in minutes"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this buffer time setting",
+      "maxLength": 1000
     }
   },
   "required": [

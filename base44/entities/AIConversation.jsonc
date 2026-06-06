@@ -13,6 +13,11 @@
       "type": "string",
       "description": "First user message truncated"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional summary or notes about this conversation",
+      "maxLength": 1000
+    },
     "messages": {
       "type": "array",
       "description": "Array of message objects",

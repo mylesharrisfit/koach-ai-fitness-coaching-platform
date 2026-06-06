@@ -50,6 +50,11 @@
     "created_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this affiliate link",
+      "maxLength": 1000
     }
   },
   "required": [

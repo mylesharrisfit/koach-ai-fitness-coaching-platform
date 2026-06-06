@@ -22,6 +22,11 @@
     "success": {
       "type": "boolean",
       "default": true
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this Zapier log entry",
+      "maxLength": 1000
     }
   },
   "required": [

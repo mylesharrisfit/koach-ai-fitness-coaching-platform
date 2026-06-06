@@ -58,6 +58,11 @@
           }
         }
       }
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this workout session",
+      "maxLength": 1000
     }
   },
   "required": [

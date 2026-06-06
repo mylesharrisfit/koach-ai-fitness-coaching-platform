@@ -85,6 +85,11 @@
         "experienced",
         "advanced"
       ]
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this onboarding response",
+      "maxLength": 1000
     }
   },
   "required": [

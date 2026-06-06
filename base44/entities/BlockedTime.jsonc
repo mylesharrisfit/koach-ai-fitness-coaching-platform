@@ -34,6 +34,11 @@
     "title": {
       "type": "string",
       "description": "Display title for the blocked time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional details about this blocked time",
+      "maxLength": 1000
     }
   },
   "required": [

@@ -35,6 +35,11 @@
       "type": "string",
       "default": "America/New_York",
       "description": "IANA timezone"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this availability schedule",
+      "maxLength": 1000
     }
   },
   "required": [

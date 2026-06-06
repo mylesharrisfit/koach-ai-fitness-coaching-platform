@@ -16,6 +16,11 @@
     },
     "coach_id": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about these community settings",
+      "maxLength": 1000
     }
   },
   "required": []

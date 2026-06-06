@@ -20,6 +20,11 @@
     },
     "actions_taken": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this automation log entry",
+      "maxLength": 1000
     }
   },
   "required": [

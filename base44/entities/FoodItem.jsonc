@@ -63,6 +63,11 @@
     "coach_id": {
       "type": "string",
       "description": "Coach user ID who created this item"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes or details about this food item",
+      "maxLength": 1000
     }
   },
   "required": [

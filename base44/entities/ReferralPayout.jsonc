@@ -43,6 +43,11 @@
     "reference_number": {
       "type": "string",
       "description": "Public reference for coach"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional notes about this payout",
+      "maxLength": 1000
     }
   },
   "required": [
