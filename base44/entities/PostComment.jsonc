@@ -11,6 +11,10 @@
     "author_name": {
       "type": "string"
     },
+    "coach_id": {
+      "type": "string",
+      "description": "Coach who owns the community this comment belongs to \u2014 for multi-tenant isolation"
+    },
     "is_coach": {
       "type": "boolean",
       "default": false
@@ -38,7 +42,24 @@
     "create": {
       "created_by_id": "{{user.id}}"
     },
-    "read": true,
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.author_id": "{{user.id}}"
+        },
+        {
+          "data.coach_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
     "update": {
       "$or": [
         {
