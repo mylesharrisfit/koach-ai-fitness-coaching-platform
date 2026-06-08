@@ -1,10 +1,9 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 const getZoomAccessToken = async () => {
   const accountId = Deno.env.get('ZOOM_ACCOUNT_ID');
   const clientId = Deno.env.get('ZOOM_CLIENT_ID');
   const clientSecret = Deno.env.get('ZOOM_CLIENT_SECRET');
-
   const credentials = btoa(`${clientId}:${clientSecret}`);
   const response = await fetch(
     `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`,
@@ -21,12 +20,20 @@ const getZoomAccessToken = async () => {
   return data.access_token;
 };
 
+// Verify a meeting was created by this coach via our Session records
+const verifyMeetingOwnership = async (base44, userId, meetingId) => {
+  const sessions = await base44.asServiceRole.entities.Session.filter({ zoom_meeting_id: String(meetingId) });
+  const session = sessions[0];
+  if (!session) return false; // meeting not in our DB — deny
+  return session.created_by_id === userId;
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
+    if (user.role !== 'admin') return Response.json({ error: 'Forbidden: admin only' }, { status: 403 });
 
     const { action, payload = {} } = await req.json();
     const accessToken = await getZoomAccessToken();
@@ -64,7 +71,11 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'deleteMeeting') {
-      await fetch(`https://api.zoom.us/v2/meetings/${payload.meeting_id}`, {
+      const { meeting_id } = payload;
+      // Verify this coach owns the meeting before deleting
+      const owns = await verifyMeetingOwnership(base44, user.id, meeting_id);
+      if (!owns) return Response.json({ error: 'Forbidden: meeting not owned by you' }, { status: 403 });
+      await fetch(`https://api.zoom.us/v2/meetings/${meeting_id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -72,7 +83,11 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'getMeeting') {
-      const res = await fetch(`https://api.zoom.us/v2/meetings/${payload.meeting_id}`, {
+      const { meeting_id } = payload;
+      // Verify this coach owns the meeting before exposing details
+      const owns = await verifyMeetingOwnership(base44, user.id, meeting_id);
+      if (!owns) return Response.json({ error: 'Forbidden: meeting not owned by you' }, { status: 403 });
+      const res = await fetch(`https://api.zoom.us/v2/meetings/${meeting_id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const data = await res.json();
