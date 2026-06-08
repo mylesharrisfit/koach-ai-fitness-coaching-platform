@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
   Plus, Dumbbell, Lock, Zap, Search, SlidersHorizontal,
-  LayoutGrid, List, ChevronDown, X, Flame, Layers, Target,
+  LayoutGrid, List, ChevronDown, X, Flame, Layers, Target, Sparkles, PenLine,
 } from 'lucide-react';
 import { hasFeature, getLimit } from '@/lib/subscription';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -120,6 +120,9 @@ function FiltersPanel({ filters, onChange }) {
 /* ── Main Page ── */
 export default function Programs() {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createModalMode, setCreateModalMode] = useState(null);
+
+  const openCreateModal = (mode = null) => { setCreateModalMode(mode); setShowCreateModal(true); };
   const [assigningProgram, setAssigningProgram]   = useState(null);
   const [previewingProgram, setPreviewingProgram] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -274,13 +277,32 @@ export default function Programs() {
             {programs.length} program{programs.length !== 1 ? 's' : ''} · {assignedClientCount} client{assignedClientCount !== 1 ? 's' : ''} assigned
           </p>
         </div>
-        <button
-          onClick={() => { if (atLimit) { openUpgradeModal('clients'); return; } openBuilder(); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-[#0E1525] bg-white transition-opacity hover:opacity-90"
-        >
-          {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {atLimit ? `Limit (${programs.length}/${programLimit})` : 'New program'}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Build with AI — primary CTA */}
+          <button
+            onClick={() => {
+              if (atLimit) { openUpgradeModal('clients'); return; }
+              openCreateModal('ai');
+            }}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            style={{ background: '#2563EB' }}
+          >
+            <Sparkles className="w-4 h-4" />
+            Build with AI
+          </button>
+          {/* Build from scratch — secondary */}
+          <button
+            onClick={() => {
+              if (atLimit) { openUpgradeModal('clients'); return; }
+              openBuilder();
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-white/80 hover:text-white transition-colors"
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}
+          >
+            <PenLine className="w-4 h-4" />
+            <span className="hidden sm:inline">From scratch</span>
+          </button>
+        </div>
       </div>
 
       <div className="px-6 py-5 space-y-5 max-w-7xl mx-auto">
@@ -410,19 +432,28 @@ export default function Programs() {
               ))}
             </div>
           ) : programs.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
-              <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
-                <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
+            <div className="text-center py-16 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
+              <div className="w-14 h-14 rounded-2xl bg-[#EFF6FF] flex items-center justify-center mx-auto mb-4">
+                <Dumbbell className="w-6 h-6 text-[#2563EB]" />
               </div>
-              <p className="font-semibold text-[#0E1525]">No programs yet</p>
-              <p className="text-sm text-[#6B7280] mt-1 mb-5">Create your first workout program to get started.</p>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="px-4 py-2 rounded-xl text-sm font-semibold text-white"
-                style={{ background: '#2563EB' }}
-              >
-                <Plus className="w-4 h-4 inline mr-1" />Create program
-              </button>
+              <p className="font-bold text-[#0E1525]">No programs yet</p>
+              <p className="text-sm text-[#6B7280] mt-1 mb-6">Create your first program in seconds with AI, or build from scratch.</p>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => openCreateModal('ai')}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: '#2563EB' }}
+                >
+                  <Sparkles className="w-4 h-4" /> Build with AI
+                </button>
+                <button
+                  onClick={() => openBuilder()}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-[#374151] transition-colors hover:bg-[#F3F4F6]"
+                  style={{ border: '0.5px solid #E2E5EC' }}
+                >
+                  <PenLine className="w-4 h-4" /> From scratch
+                </button>
+              </div>
             </div>
           ) : filteredPrograms.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
@@ -455,20 +486,27 @@ export default function Programs() {
                 );
               })}
 
-              {/* Dashed "New program" tile */}
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="rounded-xl flex flex-col items-center justify-center gap-3 py-10 transition-all hover:border-[#2563EB] hover:bg-[#EFF6FF]/40 group"
+              {/* Dashed "New program" tile — split CTAs */}
+              <div
+                className="rounded-xl flex flex-col items-center justify-center gap-3 py-8 px-4"
                 style={{ border: '1.5px dashed #D1D5DB', background: 'transparent' }}
               >
-                <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] group-hover:bg-[#EFF6FF] flex items-center justify-center transition-colors">
-                  <Plus className="w-5 h-5 text-[#9CA3AF] group-hover:text-[#2563EB] transition-colors" />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs font-semibold text-[#9CA3AF] group-hover:text-[#2563EB] transition-colors">New program</p>
-                  <p className="text-[10px] text-[#C4C9D4] mt-0.5">Build from scratch or AI</p>
-                </div>
-              </button>
+                <p className="text-xs font-semibold text-[#9CA3AF]">New program</p>
+                <button
+                  onClick={() => openCreateModal('ai')}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  style={{ background: '#2563EB' }}
+                >
+                  <Sparkles className="w-3.5 h-3.5" /> Build with AI
+                </button>
+                <button
+                  onClick={() => openBuilder()}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-[#6B7280] transition-colors hover:bg-[#F3F4F6]"
+                  style={{ border: '0.5px solid #E2E5EC', background: '#fff' }}
+                >
+                  <PenLine className="w-3.5 h-3.5" /> From scratch
+                </button>
+              </div>
             </div>
           ) : (
             <div className="space-y-2">
@@ -534,6 +572,7 @@ export default function Programs() {
 
       <ProgramCreationModal
         open={showCreateModal}
+        initialMode={createModalMode}
         onOpenChange={setShowCreateModal}
         onProgramCreated={(program) => {
           queryClient.invalidateQueries({ queryKey: ['programs'] });

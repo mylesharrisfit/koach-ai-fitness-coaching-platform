@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Edit3, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
@@ -24,8 +24,14 @@ const ModeCard = ({ icon: Icon, title, description, onClick }) => (
   </motion.button>
 );
 
-export default function ProgramCreationModal({ open, onOpenChange, onProgramCreated }) {
+export default function ProgramCreationModal({ open, onOpenChange, onProgramCreated, initialMode = null }) {
   const [mode, setMode] = useState(null);
+
+  // When opened with a pre-selected mode, jump straight to it
+  useEffect(() => {
+    if (open) setMode(initialMode);
+    else setMode(null);
+  }, [open, initialMode]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
