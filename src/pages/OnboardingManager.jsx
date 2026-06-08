@@ -184,7 +184,7 @@ export default function OnboardingManager() {
     onError: () => toast.error('Failed to approve. Please try again.'),
   });
 
-  const onboardingUrl = `${window.location.origin}/client-onboarding${user?.email ? `?coach=${encodeURIComponent(user.email)}` : ''}`;
+  const onboardingUrl = `https://koachai.net/client-onboarding${user?.email ? `?coach=${encodeURIComponent(user.email)}` : ''}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(onboardingUrl);
