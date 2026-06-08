@@ -18,6 +18,8 @@ import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import ExerciseDetailsPanel from '@/components/programs/builder/ExerciseDetailsPanel';
+import ExerciseLibraryPanel from '@/components/programs/builder/ExerciseLibraryPanel';
+import ExercisePickerModal from '@/components/programs/builder/ExercisePickerModal';
 
 /* ─────────────────────────────────────────────────
    Constants
@@ -360,7 +362,7 @@ function AssignClientModal({ open, onClose, programId, programTitle }) {
 ───────────────────────────────────────────────── */
 function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onClick, onRemove, onPrescriptionChange }) {
   const libEntry = exLibMap?.[ex.name?.toLowerCase()] || null;
-  const thumb = libEntry?.image_url || null;
+  const thumb = ex.image_url || libEntry?.thumbnail_url || libEntry?.image_url || null;
   const hasVideo = !!(libEntry?.video_url || ex.video_url);
 
   return (
@@ -426,7 +428,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
 ───────────────────────────────────────────────── */
 function DayCard({
   day, globalDayIdx, isActiveDayForEx, selectedExIdx,
-  onSelectExercise, onAddExercise, onRemoveExercise, onRemoveDay, onDuplicateDay,
+  onSelectExercise, onAddExercise, onOpenPicker, onRemoveExercise, onRemoveDay, onDuplicateDay,
   onUpdateDay, exLibMap,
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -704,7 +706,7 @@ function DayCard({
           {/* Action buttons */}
           <div className="flex gap-2 mt-3">
             <button
-              onClick={() => onAddExercise('main')}
+              onClick={() => onOpenPicker ? onOpenPicker('main') : onAddExercise('main')}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
               style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
             >
@@ -780,6 +782,8 @@ export default function ProgramBuilder() {
   const [showAssign, setShowAssign] = useState(false);
   const [demoExercise, setDemoExercise] = useState(null);
   const [savedId, setSavedId] = useState(existingProgram?.id || null);
+  const [showLibPanel, setShowLibPanel] = useState(true); // left library panel
+  const [pickerState, setPickerState] = useState(null); // { dayIdx, section } — null = closed
   const [lastSaved, setLastSaved] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -940,11 +944,43 @@ export default function ProgramBuilder() {
     setWorkouts(next); trackChange();
   };
 
-  const addExercise = (dayIdx, section = 'main') => {
-    const ex = newExercise(section);
+  const addExercise = (dayIdx, section = 'main', libEntry = null) => {
+    const base = newExercise(section);
+    const ex = libEntry ? {
+      ...base,
+      name: libEntry.name || '',
+      video_url: libEntry.video_url || '',
+      // store library metadata for thumbnail lookup + carry-through to client
+      library_id: libEntry.id,
+      muscle_group: libEntry.muscle_group || '',
+      equipment: libEntry.equipment || '',
+      image_url: libEntry.thumbnail_url || libEntry.image_url || '',
+    } : base;
     setWorkouts(w => w.map((wk, i) => i !== dayIdx ? wk : { ...wk, exercises: [...wk.exercises, ex] }));
     const newExIdx = (workouts[dayIdx]?.exercises || []).length;
     setSelectedEx({ dayIdx, exIdx: newExIdx });
+    trackChange();
+  };
+
+  // Called when coach drags a library card onto a day's droppable zone
+  const addExerciseFromDrag = (dayIdx, libEntry, insertIdx) => {
+    const section = 'main';
+    const ex = {
+      ...newExercise(section),
+      name: libEntry.name || '',
+      video_url: libEntry.video_url || '',
+      library_id: libEntry.id,
+      muscle_group: libEntry.muscle_group || '',
+      equipment: libEntry.equipment || '',
+      image_url: libEntry.thumbnail_url || libEntry.image_url || '',
+    };
+    setWorkouts(w => w.map((wk, i) => {
+      if (i !== dayIdx) return wk;
+      const exs = [...wk.exercises];
+      exs.splice(insertIdx, 0, ex);
+      return { ...wk, exercises: exs };
+    }));
+    setSelectedEx({ dayIdx, exIdx: insertIdx });
     trackChange();
   };
 
@@ -963,17 +999,50 @@ export default function ProgramBuilder() {
   };
 
   const onDragEnd = (result) => {
-    const { source, destination } = result;
+    const { source, destination, draggableId } = result;
     if (!destination) return;
-    const dayIdx = parseInt(source.droppableId.replace('ex-', ''));
-    const exs = [...workouts[dayIdx].exercises];
-    const [moved] = exs.splice(source.index, 1);
-    exs.splice(destination.index, 0, moved);
-    setWorkouts(w => w.map((wk, i) => i !== dayIdx ? wk : { ...wk, exercises: exs }));
-    trackChange();
+
+    // Drag from library panel → day
+    if (source.droppableId === 'lib-panel' && destination.droppableId.startsWith('ex-')) {
+      const dayIdx = parseInt(destination.droppableId.replace('ex-', ''));
+      const libEntry = exLibrary.find(e => `lib-${e.id}` === draggableId);
+      if (libEntry) {
+        addExerciseFromDrag(dayIdx, libEntry, destination.index);
+      }
+      return;
+    }
+
+    // Reorder within a day
+    if (source.droppableId.startsWith('ex-') && destination.droppableId.startsWith('ex-')) {
+      const srcDayIdx = parseInt(source.droppableId.replace('ex-', ''));
+      const dstDayIdx = parseInt(destination.droppableId.replace('ex-', ''));
+
+      if (srcDayIdx === dstDayIdx) {
+        // Same day — reorder
+        const exs = [...workouts[srcDayIdx].exercises];
+        const [moved] = exs.splice(source.index, 1);
+        exs.splice(destination.index, 0, moved);
+        setWorkouts(w => w.map((wk, i) => i !== srcDayIdx ? wk : { ...wk, exercises: exs }));
+      } else {
+        // Move between days
+        const srcExs = [...workouts[srcDayIdx].exercises];
+        const dstExs = [...workouts[dstDayIdx].exercises];
+        const [moved] = srcExs.splice(source.index, 1);
+        dstExs.splice(destination.index, 0, moved);
+        setWorkouts(w => w.map((wk, i) => {
+          if (i === srcDayIdx) return { ...wk, exercises: srcExs };
+          if (i === dstDayIdx) return { ...wk, exercises: dstExs };
+          return wk;
+        }));
+        if (selectedEx?.dayIdx === srcDayIdx && selectedEx?.exIdx === source.index) {
+          setSelectedEx({ dayIdx: dstDayIdx, exIdx: destination.index });
+        }
+      }
+      trackChange();
+    }
   };
 
-  // Exercise library for thumbnails
+  // Exercise library — for thumbnails, drag-to-add, and click-to-add
   const { data: exLibrary = [] } = useQuery({
     queryKey: ['exercise-library-map'],
     queryFn: () => base44.entities.ExerciseLibrary.list(),
@@ -1221,6 +1290,32 @@ export default function ProgramBuilder() {
       {/* ── MAIN BODY ── */}
       <div className="flex flex-1 overflow-hidden">
 
+        {/* ── LEFT: Exercise Library Panel ── */}
+        <div className="hidden lg:flex flex-col w-60 xl:w-64 flex-shrink-0 overflow-hidden" style={{ borderRight: '0.5px solid #E2E5EC' }}>
+          <ExerciseLibraryPanel
+            onAddExercise={(libEntry) => {
+              if (pickerState) {
+                addExercise(pickerState.dayIdx, pickerState.section, libEntry);
+                setPickerState(null);
+              } else {
+                // If no day selected, use most recently active day
+                if (selectedEx) {
+                  addExercise(selectedEx.dayIdx, 'main', libEntry);
+                } else {
+                  toast('Select a day first, then click + on an exercise', { icon: '👆' });
+                }
+              }
+            }}
+            targetDayName={
+              pickerState != null
+                ? workouts[pickerState.dayIdx]?.day_name
+                : selectedEx != null
+                  ? workouts[selectedEx.dayIdx]?.day_name
+                  : null
+            }
+          />
+        </div>
+
         {/* Canvas */}
         <div className="flex-1 overflow-y-auto">
           {workouts.length === 0 ? (
@@ -1265,6 +1360,7 @@ export default function ProgramBuilder() {
                     selectedExIdx={selectedEx?.exIdx}
                     onSelectExercise={(exIdx) => setSelectedEx({ dayIdx: i, exIdx })}
                     onAddExercise={(section) => addExercise(i, section)}
+                    onOpenPicker={(section) => setPickerState({ dayIdx: i, section })}
                     onRemoveExercise={(exIdx) => removeExercise(i, exIdx)}
                     onRemoveDay={() => removeDay(i)}
                     onDuplicateDay={() => duplicateDay(i)}
@@ -1296,6 +1392,7 @@ export default function ProgramBuilder() {
                       selectedExIdx={selectedEx?.exIdx}
                       onSelectExercise={(exIdx) => setSelectedEx({ dayIdx: gIdx, exIdx })}
                       onAddExercise={(section) => addExercise(gIdx, section)}
+                      onOpenPicker={(section) => setPickerState({ dayIdx: gIdx, section })}
                       onRemoveExercise={(exIdx) => removeExercise(gIdx, exIdx)}
                       onRemoveDay={() => removeDay(gIdx)}
                       onDuplicateDay={() => duplicateDay(gIdx)}
@@ -1346,6 +1443,19 @@ export default function ProgramBuilder() {
         open={!!demoExercise}
         onClose={() => setDemoExercise(null)}
         onEdit={() => {}}
+      />
+
+      {/* Exercise picker modal — shown on mobile or when clicking Add exercise */}
+      <ExercisePickerModal
+        open={!!pickerState}
+        onClose={() => setPickerState(null)}
+        dayName={pickerState != null ? workouts[pickerState?.dayIdx]?.day_name : ''}
+        onPickExercise={(libEntry) => {
+          if (pickerState) addExercise(pickerState.dayIdx, pickerState.section, libEntry);
+        }}
+        onAddCustom={() => {
+          if (pickerState) addExercise(pickerState.dayIdx, pickerState.section, null);
+        }}
       />
     </div>
   );

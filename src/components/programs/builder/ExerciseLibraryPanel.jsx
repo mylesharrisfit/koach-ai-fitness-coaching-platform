@@ -1,106 +1,273 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Search, Dumbbell, Plus } from 'lucide-react';
+import { Search, Dumbbell, ChevronDown, X, GripVertical } from 'lucide-react';
+import { Draggable, Droppable } from '@hello-pangea/dnd';
+import { cn } from '@/lib/utils';
+
+const MUSCLE_OPTIONS = ['chest','back','shoulders','biceps','triceps','legs','glutes','core','full_body','cardio'];
+const EQUIPMENT_OPTIONS = ['barbell','dumbbell','cable','machine','bodyweight','kettlebell','resistance_band','trx'];
+const DIFFICULTY_OPTIONS = ['beginner','intermediate','advanced'];
 
 const MUSCLE_COLORS = {
-  chest: 'bg-red-50 text-red-600',
-  back: 'bg-emerald-50 text-emerald-700',
-  shoulders: 'bg-purple-50 text-purple-700',
-  biceps: 'bg-blue-50 text-blue-700',
-  triceps: 'bg-blue-50 text-blue-700',
-  legs: 'bg-orange-50 text-orange-700',
-  glutes: 'bg-orange-50 text-orange-700',
-  core: 'bg-amber-50 text-amber-700',
-  full_body: 'bg-indigo-50 text-indigo-700',
-  cardio: 'bg-teal-50 text-teal-700',
+  chest:     'bg-red-50 text-red-600 border-red-100',
+  back:      'bg-emerald-50 text-emerald-700 border-emerald-100',
+  shoulders: 'bg-purple-50 text-purple-700 border-purple-100',
+  biceps:    'bg-blue-50 text-blue-700 border-blue-100',
+  triceps:   'bg-blue-50 text-blue-700 border-blue-100',
+  legs:      'bg-orange-50 text-orange-700 border-orange-100',
+  glutes:    'bg-orange-50 text-orange-700 border-orange-100',
+  core:      'bg-amber-50 text-amber-700 border-amber-100',
+  full_body: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+  cardio:    'bg-teal-50 text-teal-700 border-teal-100',
 };
 
-export default function ExerciseLibraryPanel({ onAddExercise }) {
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('All');
-
-  const { data: exercises = [] } = useQuery({
-    queryKey: ['exercise-library'],
-    queryFn: () => base44.entities.ExerciseLibrary.list(),
-  });
-
-  const muscles = ['All', ...Array.from(new Set(exercises.map(e => e.muscle_group).filter(Boolean)))];
-
-  const filtered = exercises.filter(ex => {
-    const matchMuscle = filter === 'All' || ex.muscle_group === filter;
-    const matchSearch = !search || ex.name?.toLowerCase().includes(search.toLowerCase());
-    return matchMuscle && matchSearch;
-  });
-
+function FilterChip({ label, active, onClick }) {
   return (
-    <div className="flex flex-col h-full bg-white" style={{ borderRight: '1px solid #E7EAF3' }}>
-      {/* Panel header */}
-      <div className="px-4 pt-4 pb-3 flex-shrink-0" style={{ borderBottom: '1px solid #F3F4F6' }}>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">Exercise Library</p>
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
-          <input
-            type="text"
-            placeholder="Search exercises..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full h-8 text-xs pl-8 pr-3 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] focus:outline-none focus:border-blue-400 placeholder:text-[#C4C9D4]"
-          />
-        </div>
-        {/* Muscle filter chips */}
-        <div className="flex gap-1 mt-2 overflow-x-auto pb-0.5 scrollbar-hide">
-          {muscles.slice(0, 8).map(m => (
-            <button
-              key={m}
-              onClick={() => setFilter(m)}
-              className="text-[10px] font-semibold px-2 py-1 rounded-full whitespace-nowrap transition-colors flex-shrink-0"
-              style={{
-                background: filter === m ? '#2563EB' : '#F3F4F6',
-                color: filter === m ? '#fff' : '#6B7280',
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
+    <button
+      onClick={onClick}
+      className="text-[10px] font-semibold px-2 py-1 rounded-full whitespace-nowrap transition-all flex-shrink-0 capitalize"
+      style={{
+        background: active ? '#2563EB' : '#F3F4F6',
+        color: active ? '#fff' : '#6B7280',
+      }}
+    >
+      {label.replace(/_/g, ' ')}
+    </button>
+  );
+}
+
+function ExerciseCard({ ex, onAdd, draggable, dragIndex }) {
+  const thumb = ex.thumbnail_url || ex.image_url;
+  const muscleClass = MUSCLE_COLORS[ex.muscle_group] || 'bg-gray-50 text-gray-600 border-gray-100';
+
+  const inner = (dragProvided, snapshot) => (
+    <div
+      ref={dragProvided?.innerRef}
+      {...(dragProvided?.draggableProps || {})}
+      className={cn(
+        'flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all text-left group cursor-grab',
+        snapshot?.isDragging
+          ? 'border-blue-300 bg-blue-50 shadow-lg'
+          : 'border-transparent hover:border-blue-200 hover:bg-blue-50/40'
+      )}
+    >
+      {/* Drag handle */}
+      <div {...(dragProvided?.dragHandleProps || {})} className="flex-shrink-0 text-[#D1D5DB] group-hover:text-[#9CA3AF]">
+        <GripVertical className="w-3 h-3" />
       </div>
 
-      {/* Exercise list */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 text-center gap-2">
-            <Dumbbell className="w-6 h-6 text-[#D1D5DB]" />
-            <p className="text-xs text-[#9CA3AF]">No exercises found</p>
-          </div>
+      {/* Thumbnail */}
+      <div className="w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden" style={{ background: '#0E1525' }}>
+        {thumb ? (
+          <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
         ) : (
-          filtered.map(ex => (
-            <button
-              key={ex.id}
-              onClick={() => onAddExercise(ex)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-transparent hover:border-blue-200 hover:bg-blue-50/40 transition-all text-left group"
-            >
-              <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] flex items-center justify-center flex-shrink-0 group-hover:bg-white group-hover:border group-hover:border-blue-200">
-                <Dumbbell className="w-3.5 h-3.5 text-[#9CA3AF] group-hover:text-[#2563EB]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[#1F2A44] truncate">{ex.name}</p>
-                {ex.muscle_group && (
-                  <p className="text-[10px] text-[#9CA3AF] capitalize">{ex.muscle_group}</p>
-                )}
-              </div>
-              <div className="w-5 h-5 rounded-full bg-[#EEF2FF] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                <Plus className="w-3 h-3 text-[#2563EB]" />
-              </div>
-            </button>
-          ))
+          <div className="w-full h-full flex items-center justify-center">
+            <Dumbbell className="w-4 h-4 text-[#4B5563]" />
+          </div>
         )}
       </div>
 
-      {/* Count */}
-      <div className="px-4 py-2 border-t border-[#F3F4F6] flex-shrink-0">
-        <p className="text-[10px] text-[#9CA3AF]">{filtered.length} exercises</p>
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold text-[#0E1525] truncate leading-tight">{ex.name}</p>
+        <div className="flex items-center gap-1 mt-0.5 flex-wrap">
+          {ex.muscle_group && (
+            <span className={cn('text-[9px] font-semibold px-1.5 py-0.5 rounded-full border capitalize', muscleClass)}>
+              {ex.muscle_group.replace(/_/g, ' ')}
+            </span>
+          )}
+          {ex.equipment && (
+            <span className="text-[9px] text-[#9CA3AF] capitalize">{ex.equipment.replace(/_/g, ' ')}</span>
+          )}
+        </div>
+      </div>
+
+      {/* Click-to-add button */}
+      {onAdd && (
+        <button
+          onClick={e => { e.stopPropagation(); onAdd(ex); }}
+          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all text-white text-sm font-bold"
+          style={{ background: '#2563EB' }}
+          title="Add to selected day"
+        >+</button>
+      )}
+    </div>
+  );
+
+  if (draggable) {
+    return (
+      <Draggable draggableId={`lib-${ex.id}`} index={dragIndex}>
+        {(prov, snap) => inner(prov, snap)}
+      </Draggable>
+    );
+  }
+  return inner();
+}
+
+export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
+  const [search, setSearch] = useState('');
+  const [muscleFilter, setMuscleFilter] = useState('');
+  const [equipFilter, setEquipFilter] = useState('');
+  const [diffFilter, setDiffFilter] = useState('');
+  const [showEquip, setShowEquip] = useState(false);
+  const [showDiff, setShowDiff] = useState(false);
+
+  const { data: exercises = [], isLoading } = useQuery({
+    queryKey: ['exercise-library'],
+    queryFn: () => base44.entities.ExerciseLibrary.list(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const filtered = useMemo(() => {
+    return exercises.filter(ex => {
+      if (muscleFilter && ex.muscle_group !== muscleFilter) return false;
+      if (equipFilter && ex.equipment !== equipFilter) return false;
+      if (diffFilter && ex.difficulty !== diffFilter) return false;
+      if (search && !ex.name?.toLowerCase().includes(search.toLowerCase())) return false;
+      return true;
+    });
+  }, [exercises, muscleFilter, equipFilter, diffFilter, search]);
+
+  const activeFilters = [muscleFilter, equipFilter, diffFilter].filter(Boolean).length;
+
+  const clearFilters = () => { setMuscleFilter(''); setEquipFilter(''); setDiffFilter(''); setSearch(''); };
+
+  return (
+    <div className="flex flex-col h-full bg-white" style={{ borderRight: '0.5px solid #E2E5EC' }}>
+
+      {/* ── HEADER ── */}
+      <div className="px-3 pt-3 pb-2 flex-shrink-0" style={{ borderBottom: '0.5px solid #F3F4F6' }}>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF]">Exercise Library</p>
+          {activeFilters > 0 && (
+            <button onClick={clearFilters} className="flex items-center gap-0.5 text-[10px] font-semibold text-[#2563EB] hover:text-blue-700 transition-colors">
+              <X className="w-2.5 h-2.5" /> Clear
+            </button>
+          )}
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-2">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-[#9CA3AF]" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full h-7 text-xs pl-7 pr-2 rounded-lg border border-[#E7EAF3] bg-[#F6F7FB] focus:outline-none focus:border-blue-400 placeholder:text-[#C4C9D4]"
+          />
+        </div>
+
+        {/* Muscle group filter chips */}
+        <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
+          <FilterChip label="All" active={!muscleFilter} onClick={() => setMuscleFilter('')} />
+          {MUSCLE_OPTIONS.map(m => (
+            <FilterChip key={m} label={m} active={muscleFilter === m} onClick={() => setMuscleFilter(muscleFilter === m ? '' : m)} />
+          ))}
+        </div>
+
+        {/* Equipment + Difficulty dropdowns */}
+        <div className="flex gap-1.5 mt-1.5">
+          {/* Equipment */}
+          <div className="relative flex-1">
+            <button
+              onClick={() => { setShowEquip(v => !v); setShowDiff(false); }}
+              className="w-full h-6 flex items-center justify-between px-2 rounded-lg text-[10px] font-semibold transition-colors"
+              style={{
+                border: '0.5px solid #E7EAF3',
+                background: equipFilter ? '#EEF4FF' : '#F6F7FB',
+                color: equipFilter ? '#2563EB' : '#6B7280',
+              }}
+            >
+              <span className="truncate capitalize">{equipFilter ? equipFilter.replace(/_/g, ' ') : 'Equipment'}</span>
+              <ChevronDown className="w-2.5 h-2.5 flex-shrink-0 ml-1" />
+            </button>
+            {showEquip && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E7EAF3] rounded-xl shadow-lg z-30 py-1 max-h-40 overflow-y-auto">
+                <button onClick={() => { setEquipFilter(''); setShowEquip(false); }}
+                  className="w-full text-left px-3 py-1.5 text-[10px] font-semibold text-[#9CA3AF] hover:bg-[#F6F7FB]">All Equipment</button>
+                {EQUIPMENT_OPTIONS.map(e => (
+                  <button key={e} onClick={() => { setEquipFilter(e); setShowEquip(false); }}
+                    className={cn('w-full text-left px-3 py-1.5 text-[10px] capitalize font-medium hover:bg-[#F6F7FB]',
+                      equipFilter === e ? 'text-[#2563EB] font-semibold' : 'text-[#374151]')}>
+                    {e.replace(/_/g, ' ')}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Difficulty */}
+          <div className="relative flex-1">
+            <button
+              onClick={() => { setShowDiff(v => !v); setShowEquip(false); }}
+              className="w-full h-6 flex items-center justify-between px-2 rounded-lg text-[10px] font-semibold transition-colors"
+              style={{
+                border: '0.5px solid #E7EAF3',
+                background: diffFilter ? '#EEF4FF' : '#F6F7FB',
+                color: diffFilter ? '#2563EB' : '#6B7280',
+              }}
+            >
+              <span className="truncate capitalize">{diffFilter || 'Difficulty'}</span>
+              <ChevronDown className="w-2.5 h-2.5 flex-shrink-0 ml-1" />
+            </button>
+            {showDiff && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E7EAF3] rounded-xl shadow-lg z-30 py-1">
+                <button onClick={() => { setDiffFilter(''); setShowDiff(false); }}
+                  className="w-full text-left px-3 py-1.5 text-[10px] font-semibold text-[#9CA3AF] hover:bg-[#F6F7FB]">All Levels</button>
+                {DIFFICULTY_OPTIONS.map(d => (
+                  <button key={d} onClick={() => { setDiffFilter(d); setShowDiff(false); }}
+                    className={cn('w-full text-left px-3 py-1.5 text-[10px] capitalize font-medium hover:bg-[#F6F7FB]',
+                      diffFilter === d ? 'text-[#2563EB] font-semibold' : 'text-[#374151]')}>
+                    {d}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Target day hint */}
+        {targetDayName && (
+          <p className="text-[9px] text-[#9CA3AF] mt-1.5 text-center">
+            Adding to <span className="text-[#2563EB] font-semibold">{targetDayName}</span> · click <span className="font-semibold">+</span> or drag onto day
+          </p>
+        )}
+      </div>
+
+      {/* ── EXERCISE LIST (draggable) ── */}
+      <Droppable droppableId="lib-panel" isDropDisabled={true}>
+        {(prov) => (
+          <div ref={prov.innerRef} {...prov.droppableProps} className="flex-1 overflow-y-auto px-2 py-1.5 space-y-0.5">
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-2">
+                <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
+                <p className="text-[10px] text-[#9CA3AF]">Loading library...</p>
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
+                <Dumbbell className="w-6 h-6 text-[#D1D5DB]" />
+                <p className="text-xs text-[#9CA3AF]">No exercises found</p>
+                {(search || activeFilters > 0) && (
+                  <button onClick={clearFilters} className="text-[10px] text-[#2563EB] font-semibold">Clear filters</button>
+                )}
+              </div>
+            ) : (
+              filtered.map((ex, idx) => (
+                <ExerciseCard key={ex.id} ex={ex} onAdd={onAddExercise} draggable dragIndex={idx} />
+              ))
+            )}
+            {prov.placeholder}
+          </div>
+        )}
+      </Droppable>
+
+      {/* Footer */}
+      <div className="px-3 py-2 flex-shrink-0" style={{ borderTop: '0.5px solid #F3F4F6' }}>
+        <p className="text-[9px] text-[#C4C9D4] text-center">
+          {filtered.length} of {exercises.length} exercises
+        </p>
       </div>
     </div>
   );
