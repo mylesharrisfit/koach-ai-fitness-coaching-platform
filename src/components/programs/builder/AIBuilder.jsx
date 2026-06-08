@@ -39,10 +39,29 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
         profile,
         preferences: prefs,
       });
-      const program = result.data;
-      if (!program || program.error || !program.title) {
+      // Unwrap any extra nesting (belt + suspenders after backend fix)
+      let program = result.data;
+      if (program?.response) program = program.response;
+
+      if (!program || program.error) {
         throw new Error(program?.error || 'Invalid program returned from AI');
       }
+      // Resilient coercion — only fail if truly critical fields are absent
+      if (!program.title) program.title = 'AI Generated Program';
+      if (!Array.isArray(program.workouts) || program.workouts.length === 0) {
+        throw new Error('AI did not return any workout days. Please try again.');
+      }
+      // Ensure every exercise has minimum required fields
+      program.workouts = program.workouts.map((w, wi) => ({
+        ...w,
+        day_number: w.day_number ?? wi + 1,
+        exercises: (w.exercises || []).map(ex => ({
+          ...ex,
+          sets: ex.sets ?? 3,
+          reps: ex.reps ?? '8-12',
+          section: ex.section || 'main',
+        })),
+      }));
       setGeneratedProgram(program);
       setStep('review');
     } catch (error) {

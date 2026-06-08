@@ -189,27 +189,33 @@ Return ONLY valid JSON (no markdown, no code fences) with this exact structure:
       },
     });
 
-    // Enrich exercises with library metadata (thumbnail, video) where names match
-    if (result && result.workouts) {
-      result.workouts = result.workouts.map(workout => ({
-        ...workout,
-        exercises: (workout.exercises || []).map(ex => {
-          const libMatch = libraryByName[ex.name?.toLowerCase()];
-          if (libMatch) {
-            return {
-              ...ex,
-              library_id: libMatch.id,
-              image_url: libMatch.thumbnail_url || libMatch.image_url || ex.image_url,
-              video_url: libMatch.video_url || ex.video_url,
-              muscle_group: libMatch.muscle_group || ex.muscle_group,
-            };
-          }
-          return ex;
-        }),
-      }));
+    // InvokeLLM wraps the parsed JSON in a `response` key — unwrap it
+    const program = result?.response || result;
+
+    // Validate minimum required fields
+    if (!program || !program.title || !Array.isArray(program.workouts) || program.workouts.length === 0) {
+      return Response.json({ error: 'AI returned an invalid program structure. Missing title or workouts.' }, { status: 500 });
     }
 
-    return Response.json(result);
+    // Enrich exercises with library metadata (thumbnail, video) where names match
+    program.workouts = program.workouts.map(workout => ({
+      ...workout,
+      exercises: (workout.exercises || []).map(ex => {
+        const libMatch = libraryByName[ex.name?.toLowerCase()];
+        if (libMatch) {
+          return {
+            ...ex,
+            library_id: libMatch.id,
+            image_url: libMatch.thumbnail_url || libMatch.image_url || ex.image_url,
+            video_url: libMatch.video_url || ex.video_url,
+            muscle_group: libMatch.muscle_group || ex.muscle_group,
+          };
+        }
+        return ex;
+      }),
+    }));
+
+    return Response.json(program);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
