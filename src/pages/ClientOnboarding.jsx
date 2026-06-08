@@ -19,8 +19,10 @@ const STEPS = [
   'experience',
   'lifestyle',
   'training_prefs',
+  'equipment',
   'nutrition',
   'medical',
+  'consent',
   'mindset',
   'obstacles',
   'commitment',
@@ -260,6 +262,7 @@ function PremiumTextarea({ value, onChange, placeholder, rows = 4 }) {
 
 function WelcomeStep({ onNext }) {
   const displayName = COACH_NAME || (COACH_ID ? decodeURIComponent(COACH_ID).split('@')[0] : null);
+  const totalSteps = PROGRESS_STEPS.length;
   return (
     <Screen>
       <div className="flex-1 flex flex-col items-center justify-center px-6 gap-10 relative z-10">
@@ -269,12 +272,10 @@ function WelcomeStep({ onNext }) {
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.11 } } }}
         >
-          {/* Logo */}
           <motion.div variants={{ hidden: { opacity: 0, scale: 0.7 }, show: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: [0.32, 0.72, 0, 1] } } }}>
             <KoachLogo size={80} rounded="rounded-3xl" glow bg />
           </motion.div>
 
-          {/* Text */}
           <motion.div
             variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
             className="space-y-4"
@@ -295,7 +296,6 @@ function WelcomeStep({ onNext }) {
             </p>
           </motion.div>
 
-          {/* Tags */}
           <motion.div
             variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.4 } } }}
             className="flex flex-wrap justify-center gap-2"
@@ -311,7 +311,6 @@ function WelcomeStep({ onNext }) {
             ))}
           </motion.div>
 
-          {/* CTA */}
           <motion.div
             variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
             className="w-full space-y-3"
@@ -325,7 +324,7 @@ function WelcomeStep({ onNext }) {
             >
               Let's Go →
             </motion.button>
-            <p className="text-xs" style={{ color: '#2E2E2E' }}>Takes about 3 minutes · Private & secure</p>
+            <p className="text-xs" style={{ color: '#2E2E2E' }}>Takes about 5 minutes · {totalSteps} steps · Private & secure</p>
           </motion.div>
         </motion.div>
       </div>
@@ -333,13 +332,13 @@ function WelcomeStep({ onNext }) {
   );
 }
 
-/* BASIC INFO */
+/* STEP 1: BASIC INFO */
 function BasicInfoStep({ data, set, onNext, onBack }) {
   const valid = (data.first_name || '').trim() && (data.email || '').includes('@');
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 1 of 11" headline="What should your coach call you?" />
+      <Header eyebrow="Step 1 of 13" headline="What should your coach call you?" />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
@@ -349,13 +348,13 @@ function BasicInfoStep({ data, set, onNext, onBack }) {
         >
           <div className="flex gap-3">
             <div className="flex-1">
-              <PremiumField label="First Name" value={data.first_name} onChange={v => set('first_name', v)} placeholder="Alex" autoFocus />
+              <PremiumField label="First Name *" value={data.first_name} onChange={v => set('first_name', v)} placeholder="Alex" autoFocus />
             </div>
             <div className="flex-1">
               <PremiumField label="Last Name" value={data.last_name} onChange={v => set('last_name', v)} placeholder="Johnson" />
             </div>
           </div>
-          <PremiumField label="Email Address" value={data.email} onChange={v => set('email', v)} type="email" placeholder="alex@email.com" />
+          <PremiumField label="Email Address *" value={data.email} onChange={v => set('email', v)} type="email" placeholder="alex@email.com" />
           <PremiumField label="Phone (optional)" value={data.phone} onChange={v => set('phone', v)} type="tel" placeholder="+1 (555) 000-0000" />
         </motion.div>
       </div>
@@ -364,7 +363,7 @@ function BasicInfoStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* GOALS */
+/* STEP 2: GOALS */
 const GOAL_OPTIONS = [
   { id: 'fat_loss', emoji: '🔥', label: 'Lose Fat', sublabel: 'Shred body fat, get lean' },
   { id: 'muscle_gain', emoji: '💪', label: 'Build Muscle', sublabel: 'Gain size, strength & mass' },
@@ -383,7 +382,7 @@ function GoalsStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 2 of 11" headline="What's your main goal right now?" sub="Select all that apply." />
+      <Header eyebrow="Step 2 of 13" headline="What's your main goal right now?" sub="Select all that apply." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0 }}
@@ -403,13 +402,13 @@ function GoalsStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* BODY METRICS */
+/* STEP 3: BODY METRICS */
 function BodyMetricsStep({ data, set, onNext, onBack }) {
   const valid = data.age && data.current_weight && data.height;
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 3 of 11" headline="Tell us about yourself." sub="Used to calculate your personalized targets." />
+      <Header eyebrow="Step 3 of 13" headline="Tell us about yourself." sub="Used to calculate your personalized targets." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
@@ -418,12 +417,12 @@ function BodyMetricsStep({ data, set, onNext, onBack }) {
           className="space-y-4 max-w-md mx-auto w-full pb-4"
         >
           <div className="flex gap-3">
-            <NumBox label="Age" value={data.age} onChange={v => set('age', v)} unit="years" placeholder="25" />
-            <NumBox label="Weight" value={data.current_weight} onChange={v => set('current_weight', v)} unit="lbs" placeholder="170" />
+            <NumBox label="Age *" value={data.age} onChange={v => set('age', v)} unit="years" placeholder="25" />
+            <NumBox label="Weight *" value={data.current_weight} onChange={v => set('current_weight', v)} unit="lbs" placeholder="170" />
           </div>
           <div className="flex gap-3">
             <div className="flex-1">
-              <PremiumField label='Height' value={data.height} onChange={v => set('height', v)} placeholder={`5'10"`} />
+              <PremiumField label="Height *" value={data.height} onChange={v => set('height', v)} placeholder={`5'10"`} />
             </div>
             <div className="flex-1">
               <PremiumField label="Goal Weight" value={data.target_weight} onChange={v => set('target_weight', v)} placeholder="160 lbs" />
@@ -439,7 +438,7 @@ function BodyMetricsStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* EXPERIENCE */
+/* STEP 4: EXPERIENCE */
 const EXP_LEVELS = [
   { id: 'none', emoji: '🌱', label: 'Beginner', sublabel: 'New to structured training' },
   { id: 'some', emoji: '🔥', label: 'Intermediate', sublabel: '1–3 years of consistent training' },
@@ -452,7 +451,7 @@ function ExperienceStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 4 of 11" headline="What's your fitness experience?" />
+      <Header eyebrow="Step 4 of 13" headline="What's your fitness experience?" />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-7 max-w-md mx-auto w-full pb-4">
@@ -472,6 +471,18 @@ function ExperienceStep({ data, set, onNext, onBack }) {
               ))}
             </div>
           </div>
+          <SectionDivider label="Training History" />
+          <div className="space-y-1.5">
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#4A4A4A' }}>
+              Describe your training history (optional)
+            </p>
+            <PremiumTextarea
+              value={data.training_history}
+              onChange={v => set('training_history', v)}
+              placeholder="e.g. Trained powerlifting for 2 years, took 6 months off, recently returned to gym..."
+              rows={3}
+            />
+          </div>
         </motion.div>
       </div>
       <CTABtn onClick={onNext} disabled={!data.experience} />
@@ -479,7 +490,7 @@ function ExperienceStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* LIFESTYLE */
+/* STEP 5: LIFESTYLE */
 const ACTIVITY_OPTS = ['Mostly sitting', 'Light movement', 'Moderately active', 'Very active', 'Athlete-level'];
 const SCHEDULE_OPTS = ['9-5 office job', 'Shift work', 'Remote / flexible', 'Student', 'Physical job'];
 const ALCOHOL_OPTS = ['Never', 'Rarely', 'Weekends', 'Few times/week', 'Daily'];
@@ -489,13 +500,13 @@ function LifestyleStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 5 of 11" headline="What does your lifestyle look like?" sub="Recovery is half the battle." />
+      <Header eyebrow="Step 5 of 13" headline="What does your lifestyle look like?" sub="Recovery is half the battle." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-7 max-w-md mx-auto w-full pb-4">
 
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-white">Daily activity level</p>
+            <p className="text-sm font-semibold text-white">Daily activity level *</p>
             <div className="flex flex-wrap gap-2">
               {ACTIVITY_OPTS.map(o => <Chip key={o} label={o} selected={data.activity_level === o} onClick={() => set('activity_level', o)} />)}
             </div>
@@ -548,7 +559,7 @@ function LifestyleStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* TRAINING PREFS */
+/* STEP 6: TRAINING PREFS */
 const TRAINING_STYLES = [
   { id: 'gym', emoji: '🏋️', label: 'Gym Workouts', sublabel: 'Weights, machines, barbells' },
   { id: 'running', emoji: '🏃', label: 'Running', sublabel: 'Road, trail, cardio-focused' },
@@ -568,7 +579,7 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 6 of 11" headline="How do you enjoy training?" sub="Select all that apply." />
+      <Header eyebrow="Step 6 of 13" headline="How do you enjoy training?" sub="Select all that apply." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-7 max-w-md mx-auto w-full pb-4">
@@ -581,7 +592,7 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
           </div>
           <SectionDivider label="Training Frequency" />
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-white">How many days can you realistically train?</p>
+            <p className="text-sm font-semibold text-white">Days available to train per week *</p>
             <div className="flex gap-2">
               {DAYS.map(d => (
                 <motion.button
@@ -603,35 +614,87 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
           </div>
         </motion.div>
       </div>
-      <CTABtn onClick={onNext} disabled={selected.length === 0} />
+      <CTABtn onClick={onNext} disabled={selected.length === 0 || !data.training_days_per_week} />
     </Screen>
   );
 }
 
-/* NUTRITION */
+/* STEP 7: EQUIPMENT */
+const EQUIPMENT_OPTS = [
+  { id: 'full_gym', emoji: '🏋️', label: 'Full Commercial Gym', sublabel: 'Barbells, cables, machines, dumbbells' },
+  { id: 'home_full', emoji: '🏠', label: 'Home Gym (Full)', sublabel: 'Barbell, rack, plates, dumbbells' },
+  { id: 'home_basic', emoji: '🪬', label: 'Home Gym (Basic)', sublabel: 'Dumbbells, resistance bands, bench' },
+  { id: 'bodyweight', emoji: '🤸', label: 'Bodyweight Only', sublabel: 'No equipment available' },
+  { id: 'outdoor', emoji: '🏞️', label: 'Outdoors / Park', sublabel: 'Pull-up bars, open space' },
+  { id: 'hotel', emoji: '🧳', label: 'Hotel / Travel Gym', sublabel: 'Limited machines, light dumbbells' },
+];
+
+function EquipmentStep({ data, set, onNext, onBack }) {
+  return (
+    <Screen>
+      <BackBtn onClick={onBack} />
+      <Header eyebrow="Step 7 of 13" headline="What equipment do you have access to?" sub="This determines what exercises we can program." />
+      <div className="flex-1 overflow-y-auto px-6 relative z-10">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
+          className="space-y-4 max-w-md mx-auto w-full pb-4">
+          <div className="space-y-2.5">
+            {EQUIPMENT_OPTS.map((e, i) => (
+              <motion.div key={e.id} initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+                <BigCard {...e} selected={data.equipment_access === e.id} onClick={() => set('equipment_access', e.id)} />
+              </motion.div>
+            ))}
+          </div>
+          <SectionDivider label="Specific Equipment (optional)" />
+          <PremiumTextarea
+            value={data.equipment_notes}
+            onChange={v => set('equipment_notes', v)}
+            placeholder="e.g. I have a squat rack, barbell, and dumbbells up to 50lbs. No cable machine..."
+            rows={3}
+          />
+        </motion.div>
+      </div>
+      <CTABtn onClick={onNext} disabled={!data.equipment_access} />
+    </Screen>
+  );
+}
+
+/* STEP 8: NUTRITION */
 const FOOD_CHIPS = ['Chicken', 'Steak', 'Rice', 'Potatoes', 'Eggs', 'Pasta', 'Greek Yogurt', 'Salmon', 'Turkey', 'Fruit', 'Oats', 'Avocado', 'Broccoli', 'Bread', 'Quinoa', 'Tofu'];
-const DIET_OPTS = ['No restrictions', 'Dairy-free', 'Gluten-free', 'Nut allergy', 'Vegetarian', 'Vegan', 'Halal', 'Keto'];
+const DIET_OPTS = ['No restrictions', 'Dairy-free', 'Gluten-free', 'Vegetarian', 'Vegan', 'Halal', 'Kosher', 'Keto', 'Paleo'];
+const ALLERGY_OPTS = ['None', 'Peanuts', 'Tree nuts', 'Shellfish', 'Fish', 'Eggs', 'Milk/Dairy', 'Wheat/Gluten', 'Soy', 'Sesame'];
 
 function NutritionStep({ data, set, onNext, onBack }) {
   const favFoods = data.fav_foods || [];
   const diets = data.dietary_restrictions || [];
+  const allergies = data.food_allergies || [];
+
   const toggleFood = f => set('fav_foods', favFoods.includes(f) ? favFoods.filter(x => x !== f) : [...favFoods, f]);
   const toggleDiet = d => {
     if (d === 'No restrictions') { set('dietary_restrictions', ['No restrictions']); return; }
     const without = diets.filter(x => x !== 'No restrictions');
     set('dietary_restrictions', without.includes(d) ? without.filter(x => x !== d) : [...without, d]);
   };
+  const toggleAllergy = a => {
+    if (a === 'None') { set('food_allergies', ['None']); return; }
+    const without = allergies.filter(x => x !== 'None');
+    set('food_allergies', without.includes(a) ? without.filter(x => x !== a) : [...without, a]);
+  };
+
+  const valid = allergies.length > 0;
 
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 7 of 11" headline="What foods do you enjoy?" sub="We'll build your nutrition plan around what you actually like." />
+      <Header eyebrow="Step 8 of 13" headline="Nutrition & dietary preferences." sub="We'll build your plan around what you actually like." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-7 max-w-md mx-auto w-full pb-4">
 
-          <div className="flex flex-wrap gap-2">
-            {FOOD_CHIPS.map(f => <Chip key={f} label={f} selected={favFoods.includes(f)} onClick={() => toggleFood(f)} />)}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-white">Foods you enjoy</p>
+            <div className="flex flex-wrap gap-2">
+              {FOOD_CHIPS.map(f => <Chip key={f} label={f} selected={favFoods.includes(f)} onClick={() => toggleFood(f)} />)}
+            </div>
           </div>
 
           <SectionDivider label="Foods you dislike" />
@@ -642,20 +705,34 @@ function NutritionStep({ data, set, onNext, onBack }) {
             placeholder="e.g. fish, mushrooms, tofu..."
           />
 
-          <SectionDivider label="Restrictions & Allergies" />
+          <SectionDivider label="Dietary Preferences" />
           <div className="flex flex-wrap gap-2">
             {DIET_OPTS.map(d => <Chip key={d} label={d} selected={diets.includes(d)} onClick={() => toggleDiet(d)} />)}
           </div>
+
+          <SectionDivider label="Food Allergies *" />
+          <p className="text-xs" style={{ color: '#5A5A5A' }}>Select all that apply — required for safe programming.</p>
+          <div className="flex flex-wrap gap-2">
+            {ALLERGY_OPTS.map(a => <Chip key={a} label={a} selected={allergies.includes(a)} onClick={() => toggleAllergy(a)} />)}
+          </div>
+
+          <SectionDivider label="Other allergies or notes" />
+          <PremiumTextarea
+            value={data.allergy_notes}
+            onChange={v => set('allergy_notes', v)}
+            placeholder="Any other allergies, intolerances, or important food notes..."
+            rows={2}
+          />
         </motion.div>
       </div>
-      <CTABtn onClick={onNext} disabled={false} />
+      <CTABtn onClick={onNext} disabled={!valid} />
     </Screen>
   );
 }
 
-/* MEDICAL / INJURIES */
-const INJURY_OPTS = ['Lower back', 'Knees', 'Shoulders', 'Hips', 'Ankles', 'Neck', 'Previous surgery', 'None'];
-const MEDICAL_OPTS = ['High blood pressure', 'Diabetes', 'Digestive issues', 'Hormonal issues', 'Asthma', 'Anxiety/stress', 'None'];
+/* STEP 9: MEDICAL / INJURIES */
+const INJURY_OPTS = ['Lower back', 'Knees', 'Shoulders', 'Hips', 'Ankles', 'Neck', 'Wrists/Elbows', 'Previous surgery', 'None'];
+const MEDICAL_OPTS = ['High blood pressure', 'Diabetes (Type 1)', 'Diabetes (Type 2)', 'Digestive issues', 'Hormonal issues', 'Asthma', 'Anxiety/depression', 'Heart condition', 'Thyroid condition', 'None'];
 
 function MedicalStep({ data, set, onNext, onBack }) {
   const injuries = data.injuries || [];
@@ -672,30 +749,79 @@ function MedicalStep({ data, set, onNext, onBack }) {
     set('medical_conditions', w.includes(v) ? w.filter(x => x !== v) : [...w, v]);
   };
 
-  const valid = injuries.length > 0 && medical.length > 0;
+  const valid = injuries.length > 0 && medical.length > 0 && data.parq_answer;
 
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 8 of 11" headline="Any injuries or limitations?" sub="This helps us keep your plan safe and effective." />
+      <Header eyebrow="Step 9 of 13" headline="Health & injury history." sub="This helps us keep your plan safe and effective." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-7 max-w-md mx-auto w-full pb-4">
 
-          <div className="flex flex-wrap gap-2">
-            {INJURY_OPTS.map(o => <Chip key={o} label={o} selected={injuries.includes(o)} onClick={() => toggleInjury(o)} />)}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-white">Physical limitations / injuries *</p>
+            <div className="flex flex-wrap gap-2">
+              {INJURY_OPTS.map(o => <Chip key={o} label={o} selected={injuries.includes(o)} onClick={() => toggleInjury(o)} />)}
+            </div>
           </div>
 
-          <SectionDivider label="Medical Conditions" />
+          <SectionDivider label="Medical Conditions *" />
           <div className="flex flex-wrap gap-2">
             {MEDICAL_OPTS.map(o => <Chip key={o} label={o} selected={medical.includes(o)} onClick={() => toggleMedical(o)} />)}
           </div>
 
-          <SectionDivider label="Additional Notes" />
+          <SectionDivider label="Medications (optional)" />
+          <PremiumTextarea
+            value={data.medications}
+            onChange={v => set('medications', v)}
+            placeholder="List any medications you're currently taking that may affect exercise (e.g. beta-blockers, insulin)..."
+            rows={2}
+          />
+
+          <SectionDivider label="PAR-Q Health Screening *" />
+          <div className="p-4 rounded-2xl space-y-4" style={{ background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.15)' }}>
+            <div className="flex gap-2">
+              <span className="text-lg flex-shrink-0">❤️</span>
+              <p className="text-sm leading-relaxed" style={{ color: '#D4A017' }}>
+                <strong>Has a doctor ever said you have a heart condition, or that you should only do physical activity recommended by a doctor?</strong>
+              </p>
+            </div>
+            <div className="flex gap-3">
+              {['Yes', 'No'].map(ans => (
+                <motion.button
+                  key={ans}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => set('parq_answer', ans)}
+                  className="flex-1 py-3 rounded-xl font-bold text-sm transition-all"
+                  style={{
+                    background: data.parq_answer === ans
+                      ? (ans === 'Yes' ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.1)')
+                      : 'rgba(255,255,255,0.04)',
+                    border: data.parq_answer === ans
+                      ? (ans === 'Yes' ? '1.5px solid rgba(239,68,68,0.55)' : '1.5px solid rgba(34,197,94,0.55)')
+                      : '1.5px solid rgba(255,255,255,0.07)',
+                    color: data.parq_answer === ans ? '#fff' : '#4A4A4A',
+                  }}
+                >
+                  {ans === 'Yes' ? '⚠️ Yes' : '✅ No'}
+                </motion.button>
+              ))}
+            </div>
+            {data.parq_answer === 'Yes' && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-xl text-xs leading-relaxed"
+                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#F87171' }}>
+                Please ensure you have medical clearance before starting any exercise program. Your coach will review this and may request documentation.
+              </motion.div>
+            )}
+          </div>
+
+          <SectionDivider label="Additional Health Notes" />
           <PremiumTextarea
             value={data.health_notes}
             onChange={v => set('health_notes', v)}
-            placeholder="Anything your coach should know about your body or history..."
+            placeholder="Anything else your coach should know about your health or injury history..."
             rows={3}
           />
         </motion.div>
@@ -705,7 +831,96 @@ function MedicalStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* MINDSET */
+/* STEP 10: CONSENT */
+function ConsentStep({ data, set, onNext, onBack }) {
+  const consentChecked = !!data.consent_agreed;
+
+  return (
+    <Screen>
+      <BackBtn onClick={onBack} />
+      <Header eyebrow="Step 10 of 13" headline="Health & coaching agreement." sub="Please read and confirm before continuing." />
+      <div className="flex-1 overflow-y-auto px-6 relative z-10">
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="space-y-5 max-w-md mx-auto w-full pb-4">
+
+          {/* Disclaimer card */}
+          <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="flex gap-3">
+              <span className="text-2xl flex-shrink-0">🛡️</span>
+              <div>
+                <p className="text-sm font-bold text-white mb-1">Coaching is not medical advice</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#6A6A6A' }}>
+                  The coaching, training programs, and nutrition guidance provided are for general fitness and wellness purposes only. They do not constitute medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional before starting any exercise or nutrition program, especially if you have any pre-existing health conditions.
+                </p>
+              </div>
+            </div>
+
+            <div className="h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+
+            <div className="flex gap-3">
+              <span className="text-2xl flex-shrink-0">✅</span>
+              <div>
+                <p className="text-sm font-bold text-white mb-1">Exercise clearance</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#6A6A6A' }}>
+                  By proceeding, you confirm that you are physically capable of participating in exercise, have disclosed any known medical conditions or limitations above, and are not relying on this coaching as a substitute for professional medical advice.
+                </p>
+              </div>
+            </div>
+
+            <div className="h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+
+            <div className="flex gap-3">
+              <span className="text-2xl flex-shrink-0">🔒</span>
+              <div>
+                <p className="text-sm font-bold text-white mb-1">Privacy</p>
+                <p className="text-xs leading-relaxed" style={{ color: '#6A6A6A' }}>
+                  Your personal information and health data are shared only with your coach and will not be sold or shared with third parties.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Consent checkbox */}
+          <motion.button
+            onClick={() => set('consent_agreed', !consentChecked)}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex items-start gap-4 p-5 rounded-2xl text-left transition-all"
+            style={{
+              background: consentChecked ? 'rgba(34,197,94,0.07)' : 'rgba(255,255,255,0.03)',
+              border: consentChecked ? '1.5px solid rgba(34,197,94,0.4)' : '1.5px solid rgba(255,255,255,0.1)',
+            }}
+          >
+            <div
+              className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center mt-0.5 transition-all"
+              style={{
+                background: consentChecked ? '#22C55E' : 'transparent',
+                border: consentChecked ? '2px solid #22C55E' : '2px solid rgba(255,255,255,0.2)',
+              }}
+            >
+              {consentChecked && (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6L5 9L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </div>
+            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? '#fff' : '#7A7A7A' }}>
+              I confirm I am cleared to exercise, I understand that coaching is not medical advice, and I take full responsibility for my own health and safety during this program. <span style={{ color: '#22C55E' }}>*Required</span>
+            </p>
+          </motion.button>
+
+          {!consentChecked && (
+            <p className="text-xs text-center" style={{ color: '#3A3A3A' }}>
+              You must agree to the above to continue
+            </p>
+          )}
+        </motion.div>
+      </div>
+      <CTABtn onClick={onNext} disabled={!consentChecked} label="I Agree — Continue" />
+    </Screen>
+  );
+}
+
+/* STEP 11: MINDSET */
 const WHY_PROMPTS = ['Confidence', 'Family', 'Performance', 'Discipline', 'Health', 'Longevity', 'Mental health', 'Appearance', 'Athletics'];
 
 function MindsetStep({ data, set, onNext, onBack }) {
@@ -715,7 +930,7 @@ function MindsetStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 9 of 11" headline="Why is this important to you?" sub="This keeps you going when it gets hard. Be honest." />
+      <Header eyebrow="Step 11 of 13" headline="Why is this important to you?" sub="This keeps you going when it gets hard. Be honest." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-6 max-w-md mx-auto w-full pb-4">
@@ -753,7 +968,7 @@ function MindsetStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* OBSTACLES */
+/* STEP 12: OBSTACLES */
 const OBSTACLE_OPTS = [
   { id: 'consistency', emoji: '🔄', label: 'Consistency' },
   { id: 'motivation', emoji: '😴', label: 'Motivation' },
@@ -774,7 +989,7 @@ function ObstaclesStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 10 of 11" headline="What usually holds you back?" sub="Your coach will build a plan to overcome these." />
+      <Header eyebrow="Step 12 of 13" headline="What usually holds you back?" sub="Your coach will build a plan to overcome these." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
           className="space-y-5 max-w-md mx-auto w-full pb-4">
@@ -806,7 +1021,7 @@ function ObstaclesStep({ data, set, onNext, onBack }) {
   );
 }
 
-/* COMMITMENT */
+/* STEP 13: COMMITMENT + ANYTHING ELSE */
 const COMMIT_LEVELS = [
   { value: 3, emoji: '🌱', label: 'Casual', sub: "I'll try when I can" },
   { value: 6, emoji: '💪', label: 'Motivated', sub: 'Ready to put in real effort' },
@@ -819,42 +1034,55 @@ function CommitmentStep({ data, set, onNext, onBack }) {
   return (
     <Screen>
       <BackBtn onClick={onBack} />
-      <Header eyebrow="Step 11 of 11" headline="How committed are you to changing?" sub="Be honest — there's no wrong answer." />
+      <Header eyebrow="Step 13 of 13" headline="Almost done — final questions." sub="Be honest — there's no wrong answer." />
       <div className="flex-1 overflow-y-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
-          className="space-y-5 max-w-md mx-auto w-full pb-4">
-          <div className="grid grid-cols-2 gap-3">
-            {COMMIT_LEVELS.map((c, i) => {
-              const sel = level === c.value;
-              return (
-                <motion.button
-                  key={c.value}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => set('commitment_level', c.value)}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.07 }}
-                  className="py-6 px-4 rounded-2xl text-center transition-all"
-                  style={{
-                    background: sel ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                    border: sel ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                    boxShadow: sel ? '0 0 30px rgba(59,130,246,0.18)' : 'none',
-                    transform: sel ? 'scale(1.03)' : 'scale(1)',
-                  }}
-                >
-                  <div className="text-3xl mb-2">{c.emoji}</div>
-                  <p className="font-bold text-sm" style={{ color: sel ? '#fff' : '#9A9A9A' }}>{c.label}</p>
-                  <p className="text-xs mt-1" style={{ color: '#4A4A4A' }}>{c.sub}</p>
-                </motion.button>
-              );
-            })}
+          className="space-y-6 max-w-md mx-auto w-full pb-4">
+
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-white">How committed are you to changing?</p>
+            <div className="grid grid-cols-2 gap-3">
+              {COMMIT_LEVELS.map((c, i) => {
+                const sel = level === c.value;
+                return (
+                  <motion.button
+                    key={c.value}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => set('commitment_level', c.value)}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.07 }}
+                    className="py-6 px-4 rounded-2xl text-center transition-all"
+                    style={{
+                      background: sel ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
+                      border: sel ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
+                      boxShadow: sel ? '0 0 30px rgba(59,130,246,0.18)' : 'none',
+                      transform: sel ? 'scale(1.03)' : 'scale(1)',
+                    }}
+                  >
+                    <div className="text-3xl mb-2">{c.emoji}</div>
+                    <p className="font-bold text-sm" style={{ color: sel ? '#fff' : '#9A9A9A' }}>{c.label}</p>
+                    <p className="text-xs mt-1" style={{ color: '#4A4A4A' }}>{c.sub}</p>
+                  </motion.button>
+                );
+              })}
+            </div>
           </div>
+
           <div className="py-3 px-5 rounded-2xl text-center space-y-1"
             style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.1)' }}>
             <p className="text-xs" style={{ color: '#5A5A5A' }}>
               Your coach uses this to calibrate your plan intensity and accountability level.
             </p>
           </div>
+
+          <SectionDivider label="Anything else your coach should know?" />
+          <PremiumTextarea
+            value={data.anything_else}
+            onChange={v => set('anything_else', v)}
+            placeholder="Is there anything important we haven't covered? Upcoming events, special circumstances, past coaching experiences, specific requests for your coach..."
+            rows={5}
+          />
         </motion.div>
       </div>
       <CTABtn onClick={onNext} disabled={!level} label="Build My Coaching Plan →" />
@@ -865,11 +1093,11 @@ function CommitmentStep({ data, set, onNext, onBack }) {
 /* AI GENERATION */
 const GEN_ITEMS = [
   { label: 'Training Profile',       icon: '🏋️', activateAt: 0.5 },
-  { label: 'Nutrition Preferences',  icon: '🥗', activateAt: 1.1 },
-  { label: 'Recovery Targets',       icon: '⚡', activateAt: 1.7 },
-  { label: 'Lifestyle Analysis',     icon: '📊', activateAt: 2.3 },
-  { label: 'Habit Recommendations',  icon: '🔄', activateAt: 2.9 },
-  { label: 'Obstacle Response Plan', icon: '🛡️', activateAt: 3.5 },
+  { label: 'Equipment & Access',     icon: '🏠', activateAt: 1.0 },
+  { label: 'Nutrition Preferences',  icon: '🥗', activateAt: 1.6 },
+  { label: 'Recovery Targets',       icon: '⚡', activateAt: 2.2 },
+  { label: 'Health & Safety Notes',  icon: '🛡️', activateAt: 2.8 },
+  { label: 'Obstacle Response Plan', icon: '🔄', activateAt: 3.4 },
 ];
 const REDIRECT_AFTER = 5200;
 
@@ -933,7 +1161,6 @@ function GeneratingStep({ onNext }) {
     return () => clearTimeout(t);
   }, []);
 
-  const doneCount = GEN_ITEMS.length;
   return (
     <Screen>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
@@ -965,12 +1192,11 @@ function GeneratingStep({ onNext }) {
           </p>
         </motion.div>
 
-        {/* Progress bar */}
         <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <motion.div
             className="h-full rounded-full"
             style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
-            animate={{ width: allDone ? '100%' : `${(GEN_ITEMS.filter((_, i) => true).length / GEN_ITEMS.length) * 85}%` }}
+            animate={{ width: allDone ? '100%' : `${(GEN_ITEMS.length / GEN_ITEMS.length) * 85}%` }}
             initial={{ width: '0%' }}
             transition={{ duration: lastAt * 0.9 }}
           />
@@ -996,7 +1222,6 @@ function DoneStep({ firstName }) {
           animate="show"
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
         >
-          {/* Check */}
           <motion.div
             variants={{ hidden: { scale: 0, opacity: 0 }, show: { scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 200, delay: 0.1 } } }}
             className="w-24 h-24 rounded-3xl flex items-center justify-center"
@@ -1090,23 +1315,33 @@ export default function ClientOnboarding() {
       food_preferences: [
         data.fav_foods?.length ? `Likes: ${data.fav_foods.join(', ')}` : '',
         data.disliked_foods ? `Dislikes: ${data.disliked_foods}` : '',
-        data.dietary_restrictions?.length ? `Restrictions: ${data.dietary_restrictions.join(', ')}` : '',
+        data.dietary_restrictions?.length ? `Dietary: ${data.dietary_restrictions.join(', ')}` : '',
+        data.food_allergies?.length ? `Allergies: ${data.food_allergies.join(', ')}` : '',
+        data.allergy_notes ? `Allergy notes: ${data.allergy_notes}` : '',
       ].filter(Boolean).join(' | '),
       health_conditions: [
         (data.injuries || []).join(', '),
         (data.medical_conditions || []).join(', '),
+        data.medications ? `Medications: ${data.medications}` : '',
+        data.parq_answer ? `PAR-Q heart condition: ${data.parq_answer}` : '',
         data.health_notes,
       ].filter(Boolean).join(' | '),
       motivation: data.motivation,
       schedule_preferences: [
         data.work_schedule,
+        `Equipment: ${data.equipment_access || 'not specified'}`,
+        data.equipment_notes ? `Equipment notes: ${data.equipment_notes}` : '',
         data.training_styles?.join(', '),
+        `Training days: ${data.training_days_per_week}/week`,
         `Sleep: ${data.sleep_quality}/10`,
         `Stress: ${data.stress_level}/10`,
         `Water: ${data.water_intake}/10`,
         data.alcohol_frequency ? `Alcohol: ${data.alcohol_frequency}` : '',
         `Commitment: ${data.commitment_level}/10`,
         `Obstacles: ${(data.obstacles || []).join(', ')}`,
+        data.training_history ? `Training history: ${data.training_history}` : '',
+        data.anything_else ? `Additional notes: ${data.anything_else}` : '',
+        `Consent agreed: Yes`,
       ].filter(Boolean).join(' | '),
       coach_id: COACH_ID,
       status: 'pending',
@@ -1135,27 +1370,28 @@ export default function ClientOnboarding() {
 
   const renderStep = () => {
     switch (step) {
-      case 'welcome':       return <WelcomeStep onNext={next} />;
-      case 'basic_info':    return <BasicInfoStep {...props} />;
-      case 'goals':         return <GoalsStep {...props} />;
-      case 'body_metrics':  return <BodyMetricsStep {...props} />;
-      case 'experience':    return <ExperienceStep {...props} />;
-      case 'lifestyle':     return <LifestyleStep {...props} />;
+      case 'welcome':        return <WelcomeStep onNext={next} />;
+      case 'basic_info':     return <BasicInfoStep {...props} />;
+      case 'goals':          return <GoalsStep {...props} />;
+      case 'body_metrics':   return <BodyMetricsStep {...props} />;
+      case 'experience':     return <ExperienceStep {...props} />;
+      case 'lifestyle':      return <LifestyleStep {...props} />;
       case 'training_prefs': return <TrainingPrefsStep {...props} />;
-      case 'nutrition':     return <NutritionStep {...props} />;
-      case 'medical':       return <MedicalStep {...props} />;
-      case 'mindset':       return <MindsetStep {...props} />;
-      case 'obstacles':     return <ObstaclesStep {...props} />;
-      case 'commitment':    return <CommitmentStep {...props} />;
-      case 'generating':    return <GeneratingStep onNext={next} />;
-      case 'done':          return <DoneStep firstName={data.first_name} />;
+      case 'equipment':      return <EquipmentStep {...props} />;
+      case 'nutrition':      return <NutritionStep {...props} />;
+      case 'medical':        return <MedicalStep {...props} />;
+      case 'consent':        return <ConsentStep {...props} />;
+      case 'mindset':        return <MindsetStep {...props} />;
+      case 'obstacles':      return <ObstaclesStep {...props} />;
+      case 'commitment':     return <CommitmentStep {...props} />;
+      case 'generating':     return <GeneratingStep onNext={next} />;
+      case 'done':           return <DoneStep firstName={data.first_name} />;
       default: return null;
     }
   };
 
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ background: '#0A0A0A' }}>
-      {/* Progress bar */}
       {showProgress && (
         <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <motion.div
