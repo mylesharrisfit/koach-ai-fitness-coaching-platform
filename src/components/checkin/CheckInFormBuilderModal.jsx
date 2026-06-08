@@ -389,8 +389,8 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                       { key: 'notify_coach', label: 'Notify coach immediately', desc: 'Send push notification when client submits' },
                       { key: 'auto_thankyou', label: 'Auto-send thank you message', desc: 'Automatically message client after submission' },
                     ].map(({ key, label, desc }) => (
-                      <label key={key} className="flex items-center justify-between p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl cursor-pointer hover:bg-[#F3F4F6] transition-colors">
-                        <div>
+                      <label key={key} className="flex items-center justify-between gap-4 p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl cursor-pointer hover:bg-[#F3F4F6] transition-colors">
+                        <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-[#111827]">{label}</p>
                           <p className="text-xs text-[#6B7280]">{desc}</p>
                         </div>
@@ -398,7 +398,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                           type="checkbox"
                           checked={settings[key] || false}
                           onChange={e => setSettings(s => ({ ...s, [key]: e.target.checked }))}
-                          className="w-4 h-4 rounded border-[#D1D5DB] text-primary"
+                          className="w-4 h-4 flex-shrink-0 rounded border-[#D1D5DB] text-primary"
                         />
                       </label>
                     ))}
