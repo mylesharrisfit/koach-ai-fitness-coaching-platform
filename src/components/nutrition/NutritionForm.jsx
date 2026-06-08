@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import FoodSearchModal from './FoodSearchModal';
+import MealImageUpload from './MealImageUpload';
 
 const EMOJIS = ['🥗', '🔥', '💪', '🥦', '🍗', '⚡', '🏆', '🌿'];
 
@@ -25,10 +26,11 @@ function normalizeFood(f) {
 
 function defaultMeal(m) {
   return {
-    name:     m?.meal_name     ?? m?.name   ?? '',
-    calories: m?.calories                   ?? '',
-    notes:    m?.habit_description ?? m?.notes ?? '',
-    foods:    (m?.foods ?? []).map(normalizeFood),
+    name:      m?.meal_name     ?? m?.name   ?? '',
+    calories:  m?.calories                   ?? '',
+    notes:     m?.habit_description ?? m?.notes ?? '',
+    foods:     (m?.foods ?? []).map(normalizeFood),
+    image_url: m?.image_url ?? null,
   };
 }
 
@@ -172,6 +174,13 @@ function MealCard({ meal, index, total, onUpdate, onRemove, onMoveUp, onMoveDown
         </button>
       </div>
 
+      {/* Meal image */}
+      <MealImageUpload
+        imageUrl={meal.image_url}
+        onChange={url => onUpdate('image_url', url)}
+        className="w-full"
+      />
+
       {/* Notes */}
       <textarea
         value={meal.notes}
@@ -286,7 +295,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
 
   // Meals
   function addMeal() {
-    setForm(f => ({ ...f, meals: [...f.meals, { name: '', calories: '', notes: '', foods: [] }] }));
+    setForm(f => ({ ...f, meals: [...f.meals, { name: '', calories: '', notes: '', foods: [], image_url: null }] }));
   }
   function updateMeal(i, field, val) {
     setForm(f => {
@@ -332,6 +341,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
         meals: form.meals.map(m => ({
           name:              m.name,
           meal_name:         m.name,
+          image_url:         m.image_url || null,
           calories:          m.foods.length > 0
             ? m.foods.reduce((s, f) => s + (parseFloat(f.calories) || 0), 0)
             : (m.calories ? Number(m.calories) : undefined),

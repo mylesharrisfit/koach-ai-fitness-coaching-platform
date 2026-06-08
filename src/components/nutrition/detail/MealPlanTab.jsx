@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer } from 'lucide-react';
+import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer, UtensilsCrossed } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { getFoodImageUrl, getMealImageUrl, getCategoryEmoji } from '@/lib/foodImages';
 
@@ -100,15 +100,23 @@ function MealCard({ meal, index }) {
   const mealName = meal.name || meal.meal_name || `Meal ${index + 1}`;
   const instructions = meal.instructions || meal.notes || meal.habit_description || '';
 
+  const heroImage = meal.image_url || getMealImageUrl(mealName, foods);
+
   return (
     <div className="bg-white border border-[#E7EAF3] rounded-xl overflow-hidden">
-      <img
-        src={getMealImageUrl(mealName, foods)}
-        alt={mealName}
-        loading="lazy"
-        className="w-full h-32 object-cover"
-        onError={e => { e.target.style.display = 'none'; }}
-      />
+      {heroImage ? (
+        <img
+          src={heroImage}
+          alt={mealName}
+          loading="lazy"
+          className="w-full h-32 object-cover"
+          onError={e => { e.target.style.display = 'none'; e.target.nextSibling?.style && (e.target.nextSibling.style.display = 'flex'); }}
+        />
+      ) : (
+        <div className="w-full h-20 flex items-center justify-center bg-[#F3F4F6]">
+          <UtensilsCrossed className="w-7 h-7 text-[#D1D5DB]" />
+        </div>
+      )}
       <button
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors"
         onClick={() => setExpanded(e => !e)}

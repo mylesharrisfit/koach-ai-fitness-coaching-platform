@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Plus, X, Check, Pencil } from 'lucide-react';
+import { ChevronDown, Plus, X, Check, UtensilsCrossed } from 'lucide-react';
 import { getMealStatus } from '@/lib/nutritionUtils';
 
 function MealMacroBar({ logged, target }) {
@@ -44,6 +44,7 @@ function FoodLogItem({ food, onRemove, index }) {
 
 export default function MealCard({ meal, loggedFoods = [], mealTarget = 500, onAddFood, onRemoveFood }) {
   const [expanded, setExpanded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const mealTotal   = loggedFoods.reduce((s, f) => s + (f.calories || 0), 0);
   const mealProtein = loggedFoods.reduce((s, f) => s + (f.protein  || 0), 0);
@@ -55,6 +56,22 @@ export default function MealCard({ meal, loggedFoods = [], mealTarget = 500, onA
     <motion.div layout
       className="mx-4 mb-3 bg-white rounded-[18px] overflow-hidden"
       style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
+
+      {/* Meal hero image */}
+      {meal.image_url && !imgError ? (
+        <img
+          src={meal.image_url}
+          alt={meal.name}
+          loading="lazy"
+          className="w-full object-cover"
+          style={{ height: 120 }}
+          onError={() => setImgError(true)}
+        />
+      ) : meal.image_url && imgError ? (
+        <div className="w-full flex items-center justify-center bg-slate-100" style={{ height: 80 }}>
+          <UtensilsCrossed className="w-6 h-6 text-slate-300" />
+        </div>
+      ) : null}
 
       {/* Header */}
       <button onClick={() => setExpanded(v => !v)}
