@@ -535,9 +535,15 @@ export default function Programs() {
       <ProgramCreationModal
         open={showCreateModal}
         onOpenChange={setShowCreateModal}
-        onProgramCreated={() => {
+        onProgramCreated={(program) => {
           queryClient.invalidateQueries({ queryKey: ['programs'] });
-          toast.success('Program created successfully!');
+          setShowCreateModal(false);
+          if (program?.id) {
+            toast.success('Program created! Opening in builder…');
+            openBuilder(program);
+          } else {
+            toast.success('Program created successfully!');
+          }
         }}
       />
     </div>

@@ -18,6 +18,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
   const [preferences, setPreferences] = useState(null);
   const [generatedProgram, setGeneratedProgram] = useState(null);
   const [rating, setRating] = useState(null);
+  const [generateError, setGenerateError] = useState(null);
 
   const handleProfileSubmit = (profileData) => {
     setProfile(profileData);
@@ -33,15 +34,19 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
   const generateProgram = async (prefs) => {
     try {
       setLoading(true);
+      setGenerateError(null);
       const result = await base44.functions.invoke('generateAIProgram', {
         profile,
         preferences: prefs,
       });
-      setGeneratedProgram(result.data);
+      const program = result.data;
+      if (!program || program.error || !program.title) {
+        throw new Error(program?.error || 'Invalid program returned from AI');
+      }
+      setGeneratedProgram(program);
       setStep('review');
     } catch (error) {
-      toast.error('Failed to generate program. Please try again.');
-      setStep('preferences');
+      setGenerateError(error.message || 'Failed to generate program');
     } finally {
       setLoading(false);
     }
@@ -103,7 +108,15 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
           />
         )}
         {step === 'generating' && (
-          <AIGeneratingStep key="gen" />
+          <AIGeneratingStep
+            key="gen"
+            error={generateError}
+            onRetry={() => {
+              setGenerateError(null);
+              generateProgram(preferences);
+            }}
+            onBack={() => setStep('preferences')}
+          />
         )}
         {step === 'review' && generatedProgram && (
           <AIReviewStep

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { RefreshCw } from 'lucide-react';
 
 const MESSAGES = [
   'Analyzing client profile...',
@@ -22,15 +23,49 @@ const AnimatedLogo = () => (
   </motion.div>
 );
 
-export default function AIGeneratingStep() {
+export default function AIGeneratingStep({ error, onRetry, onBack }) {
   const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
+    if (error) return;
     const interval = setInterval(() => {
       setMessageIndex(i => (i + 1) % MESSAGES.length);
     }, 1200);
     return () => clearInterval(interval);
-  }, []);
+  }, [error]);
+
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="flex flex-col items-center justify-center min-h-64 gap-5 text-center px-4"
+      >
+        <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
+          <span className="text-2xl">⚠️</span>
+        </div>
+        <div className="space-y-1.5">
+          <h3 className="font-heading text-lg">Generation Failed</h3>
+          <p className="text-sm text-muted-foreground max-w-xs">{error}</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={onBack}
+            className="px-4 py-2 rounded-lg text-sm font-medium border border-border hover:bg-accent transition-colors"
+          >
+            Go back
+          </button>
+          <button
+            onClick={onRetry}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" /> Try again
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
