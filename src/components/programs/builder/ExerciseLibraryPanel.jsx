@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Search, Dumbbell, ChevronDown, X, GripVertical } from 'lucide-react';
-import { Draggable, Droppable } from '@hello-pangea/dnd';
+import { Search, Dumbbell, ChevronDown, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const MUSCLE_OPTIONS = ['chest','back','shoulders','biceps','triceps','legs','glutes','core','full_body','cardio'];
@@ -37,26 +36,12 @@ function FilterChip({ label, active, onClick }) {
   );
 }
 
-function ExerciseCard({ ex, onAdd, draggable, dragIndex }) {
+function ExerciseCard({ ex, onAdd }) {
   const thumb = ex.thumbnail_url || ex.image_url;
   const muscleClass = MUSCLE_COLORS[ex.muscle_group] || 'bg-gray-50 text-gray-600 border-gray-100';
 
-  const inner = (dragProvided, snapshot) => (
-    <div
-      ref={dragProvided?.innerRef}
-      {...(dragProvided?.draggableProps || {})}
-      className={cn(
-        'flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all text-left group cursor-grab',
-        snapshot?.isDragging
-          ? 'border-blue-300 bg-blue-50 shadow-lg'
-          : 'border-transparent hover:border-blue-200 hover:bg-blue-50/40'
-      )}
-    >
-      {/* Drag handle */}
-      <div {...(dragProvided?.dragHandleProps || {})} className="flex-shrink-0 text-[#D1D5DB] group-hover:text-[#9CA3AF]">
-        <GripVertical className="w-3 h-3" />
-      </div>
-
+  return (
+    <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-transparent hover:border-blue-200 hover:bg-blue-50/40 transition-all text-left group cursor-pointer">
       {/* Thumbnail */}
       <div className="w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden" style={{ background: '#0E1525' }}>
         {thumb ? (
@@ -94,15 +79,6 @@ function ExerciseCard({ ex, onAdd, draggable, dragIndex }) {
       )}
     </div>
   );
-
-  if (draggable) {
-    return (
-      <Draggable draggableId={`lib-${ex.id}`} index={dragIndex}>
-        {(prov, snap) => inner(prov, snap)}
-      </Draggable>
-    );
-  }
-  return inner();
 }
 
 export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
@@ -236,32 +212,27 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
         )}
       </div>
 
-      {/* ── EXERCISE LIST (draggable) ── */}
-      <Droppable droppableId="lib-panel" isDropDisabled={true}>
-        {(prov) => (
-          <div ref={prov.innerRef} {...prov.droppableProps} className="flex-1 overflow-y-auto px-2 py-1.5 space-y-0.5">
-            {isLoading ? (
-              <div className="flex flex-col items-center justify-center py-12 gap-2">
-                <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
-                <p className="text-[10px] text-[#9CA3AF]">Loading library...</p>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
-                <Dumbbell className="w-6 h-6 text-[#D1D5DB]" />
-                <p className="text-xs text-[#9CA3AF]">No exercises found</p>
-                {(search || activeFilters > 0) && (
-                  <button onClick={clearFilters} className="text-[10px] text-[#2563EB] font-semibold">Clear filters</button>
-                )}
-              </div>
-            ) : (
-              filtered.map((ex, idx) => (
-                <ExerciseCard key={ex.id} ex={ex} onAdd={onAddExercise} draggable dragIndex={idx} />
-              ))
-            )}
-            {prov.placeholder}
+      {/* ── EXERCISE LIST ── */}
+      <div className="flex-1 overflow-y-auto px-2 py-1.5 space-y-0.5">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-2">
+            <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
+            <p className="text-[10px] text-[#9CA3AF]">Loading library...</p>
           </div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
+            <Dumbbell className="w-6 h-6 text-[#D1D5DB]" />
+            <p className="text-xs text-[#9CA3AF]">No exercises found</p>
+            {(search || activeFilters > 0) && (
+              <button onClick={clearFilters} className="text-[10px] text-[#2563EB] font-semibold">Clear filters</button>
+            )}
+          </div>
+        ) : (
+          filtered.map((ex) => (
+            <ExerciseCard key={ex.id} ex={ex} onAdd={onAddExercise} />
+          ))
         )}
-      </Droppable>
+      </div>
 
       {/* Footer */}
       <div className="px-3 py-2 flex-shrink-0" style={{ borderTop: '0.5px solid #F3F4F6' }}>
