@@ -52,15 +52,16 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
     }
   };
 
-  const handleSaveProgram = async () => {
+  const handleSaveProgram = async (editedProgram) => {
     try {
       setLoading(true);
+      const dataToSave = editedProgram || generatedProgram;
       const newProgram = await base44.entities.WorkoutProgram.create({
-        ...generatedProgram,
+        ...dataToSave,
         is_template: false,
         is_ai_generated: true,
       });
-      toast.success('Program created successfully!');
+      toast.success('Program created!');
       onProgramCreated(newProgram);
     } catch (error) {
       toast.error('Failed to save program');
@@ -78,7 +79,14 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
         </button>
         <div>
           <h2 className="font-heading text-xl">Build with AI</h2>
-          <p className="text-sm text-muted-foreground">Step {STEPS.indexOf(step) + 1} of {STEPS.length}</p>
+          <p className="text-sm text-muted-foreground">
+            {{
+              profile: 'Step 1 of 4 — Client Profile',
+              preferences: 'Step 2 of 4 — Program Settings',
+              generating: 'Step 3 of 4 — Generating',
+              review: 'Step 4 of 4 — Review & Save',
+            }[step]}
+          </p>
         </div>
       </div>
 
@@ -132,6 +140,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
             isSaving={loading}
           />
         )}
+
       </AnimatePresence>
     </div>
   );
