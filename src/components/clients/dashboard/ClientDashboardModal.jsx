@@ -96,12 +96,13 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
         style={{ maxWidth: 1100 }}
         onClick={e => e.stopPropagation()}
       >
-        {/* ── Clean header ── */}
-        <div className="flex-shrink-0 border-b border-[#E5E7EB] bg-white">
+        {/* ── Navy header ── */}
+        <div className="flex-shrink-0" style={{ background: '#0E1525' }}>
           {/* Client info row */}
-          <div className="flex items-center gap-4 px-6 pt-4 pb-3">
+          <div className="flex items-center gap-4 px-6 pt-5 pb-4">
             {/* Avatar */}
-            <div className="w-10 h-10 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center font-semibold text-sm text-[#374151] flex-shrink-0 overflow-hidden">
+            <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden"
+              style={{ background: '#1E2D45', border: '1.5px solid rgba(255,255,255,0.12)', color: '#93C5FD' }}>
               {client.avatar_url
                 ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
                 : <span>{initials}</span>
@@ -110,11 +111,11 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
             {/* Name + email */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-base font-semibold text-[#111827] leading-tight">{client.name}</h2>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h2 className="text-base font-bold text-white leading-tight">{client.name}</h2>
                 <LifecycleBadge status={client.lifecycle_status || 'lead'} />
               </div>
-              <p className="text-xs text-[#9CA3AF] mt-0.5">{client.email}</p>
+              <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{client.email}</p>
             </div>
 
             {/* Actions */}
@@ -122,42 +123,53 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
               <button
                 onClick={onEdit}
                 title="Edit client"
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+                style={{ color: '#64748B' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
               >
                 <Edit className="w-4 h-4" />
               </button>
               <button
                 onClick={() => navigate(`/client-profile?id=${client.id}`)}
                 title="Full Profile"
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+                style={{ color: '#64748B' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
               >
                 <ExternalLink className="w-4 h-4" />
               </button>
               <button
                 onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors ml-1"
+                className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors ml-1"
+                style={{ color: '#64748B' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Tab bar — underline style */}
-          <div className="flex overflow-x-auto px-6">
+          {/* Tab bar — underline style on navy */}
+          <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             {tabs.map(t => (
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  'relative px-3.5 py-2.5 text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0',
-                  tab === t.key ? 'text-[#111827]' : 'text-[#6B7280] hover:text-[#374151]'
+                  'relative px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0',
+                  tab === t.key ? 'text-white' : 'hover:text-white'
                 )}
+                style={{ color: tab === t.key ? '#fff' : '#475569' }}
               >
                 {t.label}
                 {tab === t.key && (
                   <motion.div
                     layoutId="client-tab-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#2563EB] rounded-t-full"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full"
+                    style={{ background: '#2563EB' }}
                   />
                 )}
               </button>

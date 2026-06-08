@@ -14,51 +14,43 @@ const goalLabels = {
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
 };
 
-// Gradient ring using SVG linearGradient
+// Ring — blue accent for active week, muted gray for others
 function Ring({ pct = 0, label, sublabel, size = 72, active = false }) {
   const r = (size - 10) / 2;
   const circ = 2 * Math.PI * r;
   const dash = Math.max(0, Math.min(pct / 100, 1)) * circ;
-  const gradId = `ring-grad-${label.replace(/\s/g, '')}`;
+  const activeColor = '#2563EB';
+  const inactiveColor = '#9CA3AF';
 
   return (
     <div className={cn('flex flex-col items-center gap-1.5', active && 'scale-105')}>
-      <div
-        className="relative rounded-full"
-        style={active ? { filter: 'drop-shadow(0 0 8px rgba(0,212,255,0.5))' } : {}}
-      >
+      <div className="relative rounded-full">
         <svg width={size} height={size} className="-rotate-90">
-          <defs>
-            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#00d4ff" />
-              <stop offset="100%" stopColor="#6366f1" />
-            </linearGradient>
-          </defs>
           {/* Track */}
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e5e7eb" strokeWidth={active ? 7 : 6} />
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E5E7EB" strokeWidth={active ? 7 : 5} />
           {/* Progress */}
           <circle
             cx={size / 2} cy={size / 2} r={r}
             fill="none"
-            stroke={pct > 0 ? `url(#${gradId})` : '#e5e7eb'}
-            strokeWidth={active ? 7 : 6}
+            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : '#E5E7EB'}
+            strokeWidth={active ? 7 : 5}
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={cn('font-bold tabular-nums leading-none', active ? 'text-sm' : 'text-xs')}
-            style={active ? { color: '#00d4ff' } : { color: '#374151' }}>
+            style={{ color: active ? activeColor : '#6B7280' }}>
             {pct}%
           </span>
           {sublabel && (
-            <span className="text-[8px] leading-none mt-0.5" style={{ color: '#9ca3af' }}>{sublabel}</span>
+            <span className="text-[8px] leading-none mt-0.5" style={{ color: '#9CA3AF' }}>{sublabel}</span>
           )}
         </div>
       </div>
       <div className="text-center">
-        <p className={cn('text-[10px] font-semibold leading-tight', active ? '' : 'text-gray-500')}
-          style={active ? { color: '#00d4ff' } : {}}>
+        <p className="text-[10px] font-semibold leading-tight"
+          style={{ color: active ? '#0E1525' : '#9CA3AF' }}>
           {label}
         </p>
       </div>
@@ -206,7 +198,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             {onAwardBadge && (
               <button onClick={onAwardBadge}
                 className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
-                style={{ color: '#00d4ff' }}>
+                style={{ color: '#2563EB' }}>
                 <Plus className="w-3 h-3" /> Award Badge
               </button>
             )}
@@ -245,7 +237,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               </div>
             ) : (
               <button onClick={() => setAddingTag(true)} className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
-                style={{ color: '#00d4ff' }}>
+                style={{ color: '#2563EB' }}>
                 <Plus className="w-3 h-3" /> Add Tag
               </button>
             )}
@@ -263,13 +255,13 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
                   <span className="text-sm">{app.icon}</span>
                   <span className="text-xs text-gray-600">{app.name}</span>
                 </div>
-                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: '#00d4ff' }}>Connect</button>
+                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: '#2563EB' }}>Connect</button>
               </div>
             ))}
           </Section>
 
           <Section title="Threshold Alerts">
-            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: '#00d4ff' }}>
+            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: '#2563EB' }}>
               <Bell className="w-3.5 h-3.5" /> Set up alerts
             </button>
           </Section>
@@ -282,7 +274,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#00d4ff' }}>Current Program</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#94A3B8' }}>Current Program</p>
                 {program ? (
                   <>
                     <p className="font-bold text-gray-800">{program.title}</p>
@@ -299,10 +291,10 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             </div>
             {nutritionPlan && (
               <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2">
-                <Salad className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <Salad className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#00ff88' }}>Meal Plan</p>
-                  <p className="text-xs font-semibold text-blue-500 underline underline-offset-2 cursor-pointer hover:opacity-70">{nutritionPlan.title}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>Meal Plan</p>
+                  <p className="text-xs font-semibold cursor-pointer hover:opacity-70" style={{ color: '#2563EB' }}>{nutritionPlan.title}</p>
                 </div>
               </div>
             )}
@@ -329,23 +321,17 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           {/* Body weight chart */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6366f1' }}>Body Weight</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>Body Weight</p>
               {currentWeight && <span className="text-sm font-bold text-gray-800">{currentWeight} lbs</span>}
             </div>
             {weightData.length >= 2 ? (
               <ResponsiveContainer width="100%" height={140}>
-                <LineChart data={weightData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                  <defs>
-                    <linearGradient id="weightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#00d4ff" />
-                      <stop offset="100%" stopColor="#6366f1" />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#9ca3af' }} />
-                  <YAxis tick={{ fontSize: 9, fill: '#9ca3af' }} domain={['auto', 'auto']} />
-                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', padding: '4px 8px' }} />
-                  <Line type="monotone" dataKey="weight" stroke="url(#weightGrad)" strokeWidth={2.5} dot={{ r: 3, fill: '#6366f1', strokeWidth: 0 }} />
+                <LineChart data={weightData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#9CA3AF' }} />
+                  <YAxis tick={{ fontSize: 9, fill: '#9CA3AF' }} domain={['auto', 'auto']} />
+                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E5E7EB', padding: '4px 8px' }} />
+                  <Line type="monotone" dataKey="weight" stroke="#2563EB" strokeWidth={2.5} dot={{ r: 3, fill: '#2563EB', strokeWidth: 0 }} />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
@@ -371,8 +357,8 @@ function Section({ title, children }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <div className="w-0.5 h-3 rounded-full" style={{ background: 'linear-gradient(180deg, #00d4ff, #6366f1)' }} />
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{title}</p>
+        <div className="w-0.5 h-3 rounded-full" style={{ background: '#2563EB' }} />
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>{title}</p>
       </div>
       <div className="space-y-1">{children}</div>
     </div>
@@ -401,8 +387,7 @@ function ComplianceSection({ title, weeks, checkIns, type, planLabel }) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest"
-          style={{ color: type === 'training' ? '#00d4ff' : '#00ff88' }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>
           {title}
         </p>
         {planLabel && <span className="text-[10px] text-gray-400 font-medium">{planLabel}</span>}
@@ -459,11 +444,11 @@ function NotesColumn({ client }) {
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-0.5 h-3.5 rounded-full" style={{ background: 'linear-gradient(180deg, #00d4ff, #6366f1)' }} />
-          <p className="text-sm font-bold text-gray-800">Trainer Notes</p>
+          <div className="w-0.5 h-3.5 rounded-full" style={{ background: '#2563EB' }} />
+          <p className="text-sm font-bold" style={{ color: '#0E1525' }}>Trainer Notes</p>
           {notes.length > 0 && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: 'rgba(0,212,255,0.1)', color: '#00d4ff' }}>
+              style={{ background: 'rgba(37,99,235,0.1)', color: '#2563EB' }}>
               {notes.length}
             </span>
           )}
@@ -486,7 +471,7 @@ function NotesColumn({ client }) {
           onClick={save}
           disabled={saving || !newNote.trim()}
           className="mt-2 w-full text-white text-xs font-semibold py-2 rounded-lg transition-all disabled:opacity-40"
-          style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)' }}
+          style={{ background: '#2563EB' }}
         >
           {saving ? 'Saving…' : 'Save Note'}
         </button>
@@ -498,7 +483,7 @@ function NotesColumn({ client }) {
           <p className="text-xs text-gray-400 text-center pt-4">No notes yet</p>
         ) : notes.map(ci => (
           <div key={ci.id} className="rounded-xl bg-white border border-gray-100 p-3 shadow-sm">
-            <p className="text-[10px] font-bold mb-1" style={{ color: '#00d4ff' }}>
+            <p className="text-[10px] font-bold mb-1" style={{ color: '#2563EB' }}>
               {format(new Date(ci.date), 'MMM d, yyyy')}
             </p>
             <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{ci.coach_notes}</p>
