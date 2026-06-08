@@ -23,7 +23,7 @@ import Adherence from './pages/Adherence.jsx';
 import CheckInReview from './pages/CheckInReview';
 import Sales from './pages/Sales';
 
-import Community from './pages/Community';
+import Community from './pages/Community.jsx';
 import Subscription from './pages/Subscription';
 import ExerciseLibrary from './pages/ExerciseLibrary';
 import Automations from './pages/Automations';

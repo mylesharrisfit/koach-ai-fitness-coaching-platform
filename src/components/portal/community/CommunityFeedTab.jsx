@@ -12,7 +12,7 @@ import ChallengeCard from './ChallengeCard';
 
 const REACTION_EMOJIS = ['🔥', '💪', '❤️', '🏆', '👏'];
 
-function PostComposer({ user, myClient, onPost, onClose }) {
+function PostComposer({ user, myClient, onPost, onClose, groupId }) {
   const [text, setText] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const [mediaUrl, setMediaUrl] = useState(null);
@@ -40,6 +40,7 @@ function PostComposer({ user, myClient, onPost, onClose }) {
       reactions: {},
       comment_count: 0,
       is_hidden: false,
+      group_id: groupId || undefined,
     });
     onClose();
   };
@@ -116,15 +117,17 @@ function PostComposer({ user, myClient, onPost, onClose }) {
   );
 }
 
-export default function CommunityFeedTab({ user, myClient, posts, allClients, queryClient }) {
+export default function CommunityFeedTab({ user, myClient, posts, allClients, queryClient, groupId }) {
   const [showComposer, setShowComposer] = useState(false);
   const [guidelinesAccepted, setGuidelinesAccepted] = useState(
     () => localStorage.getItem('community_guidelines_accepted') === 'true'
   );
 
   const { data: challenges = [] } = useQuery({
-    queryKey: ['challenges-active'],
-    queryFn: () => base44.entities.Challenge.filter({ is_active: true }, '-created_date', 5),
+    queryKey: ['challenges-active', groupId],
+    queryFn: () => groupId
+      ? base44.entities.Challenge.filter({ is_active: true, group_id: groupId }, '-created_date', 5)
+      : base44.entities.Challenge.filter({ is_active: true }, '-created_date', 5),
   });
 
   const createPost = useMutation({
@@ -169,7 +172,6 @@ export default function CommunityFeedTab({ user, myClient, posts, allClients, qu
   return (
     <div className="relative">
       <div className="space-y-0 pb-4">
-        {/* Announcements */}
         {announcements.map(post => (
           <div key={post.id} className="mx-4 mt-4">
             <div className="rounded-2xl p-4 relative overflow-hidden"
@@ -223,7 +225,7 @@ export default function CommunityFeedTab({ user, myClient, posts, allClients, qu
 
       <AnimatePresence>
         {showComposer && (
-          <PostComposer user={user} myClient={myClient}
+          <PostComposer user={user} myClient={myClient} groupId={groupId}
             onPost={(data) => createPost.mutate(data)}
             onClose={() => setShowComposer(false)} />
         )}

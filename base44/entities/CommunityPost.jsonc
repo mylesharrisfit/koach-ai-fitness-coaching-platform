@@ -15,6 +15,10 @@
       "type": "string",
       "description": "Coach who owns this community \u2014 used for multi-tenant isolation"
     },
+    "group_id": {
+      "type": "string",
+      "description": "CommunityGroup ID this post belongs to"
+    },
     "is_anonymous": {
       "type": "boolean",
       "default": false
@@ -64,6 +68,12 @@
     "is_hidden": {
       "type": "boolean",
       "default": false
+    },
+    "likes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [

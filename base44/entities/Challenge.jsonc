@@ -45,6 +45,16 @@
     "emoji": {
       "type": "string",
       "default": "\ud83c\udfc6"
+    },
+    "group_id": {
+      "type": "string",
+      "description": "CommunityGroup ID this challenge belongs to"
+    },
+    "reward_badge": {
+      "type": "string"
+    },
+    "completed_count": {
+      "type": "number"
     }
   },
   "required": [

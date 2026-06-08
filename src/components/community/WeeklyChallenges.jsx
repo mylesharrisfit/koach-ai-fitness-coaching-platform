@@ -101,34 +101,36 @@ function ChallengeCard({ challenge, isCoach, onToggle, onDelete }) {
   );
 }
 
-export default function WeeklyChallenges({ isCoach, compact }) {
+export default function WeeklyChallenges({ isCoach, compact, groupId }) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(BLANK_FORM);
   const queryClient = useQueryClient();
 
   const { data: challenges = [] } = useQuery({
-    queryKey: ['challenges'],
-    queryFn: () => base44.entities.Challenge.list('-created_date'),
+    queryKey: ['challenges', groupId],
+    queryFn: () => groupId
+      ? base44.entities.Challenge.filter({ group_id: groupId }, '-created_date')
+      : base44.entities.Challenge.list('-created_date'),
   });
 
   const createMutation = useMutation({
     mutationFn: (d) => base44.entities.Challenge.create(d),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['challenges'] }); setShowForm(false); setForm(BLANK_FORM); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['challenges', groupId] }); setShowForm(false); setForm(BLANK_FORM); },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Challenge.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['challenges'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['challenges', groupId] }),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Challenge.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['challenges'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['challenges', groupId] }),
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createMutation.mutate({ ...form, goal: Number(form.goal) });
+    createMutation.mutate({ ...form, goal: Number(form.goal), group_id: groupId || undefined });
   };
 
   const active = challenges.filter(c => c.is_active);

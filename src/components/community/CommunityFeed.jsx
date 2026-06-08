@@ -29,7 +29,7 @@ function AvatarInitial({ name, size = 9 }) {
   );
 }
 
-function PostCard({ post, currentUserId }) {
+function PostCard({ post, currentUserId, groupId }) {
   const queryClient = useQueryClient();
   const [showComments, setShowComments] = useState(false);
   const [comment, setComment] = useState('');
@@ -50,11 +50,11 @@ function PostCard({ post, currentUserId }) {
       const updated = hasLiked ? likes.filter(id => id !== currentUserId) : [...likes, currentUserId];
       return base44.entities.CommunityPost.update(post.id, { likes: updated });
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['community-posts'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['community-posts', groupId] }),
   });
 
   const commentMutation = useMutation({
-    mutationFn: () => base44.entities.PostComment.create({ post_id: post.id, author_id: currentUserId, author_name: 'You', content: comment }),
+    mutationFn: () => base44.entities.PostComment.create({ post_id: post.id, author_id: currentUserId, author_name: 'You', content: comment, coach_id: post.coach_id }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['comments', post.id] }); setComment(''); },
   });
 
@@ -130,14 +130,16 @@ function PostCard({ post, currentUserId }) {
   );
 }
 
-export default function CommunityFeed({ currentUser }) {
+export default function CommunityFeed({ currentUser, groupId }) {
   const [newPost, setNewPost] = useState('');
   const [postType, setPostType] = useState('post');
   const queryClient = useQueryClient();
 
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ['community-posts'],
-    queryFn: () => base44.entities.CommunityPost.list('-created_date', 50),
+    queryKey: ['community-posts', groupId],
+    queryFn: () => groupId
+      ? base44.entities.CommunityPost.filter({ group_id: groupId }, '-created_date', 50)
+      : base44.entities.CommunityPost.list('-created_date', 50),
   });
 
   const createPost = useMutation({
@@ -147,8 +149,9 @@ export default function CommunityFeed({ currentUser }) {
       content: newPost,
       type: postType,
       likes: [],
+      group_id: groupId || undefined,
     }),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['community-posts'] }); setNewPost(''); setPostType('post'); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['community-posts', groupId] }); setNewPost(''); setPostType('post'); },
   });
 
   return (
@@ -188,7 +191,7 @@ export default function CommunityFeed({ currentUser }) {
           <p className="text-xs text-[#9CA3AF] mt-1">Be the first to share something!</p>
         </div>
       ) : (
-        posts.map(post => <PostCard key={post.id} post={post} currentUserId={currentUser?.id} />)
+        posts.map(post => <PostCard key={post.id} post={post} currentUserId={currentUser?.id} groupId={groupId} />)
       )}
     </div>
   );
