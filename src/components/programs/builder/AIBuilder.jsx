@@ -94,7 +94,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
   const isReview = step === 'review';
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }}>
       {/* Sticky Header */}
       <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-border space-y-3">
         <div className="flex items-center gap-3">
@@ -126,8 +126,8 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
         </div>
       </div>
 
-      {/* Scrollable Content — flex-1 + min-h-0 lets it shrink within the flex column */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5">
+      {/* Scrollable Content */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '20px 24px' }}>
         <AnimatePresence mode="wait">
           {step === 'profile' && (
             <AIProfileStep key="profile" onSubmit={handleProfileSubmit} />
@@ -169,7 +169,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
 
       {/* Sticky Footer — only shown on review step */}
       {isReview && (
-        <div className="flex-shrink-0 flex justify-between items-center px-6 py-4 border-t border-border bg-background">
+        <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 24px', borderTop: '1px solid rgb(var(--border))', background: 'rgb(var(--background))' }}>
           <Button
             variant="outline"
             onClick={() => {

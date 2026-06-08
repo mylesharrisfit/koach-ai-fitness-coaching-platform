@@ -16,7 +16,7 @@ const SECTION_COLOR = {
 function RationaleCard({ rationale }) {
   if (!rationale) return null;
   return (
-    <div className="rounded-xl p-4 space-y-3" style={{ background: '#0E1525' }}>
+    <div className="rounded-xl p-4 space-y-3 w-full" style={{ background: '#0E1525', wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}>
       <div className="flex items-center gap-2 mb-1">
         <Zap className="w-4 h-4" style={{ color: '#85B7EB' }} />
         <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#85B7EB' }}>AI Coach Rationale</span>
@@ -24,25 +24,25 @@ function RationaleCard({ rationale }) {
       {rationale.split && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Split</p>
-          <p className="text-xs text-[#D1D5DB]">{rationale.split}</p>
+          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.split}</p>
         </div>
       )}
       {rationale.weekly_volume && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Weekly Volume</p>
-          <p className="text-xs text-[#D1D5DB]">{rationale.weekly_volume}</p>
+          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.weekly_volume}</p>
         </div>
       )}
       {rationale.rep_range_rationale && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Rep Ranges</p>
-          <p className="text-xs text-[#D1D5DB]">{rationale.rep_range_rationale}</p>
+          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.rep_range_rationale}</p>
         </div>
       )}
       {rationale.progression_approach && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Progression</p>
-          <p className="text-xs text-[#D1D5DB]">{rationale.progression_approach}</p>
+          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.progression_approach}</p>
         </div>
       )}
     </div>
@@ -138,7 +138,8 @@ export default function AIReviewStep({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="space-y-4 pb-2"
+      className="space-y-4 pb-4"
+      style={{ minWidth: 0, width: '100%' }}
     >
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-2">

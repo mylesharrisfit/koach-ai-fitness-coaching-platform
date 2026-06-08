@@ -35,59 +35,48 @@ export default function ProgramCreationModal({ open, onOpenChange, onProgramCrea
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[900px] h-[85vh] max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden">
-        <AnimatePresence mode="wait">
-          {/* AnimatePresence child must fill the modal — use h-full on the wrapper */}
-          {!mode ? (
-            <motion.div
-              key="selection"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="p-6"
-            >
-              <DialogHeader>
-                <DialogTitle className="font-heading text-2xl">Create New Program</DialogTitle>
-              </DialogHeader>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                <ModeCard
-                  icon={Zap}
-                  title="🤖 Build with AI"
-                  description="Describe your client and AI generates a complete program in seconds"
-                  onClick={() => setMode('ai')}
-                />
-                <ModeCard
-                  icon={Edit3}
-                  title="✏️ Build Manually"
-                  description="Create a program from scratch with full control over every detail"
-                  onClick={() => setMode('manual')}
-                />
-              </div>
-            </motion.div>
-          ) : mode === 'ai' ? (
-            <motion.div key="ai" className="flex flex-col flex-1 min-h-0 h-full"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <AIBuilder
-                onBack={() => setMode(null)}
-                onProgramCreated={(program) => {
-                  onProgramCreated(program);
-                  onOpenChange(false);
-                }}
+      <DialogContent className="w-[90vw] max-w-[900px] p-0 gap-0 overflow-hidden" style={{ height: '85vh', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+        {!mode ? (
+          <div className="p-6">
+            <DialogHeader>
+              <DialogTitle className="font-heading text-2xl">Create New Program</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <ModeCard
+                icon={Zap}
+                title="🤖 Build with AI"
+                description="Describe your client and AI generates a complete program in seconds"
+                onClick={() => setMode('ai')}
               />
-            </motion.div>
-          ) : (
-            <motion.div key="manual" className="flex flex-col flex-1 min-h-0 h-full"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <ManualBuilder
-                onBack={() => setMode(null)}
-                onProgramCreated={(program) => {
-                  onProgramCreated(program);
-                  onOpenChange(false);
-                }}
+              <ModeCard
+                icon={Edit3}
+                title="✏️ Build Manually"
+                description="Create a program from scratch with full control over every detail"
+                onClick={() => setMode('manual')}
               />
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        ) : mode === 'ai' ? (
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+            <AIBuilder
+              onBack={() => setMode(null)}
+              onProgramCreated={(program) => {
+                onProgramCreated(program);
+                onOpenChange(false);
+              }}
+            />
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+            <ManualBuilder
+              onBack={() => setMode(null)}
+              onProgramCreated={(program) => {
+                onProgramCreated(program);
+                onOpenChange(false);
+              }}
+            />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
