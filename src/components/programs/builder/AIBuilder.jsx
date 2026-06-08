@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Loader2, RefreshCw, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -19,6 +19,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
   const [generatedProgram, setGeneratedProgram] = useState(null);
   const [rating, setRating] = useState(null);
   const [generateError, setGenerateError] = useState(null);
+  const [reviewData, setReviewData] = useState(null); // tracks edits from review step
 
   const handleProfileSubmit = (profileData) => {
     setProfile(profileData);
@@ -63,6 +64,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
         })),
       }));
       setGeneratedProgram(program);
+      setReviewData(null); // reset edits on new generation
       setStep('review');
     } catch (error) {
       setGenerateError(error.message || 'Failed to generate program');
@@ -92,7 +94,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
   const isReview = step === 'review';
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Sticky Header */}
       <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-border space-y-3">
         <div className="flex items-center gap-3">
@@ -124,8 +126,8 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
         </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-5">
+      {/* Scrollable Content — flex-1 + min-h-0 lets it shrink within the flex column */}
+      <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5">
         <AnimatePresence mode="wait">
           {step === 'profile' && (
             <AIProfileStep key="profile" onSubmit={handleProfileSubmit} />
@@ -153,18 +155,43 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
             <AIReviewStep
               key="review"
               program={generatedProgram}
-              onSave={handleSaveProgram}
+              onProgramChange={setReviewData}
               onRegenerate={() => {
                 setStep('generating');
                 generateProgram(preferences);
               }}
               onRating={setRating}
               currentRating={rating}
-              isSaving={loading}
             />
           )}
         </AnimatePresence>
       </div>
+
+      {/* Sticky Footer — only shown on review step */}
+      {isReview && (
+        <div className="flex-shrink-0 flex justify-between items-center px-6 py-4 border-t border-border bg-background">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setStep('generating');
+              generateProgram(preferences);
+            }}
+            disabled={loading}
+            className="gap-2 text-xs"
+          >
+            <RefreshCw className="w-3.5 h-3.5" /> Regenerate
+          </Button>
+          <Button
+            onClick={() => handleSaveProgram(reviewData)}
+            disabled={loading || !(reviewData?.title ?? generatedProgram?.title)}
+            className="gap-2 text-sm font-semibold"
+            style={{ background: '#2563EB' }}
+          >
+            <Check className="w-4 h-4" />
+            {loading ? 'Saving...' : 'Save & Open Builder'}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

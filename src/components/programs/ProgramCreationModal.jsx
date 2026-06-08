@@ -35,8 +35,9 @@ export default function ProgramCreationModal({ open, onOpenChange, onProgramCrea
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[900px] h-[90vh] max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
+      <DialogContent className="w-[95vw] max-w-[900px] h-[85vh] max-h-[85vh] flex flex-col p-0 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
+          {/* AnimatePresence child must fill the modal — use h-full on the wrapper */}
           {!mode ? (
             <motion.div
               key="selection"
@@ -64,21 +65,27 @@ export default function ProgramCreationModal({ open, onOpenChange, onProgramCrea
               </div>
             </motion.div>
           ) : mode === 'ai' ? (
-            <AIBuilder
-              onBack={() => setMode(null)}
-              onProgramCreated={(program) => {
-                onProgramCreated(program);
-                onOpenChange(false);
-              }}
-            />
+            <motion.div key="ai" className="flex flex-col flex-1 min-h-0 h-full"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <AIBuilder
+                onBack={() => setMode(null)}
+                onProgramCreated={(program) => {
+                  onProgramCreated(program);
+                  onOpenChange(false);
+                }}
+              />
+            </motion.div>
           ) : (
-            <ManualBuilder
-              onBack={() => setMode(null)}
-              onProgramCreated={(program) => {
-                onProgramCreated(program);
-                onOpenChange(false);
-              }}
-            />
+            <motion.div key="manual" className="flex flex-col flex-1 min-h-0 h-full"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <ManualBuilder
+                onBack={() => setMode(null)}
+                onProgramCreated={(program) => {
+                  onProgramCreated(program);
+                  onOpenChange(false);
+                }}
+              />
+            </motion.div>
           )}
         </AnimatePresence>
       </DialogContent>

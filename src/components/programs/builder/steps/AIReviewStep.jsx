@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ThumbsUp, ThumbsDown, RefreshCw, Check, ChevronDown, ChevronUp, Dumbbell, Zap } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ThumbsUp, ThumbsDown, ChevronDown, ChevronUp, Dumbbell, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
 
 const SECTION_COLOR = {
   warmup:   '#F59E0B',
@@ -119,28 +118,27 @@ function DayCard({ workout }) {
 
 export default function AIReviewStep({
   program,
-  onSave,
-  onRegenerate,
+  onProgramChange,
   onRating,
   currentRating,
-  isSaving,
-  onProgramChange,
 }) {
   const [title, setTitle] = useState(program.title || '');
   const [description, setDescription] = useState(program.description || '');
 
-  const handleSave = () => {
-    onSave({ ...program, title, description });
-  };
-
   const totalExercises = (program.workouts || []).reduce((s, w) => s + (w.exercises || []).length, 0);
+
+  const handleChange = (field, value) => {
+    if (field === 'title') setTitle(value);
+    if (field === 'description') setDescription(value);
+    onProgramChange?.({ ...program, title: field === 'title' ? value : title, description: field === 'description' ? value : description });
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="space-y-4"
+      className="space-y-4 pb-2"
     >
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-2">
@@ -165,7 +163,7 @@ export default function AIReviewStep({
           <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">Program Name</p>
           <Input
             value={title}
-            onChange={e => setTitle(e.target.value)}
+            onChange={e => handleChange('title', e.target.value)}
             className="h-9 text-sm font-semibold"
           />
         </div>
@@ -173,7 +171,7 @@ export default function AIReviewStep({
           <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">Description</p>
           <Textarea
             value={description}
-            onChange={e => setDescription(e.target.value)}
+            onChange={e => handleChange('description', e.target.value)}
             rows={2}
             className="text-sm"
           />
@@ -191,7 +189,7 @@ export default function AIReviewStep({
       </div>
 
       {/* Rating */}
-      <div className="flex items-center gap-3 pt-2">
+      <div className="flex items-center gap-3 pt-2 pb-1">
         <p className="text-xs font-semibold text-[#6B7280]">Rate this output:</p>
         <button
           onClick={() => onRating('up')}
@@ -207,27 +205,6 @@ export default function AIReviewStep({
         >
           <ThumbsDown className="w-3.5 h-3.5" /> Needs work
         </button>
-      </div>
-
-      {/* Actions */}
-      <div className="flex justify-between items-center pt-2" style={{ borderTop: '0.5px solid #E2E5EC' }}>
-        <Button
-          variant="outline"
-          onClick={onRegenerate}
-          disabled={isSaving}
-          className="gap-2 text-xs"
-        >
-          <RefreshCw className="w-3.5 h-3.5" /> Regenerate
-        </Button>
-        <Button
-          onClick={handleSave}
-          disabled={isSaving || !title}
-          className="gap-2 text-sm font-semibold"
-          style={{ background: '#2563EB' }}
-        >
-          <Check className="w-4 h-4" />
-          {isSaving ? 'Saving...' : 'Save & Open Builder'}
-        </Button>
       </div>
     </motion.div>
   );
