@@ -1211,8 +1211,9 @@ function GeneratingStep({ onNext }) {
 }
 
 /* DONE */
-function DoneStep({ firstName }) {
+function DoneStep({ firstName, coachDisplayName, clientEmail }) {
   const name = firstName || 'you';
+  const coach = coachDisplayName ? `Coach ${coachDisplayName}` : 'your coach';
   return (
     <Screen>
       <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
@@ -1233,13 +1234,18 @@ function DoneStep({ firstName }) {
           </motion.div>
 
           <motion.div variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }} className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#22C55E' }}>You're officially onboarded</p>
-            <h2 className="font-bold text-white" style={{ fontSize: 'clamp(2.2rem, 8vw, 3.2rem)', letterSpacing: '-0.03em' }}>
-              Welcome,<br />{name}.
+            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#22C55E' }}>Application received</p>
+            <h2 className="font-bold text-white" style={{ fontSize: 'clamp(2rem, 7vw, 2.8rem)', letterSpacing: '-0.03em' }}>
+              Thanks, {name} —<br />your application<br />is in. ✅
             </h2>
             <p className="text-base leading-relaxed" style={{ color: '#6A6A6A' }}>
-              Your coach will review your intake and build your personalized plan. Get ready to level up.
+              {coach} will review your intake and reach out shortly to get you started.
             </p>
+            {clientEmail && (
+              <p className="text-sm" style={{ color: '#4A4A4A' }}>
+                A confirmation has been sent to <span style={{ color: '#6A6A6A' }}>{clientEmail}</span>
+              </p>
+            )}
           </motion.div>
 
           <motion.div
@@ -1250,9 +1256,9 @@ function DoneStep({ firstName }) {
               style={{ background: 'rgba(59,130,246,0.06)', border: '1.5px solid rgba(59,130,246,0.15)' }}>
               <p className="font-bold text-white text-sm">What happens next?</p>
               {[
-                'Your coach reviews your full profile',
-                'Your training & nutrition plan gets built',
-                "You'll be contacted within 24 hours",
+                `${coach} reviews your full intake profile`,
+                'Your personalised training & nutrition plan gets built',
+                "You'll be contacted within 24 hours to get started",
               ].map((step, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
@@ -1265,7 +1271,7 @@ function DoneStep({ firstName }) {
             </div>
 
             <div className="flex items-center justify-center gap-2 py-2">
-              {['Exclusive', 'Personalized', 'Elite-Grade'].map(t => (
+              {['Exclusive', 'Personalised', 'Elite-Grade'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-full text-xs font-semibold"
                   style={{ background: 'rgba(34,197,94,0.08)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}>
                   {t}
@@ -1300,8 +1306,11 @@ export default function ClientOnboarding() {
   const showProgress = progressIdx >= 0;
   const progress = showProgress ? (progressIdx + 1) / PROGRESS_STEPS.length : 0;
 
+  const coachDisplayName = COACH_NAME || (COACH_ID ? decodeURIComponent(COACH_ID).split('@')[0] : '');
+
   const submitMutation = useMutation({
-    mutationFn: () => base44.entities.OnboardingResponse.create({
+    mutationFn: async () => {
+      const record = await base44.entities.OnboardingResponse.create({
       name: [data.first_name, data.last_name].filter(Boolean).join(' '),
       email: data.email,
       phone: data.phone,
@@ -1343,9 +1352,18 @@ export default function ClientOnboarding() {
         data.anything_else ? `Additional notes: ${data.anything_else}` : '',
         `Consent agreed: Yes`,
       ].filter(Boolean).join(' | '),
-      coach_id: COACH_ID,
-      status: 'pending',
-    }),
+        coach_id: COACH_ID,
+        status: 'pending',
+      });
+      // Fire-and-forget emails + in-app notification
+      base44.functions.invoke('onIntakeSubmitted', {
+        intakeId: record.id,
+        clientName: [data.first_name, data.last_name].filter(Boolean).join(' '),
+        clientEmail: data.email,
+        coachId: COACH_ID,
+      }).catch(e => console.error('onIntakeSubmitted error:', e));
+      return record;
+    },
     onSuccess: () => goTo('done'),
     onError: () => toast.error('Something went wrong. Please try again.'),
   });
@@ -1385,7 +1403,7 @@ export default function ClientOnboarding() {
       case 'obstacles':      return <ObstaclesStep {...props} />;
       case 'commitment':     return <CommitmentStep {...props} />;
       case 'generating':     return <GeneratingStep onNext={next} />;
-      case 'done':           return <DoneStep firstName={data.first_name} />;
+      case 'done':           return <DoneStep firstName={data.first_name} coachDisplayName={coachDisplayName} clientEmail={data.email} />;
       default: return null;
     }
   };
