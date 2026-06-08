@@ -81,7 +81,7 @@ PROGRAM PREFERENCES:
 - Duration: ${preferences.duration} weeks
 - Progression Model: ${preferences.progression_style}
 - Deload: ${preferences.include_deload ? 'yes, ' + (preferences.deload_frequency || 'every 4 weeks').replace(/_/g, ' ') : 'no'}
-- Cardio: ${preferences.include_cardio ? `yes (${preferences.cardio_type})` : 'no'}
+- Cardio: ${preferences.include_cardio ? `yes — types: ${(preferences.cardio_types || []).join(', ') || 'general conditioning'}` : 'no'}
 - Extra coaching notes: ${preferences.extra_notes || 'none'}
 
 PROGRAMMING GUIDELINES:
