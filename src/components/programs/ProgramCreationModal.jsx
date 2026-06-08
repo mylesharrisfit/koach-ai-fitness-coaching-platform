@@ -35,7 +35,7 @@ export default function ProgramCreationModal({ open, onOpenChange, onProgramCrea
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="w-[95vw] max-w-[900px] h-[90vh] max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden">
         <AnimatePresence mode="wait">
           {!mode ? (
             <motion.div
@@ -43,6 +43,7 @@ export default function ProgramCreationModal({ open, onOpenChange, onProgramCrea
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
+              className="p-6"
             >
               <DialogHeader>
                 <DialogTitle className="font-heading text-2xl">Create New Program</DialogTitle>

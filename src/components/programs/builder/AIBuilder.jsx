@@ -89,78 +89,82 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
     }
   };
 
+  const isReview = step === 'review';
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <button onClick={onBack} className="hover:bg-accent rounded-lg p-1.5">
-          <ArrowLeft className="w-4 h-4" />
-        </button>
-        <div>
-          <h2 className="font-heading text-xl">Build with AI</h2>
-          <p className="text-sm text-muted-foreground">
-            {{
-              profile: 'Step 1 of 4 — Client Profile',
-              preferences: 'Step 2 of 4 — Program Settings',
-              generating: 'Step 3 of 4 — Generating',
-              review: 'Step 4 of 4 — Review & Save',
-            }[step]}
-          </p>
+    <div className="flex flex-col h-full">
+      {/* Sticky Header */}
+      <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-border space-y-3">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="hover:bg-accent rounded-lg p-1.5">
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <div>
+            <h2 className="font-heading text-xl">Build with AI</h2>
+            <p className="text-sm text-muted-foreground">
+              {{
+                profile: 'Step 1 of 4 — Client Profile',
+                preferences: 'Step 2 of 4 — Program Settings',
+                generating: 'Step 3 of 4 — Generating',
+                review: 'Step 4 of 4 — Review & Save',
+              }[step]}
+            </p>
+          </div>
+        </div>
+        {/* Progress bar */}
+        <div className="flex gap-1.5 h-1">
+          {STEPS.map((s) => (
+            <div
+              key={s}
+              className={`flex-1 rounded-full transition-colors ${
+                STEPS.indexOf(s) <= STEPS.indexOf(step) ? 'bg-primary' : 'bg-border'
+              }`}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="flex gap-1.5 h-1">
-        {STEPS.map((s) => (
-          <div
-            key={s}
-            className={`flex-1 rounded-full transition-colors ${
-              STEPS.indexOf(s) <= STEPS.indexOf(step) ? 'bg-primary' : 'bg-border'
-            }`}
-          />
-        ))}
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-6 py-5">
+        <AnimatePresence mode="wait">
+          {step === 'profile' && (
+            <AIProfileStep key="profile" onSubmit={handleProfileSubmit} />
+          )}
+          {step === 'preferences' && (
+            <AIPreferencesStep
+              key="prefs"
+              profile={profile}
+              onSubmit={handlePreferencesSubmit}
+              isLoading={loading}
+            />
+          )}
+          {step === 'generating' && (
+            <AIGeneratingStep
+              key="gen"
+              error={generateError}
+              onRetry={() => {
+                setGenerateError(null);
+                generateProgram(preferences);
+              }}
+              onBack={() => setStep('preferences')}
+            />
+          )}
+          {step === 'review' && generatedProgram && (
+            <AIReviewStep
+              key="review"
+              program={generatedProgram}
+              onSave={handleSaveProgram}
+              onRegenerate={() => {
+                setStep('generating');
+                generateProgram(preferences);
+              }}
+              onRating={setRating}
+              currentRating={rating}
+              isSaving={loading}
+            />
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Content */}
-      <AnimatePresence mode="wait">
-        {step === 'profile' && (
-          <AIProfileStep key="profile" onSubmit={handleProfileSubmit} />
-        )}
-        {step === 'preferences' && (
-          <AIPreferencesStep
-            key="prefs"
-            profile={profile}
-            onSubmit={handlePreferencesSubmit}
-            isLoading={loading}
-          />
-        )}
-        {step === 'generating' && (
-          <AIGeneratingStep
-            key="gen"
-            error={generateError}
-            onRetry={() => {
-              setGenerateError(null);
-              generateProgram(preferences);
-            }}
-            onBack={() => setStep('preferences')}
-          />
-        )}
-        {step === 'review' && generatedProgram && (
-          <AIReviewStep
-            key="review"
-            program={generatedProgram}
-            onSave={handleSaveProgram}
-            onRegenerate={() => {
-              setStep('generating');
-              generateProgram(preferences);
-            }}
-            onRating={setRating}
-            currentRating={rating}
-            isSaving={loading}
-          />
-        )}
-
-      </AnimatePresence>
     </div>
   );
 }

@@ -81,7 +81,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="space-y-5 max-h-[480px] overflow-y-auto pr-3"
+      className="space-y-5"
     >
       {/* Duration */}
       <div>

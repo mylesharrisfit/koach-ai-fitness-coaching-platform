@@ -140,7 +140,7 @@ export default function AIReviewStep({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="space-y-4 max-h-[520px] overflow-y-auto pr-3"
+      className="space-y-4"
     >
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-2">
