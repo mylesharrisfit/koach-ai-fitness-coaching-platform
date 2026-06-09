@@ -7,6 +7,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 import Step4Assign from './Step4Assign';
+import MacroSplitControl from './MacroSplitControl';
 import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -509,7 +510,7 @@ function Step1Goal({ goal, setGoal, details, setDetails }) {
 }
 
 // ── Step 2 — Detailed Intake ──────────────────────────────────────────────────
-function Step2Details({ details, setDetails, goal }) {
+function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproach, customSplit, setCustomSplit, calcedCalories }) {
   const u = (key, val) => setDetails(d => ({ ...d, [key]: val }));
 
   const s1Complete = !!details.weight;
@@ -983,6 +984,47 @@ function Step2Details({ details, setDetails, goal }) {
                 );
               })}
             </div>
+          )}
+        </AccordionSection>
+
+        {/* Section — Macro Approach */}
+        <AccordionSection icon={Zap} title="Macro Split" complete={macroApproach === 'custom'}>
+          <p className="text-xs text-muted-foreground -mt-1 mb-3">
+            Control how protein, carbs, and fat are distributed within the calculated calorie target.
+          </p>
+          {/* Toggle */}
+          <div className="flex border border-input rounded-lg overflow-hidden w-fit text-xs font-semibold mb-3">
+            {[
+              { id: 'auto',   label: 'Auto (AI decides)' },
+              { id: 'custom', label: 'Custom macros' },
+            ].map(opt => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setMacroApproach(opt.id)}
+                className={cn(
+                  'px-4 py-2 transition-colors',
+                  macroApproach === opt.id ? 'bg-primary text-white' : 'bg-white text-muted-foreground hover:bg-secondary'
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {macroApproach === 'auto' && (
+            <p className="text-[11px] text-muted-foreground bg-secondary/50 px-3 py-2 rounded-lg">
+              The AI will choose the optimal macro split based on the client's goal, body type, and diet style.
+            </p>
+          )}
+
+          {macroApproach === 'custom' && (
+            <MacroSplitControl
+              split={customSplit}
+              onChange={setCustomSplit}
+              totalCalories={calcedCalories}
+              weightLbs={details.weightUnit === 'lbs' ? details.weight : (parseFloat(details.weight) * 2.20462 || '')}
+            />
           )}
         </AccordionSection>
 
@@ -1470,6 +1512,8 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   const [details, setDetails]     = useState(INITIAL_DETAILS);
   const [result, setResult]       = useState(null);
   const [macroPayload, setMacroPayload] = useState(null);
+  const [macroApproach, setMacroApproach] = useState('auto'); // 'auto' | 'custom'
+  const [customSplit, setCustomSplit] = useState({ p: 30, c: 40, f: 30 }); // %
   // step 4 = assign — no separate state needed; Step4Assign handles internally
 
   function go(next) { setDir(next > step ? 1 : -1); setStep(next); }
@@ -1480,6 +1524,16 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       : parseFloat(details.weight);
     const heightCm = (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54;
     const macros = calcMacros(goal, weightKg, heightCm, details.age, details.sex, details.activity, details.diet, details.weightLossRate || 1, details.bodyType || 'mesomorph', details.goalSubtype || '');
+
+    // If custom macro split is selected, override protein/carbs/fats
+    let finalProtein = macros.protein;
+    let finalCarbs   = macros.carbs;
+    let finalFats    = macros.fats;
+    if (macroApproach === 'custom') {
+      finalProtein = Math.round((customSplit.p / 100) * macros.calories / 4);
+      finalCarbs   = Math.round((customSplit.c / 100) * macros.calories / 4);
+      finalFats    = Math.round((customSplit.f / 100) * macros.calories / 9);
+    }
 
     const payload = {
       // Body
@@ -1497,9 +1551,10 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       // Macros
       diet: details.diet || 'Standard',
       calories: macros.calories,
-      protein: macros.protein,
-      carbs: macros.carbs,
-      fats: macros.fats,
+      protein: finalProtein,
+      carbs: finalCarbs,
+      fats: finalFats,
+      macroApproach,
       // Training
       trainingDaysPerWeek: details.trainingDays || 4,
       trainingTime: details.trainingTime || details.workoutTime || 'Morning',
@@ -1542,7 +1597,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
       condiments: (details.condiments || []).map(id => CONDIMENTS.find(c => c.id === id)?.label).filter(Boolean),
       notes: details.notes || '',
     };
-    setMacroPayload({ ...payload, _macros: { ...macros, weightLossRate: details.weightLossRate || 1 } });
+    setMacroPayload({ ...payload, _macros: { ...macros, protein: finalProtein, carbs: finalCarbs, fats: finalFats, weightLossRate: details.weightLossRate || 1 } });
     go(2);
   }
 
@@ -1666,6 +1721,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
 
   function reset() {
     setStep(0); setDir(1); setGoal(null); setDetails({ ...INITIAL_DETAILS, supplementDosages: {} }); setResult(null); setMacroPayload(null);
+    setMacroApproach('auto'); setCustomSplit({ p: 30, c: 40, f: 30 });
   }
 
   function goToAssign() { setDir(1); setStep(4); }
@@ -1695,7 +1751,25 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
           <AnimatePresence custom={dir} mode="wait">
             <motion.div key={step} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25, ease: 'easeInOut' }}>
               {step === 0 && <Step1Goal goal={goal} setGoal={setGoal} details={details} setDetails={setDetails} />}
-              {step === 1 && <Step2Details details={details} setDetails={setDetails} goal={goal} />}
+              {step === 1 && (() => {
+                const _wKg = details.weightUnit === 'lbs' ? parseFloat(details.weight) / 2.2046 : parseFloat(details.weight);
+                const _hCm = (parseFloat(details.heightFeet) || 0) * 30.48 + (parseFloat(details.heightInches) || 0) * 2.54;
+                const _mc  = (!isNaN(_wKg) && _wKg > 0 && details.activity)
+                  ? calcMacros(goal, _wKg, _hCm, details.age, details.sex, details.activity, details.diet, details.weightLossRate || 1, details.bodyType || 'mesomorph', details.goalSubtype || '')
+                  : null;
+                return (
+                  <Step2Details
+                    details={details}
+                    setDetails={setDetails}
+                    goal={goal}
+                    macroApproach={macroApproach}
+                    setMacroApproach={setMacroApproach}
+                    customSplit={customSplit}
+                    setCustomSplit={setCustomSplit}
+                    calcedCalories={_mc?.calories || 0}
+                  />
+                );
+              })()}
               {step === 2 && <Step3Generating onDone={handleGeneratingDone} macroPayload={macroPayload} />}
               {step === 3 && result && <Step4Result result={result} />}
               {step === 4 && result && (
