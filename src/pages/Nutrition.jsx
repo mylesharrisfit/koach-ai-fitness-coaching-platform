@@ -161,7 +161,7 @@ export default function Nutrition() {
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
             style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
           >
-            {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {atLimit && <Lock className="w-4 h-4" />}
             {atLimit ? `Limit (${plans.length}/${nutritionLimit})` : '+ New Plan'}
           </button>
         </div>
