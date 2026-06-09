@@ -70,10 +70,10 @@ CLIENT PROFILE:
 - Age: ${profile.age || 'not specified'}, Gender: ${profile.gender || 'not specified'}
 - Training Days: ${dpw}x/week
 - Session Length: ${profile.session_length} minutes
-- Equipment Available: ${(profile.equipment || []).join(', ') || 'full gym'}
+- Equipment Available: ${(Array.isArray(profile.equipment) ? profile.equipment.join(', ') : profile.equipment) || 'full gym'}
 - Injuries / Limitations: ${profile.injuries || 'none'}
 - Movements to Avoid: ${profile.movements_to_avoid || 'none'}
-- Priority Muscles: ${(profile.priority_muscles || []).join(', ') || 'balanced'}
+- Priority Muscles: ${(Array.isArray(profile.priority_muscles) ? profile.priority_muscles.join(', ') : profile.priority_muscles) || 'balanced'}
 - Preferred Split: ${preferredSplit}
 - Current Strength (1RM or working): ${strengthContext}
 
