@@ -35,7 +35,7 @@ export default function ProgramCreationModal({ open, onOpenChange, onProgramCrea
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[90vw] max-w-[900px] p-0 gap-0 overflow-hidden" style={{ height: '85vh', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+      <DialogContent className="max-w-[900px] p-0 gap-0 overflow-hidden" style={{ height: '85dvh', maxHeight: '85dvh', display: 'flex', flexDirection: 'column' }}>
         {!mode ? (
           <div className="p-6">
             <DialogHeader>

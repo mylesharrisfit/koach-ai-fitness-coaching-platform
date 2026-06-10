@@ -127,7 +127,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
       </div>
 
       {/* Scrollable Content */}
-      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '20px 24px' }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }} className="px-4 sm:px-6 py-5">
         <AnimatePresence mode="wait">
           {step === 'profile' && (
             <AIProfileStep key="profile" onSubmit={handleProfileSubmit} />
