@@ -6,7 +6,10 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
-    const { listing_id, success_url, cancel_url, buyer_email } = await req.json();
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { listing_id, success_url, cancel_url } = await req.json();
 
     if (!listing_id) return Response.json({ error: 'listing_id required' }, { status: 400 });
 
@@ -14,7 +17,7 @@ Deno.serve(async (req) => {
     const listing = listings[0];
     if (!listing) return Response.json({ error: 'Listing not found' }, { status: 404 });
 
-    const origin = req.headers.get('origin') || 'https://app.koachai.com';
+    const origin = 'https://koachai.net';
     const successUrl = success_url || `${origin}/store/success?listing_id=${listing_id}`;
     const cancelUrl = cancel_url || `${origin}/store`;
 
@@ -25,7 +28,7 @@ Deno.serve(async (req) => {
       metadata: { listing_id, coach_id: listing.coach_id || '' },
     };
 
-    if (buyer_email) sessionParams.customer_email = buyer_email;
+    if (user.email) sessionParams.customer_email = user.email;
 
     if (listing.stripe_price_id) {
       sessionParams.line_items = [{ price: listing.stripe_price_id, quantity: 1 }];
