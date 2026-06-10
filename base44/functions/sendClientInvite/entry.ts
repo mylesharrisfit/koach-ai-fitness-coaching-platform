@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
   if (!clientEmail) return Response.json({ error: 'Missing clientEmail' }, { status: 400 });
 
   const coachName = user.full_name || 'Your coach';
-  const appUrl = req.headers.get('origin') || 'https://app.koach.ai';
+  const appUrl = 'https://koachai.net';
 
   // Build invite link with coach info and pre-filled email embedded in URL
   const inviteCode = btoa(`${clientEmail}:${user.id}:${Date.now()}`).replace(/=/g, '').slice(0, 24);

@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 const RESEND_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = Deno.env.get('VITE_FROM_EMAIL') || 'noreply@koachai.com';
 const FROM_NAME = Deno.env.get('VITE_FROM_NAME') || 'KOACH AI';
-const APP_URL = 'https://app.koachai.com';
+const APP_URL = 'https://koachai.net';
 
 async function sendEmail(to, toName, subject, html, replyTo) {
   if (!RESEND_KEY || !to) return;
