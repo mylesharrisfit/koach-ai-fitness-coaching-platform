@@ -119,7 +119,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
   };
 
   return (
-    <div className="w-[280px] shrink-0 flex flex-col gap-4 overflow-y-auto pr-1">
+    <div className="w-full lg:w-[280px] lg:shrink-0 flex flex-col gap-4 overflow-y-auto pr-1">
       {/* Client selector */}
       <div className="bg-white border border-border rounded-xl p-4">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Client Context</p>
@@ -274,7 +274,7 @@ export default function Assistant() {
       </div>
 
       {/* Two-column layout */}
-      <div className="flex gap-5 items-start">
+      <div className="flex flex-col lg:flex-row gap-5 items-start">
         <AssistantSidebar
           clients={clients}
           selectedClient={selectedClient}
