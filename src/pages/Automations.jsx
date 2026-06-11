@@ -352,7 +352,7 @@ export default function Automations() {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: 'Active Rules', value: activeCount },
           { label: 'Total Rules', value: rules.length },
@@ -367,10 +367,10 @@ export default function Automations() {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-1 bg-secondary border border-border rounded-xl p-1">
+      <div className="flex gap-1 bg-secondary border border-border rounded-xl p-1 overflow-x-auto scrollbar-hide">
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={cn('flex-1 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-colors',
+            className={cn('flex-shrink-0 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-colors whitespace-nowrap',
               tab === t.key ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
             {t.icon}{t.label}
           </button>
