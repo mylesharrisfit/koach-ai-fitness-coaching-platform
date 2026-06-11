@@ -96,7 +96,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }}>
       {/* Sticky Header */}
-      <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-border space-y-3">
+      <div className="flex-shrink-0 px-4 sm:px-6 pt-5 pb-4 border-b border-border space-y-3">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="hover:bg-accent rounded-lg p-1.5">
             <ArrowLeft className="w-4 h-4" />
@@ -169,7 +169,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
 
       {/* Sticky Footer — only shown on review step */}
       {isReview && (
-        <div style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 24px', borderTop: '1px solid rgb(var(--border))', background: 'rgb(var(--background))' }}>
+        <div className="px-4 sm:px-6" style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', paddingBottom: '12px', borderTop: '1px solid rgb(var(--border))', background: 'rgb(var(--background))' }}>
           <Button
             variant="outline"
             onClick={() => {
