@@ -30,12 +30,12 @@ export default function RevenueDashboard() {
   return (
     <div className="p-6 lg:p-8 max-w-7xl mx-auto">
       {/* ── Header ── */}
-      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6 flex items-center justify-between">
+      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-white">Revenue Dashboard</h1>
           <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Stripe subscriptions, MRR, and payment health</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => refetch()}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
