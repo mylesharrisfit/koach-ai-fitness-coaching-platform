@@ -208,7 +208,6 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           <>
             <div className="flex-1 min-w-0">
               <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
-              <span className="block text-[9px] tracking-[0.12em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>Coaching OS</span>
             </div>
             <div className="flex items-center gap-1">
               <AchievementBell />
