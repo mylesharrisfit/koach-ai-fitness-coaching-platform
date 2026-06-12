@@ -131,8 +131,8 @@ Deno.serve(async (req) => {
       cancel_url: cancel_url || `${req.headers.get('origin')}/subscription`,
       subscription_data: {
         metadata: { user_id: user.id, tier },
-        // 14-day trial for new subscribers
-        trial_period_days: user.had_trial ? undefined : 14,
+        // 30-day trial for new subscribers
+        trial_period_days: user.had_trial ? undefined : 30,
       },
       allow_promotion_codes: true,
     };
