@@ -71,7 +71,7 @@ export const TIERS = {
       messages: true,
       progress: true,
       store: false,
-      assistant: false,        // Full AI assistant locked to Elite+
+      assistant: true,         // AI program builder — unlocked for Pro
       adherence: true,
       checkin_review: true,
       sales: false,            // Sales pipeline locked to Elite+
