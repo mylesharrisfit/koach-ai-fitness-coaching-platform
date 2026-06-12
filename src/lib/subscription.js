@@ -14,7 +14,7 @@ export const TIERS = {
     gradient: 'from-slate-400 to-slate-500',
     badge: 'bg-slate-400/15 text-slate-300 border-slate-400/20',
     limits: {
-      max_clients: 20,
+      max_clients: 10,
       max_programs: 3,
       max_nutrition_plans: 3,
     },
@@ -71,21 +71,21 @@ export const TIERS = {
       messages: true,
       progress: true,
       store: false,
-      assistant: false,        // Advanced AI locked to Elite+
+      assistant: false,        // Full AI assistant locked to Elite+
       adherence: true,
       checkin_review: true,
       sales: false,            // Sales pipeline locked to Elite+
       community: false,
       client_dashboard: true,
       // Granular
-      ai_suggestions: false,   // Advanced AI locked
+      ai_suggestions: false,   // Full AI assistant locked to Elite+
       analytics: true,
       custom_branding: false,
       api_access: false,
       voice_video_messages: true,
       program_templates: true,
       analytics_graphs: true,
-      ai_features: false,      // Advanced AI locked
+      ai_features: false,      // Full AI assistant locked to Elite+
       adherence_scoring: true,
       checkin_automation: true,
       basic_notifications: true,

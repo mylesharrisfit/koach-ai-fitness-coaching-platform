@@ -27,9 +27,9 @@ const PLAN_PRICES = {
 };
 
 const TIER_HIGHLIGHTS = {
-  starter:    ['Up to 20 clients', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
-  pro:        ['Up to 75 clients', 'Everything in Starter', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
-  elite:      ['Unlimited clients', 'Everything in Pro', 'Full AI assistant', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
+  starter:    ['Up to 10 clients', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
+  pro:        ['Up to 75 clients', 'Everything in Starter', 'AI program builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+  elite:      ['Unlimited clients', 'Everything in Pro', 'Unlimited AI — programs & meal plans', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
   enterprise: ['Unlimited clients', 'Everything in Elite', 'API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
 };
 
@@ -43,7 +43,7 @@ const TRUST_ITEMS = [
 const FAQS = [
   { q: 'Can I change plans later?', a: 'Yes! You can upgrade or downgrade your plan at any time from the subscription page. Upgrades take effect immediately, and downgrades apply at the end of your billing period.' },
   { q: 'What happens to my clients if I downgrade?', a: 'Your existing clients remain in the system. However, if you exceed the client limit of your new plan, you won\'t be able to add new clients until you\'re back under the limit. Existing client data is never deleted.' },
-  { q: 'Is there a free trial?', a: 'We offer a 14-day free trial on all plans so you can explore KOACH AI risk-free. No credit card required to start your trial.' },
+  { q: 'Is there a free trial?', a: 'We offer a 30-day free trial on all plans so you can explore KOACH AI risk-free. No credit card required to start your trial.' },
   { q: 'Do my clients pay separately?', a: 'No — your clients use KOACH AI for free as part of your subscription. You pay one flat monthly or annual rate that covers you and all your clients.' },
   { q: 'What payment methods do you accept?', a: 'We accept all major credit and debit cards (Visa, Mastercard, Amex, Discover) via Stripe. Annual plans can also be invoiced for Enterprise customers.' },
   { q: 'Can I add more coaches to my account?', a: 'Team accounts with multiple coaches are available on the Enterprise plan. Contact our sales team to discuss pricing for your coaching organization.' },

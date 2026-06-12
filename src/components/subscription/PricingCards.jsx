@@ -13,7 +13,7 @@ const PLAN_PRICES = {
 };
 
 const CLIENT_LIMIT = {
-  starter: 'Up to 20 clients',
+  starter: 'Up to 10 clients',
   pro: 'Up to 75 clients',
   elite: 'Unlimited clients',
   enterprise: 'Unlimited clients',
@@ -26,11 +26,11 @@ const TIER_FEATURES = {
   },
   pro: {
     inherited: ['Everything in Starter'],
-    unique: ['Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+    unique: ['AI program builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
   },
   elite: {
     inherited: ['Everything in Pro'],
-    unique: ['Full AI assistant (program + meal plans)', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
+    unique: ['Unlimited AI — programs & meal plans', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
   },
   enterprise: {
     inherited: ['Everything in Elite'],
