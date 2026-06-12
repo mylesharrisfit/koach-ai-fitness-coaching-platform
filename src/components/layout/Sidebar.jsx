@@ -11,7 +11,7 @@ import {
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
   Lock, UserPlus, Trophy, ShoppingBag,
   Globe, Smartphone, Activity, Apple,
-  Shield, Palette, BookOpen, LayoutTemplate, Mail
+  Shield, Palette, BookOpen, LayoutTemplate, Mail, FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -62,6 +62,7 @@ const NAV_GROUPS = [
   {
    label: 'TOOLS',
    items: [
+     { icon: FileText, label: 'Weekly Summary', path: '/weekly-summary' },
      { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
      { icon: Palette, label: 'White Label', path: '/white-label' },
    ],

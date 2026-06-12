@@ -62,6 +62,7 @@ import ReferralProgram from './pages/ReferralProgram';
 import AffiliateApplication from './pages/AffiliateApplication';
 import AffiliateDashboard from './pages/AffiliateDashboard';
 import MarketingTools from './pages/MarketingTools';
+import WeeklySummary from './pages/WeeklySummary';
 import InstallPrompt from './components/pwa/InstallPrompt';
 
 const AuthenticatedApp = () => {
@@ -131,6 +132,7 @@ const AuthenticatedApp = () => {
         <Route path="/affiliate-application" element={<AffiliateApplication />} />
         <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
         <Route path="/marketing-tools" element={<MarketingTools />} />
+        <Route path="/weekly-summary" element={<WeeklySummary />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
