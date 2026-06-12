@@ -142,6 +142,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.is_public": true
         }
       ]
     },

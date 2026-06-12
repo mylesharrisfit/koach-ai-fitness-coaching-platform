@@ -231,6 +231,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.is_published": true
         }
       ]
     },

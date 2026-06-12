@@ -86,6 +86,9 @@
           "user_condition": {
             "role": "admin"
           }
+        },
+        {
+          "data.is_approved": true
         }
       ]
     },
