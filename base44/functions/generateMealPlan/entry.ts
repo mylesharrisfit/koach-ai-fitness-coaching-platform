@@ -6,6 +6,30 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    // ── Starter tier: enforce 5 AI generations/month (combined program + meal plan) ──
+    const tier = user.subscription_tier || 'starter';
+    if (tier === 'starter') {
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+      const storedMonth  = user.ai_generation_month || '';
+      const count        = storedMonth === currentMonth ? (user.ai_generation_count || 0) : 0;
+
+      if (count >= 5) {
+        return Response.json({
+          error: 'monthly_ai_limit_reached',
+          message: "You've hit your monthly AI limit — upgrade to Pro for unlimited AI generations.",
+          used: count,
+          limit: 5,
+        }, { status: 402 });
+      }
+
+      // Increment counter
+      const newCount = count + 1;
+      await base44.asServiceRole.entities.User.update(user.id, {
+        ai_generation_count: newCount,
+        ai_generation_month: currentMonth,
+      });
+    }
+
     const body = await req.json();
     const {
       age, sex, weightKg, goal, diet, allergies, dislikedFoods, lovedFoods,

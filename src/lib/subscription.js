@@ -17,6 +17,7 @@ export const TIERS = {
       max_clients: 10,
       max_programs: 3,
       max_nutrition_plans: 3,
+      max_ai_generations_per_month: 5,   // combined program + meal plan
     },
     features: {
       // Pages
@@ -45,6 +46,11 @@ export const TIERS = {
       adherence_scoring: false,
       checkin_automation: false,
       basic_notifications: false,
+      // AI ladder
+      ai_program_builder: true,          // metered — 5/mo combined
+      ai_meal_plan_builder: true,        // metered — 5/mo combined
+      ai_assistant_full: false,
+      ai_team_access: false,
     },
   },
   pro: {
@@ -61,6 +67,7 @@ export const TIERS = {
       max_clients: 75,
       max_programs: 30,
       max_nutrition_plans: 30,
+      max_ai_generations_per_month: -1,  // unlimited
     },
     features: {
       // Pages
@@ -71,24 +78,29 @@ export const TIERS = {
       messages: true,
       progress: true,
       store: false,
-      assistant: true,         // AI program builder — unlocked for Pro
+      assistant: true,
       adherence: true,
       checkin_review: true,
-      sales: false,            // Sales pipeline locked to Elite+
+      sales: false,
       community: false,
       client_dashboard: true,
       // Granular
-      ai_suggestions: false,   // Full AI assistant locked to Elite+
+      ai_suggestions: false,
       analytics: true,
       custom_branding: false,
       api_access: false,
       voice_video_messages: true,
       program_templates: true,
       analytics_graphs: true,
-      ai_features: false,      // Full AI assistant locked to Elite+
+      ai_features: false,
       adherence_scoring: true,
       checkin_automation: true,
       basic_notifications: true,
+      // AI ladder
+      ai_program_builder: true,          // unlimited
+      ai_meal_plan_builder: true,        // unlimited
+      ai_assistant_full: false,          // full AI assistant locked to Elite+
+      ai_team_access: false,
     },
   },
   elite: {
@@ -104,6 +116,7 @@ export const TIERS = {
       max_clients: -1,      // Unlimited
       max_programs: -1,
       max_nutrition_plans: -1,
+      max_ai_generations_per_month: -1,  // unlimited
     },
     features: {
       // Pages
@@ -123,7 +136,7 @@ export const TIERS = {
       // Granular — all Pro features
       ai_suggestions: true,
       analytics: true,
-      custom_branding: true,       // White-label branding
+      custom_branding: true,
       api_access: false,
       voice_video_messages: true,
       program_templates: true,
@@ -132,13 +145,18 @@ export const TIERS = {
       adherence_scoring: true,
       checkin_automation: true,
       basic_notifications: true,
+      // AI ladder
+      ai_program_builder: true,
+      ai_meal_plan_builder: true,
+      ai_assistant_full: true,           // Full AI Assistant — auto progression, check-in analysis, coaching automation
+      ai_team_access: false,
       // Elite-exclusive
-      ai_calorie_suggestions: true,      // AI calorie adjustment suggestions
-      ai_workout_progression: true,      // AI workout progression suggestions
-      ai_checkin_responses: true,        // Auto-generated check-in responses
-      auto_progression_rules: true,      // Auto progression rules for workouts
-      trigger_notifications: true,       // Trigger-based notifications
-      revenue_dashboard: true,           // MRR & revenue dashboard
+      ai_calorie_suggestions: true,
+      ai_workout_progression: true,
+      ai_checkin_responses: true,
+      auto_progression_rules: true,
+      trigger_notifications: true,
+      revenue_dashboard: true,
     },
   },
   enterprise: {
@@ -154,6 +172,7 @@ export const TIERS = {
       max_clients: -1,
       max_programs: -1,
       max_nutrition_plans: -1,
+      max_ai_generations_per_month: -1,  // unlimited
     },
     features: {
       clients: true,
@@ -180,6 +199,12 @@ export const TIERS = {
       adherence_scoring: true,
       checkin_automation: true,
       basic_notifications: true,
+      // AI ladder
+      ai_program_builder: true,
+      ai_meal_plan_builder: true,
+      ai_assistant_full: true,
+      ai_team_access: true,              // Team-wide AI access for multiple coaches
+      // Enterprise-exclusive
       ai_calorie_suggestions: true,
       ai_workout_progression: true,
       ai_checkin_responses: true,
@@ -269,10 +294,34 @@ export const FEATURE_INFO = {
     minTier: 'elite',
   },
   assistant: {
-    name: 'AI Coach Assistant',
-    description: 'Full AI assistant with calorie adjustments, workout progression, and check-in responses.',
+    name: 'Full AI Coach Assistant',
+    description: 'Auto progression rules, AI check-in analysis, and coaching automation — the AI that analyzes, not just builds.',
     icon: 'Sparkles',
     minTier: 'elite',
+  },
+  ai_assistant_full: {
+    name: 'Full AI Coach Assistant',
+    description: 'Auto progression rules, AI check-in analysis, and coaching automation — the AI that analyzes, not just builds.',
+    icon: 'Sparkles',
+    minTier: 'elite',
+  },
+  ai_program_builder: {
+    name: 'AI Program Builder',
+    description: 'Generate complete, expert-quality workout programs for any client in seconds.',
+    icon: 'Sparkles',
+    minTier: 'starter',
+  },
+  ai_meal_plan_builder: {
+    name: 'AI Meal Plan Builder',
+    description: 'Generate precise, macro-accurate nutrition plans tailored to each client.',
+    icon: 'Sparkles',
+    minTier: 'starter',
+  },
+  ai_team_access: {
+    name: 'Team-Wide AI Access',
+    description: 'Full AI access for multiple coaches in your organization, plus AI API access.',
+    icon: 'Sparkles',
+    minTier: 'enterprise',
   },
   ai_features: {
     name: 'Advanced AI Features',

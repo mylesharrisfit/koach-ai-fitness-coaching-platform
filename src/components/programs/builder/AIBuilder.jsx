@@ -44,6 +44,11 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
       let program = result.data;
       if (program?.response) program = program.response;
 
+      // Clean monthly limit message for Starter tier
+      if (program?.error === 'monthly_ai_limit_reached') {
+        throw new Error(program.message || "You've hit your monthly AI limit — upgrade to Pro for unlimited AI generations.");
+      }
+
       if (!program || program.error) {
         throw new Error(program?.error || 'Invalid program returned from AI');
       }

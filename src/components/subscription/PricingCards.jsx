@@ -22,19 +22,19 @@ const CLIENT_LIMIT = {
 const TIER_FEATURES = {
   starter: {
     inherited: [],
-    unique: ['Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
+    unique: ['✨ 5 AI generations/month (programs + meal plans)', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
   },
   pro: {
     inherited: ['Everything in Starter'],
-    unique: ['AI program builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+    unique: ['✨ Unlimited AI program builder', '✨ Unlimited AI meal plan builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
   },
   elite: {
     inherited: ['Everything in Pro'],
-    unique: ['Unlimited AI — programs & meal plans', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
+    unique: ['🤖 Full AI Assistant — auto progression, check-in analysis & coaching automation', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
   },
   enterprise: {
     inherited: ['Everything in Elite'],
-    unique: ['API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
+    unique: ['🤖 Team-wide AI access for multiple coaches', '🔌 AI API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
   },
 };
 

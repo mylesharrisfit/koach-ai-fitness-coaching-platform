@@ -1072,6 +1072,11 @@ function Step3Generating({ onDone, macroPayload }) {
         .then(res => {
           clearInterval(interval);
           const body = res.data;
+          if (body?.error === 'monthly_ai_limit_reached') {
+            setProgress(0);
+            setError(body.message || "You've hit your monthly AI limit — upgrade to Pro for unlimited AI generations.");
+            return;
+          }
           if (body?.error) {
             setProgress(0);
             setError(body.error);

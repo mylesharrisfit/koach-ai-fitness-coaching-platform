@@ -27,10 +27,10 @@ const PLAN_PRICES = {
 };
 
 const TIER_HIGHLIGHTS = {
-  starter:    ['Up to 10 clients', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
-  pro:        ['Up to 75 clients', 'Everything in Starter', 'AI program builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
-  elite:      ['Unlimited clients', 'Everything in Pro', 'Unlimited AI — programs & meal plans', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
-  enterprise: ['Unlimited clients', 'Everything in Elite', 'API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
+  starter:    ['Up to 10 clients', '5 AI generations/month (programs + meal plans)', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
+  pro:        ['Up to 75 clients', 'Everything in Starter', 'Unlimited AI program builder', 'Unlimited AI meal plan builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+  elite:      ['Unlimited clients', 'Everything in Pro', 'Full AI Assistant — auto progression, check-in analysis & coaching automation', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
+  enterprise: ['Unlimited clients', 'Everything in Elite', 'Team-wide AI access for multiple coaches', 'AI API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
 };
 
 const TRUST_ITEMS = [

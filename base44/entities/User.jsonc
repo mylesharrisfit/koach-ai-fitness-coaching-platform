@@ -72,6 +72,15 @@
     },
     "specializations": {
       "type": "string"
+    },
+    "ai_generation_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of AI generations used this month (program + meal plan combined)"
+    },
+    "ai_generation_month": {
+      "type": "string",
+      "description": "YYYY-MM of the current generation counter window \u2014 resets on new month"
     }
   },
   "required": []
