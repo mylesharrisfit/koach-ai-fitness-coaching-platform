@@ -86,7 +86,7 @@ export default function WelcomeScreen({ onNext }) {
             <ArrowRight className="w-5 h-5" />
           </motion.button>
           <p className="text-xs" style={{ color: '#3A3A3A' }}>
-            No credit card required · 30-day free trial · Setup in 5 minutes
+            Card required · No charge for 30 days · Cancel anytime
           </p>
           <button
             onClick={() => base44.auth.redirectToLogin(`${window.location.origin}/`)}

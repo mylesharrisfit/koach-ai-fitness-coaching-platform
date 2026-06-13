@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ChevronRight, Zap } from 'lucide-react';
+import { Check, ChevronRight, Zap, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 const PLANS = [
   {
@@ -82,6 +83,29 @@ const PLANS = [
 export default function CoachPricingScreen({ onNext, onBack }) {
   const [selected, setSelected] = useState('pro');
   const [billing, setBilling] = useState('monthly');
+  const [loading, setLoading] = useState(false);
+
+  const handleStartTrial = async () => {
+    setLoading(true);
+    try {
+      const origin = window.location.origin;
+      const res = await base44.functions.invoke('stripeCheckout', {
+        tier: selected,
+        billing_cycle: billing,
+        success_url: `${origin}/?checkout=success`,
+        cancel_url: `${origin}/start`,
+      });
+      if (res.data?.url) {
+        window.location.href = res.data.url;
+      } else {
+        toast.error(res.data?.error || 'Could not start checkout. Please try again.');
+        setLoading(false);
+      }
+    } catch (e) {
+      toast.error('Something went wrong. Please try again.');
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
@@ -111,7 +135,7 @@ export default function CoachPricingScreen({ onNext, onBack }) {
             Choose your coaching system.
           </h2>
           <p className="text-sm" style={{ color: '#6B6B6B' }}>
-            Start free. Cancel anytime. No commitment.
+            Card required. No charge for 30 days. Cancel anytime.
           </p>
         </motion.div>
 
@@ -209,7 +233,7 @@ export default function CoachPricingScreen({ onNext, onBack }) {
           transition={{ delay: 0.4 }}
           className="flex items-center justify-center gap-6 py-4"
         >
-          {['30-day free trial', 'Cancel anytime', 'No credit card'].map(t => (
+          {['30-day free trial', 'Cancel anytime', 'Card on file required'].map(t => (
             <div key={t} className="flex items-center gap-1.5">
               <div className="w-3.5 h-3.5 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
                 <Check className="w-2 h-2" style={{ color: '#22C55E' }} />
@@ -225,17 +249,21 @@ export default function CoachPricingScreen({ onNext, onBack }) {
         style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))', background: 'linear-gradient(to top, #0A0A0A 70%, transparent)' }}>
         <div className="max-w-lg mx-auto w-full pt-4">
           <motion.button
-            onClick={() => onNext({ selected_plan: selected, billing_cycle: billing })}
-            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' }}
-            whileTap={{ scale: 0.97 }}
+            onClick={handleStartTrial}
+            disabled={loading}
+            whileHover={!loading ? { scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' } : {}}
+            whileTap={!loading ? { scale: 0.97 } : {}}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+            style={{ background: loading ? '#1a2a4a' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)', opacity: loading ? 0.7 : 1 }}
           >
-            <Zap className="w-5 h-5" />
-            Start 30-Day Free Trial
+            {loading ? (
+              <><Loader2 className="w-5 h-5 animate-spin" /> Redirecting to checkout…</>
+            ) : (
+              <><Zap className="w-5 h-5" /> Start 30-Day Free Trial</>
+            )}
           </motion.button>
-          <p className="text-center text-xs mt-2" style={{ color: '#333' }}>
-            You won't be charged until your trial ends
+          <p className="text-center text-xs mt-2" style={{ color: '#555' }}>
+            Card required · No charge for 30 days · Cancel anytime
           </p>
           <p className="text-center text-xs mt-3" style={{ color: '#444' }}>
             Already have an account?{' '}
