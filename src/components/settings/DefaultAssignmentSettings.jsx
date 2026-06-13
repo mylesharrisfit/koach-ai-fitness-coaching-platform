@@ -11,6 +11,7 @@ import { Dumbbell, Utensils, MessageSquare, CheckCircle2, Loader2 } from 'lucide
 export default function DefaultAssignmentSettings() {
   const qc = useQueryClient();
   const [form, setForm] = useState({
+    auto_assign_enabled: true,
     default_program_id: '',
     default_nutrition_id: '',
     send_welcome_message: true,
@@ -37,6 +38,7 @@ export default function DefaultAssignmentSettings() {
     if (defaults.length > 0) {
       const d = defaults[0];
       setForm({
+        auto_assign_enabled: d.auto_assign_enabled ?? true,
         default_program_id: d.default_program_id || '',
         default_nutrition_id: d.default_nutrition_id || '',
         send_welcome_message: d.send_welcome_message ?? true,
@@ -49,6 +51,7 @@ export default function DefaultAssignmentSettings() {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const payload = {
+        auto_assign_enabled: form.auto_assign_enabled,
         default_program_id: form.default_program_id || null,
         default_nutrition_id: form.default_nutrition_id || null,
         send_welcome_message: form.send_welcome_message,
@@ -76,13 +79,30 @@ export default function DefaultAssignmentSettings() {
 
   return (
     <div className="space-y-4">
-      {/* Status banner */}
-      <div className="flex items-center gap-2.5 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
-        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-        <p className="text-sm text-emerald-700">
-          Auto-assignment is <strong>active</strong> — new clients will automatically receive these defaults.
-        </p>
+      {/* Master toggle */}
+      <div className={`flex items-center justify-between rounded-2xl px-5 py-4 border-2 transition-all ${
+        form.auto_assign_enabled
+          ? 'bg-emerald-50 border-emerald-200'
+          : 'bg-slate-50 border-slate-200'
+      }`}>
+        <div className="flex items-center gap-3">
+          <CheckCircle2 className={`w-5 h-5 shrink-0 ${form.auto_assign_enabled ? 'text-emerald-600' : 'text-slate-400'}`} />
+          <div>
+            <p className={`text-sm font-bold ${form.auto_assign_enabled ? 'text-emerald-800' : 'text-slate-600'}`}>
+              Auto-Assignment {form.auto_assign_enabled ? 'Enabled' : 'Disabled'}
+            </p>
+            <p className={`text-xs mt-0.5 ${form.auto_assign_enabled ? 'text-emerald-600' : 'text-slate-400'}`}>
+              {form.auto_assign_enabled
+                ? 'New clients automatically receive the defaults below'
+                : 'New clients will NOT receive any defaults automatically'}
+            </p>
+          </div>
+        </div>
+        <Switch checked={form.auto_assign_enabled} onCheckedChange={v => set('auto_assign_enabled', v)} />
       </div>
+
+      {/* Defaults (dimmed when disabled) */}
+      <div className={form.auto_assign_enabled ? '' : 'opacity-40 pointer-events-none'}>
 
       {/* Program default */}
       <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3">
@@ -179,6 +199,8 @@ export default function DefaultAssignmentSettings() {
           />
         )}
       </div>
+
+      </div>{/* end dimmed wrapper */}
 
       <Button
         className="w-full"

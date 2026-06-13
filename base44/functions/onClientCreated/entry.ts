@@ -94,18 +94,23 @@ Deno.serve(async (req) => {
     const defaults = allDefaults?.[0];
     const updates = {};
 
-    if (defaults?.default_program_id && !client.assigned_program_id) {
-      updates.assigned_program_id = defaults.default_program_id;
-    }
-    if (defaults?.default_nutrition_id && !client.assigned_nutrition_id) {
-      updates.assigned_nutrition_id = defaults.default_nutrition_id;
-    }
-    if (Object.keys(updates).length > 0) {
-      await base44.asServiceRole.entities.Client.update(client.id, updates);
+    // Respect master auto-assign toggle (default true if not set)
+    const autoAssignEnabled = defaults?.auto_assign_enabled ?? true;
+
+    if (autoAssignEnabled) {
+      if (defaults?.default_program_id && !client.assigned_program_id) {
+        updates.assigned_program_id = defaults.default_program_id;
+      }
+      if (defaults?.default_nutrition_id && !client.assigned_nutrition_id) {
+        updates.assigned_nutrition_id = defaults.default_nutrition_id;
+      }
+      if (Object.keys(updates).length > 0) {
+        await base44.asServiceRole.entities.Client.update(client.id, updates);
+      }
     }
 
-    // Welcome message
-    if (defaults?.send_welcome_message && defaults.welcome_message) {
+    // Welcome message (also gated by master toggle)
+    if (autoAssignEnabled && defaults?.send_welcome_message && defaults.welcome_message) {
       await base44.asServiceRole.entities.Message.create({
         client_id: client.id,
         client_name: client.name,
