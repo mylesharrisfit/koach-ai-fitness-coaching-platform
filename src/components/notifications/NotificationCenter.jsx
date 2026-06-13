@@ -88,7 +88,7 @@ export default function NotificationCenter({ notifications, unreadCount, loading
 
   const panelClass = isMobile
     ? 'fixed inset-0 z-50 flex flex-col bg-white'
-    : 'absolute right-0 top-full mt-2 w-[420px] max-h-[calc(100vh-80px)] bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 flex flex-col overflow-hidden';
+    : 'w-[420px] max-h-[calc(100vh-80px)] bg-white rounded-2xl border border-slate-200 flex flex-col overflow-hidden';
 
   return (
     <motion.div
@@ -97,7 +97,7 @@ export default function NotificationCenter({ notifications, unreadCount, loading
       exit={isMobile ? { x: '100%' } : { opacity: 0, scale: 0.97, y: -8 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       className={panelClass}
-      style={isMobile ? {} : { boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04)' }}
+      style={isMobile ? {} : { boxShadow: '0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06)', background: '#fff' }}
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 flex-shrink-0">
