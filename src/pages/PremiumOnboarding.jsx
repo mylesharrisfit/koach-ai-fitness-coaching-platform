@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // PremiumOnboarding — coach-only onboarding flow that ends with navigate('/') into the real platform
 import { motion, AnimatePresence } from 'framer-motion';
 import SplashScreen from '@/components/onboarding/SplashScreen';
@@ -12,6 +12,8 @@ import CoachPricingScreen from '@/components/onboarding/CoachPricingScreen';
 import CoachGenerationScreen from '@/components/onboarding/CoachGenerationScreen';
 import CoachAccountScreen from '@/components/onboarding/CoachAccountScreen';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
 
 // Ordered coach-only flow
 const FLOW = [
@@ -31,9 +33,29 @@ const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_pricing', 'coach_accoun
 
 export default function PremiumOnboarding() {
   const navigate = useNavigate();
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings } = useAuth();
   const [step, setStep] = useState('splash');
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState({});
+
+  // If already logged in, skip marketing and go straight to dashboard
+  useEffect(() => {
+    if (!isLoadingAuth && !isLoadingPublicSettings && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, isLoadingAuth, isLoadingPublicSettings]);
+
+  // Show a brief loading state while auth is resolving — prevents flash of marketing content
+  if (isLoadingAuth || isLoadingPublicSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#0A0A0A' }}>
+        <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-blue-500 animate-spin" />
+      </div>
+    );
+  }
+
+  // Already authenticated — render nothing while redirect fires
+  if (isAuthenticated) return null;
 
   const idx = FLOW.indexOf(step);
 

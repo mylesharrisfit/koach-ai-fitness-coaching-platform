@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, ChevronRight, Zap } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const PLANS = [
   {
@@ -235,6 +236,16 @@ export default function CoachPricingScreen({ onNext, onBack }) {
           </motion.button>
           <p className="text-center text-xs mt-2" style={{ color: '#333' }}>
             You won't be charged until your trial ends
+          </p>
+          <p className="text-center text-xs mt-3" style={{ color: '#444' }}>
+            Already have an account?{' '}
+            <button
+              onClick={() => base44.auth.redirectToLogin(window.location.origin + '/')}
+              className="underline transition-colors"
+              style={{ color: '#3B82F6' }}
+            >
+              Log in
+            </button>
           </p>
         </div>
       </div>

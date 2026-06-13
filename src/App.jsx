@@ -64,6 +64,15 @@ import AffiliateDashboard from './pages/AffiliateDashboard';
 import MarketingTools from './pages/MarketingTools';
 import WeeklySummary from './pages/WeeklySummary';
 import InstallPrompt from './components/pwa/InstallPrompt';
+import { Navigate } from 'react-router-dom';
+
+// Redirects unauthenticated visitors from "/" to the marketing/onboarding page
+const AuthGuardedDashboard = () => {
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings } = useAuth();
+  if (isLoadingAuth || isLoadingPublicSettings) return null; // loading state handled by parent
+  if (!isAuthenticated) return <Navigate to="/start" replace />;
+  return <Dashboard />;
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -93,7 +102,7 @@ const AuthenticatedApp = () => {
       {/* ── CLIENT PORTAL (role=client) ── */}
       <Route path="/portal/*" element={<><ClientPortal /><InstallPrompt /></>} />
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<AuthGuardedDashboard />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/programs" element={<Programs />} />
         <Route path="/nutrition" element={<Nutrition />} />
