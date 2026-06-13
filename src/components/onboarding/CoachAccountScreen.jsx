@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import OnboardingLayout from './OnboardingLayout';
+import { base44 } from '@/api/base44Client';
 
 export default function CoachAccountScreen({ onNext, onBack, data }) {
   const [form, setForm] = useState({
@@ -66,13 +67,13 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2 mb-8">
           <p className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: '#3B82F6' }}>
-            Almost There
+            Step 2 of 3 · Create Account
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.025em' }}>
             Create your account.
           </h2>
           <p className="text-sm" style={{ color: '#6B6B6B' }}>
-            Your login to the KOACH AI platform.
+            Next: choose your plan and add your card.
           </p>
         </motion.div>
 
@@ -256,7 +257,14 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
             )}
           </motion.button>
           <p className="text-center text-xs mt-2" style={{ color: '#333' }}>
-            Already have an account? <a href="/login" style={{ color: '#3B82F6' }}>Sign in</a>
+            Already have an account?{' '}
+            <button
+              onClick={() => base44.auth.redirectToLogin(`${window.location.origin}/`)}
+              className="underline"
+              style={{ color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              Sign in
+            </button>
           </p>
         </div>
       </div>

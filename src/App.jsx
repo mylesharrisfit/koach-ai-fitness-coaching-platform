@@ -1,3 +1,4 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as SonnerToaster } from "sonner"
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -66,17 +67,53 @@ import WeeklySummary from './pages/WeeklySummary';
 import InstallPrompt from './components/pwa/InstallPrompt';
 import { Navigate } from 'react-router-dom';
 
-// Redirects unauthenticated visitors from "/" to the marketing/onboarding page
+// Gates the dashboard: unauthenticated → /start, authenticated without subscription → /start?resume=checkout
 const AuthGuardedDashboard = () => {
-  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings } = useAuth();
-  if (isLoadingAuth || isLoadingPublicSettings) {
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, user, checkUserAuth } = useAuth();
+  const [checkoutPolling, setCheckoutPolling] = React.useState(false);
+
+  // When returning from Stripe checkout, the webhook may not have fired yet.
+  // Poll auth up to 5 times (5s) until billing_status is set.
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get('checkout')) return;
+    if (!isAuthenticated) return;
+    const hasSubscription = user?.stripe_subscription_id || ['active', 'trialing'].includes(user?.billing_status);
+    if (hasSubscription) return;
+
+    setCheckoutPolling(true);
+    let attempts = 0;
+    const interval = setInterval(async () => {
+      attempts++;
+      await checkUserAuth();
+      if (attempts >= 5) {
+        clearInterval(interval);
+        setCheckoutPolling(false);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated, user?.stripe_subscription_id]);
+
+  if (isLoadingAuth || isLoadingPublicSettings || checkoutPolling) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+          {checkoutPolling && <p className="text-sm text-muted-foreground">Activating your account…</p>}
+        </div>
       </div>
     );
   }
+
   if (!isAuthenticated) return <Navigate to="/start" replace />;
+
+  // Authenticated but no active/trialing subscription — must complete checkout first
+  const hasSubscription = user?.stripe_subscription_id ||
+    ['active', 'trialing'].includes(user?.billing_status);
+  if (!hasSubscription) {
+    return <Navigate to="/start?resume=checkout" replace />;
+  }
+
   return <Dashboard />;
 };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// PremiumOnboarding — coach-only onboarding flow that ends with navigate('/') into the real platform
+// PremiumOnboarding — coach-only onboarding flow
+// FLOW ORDER: splash → welcome → onboarding steps → create account → choose tier → Stripe checkout → dashboard
 import { motion, AnimatePresence } from 'framer-motion';
 import SplashScreen from '@/components/onboarding/SplashScreen';
 import WelcomeScreen from '@/components/onboarding/WelcomeScreen';
@@ -9,13 +10,12 @@ import CoachTypeScreen from '@/components/onboarding/CoachTypeScreen';
 import CoachBottleneckScreen from '@/components/onboarding/CoachBottleneckScreen';
 import CoachSoftwareScreen from '@/components/onboarding/CoachSoftwareScreen';
 import CoachPricingScreen from '@/components/onboarding/CoachPricingScreen';
-import CoachGenerationScreen from '@/components/onboarding/CoachGenerationScreen';
 import CoachAccountScreen from '@/components/onboarding/CoachAccountScreen';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
-// Ordered coach-only flow
+// Step 1–6: onboarding, Step 7: create account, Step 8: pricing (→ Stripe)
 const FLOW = [
   'splash',
   'welcome',
@@ -24,28 +24,82 @@ const FLOW = [
   'coach_type',
   'coach_bottleneck',
   'coach_software',
-  'coach_pricing',
-  'coach_account',
-  'coach_generation',
+  'coach_account',   // create account AFTER onboarding, BEFORE pricing
+  'coach_pricing',   // tier selection → fires Stripe checkout
 ];
 
-const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_pricing', 'coach_account', 'coach_generation']);
+const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_account', 'coach_pricing']);
+
+// localStorage key for carrying onboarding data across the account-creation redirect
+const LS_ONBOARDING_DATA = 'koach_pending_onboarding_data';
+const LS_RESUME_PRICING  = 'koach_resume_pricing';
 
 export default function PremiumOnboarding() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings } = useAuth();
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, user, checkUserAuth } = useAuth();
   const [step, setStep] = useState('splash');
   const [direction, setDirection] = useState(1);
-  const [data, setData] = useState({});
+  const [data, setData] = useState(() => {
+    // Restore any onboarding data that was stashed before account creation
+    try {
+      const stashed = localStorage.getItem(LS_ONBOARDING_DATA);
+      return stashed ? JSON.parse(stashed) : {};
+    } catch { return {}; }
+  });
 
-  // If already logged in, skip marketing and go straight to dashboard
+  // --- Handle authenticated users landing on /start ---
   useEffect(() => {
-    if (!isLoadingAuth && !isLoadingPublicSettings && isAuthenticated) {
-      navigate('/', { replace: true });
-    }
-  }, [isAuthenticated, isLoadingAuth, isLoadingPublicSettings]);
+    if (isLoadingAuth || isLoadingPublicSettings) return;
 
-  // Show a brief loading state while auth is resolving — prevents flash of marketing content
+    if (isAuthenticated) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const resumeCheckout = urlParams.get('resume') === 'checkout' || localStorage.getItem(LS_RESUME_PRICING) === '1';
+
+      if (resumeCheckout) {
+        // User created account and was sent back to finish tier selection
+        // Flush any pending onboarding data to their profile
+        flushOnboardingData();
+        localStorage.removeItem(LS_RESUME_PRICING);
+        setStep('coach_pricing');
+        return;
+      }
+
+      // Already has a subscription — go straight to dashboard
+      if (user?.stripe_subscription_id || user?.billing_status === 'trialing' || user?.billing_status === 'active') {
+        navigate('/', { replace: true });
+        return;
+      }
+
+      // Authenticated but no subscription — resume at pricing
+      flushOnboardingData();
+      setStep('coach_pricing');
+    }
+  }, [isAuthenticated, isLoadingAuth, isLoadingPublicSettings, user]);
+
+  const flushOnboardingData = async () => {
+    const stashed = localStorage.getItem(LS_ONBOARDING_DATA);
+    if (!stashed) return;
+    try {
+      const onboardingData = JSON.parse(stashed);
+      // Save all collected onboarding fields to the user's profile
+      const ONBOARDING_FIELDS = [
+        'business_name', 'social_handle', 'niche',
+        'client_count', 'coach_type', 'bottlenecks', 'current_software',
+      ];
+      const profileUpdate = {};
+      ONBOARDING_FIELDS.forEach(key => {
+        if (onboardingData[key] !== undefined) profileUpdate[key] = onboardingData[key];
+      });
+      if (Object.keys(profileUpdate).length > 0) {
+        await base44.auth.updateMe(profileUpdate);
+      }
+      localStorage.removeItem(LS_ONBOARDING_DATA);
+    } catch (e) {
+      console.warn('Could not flush onboarding data:', e);
+    }
+  };
+
+  // Loading spinner while auth resolves
   if (isLoadingAuth || isLoadingPublicSettings) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#0A0A0A' }}>
@@ -54,22 +108,24 @@ export default function PremiumOnboarding() {
     );
   }
 
-  // Already authenticated — render nothing while redirect fires
-  if (isAuthenticated) return null;
-
   const idx = FLOW.indexOf(step);
 
   const next = (newData = {}) => {
     const merged = { ...data, ...newData };
     setData(merged);
+
+    if (step === 'coach_account') {
+      // Stash onboarding data to localStorage before redirecting for account creation
+      localStorage.setItem(LS_ONBOARDING_DATA, JSON.stringify(merged));
+      localStorage.setItem(LS_RESUME_PRICING, '1');
+      // Redirect to Base44 signup; on return, we'll land back at /start?resume=checkout
+      base44.auth.redirectToLogin(`${window.location.origin}/start?resume=checkout`);
+      return;
+    }
+
     if (idx < FLOW.length - 1) {
       setDirection(1);
       setStep(FLOW[idx + 1]);
-    } else {
-      // Onboarding complete — mark in localStorage and go straight to the real platform
-      localStorage.setItem('koach_onboarding_complete', '1');
-      localStorage.setItem('koach_onboarding_data', JSON.stringify(merged));
-      navigate('/', { replace: true });
     }
   };
 
@@ -104,16 +160,14 @@ export default function PremiumOnboarding() {
       case 'coach_type':       return <CoachTypeScreen {...props} />;
       case 'coach_bottleneck': return <CoachBottleneckScreen {...props} />;
       case 'coach_software':   return <CoachSoftwareScreen {...props} />;
-      case 'coach_pricing':    return <CoachPricingScreen {...props} />;
       case 'coach_account':    return <CoachAccountScreen {...props} />;
-      case 'coach_generation': return <CoachGenerationScreen onNext={next} />;
+      case 'coach_pricing':    return <CoachPricingScreen {...props} resuming={isAuthenticated} />;
       default: return null;
     }
   };
 
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ background: '#0A0A0A' }}>
-      {/* Progress bar */}
       {showProgress && (
         <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <motion.div

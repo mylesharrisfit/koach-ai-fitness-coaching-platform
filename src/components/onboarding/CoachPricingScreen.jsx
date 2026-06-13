@@ -80,7 +80,7 @@ const PLANS = [
   },
 ];
 
-export default function CoachPricingScreen({ onNext, onBack }) {
+export default function CoachPricingScreen({ onNext, onBack, resuming }) {
   const [selected, setSelected] = useState('pro');
   const [billing, setBilling] = useState('monthly');
   const [loading, setLoading] = useState(false);
@@ -93,7 +93,7 @@ export default function CoachPricingScreen({ onNext, onBack }) {
         tier: selected,
         billing_cycle: billing,
         success_url: `${origin}/?checkout=success`,
-        cancel_url: `${origin}/start`,
+        cancel_url: `${origin}/start?resume=checkout`,
       });
       if (res.data?.url) {
         window.location.href = res.data.url;
@@ -115,21 +115,23 @@ export default function CoachPricingScreen({ onNext, onBack }) {
           style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
-      {/* Back */}
-      <div className="flex-shrink-0 pt-5 px-5 relative z-10">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: '#555' }}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back
-        </button>
-      </div>
+      {/* Back — hidden when resuming after account creation */}
+      {!resuming && onBack && (
+        <div className="flex-shrink-0 pt-5 px-5 relative z-10">
+          <button onClick={onBack} className="flex items-center gap-1.5 text-sm font-medium" style={{ color: '#555' }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Back
+          </button>
+        </div>
+      )}
 
       <div className="flex-1 overflow-y-auto px-5 pb-36 pt-6 max-w-lg mx-auto w-full relative z-10">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-2 mb-6 text-center">
           <p className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: '#3B82F6' }}>
-            30-Day Free Trial
+            Step 3 of 3 · Choose Your Plan
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.025em' }}>
             Choose your coaching system.
