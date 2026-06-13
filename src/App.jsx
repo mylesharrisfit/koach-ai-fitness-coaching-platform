@@ -69,7 +69,13 @@ import { Navigate } from 'react-router-dom';
 // Redirects unauthenticated visitors from "/" to the marketing/onboarding page
 const AuthGuardedDashboard = () => {
   const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings } = useAuth();
-  if (isLoadingAuth || isLoadingPublicSettings) return null; // loading state handled by parent
+  if (isLoadingAuth || isLoadingPublicSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
   if (!isAuthenticated) return <Navigate to="/start" replace />;
   return <Dashboard />;
 };
@@ -92,8 +98,13 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
+      // Don't redirect public routes (/start, /join, /client-onboarding, /packages) to login
+      const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal'];
+      const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
+      if (!isPublicPath) {
+        navigateToLogin();
+        return null;
+      }
     }
   }
 

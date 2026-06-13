@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Zap, Users, TrendingUp } from 'lucide-react';
 import KoachLogo from '@/components/brand/KoachLogo';
+import { base44 } from '@/api/base44Client';
 
 const features = [
   { icon: Users, label: 'Client Management' },
@@ -87,6 +88,15 @@ export default function WelcomeScreen({ onNext }) {
           <p className="text-xs" style={{ color: '#3A3A3A' }}>
             No credit card required · 30-day free trial · Setup in 5 minutes
           </p>
+          <button
+            onClick={() => base44.auth.redirectToLogin(`${window.location.origin}/`)}
+            className="w-full py-3 rounded-2xl text-sm font-semibold transition-all"
+            style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.08)', color: '#666' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = '#999'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#666'; }}
+          >
+            Already have an account? Log In
+          </button>
         </motion.div>
       </motion.div>
     </div>
