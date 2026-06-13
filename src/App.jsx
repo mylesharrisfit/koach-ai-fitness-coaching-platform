@@ -73,7 +73,7 @@ const AuthGuardedDashboard = () => {
   const [checkoutPolling, setCheckoutPolling] = React.useState(false);
 
   // When returning from Stripe checkout, the webhook may not have fired yet.
-  // Poll auth up to 5 times (5s) until billing_status is set.
+  // Poll auth up to 8 times (8s) until billing_status is set.
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (!params.get('checkout')) return;
@@ -86,7 +86,7 @@ const AuthGuardedDashboard = () => {
     const interval = setInterval(async () => {
       attempts++;
       await checkUserAuth();
-      if (attempts >= 5) {
+      if (attempts >= 8) {
         clearInterval(interval);
         setCheckoutPolling(false);
       }
@@ -107,14 +107,27 @@ const AuthGuardedDashboard = () => {
 
   if (!isAuthenticated) return <Navigate to="/start" replace />;
 
-  // Authenticated but no active/trialing subscription — must complete checkout first
-  const hasSubscription = user?.stripe_subscription_id ||
-    ['active', 'trialing'].includes(user?.billing_status);
-  if (!hasSubscription) {
+  // Determine subscription state from multiple possible fields
+  const hasActiveSubscription =
+    ['active', 'trialing', 'past_due'].includes(user?.billing_status) ||
+    (user?.stripe_subscription_id && user?.billing_status !== 'canceled');
+
+  // Authenticated with subscription → dashboard
+  if (hasActiveSubscription) return <Dashboard />;
+
+  // Authenticated, account exists but no subscription yet →
+  // Only send to checkout resume if this looks like an incomplete new signup
+  // (i.e. they went through onboarding but never finished Stripe checkout).
+  // Returning coaches who somehow lost billing data are sent to subscription page, not onboarding.
+  const isNewSignupIncomplete = localStorage.getItem('koach_resume_pricing') === '1' ||
+    new URLSearchParams(window.location.search).get('resume') === 'checkout';
+
+  if (isNewSignupIncomplete) {
     return <Navigate to="/start?resume=checkout" replace />;
   }
 
-  return <Dashboard />;
+  // Returning user with no subscription data — send to subscription management, not onboarding
+  return <Navigate to="/subscription" replace />;
 };
 
 const AuthenticatedApp = () => {

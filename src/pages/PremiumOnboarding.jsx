@@ -64,13 +64,17 @@ export default function PremiumOnboarding() {
         return;
       }
 
-      // Already has a subscription — go straight to dashboard
-      if (user?.stripe_subscription_id || user?.billing_status === 'trialing' || user?.billing_status === 'active') {
+      // Already has an active/trialing/past_due subscription — go straight to dashboard
+      const hasActiveSubscription =
+        ['active', 'trialing', 'past_due'].includes(user?.billing_status) ||
+        (user?.stripe_subscription_id && user?.billing_status !== 'canceled');
+
+      if (hasActiveSubscription) {
         navigate('/', { replace: true });
         return;
       }
 
-      // Authenticated but no subscription — resume at pricing
+      // Authenticated but no subscription — resume at pricing (incomplete new signup)
       flushOnboardingData();
       setStep('coach_pricing');
     }
