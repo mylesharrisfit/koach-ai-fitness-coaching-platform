@@ -55,9 +55,9 @@ Deno.serve(async (req) => {
       await base44.asServiceRole.integrations.Core.SendEmail({ to, subject, body });
     }
 
-    const base44 = createClientFromRequest(req);
     const rawBody = await req.text();
     const sig = req.headers.get('stripe-signature');
+    const base44 = createClientFromRequest(req);
 
     let event;
     if (webhookSecret && sig) {
