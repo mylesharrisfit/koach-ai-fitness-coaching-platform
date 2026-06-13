@@ -115,7 +115,7 @@
     "read": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "data.coach_id": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -127,7 +127,7 @@
     "update": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "data.coach_id": "{{user.id}}"
         },
         {
           "user_condition": {
