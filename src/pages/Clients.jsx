@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal, AlignJustify, LayoutList } from 'lucide-react';
+import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal, AlignJustify, LayoutList, Upload } from 'lucide-react';
+import ImportClientsModal from '../components/clients/import/ImportClientsModal';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
@@ -44,6 +45,7 @@ export default function Clients() {
   const [quickPanelClient, setQuickPanelClient] = useState(null);
   const [leadPanelClient, setLeadPanelClient] = useState(null);
   const [selectedIds, setSelectedIds] = useState(new Set());
+  const [showImport, setShowImport] = useState(false);
   const queryClient = useQueryClient();
 
   // View mode: compact vs expanded. Persisted in localStorage.
@@ -251,14 +253,25 @@ export default function Clients() {
           <h1 className="text-base sm:text-lg font-heading font-bold text-white leading-tight">Clients</h1>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{counts.active || 0} active · {counts.at_risk || 0} at-risk · {counts.lead || 0} leads</p>
         </div>
-        <button
-          onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
-          style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
-        >
-          {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {atLimit ? 'Limit' : 'Add Client'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowImport(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)' }}
+            title="Import clients from CSV"
+          >
+            <Upload className="w-4 h-4" />
+            <span className="hidden sm:inline">Import CSV</span>
+          </button>
+          <button
+            onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
+            style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
+          >
+            {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            {atLimit ? 'Limit' : 'Add Client'}
+          </button>
+        </div>
       </div>
 
       {/* ── Alerts ── */}
@@ -501,6 +514,12 @@ export default function Clients() {
 
       <ClientForm open={showForm} onOpenChange={setShowForm} onSubmit={handleSubmit} client={editingClient} />
       <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} featureKey="clients" user={currentUser} />
+      <ImportClientsModal
+        open={showImport}
+        onOpenChange={setShowImport}
+        existingEmails={clients.map(c => c.email).filter(Boolean)}
+        onImportComplete={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
+      />
 
       {/* Client dashboard modal */}
       {quickPanelClient && (

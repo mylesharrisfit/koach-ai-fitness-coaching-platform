@@ -76,7 +76,12 @@
       "type": "string"
     },
     "notes": {
-      "type": "string"
+      "type": "string",
+      "description": "Free-text coaching notes; also stores unmapped import fields"
+    },
+    "external_id": {
+      "type": "string",
+      "description": "Client ID from an external / imported platform (e.g. TrueCoach, PTD)"
     },
     "assigned_program_id": {
       "type": "string"
