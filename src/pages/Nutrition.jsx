@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Sparkles, BookOpen, Users, Lock, Search, SlidersHorizontal, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
+import { Plus, Sparkles, BookOpen, Users, Search, SlidersHorizontal, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
 import { toast } from 'sonner';
-import { getLimit } from '@/lib/subscription';
+
 import { sendZapierEvent } from '@/lib/zapier';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -85,8 +85,8 @@ export default function Nutrition() {
     createMutation.mutate({ ...rest, title: `${rest.title} (Copy)` });
   };
 
-  const nutritionLimit = getLimit(currentUser, 'max_nutrition_plans');
-  const atLimit = nutritionLimit !== -1 && plans.length >= nutritionLimit;
+  // Nutrition plans are unlimited on all tiers — no cap enforced
+  const atLimit = false;
 
   const openCreate = (initialData = {}) => {
     setEditing(null);
@@ -154,15 +154,11 @@ export default function Nutrition() {
             AI Generator
           </button>
           <button
-            onClick={() => {
-              if (atLimit) { openUpgradeModal('clients'); return; }
-              setShowLaunchModal(true);
-            }}
+            onClick={() => setShowLaunchModal(true)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
-            style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
+            style={{ background: '#fff', color: '#111827' }}
           >
-            {atLimit && <Lock className="w-4 h-4" />}
-            {atLimit ? `Limit (${plans.length}/${nutritionLimit})` : '+ New Plan'}
+            + New Plan
           </button>
         </div>
       </div>

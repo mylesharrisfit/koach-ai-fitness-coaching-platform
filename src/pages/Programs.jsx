@@ -5,7 +5,7 @@ import {
   Plus, Dumbbell, Lock, Zap, Search, SlidersHorizontal,
   LayoutGrid, List, ChevronDown, X, Flame, Layers, Target, Sparkles, PenLine,
 } from 'lucide-react';
-import { hasFeature, getLimit } from '@/lib/subscription';
+import { hasFeature } from '@/lib/subscription';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -158,8 +158,8 @@ export default function Programs() {
     queryFn: () => base44.entities.CheckIn.list('-date', 200),
   });
 
-  const programLimit = getLimit(currentUser, 'max_programs');
-  const atLimit = programLimit !== -1 && programs.length >= programLimit;
+  // Programs are unlimited on all tiers — no cap enforced
+  const atLimit = false;
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.WorkoutProgram.create(data),

@@ -15,8 +15,8 @@ export const TIERS = {
     badge: 'bg-slate-400/15 text-slate-300 border-slate-400/20',
     limits: {
       max_clients: 10,
-      max_programs: 3,
-      max_nutrition_plans: 3,
+      max_programs: -1,         // unlimited
+      max_nutrition_plans: -1,  // unlimited
       max_ai_generations_per_month: 5,   // combined program + meal plan
     },
     features: {
@@ -65,8 +65,8 @@ export const TIERS = {
     popular: true,
     limits: {
       max_clients: 75,
-      max_programs: 30,
-      max_nutrition_plans: 30,
+      max_programs: -1,         // unlimited
+      max_nutrition_plans: -1,  // unlimited
       max_ai_generations_per_month: -1,  // unlimited
     },
     features: {

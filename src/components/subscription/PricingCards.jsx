@@ -22,7 +22,7 @@ const CLIENT_LIMIT = {
 const TIER_FEATURES = {
   starter: {
     inherited: [],
-    unique: ['✨ 5 AI generations/month (programs + meal plans)', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
+    unique: ['✨ 5 AI generations/month (programs + meal plans)', 'Unlimited workout programs', 'Unlimited nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
   },
   pro: {
     inherited: ['Everything in Starter'],
