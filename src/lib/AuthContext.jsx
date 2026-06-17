@@ -89,6 +89,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Auto-accept a pending team invite for this user.
+   * Matches by email (case-insensitive). Sets user_id and flips invite_status → "accepted".
+   * Silent no-op if no pending invite exists.
+   */
+  const acceptPendingTeamInvite = async (currentUser) => {
+    if (!currentUser?.email) return;
+    try {
+      const pending = await base44.entities.TeamMember.filter({ invite_status: 'pending' });
+      const match = pending.find(
+        m => m.email?.toLowerCase() === currentUser.email.toLowerCase()
+      );
+      if (match) {
+        await base44.entities.TeamMember.update(match.id, {
+          user_id: currentUser.id,
+          invite_status: 'accepted',
+        });
+      }
+    } catch (_) {
+      // Non-critical — never block login
+    }
+  };
+
   const checkUserAuth = async () => {
     try {
       // Now check if the user is authenticated
@@ -98,6 +121,8 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
       setAuthChecked(true);
+      // Fire-and-forget: link any pending invite for this email
+      acceptPendingTeamInvite(currentUser);
     } catch (error) {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
