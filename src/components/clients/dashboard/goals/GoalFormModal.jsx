@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { X, LayoutTemplate, BookmarkPlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -298,21 +299,23 @@ export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
         </div>
       </div>
 
-      {/* Template picker overlay */}
-      {showTemplatePicker && (
+      {/* Template picker — portalled to body so it sits outside the modal's onClick handler */}
+      {showTemplatePicker && ReactDOM.createPortal(
         <TemplatePickerSheet
           onSelect={applyTemplate}
           onClose={() => setShowTemplatePicker(false)}
-        />
+        />,
+        document.body
       )}
 
-      {/* Save-as-template overlay */}
-      {showSaveTemplate && (
+      {/* Save-as-template overlay — portalled to body */}
+      {showSaveTemplate && ReactDOM.createPortal(
         <SaveTemplateModal
           form={form}
           onSaved={() => { setShowSaveTemplate(false); toast.success('Saved to your template library'); }}
           onClose={() => setShowSaveTemplate(false)}
-        />
+        />,
+        document.body
       )}
     </>
   );
