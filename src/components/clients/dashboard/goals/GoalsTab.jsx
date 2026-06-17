@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalCard from './GoalCard';
 import GoalFormModal from './GoalFormModal';
-import GoalTemplatesManager from './GoalTemplatesManager';
+import TemplatePickerSheet from './TemplatePickerSheet';
 
 export default function GoalsTab({ client }) {
   const [formOpen, setFormOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
-  const [showTemplatesManager, setShowTemplatesManager] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [prefilledTemplate, setPrefilledTemplate] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: goals = [], isLoading } = useQuery({
@@ -26,8 +28,15 @@ export default function GoalsTab({ client }) {
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['goals', client.id] });
 
-  const handleEdit = (goal) => { setEditingGoal(goal); setFormOpen(true); };
-  const handleAdd  = ()     => { setEditingGoal(null); setFormOpen(true); };
+  const handleEdit = (goal) => { setEditingGoal(goal); setPrefilledTemplate(null); setFormOpen(true); };
+  const handleAdd  = ()     => { setEditingGoal(null); setPrefilledTemplate(null); setFormOpen(true); };
+
+  const handleTemplateSelected = (tmpl) => {
+    setShowTemplatePicker(false);
+    setEditingGoal(null);
+    setPrefilledTemplate(tmpl);
+    setFormOpen(true);
+  };
 
   const handleDelete = async (goal) => {
     if (!confirm(`Delete goal "${goal.name}"?`)) return;
@@ -46,6 +55,7 @@ export default function GoalsTab({ client }) {
   const handleSaved = () => {
     setFormOpen(false);
     setEditingGoal(null);
+    setPrefilledTemplate(null);
     refresh();
   };
 
@@ -64,7 +74,7 @@ export default function GoalsTab({ client }) {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setShowTemplatesManager(true)}
+              onClick={() => setShowTemplatePicker(true)}
               className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
             >
               <LayoutTemplate className="w-3.5 h-3.5" /> Templates
@@ -135,17 +145,23 @@ export default function GoalsTab({ client }) {
         )}
       </div>
 
-      {/* Portals — rendered outside overflow container so fixed positioning works */}
-      {showTemplatesManager && (
-        <GoalTemplatesManager onClose={() => setShowTemplatesManager(false)} />
+      {/* Portals */}
+      {showTemplatePicker && ReactDOM.createPortal(
+        <TemplatePickerSheet
+          onSelect={handleTemplateSelected}
+          onClose={() => setShowTemplatePicker(false)}
+        />,
+        document.body
       )}
-      {formOpen && (
+      {formOpen && ReactDOM.createPortal(
         <GoalFormModal
           clientId={client.id}
           goal={editingGoal}
+          prefilledTemplate={prefilledTemplate}
           onSaved={handleSaved}
-          onClose={() => { setFormOpen(false); setEditingGoal(null); }}
-        />
+          onClose={() => { setFormOpen(false); setEditingGoal(null); setPrefilledTemplate(null); }}
+        />,
+        document.body
       )}
     </div>
   );
