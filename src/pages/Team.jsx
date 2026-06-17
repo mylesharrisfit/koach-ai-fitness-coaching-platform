@@ -76,27 +76,63 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
     if (!name.trim() || !email.trim()) { toast.error('Name and email are required'); return; }
 
     setLoading(true);
-    // Create a TeamMember record (pending invite)
-    await base44.entities.TeamMember.create({
-      team_id: teamId,
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      role_label: 'coach',
-      invite_status: 'pending',
-      invited_by: userId,
-    });
+    try {
+      // Step 1: Create the TeamMember record — this MUST succeed regardless of email
+      await base44.entities.TeamMember.create({
+        team_id: teamId,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        role_label: 'coach',
+        invite_status: 'pending',
+        invited_by: userId,
+      });
 
-    // Send invite email via existing sendClientInvite pattern
-    await base44.functions.invoke('sendEmailNotification', {
-      to: email.trim().toLowerCase(),
-      subject: 'You\'ve been invited to join a KOACH AI team',
-      body: `Hi ${name.trim()},\n\nYou've been invited to join a coaching team on KOACH AI.\n\nClick here to sign up or log in: https://app.base44.com\n\nOnce you log in with this email address, you'll be connected to the team automatically.\n\nSee you on the platform!\nThe KOACH AI Team`,
-    });
+      // Step 2: Notify the invited coach by calling onInvited so they appear in the list immediately
+      onInvited();
 
-    toast.success(`Invite sent to ${email.trim()}`);
-    setLoading(false);
-    onInvited();
-    onClose();
+      // Step 3: Try to send invite email — failure must NOT block the UI or undo the invite
+      let emailSent = false;
+      try {
+        const htmlBody = `
+          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
+            <h2 style="color:#111827;margin-bottom:8px">You've been invited to KOACH AI</h2>
+            <p style="color:#4B5563">Hi ${name.trim()},</p>
+            <p style="color:#4B5563">You've been invited to join a coaching team on KOACH AI.</p>
+            <p style="margin:24px 0">
+              <a href="https://app.base44.com" style="background:#2563EB;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
+                Accept Invite &rarr;
+              </a>
+            </p>
+            <p style="color:#6B7280;font-size:13px">Sign up or log in with this email address and you'll be connected to the team automatically.</p>
+            <p style="color:#9CA3AF;font-size:12px;margin-top:24px">The KOACH AI Team</p>
+          </div>`;
+
+        await Promise.race([
+          base44.functions.invoke('sendEmailNotification', {
+            to: email.trim().toLowerCase(),
+            subject: "You've been invited to join a KOACH AI team",
+            html: htmlBody,
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000)),
+        ]);
+        emailSent = true;
+      } catch (emailErr) {
+        // Email failed or timed out — invite record is already saved, just warn
+        console.warn('Invite email failed:', emailErr.message);
+      }
+
+      if (emailSent) {
+        toast.success(`Invite sent to ${email.trim()}`);
+      } else {
+        toast.success(`${name.trim()} added as pending invite — email delivery failed, but they appear in the list.`);
+      }
+
+      onClose();
+    } catch (err) {
+      toast.error(`Failed to create invite: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
