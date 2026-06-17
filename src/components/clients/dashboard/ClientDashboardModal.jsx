@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { X, Edit, ExternalLink } from 'lucide-react';
@@ -14,34 +14,106 @@ import SessionsTab from './SessionsTab';
 import PaymentsTab from './PaymentsTab';
 import { motion } from 'framer-motion';
 
-const TABS_BASE = [
-  { key: 'summary',       label: 'Summary' },
-  { key: 'sessions',      label: 'Sessions' },
-  { key: 'payments',      label: 'Payments' },
-  { key: 'notes',         label: 'Notes' },
-  { key: 'consultation',  label: 'Consultation' },
-  { key: 'nutrition',     label: 'Nutrition' },
-  { key: 'programs',      label: 'Programs' },
-  { key: 'attachments',   label: 'Attachments' },
-  { key: 'sales',         label: 'Sales' },
-  { key: 'invoices',      label: 'Invoices' },
-  { key: 'forms',         label: 'Forms' },
+// ── Two-level navigation structure ──────────────────────────────────────────
+// Each section has a list of sub-tabs. 'key' matches the original tab keys so
+// all existing content rendering is unchanged.
+const NAV_GROUPS = [
+  {
+    key: 'overview',
+    label: 'Overview',
+    subs: [
+      { key: 'summary',      label: 'Summary' },
+      { key: 'pipeline',     label: 'Pipeline', leadOnly: true },
+    ],
+  },
+  {
+    key: 'training',
+    label: 'Training',
+    subs: [
+      { key: 'programs',   label: 'Programs' },
+      { key: 'sessions',   label: 'Sessions' },
+      { key: 'nutrition',  label: 'Nutrition' },
+    ],
+  },
+  {
+    key: 'engagement',
+    label: 'Engagement',
+    subs: [
+      { key: 'notes',         label: 'Notes' },
+      { key: 'consultation',  label: 'Consultation' },
+      { key: 'forms',         label: 'Forms' },
+    ],
+  },
+  {
+    key: 'business',
+    label: 'Business',
+    subs: [
+      { key: 'payments',  label: 'Payments' },
+      { key: 'invoices',  label: 'Invoices' },
+      { key: 'sales',     label: 'Sales' },
+    ],
+  },
+  {
+    key: 'files',
+    label: 'Files',
+    subs: [
+      { key: 'attachments', label: 'Attachments' },
+    ],
+  },
 ];
+
+// Given an active sub-tab key, find which group it belongs to.
+function findGroupForTab(tabKey) {
+  for (const g of NAV_GROUPS) {
+    if (g.subs.some(s => s.key === tabKey)) return g.key;
+  }
+  return 'overview';
+}
 
 function getInitials(name = '') {
   return name.split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
 }
 
+// "Coming soon" placeholder — used for tabs without real content yet.
+function ComingSoon({ label }) {
+  return (
+    <div className="h-full flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-12 h-12 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-3">
+          <span className="text-lg">📋</span>
+        </div>
+        <p className="text-sm font-medium text-[#374151] capitalize">{label}</p>
+        <p className="text-xs text-[#9CA3AF] mt-1">Coming soon</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ClientDashboardModal({ client, checkIns = [], onClose, onEdit }) {
   const isLead = (client?.lifecycle_status || 'lead') === 'lead';
-  const [tab, setTab] = useState(isLead ? 'pipeline' : 'summary');
+
+  // Default sub-tab: leads land on pipeline, others on summary.
+  const defaultTab = isLead ? 'pipeline' : 'summary';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeGroup, setActiveGroup] = useState(findGroupForTab(defaultTab));
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  // Local client copy so metric saves reflect immediately.
+  const [localClient, setLocalClient] = useState(client);
+  useEffect(() => { setLocalClient(client); }, [client?.id]);
+
+  const handleClientUpdated = async () => {
+    const fresh = await base44.entities.Client.filter({ id: client.id });
+    if (fresh?.[0]) setLocalClient(fresh[0]);
+    queryClient.invalidateQueries({ queryKey: ['clients'] });
+  };
 
   const { data: messages = [] } = useQuery({
     queryKey: ['messages-modal', localClient?.id],
     queryFn: () => base44.entities.Message.filter({ client_id: localClient.id }),
-    enabled: !!client?.id,
+    enabled: !!localClient?.id,
     select: d => [...d].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)),
   });
 
@@ -59,13 +131,6 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
     select: d => d[0],
   });
 
-  const { data: sessions = [] } = useQuery({
-    queryKey: ['sessions-modal', localClient?.id],
-    queryFn: () => base44.entities.Session.filter({ client_id: localClient.id }),
-    enabled: !!localClient?.id,
-    select: d => d.sort((a, b) => new Date(b.date) - new Date(a.date)),
-  });
-
   const { data: workoutSessions = [] } = useQuery({
     queryKey: ['workout-sessions-modal', localClient?.id],
     queryFn: () => base44.entities.WorkoutSession.filter({ client_id: localClient.id }),
@@ -79,28 +144,29 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
     select: d => [...d].sort((a, b) => new Date(b.earned_date) - new Date(a.earned_date)),
   });
 
-  // Keep a local copy of the client so metric saves reflect immediately
-  // without needing the parent to re-fetch the full list.
-  const [localClient, setLocalClient] = useState(client);
-
-  // When the parent passes a new client (different id), reset local copy.
-  React.useEffect(() => { setLocalClient(client); }, [client?.id]);
-
-  const handleClientUpdated = async () => {
-    // Re-fetch the freshest copy of this single client and update local state.
-    const fresh = await base44.entities.Client.filter({ id: client.id });
-    if (fresh?.[0]) setLocalClient(fresh[0]);
-    queryClient.invalidateQueries({ queryKey: ['clients'] });
-  };
-
   if (!localClient) return null;
 
   const initials = getInitials(localClient.name);
 
-  const tabs = [
-    ...(isLead ? [{ key: 'pipeline', label: 'Pipeline' }] : []),
-    ...TABS_BASE,
-  ];
+  // When clicking a main group, switch to that group and jump to its first
+  // visible sub-tab (respecting leadOnly filter).
+  const handleGroupClick = (groupKey) => {
+    const group = NAV_GROUPS.find(g => g.key === groupKey);
+    if (!group) return;
+    setActiveGroup(groupKey);
+    const visibleSubs = group.subs.filter(s => !s.leadOnly || isLead);
+    if (visibleSubs.length > 0) setActiveTab(visibleSubs[0].key);
+  };
+
+  // When clicking a sub-tab directly.
+  const handleSubTabClick = (tabKey) => {
+    setActiveTab(tabKey);
+    setActiveGroup(findGroupForTab(tabKey));
+  };
+
+  // Sub-tabs for the currently active group (filtered by lead status).
+  const currentGroup = NAV_GROUPS.find(g => g.key === activeGroup);
+  const visibleSubs = (currentGroup?.subs || []).filter(s => !s.leadOnly || isLead);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
@@ -112,9 +178,9 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
       >
         {/* ── Navy header ── */}
         <div className="flex-shrink-0" style={{ background: '#0E1525' }}>
+
           {/* Client info row */}
           <div className="flex items-center gap-4 px-6 pt-5 pb-4">
-            {/* Avatar */}
             <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden"
               style={{ background: '#1E2D45', border: '1.5px solid rgba(255,255,255,0.12)', color: '#93C5FD' }}>
               {localClient.avatar_url
@@ -122,8 +188,6 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                 : <span>{initials}</span>
               }
             </div>
-
-            {/* Name + email */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h2 className="text-base font-bold text-white leading-tight">{localClient.name}</h2>
@@ -131,78 +195,96 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
               </div>
               <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{localClient.email}</p>
             </div>
-
-            {/* Actions */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              <button
-                onClick={onEdit}
-                title="Edit client"
+              <button onClick={onEdit} title="Edit client"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
                 style={{ color: '#64748B' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
-              >
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
                 <Edit className="w-4 h-4" />
               </button>
-              <button
-                onClick={() => navigate(`/client-profile?id=${client.id}`)}
-                title="Full Profile"
+              <button onClick={() => navigate(`/client-profile?id=${client.id}`)} title="Full Profile"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
                 style={{ color: '#64748B' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
-              >
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
                 <ExternalLink className="w-4 h-4" />
               </button>
-              <button
-                onClick={onClose}
+              <button onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors ml-1"
                 style={{ color: '#64748B' }}
                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}
-              >
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Tab bar — underline style on navy */}
+          {/* ── PRIMARY nav: 5 main groups ── */}
           <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            {tabs.map(t => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={cn(
-                  'relative px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0',
-                  tab === t.key ? 'text-white' : 'hover:text-white'
-                )}
-                style={{ color: tab === t.key ? '#fff' : '#475569' }}
-              >
-                {t.label}
-                {tab === t.key && (
-                  <motion.div
-                    layoutId="client-tab-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full"
-                    style={{ background: '#2563EB' }}
-                  />
-                )}
-              </button>
-            ))}
+            {NAV_GROUPS.map(g => {
+              // Hide Overview's Pipeline sub-tab group entirely for non-leads? No —
+              // always show Overview. But hide entire group if all its subs are leadOnly and not a lead.
+              const allLeadOnly = g.subs.every(s => s.leadOnly);
+              if (allLeadOnly && !isLead) return null;
+              const isActive = activeGroup === g.key;
+              return (
+                <button
+                  key={g.key}
+                  onClick={() => handleGroupClick(g.key)}
+                  className="relative px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0"
+                  style={{ color: isActive ? '#fff' : '#475569' }}
+                >
+                  {g.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="group-indicator"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full"
+                      style={{ background: '#2563EB' }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
+
+          {/* ── SECONDARY nav: sub-tabs for the active group ── */}
+          {visibleSubs.length > 1 && (
+            <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ background: 'rgba(255,255,255,0.04)', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+              {visibleSubs.map(s => {
+                const isActive = activeTab === s.key;
+                return (
+                  <button
+                    key={s.key}
+                    onClick={() => handleSubTabClick(s.key)}
+                    className="relative px-3 py-2 text-[11px] font-medium whitespace-nowrap transition-colors flex-shrink-0"
+                    style={{ color: isActive ? '#93C5FD' : '#475569' }}
+                  >
+                    {s.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="sub-indicator"
+                        className="absolute bottom-0 left-0 right-0 h-[1.5px] rounded-t-full"
+                        style={{ background: '#93C5FD' }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* ── Tab content ── */}
+        {/* ── Tab content — all original renderers untouched ── */}
         <div className="flex-1 overflow-hidden bg-[#FAFAFA]">
-          {tab === 'pipeline' && (
+
+          {activeTab === 'pipeline' && (
             <div className="h-full overflow-y-auto p-6 max-w-lg">
-              <LeadPipelinePanel
-                client={localClient}
-                onUpdate={handleClientUpdated}
-              />
+              <LeadPipelinePanel client={localClient} onUpdate={handleClientUpdated} />
             </div>
           )}
 
-          {tab === 'summary' && (
+          {activeTab === 'summary' && (
             <SummaryTab
               client={localClient}
               checkIns={checkIns}
@@ -215,22 +297,15 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
             />
           )}
 
-          {tab === 'sessions' && <SessionsTab client={localClient} />}
-          {tab === 'payments' && <PaymentsTab client={localClient} />}
-          {tab === 'notes' && <NotesTab client={localClient} />}
-          {tab === 'nutrition' && <NutritionTab client={localClient} />}
-          {tab === 'programs' && <ProgramsTab client={localClient} />}
+          {activeTab === 'programs'  && <ProgramsTab  client={localClient} />}
+          {activeTab === 'sessions'  && <SessionsTab  client={localClient} />}
+          {activeTab === 'nutrition' && <NutritionTab  client={localClient} />}
+          {activeTab === 'notes'     && <NotesTab      client={localClient} />}
+          {activeTab === 'payments'  && <PaymentsTab   client={localClient} />}
 
-          {(tab === 'consultation' || tab === 'attachments' || tab === 'sales' || tab === 'invoices' || tab === 'forms') && (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-3">
-                  <span className="text-lg">📋</span>
-                </div>
-                <p className="text-sm font-medium text-[#374151] capitalize">{tab}</p>
-                <p className="text-xs text-[#9CA3AF] mt-1">Coming soon</p>
-              </div>
-            </div>
+          {(activeTab === 'consultation' || activeTab === 'forms' || activeTab === 'invoices' ||
+            activeTab === 'sales' || activeTab === 'attachments') && (
+            <ComingSoon label={activeTab} />
           )}
         </div>
       </div>
