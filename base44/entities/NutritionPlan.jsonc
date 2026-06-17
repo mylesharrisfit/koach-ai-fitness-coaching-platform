@@ -32,6 +32,19 @@
       "type": "string",
       "description": "ID of the client this plan is assigned to"
     },
+    "plan_type": {
+      "type": "string",
+      "enum": [
+        "structured",
+        "pdf"
+      ],
+      "default": "structured",
+      "description": "structured = meal-by-meal plan, pdf = uploaded PDF document"
+    },
+    "pdf_file_url": {
+      "type": "string",
+      "description": "URL of uploaded PDF file (populated only when plan_type='pdf')"
+    },
     "calories": {
       "type": "number"
     },

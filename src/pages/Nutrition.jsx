@@ -14,6 +14,7 @@ import NutritionInsightCards from '../components/nutrition/NutritionInsightCards
 import NutritionPlanCard from '../components/nutrition/NutritionPlanCard';
 import AIGeneratorModal from '../components/nutrition/AIGeneratorModal';
 import NewPlanLaunchModal from '../components/nutrition/NewPlanLaunchModal';
+import UploadPDFModal from '../components/nutrition/UploadPDFModal';
 import SupplementsTab from '../components/nutrition/reference/SupplementsTab';
 import VitaminsTab from '../components/nutrition/reference/VitaminsTab';
 import SaucesTab from '../components/nutrition/reference/SaucesTab';
@@ -33,6 +34,7 @@ export default function Nutrition() {
   const [showForm, setShowForm] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [showLaunchModal, setShowLaunchModal] = useState(false);
+  const [showPDFModal, setShowPDFModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [search, setSearch] = useState('');
@@ -145,13 +147,20 @@ export default function Nutrition() {
           <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <button
+           <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
             style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
             onClick={() => setShowAIModal(true)}
           >
             <Sparkles className="w-4 h-4" />
             AI Generator
+          </button>
+          <button
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
+            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+            onClick={() => setShowPDFModal(true)}
+          >
+            📄 Upload PDF
           </button>
           <button
             onClick={() => setShowLaunchModal(true)}
@@ -321,6 +330,12 @@ export default function Nutrition() {
         onOpenChange={setShowLaunchModal}
         onSelectAI={() => { setShowLaunchModal(false); setShowAIModal(true); }}
         onSelectManual={() => { setShowLaunchModal(false); openCreate(); }}
+      />
+
+      <UploadPDFModal
+        open={showPDFModal}
+        onOpenChange={setShowPDFModal}
+        onSubmit={() => queryClient.invalidateQueries({ queryKey: ['nutrition'] })}
       />
     </div>
   );
