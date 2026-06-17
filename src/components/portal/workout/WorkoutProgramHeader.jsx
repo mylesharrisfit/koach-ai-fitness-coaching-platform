@@ -9,10 +9,16 @@ export default function WorkoutProgramHeader({ program, client, sessions = [] })
   const start = client?.start_date ? new Date(client.start_date) : new Date();
   const weeksPassed = Math.min(Math.max(1, Math.ceil((new Date() - start) / (7 * 24 * 60 * 60 * 1000))), totalWeeks);
   const pct = Math.round((weeksPassed / totalWeeks) * 100);
-  const workoutsPerWeek = (program.workouts || []).filter(w => !w.day_name?.toLowerCase().includes('rest')).length;
-  const totalExpected = weeksPassed * workoutsPerWeek;
+  
+  // Count actual workout days in the program (excluding rest days)
+  const allWorkouts = program.workouts || [];
+  const totalWorkouts = allWorkouts.filter(w => !w.day_name?.toLowerCase().includes('rest')).length;
+  
+  // Completed = actual workout sessions logged
   const completed = sessions.length;
-  const remaining = Math.max(0, (totalWeeks * workoutsPerWeek) - completed);
+  
+  // Remaining = total workouts - completed, never below 0
+  const remaining = Math.max(0, totalWorkouts - completed);
 
   return (
     <div className="mx-4 rounded-[20px] overflow-hidden"
