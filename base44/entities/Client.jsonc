@@ -134,6 +134,10 @@
       "type": "string",
       "description": "Optional notes about this client",
       "maxLength": 1000
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Team ID this client belongs to"
     }
   },
   "required": [
