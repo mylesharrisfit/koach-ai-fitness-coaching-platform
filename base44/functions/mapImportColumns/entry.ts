@@ -5,7 +5,9 @@ const KOACH_FIELDS = [
   { key: 'email',            label: 'Email',            description: 'Email address' },
   { key: 'phone',            label: 'Phone',            description: 'Phone number' },
   { key: 'height',           label: 'Height',           description: "Height (string, e.g. 5'10\" or cm)" },
-  { key: 'current_weight',   label: 'Weight',           description: 'Body weight in lbs or kg' },
+  { key: 'current_weight',   label: 'Weight',           description: 'Current body weight in lbs or kg' },
+  { key: 'starting_weight',  label: 'Starting Weight',  description: 'Starting / baseline body weight in lbs or kg' },
+  { key: 'target_weight',    label: 'Target Weight',    description: 'Target / goal body weight in lbs or kg' },
   { key: 'sex',              label: 'Sex / Gender',     description: 'Sex or gender' },
   { key: 'date_of_birth',    label: 'Date of Birth',    description: 'DOB or age' },
   { key: 'location',         label: 'Location',         description: 'City, state, country' },
@@ -38,11 +40,13 @@ const RULES = [
   // Height
   { field: 'height',         confidence: 'high',   patterns: ['height', 'ht', 'height (in)', 'height (cm)', 'height_in', 'height_cm'] },
 
-  // Weight
-  { field: 'current_weight', confidence: 'high',   patterns: ['weight', 'body weight', 'bodyweight', 'current weight', 'weight (lbs)', 'weight (kg)', 'wt', 'bw'] },
+  // Weight — current first, then starting, then target (order matters for deduplication)
+  { field: 'current_weight',  confidence: 'high',   patterns: ['current weight', 'current_weight', 'weight (lbs)', 'weight (kg)', 'weight_lbs', 'weight_kg', 'body weight', 'bodyweight', 'weight', 'wt', 'bw'] },
+  { field: 'starting_weight', confidence: 'high',   patterns: ['starting weight', 'starting_weight', 'start weight', 'initial weight', 'initial_weight', 'baseline weight', 'starting_lbs'] },
+  { field: 'target_weight',   confidence: 'high',   patterns: ['target weight', 'target_weight', 'goal weight', 'goal_weight', 'desired weight', 'ideal weight'] },
 
   // Sex / Gender
-  { field: 'sex',            confidence: 'high',   patterns: ['sex', 'gender', 'biological sex', 'sex/gender'] },
+  { field: 'sex',             confidence: 'high',   patterns: ['sex', 'gender', 'biological sex', 'sex/gender', 'sex / gender'] },
 
   // Date of birth
   { field: 'date_of_birth',  confidence: 'high',   patterns: ['date of birth', 'dob', 'birth date', 'birthdate', 'birthday', 'birth_date', 'date_of_birth'] },
