@@ -410,8 +410,10 @@ export const FEATURE_INFO = {
 
 /**
  * Get the tier config for a user. Defaults to 'starter'.
+ * Admin users (app builders/owners) always get Enterprise-level access.
  */
 export function getUserTier(user) {
+  if (user?.role === 'admin') return TIERS.enterprise;
   const tierKey = user?.subscription_tier || 'starter';
   return TIERS[tierKey] || TIERS.starter;
 }
