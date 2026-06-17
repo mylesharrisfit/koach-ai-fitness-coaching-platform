@@ -6,7 +6,7 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import AchievementBell from '@/components/achievements/AchievementBell';
 import {
   LayoutDashboard, Users, MessageSquare, Calendar,
-  Dumbbell, Salad, ClipboardList, TrendingUp,
+  Dumbbell, Salad, ClipboardList,
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
   Lock, UserPlus, Trophy, ShoppingBag,
@@ -34,7 +34,6 @@ const NAV_GROUPS = [
       { icon: Dumbbell, label: 'Programs', path: '/programs' },
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
       { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
-      { icon: TrendingUp, label: 'Progress', path: '/progress', feature: 'progress' },
       { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
       { icon: Shield, label: 'At-Risk', path: '/at-risk' },
       { icon: Activity, label: 'Exercises', path: '/exercises' },

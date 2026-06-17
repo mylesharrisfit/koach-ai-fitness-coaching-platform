@@ -5,8 +5,6 @@ import { compositeAdherenceScore } from '@/lib/adherence';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { cn } from '@/lib/utils';
 import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
-import MetricsCard from './MetricsCard';
-import BodyWeightChart from './BodyWeightChart';
 import GoalsSummarySection from './GoalsSummarySection';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -294,9 +292,6 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             )}
           </div>
 
-          {/* Metrics card — full width in middle column */}
-          <MetricsCard client={client} onUpdated={onClientUpdated} />
-
           {/* Exercise compliance */}
           <ComplianceSection
             title="Exercise Compliance"
@@ -314,9 +309,6 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             type="nutrition"
             planLabel={nutritionPlan?.calories ? `${nutritionPlan.calories} kcal` : null}
           />
-
-          {/* Body weight chart */}
-          <BodyWeightChart client={client} onCurrentWeightUpdated={onClientUpdated} />
 
           {/* Goals */}
           <GoalsSummarySection client={client} />
