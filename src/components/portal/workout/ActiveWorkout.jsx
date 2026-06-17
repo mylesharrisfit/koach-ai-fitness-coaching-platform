@@ -294,7 +294,7 @@ function ExercisePanel({ exercise, exIdx, totalEx, exerciseLogs, prevBest, onLog
     : null;
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full">
 
       {/* Exercise header */}
       <div className="px-5 pt-4 pb-3 flex-shrink-0">
@@ -505,13 +505,12 @@ export default function ActiveWorkout({ workout, onFinish, onExit }) {
       </div>
 
       {/* Exercise content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
           {currentEx && (
             <motion.div key={exIdx}
               initial={{ opacity: 0, x: 32 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -32 }}
-              transition={{ duration: 0.22 }}
-              className="h-full">
+              transition={{ duration: 0.22 }}>
               <ExercisePanel
                 exercise={currentEx}
                 exIdx={exIdx}
