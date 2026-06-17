@@ -41,11 +41,17 @@ const NAV_GROUPS = [
     key: 'engagement',
     label: 'Engagement',
     subs: [
-      { key: 'nutrition',     label: 'Nutrition' },
       { key: 'notes',         label: 'Notes' },
       { key: 'goals',         label: 'Goals' },
       { key: 'consultation',  label: 'Consultation' },
       { key: 'forms',         label: 'Forms' },
+    ],
+  },
+  {
+    key: 'nutrition',
+    label: 'Nutrition',
+    subs: [
+      { key: 'nutrition_overview', label: 'Overview' },
     ],
   },
   {
@@ -317,7 +323,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
           {activeTab === 'programs'  && <ProgramsTab  client={localClient} />}
           {activeTab === 'sessions'  && <SessionsTab  client={localClient} />}
-          {activeTab === 'nutrition' && <ClientNutritionTab client={localClient} nutritionPlan={nutritionPlan} checkIns={checkIns} />}
+          {activeTab === 'nutrition_overview' && <ClientNutritionTab client={localClient} nutritionPlan={nutritionPlan} checkIns={checkIns} />}
           {activeTab === 'notes'     && <NotesTab      client={localClient} />}
           {activeTab === 'goals'         && <GoalsTab         client={localClient} />}
           {activeTab === 'goals_habits_tab' && <GoalsHabitsTab client={localClient} />}
