@@ -101,12 +101,20 @@ export default function GoalsTab({ client }) {
             </div>
             <p className="text-sm font-semibold text-gray-600 mb-1">No goals yet</p>
             <p className="text-xs text-gray-400 mb-4">Create custom goals to track this client's progress.</p>
-            <button
-              onClick={handleAdd}
-              className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-            >
-              + Add the first goal
-            </button>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={handleAdd}
+                className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-xl transition-colors"
+              >
+                <Plus className="w-4 h-4" /> Add First Goal
+              </button>
+              <button
+                onClick={() => setShowTemplatePicker(true)}
+                className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-blue-600 px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-200 transition-colors"
+              >
+                <LayoutTemplate className="w-4 h-4" /> Browse Templates
+              </button>
+            </div>
           </div>
         )}
 
