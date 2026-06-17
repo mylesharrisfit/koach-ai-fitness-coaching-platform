@@ -19,7 +19,7 @@
     },
     "content": {
       "type": "string",
-      "description": "Message content"
+      "description": "Message content (empty string for voice messages)"
     },
     "is_read": {
       "type": "boolean",
@@ -44,7 +44,7 @@
     "is_broadcast": {
       "type": "boolean",
       "default": false,
-      "description": "True if this message was sent as part of a broadcast to multiple clients"
+      "description": "True if sent as broadcast"
     },
     "media_type": {
       "type": "string",
@@ -57,7 +57,11 @@
     },
     "media_url": {
       "type": "string",
-      "description": "URL for voice/video media"
+      "description": "Persistent CDN URL for voice/video media"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "description": "Duration of voice/video recording in seconds"
     }
   },
   "required": [

@@ -219,8 +219,9 @@ function VoiceRecorderActive({ seconds, onStop, onCancel }) {
 
 // ── Recording UI: playback/preview state ──
 // uploadState: 'uploading' | 'done' | 'error'
-function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRetryUpload }) {
+function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRetryUpload, onSend }) {
   const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  const canSend = uploadState === 'done' && !!audioUrl;
 
   return (
     <div className="flex flex-col gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
@@ -233,7 +234,7 @@ function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRet
           {uploadState === 'error' && <span className="text-red-500 text-[10px]">!</span>}
           <span className={`text-[11px] font-semibold ${uploadState === 'error' ? 'text-red-600' : 'text-emerald-700'}`}>
             {uploadState === 'uploading' && `Uploading… · ${fmt(seconds)}`}
-            {uploadState === 'done'      && `🎙 Saved · ${fmt(seconds)}`}
+            {uploadState === 'done'      && `🎙 Ready · ${fmt(seconds)}`}
             {uploadState === 'error'     && 'Upload failed'}
           </span>
         </div>
@@ -248,6 +249,7 @@ function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRet
           </button>
         </div>
       </div>
+      {/* Playback row */}
       {audioUrl && (
         <audio
           src={audioUrl}
@@ -256,6 +258,20 @@ function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRet
           style={{ height: 32 }}
         />
       )}
+      {/* Send button — only enabled once upload is done */}
+      <button
+        onClick={onSend}
+        disabled={!canSend}
+        className={cn(
+          'w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all',
+          canSend
+            ? 'bg-primary text-white hover:bg-primary/90 shadow-sm'
+            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+        )}
+      >
+        <Send className="w-3.5 h-3.5" />
+        {uploadState === 'uploading' ? 'Waiting for upload…' : 'Send Voice Message'}
+      </button>
     </div>
   );
 }
@@ -288,7 +304,7 @@ function VideoLinkPopover({ clientName, onInsert, onClose }) {
   );
 }
 
-export default function ComposeBar({ client, allMessages, checkIns = [], onSend, selectedTag, setSelectedTag, value, onChange }) {
+export default function ComposeBar({ client, allMessages, checkIns = [], onSend, onSendVoice, selectedTag, setSelectedTag, value, onChange }) {
   const [showTagPicker, setShowTagPicker] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showAttach, setShowAttach] = useState(false);
@@ -429,6 +445,20 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
     if (recordedBlobRef.current) {
       uploadBlob(recordedBlobRef.current);
     }
+  }
+
+  function handleSendVoice() {
+    if (uploadState !== 'done' || !audioUrl) return;
+    onSendVoice?.({ audioUrl, durationSeconds: recordingSeconds });
+    // Reset composer back to idle
+    if (audioUrl.startsWith('blob:')) URL.revokeObjectURL(audioUrl);
+    setAudioUrl(null);
+    recordedBlobRef.current = null;
+    mediaRecorderRef.current = null;
+    chunksRef.current = [];
+    setRecordingSeconds(0);
+    setRecordingState('idle');
+    setUploadState('uploading');
   }
   const isEmpty = !value.trim();
 
@@ -586,6 +616,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
               seconds={recordingSeconds}
               onDiscard={handleDiscardPreview}
               onRetryUpload={handleRetryUpload}
+              onSend={handleSendVoice}
             />
           </div>
         ) : (

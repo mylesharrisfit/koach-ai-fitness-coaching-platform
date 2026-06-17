@@ -136,6 +136,21 @@ export default function Messages() {
     setSelectedTag('general');
   };
 
+  const handleSendVoice = ({ audioUrl, durationSeconds }) => {
+    if (!audioUrl || !selectedClientId) return;
+    createMutation.mutate({
+      client_id: selectedClientId,
+      client_name: selectedClient?.name || '',
+      sender: 'coach',
+      content: '',
+      is_read: true,
+      tag: 'general',
+      media_type: 'voice',
+      media_url: audioUrl,
+      duration_seconds: durationSeconds || 0,
+    });
+  };
+
   const handleTogglePin = (msg) => {
     updateMutation.mutate({ id: msg.id, data: { is_pinned: !msg.is_pinned } });
   };
@@ -222,6 +237,7 @@ export default function Messages() {
               client={selectedClient}
               allMessages={allMessages}
               onSend={handleSend}
+              onSendVoice={handleSendVoice}
               selectedTag={selectedTag}
               setSelectedTag={setSelectedTag}
               value={newMessage}

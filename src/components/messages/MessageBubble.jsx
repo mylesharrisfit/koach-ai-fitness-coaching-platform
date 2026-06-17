@@ -145,10 +145,24 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
           )}>
             {/* Voice */}
             {msg.media_type === 'voice' && (
-              <div className="flex items-center gap-2 mb-1">
-                <Mic className="w-3.5 h-3.5 opacity-70" />
-                <span className="text-xs opacity-70">Voice Note</span>
-                {url && <audio controls src={url} className="h-6 max-w-[140px]" />}
+              <div className="flex flex-col gap-1.5 min-w-[200px]">
+                <div className="flex items-center gap-1.5">
+                  <Mic className="w-3.5 h-3.5 opacity-70 flex-shrink-0" />
+                  <span className="text-xs font-semibold opacity-80">Voice Message</span>
+                  {msg.duration_seconds > 0 && (
+                    <span className="text-[10px] opacity-60 ml-auto">
+                      {String(Math.floor(msg.duration_seconds / 60)).padStart(2, '0')}:{String(Math.floor(msg.duration_seconds) % 60).padStart(2, '0')}
+                    </span>
+                  )}
+                </div>
+                {url && (
+                  <audio
+                    controls
+                    src={url}
+                    className="w-full"
+                    style={{ height: 32 }}
+                  />
+                )}
               </div>
             )}
             {/* Video */}
