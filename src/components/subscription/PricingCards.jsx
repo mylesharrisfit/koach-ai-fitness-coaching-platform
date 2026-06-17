@@ -34,7 +34,7 @@ const TIER_FEATURES = {
   },
   enterprise: {
     inherited: ['Everything in Elite'],
-    unique: ['🤖 Team-wide AI access for multiple coaches', '🔌 AI API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
+    unique: ['🤖 Full AI Assistant, AI program & meal-plan builder (unlimited)', '🤖 AI Onboarding — auto-generate plans for every new client', '✨ AI reply suggestions & follow-up tools', 'White-label branding & custom domain', '🏢 Team accounts for multi-coach businesses (coming soon)', '👥 Team-wide AI access for all your coaches (coming soon)', 'Early access to all new features', 'Priority email & chat support'],
   },
 };
 
