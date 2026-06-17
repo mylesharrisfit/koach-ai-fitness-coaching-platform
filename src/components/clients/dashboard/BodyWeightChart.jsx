@@ -4,12 +4,21 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   CartesianGrid, ReferenceLine,
 } from 'recharts';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, subWeeks, subMonths, subYears } from 'date-fns';
 import { Plus, Scale, Trash2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const BLUE = '#2563EB';
+
+const RANGES = [
+  { key: '1W',  label: '1W',  getCutoff: () => subWeeks(new Date(), 1) },
+  { key: '1M',  label: '1M',  getCutoff: () => subMonths(new Date(), 1) },
+  { key: '3M',  label: '3M',  getCutoff: () => subMonths(new Date(), 3) },
+  { key: '6M',  label: '6M',  getCutoff: () => subMonths(new Date(), 6) },
+  { key: '1Y',  label: '1Y',  getCutoff: () => subYears(new Date(), 1) },
+  { key: 'ALL', label: 'All', getCutoff: () => null },
+];
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -27,6 +36,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
   const [draft, setDraft] = useState({ weight: '', date: new Date().toISOString().split('T')[0], note: '' });
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [range, setRange] = useState('3M');
 
   const { data: entries = [] } = useQuery({
     queryKey: ['weigh-ins', client?.id],
@@ -35,12 +45,19 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
     select: d => [...d].sort((a, b) => new Date(a.date) - new Date(b.date)),
   });
 
-  const chartData = entries.map(e => ({
+  // Filter entries by selected range
+  const activeCutoff = RANGES.find(r => r.key === range)?.getCutoff() ?? null;
+  const filteredEntries = activeCutoff
+    ? entries.filter(e => new Date(e.date) >= activeCutoff)
+    : entries;
+
+  const chartData = filteredEntries.map(e => ({
     date: format(parseISO(e.date), 'MMM d'),
     weight: e.weight,
     id: e.id,
   }));
 
+  // Stats always from ALL entries so latest weight is always accurate
   const latestEntry = entries[entries.length - 1];
   const firstEntry = entries[0];
   const delta = latestEntry && firstEntry && entries.length > 1
@@ -96,8 +113,8 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
     setDeletingId(null);
   };
 
-  const yDomain = entries.length >= 2
-    ? [Math.floor(Math.min(...entries.map(e => e.weight)) - 3), Math.ceil(Math.max(...entries.map(e => e.weight)) + 3)]
+  const yDomain = filteredEntries.length >= 2
+    ? [Math.floor(Math.min(...filteredEntries.map(e => e.weight)) - 3), Math.ceil(Math.max(...filteredEntries.map(e => e.weight)) + 3)]
     : ['auto', 'auto'];
 
   return (
@@ -134,6 +151,23 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
             <Plus className="w-3 h-3" /> Log
           </button>
         </div>
+      </div>
+
+      {/* Range toggle */}
+      <div className="flex items-center gap-1 px-4 pb-2">
+        {RANGES.map(r => (
+          <button
+            key={r.key}
+            onClick={() => setRange(r.key)}
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-md transition-colors"
+            style={{
+              background: range === r.key ? BLUE : '#F3F4F6',
+              color: range === r.key ? '#fff' : '#6B7280',
+            }}
+          >
+            {r.label}
+          </button>
+        ))}
       </div>
 
       {/* Add entry form */}
@@ -188,7 +222,15 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
       )}
 
       {/* Chart */}
-      {chartData.length >= 2 ? (
+      {filteredEntries.length === 0 && entries.length > 0 ? (
+        <div className="flex flex-col items-center justify-center h-28 gap-2 pb-4">
+          <Scale className="w-6 h-6 text-gray-200" />
+          <p className="text-xs text-gray-400">No weigh-ins in this range</p>
+          <button onClick={() => setRange('ALL')} className="text-[10px] font-semibold underline underline-offset-2" style={{ color: BLUE }}>
+            Show all
+          </button>
+        </div>
+      ) : chartData.length >= 2 ? (
         <div className="px-1 pb-4">
           <ResponsiveContainer width="100%" height={170}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
@@ -243,10 +285,10 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
         </div>
       )}
 
-      {/* Recent entries list (last 5) */}
-      {entries.length > 0 && (
+      {/* Recent entries list (last 5 within range) */}
+      {filteredEntries.length > 0 && (
         <div className="border-t border-gray-50 px-4 py-2 space-y-1">
-          {[...entries].reverse().slice(0, 5).map(entry => (
+          {[...filteredEntries].reverse().slice(0, 5).map(entry => (
             <div key={entry.id} className="flex items-center justify-between py-0.5 group">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-gray-400 w-16 flex-shrink-0">{format(parseISO(entry.date), 'MMM d, yyyy')}</span>
