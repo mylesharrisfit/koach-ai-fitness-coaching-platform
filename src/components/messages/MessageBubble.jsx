@@ -1,8 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { Pin, Mic, Video, Tag, Check, CheckCheck, Download, FileText, Eye, Megaphone } from 'lucide-react';
+import { Pin, Mic, Video, Tag, Check, CheckCheck, Download, FileText, Megaphone, Play, Pause, AlertCircle } from 'lucide-react';
 import { TAG_COLORS } from './MessageTemplates';
+
+// ── Custom voice player ──────────────────────────────────────────────────────
+function VoicePlayer({ url, durationSeconds, isCoach }) {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(durationSeconds || 0);
+  const [error, setError] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  const fmt = (s) => {
+    const t = Math.floor(s || 0);
+    return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onTime   = () => setCurrentTime(audio.currentTime);
+    const onMeta   = () => { setDuration(audio.duration); setLoaded(true); };
+    const onEnded  = () => { setPlaying(false); setCurrentTime(0); };
+    const onError  = () => { setError(true); setPlaying(false); };
+    audio.addEventListener('timeupdate',      onTime);
+    audio.addEventListener('loadedmetadata',  onMeta);
+    audio.addEventListener('ended',           onEnded);
+    audio.addEventListener('error',           onError);
+    return () => {
+      audio.removeEventListener('timeupdate',     onTime);
+      audio.removeEventListener('loadedmetadata', onMeta);
+      audio.removeEventListener('ended',          onEnded);
+      audio.removeEventListener('error',          onError);
+    };
+  }, []);
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio || error) return;
+    if (playing) { audio.pause(); setPlaying(false); }
+    else         { audio.play().then(() => setPlaying(true)).catch(() => setError(true)); }
+  };
+
+  const handleSeek = (e) => {
+    const audio = audioRef.current;
+    if (!audio || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    audio.currentTime = pct * duration;
+    setCurrentTime(pct * duration);
+  };
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Colour tokens depending on whose bubble it's in
+  const trackBg    = isCoach ? 'rgba(255,255,255,0.25)' : '#E7EAF3';
+  const fillBg     = isCoach ? 'rgba(255,255,255,0.85)' : '#2563EB';
+  const iconColor  = isCoach ? 'text-white'             : 'text-primary';
+  const timeColor  = isCoach ? 'text-white/70'          : 'text-[#9CA3AF]';
+  const btnBg      = isCoach ? 'bg-white/20 hover:bg-white/30' : 'bg-primary/10 hover:bg-primary/20';
+
+  if (error) {
+    return (
+      <div className={cn('flex items-center gap-2 min-w-[200px] py-0.5', isCoach ? 'text-white/70' : 'text-[#9CA3AF]')}>
+        <AlertCircle className="w-4 h-4 flex-shrink-0" />
+        <span className="text-xs">Audio unavailable</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2.5 min-w-[220px] py-0.5">
+      {/* Hidden native audio element */}
+      <audio ref={audioRef} src={url} preload="metadata" />
+
+      {/* Play / Pause */}
+      <button
+        onClick={togglePlay}
+        className={cn('w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors', btnBg)}
+      >
+        {playing
+          ? <Pause className={cn('w-3.5 h-3.5', iconColor)} />
+          : <Play  className={cn('w-3.5 h-3.5 translate-x-px', iconColor)} />
+        }
+      </button>
+
+      {/* Progress bar + times */}
+      <div className="flex flex-col gap-1 flex-1 min-w-0">
+        {/* Scrubber track */}
+        <div
+          className="relative h-1.5 rounded-full cursor-pointer"
+          style={{ background: trackBg }}
+          onClick={handleSeek}
+        >
+          <div
+            className="absolute left-0 top-0 h-full rounded-full transition-all"
+            style={{ width: `${progress}%`, background: fillBg }}
+          />
+        </div>
+        {/* Time row */}
+        <div className={cn('flex justify-between text-[10px]', timeColor)}>
+          <span>{fmt(currentTime)}</span>
+          <span>{fmt(duration)}</span>
+        </div>
+      </div>
+
+      {/* Mic icon */}
+      <Mic className={cn('w-3.5 h-3.5 flex-shrink-0 opacity-50', iconColor)} />
+    </div>
+  );
+}
 
 function ReadReceipt({ msg }) {
   if (msg.sender !== 'coach') return null;
@@ -145,25 +254,11 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
           )}>
             {/* Voice */}
             {msg.media_type === 'voice' && (
-              <div className="flex flex-col gap-1.5 min-w-[200px]">
-                <div className="flex items-center gap-1.5">
-                  <Mic className="w-3.5 h-3.5 opacity-70 flex-shrink-0" />
-                  <span className="text-xs font-semibold opacity-80">Voice Message</span>
-                  {msg.duration_seconds > 0 && (
-                    <span className="text-[10px] opacity-60 ml-auto">
-                      {String(Math.floor(msg.duration_seconds / 60)).padStart(2, '0')}:{String(Math.floor(msg.duration_seconds) % 60).padStart(2, '0')}
-                    </span>
-                  )}
-                </div>
-                {url && (
-                  <audio
-                    controls
-                    src={url}
-                    className="w-full"
-                    style={{ height: 32 }}
-                  />
-                )}
-              </div>
+              <VoicePlayer
+                url={url}
+                durationSeconds={msg.duration_seconds}
+                isCoach={isCoach}
+              />
             )}
             {/* Video */}
             {msg.media_type === 'video' && (
