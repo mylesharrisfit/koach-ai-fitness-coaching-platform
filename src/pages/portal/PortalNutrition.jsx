@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { format, subDays, parseISO } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf, Download } from 'lucide-react';
 import SupplementsTab from '@/components/nutrition/reference/SupplementsTab';
 import VitaminsTab from '@/components/nutrition/reference/VitaminsTab';
 import SaucesTab from '@/components/nutrition/reference/SaucesTab';
@@ -43,6 +43,7 @@ export default function PortalNutrition({ user }) {
   const [waterIntake, setWaterIntake]     = useState(5);
   const [nutritionPlan, setNutritionPlan] = useState(null);
   const [coachName, setCoachName]         = useState(null);
+  const [pdfView, setPdfView]             = useState('plan'); // 'plan' or 'log'
 
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
   const clientId = user?.id;
@@ -170,6 +171,7 @@ export default function PortalNutrition({ user }) {
   };
 
   const isToday = dateStr === format(new Date(), 'yyyy-MM-dd');
+  const isPdfPlan = nutritionPlan?.plan_type === 'pdf';
 
   return (
     <div className="pb-32 bg-gradient-to-b from-white to-slate-50 min-h-screen">
@@ -204,6 +206,25 @@ export default function PortalNutrition({ user }) {
         </div>
       </div>
 
+      {/* PDF Plan Toggle (only for PDF plans) */}
+      {isPdfPlan && (
+        <div className="px-4 mt-3 flex gap-2">
+          {['plan', 'log'].map(view => (
+            <button
+              key={view}
+              onClick={() => setPdfView(view)}
+              className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                pdfView === view
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-white text-slate-600 border border-slate-200'
+              }`}
+            >
+              {view === 'plan' ? '📄 My Plan' : '📝 Log'}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Tab switcher */}
       <div className="px-4 mt-3 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
         {PORTAL_TABS.map(tab => {
@@ -231,7 +252,32 @@ export default function PortalNutrition({ user }) {
       {portalTab === 'sauces'      && <div className="px-4 mt-3"><SaucesTab isPortal /></div>}
       {portalTab === 'seasonings'  && <div className="px-4 mt-3"><SeasoningsTab isPortal /></div>}
 
-      {portalTab !== 'log' ? null : <>
+      {/* PDF Plan Viewer (for PDF plans on "My Plan" view) */}
+      {isPdfPlan && pdfView === 'plan' && nutritionPlan?.pdf_file_url && (
+        <div className="px-4 mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="font-bold text-sm text-slate-900">{nutritionPlan.title}</h2>
+            <a
+              href={nutritionPlan.pdf_file_url}
+              download={`${nutritionPlan.title}.pdf`}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download
+            </a>
+          </div>
+          <div className="rounded-xl border border-slate-200 overflow-hidden bg-white" style={{ height: '600px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <iframe
+              src={nutritionPlan.pdf_file_url}
+              title="Nutrition Plan PDF"
+              className="w-full h-full"
+              style={{ border: 'none' }}
+            />
+          </div>
+        </div>
+      )}
+
+      {portalTab !== 'log' || (isPdfPlan && pdfView === 'plan') ? null : <>
 
       {/* Daily macro summary */}
       <div className="mt-3">
