@@ -13,6 +13,7 @@ import ProgramsTab from './ProgramsTab';
 import SessionsTab from './SessionsTab';
 import PaymentsTab from './PaymentsTab';
 import GoalsTab from './goals/GoalsTab';
+import GoalsHabitsTab from './GoalsHabitsTab';
 import MetricsTab from './MetricsTab';
 import { motion } from 'framer-motion';
 
@@ -54,6 +55,13 @@ const NAV_GROUPS = [
       { key: 'payments',  label: 'Payments' },
       { key: 'invoices',  label: 'Invoices' },
       { key: 'sales',     label: 'Sales' },
+    ],
+  },
+  {
+    key: 'goals_habits',
+    label: 'Goals & Habits',
+    subs: [
+      { key: 'goals_habits_tab', label: 'Goals & Habits' },
     ],
   },
   {
@@ -311,8 +319,9 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
           {activeTab === 'sessions'  && <SessionsTab  client={localClient} />}
           {activeTab === 'nutrition' && <NutritionTab  client={localClient} />}
           {activeTab === 'notes'     && <NotesTab      client={localClient} />}
-          {activeTab === 'goals'     && <GoalsTab      client={localClient} />}
-          {activeTab === 'metrics_tab' && <MetricsTab client={localClient} onClientUpdated={handleClientUpdated} />}
+          {activeTab === 'goals'         && <GoalsTab         client={localClient} />}
+          {activeTab === 'goals_habits_tab' && <GoalsHabitsTab client={localClient} />}
+          {activeTab === 'metrics_tab'  && <MetricsTab client={localClient} onClientUpdated={handleClientUpdated} />}
           {activeTab === 'payments'  && <PaymentsTab   client={localClient} />}
 
           {(activeTab === 'consultation' || activeTab === 'forms' || activeTab === 'invoices' ||
