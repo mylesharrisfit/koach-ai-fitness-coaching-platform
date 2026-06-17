@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useTeamRole } from '@/lib/useTeamRole';
+import { ShieldAlert } from 'lucide-react';
 import { TIERS, TIER_ORDER, getUserTier, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
 import {
@@ -67,10 +69,29 @@ function FAQItem({ q, a }) {
   );
 }
 
+function CoachBillingBlock() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6"
+      style={{ background: 'linear-gradient(180deg, #070b14 0%, #0a0f1e 100%)' }}>
+      <div className="max-w-sm w-full text-center">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+          style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
+          <ShieldAlert className="w-7 h-7 text-red-400" />
+        </div>
+        <h2 className="text-xl font-bold text-white mb-2">Billing is owner-only</h2>
+        <p className="text-sm text-slate-400 leading-relaxed">
+          Only the team owner can view or change the subscription plan. Contact your team owner if you need to make billing changes.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function Subscription() {
   const [user, setUser] = useState(null);
   const [openingPortal, setOpeningPortal] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const { isOwner, isLoading: loadingRole } = useTeamRole();
 
   useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
@@ -86,6 +107,9 @@ export default function Subscription() {
   const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list() });
   const { data: programs = [] } = useQuery({ queryKey: ['programs'], queryFn: () => base44.entities.WorkoutProgram.list() });
   const { data: nutritionPlans = [] } = useQuery({ queryKey: ['nutrition-plans'], queryFn: () => base44.entities.NutritionPlan.list() });
+
+  // Block non-owners from accessing billing (after all hooks)
+  if (!loadingRole && !isOwner) return <CoachBillingBlock />;
 
   const userTier = getUserTier(user);
   const billingStatus = user?.billing_status || 'active';

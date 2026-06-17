@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { hasFeature } from '@/lib/subscription';
+import { useTeamRole } from '@/lib/useTeamRole';
 
 const NAV_GROUPS = [
   {
@@ -69,8 +70,8 @@ const NAV_GROUPS = [
   },
 ];
 
-const BOTTOM_ITEMS = [
-  { icon: CreditCard, label: 'Subscription', path: '/subscription' },
+const ALL_BOTTOM_ITEMS = [
+  { icon: CreditCard, label: 'Subscription', path: '/subscription', ownerOnly: true },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
@@ -144,6 +145,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
 
 export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClick }) {
   const [collapsed, setCollapsed] = useState(false);
+  const { isOwner } = useTeamRole();
 
   // Mobile mode: render just the nav content (no fixed positioning, shown inside overlay)
   if (mobileMode) {
@@ -166,7 +168,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           </div>
         ))}
         <div className="pt-2 border-t border-white/5 space-y-0.5">
-          {BOTTOM_ITEMS.map(item => (
+          {ALL_BOTTOM_ITEMS.filter(item => !item.ownerOnly || isOwner).map(item => (
             <div key={item.path} onClick={onNavClick}>
               <Link
                 to={item.path}
@@ -238,7 +240,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
 
       {/* Bottom */}
       <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        {BOTTOM_ITEMS.map(item => {
+        {ALL_BOTTOM_ITEMS.filter(item => !item.ownerOnly || isOwner).map(item => {
           return (
             <Link
               key={item.path}
