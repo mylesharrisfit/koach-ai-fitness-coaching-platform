@@ -46,8 +46,8 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
       <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
 
       <div
-        className="relative w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl"
-        style={{ background: '#0E1525' }}
+        className="relative w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col"
+        style={{ background: '#0E1525', maxHeight: '85vh' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Close */}
@@ -59,9 +59,9 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
           <X className="w-4 h-4" />
         </button>
 
-        {/* Hero */}
+        {/* ── HEADER (fixed) ── */}
         <div className="relative px-7 pt-8 pb-6 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #0E1525 0%, #1a2744 100%)' }}>
+          style={{ background: 'linear-gradient(135deg, #0E1525 0%, #1a2744 100%)', flexShrink: 0 }}>
           {/* Decorative glow */}
           <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full opacity-20"
             style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }} />
@@ -83,50 +83,52 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
           </p>
         </div>
 
-        {/* Benefits */}
-        <div className="px-7 py-5 space-y-3" style={{ background: '#111827' }}>
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>What you get</p>
-          {BENEFITS.map((b, i) => {
-            const Icon = b.icon;
-            return (
-              <div key={i} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: b.bg }}>
-                  <Icon className="w-4 h-4" style={{ color: b.color }} />
+        {/* ── SCROLLABLE MIDDLE ── */}
+        <div style={{ flex: '1 1 0', overflowY: 'auto', minHeight: 0 }}>
+          {/* Benefits */}
+          <div className="px-7 py-5 space-y-3" style={{ background: '#111827' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>What you get</p>
+            {BENEFITS.map((b, i) => {
+              const Icon = b.icon;
+              return (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: b.bg }}>
+                    <Icon className="w-4 h-4" style={{ color: b.color }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{b.title}</p>
+                    <p className="text-xs leading-relaxed mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{b.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">{b.title}</p>
-                  <p className="text-xs leading-relaxed mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{b.desc}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* How it works */}
-        <div className="px-7 py-5" style={{ background: '#0E1525', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>How it works</p>
-          <div className="flex items-start gap-0">
-            {STEPS.map((s, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center text-center relative">
-                {/* Connector line */}
-                {i < STEPS.length - 1 && (
-                  <div className="absolute top-4 left-1/2 right-0 h-px"
-                    style={{ background: 'linear-gradient(90deg, rgba(37,99,235,0.5), rgba(37,99,235,0.1))' }} />
-                )}
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative z-10 mb-2"
-                  style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff' }}>
-                  {s.n}
+          {/* How it works */}
+          <div className="px-7 py-5" style={{ background: '#0E1525', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>How it works</p>
+            <div className="flex items-start gap-0">
+              {STEPS.map((s, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center text-center relative">
+                  {i < STEPS.length - 1 && (
+                    <div className="absolute top-4 left-1/2 right-0 h-px"
+                      style={{ background: 'linear-gradient(90deg, rgba(37,99,235,0.5), rgba(37,99,235,0.1))' }} />
+                  )}
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative z-10 mb-2"
+                    style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff' }}>
+                    {s.n}
+                  </div>
+                  <p className="text-[11px] font-semibold text-white leading-tight px-1">{s.label}</p>
+                  <p className="text-[9px] mt-0.5 px-1 leading-tight" style={{ color: 'rgba(255,255,255,0.35)' }}>{s.sub}</p>
                 </div>
-                <p className="text-[11px] font-semibold text-white leading-tight px-1">{s.label}</p>
-                <p className="text-[9px] mt-0.5 px-1 leading-tight" style={{ color: 'rgba(255,255,255,0.35)' }}>{s.sub}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="px-7 py-5 space-y-3" style={{ background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        {/* ── FOOTER (fixed) ── */}
+        <div className="px-7 py-5 space-y-3" style={{ background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
           {canUse ? (
             <button
               onClick={onGetStarted}
