@@ -126,9 +126,15 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl w-full max-h-[90dvh] flex flex-col p-0 gap-0 overflow-hidden">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex-shrink-0">
+      {/*
+        DialogContent gets p-0, no gap, overflow-hidden, and a hard max-height.
+        Inside we place a plain div that is the true flex column — this escapes
+        any internal DialogContent styles that could fight flex-1 on children.
+      */}
+      <DialogContent className="max-w-2xl w-full p-0 gap-0 overflow-hidden" style={{ maxHeight: '85dvh', display: 'flex', flexDirection: 'column' }}>
+
+        {/* ── HEADER (fixed) ── */}
+        <div style={{ flexShrink: 0 }} className="px-6 py-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               {step > 0 && step < 3 && (
@@ -171,8 +177,8 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
           </div>
         </div>
 
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        {/* ── BODY (scrollable) ── */}
+        <div style={{ flex: '1 1 0', overflowY: 'auto', minHeight: 0 }} className="px-6 py-4">
           {step === 0 && <ImportStep1Upload onParsed={handleParsed} />}
           {step === 1 && (
             <ImportStep2Mapping
@@ -203,18 +209,19 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
           )}
         </div>
 
-        {/* Footer actions */}
+        {/* ── FOOTER (fixed) ── */}
         {step < 3 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between flex-shrink-0">
-            {step === 1 && !aiLoading && (
-              <p className="text-xs text-gray-400">{parsed?.rows?.length || 0} rows · {parsed?.headers?.length || 0} columns</p>
-            )}
-            {step === 2 && (
-              <p className="text-xs text-gray-400">{parsed?.rows?.length || 0} clients ready to import</p>
-            )}
-            {step === 0 && <span />}
+          <div style={{ flexShrink: 0 }} className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div>
+              {step === 1 && !aiLoading && (
+                <p className="text-xs text-gray-400">{parsed?.rows?.length || 0} rows · {parsed?.headers?.length || 0} columns</p>
+              )}
+              {step === 2 && (
+                <p className="text-xs text-gray-400">{parsed?.rows?.length || 0} clients ready to import</p>
+              )}
+            </div>
 
-            <div className="flex items-center gap-3 ml-auto">
+            <div className="flex items-center gap-3">
               {step === 1 && !aiLoading && (
                 <Button onClick={handleMappingConfirm} size="sm">
                   Continue to Review →
