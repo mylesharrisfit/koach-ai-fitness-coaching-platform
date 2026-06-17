@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus } from 'lucide-react';
+import { Plus, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalCard from './GoalCard';
 import GoalFormModal from './GoalFormModal';
+import GoalTemplatesManager from './GoalTemplatesManager';
 
 export default function GoalsTab({ client }) {
   const [formOpen, setFormOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
+  const [showTemplatesManager, setShowTemplatesManager] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: goals = [], isLoading } = useQuery({
@@ -60,12 +62,20 @@ export default function GoalsTab({ client }) {
             <h3 className="text-base font-bold text-gray-900">Client Goals</h3>
             <p className="text-xs text-gray-400 mt-0.5">{active.length} active · {completed.length} completed</p>
           </div>
-          <button
-            onClick={handleAdd}
-            className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Add Goal
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowTemplatesManager(true)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
+            >
+              <LayoutTemplate className="w-3.5 h-3.5" /> Templates
+            </button>
+            <button
+              onClick={handleAdd}
+              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+            >
+              <Plus className="w-4 h-4" /> Add Goal
+            </button>
+          </div>
         </div>
 
         {/* Loading */}
@@ -124,6 +134,11 @@ export default function GoalsTab({ client }) {
           </div>
         )}
       </div>
+
+      {/* Templates manager */}
+      {showTemplatesManager && (
+        <GoalTemplatesManager onClose={() => setShowTemplatesManager(false)} />
+      )}
 
       {/* Form modal */}
       {formOpen && (

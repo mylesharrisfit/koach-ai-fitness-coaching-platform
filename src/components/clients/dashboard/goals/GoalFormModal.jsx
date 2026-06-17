@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, LayoutTemplate, BookmarkPlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import TemplatePickerSheet from './TemplatePickerSheet';
+import SaveTemplateModal from './SaveTemplateModal';
 
 const GOAL_TYPES = [
   { key: 'numeric',   label: 'Numeric',   desc: 'Target a number with a unit (weight, steps, reps…)' },
@@ -42,6 +44,8 @@ export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
   const isEdit = !!goal?.id;
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
 
   useEffect(() => {
     if (goal) {
@@ -69,6 +73,30 @@ export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
   }, [goal]);
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
+
+  // Apply a template to pre-fill the form (current values start blank)
+  const applyTemplate = (tmpl) => {
+    setForm(f => ({
+      ...f,
+      name: tmpl.name,
+      goal_type: tmpl.goal_type,
+      notes: tmpl.notes || '',
+      target_value: tmpl.target_value ?? '',
+      unit: tmpl.unit || '',
+      current_value: '',
+      progress_pct: 0,
+      calories_target: tmpl.calories_target ?? '',
+      protein_target: tmpl.protein_target ?? '',
+      carbs_target: tmpl.carbs_target ?? '',
+      fat_target: tmpl.fat_target ?? '',
+      calories_current: '',
+      protein_current: '',
+      carbs_current: '',
+      fat_current: '',
+    }));
+    setShowTemplatePicker(false);
+    toast.success(`Template "${tmpl.name}" applied — tweak and save`);
+  };
 
   const handleSave = async () => {
     if (!form.name.trim()) { toast.error('Goal name is required'); return; }
@@ -111,137 +139,181 @@ export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/40" />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
-        onClick={e => e.stopPropagation()}>
+    <>
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+          onClick={e => e.stopPropagation()}>
 
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h3 className="text-base font-bold text-gray-900">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
-          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="px-6 py-5 space-y-5">
-
-          {/* Goal type selector */}
-          <Field label="Goal Type">
-            <div className="grid grid-cols-3 gap-2">
-              {GOAL_TYPES.map(t => (
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h3 className="text-base font-bold text-gray-900">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
+            <div className="flex items-center gap-1">
+              {/* Use template (only on new goals) */}
+              {!isEdit && (
                 <button
-                  key={t.key}
-                  onClick={() => set('goal_type', t.key)}
-                  className={`text-left p-3 rounded-xl border-2 transition-all ${
-                    form.goal_type === t.key
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-100 bg-gray-50 hover:border-gray-200'
-                  }`}
+                  onClick={() => setShowTemplatePicker(true)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 px-2.5 py-1.5 rounded-lg hover:bg-blue-50 transition-colors mr-1"
+                  title="Use a template"
                 >
-                  <p className={`text-xs font-bold ${form.goal_type === t.key ? 'text-blue-600' : 'text-gray-700'}`}>{t.label}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{t.desc}</p>
+                  <LayoutTemplate className="w-3.5 h-3.5" />
+                  Use Template
                 </button>
-              ))}
+              )}
+              <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+                <X className="w-4 h-4" />
+              </button>
             </div>
-          </Field>
+          </div>
 
-          {/* Name */}
-          <Field label="Goal Name">
-            <TextInput value={form.name} onChange={v => set('name', v)} placeholder="e.g. Reach 175 lbs" />
-          </Field>
+          <div className="px-6 py-5 space-y-5">
 
-          {/* ── Numeric fields ── */}
-          {form.goal_type === 'numeric' && (
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="Target Value">
-                  <TextInput type="number" value={form.target_value} onChange={v => set('target_value', v)} placeholder="e.g. 175" />
-                </Field>
-                <Field label="Current Value">
-                  <TextInput type="number" value={form.current_value} onChange={v => set('current_value', v)} placeholder="e.g. 190" />
+            {/* Goal type selector */}
+            <Field label="Goal Type">
+              <div className="grid grid-cols-3 gap-2">
+                {GOAL_TYPES.map(t => (
+                  <button
+                    key={t.key}
+                    onClick={() => set('goal_type', t.key)}
+                    className={`text-left p-3 rounded-xl border-2 transition-all ${
+                      form.goal_type === t.key
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-100 bg-gray-50 hover:border-gray-200'
+                    }`}
+                  >
+                    <p className={`text-xs font-bold ${form.goal_type === t.key ? 'text-blue-600' : 'text-gray-700'}`}>{t.label}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{t.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            {/* Name */}
+            <Field label="Goal Name">
+              <TextInput value={form.name} onChange={v => set('name', v)} placeholder="e.g. Reach 175 lbs" />
+            </Field>
+
+            {/* ── Numeric fields ── */}
+            {form.goal_type === 'numeric' && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Target Value">
+                    <TextInput type="number" value={form.target_value} onChange={v => set('target_value', v)} placeholder="e.g. 175" />
+                  </Field>
+                  <Field label="Current Value">
+                    <TextInput type="number" value={form.current_value} onChange={v => set('current_value', v)} placeholder="e.g. 190" />
+                  </Field>
+                </div>
+                <Field label="Unit">
+                  <TextInput value={form.unit} onChange={v => set('unit', v)} placeholder="e.g. lbs, steps, km" />
                 </Field>
               </div>
-              <Field label="Unit">
-                <TextInput value={form.unit} onChange={v => set('unit', v)} placeholder="e.g. lbs, steps, km" />
+            )}
+
+            {/* ── Nutrition fields ── */}
+            {form.goal_type === 'nutrition' && (
+              <div className="space-y-4">
+                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Daily Targets</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Calories (kcal)">
+                    <TextInput type="number" value={form.calories_target} onChange={v => set('calories_target', v)} placeholder="e.g. 2200" />
+                  </Field>
+                  <Field label="Protein (g)">
+                    <TextInput type="number" value={form.protein_target} onChange={v => set('protein_target', v)} placeholder="e.g. 180" />
+                  </Field>
+                  <Field label="Carbs (g)">
+                    <TextInput type="number" value={form.carbs_target} onChange={v => set('carbs_target', v)} placeholder="e.g. 220" />
+                  </Field>
+                  <Field label="Fat (g)">
+                    <TextInput type="number" value={form.fat_target} onChange={v => set('fat_target', v)} placeholder="e.g. 70" />
+                  </Field>
+                </div>
+                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Current Actuals (today)</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Calories (kcal)">
+                    <TextInput type="number" value={form.calories_current} onChange={v => set('calories_current', v)} placeholder="e.g. 1800" />
+                  </Field>
+                  <Field label="Protein (g)">
+                    <TextInput type="number" value={form.protein_current} onChange={v => set('protein_current', v)} placeholder="e.g. 140" />
+                  </Field>
+                  <Field label="Carbs (g)">
+                    <TextInput type="number" value={form.carbs_current} onChange={v => set('carbs_current', v)} placeholder="e.g. 180" />
+                  </Field>
+                  <Field label="Fat (g)">
+                    <TextInput type="number" value={form.fat_current} onChange={v => set('fat_current', v)} placeholder="e.g. 55" />
+                  </Field>
+                </div>
+              </div>
+            )}
+
+            {/* ── Simple fields ── */}
+            {form.goal_type === 'simple' && (
+              <Field label={`Progress: ${form.progress_pct}%`}>
+                <input
+                  type="range" min={0} max={100} step={1}
+                  value={form.progress_pct}
+                  onChange={e => set('progress_pct', Number(e.target.value))}
+                  className="w-full accent-blue-600"
+                />
               </Field>
-            </div>
-          )}
+            )}
 
-          {/* ── Nutrition fields ── */}
-          {form.goal_type === 'nutrition' && (
-            <div className="space-y-4">
-              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Daily Targets</p>
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="Calories (kcal)">
-                  <TextInput type="number" value={form.calories_target} onChange={v => set('calories_target', v)} placeholder="e.g. 2200" />
-                </Field>
-                <Field label="Protein (g)">
-                  <TextInput type="number" value={form.protein_target} onChange={v => set('protein_target', v)} placeholder="e.g. 180" />
-                </Field>
-                <Field label="Carbs (g)">
-                  <TextInput type="number" value={form.carbs_target} onChange={v => set('carbs_target', v)} placeholder="e.g. 220" />
-                </Field>
-                <Field label="Fat (g)">
-                  <TextInput type="number" value={form.fat_target} onChange={v => set('fat_target', v)} placeholder="e.g. 70" />
-                </Field>
-              </div>
-              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Current Actuals (today)</p>
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="Calories (kcal)">
-                  <TextInput type="number" value={form.calories_current} onChange={v => set('calories_current', v)} placeholder="e.g. 1800" />
-                </Field>
-                <Field label="Protein (g)">
-                  <TextInput type="number" value={form.protein_current} onChange={v => set('protein_current', v)} placeholder="e.g. 140" />
-                </Field>
-                <Field label="Carbs (g)">
-                  <TextInput type="number" value={form.carbs_current} onChange={v => set('carbs_current', v)} placeholder="e.g. 180" />
-                </Field>
-                <Field label="Fat (g)">
-                  <TextInput type="number" value={form.fat_current} onChange={v => set('fat_current', v)} placeholder="e.g. 55" />
-                </Field>
-              </div>
-            </div>
-          )}
-
-          {/* ── Simple fields ── */}
-          {form.goal_type === 'simple' && (
-            <Field label={`Progress: ${form.progress_pct}%`}>
-              <input
-                type="range" min={0} max={100} step={1}
-                value={form.progress_pct}
-                onChange={e => set('progress_pct', Number(e.target.value))}
-                className="w-full accent-blue-600"
+            {/* Notes */}
+            <Field label="Notes (optional)">
+              <textarea
+                value={form.notes}
+                onChange={e => set('notes', e.target.value)}
+                placeholder="Any additional context…"
+                rows={2}
+                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400 resize-none"
               />
             </Field>
-          )}
+          </div>
 
-          {/* Notes */}
-          <Field label="Notes (optional)">
-            <textarea
-              value={form.notes}
-              onChange={e => set('notes', e.target.value)}
-              placeholder="Any additional context…"
-              rows={2}
-              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400 resize-none"
-            />
-          </Field>
-        </div>
+          {/* Footer */}
+          <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100">
+            {/* Save as template (left side) */}
+            <button
+              onClick={() => setShowSaveTemplate(true)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
+              title="Save current settings as a reusable template"
+            >
+              <BookmarkPlus className="w-3.5 h-3.5" />
+              Save as Template
+            </button>
 
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
-          <button onClick={onClose} className="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg border border-gray-200 bg-white">
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-          >
-            {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Goal'}
-          </button>
+            <div className="flex items-center gap-2">
+              <button onClick={onClose} className="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg border border-gray-200 bg-white">
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              >
+                {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Goal'}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Template picker overlay */}
+      {showTemplatePicker && (
+        <TemplatePickerSheet
+          onSelect={applyTemplate}
+          onClose={() => setShowTemplatePicker(false)}
+        />
+      )}
+
+      {/* Save-as-template overlay */}
+      {showSaveTemplate && (
+        <SaveTemplateModal
+          form={form}
+          onSaved={() => { setShowSaveTemplate(false); toast.success('Saved to your template library'); }}
+          onClose={() => setShowSaveTemplate(false)}
+        />
+      )}
+    </>
   );
 }
