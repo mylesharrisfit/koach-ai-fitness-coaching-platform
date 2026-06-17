@@ -218,23 +218,44 @@ function VoiceRecorderActive({ seconds, onStop, onCancel }) {
 }
 
 // ── Recording UI: playback/preview state ──
-function VoiceRecorderPreview({ blobUrl, seconds, onDiscard }) {
+// uploadState: 'uploading' | 'done' | 'error'
+function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRetryUpload }) {
+  const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+
   return (
     <div className="flex flex-col gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold text-emerald-700">
-          🎙 Recording ready · {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}
-        </span>
-        <button onClick={onDiscard} className="text-[11px] text-red-400 hover:text-red-600 font-medium transition-colors">
-          Discard
-        </button>
+        <div className="flex items-center gap-1.5">
+          {uploadState === 'uploading' && (
+            <div className="w-3 h-3 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin" />
+          )}
+          {uploadState === 'done' && <span className="text-emerald-600 text-[10px]">✓</span>}
+          {uploadState === 'error' && <span className="text-red-500 text-[10px]">!</span>}
+          <span className={`text-[11px] font-semibold ${uploadState === 'error' ? 'text-red-600' : 'text-emerald-700'}`}>
+            {uploadState === 'uploading' && `Uploading… · ${fmt(seconds)}`}
+            {uploadState === 'done'      && `🎙 Saved · ${fmt(seconds)}`}
+            {uploadState === 'error'     && 'Upload failed'}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          {uploadState === 'error' && (
+            <button onClick={onRetryUpload} className="text-[11px] text-primary font-medium hover:underline">
+              Retry
+            </button>
+          )}
+          <button onClick={onDiscard} className="text-[11px] text-red-400 hover:text-red-600 font-medium transition-colors">
+            Discard
+          </button>
+        </div>
       </div>
-      <audio
-        src={blobUrl}
-        controls
-        className="w-full h-8"
-        style={{ height: 32 }}
-      />
+      {audioUrl && (
+        <audio
+          src={audioUrl}
+          controls
+          className="w-full"
+          style={{ height: 32 }}
+        />
+      )}
     </div>
   );
 }
@@ -276,7 +297,9 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   // recordingState: 'idle' | 'recording' | 'preview'
   const [recordingState, setRecordingState] = useState('idle');
   const [recordingSeconds, setRecordingSeconds] = useState(0);
-  const [audioBlobUrl, setAudioBlobUrl] = useState(null);
+  // audioUrl: starts as blob:// for immediate playback, replaced by CDN URL after upload
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [uploadState, setUploadState] = useState('uploading'); // 'uploading' | 'done' | 'error'
   const [showAI, setShowAI] = useState(false);
   const textareaRef = useRef(null);
 
@@ -286,6 +309,8 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   const streamRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
+  // Keep a ref to the current blob so we can retry upload without re-recording
+  const recordedBlobRef = useRef(null);
 
   function releaseStream() {
     if (streamRef.current) {
@@ -299,12 +324,33 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
     timerRef.current = null;
   }
 
-  async function handleStartRecording() {
-    // Revoke any previous blob URL
-    if (audioBlobUrl) {
-      URL.revokeObjectURL(audioBlobUrl);
-      setAudioBlobUrl(null);
+  async function uploadBlob(blob) {
+    setUploadState('uploading');
+    // Show blob URL immediately so coach can hear the recording while uploading
+    const blobUrl = URL.createObjectURL(blob);
+    setAudioUrl(blobUrl);
+    setRecordingState('preview');
+    try {
+      // Determine file extension from MIME type
+      const ext = blob.type.includes('ogg') ? 'ogg' : blob.type.includes('mp4') ? 'mp4' : 'webm';
+      // Convert blob to File so UploadFile gets the correct filename/content-type
+      const file = new File([blob], `voice-message-${Date.now()}.${ext}`, { type: blob.type });
+      const result = await base44.integrations.Core.UploadFile({ file });
+      // Replace blob URL with persistent CDN URL
+      URL.revokeObjectURL(blobUrl);
+      setAudioUrl(result.file_url);
+      setUploadState('done');
+    } catch (_err) {
+      // Keep blob URL so playback still works; allow retry
+      setUploadState('error');
     }
+  }
+
+  async function handleStartRecording() {
+    // Clean up any previous recording
+    if (recordedBlobRef.current) recordedBlobRef.current = null;
+    if (audioUrl && audioUrl.startsWith('blob:')) URL.revokeObjectURL(audioUrl);
+    setAudioUrl(null);
     chunksRef.current = [];
     setRecordingSeconds(0);
 
@@ -318,7 +364,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
 
     streamRef.current = stream;
 
-    // Pick a supported MIME type
+    // Pick best supported MIME type for broad browser compatibility
     const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg', '']
       .find(m => m === '' || MediaRecorder.isTypeSupported(m));
 
@@ -330,18 +376,14 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
     };
 
     mr.onstop = () => {
-      // Only build the blob if we're doing a proper stop (not a cancel)
-      // We signal cancel vs stop via a flag on the ref
       if (mediaRecorderRef.current?._cancelled) return;
       const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' });
-      const url = URL.createObjectURL(blob);
-      setAudioBlobUrl(url);
-      setRecordingState('preview');
+      recordedBlobRef.current = blob;
+      uploadBlob(blob);
     };
 
-    mr.start(100); // collect data every 100ms
+    mr.start(100);
     setRecordingState('recording');
-
     timerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
   }
 
@@ -353,30 +395,40 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
       mr.stop();
     }
     releaseStream();
-    // onstop will fire and transition to 'preview'
+    // onstop fires → uploadBlob → transitions to 'preview'
   }
 
   function handleCancelRecording() {
     stopTimer();
     const mr = mediaRecorderRef.current;
     if (mr && mr.state !== 'inactive') {
-      mr._cancelled = true; // signal onstop to skip blob creation
+      mr._cancelled = true;
       mr.stop();
     }
     mediaRecorderRef.current = null;
     chunksRef.current = [];
+    recordedBlobRef.current = null;
     releaseStream();
+    if (audioUrl && audioUrl.startsWith('blob:')) URL.revokeObjectURL(audioUrl);
+    setAudioUrl(null);
     setRecordingSeconds(0);
     setRecordingState('idle');
   }
 
   function handleDiscardPreview() {
-    if (audioBlobUrl) URL.revokeObjectURL(audioBlobUrl);
-    setAudioBlobUrl(null);
+    if (audioUrl && audioUrl.startsWith('blob:')) URL.revokeObjectURL(audioUrl);
+    setAudioUrl(null);
+    recordedBlobRef.current = null;
     mediaRecorderRef.current = null;
     chunksRef.current = [];
     setRecordingSeconds(0);
     setRecordingState('idle');
+  }
+
+  function handleRetryUpload() {
+    if (recordedBlobRef.current) {
+      uploadBlob(recordedBlobRef.current);
+    }
   }
   const isEmpty = !value.trim();
 
@@ -529,9 +581,11 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         ) : recordingState === 'preview' ? (
           <div className="flex-1">
             <VoiceRecorderPreview
-              blobUrl={audioBlobUrl}
+              audioUrl={audioUrl}
+              uploadState={uploadState}
               seconds={recordingSeconds}
               onDiscard={handleDiscardPreview}
+              onRetryUpload={handleRetryUpload}
             />
           </div>
         ) : (
