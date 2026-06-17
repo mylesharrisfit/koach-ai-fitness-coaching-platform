@@ -8,10 +8,11 @@ import { toast } from 'sonner';
 import {
   Link2, UserPlus, Check, Clock, Users, ChevronDown, ChevronUp,
   Mail, Shield, AlertCircle, Send, Copy, Eye, CheckCircle2,
-  XCircle, Hourglass, Star, Sparkles, Lock, ChevronRight
+  XCircle, Hourglass, Star, Sparkles, Lock, ChevronRight, X
 } from 'lucide-react';
 import { hasFeature } from '@/lib/subscription';
 import AIOnboardingModal from '@/components/clients/ai-onboarding/AIOnboardingModal';
+import AIOnboardingOverviewModal from '@/components/clients/ai-onboarding/AIOnboardingOverviewModal';
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {
@@ -188,6 +189,8 @@ export default function OnboardingManager() {
 
   const [aiClient, setAiClient] = useState(null);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [showOverview, setShowOverview] = useState(false);
+  const [showAIPicker, setShowAIPicker] = useState(false);
   const [clientSearch, setClientSearch] = useState('');
 
   const canAIOnboard = hasFeature(user, 'ai_onboarding');
@@ -238,42 +241,109 @@ export default function OnboardingManager() {
         </button>
       </div>
 
-      {/* ── AI Onboarding Section ── */}
-      {!canAIOnboard ? (
-        <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-white p-5 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-              <Lock className="w-5 h-5 text-gray-400" />
+      {/* ── AI Onboarding Premium Card ── */}
+      <button
+        onClick={() => setShowOverview(true)}
+        className="w-full text-left rounded-2xl overflow-hidden shadow-lg transition-all hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] relative"
+        style={{ background: 'linear-gradient(135deg, #0E1525 0%, #1a2744 60%, #1e1a3a 100%)' }}
+      >
+        {/* Decorative glows */}
+        <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-25 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }} />
+        <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full opacity-20 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #2563EB, transparent 70%)' }} />
+
+        <div className="relative p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3.5">
+              {/* Icon */}
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+
+              <div>
+                {/* Badge */}
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full mb-1.5"
+                  style={{ background: 'rgba(167,139,250,0.18)', border: '1px solid rgba(167,139,250,0.35)' }}>
+                  <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#A78BFA' }}>Pro &amp; Elite</span>
+                </div>
+                <p className="text-base font-bold text-white leading-tight">AI Onboarding</p>
+                <p className="text-xs mt-1 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  Generate a tailored program + meal plan for any client using AI — you review and approve before anything saves.
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-bold text-gray-700">AI Onboarding — Pro & Elite</p>
-              <p className="text-xs text-gray-400 mt-0.5">Generate a personalised program + meal plan for any existing client using AI. Requires Pro or Elite plan.</p>
-            </div>
-          </div>
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 flex-shrink-0">Pro+</span>
-        </div>
-      ) : (
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-          {/* Section header */}
-          <div className="px-5 py-4 flex items-center gap-3"
-            style={{ background: 'linear-gradient(135deg, #0E1525, #1e2d4a)' }}>
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">AI Onboarding</p>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                Select a client → answer a quick questionnaire → AI builds their starting plan → you review &amp; approve
-              </p>
+
+            {/* Arrow */}
+            <div className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5"
+              style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
             </div>
           </div>
 
+          {/* Feature pills */}
+          <div className="flex flex-wrap gap-1.5 mt-4">
+            {['Training Program', 'Meal Plan', 'Goal-Matched', 'Review & Approve'].map(tag => (
+              <span key={tag} className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom CTA strip */}
+        <div className="px-5 py-3 flex items-center justify-between"
+          style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          {canAIOnboard ? (
+            <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              Click to get started →
+            </span>
+          ) : (
+            <span className="text-xs font-semibold" style={{ color: 'rgba(167,139,250,0.8)' }}>
+              Upgrade to Pro or Elite to unlock →
+            </span>
+          )}
+          <div className="flex items-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? '#10B981' : '#7C3AED' }} />
+            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? '#10B981' : 'rgba(167,139,250,0.7)' }}>
+              {canAIOnboard ? 'Available' : 'Pro+'}
+            </span>
+          </div>
+        </div>
+      </button>
+
+      {/* Overview modal */}
+      {showOverview && (
+        <AIOnboardingOverviewModal
+          canUse={canAIOnboard}
+          onClose={() => setShowOverview(false)}
+          onGetStarted={() => { setShowOverview(false); setShowAIPicker(true); }}
+          onUpgrade={() => { setShowOverview(false); window.location.href = '/subscription'; }}
+        />
+      )}
+
+      {/* Client picker panel — slides in after "Get Started" */}
+      {canAIOnboard && showAIPicker && (
+        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-5 py-3.5 flex items-center justify-between"
+            style={{ background: 'linear-gradient(135deg, #0E1525, #1a2744)' }}>
+            <div className="flex items-center gap-2.5">
+              <Sparkles className="w-4 h-4" style={{ color: '#A78BFA' }} />
+              <p className="text-sm font-bold text-white">AI Onboarding — Select a Client</p>
+            </div>
+            <button onClick={() => { setShowAIPicker(false); setAiClient(null); setClientSearch(''); }}
+              className="w-6 h-6 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
           <div className="p-5 space-y-4">
-            {/* Client search */}
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Select Client</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Search Client</p>
               <input
+                autoFocus
                 type="text"
                 value={clientSearch}
                 onChange={e => { setClientSearch(e.target.value); setAiClient(null); }}
@@ -285,11 +355,9 @@ export default function OnboardingManager() {
                   {filteredClients.length === 0 ? (
                     <p className="text-xs text-gray-400 px-3 py-3">No clients found</p>
                   ) : filteredClients.slice(0, 8).map(c => (
-                    <button
-                      key={c.id}
+                    <button key={c.id}
                       onClick={() => { setAiClient(c); setClientSearch(c.name); }}
-                      className="w-full text-left px-3 py-2.5 hover:bg-blue-50 flex items-center justify-between gap-2 transition-colors border-b border-gray-50 last:border-0"
-                    >
+                      className="w-full text-left px-3 py-2.5 hover:bg-blue-50 flex items-center justify-between gap-2 transition-colors border-b border-gray-50 last:border-0">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
                           style={{ background: '#EFF6FF', color: '#2563EB' }}>
@@ -306,8 +374,6 @@ export default function OnboardingManager() {
                 </div>
               )}
             </div>
-
-            {/* Selected client preview */}
             {aiClient && (
               <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
@@ -318,11 +384,7 @@ export default function OnboardingManager() {
                   <div>
                     <p className="text-sm font-bold text-blue-900">{aiClient.name}</p>
                     <p className="text-[10px] text-blue-500">
-                      {[
-                        aiClient.goal?.replace(/_/g, ' '),
-                        aiClient.current_weight && `${aiClient.current_weight} lbs`,
-                        aiClient.height,
-                      ].filter(Boolean).join(' · ')}
+                      {[aiClient.goal?.replace(/_/g, ' '), aiClient.current_weight && `${aiClient.current_weight} lbs`, aiClient.height].filter(Boolean).join(' · ')}
                     </p>
                   </div>
                 </div>
@@ -330,16 +392,13 @@ export default function OnboardingManager() {
                   className="text-blue-300 hover:text-blue-600 text-xs">✕</button>
               </div>
             )}
-
-            {/* Launch button */}
             <button
               onClick={() => aiClient && setShowAIModal(true)}
               disabled={!aiClient}
               className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: aiClient ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#94A3B8' }}
-            >
+              style={{ background: aiClient ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#94A3B8' }}>
               <Sparkles className="w-4 h-4" />
-              {aiClient ? `Generate AI Plan for ${aiClient.name}` : 'Select a client first'}
+              {aiClient ? `Generate AI Plan for ${aiClient.name}` : 'Select a client to continue'}
             </button>
             <p className="text-center text-[10px] text-gray-400">Nothing is saved until you review and approve</p>
           </div>
@@ -425,6 +484,7 @@ export default function OnboardingManager() {
           onClose={() => setShowAIModal(false)}
           onSaved={() => {
             setShowAIModal(false);
+            setShowAIPicker(false);
             setAiClient(null);
             setClientSearch('');
           }}
