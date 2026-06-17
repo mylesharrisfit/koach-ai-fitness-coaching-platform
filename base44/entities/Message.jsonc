@@ -6,6 +6,10 @@
       "type": "string",
       "description": "Client ID"
     },
+    "team_id": {
+      "type": "string",
+      "description": "Team ID this message belongs to"
+    },
     "client_name": {
       "type": "string"
     },
@@ -86,6 +90,17 @@
         },
         {
           "data.client_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
