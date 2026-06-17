@@ -41,7 +41,7 @@ function TextInput({ value, onChange, placeholder, type = 'text' }) {
   );
 }
 
-export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
+export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSaved, onClose }) {
   const isEdit = !!goal?.id;
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
@@ -68,10 +68,24 @@ export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
         carbs_current: goal.carbs_current ?? '',
         fat_current: goal.fat_current ?? '',
       });
+    } else if (prefilledTemplate) {
+      // Apply template as starting point — current values left blank
+      setForm({
+        ...EMPTY,
+        name: prefilledTemplate.name || '',
+        goal_type: prefilledTemplate.goal_type || 'numeric',
+        notes: prefilledTemplate.notes || '',
+        target_value: prefilledTemplate.target_value ?? '',
+        unit: prefilledTemplate.unit || '',
+        calories_target: prefilledTemplate.calories_target ?? '',
+        protein_target: prefilledTemplate.protein_target ?? '',
+        carbs_target: prefilledTemplate.carbs_target ?? '',
+        fat_target: prefilledTemplate.fat_target ?? '',
+      });
     } else {
       setForm(EMPTY);
     }
-  }, [goal]);
+  }, [goal, prefilledTemplate]);
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, LayoutTemplate, Target, Sparkles } from 'lucide-react';
@@ -6,6 +7,7 @@ import { toast } from 'sonner';
 import GoalCard from './goals/GoalCard';
 import GoalFormModal from './goals/GoalFormModal';
 import GoalTemplatesManager from './goals/GoalTemplatesManager';
+import TemplatePickerSheet from './goals/TemplatePickerSheet';
 import HabitsSection from './habits/HabitsSection';
 
 // ── Sub-sections ─────────────────────────────────────────────────────────────
@@ -19,6 +21,8 @@ export default function GoalsHabitsTab({ client }) {
   const [formOpen, setFormOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
   const [showTemplatesManager, setShowTemplatesManager] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [prefilledTemplate, setPrefilledTemplate] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: goals = [], isLoading } = useQuery({
@@ -34,8 +38,16 @@ export default function GoalsHabitsTab({ client }) {
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['goals', client.id] });
 
   const handleEdit   = (goal) => { setEditingGoal(goal); setFormOpen(true); };
-  const handleAdd    = ()     => { setEditingGoal(null); setFormOpen(true); };
-  const handleSaved  = ()     => { setFormOpen(false); setEditingGoal(null); refresh(); };
+  const handleAdd    = ()     => { setEditingGoal(null); setPrefilledTemplate(null); setFormOpen(true); };
+  const handleSaved  = ()     => { setFormOpen(false); setEditingGoal(null); setPrefilledTemplate(null); refresh(); };
+
+  // Called when a template is picked from the picker sheet
+  const handleTemplateSelected = (tmpl) => {
+    setShowTemplatePicker(false);
+    setEditingGoal(null);
+    setPrefilledTemplate(tmpl);
+    setFormOpen(true);
+  };
 
   const handleDelete = async (goal) => {
     if (!confirm(`Delete goal "${goal.name}"?`)) return;
@@ -136,7 +148,7 @@ export default function GoalsHabitsTab({ client }) {
                     <Plus className="w-4 h-4" /> Add First Goal
                   </button>
                   <button
-                    onClick={() => setShowTemplatesManager(true)}
+                    onClick={() => setShowTemplatePicker(true)}
                     className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-blue-600 px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-200 transition-colors"
                   >
                     <LayoutTemplate className="w-4 h-4" /> Browse Templates
@@ -195,17 +207,27 @@ export default function GoalsHabitsTab({ client }) {
         </div>
       )}
 
-      {/* ── Portals — rendered at z-[210] so they always appear above the profile modal ── */}
-      {showTemplatesManager && (
-        <GoalTemplatesManager onClose={() => setShowTemplatesManager(false)} />
+      {/* ── Portals ── */}
+      {showTemplatesManager && ReactDOM.createPortal(
+        <GoalTemplatesManager onClose={() => setShowTemplatesManager(false)} />,
+        document.body
       )}
-      {formOpen && (
+      {showTemplatePicker && ReactDOM.createPortal(
+        <TemplatePickerSheet
+          onSelect={handleTemplateSelected}
+          onClose={() => setShowTemplatePicker(false)}
+        />,
+        document.body
+      )}
+      {formOpen && ReactDOM.createPortal(
         <GoalFormModal
           clientId={client.id}
           goal={editingGoal}
+          prefilledTemplate={prefilledTemplate}
           onSaved={handleSaved}
-          onClose={() => { setFormOpen(false); setEditingGoal(null); }}
-        />
+          onClose={() => { setFormOpen(false); setEditingGoal(null); setPrefilledTemplate(null); }}
+        />,
+        document.body
       )}
     </div>
   );
