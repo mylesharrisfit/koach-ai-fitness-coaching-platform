@@ -27,6 +27,7 @@ import { getLimit } from '@/lib/subscription';
 import { sendZapierEvent } from '@/lib/zapier';
 import { sendEmail, isResendEnabled } from '@/lib/sendgrid';
 import { templates } from '@/lib/emailTemplates';
+import { getMyTeamId } from '@/lib/teamUtils';
 
 const LIFECYCLE_ORDER = ['lead', 'active', 'at_risk', 'completed', 'alumni'];
 
@@ -99,7 +100,8 @@ export default function Clients() {
     mutationFn: async ({ data, sendInvite }) => {
       const res = await base44.functions.invoke('validateSubscription', { action: 'validate_create_client' });
       if (!res.data.allowed) { setUpgradeOpen(true); throw new Error(res.data.error); }
-      const client = await base44.entities.Client.create(data);
+      const teamId = await getMyTeamId(currentUser?.id);
+      const client = await base44.entities.Client.create({ ...data, ...(teamId ? { team_id: teamId } : {}) });
       if (sendInvite && data.email) {
         await base44.functions.invoke('sendClientInvite', { clientName: data.name, clientEmail: data.email });
       }

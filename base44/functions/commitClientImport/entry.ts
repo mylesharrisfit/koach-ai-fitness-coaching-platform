@@ -120,6 +120,18 @@ Deno.serve(async (req) => {
     const allCsvCols = job.headers || [];
     const extraCols = allCsvCols.filter(col => !mappedCsvCols.has(col));
 
+    // Resolve the coach's team_id for tagging new clients
+    let coachTeamId = null;
+    try {
+      const teams = await base44.asServiceRole.entities.Team.filter({ owner_coach_id: user.id });
+      if (teams.length > 0) {
+        coachTeamId = teams[0].id;
+      } else {
+        const memberships = await base44.asServiceRole.entities.TeamMember.filter({ user_id: user.id });
+        if (memberships.length > 0) coachTeamId = memberships[0].team_id;
+      }
+    } catch (_) { /* non-critical */ }
+
     // Fetch existing clients for duplicate detection (by email)
     const existingClients = await base44.asServiceRole.entities.Client.filter({ created_by_id: user.id });
     const existingEmails = new Set(existingClients.map(c => (c.email || '').toLowerCase().trim()));
@@ -193,7 +205,11 @@ Deno.serve(async (req) => {
       });
 
       try {
-        await base44.asServiceRole.entities.Client.create({ ...clientData, created_by_id: user.id });
+        await base44.asServiceRole.entities.Client.create({
+          ...clientData,
+          created_by_id: user.id,
+          ...(coachTeamId ? { team_id: coachTeamId } : {}),
+        });
         if (email) existingEmails.add(email.toLowerCase().trim());
         imported++;
       } catch (err) {

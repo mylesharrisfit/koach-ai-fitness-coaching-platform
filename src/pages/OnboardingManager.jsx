@@ -11,6 +11,7 @@ import {
   XCircle, Hourglass, Star, Sparkles, Lock, ChevronRight, X
 } from 'lucide-react';
 import { hasFeature } from '@/lib/subscription';
+import { getMyTeamId } from '@/lib/teamUtils';
 import AIOnboardingModal from '@/components/clients/ai-onboarding/AIOnboardingModal';
 import AIOnboardingOverviewModal from '@/components/clients/ai-onboarding/AIOnboardingOverviewModal';
 
@@ -160,6 +161,7 @@ export default function OnboardingManager() {
   const approveMutation = useMutation({
     mutationFn: async (resp) => {
       const goalMap = { fat_loss: 'weight_loss', hybrid: 'muscle_gain' };
+      const teamId = await getMyTeamId(user?.id);
       const client = await base44.entities.Client.create({
         name: resp.name,
         email: resp.email,
@@ -175,6 +177,7 @@ export default function OnboardingManager() {
           resp.motivation && `Motivation: ${resp.motivation}`,
           resp.schedule_preferences && `Schedule: ${resp.schedule_preferences}`,
         ].filter(Boolean).join('\n\n'),
+        ...(teamId ? { team_id: teamId } : {}),
       });
       await base44.entities.OnboardingResponse.update(resp.id, { status: 'converted', client_id: client.id });
       return client;
