@@ -193,20 +193,48 @@ function AttachmentMenu({ onSelect, onClose }) {
   );
 }
 
-function VoiceRecorder({ seconds, onSend, onCancel }) {
+// ── Recording UI: active recording state ──
+function VoiceRecorderActive({ seconds, onStop, onCancel }) {
   return (
     <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
       <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
       <div className="flex-1 flex items-center gap-0.5">
         {Array.from({ length: 20 }).map((_, i) => (
-          <div key={i} className="w-0.5 bg-red-400 rounded-full" style={{ height: `${6 + Math.abs(Math.sin(i * 0.8)) * 8}px` }} />
+          <div key={i} className="w-0.5 bg-red-400 rounded-full" style={{ height: `${6 + Math.abs(Math.sin(i * 0.8 + Date.now() * 0.001)) * 8}px` }} />
         ))}
       </div>
       <span className="text-xs font-mono text-red-600 tabular-nums flex-shrink-0">
         {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}
       </span>
-      <button onClick={onSend} className="text-[11px] font-semibold text-red-600 hover:text-red-700 flex-shrink-0">Send</button>
-      <button onClick={onCancel} className="text-[11px] text-[#9CA3AF] hover:text-gray-600 flex-shrink-0">✕</button>
+      <button
+        onClick={onStop}
+        className="text-[11px] font-semibold text-red-600 hover:text-red-700 flex-shrink-0 px-2 py-0.5 rounded-md bg-red-100 hover:bg-red-200 transition-colors"
+      >
+        Stop
+      </button>
+      <button onClick={onCancel} className="text-[11px] text-[#9CA3AF] hover:text-gray-600 flex-shrink-0 px-1">✕</button>
+    </div>
+  );
+}
+
+// ── Recording UI: playback/preview state ──
+function VoiceRecorderPreview({ blobUrl, seconds, onDiscard }) {
+  return (
+    <div className="flex flex-col gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-semibold text-emerald-700">
+          🎙 Recording ready · {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}
+        </span>
+        <button onClick={onDiscard} className="text-[11px] text-red-400 hover:text-red-600 font-medium transition-colors">
+          Discard
+        </button>
+      </div>
+      <audio
+        src={blobUrl}
+        controls
+        className="w-full h-8"
+        style={{ height: 32 }}
+      />
     </div>
   );
 }
@@ -245,32 +273,110 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   const [showAttach, setShowAttach] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
-  const [isRecording, setIsRecording] = useState(false);
+  // recordingState: 'idle' | 'recording' | 'preview'
+  const [recordingState, setRecordingState] = useState('idle');
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [audioBlobUrl, setAudioBlobUrl] = useState(null);
   const [showAI, setShowAI] = useState(false);
   const textareaRef = useRef(null);
 
-  const recordingTimerRef = useRef(null);
+  // All recording refs live here in ComposeBar (never in a child) so they
+  // are always reachable by cancel/stop regardless of re-renders.
+  const mediaRecorderRef = useRef(null);
+  const streamRef = useRef(null);
+  const chunksRef = useRef([]);
+  const timerRef = useRef(null);
 
-  function handleStartRecording() {
+  function releaseStream() {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+  }
+
+  function stopTimer() {
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+  }
+
+  async function handleStartRecording() {
+    // Revoke any previous blob URL
+    if (audioBlobUrl) {
+      URL.revokeObjectURL(audioBlobUrl);
+      setAudioBlobUrl(null);
+    }
+    chunksRef.current = [];
     setRecordingSeconds(0);
-    setIsRecording(true);
-    recordingTimerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (_err) {
+      alert('Microphone access denied. Please allow mic access and try again.');
+      return;
+    }
+
+    streamRef.current = stream;
+
+    // Pick a supported MIME type
+    const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg', '']
+      .find(m => m === '' || MediaRecorder.isTypeSupported(m));
+
+    const mr = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+    mediaRecorderRef.current = mr;
+
+    mr.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
+    };
+
+    mr.onstop = () => {
+      // Only build the blob if we're doing a proper stop (not a cancel)
+      // We signal cancel vs stop via a flag on the ref
+      if (mediaRecorderRef.current?._cancelled) return;
+      const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      setAudioBlobUrl(url);
+      setRecordingState('preview');
+    };
+
+    mr.start(100); // collect data every 100ms
+    setRecordingState('recording');
+
+    timerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+  }
+
+  function handleStopRecording() {
+    stopTimer();
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== 'inactive') {
+      mr._cancelled = false;
+      mr.stop();
+    }
+    releaseStream();
+    // onstop will fire and transition to 'preview'
   }
 
   function handleCancelRecording() {
-    clearInterval(recordingTimerRef.current);
-    recordingTimerRef.current = null;
-    setIsRecording(false);
+    stopTimer();
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== 'inactive') {
+      mr._cancelled = true; // signal onstop to skip blob creation
+      mr.stop();
+    }
+    mediaRecorderRef.current = null;
+    chunksRef.current = [];
+    releaseStream();
     setRecordingSeconds(0);
+    setRecordingState('idle');
   }
 
-  function handleSendRecording() {
-    clearInterval(recordingTimerRef.current);
-    recordingTimerRef.current = null;
-    setIsRecording(false);
+  function handleDiscardPreview() {
+    if (audioBlobUrl) URL.revokeObjectURL(audioBlobUrl);
+    setAudioBlobUrl(null);
+    mediaRecorderRef.current = null;
+    chunksRef.current = [];
     setRecordingSeconds(0);
-    onSend();
+    setRecordingState('idle');
   }
   const isEmpty = !value.trim();
 
@@ -336,7 +442,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         )}
       </div>
 
-      {showQuickReplies && !isRecording && (
+      {showQuickReplies && recordingState === 'idle' && (
         <div className="flex gap-1.5 flex-wrap px-4 pt-3 pb-1">
           {chips.map((r, i) => (
             <button key={i} onClick={() => { onChange(r.text); setShowQuickReplies(false); textareaRef.current?.focus(); }}
@@ -350,7 +456,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         </div>
       )}
 
-      {!isRecording && (
+      {recordingState === 'idle' && (
         <div className="flex items-center gap-1 px-3 pt-2 pb-1">
           <div className="relative">
             <button onClick={() => { setShowTagPicker(!showTagPicker); setShowAttach(false); setShowVideo(false); }}
@@ -381,8 +487,11 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
           <div className="flex-1" />
 
           <FeatureLock feature="voice_video_messages" className="rounded-lg">
-            <button onClick={handleStartRecording}
-              className="flex items-center gap-1 text-[11px] text-[#6B7280] hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors" title="Record voice message">
+            <button
+              onClick={handleStartRecording}
+              className="flex items-center gap-1 text-[11px] text-[#6B7280] hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors"
+              title="Record voice message"
+            >
               <Mic className="w-3.5 h-3.5" />
             </button>
           </FeatureLock>
@@ -409,12 +518,20 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
           {showAttach && <AttachmentMenu onSelect={handleAttachSelect} onClose={() => setShowAttach(false)} />}
         </div>
 
-        {isRecording ? (
+        {recordingState === 'recording' ? (
           <div className="flex-1">
-            <VoiceRecorder
+            <VoiceRecorderActive
               seconds={recordingSeconds}
-              onSend={handleSendRecording}
+              onStop={handleStopRecording}
               onCancel={handleCancelRecording}
+            />
+          </div>
+        ) : recordingState === 'preview' ? (
+          <div className="flex-1">
+            <VoiceRecorderPreview
+              blobUrl={audioBlobUrl}
+              seconds={recordingSeconds}
+              onDiscard={handleDiscardPreview}
             />
           </div>
         ) : (
@@ -429,7 +546,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
           />
         )}
 
-        {!isRecording && (
+        {recordingState === 'idle' && (
           <button onClick={onSend} disabled={isEmpty}
             className={cn('w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full transition-all',
               isEmpty ? 'bg-[#F0F2F8] text-[#C4C9D8] cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90 shadow-sm hover:shadow-md')}>
