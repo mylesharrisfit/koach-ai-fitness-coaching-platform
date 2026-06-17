@@ -3,10 +3,10 @@ import { CheckCircle2, AlertTriangle, HelpCircle, Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const CONFIDENCE_CONFIG = {
-  high:     { icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50', label: 'High' },
-  medium:   { icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-50', label: 'Medium' },
-  low:      { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50', label: 'Low' },
-  unmapped: { icon: HelpCircle, color: 'text-gray-400', bg: 'bg-gray-50', label: 'Unmapped → notes' },
+  high:     { icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', label: 'High' },
+  medium:   { icon: AlertTriangle, color: 'text-amber-500',  bg: 'bg-amber-50',   label: 'Medium' },
+  low:      { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50',  label: 'Low' },
+  unmapped: { icon: HelpCircle,    color: 'text-gray-400',   bg: 'bg-gray-100',   label: 'Unmapped' },
 };
 
 export default function ImportStep2Mapping({ headers, mapping, confidence, koachFields, onMappingChange, aiLoading }) {
@@ -23,8 +23,14 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
   // __last_name__ is a special sentinel meaning "merged into name" — don't count as a used field
   const usedFields = new Set(Object.values(mapping).filter(f => f && f !== '__last_name__'));
 
+  const mappedCount =
+    Object.values(mapping).filter(f => f && f !== '__last_name__').length +
+    (Object.values(mapping).includes('__last_name__') ? 1 : 0);
+  const unmappedCount = headers.length - mappedCount;
+
   return (
-    <div className="space-y-4">
+    // No fixed height or overflow here — the parent modal body owns scrolling
+    <div className="flex flex-col gap-4">
       <div>
         <h3 className="text-sm font-bold text-gray-900">Review AI column mapping</h3>
         <p className="text-xs text-gray-500 mt-0.5">
@@ -33,32 +39,49 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
         </p>
       </div>
 
+      {/* Summary stat */}
+      <p className="text-xs text-gray-400">
+        {mappedCount} of {headers.length} columns mapped
+        {unmappedCount > 0
+          ? ` · ${unmappedCount} will be stored in notes`
+          : ' · all columns mapped ✓'}
+      </p>
+
+      {/* Mapping table */}
       <div className="border border-gray-100 rounded-xl overflow-hidden">
-        {/* Header */}
-        <div className="grid grid-cols-[1fr_24px_1fr_100px] gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+        {/* Table header */}
+        <div className="grid gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-wider text-gray-400"
+          style={{ gridTemplateColumns: '1fr 20px minmax(180px,1.4fr) 90px' }}>
           <div>CSV Column</div>
           <div />
           <div>KOACH Field</div>
           <div>Confidence</div>
         </div>
 
-        <div className="divide-y divide-gray-50 max-h-[380px] overflow-y-auto">
+        {/* Rows — no max-h here; modal body scrolls */}
+        <div className="divide-y divide-gray-50">
           {headers.map((col) => {
             const mapped = mapping[col] || '';
-            const conf = confidence[col] || 'unmapped';
+            const conf   = confidence[col] || 'unmapped';
             const { icon: Icon, color, bg, label } = CONFIDENCE_CONFIG[conf] || CONFIDENCE_CONFIG.unmapped;
 
             return (
-              <div key={col} className="grid grid-cols-[1fr_24px_1fr_100px] gap-3 items-center px-4 py-2.5">
+              <div
+                key={col}
+                className="grid gap-3 items-center px-4 py-2.5"
+                style={{ gridTemplateColumns: '1fr 20px minmax(180px,1.4fr) 90px' }}
+              >
                 {/* CSV column name */}
-                <div className="text-sm font-medium text-gray-800 truncate" title={col}>{col}</div>
+                <div className="text-sm font-medium text-gray-800 truncate min-w-0" title={col}>
+                  {col}
+                </div>
 
                 {/* Arrow */}
-                <div className="text-gray-300 text-xs">→</div>
+                <div className="text-gray-300 text-xs text-center">→</div>
 
-                {/* KOACH field dropdown */}
+                {/* KOACH field — sentinel or dropdown */}
                 {mapped === '__last_name__' ? (
-                  <div className="h-8 px-3 flex items-center text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md">
+                  <div className="h-8 px-3 flex items-center text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md whitespace-nowrap overflow-hidden text-ellipsis">
                     Last Name → merged into Name ✓
                   </div>
                 ) : (
@@ -66,7 +89,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                     value={mapped || '__unmapped__'}
                     onValueChange={(val) => onMappingChange(col, val === '__unmapped__' ? null : val)}
                   >
-                    <SelectTrigger className="h-8 text-xs">
+                    <SelectTrigger className="h-8 text-xs w-full">
                       <SelectValue placeholder="Select field…" />
                     </SelectTrigger>
                     <SelectContent>
@@ -81,7 +104,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                         >
                           {f.label}
                           {usedFields.has(f.key) && mapped !== f.key && (
-                            <span className="text-gray-400 ml-1">(already mapped)</span>
+                            <span className="text-gray-400 ml-1 text-[10px]">(taken)</span>
                           )}
                         </SelectItem>
                       ))}
@@ -91,26 +114,14 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
 
                 {/* Confidence badge */}
                 <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${bg} ${color} w-fit`}>
-                  <Icon className="w-3 h-3" />
-                  <span className="hidden sm:inline">{conf}</span>
+                  <Icon className="w-3 h-3 shrink-0" />
+                  <span>{label}</span>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
-
-      {(() => {
-        const mappedCount = Object.values(mapping).filter(f => f && f !== '__last_name__').length
-          + (Object.values(mapping).includes('__last_name__') ? 1 : 0); // last name counts as mapped
-        const unmapped = headers.length - mappedCount;
-        return (
-          <p className="text-xs text-gray-400">
-            {mappedCount} of {headers.length} columns mapped ·{' '}
-            {unmapped > 0 ? `${unmapped} will be stored in notes` : 'all columns mapped ✓'}
-          </p>
-        );
-      })()}
     </div>
   );
 }
