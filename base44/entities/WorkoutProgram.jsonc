@@ -123,6 +123,10 @@
     },
     "image_url": {
       "type": "string"
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Team ID this program belongs to"
     }
   },
   "required": [
@@ -135,18 +139,26 @@
     "read": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "data.is_template": true
         },
         {
-          "data.is_template": true
+          "data.client_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.client_id": "{{user.id}}"
         }
       ]
     },
@@ -154,6 +166,17 @@
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
@@ -166,6 +189,17 @@
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
