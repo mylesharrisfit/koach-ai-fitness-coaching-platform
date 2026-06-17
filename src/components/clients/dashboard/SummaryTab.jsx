@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format, formatDistanceToNow, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { cn } from '@/lib/utils';
-import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
+import { Plus, Bell, Dumbbell, Salad, Sparkles, Lock } from 'lucide-react';
 import GoalsSummarySection from './GoalsSummarySection';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { hasFeature } from '@/lib/subscription';
+import AIOnboardingModal from '@/components/clients/ai-onboarding/AIOnboardingModal';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
@@ -116,6 +118,11 @@ const TAG_STYLES = {
 export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions, earnedBadges = [], onAwardBadge, onClientUpdated }) {
   const [newTag, setNewTag] = useState('');
   const [addingTag, setAddingTag] = useState(false);
+  const [showAIOnboarding, setShowAIOnboarding] = useState(false);
+
+  const [user, setUser] = useState(null);
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
+  const canAIOnboard = hasFeature(user, 'ai_onboarding');
 
   const score = compositeAdherenceScore(checkIns);
   const smartTags = generateSmartTags(client, checkIns, messages);
@@ -262,6 +269,16 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
         {/* ═══════════════ MIDDLE COLUMN ═══════════════ */}
         <div className="overflow-y-auto p-5 space-y-4">
 
+          {/* AI Onboarding button */}
+          <button
+            onClick={() => canAIOnboard ? setShowAIOnboarding(true) : toast.error('AI Onboarding requires Pro or Elite plan')}
+            className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-2.5 rounded-xl transition-all"
+            style={{ background: canAIOnboard ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#94A3B8' }}
+          >
+            {canAIOnboard ? <Sparkles className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
+            {canAIOnboard ? 'AI Onboarding — Generate Starting Plan' : 'AI Onboarding (Pro+)'}
+          </button>
+
           {/* Program card */}
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
             <div className="flex items-start justify-between gap-3">
@@ -319,6 +336,15 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           <NotesColumn client={client} />
         </div>
       </div>
+
+      {/* AI Onboarding modal */}
+      {showAIOnboarding && (
+        <AIOnboardingModal
+          client={client}
+          onClose={() => setShowAIOnboarding(false)}
+          onSaved={onClientUpdated}
+        />
+      )}
     </div>
   );
 }

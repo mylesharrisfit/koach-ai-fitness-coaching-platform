@@ -49,6 +49,7 @@ export const TIERS = {
       // AI ladder
       ai_program_builder: true,          // metered — 5/mo combined
       ai_meal_plan_builder: true,        // metered — 5/mo combined
+      ai_onboarding: false,              // Pro+ only
       ai_assistant_full: false,
       ai_team_access: false,
     },
@@ -99,6 +100,7 @@ export const TIERS = {
       // AI ladder
       ai_program_builder: true,          // unlimited
       ai_meal_plan_builder: true,        // unlimited
+      ai_onboarding: true,               // AI Onboarding — Pro+
       ai_assistant_full: false,          // full AI assistant locked to Elite+
       ai_team_access: false,
     },
@@ -148,6 +150,7 @@ export const TIERS = {
       // AI ladder
       ai_program_builder: true,
       ai_meal_plan_builder: true,
+      ai_onboarding: true,               // AI Onboarding — Pro+
       ai_assistant_full: true,           // Full AI Assistant — auto progression, check-in analysis, coaching automation
       ai_team_access: false,
       // Elite-exclusive
@@ -202,6 +205,7 @@ export const TIERS = {
       // AI ladder
       ai_program_builder: true,
       ai_meal_plan_builder: true,
+      ai_onboarding: true,               // AI Onboarding — Pro+
       ai_assistant_full: true,
       ai_team_access: true,              // Team-wide AI access for multiple coaches
       // Enterprise-exclusive
@@ -304,6 +308,12 @@ export const FEATURE_INFO = {
     description: 'Auto progression rules, AI check-in analysis, and coaching automation — the AI that analyzes, not just builds.',
     icon: 'Sparkles',
     minTier: 'elite',
+  },
+  ai_onboarding: {
+    name: 'AI Onboarding',
+    description: 'Generate a personalised starting program and meal plan for a client in one click — review and approve before saving.',
+    icon: 'Sparkles',
+    minTier: 'pro',
   },
   ai_program_builder: {
     name: 'AI Program Builder',
