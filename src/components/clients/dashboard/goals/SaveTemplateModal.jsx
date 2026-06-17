@@ -39,7 +39,7 @@ export default function SaveTemplateModal({ form, onSaved, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[210] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">

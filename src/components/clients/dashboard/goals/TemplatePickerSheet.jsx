@@ -22,7 +22,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
   );
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[210] flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
       <div
         className="relative bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col"

@@ -135,12 +135,10 @@ export default function GoalsTab({ client }) {
         )}
       </div>
 
-      {/* Templates manager */}
+      {/* Portals — rendered outside overflow container so fixed positioning works */}
       {showTemplatesManager && (
         <GoalTemplatesManager onClose={() => setShowTemplatesManager(false)} />
       )}
-
-      {/* Form modal */}
       {formOpen && (
         <GoalFormModal
           clientId={client.id}
