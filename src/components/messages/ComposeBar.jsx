@@ -258,46 +258,63 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   // Tracks whether getUserMedia has resolved yet (to handle fast-cancel race)
   const recordingActiveRef = useRef(false);
 
+  // Use a session ID so async callbacks from a cancelled session are ignored
+  const recordingSessionRef = useRef(0);
+
   function stopAndReleaseRecording() {
-    console.log('[VoiceRecorder] stopAndReleaseRecording called', {
-      mr: mediaRecorderRef.current?.state,
-      stream: streamRef.current?.getTracks().map(t => t.readyState),
-    });
+    console.log('[VoiceRecorder] stopAndReleaseRecording — killing session', recordingSessionRef.current);
+    // Invalidate any in-flight async session immediately
+    recordingSessionRef.current += 1;
+    recordingActiveRef.current = false;
+
     clearInterval(recordingTimerRef.current);
     recordingTimerRef.current = null;
+
     const mr = mediaRecorderRef.current;
     if (mr && mr.state !== 'inactive') {
       try { mr.stop(); } catch (_) {}
     }
+    mediaRecorderRef.current = null;
+
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => { t.stop(); });
+      streamRef.current.getTracks().forEach(t => t.stop());
       streamRef.current = null;
     }
-    mediaRecorderRef.current = null;
+
     chunksRef.current = [];
-    recordingActiveRef.current = false;
   }
 
   async function startRecording() {
+    const session = recordingSessionRef.current;
     setRecordingSeconds(0);
     chunksRef.current = [];
     recordingActiveRef.current = true;
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // If cancelled before mic resolved, release immediately
-      if (!recordingActiveRef.current) {
+
+      // Session was cancelled while waiting for mic permission — release and bail
+      if (recordingSessionRef.current !== session || !recordingActiveRef.current) {
         stream.getTracks().forEach(t => t.stop());
         return;
       }
+
       streamRef.current = stream;
       const mr = new MediaRecorder(stream);
       mediaRecorderRef.current = mr;
       mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
       mr.start();
-      recordingTimerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+      recordingTimerRef.current = setInterval(() => {
+        // Only tick if still the same session
+        if (recordingSessionRef.current === session) {
+          setRecordingSeconds(s => s + 1);
+        }
+      }, 1000);
     } catch (_err) {
-      recordingActiveRef.current = false;
-      setIsRecording(false);
+      if (recordingSessionRef.current === session) {
+        recordingActiveRef.current = false;
+        setIsRecording(false);
+      }
     }
   }
 
@@ -307,14 +324,14 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   }
 
   function handleCancelRecording() {
-    console.log('[VoiceRecorder] X cancel clicked');
+    console.log('[VoiceRecorder] X cancel clicked — stopping recording');
     stopAndReleaseRecording();
     setIsRecording(false);
     setRecordingSeconds(0);
   }
 
   function handleSendRecording() {
-    console.log('[VoiceRecorder] Send clicked');
+    console.log('[VoiceRecorder] Send clicked — stopping recording');
     stopAndReleaseRecording();
     setIsRecording(false);
     setRecordingSeconds(0);
