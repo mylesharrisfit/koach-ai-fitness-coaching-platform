@@ -8,13 +8,13 @@ import LifecycleBadge from '../LifecycleBadge';
 import LeadPipelinePanel from '../LeadPipelinePanel';
 import SummaryTab from './SummaryTab';
 import NotesTab from './NotesTab';
-import NutritionTab from './NutritionTab';
 import ProgramsTab from './ProgramsTab';
 import SessionsTab from './SessionsTab';
 import PaymentsTab from './PaymentsTab';
 import GoalsTab from './goals/GoalsTab';
 import GoalsHabitsTab from './GoalsHabitsTab';
 import MetricsTab from './MetricsTab';
+import ClientNutritionTab from './ClientNutritionTab';
 import { motion } from 'framer-motion';
 
 // ── Two-level navigation structure ──────────────────────────────────────────
@@ -35,13 +35,13 @@ const NAV_GROUPS = [
     subs: [
       { key: 'programs',   label: 'Programs' },
       { key: 'sessions',   label: 'Sessions' },
-      { key: 'nutrition',  label: 'Nutrition' },
     ],
   },
   {
     key: 'engagement',
     label: 'Engagement',
     subs: [
+      { key: 'nutrition',     label: 'Nutrition' },
       { key: 'notes',         label: 'Notes' },
       { key: 'goals',         label: 'Goals' },
       { key: 'consultation',  label: 'Consultation' },
@@ -317,7 +317,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
           {activeTab === 'programs'  && <ProgramsTab  client={localClient} />}
           {activeTab === 'sessions'  && <SessionsTab  client={localClient} />}
-          {activeTab === 'nutrition' && <NutritionTab  client={localClient} />}
+          {activeTab === 'nutrition' && <ClientNutritionTab client={localClient} nutritionPlan={nutritionPlan} checkIns={checkIns} />}
           {activeTab === 'notes'     && <NotesTab      client={localClient} />}
           {activeTab === 'goals'         && <GoalsTab         client={localClient} />}
           {activeTab === 'goals_habits_tab' && <GoalsHabitsTab client={localClient} />}
