@@ -8,8 +8,10 @@ import { toast } from 'sonner';
 import {
   Link2, UserPlus, Check, Clock, Users, ChevronDown, ChevronUp,
   Mail, Shield, AlertCircle, Send, Copy, Eye, CheckCircle2,
-  XCircle, Hourglass, Star
+  XCircle, Hourglass, Star, Sparkles, Lock, ChevronRight
 } from 'lucide-react';
+import { hasFeature } from '@/lib/subscription';
+import AIOnboardingModal from '@/components/clients/ai-onboarding/AIOnboardingModal';
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {
@@ -184,6 +186,23 @@ export default function OnboardingManager() {
     onError: () => toast.error('Failed to approve. Please try again.'),
   });
 
+  const [aiClient, setAiClient] = useState(null);
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [clientSearch, setClientSearch] = useState('');
+
+  const canAIOnboard = hasFeature(user, 'ai_onboarding');
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ['clients-list'],
+    queryFn: () => base44.entities.Client.list('-created_date', 200),
+    enabled: canAIOnboard,
+  });
+
+  const filteredClients = clients.filter(c =>
+    c.name?.toLowerCase().includes(clientSearch.toLowerCase()) ||
+    c.email?.toLowerCase().includes(clientSearch.toLowerCase())
+  );
+
   const onboardingUrl = `https://koachai.net/client-onboarding${user?.email ? `?coach=${encodeURIComponent(user.email)}` : ''}`;
 
   const copyLink = () => {
@@ -218,6 +237,114 @@ export default function OnboardingManager() {
           {copied ? 'Copied!' : 'Copy Intake Link'}
         </button>
       </div>
+
+      {/* ── AI Onboarding Section ── */}
+      {!canAIOnboard ? (
+        <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-white p-5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <Lock className="w-5 h-5 text-gray-400" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gray-700">AI Onboarding — Pro & Elite</p>
+              <p className="text-xs text-gray-400 mt-0.5">Generate a personalised program + meal plan for any existing client using AI. Requires Pro or Elite plan.</p>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 flex-shrink-0">Pro+</span>
+        </div>
+      ) : (
+        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+          {/* Section header */}
+          <div className="px-5 py-4 flex items-center gap-3"
+            style={{ background: 'linear-gradient(135deg, #0E1525, #1e2d4a)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">AI Onboarding</p>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                Select a client → answer a quick questionnaire → AI builds their starting plan → you review &amp; approve
+              </p>
+            </div>
+          </div>
+
+          <div className="p-5 space-y-4">
+            {/* Client search */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Select Client</p>
+              <input
+                type="text"
+                value={clientSearch}
+                onChange={e => { setClientSearch(e.target.value); setAiClient(null); }}
+                placeholder="Search clients by name or email…"
+                className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50"
+              />
+              {clientSearch && !aiClient && (
+                <div className="mt-1 border border-gray-100 rounded-xl overflow-hidden shadow-sm max-h-48 overflow-y-auto">
+                  {filteredClients.length === 0 ? (
+                    <p className="text-xs text-gray-400 px-3 py-3">No clients found</p>
+                  ) : filteredClients.slice(0, 8).map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => { setAiClient(c); setClientSearch(c.name); }}
+                      className="w-full text-left px-3 py-2.5 hover:bg-blue-50 flex items-center justify-between gap-2 transition-colors border-b border-gray-50 last:border-0"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
+                          style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                          {c.name?.[0]?.toUpperCase() || '?'}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-800">{c.name}</p>
+                          <p className="text-[10px] text-gray-400">{c.email}</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Selected client preview */}
+            {aiClient && (
+              <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
+                    style={{ background: '#2563EB', color: '#fff' }}>
+                    {aiClient.name?.[0]?.toUpperCase() || '?'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-blue-900">{aiClient.name}</p>
+                    <p className="text-[10px] text-blue-500">
+                      {[
+                        aiClient.goal?.replace(/_/g, ' '),
+                        aiClient.current_weight && `${aiClient.current_weight} lbs`,
+                        aiClient.height,
+                      ].filter(Boolean).join(' · ')}
+                    </p>
+                  </div>
+                </div>
+                <button onClick={() => { setAiClient(null); setClientSearch(''); }}
+                  className="text-blue-300 hover:text-blue-600 text-xs">✕</button>
+              </div>
+            )}
+
+            {/* Launch button */}
+            <button
+              onClick={() => aiClient && setShowAIModal(true)}
+              disabled={!aiClient}
+              className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ background: aiClient ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#94A3B8' }}
+            >
+              <Sparkles className="w-4 h-4" />
+              {aiClient ? `Generate AI Plan for ${aiClient.name}` : 'Select a client first'}
+            </button>
+            <p className="text-center text-[10px] text-gray-400">Nothing is saved until you review and approve</p>
+          </div>
+        </div>
+      )}
 
       {/* How it works */}
       <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 space-y-2.5">
@@ -289,6 +416,19 @@ export default function OnboardingManager() {
             </button>
           ))}
         </div>
+      )}
+
+      {/* AI Onboarding Modal */}
+      {showAIModal && aiClient && (
+        <AIOnboardingModal
+          client={aiClient}
+          onClose={() => setShowAIModal(false)}
+          onSaved={() => {
+            setShowAIModal(false);
+            setAiClient(null);
+            setClientSearch('');
+          }}
+        />
       )}
 
       {/* Response list */}
