@@ -30,7 +30,7 @@ function getTodayWeekIdx() {
   return d === 0 ? 6 : d - 1; // Mon=0 ... Sun=6
 }
 
-export default function PortalWorkouts({ user }) {
+export default function PortalWorkouts({ user, onActiveWorkoutChange }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const startTimeRef = useRef(Date.now());
@@ -99,6 +99,7 @@ export default function PortalWorkouts({ user }) {
     startTimeRef.current = Date.now();
     setExerciseLogs({});
     setActiveMode(true);
+    onActiveWorkoutChange?.(true);
   };
 
   const handleFinishWorkout = (logs) => {
@@ -146,7 +147,7 @@ export default function PortalWorkouts({ user }) {
             <ActiveWorkout
               workout={selectedWorkout}
               onFinish={handleFinishWorkout}
-              onExit={() => setActiveMode(false)}
+              onExit={() => { setActiveMode(false); onActiveWorkoutChange?.(false); }}
             />
           </motion.div>
         )}

@@ -28,7 +28,7 @@ const NAV = [
   { icon: MessageSquare, label: 'Coach',     path: '/portal/messages' },
 ];
 
-function BottomNav({ user }) {
+function BottomNav({ user, hideForActiveWorkout }) {
   const location = useLocation();
 
   const { data: clients = [] } = useQuery({
@@ -73,7 +73,7 @@ function BottomNav({ user }) {
   };
 
   const hiddenPaths = ['/portal/profile', '/portal/billing'];
-  if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
+  if (hideForActiveWorkout || hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white"
@@ -125,6 +125,7 @@ export default function ClientPortal() {
   const [user, setUser] = useState(null);
   const [showNotifPrompt, setShowNotifPrompt] = useState(false);
   const [showAddToHomePrompt, setShowAddToHomePrompt] = useState(false);
+  const [activeWorkoutMode, setActiveWorkoutMode] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -169,7 +170,7 @@ export default function ClientPortal() {
       <div className="absolute inset-0 overflow-y-auto">
         <Routes>
           <Route path="/"          element={<PortalHome user={user} />} />
-          <Route path="/workouts"  element={<PortalWorkouts user={user} />} />
+          <Route path="/workouts"  element={<PortalWorkouts user={user} onActiveWorkoutChange={setActiveWorkoutMode} />} />
           <Route path="/nutrition" element={<PortalNutritionPage user={user} />} />
           <Route path="/checkin"   element={<PortalCheckIn user={user} />} />
           <Route path="/progress"  element={<PortalProgress user={user} />} />
@@ -179,8 +180,8 @@ export default function ClientPortal() {
           <Route path="/profile"   element={<PortalProfile user={user} />} />
           <Route path="/billing"   element={<PortalBilling user={user} />} />
         </Routes>
-      </div>
-      <BottomNav user={user} />
+        </div>
+        <BottomNav user={user} hideForActiveWorkout={activeWorkoutMode} />
 
       {/* Notification permission prompt */}
       <NotificationPrompt
