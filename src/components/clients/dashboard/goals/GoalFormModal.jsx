@@ -1,0 +1,247 @@
+import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
+
+const GOAL_TYPES = [
+  { key: 'numeric',   label: 'Numeric',   desc: 'Target a number with a unit (weight, steps, reps…)' },
+  { key: 'nutrition', label: 'Nutrition', desc: 'Daily macro targets: calories, protein, carbs, fat' },
+  { key: 'simple',    label: 'Simple',    desc: 'Named goal with a manual progress % (habits, lifestyle)' },
+];
+
+const EMPTY = {
+  name: '', goal_type: 'numeric', notes: '', status: 'active',
+  target_value: '', current_value: '', unit: '',
+  progress_pct: 0,
+  calories_target: '', protein_target: '', carbs_target: '', fat_target: '',
+  calories_current: '', protein_current: '', carbs_current: '', fat_current: '',
+};
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function TextInput({ value, onChange, placeholder, type = 'text' }) {
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+    />
+  );
+}
+
+export default function GoalFormModal({ clientId, goal, onSaved, onClose }) {
+  const isEdit = !!goal?.id;
+  const [form, setForm] = useState(EMPTY);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (goal) {
+      setForm({
+        name: goal.name || '',
+        goal_type: goal.goal_type || 'numeric',
+        notes: goal.notes || '',
+        status: goal.status || 'active',
+        target_value: goal.target_value ?? '',
+        current_value: goal.current_value ?? '',
+        unit: goal.unit || '',
+        progress_pct: goal.progress_pct ?? 0,
+        calories_target: goal.calories_target ?? '',
+        protein_target: goal.protein_target ?? '',
+        carbs_target: goal.carbs_target ?? '',
+        fat_target: goal.fat_target ?? '',
+        calories_current: goal.calories_current ?? '',
+        protein_current: goal.protein_current ?? '',
+        carbs_current: goal.carbs_current ?? '',
+        fat_current: goal.fat_current ?? '',
+      });
+    } else {
+      setForm(EMPTY);
+    }
+  }, [goal]);
+
+  const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
+
+  const handleSave = async () => {
+    if (!form.name.trim()) { toast.error('Goal name is required'); return; }
+    setSaving(true);
+    const payload = {
+      client_id: clientId,
+      name: form.name.trim(),
+      goal_type: form.goal_type,
+      notes: form.notes || null,
+      status: form.status,
+    };
+    if (form.goal_type === 'numeric') {
+      payload.target_value  = form.target_value  !== '' ? Number(form.target_value)  : null;
+      payload.current_value = form.current_value !== '' ? Number(form.current_value) : null;
+      payload.unit = form.unit || null;
+    }
+    if (form.goal_type === 'simple') {
+      payload.progress_pct = Number(form.progress_pct) || 0;
+    }
+    if (form.goal_type === 'nutrition') {
+      payload.calories_target  = form.calories_target  !== '' ? Number(form.calories_target)  : null;
+      payload.protein_target   = form.protein_target   !== '' ? Number(form.protein_target)   : null;
+      payload.carbs_target     = form.carbs_target     !== '' ? Number(form.carbs_target)     : null;
+      payload.fat_target       = form.fat_target       !== '' ? Number(form.fat_target)       : null;
+      payload.calories_current = form.calories_current !== '' ? Number(form.calories_current) : null;
+      payload.protein_current  = form.protein_current  !== '' ? Number(form.protein_current)  : null;
+      payload.carbs_current    = form.carbs_current    !== '' ? Number(form.carbs_current)    : null;
+      payload.fat_current      = form.fat_current      !== '' ? Number(form.fat_current)      : null;
+    }
+
+    if (isEdit) {
+      await base44.entities.Goal.update(goal.id, payload);
+      toast.success('Goal updated');
+    } else {
+      await base44.entities.Goal.create(payload);
+      toast.success('Goal created');
+    }
+    setSaving(false);
+    onSaved();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        onClick={e => e.stopPropagation()}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h3 className="text-base font-bold text-gray-900">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
+          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="px-6 py-5 space-y-5">
+
+          {/* Goal type selector */}
+          <Field label="Goal Type">
+            <div className="grid grid-cols-3 gap-2">
+              {GOAL_TYPES.map(t => (
+                <button
+                  key={t.key}
+                  onClick={() => set('goal_type', t.key)}
+                  className={`text-left p-3 rounded-xl border-2 transition-all ${
+                    form.goal_type === t.key
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-100 bg-gray-50 hover:border-gray-200'
+                  }`}
+                >
+                  <p className={`text-xs font-bold ${form.goal_type === t.key ? 'text-blue-600' : 'text-gray-700'}`}>{t.label}</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{t.desc}</p>
+                </button>
+              ))}
+            </div>
+          </Field>
+
+          {/* Name */}
+          <Field label="Goal Name">
+            <TextInput value={form.name} onChange={v => set('name', v)} placeholder="e.g. Reach 175 lbs" />
+          </Field>
+
+          {/* ── Numeric fields ── */}
+          {form.goal_type === 'numeric' && (
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Target Value">
+                  <TextInput type="number" value={form.target_value} onChange={v => set('target_value', v)} placeholder="e.g. 175" />
+                </Field>
+                <Field label="Current Value">
+                  <TextInput type="number" value={form.current_value} onChange={v => set('current_value', v)} placeholder="e.g. 190" />
+                </Field>
+              </div>
+              <Field label="Unit">
+                <TextInput value={form.unit} onChange={v => set('unit', v)} placeholder="e.g. lbs, steps, km" />
+              </Field>
+            </div>
+          )}
+
+          {/* ── Nutrition fields ── */}
+          {form.goal_type === 'nutrition' && (
+            <div className="space-y-4">
+              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Daily Targets</p>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Calories (kcal)">
+                  <TextInput type="number" value={form.calories_target} onChange={v => set('calories_target', v)} placeholder="e.g. 2200" />
+                </Field>
+                <Field label="Protein (g)">
+                  <TextInput type="number" value={form.protein_target} onChange={v => set('protein_target', v)} placeholder="e.g. 180" />
+                </Field>
+                <Field label="Carbs (g)">
+                  <TextInput type="number" value={form.carbs_target} onChange={v => set('carbs_target', v)} placeholder="e.g. 220" />
+                </Field>
+                <Field label="Fat (g)">
+                  <TextInput type="number" value={form.fat_target} onChange={v => set('fat_target', v)} placeholder="e.g. 70" />
+                </Field>
+              </div>
+              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Current Actuals (today)</p>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Calories (kcal)">
+                  <TextInput type="number" value={form.calories_current} onChange={v => set('calories_current', v)} placeholder="e.g. 1800" />
+                </Field>
+                <Field label="Protein (g)">
+                  <TextInput type="number" value={form.protein_current} onChange={v => set('protein_current', v)} placeholder="e.g. 140" />
+                </Field>
+                <Field label="Carbs (g)">
+                  <TextInput type="number" value={form.carbs_current} onChange={v => set('carbs_current', v)} placeholder="e.g. 180" />
+                </Field>
+                <Field label="Fat (g)">
+                  <TextInput type="number" value={form.fat_current} onChange={v => set('fat_current', v)} placeholder="e.g. 55" />
+                </Field>
+              </div>
+            </div>
+          )}
+
+          {/* ── Simple fields ── */}
+          {form.goal_type === 'simple' && (
+            <Field label={`Progress: ${form.progress_pct}%`}>
+              <input
+                type="range" min={0} max={100} step={1}
+                value={form.progress_pct}
+                onChange={e => set('progress_pct', Number(e.target.value))}
+                className="w-full accent-blue-600"
+              />
+            </Field>
+          )}
+
+          {/* Notes */}
+          <Field label="Notes (optional)">
+            <textarea
+              value={form.notes}
+              onChange={e => set('notes', e.target.value)}
+              placeholder="Any additional context…"
+              rows={2}
+              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+            />
+          </Field>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100">
+          <button onClick={onClose} className="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg border border-gray-200 bg-white">
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+          >
+            {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Goal'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
