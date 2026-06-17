@@ -6,7 +6,7 @@ import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { cn } from '@/lib/utils';
 import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
 import MetricsCard from './MetricsCard';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import BodyWeightChart from './BodyWeightChart';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -131,14 +131,6 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
     { label: 'This Week', start: startOfWeek(now), end: endOfWeek(now), active: true },
     { label: 'Next Week', start: startOfWeek(new Date(now.getTime() + 7 * 86400000)), end: endOfWeek(new Date(now.getTime() + 7 * 86400000)) },
   ];
-
-  const weightData = [...checkIns]
-    .filter(ci => ci.weight)
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(-16)
-    .map(ci => ({ date: format(new Date(ci.date), 'MMM d'), weight: ci.weight }));
-
-  const currentWeight = client.current_weight || checkIns.find(ci => ci.weight)?.weight;
 
   const saveTag = async () => {
     if (!newTag.trim()) return;
@@ -322,27 +314,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           />
 
           {/* Body weight chart */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>Body Weight</p>
-              {currentWeight && <span className="text-sm font-bold text-gray-800">{currentWeight} lbs</span>}
-            </div>
-            {weightData.length >= 2 ? (
-              <ResponsiveContainer width="100%" height={140}>
-                <LineChart data={weightData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#9CA3AF' }} />
-                  <YAxis tick={{ fontSize: 9, fill: '#9CA3AF' }} domain={['auto', 'auto']} />
-                  <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #E5E7EB', padding: '4px 8px' }} />
-                  <Line type="monotone" dataKey="weight" stroke="#2563EB" strokeWidth={2.5} dot={{ r: 3, fill: '#2563EB', strokeWidth: 0 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-28 flex items-center justify-center text-xs text-gray-400">
-                Not enough weight data yet
-              </div>
-            )}
-          </div>
+          <BodyWeightChart client={client} onCurrentWeightUpdated={onClientUpdated} />
         </div>
 
         {/* ═══════════════ RIGHT COLUMN ═══════════════ */}
