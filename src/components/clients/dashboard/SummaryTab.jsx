@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
 import MetricsCard from './MetricsCard';
 import BodyWeightChart from './BodyWeightChart';
+import GoalsSummarySection from './GoalsSummarySection';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
@@ -316,6 +317,9 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
 
           {/* Body weight chart */}
           <BodyWeightChart client={client} onCurrentWeightUpdated={onClientUpdated} />
+
+          {/* Goals */}
+          <GoalsSummarySection client={client} />
         </div>
 
         {/* ═══════════════ RIGHT COLUMN ═══════════════ */}
