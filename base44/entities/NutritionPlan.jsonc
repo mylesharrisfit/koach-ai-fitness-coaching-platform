@@ -51,166 +51,14 @@
     "meals": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "meal_name": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "time": {
-            "type": "string"
-          },
-          "calories": {
-            "type": "number"
-          },
-          "protein": {
-            "type": "number"
-          },
-          "carbs": {
-            "type": "number"
-          },
-          "fats": {
-            "type": "number"
-          },
-          "instructions": {
-            "type": "string"
-          },
-          "habit_description": {
-            "type": "string"
-          },
-          "why_this_meal": {
-            "type": "string"
-          },
-          "option_b": {
-            "type": "string"
-          },
-          "option_c": {
-            "type": "string"
-          },
-          "foods": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "food_name": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "portion": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "amount_grams": {
-                  "type": "number"
-                },
-                "amount_household": {
-                  "type": "string"
-                },
-                "prep_method": {
-                  "type": "string"
-                },
-                "calories": {
-                  "type": "number"
-                },
-                "protein": {
-                  "type": "number"
-                },
-                "carbs": {
-                  "type": "number"
-                },
-                "fats": {
-                  "type": "number"
-                },
-                "swap_options": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
+        "type": "object"
       }
     },
     "rest_day_meals": {
       "type": "array",
       "description": "Meals for rest days (different from training days)",
       "items": {
-        "type": "object",
-        "properties": {
-          "meal_name": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "time": {
-            "type": "string"
-          },
-          "calories": {
-            "type": "number"
-          },
-          "protein": {
-            "type": "number"
-          },
-          "carbs": {
-            "type": "number"
-          },
-          "fats": {
-            "type": "number"
-          },
-          "instructions": {
-            "type": "string"
-          },
-          "foods": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "food_name": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "portion": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "string"
-                },
-                "amount_grams": {
-                  "type": "number"
-                },
-                "amount_household": {
-                  "type": "string"
-                },
-                "prep_method": {
-                  "type": "string"
-                },
-                "calories": {
-                  "type": "number"
-                },
-                "protein": {
-                  "type": "number"
-                },
-                "carbs": {
-                  "type": "number"
-                },
-                "fats": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        }
+        "type": "object"
       }
     },
     "hydration": {
@@ -234,29 +82,7 @@
     "supplements": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "supplement",
-              "vitamin",
-              "mineral"
-            ]
-          },
-          "dosage": {
-            "type": "string"
-          },
-          "timing": {
-            "type": "string"
-          },
-          "purpose": {
-            "type": "string"
-          }
-        }
+        "type": "object"
       }
     },
     "assigned_clients": {
@@ -289,6 +115,10 @@
     },
     "diet": {
       "type": "string"
+    },
+    "team_id": {
+      "type": "string",
+      "description": "Team ID this nutrition plan belongs to"
     }
   },
   "required": [
@@ -301,10 +131,21 @@
     "read": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "data.client_id": "{{user.id}}"
         },
         {
-          "data.client_id": "{{user.id}}"
+          "data.is_template": true
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
@@ -319,6 +160,17 @@
           "created_by_id": "{{user.id}}"
         },
         {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
+        },
+        {
           "user_condition": {
             "role": "admin"
           }
@@ -329,6 +181,17 @@
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
