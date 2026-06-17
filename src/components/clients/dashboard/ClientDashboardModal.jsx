@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { X, Edit, ExternalLink } from 'lucide-react';
@@ -39,49 +39,63 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
   const queryClient = useQueryClient();
 
   const { data: messages = [] } = useQuery({
-    queryKey: ['messages-modal', client?.id],
-    queryFn: () => base44.entities.Message.filter({ client_id: client.id }),
+    queryKey: ['messages-modal', localClient?.id],
+    queryFn: () => base44.entities.Message.filter({ client_id: localClient.id }),
     enabled: !!client?.id,
     select: d => [...d].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)),
   });
 
   const { data: program } = useQuery({
-    queryKey: ['program-modal', client?.assigned_program_id],
-    queryFn: () => base44.entities.WorkoutProgram.filter({ id: client.assigned_program_id }),
-    enabled: !!client?.assigned_program_id,
+    queryKey: ['program-modal', localClient?.assigned_program_id],
+    queryFn: () => base44.entities.WorkoutProgram.filter({ id: localClient.assigned_program_id }),
+    enabled: !!localClient?.assigned_program_id,
     select: d => d[0],
   });
 
   const { data: nutritionPlan } = useQuery({
-    queryKey: ['nutrition-modal', client?.assigned_nutrition_id],
-    queryFn: () => base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id }),
-    enabled: !!client?.assigned_nutrition_id,
+    queryKey: ['nutrition-modal', localClient?.assigned_nutrition_id],
+    queryFn: () => base44.entities.NutritionPlan.filter({ id: localClient.assigned_nutrition_id }),
+    enabled: !!localClient?.assigned_nutrition_id,
     select: d => d[0],
   });
 
   const { data: sessions = [] } = useQuery({
-    queryKey: ['sessions-modal', client?.id],
-    queryFn: () => base44.entities.Session.filter({ client_id: client.id }),
-    enabled: !!client?.id,
+    queryKey: ['sessions-modal', localClient?.id],
+    queryFn: () => base44.entities.Session.filter({ client_id: localClient.id }),
+    enabled: !!localClient?.id,
     select: d => d.sort((a, b) => new Date(b.date) - new Date(a.date)),
   });
 
   const { data: workoutSessions = [] } = useQuery({
-    queryKey: ['workout-sessions-modal', client?.id],
-    queryFn: () => base44.entities.WorkoutSession.filter({ client_id: client.id }),
-    enabled: !!client?.id,
+    queryKey: ['workout-sessions-modal', localClient?.id],
+    queryFn: () => base44.entities.WorkoutSession.filter({ client_id: localClient.id }),
+    enabled: !!localClient?.id,
   });
 
   const { data: earnedBadges = [] } = useQuery({
-    queryKey: ['badges-modal', client?.id],
-    queryFn: () => base44.entities.ClientBadge.filter({ client_id: client.id }),
-    enabled: !!client?.id,
+    queryKey: ['badges-modal', localClient?.id],
+    queryFn: () => base44.entities.ClientBadge.filter({ client_id: localClient.id }),
+    enabled: !!localClient?.id,
     select: d => [...d].sort((a, b) => new Date(b.earned_date) - new Date(a.earned_date)),
   });
 
-  if (!client) return null;
+  // Keep a local copy of the client so metric saves reflect immediately
+  // without needing the parent to re-fetch the full list.
+  const [localClient, setLocalClient] = useState(client);
 
-  const initials = getInitials(client.name);
+  // When the parent passes a new client (different id), reset local copy.
+  React.useEffect(() => { setLocalClient(client); }, [client?.id]);
+
+  const handleClientUpdated = async () => {
+    // Re-fetch the freshest copy of this single client and update local state.
+    const fresh = await base44.entities.Client.filter({ id: client.id });
+    if (fresh?.[0]) setLocalClient(fresh[0]);
+    queryClient.invalidateQueries({ queryKey: ['clients'] });
+  };
+
+  if (!localClient) return null;
+
+  const initials = getInitials(localClient.name);
 
   const tabs = [
     ...(isLead ? [{ key: 'pipeline', label: 'Pipeline' }] : []),
@@ -103,8 +117,8 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
             {/* Avatar */}
             <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden"
               style={{ background: '#1E2D45', border: '1.5px solid rgba(255,255,255,0.12)', color: '#93C5FD' }}>
-              {client.avatar_url
-                ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
+              {localClient.avatar_url
+                ? <img src={localClient.avatar_url} alt={localClient.name} className="w-full h-full object-cover" />
                 : <span>{initials}</span>
               }
             </div>
@@ -112,10 +126,10 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
             {/* Name + email */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h2 className="text-base font-bold text-white leading-tight">{client.name}</h2>
-                <LifecycleBadge status={client.lifecycle_status || 'lead'} />
+                <h2 className="text-base font-bold text-white leading-tight">{localClient.name}</h2>
+                <LifecycleBadge status={localClient.lifecycle_status || 'lead'} />
               </div>
-              <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{client.email}</p>
+              <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{localClient.email}</p>
             </div>
 
             {/* Actions */}
@@ -182,29 +196,30 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
           {tab === 'pipeline' && (
             <div className="h-full overflow-y-auto p-6 max-w-lg">
               <LeadPipelinePanel
-                client={client}
-                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
+                client={localClient}
+                onUpdate={handleClientUpdated}
               />
             </div>
           )}
 
           {tab === 'summary' && (
             <SummaryTab
-              client={client}
+              client={localClient}
               checkIns={checkIns}
               messages={messages}
               program={program}
               nutritionPlan={nutritionPlan}
               workoutSessions={workoutSessions}
               earnedBadges={earnedBadges}
+              onClientUpdated={handleClientUpdated}
             />
           )}
 
-          {tab === 'sessions' && <SessionsTab client={client} />}
-          {tab === 'payments' && <PaymentsTab client={client} />}
-          {tab === 'notes' && <NotesTab client={client} />}
-          {tab === 'nutrition' && <NutritionTab client={client} />}
-          {tab === 'programs' && <ProgramsTab client={client} />}
+          {tab === 'sessions' && <SessionsTab client={localClient} />}
+          {tab === 'payments' && <PaymentsTab client={localClient} />}
+          {tab === 'notes' && <NotesTab client={localClient} />}
+          {tab === 'nutrition' && <NutritionTab client={localClient} />}
+          {tab === 'programs' && <ProgramsTab client={localClient} />}
 
           {(tab === 'consultation' || tab === 'attachments' || tab === 'sales' || tab === 'invoices' || tab === 'forms') && (
             <div className="h-full flex items-center justify-center">

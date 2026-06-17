@@ -156,8 +156,6 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             {client.monthly_rate && <InfoRow label="Rate" value={`$${client.monthly_rate}/mo`} />}
           </div>
 
-          <MetricsCard client={client} onUpdated={onClientUpdated} />
-
           <Section title="Activity">
             <InfoRow label="Last check-in" value={lastCheckIn ? formatDistanceToNow(new Date(lastCheckIn.date), { addSuffix: true }) : 'Never'} />
             <InfoRow label="Msg sent" value={lastMsgFromCoach ? formatDistanceToNow(new Date(lastMsgFromCoach.created_date), { addSuffix: true }) : 'Never'} />
@@ -294,6 +292,9 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               </div>
             )}
           </div>
+
+          {/* Metrics card — full width in middle column */}
+          <MetricsCard client={client} onUpdated={onClientUpdated} />
 
           {/* Exercise compliance */}
           <ComplianceSection
