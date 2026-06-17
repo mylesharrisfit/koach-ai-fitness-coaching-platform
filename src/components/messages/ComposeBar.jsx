@@ -193,83 +193,7 @@ function AttachmentMenu({ onSelect, onClose }) {
   );
 }
 
-function VoiceRecorder({ onDone, onCancel }) {
-  const [seconds, setSeconds] = useState(0);
-  const mediaRecorderRef = useRef(null);
-  const streamRef = useRef(null);
-  const chunksRef = useRef([]);
-  const timerRef = useRef(null);
-
-  // Start recording on mount, clean up on unmount
-  useEffect(() => {
-    let cancelled = false;
-
-    async function startRecording() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        if (cancelled) {
-          // Component was cancelled before mic was acquired — release immediately
-          stream.getTracks().forEach(t => t.stop());
-          return;
-        }
-        streamRef.current = stream;
-        const mr = new MediaRecorder(stream);
-        mediaRecorderRef.current = mr;
-        chunksRef.current = [];
-        mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-        mr.start();
-      } catch (err) {
-        // Mic permission denied or unavailable — cancel silently
-        if (!cancelled) onCancel();
-      }
-    }
-
-    startRecording();
-
-    timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(timerRef.current);
-    };
-  }, []);
-
-  function stopAndRelease() {
-    clearInterval(timerRef.current);
-    const mr = mediaRecorderRef.current;
-    if (mr && mr.state !== 'inactive') mr.stop();
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
-      streamRef.current = null;
-    }
-    mediaRecorderRef.current = null;
-  }
-
-  function handleCancel() {
-    stopAndRelease();
-    chunksRef.current = [];
-    onCancel();
-  }
-
-  function handleSend() {
-    const mr = mediaRecorderRef.current;
-    if (mr && mr.state !== 'inactive') {
-      mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        stopAndRelease();
-        onDone(blob);
-      };
-      mr.stop();
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(t => t.stop());
-        streamRef.current = null;
-      }
-    } else {
-      stopAndRelease();
-      onDone(null);
-    }
-  }
-
+function VoiceRecorder({ seconds, onSend, onCancel }) {
   return (
     <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
       <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
@@ -281,8 +205,8 @@ function VoiceRecorder({ onDone, onCancel }) {
       <span className="text-xs font-mono text-red-600 tabular-nums flex-shrink-0">
         {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}
       </span>
-      <button onClick={handleSend} className="text-[11px] font-semibold text-red-600 hover:text-red-700 flex-shrink-0">Send</button>
-      <button onClick={handleCancel} className="text-[11px] text-[#9CA3AF] hover:text-gray-600 flex-shrink-0">✕</button>
+      <button onClick={onSend} className="text-[11px] font-semibold text-red-600 hover:text-red-700 flex-shrink-0">Send</button>
+      <button onClick={onCancel} className="text-[11px] text-[#9CA3AF] hover:text-gray-600 flex-shrink-0">✕</button>
     </div>
   );
 }
@@ -322,8 +246,80 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
   const [showVideo, setShowVideo] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [showAI, setShowAI] = useState(false);
   const textareaRef = useRef(null);
+
+  // Recording refs — live in the parent so they survive VoiceRecorder mount/unmount
+  const mediaRecorderRef = useRef(null);
+  const streamRef = useRef(null);
+  const chunksRef = useRef([]);
+  const recordingTimerRef = useRef(null);
+  // Tracks whether getUserMedia has resolved yet (to handle fast-cancel race)
+  const recordingActiveRef = useRef(false);
+
+  function stopAndReleaseRecording() {
+    console.log('[VoiceRecorder] stopAndReleaseRecording called', {
+      mr: mediaRecorderRef.current?.state,
+      stream: streamRef.current?.getTracks().map(t => t.readyState),
+    });
+    clearInterval(recordingTimerRef.current);
+    recordingTimerRef.current = null;
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== 'inactive') {
+      try { mr.stop(); } catch (_) {}
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => { t.stop(); });
+      streamRef.current = null;
+    }
+    mediaRecorderRef.current = null;
+    chunksRef.current = [];
+    recordingActiveRef.current = false;
+  }
+
+  async function startRecording() {
+    setRecordingSeconds(0);
+    chunksRef.current = [];
+    recordingActiveRef.current = true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // If cancelled before mic resolved, release immediately
+      if (!recordingActiveRef.current) {
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+      streamRef.current = stream;
+      const mr = new MediaRecorder(stream);
+      mediaRecorderRef.current = mr;
+      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      mr.start();
+      recordingTimerRef.current = setInterval(() => setRecordingSeconds(s => s + 1), 1000);
+    } catch (_err) {
+      recordingActiveRef.current = false;
+      setIsRecording(false);
+    }
+  }
+
+  function handleStartRecording() {
+    setIsRecording(true);
+    startRecording();
+  }
+
+  function handleCancelRecording() {
+    console.log('[VoiceRecorder] X cancel clicked');
+    stopAndReleaseRecording();
+    setIsRecording(false);
+    setRecordingSeconds(0);
+  }
+
+  function handleSendRecording() {
+    console.log('[VoiceRecorder] Send clicked');
+    stopAndReleaseRecording();
+    setIsRecording(false);
+    setRecordingSeconds(0);
+    onSend();
+  }
   const isEmpty = !value.trim();
 
   // Detect if last message is from client (show AI chip)
@@ -433,7 +429,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
           <div className="flex-1" />
 
           <FeatureLock feature="voice_video_messages" className="rounded-lg">
-            <button onClick={() => setIsRecording(true)}
+            <button onClick={handleStartRecording}
               className="flex items-center gap-1 text-[11px] text-[#6B7280] hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors" title="Record voice message">
               <Mic className="w-3.5 h-3.5" />
             </button>
@@ -464,9 +460,10 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         {isRecording ? (
           <div className="flex-1">
             <VoiceRecorder
-            onDone={(_blob) => { setIsRecording(false); onSend(); }}
-            onCancel={() => setIsRecording(false)}
-          />
+              seconds={recordingSeconds}
+              onSend={handleSendRecording}
+              onCancel={handleCancelRecording}
+            />
           </div>
         ) : (
           <textarea ref={textareaRef} value={value}
