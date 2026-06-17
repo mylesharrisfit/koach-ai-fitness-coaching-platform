@@ -6,6 +6,10 @@
       "type": "string",
       "description": "Client ID this goal belongs to"
     },
+    "team_id": {
+      "type": "string",
+      "description": "Team ID this goal belongs to"
+    },
     "name": {
       "type": "string",
       "description": "Goal name e.g. 'Reach 175 lbs' or 'Morning Vitamins'"
@@ -86,7 +90,15 @@
           "created_by_id": "{{user.id}}"
         },
         {
-          "data.client_id": "{{user.id}}"
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
@@ -101,6 +113,17 @@
           "created_by_id": "{{user.id}}"
         },
         {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
+        },
+        {
           "user_condition": {
             "role": "admin"
           }
@@ -111,6 +134,17 @@
       "$or": [
         {
           "created_by_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
