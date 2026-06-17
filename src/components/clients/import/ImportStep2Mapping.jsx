@@ -3,10 +3,10 @@ import { CheckCircle2, AlertTriangle, HelpCircle, Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const CONFIDENCE_CONFIG = {
-  high:     { icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50', label: 'High confidence' },
-  medium:   { icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-50', label: 'Medium confidence' },
-  low:      { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50', label: 'Low confidence' },
-  unmapped: { icon: HelpCircle, color: 'text-gray-400', bg: 'bg-gray-50', label: 'Unmapped — will go to notes' },
+  high:     { icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50', label: 'High' },
+  medium:   { icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-50', label: 'Medium' },
+  low:      { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50', label: 'Low' },
+  unmapped: { icon: HelpCircle, color: 'text-gray-400', bg: 'bg-gray-50', label: 'Unmapped → notes' },
 };
 
 export default function ImportStep2Mapping({ headers, mapping, confidence, koachFields, onMappingChange, aiLoading }) {
@@ -20,7 +20,8 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
     );
   }
 
-  const usedFields = new Set(Object.values(mapping).filter(Boolean));
+  // __last_name__ is a special sentinel meaning "merged into name" — don't count as a used field
+  const usedFields = new Set(Object.values(mapping).filter(f => f && f !== '__last_name__'));
 
   return (
     <div className="space-y-4">
@@ -56,31 +57,37 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                 <div className="text-gray-300 text-xs">→</div>
 
                 {/* KOACH field dropdown */}
-                <Select
-                  value={mapped || '__unmapped__'}
-                  onValueChange={(val) => onMappingChange(col, val === '__unmapped__' ? null : val)}
-                >
-                  <SelectTrigger className="h-8 text-xs">
-                    <SelectValue placeholder="Select field…" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__unmapped__">
-                      <span className="text-gray-400 italic">Unmapped (→ notes)</span>
-                    </SelectItem>
-                    {(koachFields || []).map(f => (
-                      <SelectItem
-                        key={f.key}
-                        value={f.key}
-                        disabled={usedFields.has(f.key) && mapped !== f.key}
-                      >
-                        {f.label}
-                        {usedFields.has(f.key) && mapped !== f.key && (
-                          <span className="text-gray-400 ml-1">(already mapped)</span>
-                        )}
+                {mapped === '__last_name__' ? (
+                  <div className="h-8 px-3 flex items-center text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md">
+                    Last Name → merged into Name ✓
+                  </div>
+                ) : (
+                  <Select
+                    value={mapped || '__unmapped__'}
+                    onValueChange={(val) => onMappingChange(col, val === '__unmapped__' ? null : val)}
+                  >
+                    <SelectTrigger className="h-8 text-xs">
+                      <SelectValue placeholder="Select field…" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="__unmapped__">
+                        <span className="text-gray-400 italic">Unmapped (→ notes)</span>
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      {(koachFields || []).map(f => (
+                        <SelectItem
+                          key={f.key}
+                          value={f.key}
+                          disabled={usedFields.has(f.key) && mapped !== f.key}
+                        >
+                          {f.label}
+                          {usedFields.has(f.key) && mapped !== f.key && (
+                            <span className="text-gray-400 ml-1">(already mapped)</span>
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
 
                 {/* Confidence badge */}
                 <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${bg} ${color} w-fit`}>
@@ -93,10 +100,17 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
         </div>
       </div>
 
-      <p className="text-xs text-gray-400">
-        {Object.values(mapping).filter(Boolean).length} of {headers.length} columns mapped ·{' '}
-        {headers.length - Object.values(mapping).filter(Boolean).length} will be stored in notes
-      </p>
+      {(() => {
+        const mappedCount = Object.values(mapping).filter(f => f && f !== '__last_name__').length
+          + (Object.values(mapping).includes('__last_name__') ? 1 : 0); // last name counts as mapped
+        const unmapped = headers.length - mappedCount;
+        return (
+          <p className="text-xs text-gray-400">
+            {mappedCount} of {headers.length} columns mapped ·{' '}
+            {unmapped > 0 ? `${unmapped} will be stored in notes` : 'all columns mapped ✓'}
+          </p>
+        );
+      })()}
     </div>
   );
 }

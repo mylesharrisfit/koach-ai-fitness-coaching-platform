@@ -105,8 +105,11 @@ Deno.serve(async (req) => {
     const rows = job.all_rows || [];
 
     // Build reverse map: koach_field -> csv_header
+    // __last_name__ is a special sentinel for "Last Name" columns to be merged into name
     const reverseMap = {};
+    let lastNameCol = null;
     Object.entries(mapping).forEach(([csvCol, koachField]) => {
+      if (koachField === '__last_name__') { lastNameCol = csvCol; return; }
       if (koachField) reverseMap[koachField] = csvCol;
     });
 
@@ -133,7 +136,12 @@ Deno.serve(async (req) => {
         return col ? (row[col] ?? null) : null;
       };
 
-      const name = getVal('name');
+      // Merge first name + last name if both present
+      let name = getVal('name');
+      if (lastNameCol && row[lastNameCol]) {
+        const lastName = row[lastNameCol].trim();
+        name = name ? `${name.trim()} ${lastName}` : lastName;
+      }
       const email = getVal('email');
 
       // Skip rows with no name or no email
