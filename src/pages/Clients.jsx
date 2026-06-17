@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal, AlignJustify, LayoutList, Upload } from 'lucide-react';
+import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal, AlignJustify, LayoutList, Upload, Trash2 } from 'lucide-react';
 import ImportClientsModal from '../components/clients/import/ImportClientsModal';
+import ImportCleanupModal from '../components/clients/import/ImportCleanupModal';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAtRiskClients } from '@/lib/riskEngine';
@@ -46,6 +47,7 @@ export default function Clients() {
   const [leadPanelClient, setLeadPanelClient] = useState(null);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [showImport, setShowImport] = useState(false);
+  const [showCleanup, setShowCleanup] = useState(false);
   const queryClient = useQueryClient();
 
   // View mode: compact vs expanded. Persisted in localStorage.
@@ -254,6 +256,15 @@ export default function Clients() {
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>{counts.active || 0} active · {counts.at_risk || 0} at-risk · {counts.lead || 0} leads</p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowCleanup(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
+            style={{ background: 'rgba(239,68,68,0.15)', color: '#fca5a5', border: '1px solid rgba(239,68,68,0.25)' }}
+            title="Review & delete test import records"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="hidden sm:inline">Import Cleanup</span>
+          </button>
           <button
             onClick={() => setShowImport(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
@@ -519,6 +530,12 @@ export default function Clients() {
         onOpenChange={setShowImport}
         existingEmails={clients.map(c => c.email).filter(Boolean)}
         onImportComplete={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
+      />
+      <ImportCleanupModal
+        open={showCleanup}
+        onOpenChange={setShowCleanup}
+        clients={clients}
+        onDeleted={() => queryClient.invalidateQueries({ queryKey: ['clients'] })}
       />
 
       {/* Client dashboard modal */}
