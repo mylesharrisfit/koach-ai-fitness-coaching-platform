@@ -195,10 +195,81 @@ function AttachmentMenu({ onSelect, onClose }) {
 
 function VoiceRecorder({ onDone, onCancel }) {
   const [seconds, setSeconds] = useState(0);
+  const mediaRecorderRef = useRef(null);
+  const streamRef = useRef(null);
+  const chunksRef = useRef([]);
+  const timerRef = useRef(null);
+
+  // Start recording on mount, clean up on unmount
   useEffect(() => {
-    const t = setInterval(() => setSeconds(s => s + 1), 1000);
-    return () => clearInterval(t);
+    let cancelled = false;
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (cancelled) {
+          // Component was cancelled before mic was acquired — release immediately
+          stream.getTracks().forEach(t => t.stop());
+          return;
+        }
+        streamRef.current = stream;
+        const mr = new MediaRecorder(stream);
+        mediaRecorderRef.current = mr;
+        chunksRef.current = [];
+        mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+        mr.start();
+      } catch (err) {
+        // Mic permission denied or unavailable — cancel silently
+        if (!cancelled) onCancel();
+      }
+    }
+
+    startRecording();
+
+    timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timerRef.current);
+    };
   }, []);
+
+  function stopAndRelease() {
+    clearInterval(timerRef.current);
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== 'inactive') mr.stop();
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    mediaRecorderRef.current = null;
+  }
+
+  function handleCancel() {
+    stopAndRelease();
+    chunksRef.current = [];
+    onCancel();
+  }
+
+  function handleSend() {
+    const mr = mediaRecorderRef.current;
+    if (mr && mr.state !== 'inactive') {
+      mr.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        stopAndRelease();
+        onDone(blob);
+      };
+      mr.stop();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop());
+        streamRef.current = null;
+      }
+    } else {
+      stopAndRelease();
+      onDone(null);
+    }
+  }
+
   return (
     <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
       <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
@@ -210,8 +281,8 @@ function VoiceRecorder({ onDone, onCancel }) {
       <span className="text-xs font-mono text-red-600 tabular-nums flex-shrink-0">
         {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}
       </span>
-      <button onClick={onDone} className="text-[11px] font-semibold text-red-600 hover:text-red-700 flex-shrink-0">Send</button>
-      <button onClick={onCancel} className="text-[11px] text-[#9CA3AF] hover:text-gray-600 flex-shrink-0">✕</button>
+      <button onClick={handleSend} className="text-[11px] font-semibold text-red-600 hover:text-red-700 flex-shrink-0">Send</button>
+      <button onClick={handleCancel} className="text-[11px] text-[#9CA3AF] hover:text-gray-600 flex-shrink-0">✕</button>
     </div>
   );
 }
@@ -362,8 +433,8 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
           <div className="flex-1" />
 
           <FeatureLock feature="voice_video_messages" className="rounded-lg">
-            <button onMouseDown={() => setIsRecording(true)} onTouchStart={() => setIsRecording(true)}
-              className="flex items-center gap-1 text-[11px] text-[#6B7280] hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors" title="Hold to record">
+            <button onClick={() => setIsRecording(true)}
+              className="flex items-center gap-1 text-[11px] text-[#6B7280] hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors" title="Record voice message">
               <Mic className="w-3.5 h-3.5" />
             </button>
           </FeatureLock>
@@ -392,7 +463,10 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
 
         {isRecording ? (
           <div className="flex-1">
-            <VoiceRecorder onDone={() => { setIsRecording(false); onSend(); }} onCancel={() => setIsRecording(false)} />
+            <VoiceRecorder
+            onDone={(_blob) => { setIsRecording(false); onSend(); }}
+            onCancel={() => setIsRecording(false)}
+          />
           </div>
         ) : (
           <textarea ref={textareaRef} value={value}
