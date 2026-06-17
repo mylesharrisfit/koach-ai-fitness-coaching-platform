@@ -67,13 +67,35 @@
       "format": "date"
     },
     "current_weight": {
-      "type": "number"
+      "type": "number",
+      "description": "Current body weight (lbs)"
+    },
+    "starting_weight": {
+      "type": "number",
+      "description": "Starting / baseline body weight (lbs)"
     },
     "target_weight": {
-      "type": "number"
+      "type": "number",
+      "description": "Target body weight (lbs)"
     },
     "height": {
-      "type": "string"
+      "type": "string",
+      "description": "Height e.g. 5'10\" or 178cm"
+    },
+    "sex": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "other",
+        "prefer_not_to_say"
+      ],
+      "description": "Biological sex / gender"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth (YYYY-MM-DD)"
     },
     "notes": {
       "type": "string",

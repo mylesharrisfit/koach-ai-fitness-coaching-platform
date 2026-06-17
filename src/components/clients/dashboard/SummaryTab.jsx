@@ -5,6 +5,7 @@ import { compositeAdherenceScore } from '@/lib/adherence';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { cn } from '@/lib/utils';
 import { Plus, Bell, Dumbbell, Salad } from 'lucide-react';
+import MetricsCard from './MetricsCard';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -113,7 +114,7 @@ const TAG_STYLES = {
 };
 
 // ─────────────────────────────────────────────────────────
-export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions, earnedBadges = [], onAwardBadge }) {
+export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions, earnedBadges = [], onAwardBadge, onClientUpdated }) {
   const [newTag, setNewTag] = useState('');
   const [addingTag, setAddingTag] = useState(false);
 
@@ -162,6 +163,8 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             {client.start_date && <InfoRow label="Client since" value={format(new Date(client.start_date), 'MMM d, yyyy')} />}
             {client.monthly_rate && <InfoRow label="Rate" value={`$${client.monthly_rate}/mo`} />}
           </div>
+
+          <MetricsCard client={client} onUpdated={onClientUpdated} />
 
           <Section title="Activity">
             <InfoRow label="Last check-in" value={lastCheckIn ? formatDistanceToNow(new Date(lastCheckIn.date), { addSuffix: true }) : 'Never'} />

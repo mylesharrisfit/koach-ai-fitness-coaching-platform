@@ -1,0 +1,170 @@
+import React, { useState } from 'react';
+import { Pencil, Check, X } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
+import { differenceInYears, parseISO } from 'date-fns';
+
+const SEX_LABELS = {
+  male: 'Male',
+  female: 'Female',
+  other: 'Other',
+  prefer_not_to_say: 'Prefer not to say',
+};
+
+function calcAge(dob) {
+  if (!dob) return null;
+  try {
+    return differenceInYears(new Date(), parseISO(dob));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * An inline-editable card showing the client's baseline body metrics:
+ * height, current weight, starting weight, target weight, sex, date of birth.
+ * Stored directly on the Client entity — changes are saved immediately on confirm.
+ */
+export default function MetricsCard({ client, onUpdated }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [draft, setDraft] = useState({});
+
+  const startEdit = () => {
+    setDraft({
+      height: client.height || '',
+      current_weight: client.current_weight ?? '',
+      starting_weight: client.starting_weight ?? '',
+      target_weight: client.target_weight ?? '',
+      sex: client.sex || '',
+      date_of_birth: client.date_of_birth || '',
+    });
+    setEditing(true);
+  };
+
+  const cancel = () => { setEditing(false); setDraft({}); };
+
+  const save = async () => {
+    setSaving(true);
+    const patch = {
+      height: draft.height || null,
+      current_weight: draft.current_weight !== '' ? Number(draft.current_weight) : null,
+      starting_weight: draft.starting_weight !== '' ? Number(draft.starting_weight) : null,
+      target_weight: draft.target_weight !== '' ? Number(draft.target_weight) : null,
+      sex: draft.sex || null,
+      date_of_birth: draft.date_of_birth || null,
+    };
+    // Remove nulls to avoid overwriting with null if field is intentionally kept empty
+    Object.keys(patch).forEach(k => { if (patch[k] === null) delete patch[k]; });
+    await base44.entities.Client.update(client.id, patch);
+    toast.success('Metrics saved');
+    setSaving(false);
+    setEditing(false);
+    onUpdated?.();
+  };
+
+  const age = calcAge(client.date_of_birth);
+
+  return (
+    <div>
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="w-0.5 h-3 rounded-full bg-blue-600" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Metrics</p>
+        </div>
+        {!editing && (
+          <button
+            onClick={startEdit}
+            className="flex items-center gap-1 text-[10px] font-semibold text-blue-500 hover:text-blue-700 transition-colors"
+          >
+            <Pencil className="w-3 h-3" /> Edit
+          </button>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="space-y-2 bg-blue-50 rounded-xl p-3 border border-blue-100">
+          <MetricInput label="Height" placeholder="e.g. 5'10&quot; or 178cm"
+            value={draft.height} onChange={v => setDraft(d => ({ ...d, height: v }))} type="text" />
+          <MetricInput label="Current weight (lbs)" placeholder="e.g. 185"
+            value={draft.current_weight} onChange={v => setDraft(d => ({ ...d, current_weight: v }))} type="number" />
+          <MetricInput label="Starting weight (lbs)" placeholder="e.g. 200"
+            value={draft.starting_weight} onChange={v => setDraft(d => ({ ...d, starting_weight: v }))} type="number" />
+          <MetricInput label="Target weight (lbs)" placeholder="e.g. 175"
+            value={draft.target_weight} onChange={v => setDraft(d => ({ ...d, target_weight: v }))} type="number" />
+
+          <div>
+            <label className="text-[10px] font-semibold text-gray-500 block mb-0.5">Sex</label>
+            <select
+              value={draft.sex}
+              onChange={e => setDraft(d => ({ ...d, sex: e.target.value }))}
+              className="w-full text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white outline-none focus:ring-1 focus:ring-blue-400"
+            >
+              <option value="">— select —</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+
+          <MetricInput label="Date of birth" placeholder=""
+            value={draft.date_of_birth} onChange={v => setDraft(d => ({ ...d, date_of_birth: v }))} type="date" />
+
+          <div className="flex gap-2 pt-1">
+            <button
+              onClick={save}
+              disabled={saving}
+              className="flex items-center gap-1 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <Check className="w-3.5 h-3.5" /> {saving ? 'Saving…' : 'Save'}
+            </button>
+            <button onClick={cancel} disabled={saving}
+              className="flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 bg-white transition-colors">
+              <X className="w-3.5 h-3.5" /> Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          <MetricRow label="Height" value={client.height} />
+          <MetricRow label="Current weight" value={client.current_weight ? `${client.current_weight} lbs` : null} />
+          <MetricRow label="Starting weight" value={client.starting_weight ? `${client.starting_weight} lbs` : null} />
+          <MetricRow label="Target weight" value={client.target_weight ? `${client.target_weight} lbs` : null} />
+          <MetricRow label="Sex" value={SEX_LABELS[client.sex] || null} />
+          <MetricRow
+            label="Date of birth"
+            value={client.date_of_birth
+              ? `${client.date_of_birth}${age !== null ? ` (${age} yrs)` : ''}`
+              : null}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MetricRow({ label, value }) {
+  return (
+    <div className="flex items-center justify-between gap-2 py-0.5">
+      <span className="text-xs text-gray-400 flex-shrink-0">{label}</span>
+      <span className="text-xs font-semibold text-gray-700 text-right truncate">{value ?? '—'}</span>
+    </div>
+  );
+}
+
+function MetricInput({ label, value, onChange, type, placeholder }) {
+  return (
+    <div>
+      <label className="text-[10px] font-semibold text-gray-500 block mb-0.5">{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white outline-none focus:ring-1 focus:ring-blue-400"
+      />
+    </div>
+  );
+}
