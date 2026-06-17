@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, LayoutTemplate, Target, CheckCircle2, Trophy, Sparkles } from 'lucide-react';
+import { Plus, LayoutTemplate, Target, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalCard from './goals/GoalCard';
 import GoalFormModal from './goals/GoalFormModal';
 import GoalTemplatesManager from './goals/GoalTemplatesManager';
+import HabitsSection from './habits/HabitsSection';
 
 // ── Sub-sections ─────────────────────────────────────────────────────────────
 const SECTIONS = [
@@ -187,25 +188,10 @@ export default function GoalsHabitsTab({ client }) {
         </div>
       )}
 
-      {/* ── Habits section (placeholder) ── */}
+      {/* ── Habits section ── */}
       {section === 'habits' && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center max-w-sm px-6">
-            <div className="w-16 h-16 rounded-2xl bg-white border border-gray-100 flex items-center justify-center mx-auto mb-4 shadow-sm">
-              <Sparkles className="w-7 h-7 text-purple-400" />
-            </div>
-            <p className="text-sm font-bold text-gray-700 mb-2">Habits — Coming Soon</p>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Daily habit tracking, recurring task streaks, and completion logs will be available here in a future update.
-            </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {['Morning vitamins', 'Drink 3L water', 'Sleep 8hrs', '10k steps'].map(h => (
-                <span key={h} className="text-[11px] font-semibold px-3 py-1.5 rounded-full bg-purple-50 text-purple-500 border border-purple-100 opacity-60">
-                  {h}
-                </span>
-              ))}
-            </div>
-          </div>
+        <div className="flex-1 overflow-hidden">
+          <HabitsSection client={client} />
         </div>
       )}
 
