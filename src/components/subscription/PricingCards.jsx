@@ -26,7 +26,7 @@ const TIER_FEATURES = {
   },
   pro: {
     inherited: ['Everything in Starter'],
-    unique: ['✨ Unlimited AI program builder', '✨ Unlimited AI meal plan builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+    unique: ['✨ Unlimited AI program builder', '✨ Unlimited AI meal plan builder', '✨ AI Onboarding — auto-generate a starting program & meal plan for any client', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
   },
   elite: {
     inherited: ['Everything in Pro'],
