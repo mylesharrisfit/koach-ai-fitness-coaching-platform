@@ -6,7 +6,6 @@ import { Plus, LayoutTemplate, Target, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalCard from './goals/GoalCard';
 import GoalFormModal from './goals/GoalFormModal';
-import GoalTemplatesManager from './goals/GoalTemplatesManager';
 import TemplatePickerSheet from './goals/TemplatePickerSheet';
 import HabitsSection from './habits/HabitsSection';
 
@@ -20,7 +19,6 @@ export default function GoalsHabitsTab({ client }) {
   const [section, setSection] = useState('goals');
   const [formOpen, setFormOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
-  const [showTemplatesManager, setShowTemplatesManager] = useState(false);
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [prefilledTemplate, setPrefilledTemplate] = useState(null);
   const queryClient = useQueryClient();
@@ -110,10 +108,10 @@ export default function GoalsHabitsTab({ client }) {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setShowTemplatesManager(true)}
+                  onClick={() => setShowTemplatePicker(true)}
                   className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 bg-white transition-colors"
                 >
-                  <LayoutTemplate className="w-3.5 h-3.5" /> Manage Templates
+                  <LayoutTemplate className="w-3.5 h-3.5" /> Templates
                 </button>
                 <button
                   onClick={handleAdd}
@@ -208,10 +206,6 @@ export default function GoalsHabitsTab({ client }) {
       )}
 
       {/* ── Portals ── */}
-      {showTemplatesManager && ReactDOM.createPortal(
-        <GoalTemplatesManager onClose={() => setShowTemplatesManager(false)} />,
-        document.body
-      )}
       {showTemplatePicker && ReactDOM.createPortal(
         <TemplatePickerSheet
           onSelect={handleTemplateSelected}
