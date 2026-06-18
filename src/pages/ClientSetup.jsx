@@ -58,14 +58,11 @@ export default function ClientSetup() {
   useEffect(() => {
     if (!token) { setStatus('invalid'); return; }
 
-    base44.asServiceRole.entities.Client.filter({ invite_token: token }, '-created_date', 1)
-      .then(results => {
-        const match = results[0];
-        if (!match) { setStatus('invalid'); return; }
-        if (!match.invite_token_expires || new Date(match.invite_token_expires) < new Date()) {
-          setStatus('invalid'); return;
-        }
-        setClient(match);
+    base44.functions.invoke('validateInviteToken', { token })
+      .then(res => {
+        const data = res.data;
+        if (!data?.valid) { setStatus('invalid'); return; }
+        setClient(data.client);
         setStatus('valid');
       })
       .catch(() => setStatus('invalid'));
