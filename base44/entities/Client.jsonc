@@ -14,6 +14,15 @@
       "type": "string",
       "description": "User ID of the app user who owns this client record"
     },
+    "invite_token": {
+      "type": "string",
+      "description": "Secure random token for the client portal invite link"
+    },
+    "invite_token_expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Expiry datetime for the invite token (ISO 8601)"
+    },
     "phone": {
       "type": "string",
       "description": "Phone number"
@@ -155,7 +164,7 @@
     "read": {
       "$or": [
         {
-          "data.email": "{{user.email}}"
+          "data.user_id": "{{user.id}}"
         },
         {
           "related_entity": {
@@ -192,7 +201,7 @@
           }
         },
         {
-          "data.email": "{{user.email}}"
+          "data.user_id": "{{user.id}}"
         },
         {
           "user_condition": {
