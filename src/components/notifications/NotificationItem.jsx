@@ -4,14 +4,15 @@ import { formatDistanceToNow, isToday, isYesterday, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 const CATEGORY_CONFIG = {
-  client:  { bg: '#EFF6FF', color: '#2563EB', emoji: '👤' },
-  message: { bg: '#F5F3FF', color: '#7C3AED', emoji: '💬' },
-  payment: { bg: '#ECFDF5', color: '#059669', emoji: '💳' },
-  atrisk:  { bg: '#FFF7ED', color: '#D97706', emoji: '⚠️' },
-  ai:      { bg: '#EEF2FF', color: '#4F46E5', emoji: '🤖' },
-  checkin: { bg: '#F0FDFA', color: '#0D9488', emoji: '📋' },
-  schedule:{ bg: '#FEFCE8', color: '#CA8A04', emoji: '📅' },
-  system:  { bg: '#F8FAFC', color: '#64748B', emoji: '⚙️' },
+  client:      { bg: '#EFF6FF', color: '#2563EB', emoji: '👤' },
+  message:     { bg: '#F5F3FF', color: '#7C3AED', emoji: '💬' },
+  payment:     { bg: '#ECFDF5', color: '#059669', emoji: '💳' },
+  atrisk:      { bg: '#FFF7ED', color: '#D97706', emoji: '⚠️' },
+  ai:          { bg: '#EEF2FF', color: '#4F46E5', emoji: '🤖' },
+  checkin:     { bg: '#F0FDFA', color: '#0D9488', emoji: '📋' },
+  schedule:    { bg: '#FEFCE8', color: '#CA8A04', emoji: '📅' },
+  achievement: { bg: '#FFFBEB', color: '#D97706', emoji: '🏆' },
+  system:      { bg: '#F8FAFC', color: '#64748B', emoji: '⚙️' },
 };
 
 function timeLabel(dateStr) {

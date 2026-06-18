@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 import NotificationBell from '@/components/notifications/NotificationBell';
-import AchievementBell from '@/components/achievements/AchievementBell';
+
 import {
   LayoutDashboard, Users, MessageSquare, Calendar,
   Dumbbell, Salad, ClipboardList,
@@ -213,7 +213,6 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
             </div>
             <div className="flex items-center gap-1">
-              <AchievementBell />
               <NotificationBell />
             </div>
           </>

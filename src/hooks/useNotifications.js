@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState([]);
+  const [badges, setBadges] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const PAGE_SIZE = 50;
 
   const fetchNotifications = useCallback(async (currentUser, reset = false) => {
@@ -21,14 +21,23 @@ export function useNotifications() {
     });
   }, []);
 
+  const fetchBadges = useCallback(async () => {
+    const all = await base44.entities.ClientBadge.list('-created_date', 20);
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    setBadges(all.filter(b => {
+      const d = new Date(b.earned_date || b.created_date).getTime();
+      return d > cutoff;
+    }));
+  }, []);
+
   useEffect(() => {
     base44.auth.me().then(u => {
       setUser(u);
-      fetchNotifications(u, true).finally(() => setLoading(false));
+      Promise.all([fetchNotifications(u, true), fetchBadges()]).finally(() => setLoading(false));
     }).catch(() => setLoading(false));
-  }, [fetchNotifications]);
+  }, [fetchNotifications, fetchBadges]);
 
-  // Real-time subscription
+  // Real-time subscription for notifications
   useEffect(() => {
     if (!user) return;
     const unsub = base44.entities.Notification.subscribe((event) => {
@@ -44,7 +53,26 @@ export function useNotifications() {
     return unsub;
   }, [user]);
 
+  // Combine notifications + recent badges into one feed
+  const combined = useMemo(() => {
+    const badgeNotifs = badges.map(b => ({
+      id: `badge_${b.id}`,
+      category: 'achievement',
+      is_read: true,
+      is_dismissed: false,
+      title: `${b.client_name || 'Client'} earned a badge!`,
+      body: (b.badge_key || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      created_date: b.earned_date || b.created_date,
+      link: '/adherence',
+      client_name: b.client_name,
+    }));
+    return [...notifications, ...badgeNotifs].sort((a, b) =>
+      new Date(b.created_date) - new Date(a.created_date)
+    );
+  }, [notifications, badges]);
+
   const markRead = useCallback(async (id) => {
+    if (String(id).startsWith('badge_')) return;
     await base44.entities.Notification.update(id, { is_read: true });
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
   }, []);
@@ -56,6 +84,10 @@ export function useNotifications() {
   }, [notifications]);
 
   const dismiss = useCallback(async (id) => {
+    if (String(id).startsWith('badge_')) {
+      setBadges(prev => prev.filter(b => `badge_${b.id}` !== id));
+      return;
+    }
     await base44.entities.Notification.update(id, { is_dismissed: true, is_read: true });
     setNotifications(prev => prev.filter(n => n.id !== id));
   }, []);
@@ -63,9 +95,10 @@ export function useNotifications() {
   const dismissAll = useCallback(async () => {
     await Promise.all(notifications.map(n => base44.entities.Notification.update(n.id, { is_dismissed: true, is_read: true })));
     setNotifications([]);
+    setBadges([]);
   }, [notifications]);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
-  return { notifications, unreadCount, loading, markRead, markAllRead, dismiss, dismissAll };
+  return { notifications: combined, unreadCount, loading, markRead, markAllRead, dismiss, dismissAll };
 }

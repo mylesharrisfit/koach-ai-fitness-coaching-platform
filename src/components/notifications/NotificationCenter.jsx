@@ -6,13 +6,14 @@ import { isToday, isYesterday, isThisWeek, parseISO } from 'date-fns';
 import NotificationItem from './NotificationItem';
 
 const TABS = [
-  { id: 'all',      label: 'All' },
-  { id: 'unread',   label: 'Unread' },
-  { id: 'client',   label: 'Clients' },
-  { id: 'payment',  label: 'Payments' },
-  { id: 'message',  label: 'Messages' },
-  { id: 'ai',       label: 'AI' },
-  { id: 'system',   label: 'System' },
+  { id: 'all',         label: 'All' },
+  { id: 'unread',      label: 'Unread' },
+  { id: 'client',      label: 'Clients' },
+  { id: 'achievement', label: 'Achievements' },
+  { id: 'payment',     label: 'Payments' },
+  { id: 'message',     label: 'Messages' },
+  { id: 'ai',          label: 'AI' },
+  { id: 'system',      label: 'System' },
 ];
 
 function groupNotifications(list) {

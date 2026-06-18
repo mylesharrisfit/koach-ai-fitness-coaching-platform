@@ -52,10 +52,14 @@ export default function NotificationBell() {
     if (!bellRef.current) return;
     const rect = bellRef.current.getBoundingClientRect();
     const panelWidth = 420;
-    const rightEdge = window.innerWidth - rect.right;
+    // Position panel below the bell, ensure it stays within viewport
+    let left = rect.left;
+    if (left + panelWidth > window.innerWidth - 8) {
+      left = window.innerWidth - panelWidth - 8;
+    }
     setPanelPos({
       top: rect.bottom + 8,
-      right: Math.max(8, rightEdge - 4),
+      left: Math.max(8, left),
     });
   }, []);
 
@@ -138,7 +142,7 @@ export default function NotificationBell() {
             {open && (
               <div
                 className="fixed z-[9999]"
-                style={{ top: panelPos.top, right: panelPos.right }}
+                style={{ top: panelPos.top, left: panelPos.left }}
               >
                 <NotificationCenter
                   notifications={notifications}
