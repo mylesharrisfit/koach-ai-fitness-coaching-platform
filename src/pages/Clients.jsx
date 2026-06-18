@@ -147,11 +147,41 @@ export default function Clients() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Client.delete(id),
+    mutationFn: async (id) => {
+      // Delete all related records in parallel before removing the client
+      const deleteRelated = async (entityName, field) => {
+        try {
+          const records = await base44.entities[entityName].filter({ [field]: id });
+          await Promise.all(records.map(r => base44.entities[entityName].delete(r.id)));
+        } catch (e) {
+          // Non-blocking: log and continue
+          console.warn(`Failed to delete ${entityName} for client ${id}:`, e);
+        }
+      };
+
+      await Promise.all([
+        deleteRelated('Message', 'client_id'),
+        deleteRelated('WeighIn', 'client_id'),
+        deleteRelated('Goal', 'client_id'),
+        deleteRelated('Habit', 'client_id'),
+        deleteRelated('HabitCompletion', 'client_id'),
+        deleteRelated('NutritionPlan', 'client_id'),
+        deleteRelated('FoodLog', 'client_id'),
+        deleteRelated('CheckIn', 'client_id'),
+        deleteRelated('WorkoutSession', 'client_id'),
+        deleteRelated('DailyLog', 'client_id'),
+        deleteRelated('InBodyScan', 'client_id'),
+        deleteRelated('OnboardingResponse', 'client_id'),
+        deleteRelated('CommunityPost', 'author_id'),
+      ]);
+
+      await base44.entities.Client.delete(id);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      toast.success('Client deleted');
+      toast.success('Client and all associated data deleted');
     },
+    onError: () => toast.error('Failed to delete client'),
   });
 
   const allTags = useMemo(() => {
