@@ -50,6 +50,7 @@ import PremiumOnboarding from './pages/PremiumOnboarding';
 import ClientPortal from './pages/ClientPortal';
 import ClientWorkoutView from './pages/ClientWorkoutView';
 import ClientInviteJoin from './pages/ClientInviteJoin';
+import ClientSetup from './pages/ClientSetup';
 import EmailCenter from './pages/EmailCenter';
 import AIInsightsPage from './pages/AIInsightsPage';
 import Invoicing from './pages/Invoicing';
@@ -218,6 +219,7 @@ const AuthenticatedApp = () => {
       <Route path="/packages/:slug" element={<PackageLanding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="/join/:code" element={<ClientInviteJoin />} />
+      <Route path="/client-setup/:token" element={<ClientSetup />} />
       <Route path="/join" element={<ClientInviteJoin />} />
       <Route path="/workout" element={<ClientWorkoutView />} />
 

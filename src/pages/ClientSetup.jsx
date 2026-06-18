@@ -1,0 +1,211 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import KoachLogo from '@/components/brand/KoachLogo.jsx';
+
+function PasswordInput({ label, value, onChange, placeholder }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">{label}</label>
+      <div className="relative">
+        <input
+          type={show ? 'text' : 'password'}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full px-4 py-3.5 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-blue-500/60 transition-colors"
+        />
+        <button
+          type="button"
+          onClick={() => setShow(s => !s)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-white/30 hover:text-white/60 transition-colors"
+        >
+          {show ? 'HIDE' : 'SHOW'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function StrengthBar({ password }) {
+  if (!password) return null;
+  const strength = password.length < 6 ? 1 : password.length < 10 ? 2 : /[A-Z]/.test(password) && /[0-9]/.test(password) ? 4 : 3;
+  const colors = ['', '#EF4444', '#F59E0B', '#3B82F6', '#10B981'];
+  const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  return (
+    <div className="flex items-center gap-2 mt-1.5">
+      <div className="flex gap-1 flex-1">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="flex-1 h-1 rounded-full transition-all duration-300"
+            style={{ background: i <= strength ? colors[strength] : 'rgba(255,255,255,0.08)' }} />
+        ))}
+      </div>
+      <span className="text-[10px] font-bold" style={{ color: colors[strength] }}>{labels[strength]}</span>
+    </div>
+  );
+}
+
+export default function ClientSetup() {
+  const { token } = useParams();
+  const [status, setStatus] = useState('loading'); // loading | invalid | valid | success
+  const [client, setClient] = useState(null);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!token) { setStatus('invalid'); return; }
+
+    base44.asServiceRole.entities.Client.filter({ invite_token: token }, '-created_date', 1)
+      .then(results => {
+        const match = results[0];
+        if (!match) { setStatus('invalid'); return; }
+        if (!match.invite_token_expires || new Date(match.invite_token_expires) < new Date()) {
+          setStatus('invalid'); return;
+        }
+        setClient(match);
+        setStatus('valid');
+      })
+      .catch(() => setStatus('invalid'));
+  }, [token]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+    if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
+    if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
+    setSubmitting(true);
+    // Placeholder: fragment 3 will wire up account creation here
+    setTimeout(() => { setSubmitting(false); setStatus('success'); }, 600);
+  };
+
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center px-5"
+      style={{ background: 'linear-gradient(160deg, #0A0A0A 0%, #0F172A 60%, #0A0A0A 100%)' }}>
+
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
+          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
+      </div>
+
+      <div className="relative z-10 w-full max-w-sm flex flex-col items-center gap-6">
+
+        <KoachLogo size={56} rounded="rounded-2xl" glow bg />
+
+        {/* ── LOADING ── */}
+        {status === 'loading' && (
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-6 h-6 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+            <p className="text-sm text-white/40">Verifying your invite…</p>
+          </div>
+        )}
+
+        {/* ── INVALID ── */}
+        {status === 'invalid' && (
+          <div className="w-full text-center space-y-4">
+            <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)' }}>
+              <span className="text-2xl">⛔</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-white mb-2">Link Invalid or Expired</h1>
+              <p className="text-sm text-white/40 leading-relaxed">
+                This invite link is invalid or has expired. Please ask your coach to resend your invite.
+              </p>
+            </div>
+            <div className="pt-2 px-4 py-3 rounded-xl text-xs text-white/30 leading-relaxed"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              Invite links are valid for 7 days after they are sent.
+            </div>
+          </div>
+        )}
+
+        {/* ── VALID — SET PASSWORD FORM ── */}
+        {status === 'valid' && client && (
+          <div className="w-full space-y-5">
+            <div className="text-center space-y-1">
+              <h1 className="text-2xl font-black text-white" style={{ letterSpacing: '-0.03em' }}>
+                Welcome, {client.name?.split(' ')[0]} 👋
+              </h1>
+              <p className="text-sm text-white/40 leading-relaxed">
+                Set your password to access your coaching portal.
+              </p>
+            </div>
+
+            {/* Client identity card */}
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
+              style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)' }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0"
+                style={{ background: 'rgba(59,130,246,0.2)', color: '#93C5FD' }}>
+                {client.name?.[0]?.toUpperCase() || '?'}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{client.name}</p>
+                <p className="text-xs text-white/40">{client.email}</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <PasswordInput
+                  label="Password"
+                  value={password}
+                  onChange={setPassword}
+                  placeholder="At least 6 characters"
+                />
+                <StrengthBar password={password} />
+              </div>
+
+              <PasswordInput
+                label="Confirm Password"
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                placeholder="Re-enter your password"
+              />
+
+              {error && (
+                <div className="px-4 py-3 rounded-xl text-xs font-medium text-red-400"
+                  style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting || !password || !confirmPassword}
+                className="w-full py-4 rounded-xl font-bold text-base text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{
+                  background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                  boxShadow: '0 0 24px rgba(37,99,235,0.25)',
+                }}
+              >
+                {submitting ? 'Setting up…' : 'Set Password & Continue →'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── SUCCESS (placeholder) ── */}
+        {status === 'success' && (
+          <div className="w-full text-center space-y-4">
+            <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
+              style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <path d="M6 14L11 19L22 8" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-white mb-2">Account created!</h1>
+              <p className="text-sm text-white/40 leading-relaxed">
+                Your account is ready. Fragment 3 will redirect you to the portal here.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
