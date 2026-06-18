@@ -1147,19 +1147,67 @@ function GenItemCard({ item }) {
   );
 }
 
-function GeneratingStep({ onNext }) {
+function GeneratingStep({ submitStatus, onDone, onRetry }) {
   const [allDone, setAllDone] = useState(false);
+  const [animTimerDone, setAnimTimerDone] = useState(false);
+  const [animKey, setAnimKey] = useState(0);
   const lastAt = GEN_ITEMS[GEN_ITEMS.length - 1].activateAt;
 
+  // Reset animation timers on retry
   useEffect(() => {
-    const t = setTimeout(() => setAllDone(true), lastAt * 1000 + 400);
-    return () => clearTimeout(t);
-  }, []);
+    setAllDone(false);
+    setAnimTimerDone(false);
+    const t1 = setTimeout(() => setAllDone(true), lastAt * 1000 + 400);
+    const t2 = setTimeout(() => setAnimTimerDone(true), REDIRECT_AFTER);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [animKey]);
 
+  // Advance to done ONLY when animation timer completes AND submission confirmed success
   useEffect(() => {
-    const t = setTimeout(onNext, REDIRECT_AFTER);
-    return () => clearTimeout(t);
-  }, []);
+    if (animTimerDone && submitStatus === 'success') {
+      onDone();
+    }
+  }, [animTimerDone, submitStatus]);
+
+  // Error state — show retry UI
+  if (submitStatus === 'error') {
+    return (
+      <Screen>
+        <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center gap-6 text-center max-w-sm"
+          >
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1.5px solid rgba(239,68,68,0.3)' }}>
+              <span className="text-3xl">⚠️</span>
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
+                Something went wrong
+              </h2>
+              <p className="text-sm leading-relaxed" style={{ color: '#6A6A6A' }}>
+                We couldn't save your application. Please check your connection and try again — your answers are still here.
+              </p>
+            </div>
+            <motion.button
+              onClick={() => { setAnimKey(k => k + 1); onRetry(); }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 rounded-2xl font-bold text-base text-white"
+              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 24px rgba(59,130,246,0.28)' }}
+            >
+              Try Again →
+            </motion.button>
+          </motion.div>
+        </div>
+      </Screen>
+    );
+  }
+
+  // If animation finished but submission still in progress, show extended saving state
+  const showSaving = animTimerDone && submitStatus !== 'success';
 
   return (
     <Screen>
@@ -1175,7 +1223,12 @@ function GeneratingStep({ onNext }) {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2">
           <p className="text-[11px] uppercase tracking-[0.26em] font-bold" style={{ color: '#3B82F6' }}>KOACH AI Engine</p>
           <AnimatePresence mode="wait">
-            {allDone ? (
+            {showSaving ? (
+              <motion.h2 key="saving" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.025em' }}>
+                Saving your profile…
+              </motion.h2>
+            ) : allDone ? (
               <motion.h2 key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 className="text-3xl font-bold" style={{ color: '#22C55E', letterSpacing: '-0.025em' }}>
                 Your profile is ready.
@@ -1188,7 +1241,7 @@ function GeneratingStep({ onNext }) {
             )}
           </AnimatePresence>
           <p className="text-sm" style={{ color: '#5A5A5A' }}>
-            {allDone ? 'Sending to your coach…' : 'Analyzing your profile for your coach'}
+            {showSaving ? 'Almost there…' : allDone ? 'Sending to your coach…' : 'Analyzing your profile for your coach'}
           </p>
         </motion.div>
 
@@ -1202,9 +1255,22 @@ function GeneratingStep({ onNext }) {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2" key={animKey}>
           {GEN_ITEMS.map((item, i) => <GenItemCard key={i} item={item} />)}
         </div>
+
+        {showSaving && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center justify-center gap-2"
+          >
+            <motion.div className="w-4 h-4 rounded-full border-2"
+              style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+              animate={{ rotate: 360 }} transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }} />
+            <p className="text-xs font-medium" style={{ color: '#5A5A5A' }}>Saving your application…</p>
+          </motion.div>
+        )}
       </div>
     </Screen>
   );
@@ -1310,62 +1376,55 @@ export default function ClientOnboarding() {
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const record = await base44.entities.OnboardingResponse.create({
-      name: [data.first_name, data.last_name].filter(Boolean).join(' '),
-      email: data.email,
-      phone: data.phone,
-      age: data.age ? Number(data.age) : undefined,
-      height: data.height,
-      current_weight: data.current_weight ? Number(data.current_weight) : undefined,
-      goal: (data.goals || [])[0] || 'general_fitness',
-      activity_level: data.activity_level,
-      training_days_per_week: data.training_days_per_week,
-      previous_experience: data.experience,
-      food_preferences: [
-        data.fav_foods?.length ? `Likes: ${data.fav_foods.join(', ')}` : '',
-        data.disliked_foods ? `Dislikes: ${data.disliked_foods}` : '',
-        data.dietary_restrictions?.length ? `Dietary: ${data.dietary_restrictions.join(', ')}` : '',
-        data.food_allergies?.length ? `Allergies: ${data.food_allergies.join(', ')}` : '',
-        data.allergy_notes ? `Allergy notes: ${data.allergy_notes}` : '',
-      ].filter(Boolean).join(' | '),
-      health_conditions: [
-        (data.injuries || []).join(', '),
-        (data.medical_conditions || []).join(', '),
-        data.medications ? `Medications: ${data.medications}` : '',
-        data.parq_answer ? `PAR-Q heart condition: ${data.parq_answer}` : '',
-        data.health_notes,
-      ].filter(Boolean).join(' | '),
-      motivation: data.motivation,
-      schedule_preferences: [
-        data.work_schedule,
-        `Equipment: ${data.equipment_access || 'not specified'}`,
-        data.equipment_notes ? `Equipment notes: ${data.equipment_notes}` : '',
-        data.training_styles?.join(', '),
-        `Training days: ${data.training_days_per_week}/week`,
-        `Sleep: ${data.sleep_quality}/10`,
-        `Stress: ${data.stress_level}/10`,
-        `Water: ${data.water_intake}/10`,
-        data.alcohol_frequency ? `Alcohol: ${data.alcohol_frequency}` : '',
-        `Commitment: ${data.commitment_level}/10`,
-        `Obstacles: ${(data.obstacles || []).join(', ')}`,
-        data.training_history ? `Training history: ${data.training_history}` : '',
-        data.anything_else ? `Additional notes: ${data.anything_else}` : '',
-        `Consent agreed: Yes`,
-      ].filter(Boolean).join(' | '),
+      const payload = {
+        name: [data.first_name, data.last_name].filter(Boolean).join(' '),
+        email: data.email,
+        phone: data.phone,
+        age: data.age ? Number(data.age) : undefined,
+        height: data.height,
+        current_weight: data.current_weight ? Number(data.current_weight) : undefined,
+        goal: (data.goals || [])[0] || 'general_fitness',
+        activity_level: data.activity_level,
+        training_days_per_week: data.training_days_per_week,
+        previous_experience: data.experience,
+        food_preferences: [
+          data.fav_foods?.length ? `Likes: ${data.fav_foods.join(', ')}` : '',
+          data.disliked_foods ? `Dislikes: ${data.disliked_foods}` : '',
+          data.dietary_restrictions?.length ? `Dietary: ${data.dietary_restrictions.join(', ')}` : '',
+          data.food_allergies?.length ? `Allergies: ${data.food_allergies.join(', ')}` : '',
+          data.allergy_notes ? `Allergy notes: ${data.allergy_notes}` : '',
+        ].filter(Boolean).join(' | '),
+        health_conditions: [
+          (data.injuries || []).join(', '),
+          (data.medical_conditions || []).join(', '),
+          data.medications ? `Medications: ${data.medications}` : '',
+          data.parq_answer ? `PAR-Q heart condition: ${data.parq_answer}` : '',
+          data.health_notes,
+        ].filter(Boolean).join(' | '),
+        motivation: data.motivation,
+        schedule_preferences: [
+          data.work_schedule,
+          `Equipment: ${data.equipment_access || 'not specified'}`,
+          data.equipment_notes ? `Equipment notes: ${data.equipment_notes}` : '',
+          data.training_styles?.join(', '),
+          `Training days: ${data.training_days_per_week}/week`,
+          `Sleep: ${data.sleep_quality}/10`,
+          `Stress: ${data.stress_level}/10`,
+          `Water: ${data.water_intake}/10`,
+          data.alcohol_frequency ? `Alcohol: ${data.alcohol_frequency}` : '',
+          `Commitment: ${data.commitment_level}/10`,
+          `Obstacles: ${(data.obstacles || []).join(', ')}`,
+          data.training_history ? `Training history: ${data.training_history}` : '',
+          data.anything_else ? `Additional notes: ${data.anything_else}` : '',
+          `Consent agreed: Yes`,
+        ].filter(Boolean).join(' | '),
         coach_id: COACH_ID,
-        status: 'pending',
-      });
-      // Fire-and-forget emails + in-app notification
-      base44.functions.invoke('onIntakeSubmitted', {
-        intakeId: record.id,
-        clientName: [data.first_name, data.last_name].filter(Boolean).join(' '),
-        clientEmail: data.email,
-        coachId: COACH_ID,
-      }).catch(e => console.error('onIntakeSubmitted error:', e));
-      return record;
+      };
+      const res = await base44.functions.invoke('submitOnboardingIntake', payload);
+      if (!res.data?.success) throw new Error(res.data?.error || 'Submission failed');
+      return res.data;
     },
-    onSuccess: () => goTo('done'),
-    onError: () => toast.error('Something went wrong. Please try again.'),
+    // success/error handled by GeneratingStep — no callbacks here
   });
 
   const handleNext = () => {
@@ -1402,7 +1461,11 @@ export default function ClientOnboarding() {
       case 'mindset':        return <MindsetStep {...props} />;
       case 'obstacles':      return <ObstaclesStep {...props} />;
       case 'commitment':     return <CommitmentStep {...props} />;
-      case 'generating':     return <GeneratingStep onNext={next} />;
+      case 'generating':     return <GeneratingStep 
+          submitStatus={submitMutation.isPending ? 'pending' : submitMutation.isSuccess ? 'success' : submitMutation.isError ? 'error' : 'pending'}
+          onDone={() => goTo('done')}
+          onRetry={() => submitMutation.mutate()}
+        />;
       case 'done':           return <DoneStep firstName={data.first_name} coachDisplayName={coachDisplayName} clientEmail={data.email} />;
       default: return null;
     }
