@@ -1,4 +1,4 @@
-// cache-bust: 2026-06-18
+// cache-bust: 2026-06-18T19:45:00Z — force full recompile, bundle index-wl2fz097.js is stale
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
