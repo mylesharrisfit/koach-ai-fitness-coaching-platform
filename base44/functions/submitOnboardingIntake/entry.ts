@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
     });
 
     // Fire-and-forget: send emails + in-app notifications via existing function
-    base44.asServiceRole.functions.invoke('onIntakeSubmitted', {
+    base44.functions.invoke('onIntakeSubmitted', {
       intakeId: record.id,
       clientName: payload.name,
       clientEmail: payload.email,
