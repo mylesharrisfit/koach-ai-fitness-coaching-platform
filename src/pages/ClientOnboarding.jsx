@@ -1156,12 +1156,15 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
     return () => clearTimeout(t);
   }, []);
 
-  // Auto-advance only when animation done AND submission succeeded
+  // Auto-advance ONLY when animation is done AND we have a CONFIRMED success response.
+  // Never advance on timer alone — submitStatus must be 'success'.
   useEffect(() => {
     if (allDone && submitStatus === 'success') {
       const t = setTimeout(onNext, 800);
       return () => clearTimeout(t);
     }
+    // If allDone but status is still 'pending', stay on this screen and wait.
+    // If status is 'error', the error card below will render — never advance.
   }, [allDone, submitStatus]);
 
   return (
@@ -1209,18 +1212,25 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
           {GEN_ITEMS.map((item, i) => <GenItemCard key={i} item={item} />)}
         </div>
 
-        {/* Error state */}
+        {/* Error state — shown instead of success when submission fails */}
         {submitStatus === 'error' && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mx-auto w-full max-w-md px-6 space-y-3"
+            className="w-full space-y-3"
           >
-            <div className="p-4 rounded-2xl text-center space-y-3"
-              style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)' }}>
-              <p className="text-sm font-semibold" style={{ color: '#F87171' }}>⚠️ Submission failed</p>
-              <p className="text-xs" style={{ color: '#6A6A6A' }}>
-                {submitError || 'Something went wrong saving your intake. Your answers are safe — please try again.'}
+            <div className="p-5 rounded-2xl space-y-3"
+              style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.3)' }}>
+              <p className="text-sm font-bold text-center" style={{ color: '#F87171' }}>⚠️ Submission Failed</p>
+              <div className="rounded-xl p-3 text-left"
+                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: '#6A6A6A' }}>Error details</p>
+                <p className="text-xs leading-relaxed break-words" style={{ color: '#FCA5A5', fontFamily: 'monospace' }}>
+                  {submitError || 'Unknown error — no message received.'}
+                </p>
+              </div>
+              <p className="text-xs text-center" style={{ color: '#6A6A6A' }}>
+                Your answers are saved in this browser session. Tap Try Again to resubmit.
               </p>
               <button
                 onClick={onRetry}
@@ -1337,19 +1347,45 @@ export default function ClientOnboarding() {
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const res = await base44.functions.invoke('submitOnboardingIntake', {
-        name: [data.first_name, data.last_name].filter(Boolean).join(' '),
-        email: data.email,
-        coachId: COACH_ID,
-        formData: data,
-      });
-      if (!res?.data?.success) {
-        throw new Error(res?.data?.error || 'Submission failed');
+      // Guard: coach param is required — without it the record would have no coach_id
+      // and would be invisible on the dashboard due to RLS.
+      if (!COACH_ID) {
+        throw new Error(
+          'This intake link is missing its coach identifier. Please use the original link sent to you by your coach.'
+        );
       }
+
+      let res;
+      try {
+        res = await base44.functions.invoke('submitOnboardingIntake', {
+          name: [data.first_name, data.last_name].filter(Boolean).join(' '),
+          email: data.email,
+          coachId: COACH_ID,
+          formData: data,
+        });
+      } catch (networkErr) {
+        // Network-level failure (no response at all)
+        throw new Error(`Network error: ${networkErr?.message || 'Could not reach the server. Please check your connection and try again.'}`);
+      }
+
+      // Surface HTTP-level errors with status + body
+      if (res?.status && res.status >= 400) {
+        const body = res?.data ? JSON.stringify(res.data) : '(no response body)';
+        throw new Error(`Server error ${res.status}: ${body}`);
+      }
+
+      if (!res?.data?.success) {
+        const errMsg = res?.data?.error || res?.data?.message || JSON.stringify(res?.data) || 'Submission failed — no success confirmation received.';
+        throw new Error(errMsg);
+      }
+
       return res.data;
     },
     onSuccess: () => goTo('done'),
-    onError: (err) => console.error('submitOnboardingIntake failed:', err),
+    onError: (err) => {
+      console.error('submitOnboardingIntake failed:', err);
+      // Error is surfaced in GeneratingStep via submitMutation.status + submitMutation.error
+    },
   });
 
   const handleNext = () => {
