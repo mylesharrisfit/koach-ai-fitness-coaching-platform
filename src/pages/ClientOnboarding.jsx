@@ -1147,7 +1147,7 @@ function GenItemCard({ item }) {
   );
 }
 
-function GeneratingStep({ onNext }) {
+function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
   const [allDone, setAllDone] = useState(false);
   const lastAt = GEN_ITEMS[GEN_ITEMS.length - 1].activateAt;
 
@@ -1156,10 +1156,13 @@ function GeneratingStep({ onNext }) {
     return () => clearTimeout(t);
   }, []);
 
+  // Auto-advance only when animation done AND submission succeeded
   useEffect(() => {
-    const t = setTimeout(onNext, REDIRECT_AFTER);
-    return () => clearTimeout(t);
-  }, []);
+    if (allDone && submitStatus === 'success') {
+      const t = setTimeout(onNext, 800);
+      return () => clearTimeout(t);
+    }
+  }, [allDone, submitStatus]);
 
   return (
     <Screen>
@@ -1205,6 +1208,30 @@ function GeneratingStep({ onNext }) {
         <div className="space-y-2">
           {GEN_ITEMS.map((item, i) => <GenItemCard key={i} item={item} />)}
         </div>
+
+        {/* Error state */}
+        {submitStatus === 'error' && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto w-full max-w-md px-6 space-y-3"
+          >
+            <div className="p-4 rounded-2xl text-center space-y-3"
+              style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)' }}>
+              <p className="text-sm font-semibold" style={{ color: '#F87171' }}>⚠️ Submission failed</p>
+              <p className="text-xs" style={{ color: '#6A6A6A' }}>
+                {submitError || 'Something went wrong saving your intake. Your answers are safe — please try again.'}
+              </p>
+              <button
+                onClick={onRetry}
+                className="w-full py-3 rounded-xl font-bold text-sm text-white"
+                style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}
+              >
+                Try Again
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
     </Screen>
   );
@@ -1310,68 +1337,25 @@ export default function ClientOnboarding() {
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const record = await base44.entities.OnboardingResponse.create({
-      name: [data.first_name, data.last_name].filter(Boolean).join(' '),
-      email: data.email,
-      phone: data.phone,
-      age: data.age ? Number(data.age) : undefined,
-      height: data.height,
-      current_weight: data.current_weight ? Number(data.current_weight) : undefined,
-      goal: (data.goals || [])[0] || 'general_fitness',
-      activity_level: data.activity_level,
-      training_days_per_week: data.training_days_per_week,
-      previous_experience: data.experience,
-      food_preferences: [
-        data.fav_foods?.length ? `Likes: ${data.fav_foods.join(', ')}` : '',
-        data.disliked_foods ? `Dislikes: ${data.disliked_foods}` : '',
-        data.dietary_restrictions?.length ? `Dietary: ${data.dietary_restrictions.join(', ')}` : '',
-        data.food_allergies?.length ? `Allergies: ${data.food_allergies.join(', ')}` : '',
-        data.allergy_notes ? `Allergy notes: ${data.allergy_notes}` : '',
-      ].filter(Boolean).join(' | '),
-      health_conditions: [
-        (data.injuries || []).join(', '),
-        (data.medical_conditions || []).join(', '),
-        data.medications ? `Medications: ${data.medications}` : '',
-        data.parq_answer ? `PAR-Q heart condition: ${data.parq_answer}` : '',
-        data.health_notes,
-      ].filter(Boolean).join(' | '),
-      motivation: data.motivation,
-      schedule_preferences: [
-        data.work_schedule,
-        `Equipment: ${data.equipment_access || 'not specified'}`,
-        data.equipment_notes ? `Equipment notes: ${data.equipment_notes}` : '',
-        data.training_styles?.join(', '),
-        `Training days: ${data.training_days_per_week}/week`,
-        `Sleep: ${data.sleep_quality}/10`,
-        `Stress: ${data.stress_level}/10`,
-        `Water: ${data.water_intake}/10`,
-        data.alcohol_frequency ? `Alcohol: ${data.alcohol_frequency}` : '',
-        `Commitment: ${data.commitment_level}/10`,
-        `Obstacles: ${(data.obstacles || []).join(', ')}`,
-        data.training_history ? `Training history: ${data.training_history}` : '',
-        data.anything_else ? `Additional notes: ${data.anything_else}` : '',
-        `Consent agreed: Yes`,
-      ].filter(Boolean).join(' | '),
-        coach_id: COACH_ID,
-        status: 'pending',
-      });
-      // Fire-and-forget emails + in-app notification
-      base44.functions.invoke('onIntakeSubmitted', {
-        intakeId: record.id,
-        clientName: [data.first_name, data.last_name].filter(Boolean).join(' '),
-        clientEmail: data.email,
+      const res = await base44.functions.invoke('submitOnboardingIntake', {
+        name: [data.first_name, data.last_name].filter(Boolean).join(' '),
+        email: data.email,
         coachId: COACH_ID,
-      }).catch(e => console.error('onIntakeSubmitted error:', e));
-      return record;
+        formData: data,
+      });
+      if (!res?.data?.success) {
+        throw new Error(res?.data?.error || 'Submission failed');
+      }
+      return res.data;
     },
     onSuccess: () => goTo('done'),
-    onError: () => toast.error('Something went wrong. Please try again.'),
+    onError: (err) => console.error('submitOnboardingIntake failed:', err),
   });
 
   const handleNext = () => {
     if (step === 'commitment') {
+      next(); // advance to generating screen first (shows animation)
       submitMutation.mutate();
-      next();
       return;
     }
     next();
@@ -1402,7 +1386,14 @@ export default function ClientOnboarding() {
       case 'mindset':        return <MindsetStep {...props} />;
       case 'obstacles':      return <ObstaclesStep {...props} />;
       case 'commitment':     return <CommitmentStep {...props} />;
-      case 'generating':     return <GeneratingStep onNext={next} />;
+      case 'generating':     return (
+        <GeneratingStep
+          onNext={next}
+          submitStatus={submitMutation.status}
+          submitError={submitMutation.error?.message}
+          onRetry={() => submitMutation.mutate()}
+        />
+      );
       case 'done':           return <DoneStep firstName={data.first_name} coachDisplayName={coachDisplayName} clientEmail={data.email} />;
       default: return null;
     }
