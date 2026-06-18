@@ -51,7 +51,7 @@ export default function PortalNutrition({ user }) {
   // Fetch nutrition plan for targets
   useEffect(() => {
     if (!clientId) return;
-    base44.entities.Client.filter({ id: clientId }).then(clients => {
+    base44.entities.Client.filter({ user_id: clientId }).then(clients => {
       const client = clients[0];
       if (client?.assigned_nutrition_id) {
         base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id }).then(plans => {

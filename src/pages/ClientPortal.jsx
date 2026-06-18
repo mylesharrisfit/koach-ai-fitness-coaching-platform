@@ -32,9 +32,9 @@ function BottomNav({ user, hideForActiveWorkout }) {
   const location = useLocation();
 
   const { data: clients = [] } = useQuery({
-    queryKey: ['portal-client-nav', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
+    queryKey: ['portal-client-nav', user?.id],
+    queryFn: () => base44.entities.Client.filter({ user_id: user.id }, '-created_date', 1),
+    enabled: !!user?.id,
   });
   const myClient = clients[0];
 

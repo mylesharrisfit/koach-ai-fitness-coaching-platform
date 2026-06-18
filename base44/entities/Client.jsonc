@@ -10,6 +10,10 @@
       "type": "string",
       "description": "Client email"
     },
+    "user_id": {
+      "type": "string",
+      "description": "User ID of the app user who owns this client record"
+    },
     "phone": {
       "type": "string",
       "description": "Phone number"
