@@ -276,14 +276,15 @@ export default function Clients() {
             <Upload className="w-4 h-4" />
             <span className="hidden sm:inline">Import CSV</span>
           </button>
-          <button
+          {/* HIDDEN: Add Client button — hidden per request, code preserved for easy restore */}
+          {false && <button
             onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
             style={{ background: atLimit ? 'rgba(255,255,255,0.1)' : '#fff', color: atLimit ? '#fff' : '#111827' }}
           >
             {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {atLimit ? 'Limit' : 'Add Client'}
-          </button>
+          </button>}
         </div>
       </div>
 
