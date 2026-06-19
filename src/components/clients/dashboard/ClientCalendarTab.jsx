@@ -188,7 +188,7 @@ function RepeatModal({ repeat, onChange, onClose }) {
           <div>
             <label className="text-xs font-semibold text-[#374151] block mb-1.5">
               Repeat for <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={forWeeks} onChange={e => setForWeeks(Number(e.target.value))}>
-                {[1,2,3,4,6,8,12].map(n => <option key={n} value={n}>{n}</option>)}
+                {[1,2,3,4,6,8,12,16,20,26,39,52,78,104].map(n => <option key={n} value={n}>{n} {n >= 52 ? `(${Math.round(n/52)}yr${n > 52 ? '+' : ''})` : ''}</option>)}
               </select> {freq === 'daily' ? 'weeks' : 'weeks'}
             </label>
           </div>
