@@ -269,8 +269,9 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
       datesToCreate = generateRepeatDates(baseDate, repeat);
     }
 
-    await Promise.all(datesToCreate.map(d =>
-      base44.entities.WorkoutSession.create({
+    // Batch creates with delay to avoid rate limits
+    for (const d of datesToCreate) {
+      await base44.entities.WorkoutSession.create({
         client_id: client.id,
         program_id: client.assigned_program_id,
         program_name: program?.title,
@@ -280,8 +281,9 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
         notes: note || undefined,
         exercises: workout?.exercises || [],
         team_id: client.team_id,
-      })
-    ));
+      });
+      await new Promise(r => setTimeout(r, 50)); // 50ms delay between creates
+    }
     qc.invalidateQueries({ queryKey: ['cal-workoutsessions', client.id] });
     onDone();
   };
@@ -375,10 +377,11 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
     setSaving(true);
     const baseDate = parseISO(dateStr);
     const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
-    await Promise.all(datesToCreate.map(d =>
-      base44.entities.Session.create({ client_id: client.id, client_name: client.name,
-        title, date: d, time, session_type: type, status: 'scheduled', team_id: client.team_id })
-    ));
+    for (const d of datesToCreate) {
+      await base44.entities.Session.create({ client_id: client.id, client_name: client.name,
+        title, date: d, time, session_type: type, status: 'scheduled', team_id: client.team_id });
+      await new Promise(r => setTimeout(r, 50));
+    }
     qc.invalidateQueries({ queryKey: ['cal-sessions', client.id] });
     onDone();
   };
