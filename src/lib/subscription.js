@@ -17,7 +17,7 @@ export const TIERS = {
       max_clients: 10,
       max_programs: -1,         // unlimited
       max_nutrition_plans: -1,  // unlimited
-      max_ai_generations_per_month: 5,   // combined program + meal plan
+      max_ai_generations_per_month: 15,  // combined program + meal plan
     },
     features: {
       // Pages
@@ -68,7 +68,7 @@ export const TIERS = {
       max_clients: 25,
       max_programs: -1,         // unlimited
       max_nutrition_plans: -1,  // unlimited
-      max_ai_generations_per_month: -1,  // unlimited
+      max_ai_generations_per_month: 50,
     },
     features: {
       // Pages
@@ -118,7 +118,7 @@ export const TIERS = {
       max_clients: 75,      // 75 clients
       max_programs: -1,
       max_nutrition_plans: -1,
-      max_ai_generations_per_month: -1,  // unlimited
+      max_ai_generations_per_month: 150,
     },
     features: {
       // Pages
