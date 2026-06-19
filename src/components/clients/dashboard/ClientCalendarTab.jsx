@@ -23,7 +23,7 @@ const TYPES = {
   workout:  { label: 'Workout',     color: '#EC4899', dot: '#F472B6', emoji: '💪', icon: Dumbbell },
 };
 
-function buildEvents(checkIns, goals, sessions, weighIns) {
+function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions) {
   const ev = [];
   checkIns.forEach(ci => {
     if (!ci.date) return;
@@ -43,6 +43,11 @@ function buildEvents(checkIns, goals, sessions, weighIns) {
   weighIns.forEach(w => {
     if (!w.date) return;
     ev.push({ id: `wi-${w.id}`, date: w.date, type: 'weighin', title: `${w.weight} lbs`, done: true });
+  });
+  (workoutSessions || []).forEach(ws => {
+    if (!ws.scheduled_date) return;
+    ev.push({ id: `ws-${ws.id}`, date: ws.scheduled_date, type: 'workout',
+      title: ws.workout_name || 'Workout', done: ws.status === 'completed' });
   });
   return ev;
 }
@@ -103,6 +108,7 @@ function DayCell({ day, events, onDayClick }) {
 
 // ── Add Event Modal ───────────────────────────────────────────────────────────
 const ADD_OPTIONS = [
+  { key: 'workout', label: 'Workout',        emoji: '💪', color: '#EC4899', bg: '#FDF2F8' },
   { key: 'session', label: 'Session / Call', emoji: '📞', color: '#059669', bg: '#ECFDF5' },
   { key: 'goal',    label: 'Goal',           emoji: '🎯', color: '#D97706', bg: '#FFFBEB' },
   { key: 'habit',   label: 'Habit',          emoji: '⚡', color: '#7C3AED', bg: '#F5F3FF' },
@@ -129,6 +135,99 @@ function SaveBtn({ saving, color = '#2563EB', disabled, onClick }) {
       {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
       {saving ? 'Saving…' : 'Save'}
     </button>
+  );
+}
+
+function WorkoutSubForm({ date, client, onDone }) {
+  const qc = useQueryClient();
+  const [saving, setSaving] = useState(false);
+  const [selectedWorkoutIdx, setSelectedWorkoutIdx] = useState('');
+  const [note, setNote] = useState('');
+
+  // Fetch the client's assigned program
+  const { data: program, isLoading } = useQuery({
+    queryKey: ['cal-program', client?.assigned_program_id],
+    queryFn: () => base44.entities.WorkoutProgram.filter({ id: client.assigned_program_id }, '-created_date', 1)
+      .then(r => r[0]),
+    enabled: !!client?.assigned_program_id,
+  });
+
+  const workouts = program?.workouts || [];
+
+  const save = async () => {
+    if (selectedWorkoutIdx === '') return;
+    setSaving(true);
+    const workout = workouts[parseInt(selectedWorkoutIdx)];
+    await base44.entities.WorkoutSession.create({
+      client_id: client.id,
+      program_id: client.assigned_program_id,
+      program_name: program?.title,
+      workout_name: workout?.day_name || `Day ${workout?.day_number || parseInt(selectedWorkoutIdx) + 1}`,
+      scheduled_date: format(date, 'yyyy-MM-dd'),
+      status: 'scheduled',
+      notes: note || undefined,
+      exercises: workout?.exercises || [],
+      team_id: client.team_id,
+    });
+    qc.invalidateQueries({ queryKey: ['cal-workoutsessions', client.id] });
+    onDone();
+  };
+
+  if (!client?.assigned_program_id) {
+    return (
+      <div className="text-center py-4">
+        <p className="text-2xl mb-2">💪</p>
+        <p className="text-sm font-semibold text-[#374151]">No program assigned</p>
+        <p className="text-xs text-[#6B7280] mt-1">Assign a workout program to this client first.</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-6">
+        <Loader2 className="w-5 h-5 animate-spin text-[#EC4899]" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2.5">
+      {program && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FDF2F8] border border-[#EC4899]/20">
+          <span className="text-base">💪</span>
+          <div className="min-w-0">
+            <p className="text-xs font-bold text-[#EC4899] truncate">{program.title}</p>
+            <p className="text-[10px] text-[#6B7280]">{workouts.length} workout{workouts.length !== 1 ? 's' : ''}</p>
+          </div>
+        </div>
+      )}
+      <Field label="Select Workout Day">
+        <select className={inputCls} value={selectedWorkoutIdx} onChange={e => setSelectedWorkoutIdx(e.target.value)}>
+          <option value="">— Choose a day —</option>
+          {workouts.map((w, i) => (
+            <option key={i} value={i}>
+              {w.day_name || `Day ${w.day_number || i + 1}`}
+              {w.exercises?.length ? ` (${w.exercises.length} exercises)` : ''}
+            </option>
+          ))}
+        </select>
+      </Field>
+      {selectedWorkoutIdx !== '' && workouts[parseInt(selectedWorkoutIdx)]?.exercises?.length > 0 && (
+        <div className="rounded-lg border border-[#F3F4F6] bg-[#FAFAFA] px-3 py-2 max-h-28 overflow-y-auto space-y-0.5">
+          {workouts[parseInt(selectedWorkoutIdx)].exercises.slice(0, 6).map((ex, i) => (
+            <p key={i} className="text-[11px] text-[#374151] truncate">• {ex.name} {ex.sets && ex.reps ? `— ${ex.sets}×${ex.reps}` : ''}</p>
+          ))}
+          {workouts[parseInt(selectedWorkoutIdx)].exercises.length > 6 && (
+            <p className="text-[10px] text-[#6B7280]">+{workouts[parseInt(selectedWorkoutIdx)].exercises.length - 6} more</p>
+          )}
+        </div>
+      )}
+      <Field label="Note (optional)">
+        <input className={inputCls} placeholder="Any coaching notes…" value={note} onChange={e => setNote(e.target.value)} />
+      </Field>
+      <SaveBtn saving={saving} color="#EC4899" disabled={selectedWorkoutIdx === ''} onClick={save} />
+    </div>
   );
 }
 
@@ -277,6 +376,7 @@ function AddEventModal({ day, client, onClose }) {
   const opt = ADD_OPTIONS.find(o => o.key === step);
 
   const subForms = {
+    workout: WorkoutSubForm,
     session: SessionSubForm,
     goal: GoalSubForm,
     habit: HabitSubForm,
@@ -381,9 +481,14 @@ export default function ClientCalendarTab({ client }) {
     queryFn: () => base44.entities.WeighIn.filter({ client_id: client.id }, '-date', 150),
     enabled: !!client?.id,
   });
+  const { data: workoutSessions = [] } = useQuery({
+    queryKey: ['cal-workoutsessions', client?.id],
+    queryFn: () => base44.entities.WorkoutSession.filter({ client_id: client.id }, '-scheduled_date', 150),
+    enabled: !!client?.id,
+  });
 
-  const events = useMemo(() => buildEvents(checkIns, goals, sessions, weighIns),
-    [checkIns, goals, sessions, weighIns]);
+  const events = useMemo(() => buildEvents(checkIns, goals, sessions, weighIns, workoutSessions),
+    [checkIns, goals, sessions, weighIns, workoutSessions]);
 
   // Build weeks for this month (Mon–Sun grid)
   const weeks = useMemo(() => {
@@ -413,11 +518,11 @@ export default function ClientCalendarTab({ client }) {
   }, [events, viewDate]);
 
   const stats = [
-    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,  color: '#2563EB', emoji: '📋' },
+    { label: 'Workouts',  count: monthEvents.filter(e => e.type === 'workout').length,   color: '#EC4899', emoji: '💪' },
+    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: '#2563EB', emoji: '📋' },
     { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: '#059669', emoji: '📞' },
     { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: '#0EA5E9', emoji: '⚖️' },
-    { label: 'Goals Due', count: monthEvents.filter(e => e.type === 'goal').length,      color: '#D97706', emoji: '🎯' },
-    { label: 'Habits',    count: monthEvents.filter(e => e.type === 'habit').length,     color: '#7C3AED', emoji: '⚡' },
+    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: '#D97706', emoji: '🎯' },
   ];
 
   return (
