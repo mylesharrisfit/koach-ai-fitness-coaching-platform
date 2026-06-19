@@ -260,35 +260,22 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
       return;
     }
     setGenerating(true);
-    const mealNames = distributeToMeals(Number(params.meal_count));
-    const prompt = `You are a professional sports dietitian. Generate a ${params.meal_count}-meal nutrition plan with ${params.options_count} distinct OPTIONS per meal.
-
-Daily targets:
-- Calories: ${params.calories} kcal
-- Protein: ${params.protein_g}g
-- Carbs: ${params.carbs_g || 'balanced'}g
-- Fats: ${params.fats_g || 'balanced'}g
-
-Meals: ${mealNames.join(', ')}
-
-Rules:
-- Each meal has exactly ${params.options_count} options. Options are DIFFERENT meal choices (e.g., Option 1 = eggs & oats, Option 2 = yogurt & fruit).
-- All options for the same meal must have similar calorie/macro totals (within 5% of each other).
-- Each option has 2-4 food items with accurate individual macros.
-- Give each option a short label (e.g., "High Protein", "Plant-Based", "Quick & Easy").
-- All meals combined should hit the daily targets.
-
-Return JSON with a "meals" array.`;
-
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: {
-        type: 'object',
-        properties: { meals: { type: 'array', items: MEAL_SCHEMA } },
-      },
+    const response = await base44.functions.invoke('generateSmartMeals', {
+      calories: params.calories,
+      protein_g: params.protein_g,
+      carbs_g: params.carbs_g,
+      fats_g: params.fats_g,
+      meal_count: params.meal_count,
+      options_count: params.options_count,
     });
 
-    const generated = (result?.meals || []).map(m => ({ ...m, tags: [] }));
+    if (response.data?.error === 'monthly_ai_limit_reached') {
+      toast.error(response.data.message || 'Monthly AI generation limit reached. Upgrade your plan.');
+      setGenerating(false);
+      return;
+    }
+
+    const generated = (response.data?.meals || []).map(m => ({ ...m, tags: [] }));
     syncUp(generated);
     setGenerating(false);
     toast.success('Meal plan generated!');
@@ -296,17 +283,22 @@ Return JSON with a "meals" array.`;
 
   const regenerateMeal = async (mIdx) => {
     const meal = meals[mIdx];
-    const prompt = `Regenerate the "${meal.meal_name}" meal with ${params.options_count} distinct options.
-Daily targets: ${params.calories}kcal, ${params.protein_g}g protein, ${params.carbs_g || 'balanced'}g carbs, ${params.fats_g || 'balanced'}g fats.
-This meal = roughly 1/${meals.length} of daily totals.
-Each option should have similar calories/macros. Give each option a short label.
-Return a single meal JSON object.`;
-
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: MEAL_SCHEMA,
+    const response = await base44.functions.invoke('generateSmartMeals', {
+      mode: 'regenerate',
+      meal: { ...meal, total_meals: meals.length },
+      calories: params.calories,
+      protein_g: params.protein_g,
+      carbs_g: params.carbs_g,
+      fats_g: params.fats_g,
+      options_count: params.options_count,
     });
 
+    if (response.data?.error === 'monthly_ai_limit_reached') {
+      toast.error(response.data.message || 'Monthly AI generation limit reached.');
+      return;
+    }
+
+    const result = response.data?.meal;
     if (result?.meal_name) {
       syncUp(meals.map((m, i) => i === mIdx ? { ...result, tags: m.tags || [] } : m));
     }
