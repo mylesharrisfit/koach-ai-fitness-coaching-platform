@@ -271,7 +271,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
 
     // Batch creates with delay to avoid rate limits
     for (const d of datesToCreate) {
-      await base44.entities.WorkoutSession.create({
+      const session = await base44.entities.WorkoutSession.create({
         client_id: client.id,
         program_id: client.assigned_program_id,
         program_name: program?.title,
@@ -282,7 +282,17 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
         exercises: workout?.exercises || [],
         team_id: client.team_id,
       });
-      await new Promise(r => setTimeout(r, 50)); // 50ms delay between creates
+      // Sync to Google Calendar
+      await base44.functions.invoke('googleCalendarProxy', {
+        action: 'createEvent',
+        event: {
+          summary: `${client.name} - ${workout?.day_name || `Day ${workout?.day_number || parseInt(selectedWorkoutIdx) + 1}`}`,
+          description: note || `Workout session for ${client.name}`,
+          start: { date: d },
+          end: { date: d },
+        },
+      }).catch(() => {}); // Silently fail if Google Calendar isn't connected
+      await new Promise(r => setTimeout(r, 50));
     }
     qc.invalidateQueries({ queryKey: ['cal-workoutsessions', client.id] });
     onDone();
@@ -380,6 +390,16 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
     for (const d of datesToCreate) {
       await base44.entities.Session.create({ client_id: client.id, client_name: client.name,
         title, date: d, time, session_type: type, status: 'scheduled', team_id: client.team_id });
+      // Sync to Google Calendar
+      await base44.functions.invoke('googleCalendarProxy', {
+        action: 'createEvent',
+        event: {
+          summary: `${client.name} - ${title}`,
+          description: `${type.replace(/_/g, ' ')} at ${time}`,
+          start: { dateTime: `${d}T${time}:00` },
+          end: { dateTime: `${d}T${String(parseInt(time.split(':')[0]) + 1).padStart(2, '0')}:00:00` },
+        },
+      }).catch(() => {});
       await new Promise(r => setTimeout(r, 50));
     }
     qc.invalidateQueries({ queryKey: ['cal-sessions', client.id] });
