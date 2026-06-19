@@ -45,7 +45,7 @@ export default function Messages() {
 
   const { data: badges = [] } = useQuery({
     queryKey: ['client-badges-messages'],
-    queryFn: () => base44.entities.ClientBadge.list('-awarded_at', 100),
+    queryFn: () => base44.entities.ClientBadge.list('-earned_date', 100),
   });
 
   // Real-time subscription
@@ -236,6 +236,7 @@ export default function Messages() {
             <ComposeBar
               client={selectedClient}
               allMessages={allMessages}
+              checkIns={clientCheckIns}
               onSend={handleSend}
               onSendVoice={handleSendVoice}
               selectedTag={selectedTag}
