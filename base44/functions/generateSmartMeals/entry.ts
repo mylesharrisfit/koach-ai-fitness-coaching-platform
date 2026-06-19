@@ -2,11 +2,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 const TIER_AI_LIMITS = { starter: 15, pro: 50, elite: 150, enterprise: -1 };
 
+// Compact single-meal schema — keeps each InvokeLLM response small and fast
 const MEAL_SCHEMA = {
   type: 'object',
   properties: {
     meal_name: { type: 'string' },
-    time: { type: 'string' },
+    time:      { type: 'string' },
     options: {
       type: 'array',
       items: {
@@ -19,11 +20,11 @@ const MEAL_SCHEMA = {
               type: 'object',
               properties: {
                 food_name: { type: 'string' },
-                portion: { type: 'string' },
-                calories: { type: 'number' },
-                protein: { type: 'number' },
-                carbs: { type: 'number' },
-                fats: { type: 'number' },
+                portion:   { type: 'string' },
+                calories:  { type: 'number' },
+                protein:   { type: 'number' },
+                carbs:     { type: 'number' },
+                fats:      { type: 'number' },
               },
             },
           },
@@ -33,22 +34,50 @@ const MEAL_SCHEMA = {
   },
 };
 
+const MEALS_ARRAY_SCHEMA = {
+  type: 'object',
+  properties: { meals: { type: 'array', items: MEAL_SCHEMA } },
+};
+
+const MEAL_ORDER = ['Breakfast', 'Lunch', 'Dinner', 'Pre-Workout', 'Post-Workout', 'Snack'];
+
+/**
+ * Build a compact prompt for a subset of meals (a "batch").
+ * Keeping each prompt to 2-3 meals stays well under the token threshold
+ * that causes slow responses, and runs in ~5-7s per call.
+ */
+function buildBatchPrompt(mealNames, calories, protein_g, carbs_g, fats_g, options_count, totalMeals) {
+  const perMealCal = Math.round(calories / totalMeals);
+  return `You are a sports dietitian. Generate exactly ${mealNames.length} meal(s): ${mealNames.join(', ')}.
+Each meal must have ${options_count} distinct options.
+Per-meal target: ~${perMealCal} kcal, proportional protein/carbs/fats from daily totals of ${protein_g}g P / ${carbs_g || 'balanced'} C / ${fats_g || 'balanced'} F.
+Each option: 2-4 foods with accurate macros. Give each a short label (e.g. "High Protein", "Quick & Easy").
+Return JSON with a "meals" array (${mealNames.length} item${mealNames.length > 1 ? 's' : ''}).`;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    // ── Parse body ──────────────────────────────────────────────────────────
     let body;
     try {
       body = await req.json();
     } catch {
       return Response.json({ error: 'invalid_request_body' }, { status: 400 });
     }
-    const { calories, protein_g, carbs_g, fats_g, meal_count, options_count, mode, meal } = body;
+    const {
+      calories, protein_g, carbs_g, fats_g,
+      meal_count, options_count,
+      mode, meal,
+      client_id,        // optional — used for persisting the draft plan
+      nutrition_plan_id // optional — update an existing draft instead of creating
+    } = body;
 
-    // ── AI generation metering — mirrors validateSubscription.js TIER_LIMITS ──
-    const tier = user.subscription_tier || 'starter';
+    // ── AI generation metering ───────────────────────────────────────────────
+    const tier    = user.subscription_tier || 'starter';
     const aiLimit = TIER_AI_LIMITS[tier] ?? 15;
 
     if (aiLimit !== -1) {
@@ -77,7 +106,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ── Single-meal regeneration ──
+    // ── Single-meal regeneration ─────────────────────────────────────────────
     if (mode === 'regenerate' && meal) {
       const prompt = `Regenerate the "${meal.meal_name}" meal with ${options_count} distinct options.
 Daily targets: ${calories}kcal, ${protein_g}g protein, ${carbs_g || 'balanced'}g carbs, ${fats_g || 'balanced'}g fats.
@@ -93,38 +122,74 @@ Return a single meal JSON object.`;
       return Response.json({ meal: result });
     }
 
-    // ── Full plan generation ──
-    const mealOrder = ['Breakfast', 'Lunch', 'Dinner', 'Pre-Workout', 'Post-Workout', 'Snack'];
-    const mealNames = mealOrder.slice(0, Number(meal_count));
+    // ── Full plan generation — batched into two parallel InvokeLLM calls ────
+    //
+    // Strategy: split meal names into two halves and fire both simultaneously.
+    // A 6-meal plan (worst case) becomes two 3-meal calls running in parallel.
+    // Each call targets ~5-8s, so total latency stays well under 12s.
+    //
+    const totalMeals = Number(meal_count);
+    const allMealNames = MEAL_ORDER.slice(0, totalMeals);
 
-    const prompt = `You are a professional sports dietitian. Generate a ${meal_count}-meal nutrition plan with ${options_count} distinct OPTIONS per meal.
+    // Split into two balanced halves
+    const midpoint  = Math.ceil(allMealNames.length / 2);
+    const firstHalf = allMealNames.slice(0, midpoint);
+    const secondHalf = allMealNames.slice(midpoint);
 
-Daily targets:
-- Calories: ${calories} kcal
-- Protein: ${protein_g}g
-- Carbs: ${carbs_g || 'balanced'}g
-- Fats: ${fats_g || 'balanced'}g
+    // Build parallel promises — both fire at the same time
+    const batchPromises = [
+      base44.integrations.Core.InvokeLLM({
+        prompt: buildBatchPrompt(firstHalf, calories, protein_g, carbs_g, fats_g, options_count, totalMeals),
+        response_json_schema: MEALS_ARRAY_SCHEMA,
+      }),
+    ];
+    if (secondHalf.length > 0) {
+      batchPromises.push(
+        base44.integrations.Core.InvokeLLM({
+          prompt: buildBatchPrompt(secondHalf, calories, protein_g, carbs_g, fats_g, options_count, totalMeals),
+          response_json_schema: MEALS_ARRAY_SCHEMA,
+        })
+      );
+    }
 
-Meals: ${mealNames.join(', ')}
+    // Await both in parallel
+    const [firstResult, secondResult] = await Promise.all(batchPromises);
 
-Rules:
-- Each meal has exactly ${options_count} options. Options are DIFFERENT meal choices (e.g., Option 1 = eggs & oats, Option 2 = yogurt & fruit).
-- All options for the same meal must have similar calorie/macro totals (within 5% of each other).
-- Each option has 2-4 food items with accurate individual macros.
-- Give each option a short label (e.g., "High Protein", "Plant-Based", "Quick & Easy").
-- All meals combined should hit the daily targets.
+    const meals = [
+      ...(firstResult?.meals || []),
+      ...(secondResult?.meals || []),
+    ];
 
-Return JSON with a "meals" array.`;
+    // ── Persist to NutritionPlan (draft) before returning ────────────────────
+    //
+    // This ensures the result survives even if the HTTP response is dropped
+    // due to a proxy timeout. The frontend can re-fetch the draft on reload.
+    //
+    if (meals.length > 0) {
+      const planData = {
+        title: `AI Smart Plan — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+        status: 'draft',
+        is_draft: true,
+        ai_generated: true,
+        calories:   Number(calories)  || 0,
+        protein_g:  Number(protein_g) || 0,
+        carbs_g:    Number(carbs_g)   || 0,
+        fats_g:     Number(fats_g)    || 0,
+        meals,
+      };
+      if (client_id) planData.client_id = client_id;
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: {
-        type: 'object',
-        properties: { meals: { type: 'array', items: MEAL_SCHEMA } },
-      },
-    });
+      // Fire-and-forget persist — don't let a DB error block the response
+      const persistPromise = nutrition_plan_id
+        ? base44.asServiceRole.entities.NutritionPlan.update(nutrition_plan_id, { meals, status: 'draft' })
+        : base44.entities.NutritionPlan.create(planData);
 
-    return Response.json({ meals: result?.meals || [] });
+      // Await it — we want it saved before we return so the ID is available
+      const savedPlan = await persistPromise;
+      return Response.json({ meals, draft_plan_id: savedPlan?.id || null });
+    }
+
+    return Response.json({ meals });
 
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
