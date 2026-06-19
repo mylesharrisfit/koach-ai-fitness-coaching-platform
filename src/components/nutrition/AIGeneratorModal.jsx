@@ -1083,7 +1083,9 @@ function Step3Generating({ onDone, macroPayload }) {
             return;
           }
           setProgress(100);
-          const fullData = { plan: body?.plan, meals: body?.meals };
+          // generateSmartMeals returns { meals, draft_plan_id } — pass meals as the raw array
+          // so handleGeneratingDone's Array.isArray(rawData) fallback picks them up correctly
+          const fullData = body?.meals || body?.plan?.meals || [];
           setTimeout(() => { if (!doneRef.current) { doneRef.current = true; onDone(fullData); } }, 400);
         })
         .catch(err => {
