@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  ArrowLeft, Plus, GripVertical, Trash2, ChevronDown, ChevronUp, BookOpen
+  ArrowLeft, Plus, GripVertical, Trash2, ChevronDown, ChevronUp, BookOpen, Calendar, Search
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -143,6 +143,9 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
   const [questions, setQuestions] = useState(form?.questions || []);
   const [settings, setSettings] = useState(form?.settings || { require_photo: false, allow_late: true, notify_coach: true, auto_thankyou: false });
   const [assignTo, setAssignTo] = useState(form?.assign_to || 'all');
+  const [clientSchedules, setClientSchedules] = useState(form?.client_schedules || {}); // { clientId: dueDay }
+  const [selectedClientIds, setSelectedClientIds] = useState(form?.assigned_client_ids || []);
+  const [clientSearch, setClientSearch] = useState('');
   const [showPresets, setShowPresets] = useState(false);
 
   const saveMutation = useMutation({
@@ -157,7 +160,13 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
 
   const handleSave = () => {
     if (!name.trim()) { toast.error('Form name is required'); return; }
-    saveMutation.mutate({ name, description, frequency, due_day: dueDay, reminder_hours_before: reminderHours, questions, settings, assign_to: assignTo, is_active: true });
+    saveMutation.mutate({
+      name, description, frequency, due_day: dueDay, reminder_hours_before: reminderHours,
+      questions, settings, assign_to: assignTo,
+      assigned_client_ids: assignTo === 'specific' ? selectedClientIds : [],
+      client_schedules: assignTo === 'specific' ? clientSchedules : {},
+      is_active: true,
+    });
   };
 
   const addQuestion = (q = {}) => {
@@ -349,6 +358,75 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                 <span className="text-sm text-[#374151]">{opt.label}</span>
               </label>
             ))}
+
+            {assignTo === 'specific' && (
+              <div className="mt-3 space-y-2">
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+                  <input
+                    type="text"
+                    value={clientSearch}
+                    onChange={e => setClientSearch(e.target.value)}
+                    placeholder="Search clients..."
+                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-[#E5E7EB] rounded-lg focus:outline-none focus:border-primary/40 bg-white"
+                  />
+                </div>
+
+                {/* Client list with per-client day picker */}
+                <div className="space-y-1.5 max-h-72 overflow-y-auto pr-0.5">
+                  {clients
+                    .filter(c => !clientSearch || c.name?.toLowerCase().includes(clientSearch.toLowerCase()))
+                    .map(client => {
+                      const isSelected = selectedClientIds.includes(client.id);
+                      const clientDay = clientSchedules[client.id] ?? dueDay;
+                      return (
+                        <div key={client.id}
+                          className={cn(
+                            'rounded-lg border p-2.5 transition-all',
+                            isSelected ? 'border-primary/30 bg-primary/5' : 'border-[#E5E7EB] bg-white hover:border-[#D1D5DB]'
+                          )}>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => {
+                                setSelectedClientIds(prev =>
+                                  prev.includes(client.id)
+                                    ? prev.filter(id => id !== client.id)
+                                    : [...prev, client.id]
+                                );
+                              }}
+                              className="accent-primary rounded flex-shrink-0"
+                            />
+                            <span className="text-xs font-semibold text-[#111827] flex-1 truncate">{client.name}</span>
+                          </label>
+
+                          {isSelected && (
+                            <div className="mt-2 flex items-center gap-2 pl-5">
+                              <Calendar className="w-3 h-3 text-[#9CA3AF] flex-shrink-0" />
+                              <span className="text-[10px] text-[#6B7280]">Due:</span>
+                              <select
+                                value={clientDay}
+                                onChange={e => setClientSchedules(prev => ({ ...prev, [client.id]: Number(e.target.value) }))}
+                                className="text-[10px] border border-[#E5E7EB] rounded px-1.5 py-0.5 focus:outline-none focus:border-primary/40 bg-white flex-1"
+                              >
+                                {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {selectedClientIds.length > 0 && (
+                  <p className="text-[10px] text-[#6B7280] pt-1">
+                    {selectedClientIds.length} client{selectedClientIds.length !== 1 ? 's' : ''} selected
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Save */}
