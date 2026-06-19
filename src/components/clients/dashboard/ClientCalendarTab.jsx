@@ -6,11 +6,11 @@ import {
   format, startOfWeek, endOfWeek, addWeeks, subWeeks,
   eachDayOfInterval, isSameDay, isToday, parseISO, isSameMonth,
   startOfMonth, endOfMonth, addMonths, subMonths, eachWeekOfInterval,
-  getDay
+  getDay, addDays
 } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, Plus, X, ClipboardList,
-  Phone, Target, Zap, Scale, Dumbbell, CheckCircle2, Circle, Loader2
+  Phone, Target, Zap, Scale, Dumbbell, CheckCircle2, Circle, Loader2, RefreshCw
 } from 'lucide-react';
 
 // ── Event type config ─────────────────────────────────────────────────────────
@@ -107,48 +107,152 @@ function DayCell({ day, events, onDayClick }) {
 }
 
 // ── Add Event Modal ───────────────────────────────────────────────────────────
-const ADD_OPTIONS = [
-  { key: 'workout', label: 'Workout',        emoji: '💪', color: '#EC4899', bg: '#FDF2F8' },
-  { key: 'session', label: 'Session / Call', emoji: '📞', color: '#059669', bg: '#ECFDF5' },
-  { key: 'goal',    label: 'Goal',           emoji: '🎯', color: '#D97706', bg: '#FFFBEB' },
-  { key: 'habit',   label: 'Habit',          emoji: '⚡', color: '#7C3AED', bg: '#F5F3FF' },
-  { key: 'weighin', label: 'Weigh-in',       emoji: '⚖️', color: '#0EA5E9', bg: '#F0F9FF' },
-  { key: 'checkin', label: 'Check-in',       emoji: '📋', color: '#2563EB', bg: '#EFF6FF' },
-];
 
-function Field({ label, children }) {
+const inputCls = "w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30";
+
+// ── Repeat Options Modal ──────────────────────────────────────────────────────
+const DAY_LABELS = ['S','M','T','W','T','F','S'];
+
+function RepeatModal({ repeat, onChange, onClose }) {
+  const [freq, setFreq] = useState(repeat.freq || 'weekly');
+  const [every, setEvery] = useState(repeat.every || 1);
+  const [days, setDays] = useState(repeat.days || [1,3,5]); // Mon, Wed, Fri default
+  const [forWeeks, setForWeeks] = useState(repeat.forWeeks || 4);
+
+  const toggleDay = (d) => setDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
+
+  const apply = () => {
+    onChange({ freq, every, days, forWeeks });
+    onClose();
+  };
+
   return (
-    <div>
-      <label className="text-[11px] font-semibold text-[#374151] block mb-1">{label}</label>
-      {children}
+    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/50" />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.12 }}
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-bold text-[#111827] text-base">Repeat options</h3>
+          <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#F3F4F6]">
+            <X className="w-4 h-4 text-[#6B7280]" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1.5">Frequency</label>
+            <select className={inputCls} value={freq} onChange={e => setFreq(e.target.value)}>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="biweekly">Every 2 weeks</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+
+          {freq === 'weekly' || freq === 'biweekly' ? (
+            <div>
+              <label className="text-xs font-semibold text-[#374151] block mb-1.5">
+                Every <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={every} onChange={e => setEvery(Number(e.target.value))}>
+                  {[1,2,3,4].map(n => <option key={n} value={n}>{n}</option>)}
+                </select> week on
+              </label>
+              <div className="flex gap-1.5 mt-2">
+                {DAY_LABELS.map((d, i) => (
+                  <button key={i} onClick={() => toggleDay(i)}
+                    className="w-9 h-9 rounded-full text-xs font-bold transition-all"
+                    style={{
+                      background: days.includes(i) ? '#2563EB' : '#F3F4F6',
+                      color: days.includes(i) ? '#fff' : '#374151',
+                    }}>
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : freq === 'daily' ? (
+            <div>
+              <label className="text-xs font-semibold text-[#374151] block mb-1.5">
+                Every <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={every} onChange={e => setEvery(Number(e.target.value))}>
+                  {[1,2,3].map(n => <option key={n} value={n}>{n}</option>)}
+                </select> day(s)
+              </label>
+            </div>
+          ) : null}
+
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1.5">
+              Repeat for <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={forWeeks} onChange={e => setForWeeks(Number(e.target.value))}>
+                {[1,2,3,4,6,8,12].map(n => <option key={n} value={n}>{n}</option>)}
+              </select> {freq === 'daily' ? 'weeks' : 'weeks'}
+            </label>
+          </div>
+        </div>
+
+        <button onClick={apply}
+          className="w-full mt-5 py-2.5 rounded-xl text-sm font-bold text-white"
+          style={{ background: '#2563EB' }}>
+          Apply
+        </button>
+      </motion.div>
     </div>
   );
 }
 
-const inputCls = "w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30";
-
-function SaveBtn({ saving, color = '#2563EB', disabled, onClick }) {
-  return (
-    <button onClick={onClick} disabled={saving || disabled}
-      className="w-full py-2 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50 mt-1"
-      style={{ background: color }}>
-      {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-      {saving ? 'Saving…' : 'Save'}
-    </button>
-  );
+// ── Generate all dates for a repeat config ────────────────────────────────────
+function generateRepeatDates(startDate, repeat) {
+  const dates = [];
+  const totalDays = repeat.forWeeks * 7;
+  if (repeat.freq === 'daily') {
+    for (let i = 0; i < totalDays; i += repeat.every) {
+      dates.push(addDays(startDate, i));
+    }
+  } else if (repeat.freq === 'weekly' || repeat.freq === 'biweekly') {
+    const intervalDays = repeat.every * 7;
+    for (let week = 0; week * intervalDays < totalDays; week++) {
+      const weekStart = addDays(startDate, week * intervalDays);
+      // Find nearest Sunday of that week to iterate days
+      repeat.days.forEach(dayOfWeek => {
+        // Find the date in this week with this day-of-week
+        const startDow = startDate.getDay();
+        let diff = dayOfWeek - startDow + (week * intervalDays);
+        if (diff >= 0 && diff < totalDays) {
+          dates.push(addDays(startDate, diff));
+        }
+      });
+    }
+  } else if (repeat.freq === 'monthly') {
+    for (let m = 0; m < Math.ceil(repeat.forWeeks / 4); m++) {
+      dates.push(addDays(startDate, m * 28));
+    }
+  }
+  return [...new Set(dates.map(d => format(d, 'yyyy-MM-dd')))].sort();
 }
 
-function WorkoutSubForm({ date, client, onDone }) {
+// ── Activity type config for sidebar ─────────────────────────────────────────
+const ACTIVITY_TYPES = [
+  { key: 'workout',  label: 'Workout',      emoji: '💪', color: '#EC4899' },
+  { key: 'session',  label: 'Session/Call', emoji: '📞', color: '#059669' },
+  { key: 'goal',     label: 'Goal',         emoji: '🎯', color: '#D97706' },
+  { key: 'habit',    label: 'Habit',        emoji: '⚡', color: '#7C3AED' },
+  { key: 'weighin',  label: 'Weigh-in',     emoji: '⚖️', color: '#0EA5E9' },
+  { key: 'checkin',  label: 'Check-in Form',emoji: '📋', color: '#2563EB' },
+];
+
+function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [selectedWorkoutIdx, setSelectedWorkoutIdx] = useState('');
   const [note, setNote] = useState('');
 
-  // Fetch the client's assigned program
   const { data: program, isLoading } = useQuery({
     queryKey: ['cal-program', client?.assigned_program_id],
-    queryFn: () => base44.entities.WorkoutProgram.filter({ id: client.assigned_program_id }, '-created_date', 1)
-      .then(r => r[0]),
+    queryFn: () => base44.entities.WorkoutProgram.filter({ id: client.assigned_program_id }, '-created_date', 1).then(r => r[0]),
     enabled: !!client?.assigned_program_id,
   });
 
@@ -158,286 +262,301 @@ function WorkoutSubForm({ date, client, onDone }) {
     if (selectedWorkoutIdx === '') return;
     setSaving(true);
     const workout = workouts[parseInt(selectedWorkoutIdx)];
-    await base44.entities.WorkoutSession.create({
-      client_id: client.id,
-      program_id: client.assigned_program_id,
-      program_name: program?.title,
-      workout_name: workout?.day_name || `Day ${workout?.day_number || parseInt(selectedWorkoutIdx) + 1}`,
-      scheduled_date: format(date, 'yyyy-MM-dd'),
-      status: 'scheduled',
-      notes: note || undefined,
-      exercises: workout?.exercises || [],
-      team_id: client.team_id,
-    });
+    const baseDate = parseISO(dateStr);
+
+    let datesToCreate = [dateStr];
+    if (repeat) {
+      datesToCreate = generateRepeatDates(baseDate, repeat);
+    }
+
+    await Promise.all(datesToCreate.map(d =>
+      base44.entities.WorkoutSession.create({
+        client_id: client.id,
+        program_id: client.assigned_program_id,
+        program_name: program?.title,
+        workout_name: workout?.day_name || `Day ${workout?.day_number || parseInt(selectedWorkoutIdx) + 1}`,
+        scheduled_date: d,
+        status: 'scheduled',
+        notes: note || undefined,
+        exercises: workout?.exercises || [],
+        team_id: client.team_id,
+      })
+    ));
     qc.invalidateQueries({ queryKey: ['cal-workoutsessions', client.id] });
     onDone();
   };
 
   if (!client?.assigned_program_id) {
     return (
-      <div className="text-center py-4">
-        <p className="text-2xl mb-2">💪</p>
-        <p className="text-sm font-semibold text-[#374151]">No program assigned</p>
-        <p className="text-xs text-[#6B7280] mt-1">Assign a workout program to this client first.</p>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-3xl mb-2">💪</p>
+          <p className="text-sm font-semibold text-[#374151]">No program assigned</p>
+          <p className="text-xs text-[#6B7280] mt-1">Assign a workout program to this client first.</p>
+        </div>
       </div>
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-6">
-        <Loader2 className="w-5 h-5 animate-spin text-[#EC4899]" />
-      </div>
-    );
-  }
+  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-[#EC4899]" /></div>;
 
   return (
-    <div className="space-y-2.5">
-      {program && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FDF2F8] border border-[#EC4899]/20">
-          <span className="text-base">💪</span>
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-[#EC4899] truncate">{program.title}</p>
-            <p className="text-[10px] text-[#6B7280]">{workouts.length} workout{workouts.length !== 1 ? 's' : ''}</p>
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <div className="flex items-center gap-3">
+            <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+            <button onClick={() => setShowRepeat(true)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              <RefreshCw className="w-3 h-3" />
+              {repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
+            </button>
           </div>
-        </div>
-      )}
-      <Field label="Select Workout Day">
-        <select className={inputCls} value={selectedWorkoutIdx} onChange={e => setSelectedWorkoutIdx(e.target.value)}>
-          <option value="">— Choose a day —</option>
-          {workouts.map((w, i) => (
-            <option key={i} value={i}>
-              {w.day_name || `Day ${w.day_number || i + 1}`}
-              {w.exercises?.length ? ` (${w.exercises.length} exercises)` : ''}
-            </option>
-          ))}
-        </select>
-      </Field>
-      {selectedWorkoutIdx !== '' && workouts[parseInt(selectedWorkoutIdx)]?.exercises?.length > 0 && (
-        <div className="rounded-lg border border-[#F3F4F6] bg-[#FAFAFA] px-3 py-2 max-h-28 overflow-y-auto space-y-0.5">
-          {workouts[parseInt(selectedWorkoutIdx)].exercises.slice(0, 6).map((ex, i) => (
-            <p key={i} className="text-[11px] text-[#374151] truncate">• {ex.name} {ex.sets && ex.reps ? `— ${ex.sets}×${ex.reps}` : ''}</p>
-          ))}
-          {workouts[parseInt(selectedWorkoutIdx)].exercises.length > 6 && (
-            <p className="text-[10px] text-[#6B7280]">+{workouts[parseInt(selectedWorkoutIdx)].exercises.length - 6} more</p>
+          {repeat && (
+            <p className="text-[11px] text-[#6B7280] mt-1">
+              Will create sessions on multiple dates · <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+            </p>
           )}
         </div>
-      )}
-      <Field label="Note (optional)">
-        <input className={inputCls} placeholder="Any coaching notes…" value={note} onChange={e => setNote(e.target.value)} />
-      </Field>
-      <SaveBtn saving={saving} color="#EC4899" disabled={selectedWorkoutIdx === ''} onClick={save} />
+
+        {program && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FDF2F8] border border-[#EC4899]/20">
+            <span>💪</span>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-[#EC4899] truncate">{program.title}</p>
+              <p className="text-[10px] text-[#6B7280]">{workouts.length} workout days</p>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-2">Select from current training program</label>
+          <div className="space-y-1.5 max-h-40 overflow-y-auto">
+            {workouts.map((w, i) => (
+              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[#EC4899] bg-[#FDF2F8]' : 'border-[#E5E7EB] hover:border-[#EC4899]/40'}`}>
+                <input type="radio" name="workout_day" value={i} checked={selectedWorkoutIdx === String(i)}
+                  onChange={() => setSelectedWorkoutIdx(String(i))} className="accent-[#EC4899]" />
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-[#111827]">{w.day_name || `Day ${w.day_number || i + 1}`}</p>
+                  {w.exercises?.length > 0 && (
+                    <p className="text-[10px] text-[#6B7280]">{w.exercises.length} exercises</p>
+                  )}
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Note (optional)</label>
+          <input className={inputCls} placeholder="Coaching notes…" value={note} onChange={e => setNote(e.target.value)} />
+        </div>
+      </div>
+
+      <button onClick={save} disabled={saving || selectedWorkoutIdx === ''}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{ background: '#EC4899' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+        {saving ? 'Adding…' : repeat ? `Add (${generateRepeatDates(parseISO(dateStr), repeat).length} sessions)` : 'Add to Calendar'}
+      </button>
     </div>
   );
 }
 
-function SessionSubForm({ date, client, onDone }) {
+function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
+  const qc = useQueryClient();
   const [title, setTitle] = useState('Coaching Session');
   const [time, setTime] = useState('09:00');
   const [type, setType] = useState('video_call');
   const [saving, setSaving] = useState(false);
-  const qc = useQueryClient();
+
   const save = async () => {
     setSaving(true);
-    await base44.entities.Session.create({ client_id: client.id, client_name: client.name,
-      title, date: format(date, 'yyyy-MM-dd'), time, session_type: type, status: 'scheduled', team_id: client.team_id });
+    const baseDate = parseISO(dateStr);
+    const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
+    await Promise.all(datesToCreate.map(d =>
+      base44.entities.Session.create({ client_id: client.id, client_name: client.name,
+        title, date: d, time, session_type: type, status: 'scheduled', team_id: client.team_id })
+    ));
     qc.invalidateQueries({ queryKey: ['cal-sessions', client.id] });
     onDone();
   };
-  return (
-    <div className="space-y-2.5">
-      <Field label="Title"><input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} /></Field>
-      <div className="grid grid-cols-2 gap-2">
-        <Field label="Time"><input type="time" className={inputCls} value={time} onChange={e => setTime(e.target.value)} /></Field>
-        <Field label="Type">
-          <select className={inputCls} value={type} onChange={e => setType(e.target.value)}>
-            <option value="video_call">Video Call</option>
-            <option value="phone_call">Phone Call</option>
-            <option value="in_person">In Person</option>
-          </select>
-        </Field>
-      </div>
-      <SaveBtn saving={saving} color="#059669" onClick={save} />
-    </div>
-  );
-}
 
-function GoalSubForm({ date, client, onDone }) {
-  const [name, setName] = useState('');
-  const [goalType, setGoalType] = useState('simple');
-  const [target, setTarget] = useState('');
-  const [unit, setUnit] = useState('');
-  const [saving, setSaving] = useState(false);
-  const qc = useQueryClient();
-  const save = async () => {
-    setSaving(true);
-    await base44.entities.Goal.create({ client_id: client.id, name, goal_type: goalType,
-      target_value: target ? parseFloat(target) : undefined, unit: unit || undefined,
-      due_date: format(date, 'yyyy-MM-dd'), status: 'active', team_id: client.team_id });
-    qc.invalidateQueries({ queryKey: ['cal-goals', client.id] });
-    onDone();
-  };
   return (
-    <div className="space-y-2.5">
-      <Field label="Goal Name"><input className={inputCls} placeholder="e.g. Reach 175 lbs" value={name} onChange={e => setName(e.target.value)} /></Field>
-      <Field label="Type">
-        <select className={inputCls} value={goalType} onChange={e => setGoalType(e.target.value)}>
-          <option value="simple">Simple (Yes/No)</option>
-          <option value="numeric">Numeric (with target)</option>
-        </select>
-      </Field>
-      {goalType === 'numeric' && (
-        <div className="grid grid-cols-2 gap-2">
-          <Field label="Target"><input type="number" className={inputCls} placeholder="175" value={target} onChange={e => setTarget(e.target.value)} /></Field>
-          <Field label="Unit"><input className={inputCls} placeholder="lbs, km…" value={unit} onChange={e => setUnit(e.target.value)} /></Field>
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <div className="flex items-center gap-3">
+            <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              <RefreshCw className="w-3 h-3" />{repeat ? `Repeating` : 'Setup repeat'}
+            </button>
+          </div>
         </div>
-      )}
-      <SaveBtn saving={saving} color="#D97706" disabled={!name.trim()} onClick={save} />
-    </div>
-  );
-}
-
-function HabitSubForm({ date, client, onDone }) {
-  const [name, setName] = useState('');
-  const [emoji, setEmoji] = useState('⚡');
-  const [freq, setFreq] = useState('daily');
-  const [saving, setSaving] = useState(false);
-  const qc = useQueryClient();
-  const save = async () => {
-    setSaving(true);
-    await base44.entities.Habit.create({ client_id: client.id, name, emoji, frequency: freq,
-      is_active: true, team_id: client.team_id });
-    qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
-    onDone();
-  };
-  return (
-    <div className="space-y-2.5">
-      <Field label="Habit Name"><input className={inputCls} placeholder="e.g. Morning vitamins" value={name} onChange={e => setName(e.target.value)} /></Field>
-      <div className="grid grid-cols-2 gap-2">
-        <Field label="Emoji"><input className={inputCls + ' text-center'} value={emoji} onChange={e => setEmoji(e.target.value)} maxLength={2} /></Field>
-        <Field label="Frequency">
-          <select className={inputCls} value={freq} onChange={e => setFreq(e.target.value)}>
-            <option value="daily">Daily</option>
-            <option value="custom">Custom</option>
-          </select>
-        </Field>
+        <div><label className="text-xs font-semibold text-[#374151] block mb-1">Title</label><input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} /></div>
+        <div className="grid grid-cols-2 gap-2">
+          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Time</label><input type="time" className={inputCls} value={time} onChange={e => setTime(e.target.value)} /></div>
+          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Type</label>
+            <select className={inputCls} value={type} onChange={e => setType(e.target.value)}>
+              <option value="video_call">Video Call</option>
+              <option value="phone_call">Phone Call</option>
+              <option value="in_person">In Person</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <SaveBtn saving={saving} color="#7C3AED" disabled={!name.trim()} onClick={save} />
+      <button onClick={save} disabled={saving} className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: '#059669' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
+      </button>
     </div>
   );
 }
 
-function WeighInSubForm({ date, client, onDone }) {
+function SimpleContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone, actType }) {
+  const qc = useQueryClient();
+  const [saving, setSaving] = useState(false);
+  const [name, setName] = useState('');
+  const [note, setNote] = useState('');
   const [weight, setWeight] = useState('');
-  const [note, setNote] = useState('');
-  const [saving, setSaving] = useState(false);
-  const qc = useQueryClient();
-  const save = async () => {
-    setSaving(true);
-    await base44.entities.WeighIn.create({ client_id: client.id, weight: parseFloat(weight),
-      date: format(date, 'yyyy-MM-dd'), note: note || undefined, team_id: client.team_id });
-    qc.invalidateQueries({ queryKey: ['cal-weighins', client.id] });
-    onDone();
-  };
-  return (
-    <div className="space-y-2.5">
-      <Field label="Weight (lbs)"><input type="number" step="0.1" className={inputCls} placeholder="175.5" value={weight} onChange={e => setWeight(e.target.value)} /></Field>
-      <Field label="Note (optional)"><input className={inputCls} placeholder="Any comments…" value={note} onChange={e => setNote(e.target.value)} /></Field>
-      <SaveBtn saving={saving} color="#0EA5E9" disabled={!weight} onClick={save} />
-    </div>
-  );
-}
 
-function CheckInSubForm({ date, client, onDone }) {
-  const [note, setNote] = useState('');
-  const [saving, setSaving] = useState(false);
-  const qc = useQueryClient();
+  const cfg = ACTIVITY_TYPES.find(a => a.key === actType);
+
   const save = async () => {
     setSaving(true);
-    await base44.entities.CheckIn.create({ client_id: client.id, client_name: client.name,
-      date: format(date, 'yyyy-MM-dd'), status: 'pending', coach_notes: note || undefined, team_id: client.team_id });
-    qc.invalidateQueries({ queryKey: ['cal-checkins', client.id] });
+    if (actType === 'weighin') {
+      await base44.entities.WeighIn.create({ client_id: client.id, weight: parseFloat(weight), date: dateStr, note: note || undefined, team_id: client.team_id });
+      qc.invalidateQueries({ queryKey: ['cal-weighins', client.id] });
+    } else if (actType === 'checkin') {
+      await base44.entities.CheckIn.create({ client_id: client.id, client_name: client.name, date: dateStr, status: 'pending', coach_notes: note || undefined, team_id: client.team_id });
+      qc.invalidateQueries({ queryKey: ['cal-checkins', client.id] });
+    } else if (actType === 'goal') {
+      await base44.entities.Goal.create({ client_id: client.id, name, goal_type: 'simple', due_date: dateStr, status: 'active', team_id: client.team_id });
+      qc.invalidateQueries({ queryKey: ['cal-goals', client.id] });
+    } else if (actType === 'habit') {
+      await base44.entities.Habit.create({ client_id: client.id, name, emoji: '⚡', frequency: 'daily', is_active: true, team_id: client.team_id });
+      qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
+    }
     onDone();
   };
+
   return (
-    <div className="space-y-2.5">
-      <p className="text-xs text-[#6B7280]">Schedule a check-in for {format(date, 'MMMM d, yyyy')}.</p>
-      <Field label="Coach Note (optional)">
-        <textarea rows={2} className={inputCls + ' resize-none'} placeholder="Context for this check-in…" value={note} onChange={e => setNote(e.target.value)} />
-      </Field>
-      <SaveBtn saving={saving} color="#2563EB" onClick={save} />
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+        </div>
+        {actType === 'weighin' ? (
+          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Weight (lbs)</label><input type="number" step="0.1" className={inputCls} placeholder="175.5" value={weight} onChange={e => setWeight(e.target.value)} /></div>
+        ) : actType === 'checkin' ? (
+          <p className="text-xs text-[#6B7280]">Schedule a check-in on {dateStr}. The client will be prompted to complete it.</p>
+        ) : (
+          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Name</label><input className={inputCls} placeholder={actType === 'goal' ? 'e.g. Reach 175 lbs' : 'e.g. Morning vitamins'} value={name} onChange={e => setName(e.target.value)} /></div>
+        )}
+        <div><label className="text-xs font-semibold text-[#374151] block mb-1">Note (optional)</label><input className={inputCls} placeholder="Any notes…" value={note} onChange={e => setNote(e.target.value)} /></div>
+      </div>
+      <button onClick={save} disabled={saving || (actType !== 'checkin' && actType !== 'weighin' && !name.trim()) || (actType === 'weighin' && !weight)}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: cfg?.color || '#2563EB' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
+      </button>
     </div>
   );
 }
 
 function AddEventModal({ day, client, onClose }) {
-  const [step, setStep] = useState(null); // null = picker, else key
+  const [activeType, setActiveType] = useState('workout');
+  const [dateStr, setDateStr] = useState(format(day, 'yyyy-MM-dd'));
+  const [repeat, setRepeat] = useState(null);
+  const [showRepeat, setShowRepeat] = useState(false);
 
-  const opt = ADD_OPTIONS.find(o => o.key === step);
-
-  const subForms = {
-    workout: WorkoutSubForm,
-    session: SessionSubForm,
-    goal: GoalSubForm,
-    habit: HabitSubForm,
-    weighin: WeighInSubForm,
-    checkin: CheckInSubForm,
+  const renderContent = () => {
+    if (activeType === 'workout') {
+      return <WorkoutContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
+    }
+    if (activeType === 'session') {
+      return <SessionContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
+    }
+    return <SimpleContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} actType={activeType} />;
   };
-  const SubForm = step ? subForms[step] : null;
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/40" />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 8 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 8 }}
-        transition={{ duration: 0.14 }}
-        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xs overflow-hidden"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#F3F4F6]"
-          style={{ background: step ? opt.bg : '#F9FAFB' }}>
-          <div>
-            <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">{format(day, 'EEE, MMM d')}</p>
-            <h3 className="font-bold text-[#111827] text-sm mt-0.5">
-              {step ? `Add ${opt.label}` : 'Add to Calendar'}
-            </h3>
+    <>
+      <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" onClick={onClose}>
+        <div className="absolute inset-0 bg-black/50" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 8 }}
+          transition={{ duration: 0.14 }}
+          className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+          style={{ maxHeight: '90vh' }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
+            <h3 className="font-bold text-[#111827] text-lg">Add Activity</h3>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => {
+                  // trigger save from content (handled by individual content components)
+                }}
+                className="px-4 py-1.5 rounded-lg text-sm font-bold text-white"
+                style={{ background: '#2563EB', opacity: 0.9 }}
+              >
+                ADD
+              </button>
+              <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#F3F4F6]">
+                <X className="w-4 h-4 text-[#6B7280]" />
+              </button>
+            </div>
           </div>
-          <button onClick={onClose}
-            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-black/5 transition-colors">
-            <X className="w-4 h-4 text-[#6B7280]" />
-          </button>
-        </div>
 
-        <div className="p-4">
-          {!step ? (
-            <div className="grid grid-cols-2 gap-2">
-              {ADD_OPTIONS.map(o => (
-                <button key={o.key} onClick={() => setStep(o.key)}
-                  className="flex items-center gap-2.5 p-3 rounded-xl border-2 text-left transition-all hover:shadow-sm active:scale-95"
-                  style={{ borderColor: o.color + '35', background: o.bg }}>
-                  <span className="text-xl">{o.emoji}</span>
-                  <span className="text-xs font-bold leading-tight" style={{ color: o.color }}>{o.label}</span>
+          {/* Body: sidebar + content */}
+          <div className="flex flex-1 overflow-hidden" style={{ minHeight: 400 }}>
+            {/* Left sidebar */}
+            <div className="w-44 border-r border-[#E5E7EB] bg-[#FAFAFA] flex-shrink-0 overflow-y-auto">
+              {ACTIVITY_TYPES.map(t => (
+                <button key={t.key} onClick={() => setActiveType(t.key)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-3 text-left text-sm font-semibold transition-colors border-l-2 ${
+                    activeType === t.key
+                      ? 'bg-white border-l-[#2563EB] text-[#111827]'
+                      : 'border-l-transparent text-[#6B7280] hover:bg-white hover:text-[#374151]'
+                  }`}
+                >
+                  <input type="checkbox" readOnly checked={activeType === t.key}
+                    className="w-3.5 h-3.5 rounded accent-[#2563EB] flex-shrink-0" />
+                  <span className="mr-1">{t.emoji}</span>
+                  <span className="text-xs leading-tight">{t.label}</span>
                 </button>
               ))}
             </div>
-          ) : (
-            <AnimatePresence mode="wait">
-              <motion.div key={step} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.12 }}>
-                <SubForm date={day} client={client} onDone={onClose} />
-                <button onClick={() => setStep(null)}
-                  className="w-full mt-2 text-xs text-[#6B7280] hover:text-[#374151] transition-colors py-1">
-                  ← Back
-                </button>
-              </motion.div>
-            </AnimatePresence>
-          )}
-        </div>
-      </motion.div>
-    </div>
+
+            {/* Right content */}
+            <div className="flex-1 p-5 overflow-y-auto flex flex-col">
+              <AnimatePresence mode="wait">
+                <motion.div key={activeType} initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -6 }} transition={{ duration: 0.1 }} className="flex flex-col flex-1">
+                  {renderContent()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Repeat modal */}
+      <AnimatePresence>
+        {showRepeat && (
+          <RepeatModal
+            repeat={repeat || {}}
+            onChange={r => setRepeat(r)}
+            onClose={() => setShowRepeat(false)}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
