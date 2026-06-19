@@ -86,52 +86,26 @@ Rules:
 - Real food names only (e.g. "Chicken Breast", "White Rice cooked", "Broccoli")
 - Keep each meal's foods list to 3-4 items max to stay within token limit`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': Deno.env.get('ANTHROPIC_API_KEY'),
-        'anthropic-version': '2023-06-01',
+    const parsed = await base44.integrations.Core.InvokeLLM({
+      prompt,
+      model: 'claude_sonnet_4_6',
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          training_day: { type: 'object' },
+          rest_day: { type: 'object' },
+          hydration: { type: 'object' },
+          coach_notes: { type: 'object' },
+          client_notes: { type: 'string' },
+          shopping_list: { type: 'array', items: { type: 'string' } },
+          macro_flexibility_rules: { type: 'array', items: { type: 'string' } },
+          weekly_overview: { type: 'object' },
+        },
       },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 8000,
-        system: 'You are a professional nutritionist. Generate meal plans with specific foods, exact gram amounts, and accurate macros. Always respond with valid JSON only. No markdown, no explanation, just the JSON object.',
-        messages: [{ role: 'user', content: prompt }],
-      }),
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Anthropic error:', response.status, errText);
-      return Response.json({ error: `AI API error ${response.status}: ${errText.substring(0, 300)}` }, { status: 500 });
-    }
-
-    const data = await response.json();
-    const rawText = (data.content?.[0]?.text || '').trim();
-
-    if (!rawText) {
-      return Response.json({ error: 'AI returned an empty response' }, { status: 500 });
-    }
-
-    // Parse JSON — strip markdown fences, then try regex fallback
-    let parsed;
-    const stripped = rawText.replace(/^```(?:json)?\s*/m, '').replace(/```\s*$/m, '').trim();
-    try {
-      parsed = JSON.parse(stripped);
-    } catch (e1) {
-      const match = stripped.match(/\{[\s\S]*\}/);
-      if (match) {
-        try {
-          parsed = JSON.parse(match[0]);
-        } catch (e2) {
-          console.error('JSON parse failed. Raw (first 800):', rawText.substring(0, 800));
-          return Response.json({ error: `Failed to parse AI response: ${e2.message}` }, { status: 500 });
-        }
-      } else {
-        console.error('No JSON found. Raw (first 800):', rawText.substring(0, 800));
-        return Response.json({ error: 'AI did not return valid JSON' }, { status: 500 });
-      }
+    if (!parsed || !parsed.training_day) {
+      return Response.json({ error: 'AI returned an invalid meal plan structure' }, { status: 500 });
     }
 
     const trainingMeals = parsed.training_day?.meals || [];
