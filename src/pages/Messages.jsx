@@ -55,6 +55,10 @@ export default function Messages() {
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Message.create(data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['messages'] }),
+    onError: (err) => {
+      console.error('Message send error:', err);
+      alert('Failed to send message: ' + (err?.message || 'Unknown error'));
+    },
   });
 
   const updateMutation = useMutation({
