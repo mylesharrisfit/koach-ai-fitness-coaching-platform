@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle2, Calendar, Video } from 'lucide-react';
+import { CheckCircle2, Calendar, Video, MapPin, Link, Phone, Users } from 'lucide-react';
 import { format, addMinutes, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -18,10 +18,18 @@ const SESSION_TYPES = [
   { value: 'custom', label: 'Custom', color: 'bg-gray-400' },
 ];
 
+const LOCATION_TYPES = [
+  { value: 'zoom', label: 'Zoom', icon: Video, placeholder: 'https://zoom.us/j/...' },
+  { value: 'google_meet', label: 'Google Meet', icon: Video, placeholder: 'https://meet.google.com/...' },
+  { value: 'phone', label: 'Phone Call', icon: Phone, placeholder: 'Phone number or dial-in...' },
+  { value: 'in_person', label: 'In Person', icon: MapPin, placeholder: 'Address or gym name...' },
+  { value: 'other', label: 'Other / Link', icon: Link, placeholder: 'Meeting link or location...' },
+];
+
 const EMPTY = {
   client_id: '', client_name: '', title: '', date: '',
   time: '', end_time: '', type: 'check_in', duration_minutes: 60,
-  notes: '', meeting_link: '', status: 'scheduled',
+  notes: '', meeting_link: '', location_type: 'zoom', status: 'scheduled',
   send_invite: false, google_event_id: '',
   add_zoom: false,
 };
@@ -197,13 +205,34 @@ export default function SessionFormDialog({
             </div>
           </div>
 
-          {/* Meeting Link */}
-          <div>
-            <Label>Zoom / Meeting Link</Label>
+          {/* Location */}
+          <div className="space-y-2">
+            <Label>Location</Label>
+            <div className="flex gap-1.5 flex-wrap">
+              {LOCATION_TYPES.map(lt => {
+                const Icon = lt.icon;
+                return (
+                  <button
+                    key={lt.value}
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, location_type: lt.value }))}
+                    className={cn(
+                      'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-all',
+                      form.location_type === lt.value
+                        ? 'border-primary bg-primary text-white'
+                        : 'border-[#E7EAF3] text-[#374151] hover:border-primary/40'
+                    )}
+                  >
+                    <Icon className="w-3 h-3" />
+                    {lt.label}
+                  </button>
+                );
+              })}
+            </div>
             <Input
               value={form.meeting_link}
               onChange={e => setForm(f => ({ ...f, meeting_link: e.target.value }))}
-              placeholder="https://zoom.us/j/..."
+              placeholder={LOCATION_TYPES.find(lt => lt.value === form.location_type)?.placeholder || 'Location details...'}
             />
           </div>
 
