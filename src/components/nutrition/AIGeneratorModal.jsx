@@ -1609,39 +1609,52 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
   }
 
   function normalizeMeals(rawMeals) {
-    return (rawMeals || []).map(meal => ({
-      ...meal,
-      name:          meal.name || meal.meal_name || '',
-      meal_name:     meal.name || meal.meal_name || '',
-      time:          meal.time || '',
-      calories:      Number(meal.calories) || 0,
-      protein:       Number(meal.protein)  || 0,
-      carbs:         Number(meal.carbs)    || 0,
-      fats:          Number(meal.fats)     || 0,
-      instructions:  meal.instructions || meal.prep || '',
-      why_this_meal: meal.why_this_meal || '',
-      option_b:      meal.option_b || '',
-      option_c:      meal.option_c || '',
-      foods: (meal.foods || []).map(food => {
-        // AI returns amount as grams (number) and amount_household as string
-        const amountGrams = Number(food.amount_grams ?? food.amount) || null;
-        const household = food.amount_household || food.serving || food.portion || (amountGrams ? `${amountGrams}g` : '');
-        return {
-          name:             food.name || food.food_name || food.item || '',
-          food_name:        food.name || food.food_name || food.item || '',
-          amount_grams:     amountGrams,
-          amount_household: household,
-          amount:           household, // for display in MealPlanTab FoodRow
-          portion:          household,
-          unit:             food.unit || 'g',
-          prep_method:      food.prep_method || food.prep || '',
-          calories:         Number(food.calories) || 0,
-          protein:          Number(food.protein)  || 0,
-          carbs:            Number(food.carbs)    || 0,
-          fats:             Number(food.fats)     || Number(food.fat) || 0,
-        };
-      }),
-    }));
+    return (rawMeals || []).map(meal => {
+      // generateSmartMeals returns meals with options[].foods (SmartNutrition format)
+      // generateMealPlan returns meals with top-level foods array
+      // Flatten the first option's foods if needed
+      const firstOptionFoods = meal.options?.[0]?.foods || [];
+      const rawFoods = meal.foods?.length ? meal.foods : firstOptionFoods;
+
+      // Aggregate macros from foods if not on the meal directly
+      const aggCalories = rawFoods.reduce((s, f) => s + (Number(f.calories) || 0), 0);
+      const aggProtein  = rawFoods.reduce((s, f) => s + (Number(f.protein)  || 0), 0);
+      const aggCarbs    = rawFoods.reduce((s, f) => s + (Number(f.carbs)    || 0), 0);
+      const aggFats     = rawFoods.reduce((s, f) => s + (Number(f.fats)     || 0), 0);
+
+      return {
+        ...meal,
+        name:          meal.name || meal.meal_name || '',
+        meal_name:     meal.name || meal.meal_name || '',
+        time:          meal.time || '',
+        calories:      Number(meal.calories) || aggCalories,
+        protein:       Number(meal.protein)  || aggProtein,
+        carbs:         Number(meal.carbs)    || aggCarbs,
+        fats:          Number(meal.fats)     || aggFats,
+        instructions:  meal.instructions || meal.prep || '',
+        why_this_meal: meal.why_this_meal || '',
+        option_b:      meal.option_b || '',
+        option_c:      meal.option_c || '',
+        foods: rawFoods.map(food => {
+          const amountGrams = Number(food.amount_grams ?? food.amount) || null;
+          const household = food.amount_household || food.serving || food.portion || (amountGrams ? `${amountGrams}g` : '');
+          return {
+            name:             food.name || food.food_name || food.item || '',
+            food_name:        food.name || food.food_name || food.item || '',
+            amount_grams:     amountGrams,
+            amount_household: household,
+            amount:           household,
+            portion:          household,
+            unit:             food.unit || 'g',
+            prep_method:      food.prep_method || food.prep || '',
+            calories:         Number(food.calories) || 0,
+            protein:          Number(food.protein)  || 0,
+            carbs:            Number(food.carbs)    || 0,
+            fats:             Number(food.fats)     || Number(food.fat) || 0,
+          };
+        }),
+      };
+    });
   }
 
   function handleGeneratingDone(rawData) {
