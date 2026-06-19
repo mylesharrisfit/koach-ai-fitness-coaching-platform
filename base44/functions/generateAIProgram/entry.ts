@@ -9,23 +9,31 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // ── Starter tier: enforce 5 AI generations/month (combined program + meal plan) ──
+    // ── AI generation metering — all tiers (mirrors validateSubscription.js TIER_LIMITS) ──
+    const TIER_AI_LIMITS = { starter: 15, pro: 50, elite: 150, enterprise: -1 };
     const tier = user.subscription_tier || 'starter';
-    if (tier === 'starter') {
+    const aiLimit = TIER_AI_LIMITS[tier] ?? 15;
+
+    if (aiLimit !== -1) {
       const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
       const storedMonth  = user.ai_generation_month || '';
       const count        = storedMonth === currentMonth ? (user.ai_generation_count || 0) : 0;
 
-      if (count >= 5) {
+      if (count >= aiLimit) {
+        const upgradeHint = {
+          starter: 'upgrade to Pro for 50 AI generations/month',
+          pro:     'upgrade to Elite for 150 AI generations/month',
+          elite:   'upgrade to Enterprise for unlimited AI generations',
+        };
         return Response.json({
           error: 'monthly_ai_limit_reached',
-          message: "You've hit your monthly AI limit — upgrade to Pro for unlimited AI generations.",
+          message: `You've used ${count}/${aiLimit} AI generations this month — ${upgradeHint[tier] || 'upgrade your plan'}.`,
           used: count,
-          limit: 5,
+          limit: aiLimit,
         }, { status: 402 });
       }
 
-      // Increment counter
+      // Increment counter for all metered tiers
       const newCount = count + 1;
       await base44.asServiceRole.entities.User.update(user.id, {
         ai_generation_count: newCount,
