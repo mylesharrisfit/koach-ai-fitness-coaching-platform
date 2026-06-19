@@ -15,6 +15,7 @@ import GoalsTab from './goals/GoalsTab';
 import GoalsHabitsTab from './GoalsHabitsTab';
 import MetricsTab from './MetricsTab';
 import ClientNutritionTab from './ClientNutritionTab';
+import ClientCalendarTab from './ClientCalendarTab';
 import { motion } from 'framer-motion';
 
 // ── Two-level navigation structure ──────────────────────────────────────────
@@ -27,6 +28,13 @@ const NAV_GROUPS = [
     subs: [
       { key: 'summary',      label: 'Summary' },
       { key: 'pipeline',     label: 'Pipeline', leadOnly: true },
+    ],
+  },
+  {
+    key: 'calendar',
+    label: 'Calendar',
+    subs: [
+      { key: 'calendar_tab', label: 'Calendar' },
     ],
   },
   {
@@ -329,6 +337,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
           {activeTab === 'goals_habits_tab' && <GoalsHabitsTab client={localClient} />}
           {activeTab === 'metrics_tab'  && <MetricsTab client={localClient} onClientUpdated={handleClientUpdated} />}
           {activeTab === 'payments'  && <PaymentsTab   client={localClient} />}
+          {activeTab === 'calendar_tab' && <ClientCalendarTab client={localClient} />}
 
           {(activeTab === 'consultation' || activeTab === 'forms' || activeTab === 'invoices' ||
             activeTab === 'sales' || activeTab === 'attachments') && (
