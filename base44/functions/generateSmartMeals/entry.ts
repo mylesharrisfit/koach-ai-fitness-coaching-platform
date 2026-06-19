@@ -39,6 +39,9 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+    const body = await req.json();
+    const { calories, protein_g, carbs_g, fats_g, meal_count, options_count, mode, meal } = body;
+
     // ── AI generation metering — mirrors validateSubscription.js TIER_LIMITS ──
     const tier = user.subscription_tier || 'starter';
     const aiLimit = TIER_AI_LIMITS[tier] ?? 15;
@@ -68,9 +71,6 @@ Deno.serve(async (req) => {
         ai_generation_month: currentMonth,
       });
     }
-
-    const body = await req.json();
-    const { calories, protein_g, carbs_g, fats_g, meal_count, options_count, mode, meal } = body;
 
     // ── Single-meal regeneration ──
     if (mode === 'regenerate' && meal) {
