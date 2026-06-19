@@ -16,9 +16,9 @@ const ICON_MAP = {
 
 // Key selling points shown per tier in the comparison table
 const TIER_SELLING_POINTS = {
-  starter: ['Up to 20 clients', 'Workout programs', 'Nutrition plans', 'Scheduling', 'Text messaging'],
-  pro:     ['Up to 75 clients', 'Progress analytics', 'Check-in reviews', 'Adherence scoring', 'Analytics graphs', 'Voice & video messages', 'Client mobile dashboard'],
-  elite:   ['Unlimited clients', 'Full AI assistant', 'AI calorie & progression', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module'],
+  starter: ['Up to 10 clients', 'Workout programs', 'Nutrition plans', 'Scheduling', 'Text messaging'],
+  pro:     ['Up to 25 clients', 'Progress analytics', 'Check-in reviews', 'Adherence scoring', 'Analytics graphs', 'Voice & video messages', 'Client mobile dashboard'],
+  elite:   ['Up to 75 clients', 'Full AI assistant', 'AI calorie & progression', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module'],
   enterprise: ['Unlimited clients', 'Multi-coach team accounts', 'Advanced analytics (LTV, churn)', 'Stripe & Sheets integrations', 'API access', 'Priority support'],
 };
 

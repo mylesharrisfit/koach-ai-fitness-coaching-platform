@@ -65,7 +65,7 @@ export const TIERS = {
     badge: 'bg-primary/15 text-primary border-primary/20',
     popular: true,
     limits: {
-      max_clients: 75,
+      max_clients: 25,
       max_programs: -1,         // unlimited
       max_nutrition_plans: -1,  // unlimited
       max_ai_generations_per_month: -1,  // unlimited
@@ -115,7 +115,7 @@ export const TIERS = {
     gradient: 'from-accent to-emerald-400',
     badge: 'bg-accent/15 text-accent border-accent/20',
     limits: {
-      max_clients: -1,      // Unlimited
+      max_clients: 75,      // 75 clients
       max_programs: -1,
       max_nutrition_plans: -1,
       max_ai_generations_per_month: -1,  // unlimited

@@ -14,8 +14,8 @@ const PLAN_PRICES = {
 
 const CLIENT_LIMIT = {
   starter: 'Up to 10 clients',
-  pro: 'Up to 75 clients',
-  elite: 'Unlimited clients',
+  pro: 'Up to 25 clients',
+  elite: 'Up to 75 clients',
   enterprise: 'Unlimited clients',
 };
 

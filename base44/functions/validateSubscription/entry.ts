@@ -3,9 +3,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 const TIER_ORDER = ['starter', 'pro', 'elite', 'enterprise'];
 
 const TIER_LIMITS = {
-  starter:    { max_clients: 20, max_programs: 3,  max_nutrition_plans: 3 },
-  pro:        { max_clients: 75, max_programs: 30, max_nutrition_plans: 30 },
-  elite:      { max_clients: -1, max_programs: -1, max_nutrition_plans: -1 },
+  starter:    { max_clients: 10, max_programs: -1, max_nutrition_plans: -1 },
+  pro:        { max_clients: 25, max_programs: -1, max_nutrition_plans: -1 },
+  elite:      { max_clients: 75, max_programs: -1, max_nutrition_plans: -1 },
   enterprise: { max_clients: -1, max_programs: -1, max_nutrition_plans: -1 },
 };
 
