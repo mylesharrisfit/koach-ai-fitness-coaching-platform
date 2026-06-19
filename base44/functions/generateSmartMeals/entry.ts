@@ -39,7 +39,12 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await req.json();
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return Response.json({ error: 'invalid_request_body' }, { status: 400 });
+    }
     const { calories, protein_g, carbs_g, fats_g, meal_count, options_count, mode, meal } = body;
 
     // ── AI generation metering — mirrors validateSubscription.js TIER_LIMITS ──
