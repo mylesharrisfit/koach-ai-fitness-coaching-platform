@@ -11,7 +11,7 @@ import ConversationHeader from '../components/messages/ConversationHeader';
 import ConversationEmpty from '../components/messages/ConversationEmpty';
 import ComposeBar from '../components/messages/ComposeBar.jsx';
 import BroadcastModal from '../components/messages/BroadcastModal';
-import ClientInfoSidebar from '../components/messages/ClientInfoSidebar';
+
 
 export default function Messages() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -43,10 +43,6 @@ export default function Messages() {
     queryFn: () => base44.entities.CheckIn.list('-date', 300),
   });
 
-  const { data: badges = [] } = useQuery({
-    queryKey: ['client-badges-messages'],
-    queryFn: () => base44.entities.ClientBadge.list('-earned_date', 100),
-  });
 
   // Real-time subscription
   useEffect(() => {
@@ -255,18 +251,6 @@ export default function Messages() {
         )}
       </div>
 
-      {/* ── Right: Client info sidebar (260px) ── */}
-      {selectedClient && (
-        <div className="hidden lg:flex flex-col w-[260px] flex-shrink-0">
-          <ClientInfoSidebar
-            client={selectedClient}
-            checkIns={clientCheckIns}
-            badges={badges}
-            allMessages={allMessages}
-            onInsertMessage={(text) => setNewMessage(text)}
-          />
-        </div>
-      )}
 
       {showBroadcast && (
         <BroadcastModal
