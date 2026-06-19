@@ -3,7 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Home, Dumbbell, Salad, BarChart2, MessageSquare, Users } from 'lucide-react';
+import { Home, Dumbbell, Salad, BarChart2, MessageSquare, Users, CalendarDays } from 'lucide-react';
 import { addDays, parseISO, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
 import PortalProfile from '@/pages/portal/PortalProfile';
@@ -15,6 +15,7 @@ import PortalProgress from '@/pages/portal/PortalProgress';
 import PortalMessages from '@/pages/portal/PortalMessages';
 import PortalNotifications from '@/pages/portal/PortalNotifications';
 import PortalCommunity from '@/pages/portal/PortalCommunity';
+import PortalCalendar from '@/pages/portal/PortalCalendar';
 import NotificationPrompt from '@/components/pwa/NotificationPrompt';
 import AddToHomeScreenPrompt from '@/components/pwa/AddToHomeScreenPrompt';
 import { pushNotificationManager } from '@/lib/pushNotificationManager';
@@ -22,7 +23,7 @@ import { pushNotificationManager } from '@/lib/pushNotificationManager';
 const NAV = [
   { icon: Home,          label: 'Home',      path: '/portal' },
   { icon: Dumbbell,      label: 'Train',     path: '/portal/workouts' },
-  { icon: Salad,         label: 'Nutrition', path: '/portal/nutrition' },
+  { icon: CalendarDays,  label: 'Schedule',  path: '/portal/calendar' },
   { icon: BarChart2,     label: 'Progress',  path: '/portal/progress' },
   { icon: Users,         label: 'Community', path: '/portal/community' },
   { icon: MessageSquare, label: 'Coach',     path: '/portal/messages' },
@@ -174,6 +175,7 @@ export default function ClientPortal() {
           <Route path="/nutrition" element={<PortalNutritionPage user={user} />} />
           <Route path="/checkin"   element={<PortalCheckIn user={user} />} />
           <Route path="/progress"  element={<PortalProgress user={user} />} />
+          <Route path="/calendar"  element={<PortalCalendar user={user} />} />
           <Route path="/community" element={<PortalCommunity user={user} />} />
           <Route path="/messages"  element={<PortalMessages user={user} />} />
           <Route path="/notifications" element={<PortalNotifications user={user} />} />
