@@ -260,47 +260,65 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
       return;
     }
     setGenerating(true);
-    const response = await base44.functions.invoke('generateSmartMeals', {
-      calories: params.calories,
-      protein_g: params.protein_g,
-      carbs_g: params.carbs_g,
-      fats_g: params.fats_g,
-      meal_count: params.meal_count,
-      options_count: params.options_count,
-    });
+    try {
+      const response = await base44.functions.invoke('generateSmartMeals', {
+        calories: params.calories,
+        protein_g: params.protein_g,
+        carbs_g: params.carbs_g,
+        fats_g: params.fats_g,
+        meal_count: params.meal_count,
+        options_count: params.options_count,
+      });
 
-    if (response.data?.error === 'monthly_ai_limit_reached') {
-      toast.error(response.data.message || 'Monthly AI generation limit reached. Upgrade your plan.');
+      if (response.data?.error === 'monthly_ai_limit_reached') {
+        toast.error(response.data.message || 'Monthly AI generation limit reached. Upgrade your plan.');
+        return;
+      }
+
+      if (response.data?.error) {
+        toast.error(response.data.error);
+        return;
+      }
+
+      const generated = (response.data?.meals || []).map(m => ({ ...m, tags: [] }));
+      syncUp(generated);
+      toast.success('Meal plan generated!');
+    } catch (err) {
+      toast.error('Failed to generate meal plan. Please try again.');
+    } finally {
       setGenerating(false);
-      return;
     }
-
-    const generated = (response.data?.meals || []).map(m => ({ ...m, tags: [] }));
-    syncUp(generated);
-    setGenerating(false);
-    toast.success('Meal plan generated!');
   };
 
   const regenerateMeal = async (mIdx) => {
     const meal = meals[mIdx];
-    const response = await base44.functions.invoke('generateSmartMeals', {
-      mode: 'regenerate',
-      meal: { ...meal, total_meals: meals.length },
-      calories: params.calories,
-      protein_g: params.protein_g,
-      carbs_g: params.carbs_g,
-      fats_g: params.fats_g,
-      options_count: params.options_count,
-    });
+    try {
+      const response = await base44.functions.invoke('generateSmartMeals', {
+        mode: 'regenerate',
+        meal: { ...meal, total_meals: meals.length },
+        calories: params.calories,
+        protein_g: params.protein_g,
+        carbs_g: params.carbs_g,
+        fats_g: params.fats_g,
+        options_count: params.options_count,
+      });
 
-    if (response.data?.error === 'monthly_ai_limit_reached') {
-      toast.error(response.data.message || 'Monthly AI generation limit reached.');
-      return;
-    }
+      if (response.data?.error === 'monthly_ai_limit_reached') {
+        toast.error(response.data.message || 'Monthly AI generation limit reached.');
+        return;
+      }
 
-    const result = response.data?.meal;
-    if (result?.meal_name) {
-      syncUp(meals.map((m, i) => i === mIdx ? { ...result, tags: m.tags || [] } : m));
+      if (response.data?.error) {
+        toast.error(response.data.error);
+        return;
+      }
+
+      const result = response.data?.meal;
+      if (result?.meal_name) {
+        syncUp(meals.map((m, i) => i === mIdx ? { ...result, tags: m.tags || [] } : m));
+      }
+    } catch (err) {
+      toast.error('Failed to regenerate meal. Please try again.');
     }
   };
 
