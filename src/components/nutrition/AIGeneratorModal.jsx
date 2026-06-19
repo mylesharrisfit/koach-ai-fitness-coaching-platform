@@ -1068,7 +1068,7 @@ function Step3Generating({ onDone, macroPayload }) {
     // Call the API
     if (!apiCalledRef.current) {
       apiCalledRef.current = true;
-      base44.functions.invoke('generateMealPlan', macroPayload)
+      base44.functions.invoke('generateSmartMeals', macroPayload)
         .then(res => {
           clearInterval(interval);
           const body = res.data;
