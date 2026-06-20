@@ -8,12 +8,7 @@ import { toast } from 'sonner';
 import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
 import { format } from 'date-fns';
 
-const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514';
-const API_HEADERS = {
-  'Content-Type': 'application/json',
-  'anthropic-version': '2023-06-01',
-  'anthropic-dangerous-direct-browser-access': 'true',
-};
+// API calls now go through backend function to avoid exposing API keys
 
 // ── Tools definition ───────────────────────────────────────────────────────
 const TOOLS = [
@@ -193,21 +188,11 @@ IMPORTANT GUIDELINES:
 - Keep final text responses concise — the tool results speak for themselves`;
 }
 
-// ── Claude API call ────────────────────────────────────────────────────────
-async function callClaude(apiKey, systemPrompt, messages) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { ...API_HEADERS, 'x-api-key': apiKey || '' },
-    body: JSON.stringify({
-      model: ANTHROPIC_MODEL,
-      max_tokens: 2000,
-      system: systemPrompt,
-      tools: TOOLS,
-      messages,
-    }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || 'Claude API error');
+// ── Backend API call ───────────────────────────────────────────────────────
+async function callClaude(_apiKey, systemPrompt, messages) {
+  const res = await base44.functions.invoke('claudeAssistant', { systemPrompt, messages });
+  const data = res.data;
+  if (data?.error) throw new Error(data.error);
   return data;
 }
 
@@ -234,7 +219,7 @@ function ToolActionCard({ toolName, input, result }) {
 }
 
 // ── Message bubble ─────────────────────────────────────────────────────────
-function MessageBubble({ message, onFollowUp, onSaveNote, isLast, apiKey }) {
+function MessageBubble({ message, onFollowUp, onSaveNote, isLast }) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
   const [followUps, setFollowUps] = useState(message.followUps || []);
@@ -245,7 +230,7 @@ function MessageBubble({ message, onFollowUp, onSaveNote, isLast, apiKey }) {
       setLoadingFollowUps(true);
       (async () => {
         try {
-          const data = await callClaude(apiKey, 'Suggest 3 short follow-up questions a coach might ask next. Return ONLY a JSON array of 3 strings.', [
+          const data = await callClaude(null, 'Suggest 3 short follow-up questions a coach might ask next. Return ONLY a JSON array of 3 strings.', [
             { role: 'user', content: `Based on this response: "${message.content.slice(0, 400)}" — suggest 3 follow-up questions as a JSON array.` },
           ]);
           const text = data.content?.[0]?.text || '[]';
@@ -362,7 +347,6 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
   const [charCount, setCharCount] = useState(0);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
   const queryClient = useQueryClient();
 
   const { data: allClients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => base44.entities.Client.list('name'), staleTime: 30_000 });
@@ -475,7 +459,7 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
     let currentApiMessages = newApiMessages;
 
     try {
-      let response = await callClaude(apiKey, systemPrompt, currentApiMessages);
+      let response = await callClaude(null, systemPrompt, currentApiMessages);
 
       // Agentic loop — keep going while Claude wants to use tools
       while (response.stop_reason === 'tool_use') {
@@ -520,7 +504,7 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
           },
         ];
 
-        response = await callClaude(apiKey, systemPrompt, currentApiMessages);
+        response = await callClaude(null, systemPrompt, currentApiMessages);
       }
 
       // Final text response
@@ -546,7 +530,7 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
     } finally {
       setIsLoading(false);
     }
-  }, [input, apiMessages, displayMessages, isLoading, selectedClient, plan, lastCheckIn, adherenceScore, streak, apiKey, executeTool]);
+  }, [input, apiMessages, displayMessages, isLoading, selectedClient, plan, lastCheckIn, adherenceScore, streak, executeTool]);
 
   const handleKey = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
   const handleInputChange = (e) => {
@@ -628,7 +612,6 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
                   isLast={i === lastDisplayIdx && msg.role === 'assistant'}
                   onFollowUp={sendMessage}
                   onSaveNote={msg.role === 'assistant' ? handleSaveNote : null}
-                  apiKey={apiKey}
                 />
               )
             ))}
