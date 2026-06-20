@@ -568,36 +568,7 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
   );
 }
 
-function HabitContent({ client, onDone }) {
-  const qc = useQueryClient();
-  const [showHabitForm, setShowHabitForm] = useState(true);
 
-  const handleSaved = () => {
-    qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
-    onDone();
-  };
-
-  // Render the HabitFormModal directly via portal — it has all quick-add + emoji built in
-  return (
-    <>
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-3xl mb-2">⚡</p>
-          <p className="text-sm font-semibold text-[#374151]">Opening habit form…</p>
-        </div>
-      </div>
-      {showHabitForm && ReactDOM.createPortal(
-        <HabitFormModal
-          clientId={client.id}
-          habit={null}
-          onSaved={handleSaved}
-          onClose={onDone}
-        />,
-        document.body
-      )}
-    </>
-  );
-}
 
 function CheckInContent({ dateStr, setDateStr, client, onDone }) {
   const qc = useQueryClient();
@@ -738,6 +709,19 @@ function AddEventModal({ day, client, onClose }) {
   const [repeat, setRepeat] = useState(null);
   const [showRepeat, setShowRepeat] = useState(false);
 
+  // When habit is selected, show HabitFormModal directly (no wrapper modal)
+  if (activeType === 'habit') {
+    return ReactDOM.createPortal(
+      <HabitFormModal
+        clientId={client.id}
+        habit={null}
+        onSaved={onClose}
+        onClose={onClose}
+      />,
+      document.body
+    );
+  }
+
   const renderContent = () => {
     if (activeType === 'workout') {
       return <WorkoutContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
@@ -747,9 +731,6 @@ function AddEventModal({ day, client, onClose }) {
     }
     if (activeType === 'goal') {
       return <GoalContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
-    }
-    if (activeType === 'habit') {
-      return <HabitContent client={client} onDone={onClose} />;
     }
     if (activeType === 'checkin') {
       return <CheckInContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
@@ -1002,6 +983,8 @@ export default function ClientCalendarTab({ client }) {
           />
         )}
       </AnimatePresence>
+
+      {/* HabitFormModal is handled inside AddEventModal via portal — no duplicate needed */}
     </div>
   );
 }
