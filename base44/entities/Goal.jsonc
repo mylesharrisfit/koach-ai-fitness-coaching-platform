@@ -23,6 +23,11 @@
       ],
       "description": "Type of goal"
     },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Target due date for this goal (YYYY-MM-DD)"
+    },
     "target_value": {
       "type": "number",
       "description": "Target number for numeric goals"

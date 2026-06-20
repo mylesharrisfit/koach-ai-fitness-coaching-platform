@@ -494,6 +494,7 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
       goal_type: goalType,
       status: 'active',
       team_id: client.team_id,
+      due_date: dateStr,
       notes: note || undefined,
     };
     if (goalType === 'numeric') {
@@ -509,21 +510,19 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-3">
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Due Date</label>
           <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
         </div>
 
-        {templates.length > 0 && (
-          <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Use Template</label>
-            <select className={inputCls} value={selectedTemplate} onChange={e => applyTemplate(e.target.value)}>
-              <option value="">— Pick a template —</option>
-              {templates.map(t => (
-                <option key={t.id} value={t.id}>{t.name} ({t.goal_type})</option>
-              ))}
-            </select>
-          </div>
-        )}
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Template</label>
+          <select className={inputCls} value={selectedTemplate} onChange={e => applyTemplate(e.target.value)}>
+            <option value="">— Pick a template or fill manually —</option>
+            {templates.map(t => (
+              <option key={t.id} value={t.id}>{t.name} ({t.goal_type})</option>
+            ))}
+          </select>
+        </div>
 
         <div>
           <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Type</label>
@@ -564,7 +563,7 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
       <button onClick={save} disabled={saving || !name.trim()}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
         style={{ background: '#D97706' }}>
-        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Goal'}
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Goal to Calendar'}
       </button>
     </div>
   );
@@ -577,8 +576,30 @@ function HabitContent({ client, onDone }) {
   const [emoji, setEmoji] = useState('');
   const [frequency, setFrequency] = useState('daily');
   const [daysOfWeek, setDaysOfWeek] = useState([1,2,3,4,5]);
+  const [selectedTemplate, setSelectedTemplate] = useState('');
 
   const DAY_LABELS = ['S','M','T','W','T','F','S'];
+
+  // Load all habits coach has created across clients as reusable templates
+  const { data: habitTemplates = [] } = useQuery({
+    queryKey: ['all-habits-templates'],
+    queryFn: async () => {
+      const habits = await base44.entities.Habit.list('-created_date', 100);
+      // Deduplicate by name
+      const seen = new Set();
+      return habits.filter(h => { if (seen.has(h.name)) return false; seen.add(h.name); return true; });
+    },
+  });
+
+  const applyHabitTemplate = (id) => {
+    setSelectedTemplate(id);
+    const h = habitTemplates.find(t => t.id === id);
+    if (!h) return;
+    setName(h.name || '');
+    setEmoji(h.emoji || '');
+    setFrequency(h.frequency || 'daily');
+    setDaysOfWeek(h.days_of_week?.length ? h.days_of_week : [1,2,3,4,5]);
+  };
 
   const toggleDay = (d) => setDaysOfWeek(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
 
@@ -601,11 +622,24 @@ function HabitContent({ client, onDone }) {
   return (
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-3">
+
+        {/* Habit template dropdown */}
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-2">Quick Add</label>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Habit Template</label>
+          <select className={inputCls} value={selectedTemplate} onChange={e => applyHabitTemplate(e.target.value)}>
+            <option value="">— Pick a template or fill manually —</option>
+            {habitTemplates.map(h => (
+              <option key={h.id} value={h.id}>{h.emoji ? `${h.emoji} ` : ''}{h.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Quick add chips */}
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1.5">Quick Add</label>
           <div className="flex flex-wrap gap-1.5">
             {HABIT_SUGGESTIONS.map(s => (
-              <button key={s.name} onClick={() => { setName(s.name); setEmoji(s.emoji); }}
+              <button key={s.name} onClick={() => { setName(s.name); setEmoji(s.emoji); setSelectedTemplate(''); }}
                 className={`text-xs px-2.5 py-1 rounded-full border font-semibold transition-colors ${name === s.name ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280] hover:bg-purple-50'}`}>
                 {s.emoji} {s.name}
               </button>
