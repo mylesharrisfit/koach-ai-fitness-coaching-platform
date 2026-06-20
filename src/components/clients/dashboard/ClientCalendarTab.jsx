@@ -758,36 +758,65 @@ function CheckInContent({ dateStr, setDateStr, client, onDone }) {
   );
 }
 
-function SimpleContent({ dateStr, setDateStr, client, onDone, actType }) {
+function WeighInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState('');
-  const [weight, setWeight] = useState('');
-
-  const cfg = ACTIVITY_TYPES.find(a => a.key === actType);
 
   const save = async () => {
     setSaving(true);
-    if (actType === 'weighin') {
-      await base44.entities.WeighIn.create({ client_id: client.id, weight: parseFloat(weight), date: dateStr, note: note || undefined, team_id: client.team_id });
-      qc.invalidateQueries({ queryKey: ['cal-weighins', client.id] });
+    const baseDate = parseISO(dateStr);
+    const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
+    for (const d of datesToCreate) {
+      // weight=0 signals a "scheduled / pending" weigh-in that the client will fill in themselves
+      await base44.entities.WeighIn.create({
+        client_id: client.id,
+        weight: 0,
+        date: d,
+        note: note || undefined,
+        team_id: client.team_id,
+      });
+      await new Promise(r => setTimeout(r, 50));
     }
+    qc.invalidateQueries({ queryKey: ['cal-weighins', client.id] });
     onDone();
   };
 
   return (
     <div className="flex-1 flex flex-col justify-between">
-      <div className="space-y-3">
+      <div className="space-y-4">
+        <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
+          <p className="text-xs font-semibold text-blue-700">📋 Scheduled by coach</p>
+          <p className="text-xs text-blue-600 mt-0.5">This will appear in the client's calendar as a pending weigh-in task. The client logs their own weight in their portal.</p>
+        </div>
+
         <div>
           <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
-          <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+          <div className="flex items-center gap-3">
+            <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
+            </button>
+          </div>
+          {repeat && (
+            <p className="text-[11px] text-[#6B7280] mt-1">
+              Will create {generateRepeatDates(parseISO(dateStr), repeat).length} weigh-in prompts ·{' '}
+              <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+            </p>
+          )}
         </div>
-        <div><label className="text-xs font-semibold text-[#374151] block mb-1">Weight (lbs)</label><input type="number" step="0.1" className={inputCls} placeholder="175.5" value={weight} onChange={e => setWeight(e.target.value)} /></div>
-        <div><label className="text-xs font-semibold text-[#374151] block mb-1">Note (optional)</label><input className={inputCls} placeholder="Any notes…" value={note} onChange={e => setNote(e.target.value)} /></div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Coach Note (optional)</label>
+          <input className={inputCls} placeholder="e.g. Morning weigh-in, fasted" value={note} onChange={e => setNote(e.target.value)} />
+        </div>
       </div>
-      <button onClick={save} disabled={saving || !weight}
-        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: cfg?.color || '#2563EB' }}>
-        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
+
+      <button onClick={save} disabled={saving}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{ background: '#0EA5E9' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+        {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} prompts)` : 'Schedule Weigh-in'}
       </button>
     </div>
   );
@@ -815,7 +844,10 @@ function AddEventModal({ day, client, onClose }) {
     if (activeType === 'checkin') {
       return <CheckInContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
     }
-    return <SimpleContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} actType={activeType} />;
+    if (activeType === 'weighin') {
+      return <WeighInContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
+    }
+    return null;
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -9,19 +9,22 @@ import {
 } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, Camera, ClipboardList, Phone,
-  Target, Zap, Dumbbell, Salad, X, Calendar, CheckCircle2
+  Target, Zap, Dumbbell, Salad, X, Calendar, CheckCircle2, Scale, Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 // ── Event type config ───────────────────────────────────
 const EVENT_TYPES = {
-  checkin:   { label: 'Check-in',   color: '#2563EB', bg: '#EFF6FF', icon: ClipboardList, emoji: '📋' },
-  photo:     { label: 'Photos',     color: '#7C3AED', bg: '#F5F3FF', icon: Camera,        emoji: '📸' },
-  call:      { label: 'Coach Call', color: '#059669', bg: '#ECFDF5', icon: Phone,         emoji: '📞' },
-  goal:      { label: 'Goal',       color: '#D97706', bg: '#FFFBEB', icon: Target,        emoji: '🎯' },
-  habit:     { label: 'Habit',      color: '#EC4899', bg: '#FDF2F8', icon: Zap,           emoji: '⚡' },
-  workout:   { label: 'Workout',    color: '#0EA5E9', bg: '#F0F9FF', icon: Dumbbell,      emoji: '💪' },
-  nutrition: { label: 'Nutrition',  color: '#10B981', bg: '#ECFDF5', icon: Salad,         emoji: '🥗' },
+  checkin:        { label: 'Check-in',        color: '#2563EB', bg: '#EFF6FF', icon: ClipboardList, emoji: '📋' },
+  photo:          { label: 'Photos',           color: '#7C3AED', bg: '#F5F3FF', icon: Camera,        emoji: '📸' },
+  call:           { label: 'Coach Call',       color: '#059669', bg: '#ECFDF5', icon: Phone,         emoji: '📞' },
+  goal:           { label: 'Goal',             color: '#D97706', bg: '#FFFBEB', icon: Target,        emoji: '🎯' },
+  habit:          { label: 'Habit',            color: '#EC4899', bg: '#FDF2F8', icon: Zap,           emoji: '⚡' },
+  workout:        { label: 'Workout',          color: '#0EA5E9', bg: '#F0F9FF', icon: Dumbbell,      emoji: '💪' },
+  nutrition:      { label: 'Nutrition',        color: '#10B981', bg: '#ECFDF5', icon: Salad,         emoji: '🥗' },
+  weighin:        { label: 'Weigh-in',         color: '#0EA5E9', bg: '#F0F9FF', icon: Scale,         emoji: '⚖️' },
+  weighin_pending:{ label: 'Log Weight',       color: '#F59E0B', bg: '#FFFBEB', icon: Scale,         emoji: '⚖️' },
 };
 
 // ── Build calendar events from real data ────────────────
@@ -67,16 +70,19 @@ function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions) {
     });
   });
 
-  // Weigh-ins
+  // Weigh-ins — weight=0 means scheduled/pending (client needs to log)
   weighIns.forEach(w => {
     if (!w.date) return;
+    const isPending = !w.weight || w.weight === 0;
     events.push({
       id: `weigh-${w.id}`,
+      weighInId: w.id,
       date: w.date,
-      type: 'photo',
-      title: 'Weight Logged',
-      subtitle: `${w.weight} lbs`,
-      done: true,
+      type: isPending ? 'weighin_pending' : 'weighin',
+      title: isPending ? 'Log Your Weight' : 'Weight Logged',
+      subtitle: isPending ? (w.note || 'Tap to enter your weight') : `${w.weight} lbs`,
+      done: !isPending,
+      isPending,
     });
   });
 
@@ -144,15 +150,83 @@ function DayCell({ day, currentMonth, events, onSelect, selected }) {
   );
 }
 
+// ── Log Weight Modal ────────────────────────────────────
+function LogWeightModal({ weighInId, date, coachNote, onClose, onSaved }) {
+  const [weight, setWeight] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    if (!weight || parseFloat(weight) <= 0) return;
+    setSaving(true);
+    await base44.entities.WeighIn.update(weighInId, { weight: parseFloat(weight) });
+    toast.success('Weight logged!');
+    onSaved();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
+      <motion.div
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 80, opacity: 0 }}
+        className="relative bg-white rounded-3xl w-full max-w-sm p-6"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="font-black text-slate-900 text-lg">Log Your Weight</h3>
+            <p className="text-slate-400 text-xs">{format(parseISO(date), 'EEE, MMMM d')}</p>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-100">
+            <X className="w-4 h-4 text-slate-500" />
+          </button>
+        </div>
+
+        {coachNote && (
+          <div className="mb-4 px-3 py-2 rounded-xl bg-blue-50 border border-blue-100">
+            <p className="text-xs text-blue-600 font-semibold">📋 Coach note: {coachNote}</p>
+          </div>
+        )}
+
+        <div className="mb-5">
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Weight (lbs)</label>
+          <input
+            type="number"
+            step="0.1"
+            autoFocus
+            placeholder="e.g. 175.5"
+            value={weight}
+            onChange={e => setWeight(e.target.value)}
+            className="w-full text-2xl font-black text-center border-2 border-slate-200 rounded-2xl px-4 py-4 outline-none focus:border-blue-400"
+          />
+        </div>
+
+        <button
+          onClick={save}
+          disabled={saving || !weight || parseFloat(weight) <= 0}
+          className="w-full py-3.5 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2 disabled:opacity-50"
+          style={{ background: 'linear-gradient(135deg, #0EA5E9, #2563EB)' }}
+        >
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+          {saving ? 'Saving…' : 'Save Weight ⚖️'}
+        </button>
+      </motion.div>
+    </div>
+  );
+}
+
 // ── Event pill ──────────────────────────────────────────
-function EventPill({ event }) {
+function EventPill({ event, onLogWeight }) {
   const cfg = EVENT_TYPES[event.type] || EVENT_TYPES.checkin;
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-3 p-3 rounded-2xl"
+      className={cn('flex items-center gap-3 p-3 rounded-2xl', event.isPending && 'cursor-pointer active:scale-95 transition-transform')}
       style={{ background: cfg.bg, border: `1px solid ${cfg.color}22` }}
+      onClick={event.isPending && onLogWeight ? () => onLogWeight(event) : undefined}
     >
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
         style={{ background: cfg.color + '22' }}>
@@ -162,9 +236,14 @@ function EventPill({ event }) {
         <p className="text-sm font-bold text-slate-800 truncate">{event.title}</p>
         {event.subtitle ? <p className="text-xs text-slate-500 truncate">{event.subtitle}</p> : null}
       </div>
-      {event.done && (
+      {event.isPending ? (
+        <span className="text-[10px] font-black px-2 py-1 rounded-full text-white flex-shrink-0"
+          style={{ background: cfg.color }}>
+          + Log
+        </span>
+      ) : event.done ? (
         <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: cfg.color }} />
-      )}
+      ) : null}
     </motion.div>
   );
 }
@@ -205,6 +284,8 @@ function LegendPill({ type, cfg }) {
 export default function PortalCalendar({ user }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(new Date());
+  const [logWeightEvent, setLogWeightEvent] = useState(null);
+  const qc = useQueryClient();
 
   // Fetch client
   const { data: clients = [] } = useQuery({
@@ -353,11 +434,24 @@ export default function PortalCalendar({ user }) {
           <div className="space-y-2">
             <AnimatePresence mode="popLayout">
               {selectedEvents.map(event => (
-                <EventPill key={event.id} event={event} />
+                <EventPill key={event.id} event={event} onLogWeight={setLogWeightEvent} />
               ))}
             </AnimatePresence>
           </div>
         )}
+
+        {/* Log Weight Modal */}
+        <AnimatePresence>
+          {logWeightEvent && (
+            <LogWeightModal
+              weighInId={logWeightEvent.weighInId}
+              date={logWeightEvent.date}
+              coachNote={logWeightEvent.subtitle !== 'Tap to enter your weight' ? logWeightEvent.subtitle : null}
+              onClose={() => setLogWeightEvent(null)}
+              onSaved={() => qc.invalidateQueries({ queryKey: ['portal-cal-weighins', myClient?.id] })}
+            />
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Upcoming section */}
