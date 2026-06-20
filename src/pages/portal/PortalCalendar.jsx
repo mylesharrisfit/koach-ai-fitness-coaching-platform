@@ -25,7 +25,7 @@ const EVENT_TYPES = {
 };
 
 // ── Build calendar events from real data ────────────────
-function buildEvents(checkIns, habits, habitCompletions, goals, sessions, weighIns) {
+function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions) {
   const events = [];
 
   // Check-ins
@@ -67,7 +67,7 @@ function buildEvents(checkIns, habits, habitCompletions, goals, sessions, weighI
     });
   });
 
-  // Weigh-ins (as photo/measurement markers)
+  // Weigh-ins
   weighIns.forEach(w => {
     if (!w.date) return;
     events.push({
@@ -77,6 +77,19 @@ function buildEvents(checkIns, habits, habitCompletions, goals, sessions, weighI
       title: 'Weight Logged',
       subtitle: `${w.weight} lbs`,
       done: true,
+    });
+  });
+
+  // Workout sessions scheduled by coach
+  (workoutSessions || []).forEach(ws => {
+    if (!ws.scheduled_date) return;
+    events.push({
+      id: `ws-${ws.id}`,
+      date: ws.scheduled_date,
+      type: 'workout',
+      title: ws.workout_name || 'Workout',
+      subtitle: ws.program_name || '',
+      done: ws.status === 'completed',
     });
   });
 
@@ -222,10 +235,15 @@ export default function PortalCalendar({ user }) {
     queryFn: () => base44.entities.WeighIn.filter({ client_id: myClient.id }, '-date', 50),
     enabled: !!myClient?.id,
   });
+  const { data: workoutSessions = [] } = useQuery({
+    queryKey: ['portal-cal-workoutsessions', myClient?.id],
+    queryFn: () => base44.entities.WorkoutSession.filter({ client_id: myClient.id }, '-scheduled_date', 200),
+    enabled: !!myClient?.id,
+  });
 
   const events = useMemo(
-    () => buildEvents(checkIns, [], [], goals, sessions, weighIns),
-    [checkIns, goals, sessions, weighIns]
+    () => buildEvents(checkIns, goals, sessions, weighIns, workoutSessions),
+    [checkIns, goals, sessions, weighIns, workoutSessions]
   );
 
   // Calendar grid days
@@ -362,9 +380,9 @@ export default function PortalCalendar({ user }) {
           <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">This Month</p>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: 'Check-ins', count: events.filter(e => e.type === 'checkin' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📋', color: '#2563EB' },
+              { label: 'Workouts', count: events.filter(e => e.type === 'workout' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '💪', color: '#0EA5E9' },
               { label: 'Sessions', count: events.filter(e => e.type === 'call' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📞', color: '#059669' },
-              { label: 'Goals Due', count: events.filter(e => e.type === 'goal' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '🎯', color: '#D97706' },
+              { label: 'Check-ins', count: events.filter(e => e.type === 'checkin' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📋', color: '#2563EB' },
             ].map(stat => (
               <div key={stat.label} className="text-center p-3 rounded-xl" style={{ background: '#F8FAFC' }}>
                 <p className="text-xl mb-0.5">{stat.emoji}</p>
