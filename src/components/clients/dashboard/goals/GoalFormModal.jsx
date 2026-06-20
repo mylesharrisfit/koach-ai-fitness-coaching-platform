@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { X, LayoutTemplate, BookmarkPlus } from 'lucide-react';
+import { X, BookmarkPlus } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import TemplatePickerSheet from './TemplatePickerSheet';
 import SaveTemplateModal from './SaveTemplateModal';
 
 const GOAL_TYPES = [
@@ -45,8 +45,13 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
   const isEdit = !!goal?.id;
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState('');
   const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+
+  const { data: templates = [] } = useQuery({
+    queryKey: ['goal-templates'],
+    queryFn: () => base44.entities.GoalTemplate.list('-created_date', 50),
+  });
 
   useEffect(() => {
     if (goal) {
@@ -90,7 +95,10 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
 
   // Apply a template to pre-fill the form (current values start blank)
-  const applyTemplate = (tmpl) => {
+  const applyTemplate = (tmplId) => {
+    setSelectedTemplate(tmplId);
+    const tmpl = templates.find(t => t.id === tmplId);
+    if (!tmpl) return;
     setForm(f => ({
       ...f,
       name: tmpl.name,
@@ -109,8 +117,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
       carbs_current: '',
       fat_current: '',
     }));
-    setShowTemplatePicker(false);
-    toast.success(`Template "${tmpl.name}" applied — tweak and save`);
+    toast.success(`Template "${tmpl.name}" applied`);
   };
 
   const handleSave = async () => {
@@ -163,25 +170,28 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h3 className="text-base font-bold text-gray-900">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
-            <div className="flex items-center gap-1">
-              {/* Use template (only on new goals) */}
-              {!isEdit && (
-                <button
-                  onClick={() => setShowTemplatePicker(true)}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 px-2.5 py-1.5 rounded-lg hover:bg-blue-50 transition-colors mr-1"
-                  title="Use a template"
-                >
-                  <LayoutTemplate className="w-3.5 h-3.5" />
-                  Use Template
-                </button>
-              )}
-              <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           <div className="px-6 py-5 space-y-5">
+
+            {/* Inline template dropdown */}
+            {!isEdit && templates.length > 0 && (
+              <Field label="Use a Template">
+                <select
+                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400"
+                  value={selectedTemplate}
+                  onChange={e => applyTemplate(e.target.value)}
+                >
+                  <option value="">— Pick a template to pre-fill —</option>
+                  {templates.map(t => (
+                    <option key={t.id} value={t.id}>{t.name} ({t.goal_type})</option>
+                  ))}
+                </select>
+              </Field>
+            )}
 
             {/* Goal type selector */}
             <Field label="Goal Type">
@@ -312,15 +322,6 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
           </div>
         </div>
       </div>
-
-      {/* Template picker — portalled to body so it sits outside the modal's onClick handler */}
-      {showTemplatePicker && ReactDOM.createPortal(
-        <TemplatePickerSheet
-          onSelect={applyTemplate}
-          onClose={() => setShowTemplatePicker(false)}
-        />,
-        document.body
-      )}
 
       {/* Save-as-template overlay — portalled to body */}
       {showSaveTemplate && ReactDOM.createPortal(

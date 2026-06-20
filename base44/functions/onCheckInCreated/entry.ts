@@ -59,8 +59,21 @@ Deno.serve(async (req) => {
     const checkIn = payload.data;
     if (!checkIn) return Response.json({ ok: true });
 
-    const users = await base44.asServiceRole.entities.User.list();
-    const coaches = users.filter(u => u.role === 'admin');
+    const allUsers = await base44.asServiceRole.entities.User.list();
+
+    // Notify the client's owning coach first, fall back to all admins
+    let coaches = [];
+    if (checkIn.client_id) {
+      const clients = await base44.asServiceRole.entities.Client.filter({ id: checkIn.client_id });
+      const client = clients?.[0];
+      if (client?.created_by_id) {
+        const owner = allUsers.find(u => u.id === client.created_by_id);
+        if (owner) coaches = [owner];
+      }
+    }
+    if (coaches.length === 0) {
+      coaches = allUsers.filter(u => u.role === 'admin');
+    }
 
     // Create in-app notifications
     await Promise.all(coaches.map(coach =>
