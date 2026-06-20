@@ -453,7 +453,121 @@ const GOAL_TYPES = [
   { key: 'nutrition', label: 'Nutrition' },
 ];
 
-function GoalContent({ dateStr, setDateStr, client, onDone }) {
+function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
+  const qc = useQueryClient();
+  const [saving, setSaving] = useState(false);
+  const [name, setName] = useState('');
+  const [emoji, setEmoji] = useState('');
+  const [frequency, setFrequency] = useState('daily');
+  const [daysOfWeek, setDaysOfWeek] = useState([1, 2, 3, 4, 5]);
+
+  const QUICK_HABITS = [
+    { name: 'Morning vitamins', emoji: '💊' },
+    { name: 'Drink 3L water',   emoji: '💧' },
+    { name: 'Sleep 8hrs',       emoji: '😴' },
+    { name: '10k steps',        emoji: '👟' },
+    { name: 'Workout',          emoji: '🏋️' },
+    { name: 'Meditate',         emoji: '🧘' },
+  ];
+
+  const toggleDay = (d) => setDaysOfWeek(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
+
+  const save = async () => {
+    if (!name.trim()) return;
+    setSaving(true);
+    const baseDate = parseISO(dateStr);
+    const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
+    for (const d of datesToCreate) {
+      await base44.entities.Habit.create({
+        client_id: client.id,
+        name: name.trim(),
+        emoji: emoji || undefined,
+        frequency,
+        days_of_week: frequency === 'custom' ? daysOfWeek : [],
+        is_active: true,
+        team_id: client.team_id,
+      });
+      await new Promise(r => setTimeout(r, 50));
+    }
+    qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
+    onDone();
+  };
+
+  return (
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Start Date</label>
+          <div className="flex items-center gap-3">
+            <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
+            </button>
+          </div>
+          {repeat && (
+            <p className="text-[11px] text-[#6B7280] mt-1">
+              Will create {generateRepeatDates(parseISO(dateStr), repeat).length} habit entries ·{' '}
+              <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1.5">Quick Add</label>
+          <div className="flex flex-wrap gap-1.5">
+            {QUICK_HABITS.map(s => (
+              <button key={s.name} onClick={() => { setName(s.name); setEmoji(s.emoji); }}
+                className={`text-xs px-2.5 py-1 rounded-full border font-semibold transition-colors ${name === s.name ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280] hover:bg-purple-50'}`}>
+                {s.emoji} {s.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Habit Name</label>
+          <div className="flex gap-2">
+            <input type="text" maxLength={2} value={emoji} onChange={e => setEmoji(e.target.value)}
+              placeholder="😀" className={inputCls + ' w-12 text-center text-base'} />
+            <input className={inputCls + ' flex-1'} placeholder="e.g. Morning vitamins" value={name} onChange={e => setName(e.target.value)} />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-2">Frequency</label>
+          <div className="flex gap-2 mb-2">
+            {[{ key: 'daily', label: 'Every day' }, { key: 'custom', label: 'Specific days' }].map(f => (
+              <button key={f.key} onClick={() => setFrequency(f.key)}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-xl border-2 transition-all ${frequency === f.key ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
+                {f.label}
+              </button>
+            ))}
+          </div>
+          {frequency === 'custom' && (
+            <div className="flex gap-1.5">
+              {DAY_LABELS.map((d, i) => (
+                <button key={i} onClick={() => toggleDay(i)}
+                  className="w-8 h-8 rounded-full text-xs font-bold transition-all"
+                  style={{ background: daysOfWeek.includes(i) ? '#7C3AED' : '#F3F4F6', color: daysOfWeek.includes(i) ? '#fff' : '#374151' }}>
+                  {d}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <button onClick={save} disabled={saving || !name.trim()}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{ background: '#7C3AED' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+        {saving ? 'Adding…' : repeat ? `Add Habit (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Habit'}
+      </button>
+    </div>
+  );
+}
+
+function GoalContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState('');
@@ -477,20 +591,25 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
   const save = async () => {
     if (!name.trim()) return;
     setSaving(true);
-    const payload = {
-      client_id: client.id,
-      name: name.trim(),
-      goal_type: goalType,
-      status: 'active',
-      team_id: client.team_id,
-      due_date: dateStr,
-      notes: note || undefined,
-    };
-    if (goalType === 'numeric') {
-      payload.target_value = targetValue !== '' ? Number(targetValue) : undefined;
-      payload.unit = unit || undefined;
+    const baseDate = parseISO(dateStr);
+    const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
+    for (const d of datesToCreate) {
+      const payload = {
+        client_id: client.id,
+        name: name.trim(),
+        goal_type: goalType,
+        status: 'active',
+        team_id: client.team_id,
+        due_date: d,
+        notes: note || undefined,
+      };
+      if (goalType === 'numeric') {
+        payload.target_value = targetValue !== '' ? Number(targetValue) : undefined;
+        payload.unit = unit || undefined;
+      }
+      await base44.entities.Goal.create(payload);
+      await new Promise(r => setTimeout(r, 50));
     }
-    await base44.entities.Goal.create(payload);
     qc.invalidateQueries({ queryKey: ['cal-goals', client.id] });
     onDone();
   };
@@ -501,7 +620,18 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
         <div className="space-y-3">
           <div>
             <label className="text-xs font-semibold text-[#374151] block mb-1">Due Date</label>
-            <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+            <div className="flex items-center gap-3">
+              <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+              <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+                <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
+              </button>
+            </div>
+            {repeat && (
+              <p className="text-[11px] text-[#6B7280] mt-1">
+                Will create {generateRepeatDates(parseISO(dateStr), repeat).length} goals ·{' '}
+                <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+              </p>
+            )}
           </div>
 
           <div>
@@ -556,7 +686,8 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
         <button onClick={save} disabled={saving || !name.trim()}
           className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
           style={{ background: '#D97706' }}>
-          {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Goal to Calendar'}
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+          {saving ? 'Adding…' : repeat ? `Add Goal (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Goal to Calendar'}
         </button>
       </div>
 
@@ -570,7 +701,7 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
 
 
 
-function CheckInContent({ dateStr, setDateStr, client, onDone }) {
+function CheckInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [formId, setFormId] = useState('');
@@ -583,15 +714,20 @@ function CheckInContent({ dateStr, setDateStr, client, onDone }) {
 
   const save = async () => {
     setSaving(true);
-    await base44.entities.CheckIn.create({
-      client_id: client.id,
-      client_name: client.name,
-      date: dateStr,
-      review_status: 'pending',
-      coach_notes: note || undefined,
-      form_id: formId || undefined,
-      team_id: client.team_id,
-    });
+    const baseDate = parseISO(dateStr);
+    const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
+    for (const d of datesToCreate) {
+      await base44.entities.CheckIn.create({
+        client_id: client.id,
+        client_name: client.name,
+        date: d,
+        review_status: 'pending',
+        coach_notes: note || undefined,
+        form_id: formId || undefined,
+        team_id: client.team_id,
+      });
+      await new Promise(r => setTimeout(r, 50));
+    }
     qc.invalidateQueries({ queryKey: ['cal-checkins', client.id] });
     onDone();
   };
@@ -603,7 +739,18 @@ function CheckInContent({ dateStr, setDateStr, client, onDone }) {
       <div className="space-y-3">
         <div>
           <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
-          <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+          <div className="flex items-center gap-3">
+            <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
+            </button>
+          </div>
+          {repeat && (
+            <p className="text-[11px] text-[#6B7280] mt-1">
+              Will create {generateRepeatDates(parseISO(dateStr), repeat).length} check-ins ·{' '}
+              <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+            </p>
+          )}
         </div>
 
         <div>
@@ -633,7 +780,8 @@ function CheckInContent({ dateStr, setDateStr, client, onDone }) {
       <button onClick={save} disabled={saving}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
         style={{ background: '#2563EB' }}>
-        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Schedule Check-in'}
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+        {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} check-ins)` : 'Schedule Check-in'}
       </button>
     </div>
   );
@@ -709,19 +857,6 @@ function AddEventModal({ day, client, onClose }) {
   const [repeat, setRepeat] = useState(null);
   const [showRepeat, setShowRepeat] = useState(false);
 
-  // When habit is selected, show HabitFormModal directly (no wrapper modal)
-  if (activeType === 'habit') {
-    return ReactDOM.createPortal(
-      <HabitFormModal
-        clientId={client.id}
-        habit={null}
-        onSaved={onClose}
-        onClose={onClose}
-      />,
-      document.body
-    );
-  }
-
   const renderContent = () => {
     if (activeType === 'workout') {
       return <WorkoutContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
@@ -730,10 +865,13 @@ function AddEventModal({ day, client, onClose }) {
       return <SessionContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
     }
     if (activeType === 'goal') {
-      return <GoalContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
+      return <GoalContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
+    }
+    if (activeType === 'habit') {
+      return <HabitContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
     }
     if (activeType === 'checkin') {
-      return <CheckInContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
+      return <CheckInContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
     }
     if (activeType === 'weighin') {
       return <WeighInContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
