@@ -11,7 +11,7 @@ import {
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
   Lock, UserPlus, Trophy, ShoppingBag,
   Globe, Smartphone, Activity, Apple,
-  Shield, Palette, BookOpen, LayoutTemplate, Mail, FileText, UsersRound
+  Shield, Palette, BookOpen, LayoutTemplate, Mail, FileText, UsersRound, Flame
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
@@ -36,6 +36,7 @@ const NAV_GROUPS = [
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
       { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
       { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
+      { icon: Flame, label: 'Challenges', path: '/challenges' },
       { icon: Shield, label: 'At-Risk', path: '/at-risk' },
       { icon: Activity, label: 'Exercises', path: '/exercises' },
       { icon: Apple, label: 'Food Library', path: '/food-library' },

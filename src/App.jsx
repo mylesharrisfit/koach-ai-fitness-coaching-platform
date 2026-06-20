@@ -65,6 +65,7 @@ import AffiliateApplication from './pages/AffiliateApplication';
 import AffiliateDashboard from './pages/AffiliateDashboard';
 import MarketingTools from './pages/MarketingTools';
 import WeeklySummary from './pages/WeeklySummary';
+import Challenges from './pages/Challenges';
 import Team from './pages/Team';
 import InstallPrompt from './components/pwa/InstallPrompt';
 import { Navigate } from 'react-router-dom';
@@ -205,6 +206,7 @@ const AuthenticatedApp = () => {
         <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
         <Route path="/marketing-tools" element={<MarketingTools />} />
         <Route path="/weekly-summary" element={<WeeklySummary />} />
+        <Route path="/challenges" element={<Challenges />} />
         <Route path="/team" element={<Team />} />
         <Route path="/ai-insights" element={<AIInsightsPage />} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
