@@ -61,14 +61,26 @@ Deno.serve(async (req) => {
 
     if (!session?.client_id) return Response.json({ ok: true });
 
-    // Look up the client name
-    let clientName = 'A client';
-    const clients = await base44.asServiceRole.entities.Client.filter({ id: session.client_id });
-    if (clients?.[0]?.name) clientName = clients[0].name;
+    // Only fire for completed sessions
+    if (session.status !== 'completed') return Response.json({ ok: true, skipped: 'not completed' });
 
-    // Notify all admin coaches
-    const users   = await base44.asServiceRole.entities.User.list();
-    const coaches = users.filter(u => u.role === 'admin');
+    // Look up the client
+    const clients = await base44.asServiceRole.entities.Client.filter({ id: session.client_id });
+    const client = clients?.[0];
+    if (!client) return Response.json({ ok: true, skipped: 'client not found' });
+    const clientName = client.name || 'A client';
+
+    // Notify only the coach who owns this client (created_by_id), falling back to all admins
+    const allUsers = await base44.asServiceRole.entities.User.list();
+    let coaches = [];
+    if (client.created_by_id) {
+      const owner = allUsers.find(u => u.id === client.created_by_id);
+      if (owner) coaches = [owner];
+    }
+    // Fallback: if no owner found, notify admins
+    if (coaches.length === 0) {
+      coaches = allUsers.filter(u => u.role === 'admin');
+    }
 
     const workout = session.workout_day_name || 'Workout';
 
