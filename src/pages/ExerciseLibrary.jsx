@@ -408,31 +408,6 @@ export default function ExerciseLibrary() {
               </button>
             </div>
 
-            {/* Option 2: AI generation */}
-            <div className="rounded-xl border border-[#E5E7EB] p-4 space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-[#111827]">AI-Generated Library (50 exercises)</p>
-                  <p className="text-xs text-[#6B7280] mt-0.5">Uses AI to generate exercises with YouTube video links, form cues, and common mistakes.</p>
-                </div>
-              </div>
-              {importProgress !== null && (importMutation.isPending) && (
-                <div className="space-y-1">
-                  <div className="w-full bg-[#F3F4F6] rounded-full h-1.5 overflow-hidden">
-                    <div className="bg-primary h-full animate-pulse w-2/3 rounded-full" />
-                  </div>
-                  <p className="text-xs text-[#9CA3AF] text-center">Generating...</p>
-                </div>
-              )}
-              <button onClick={() => { setImportProgress(0); importMutation.mutate(); }} disabled={importMutation.isPending || seedMutation.isPending}
-                className="w-full px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 disabled:opacity-60">
-                {importMutation.isPending ? 'Generating...' : '✨ Generate with AI'}
-              </button>
-            </div>
-
             <button onClick={() => setImportOpen(false)} className="w-full text-sm text-[#6B7280] hover:text-[#374151]">Cancel</button>
           </div>
         </DialogContent>
