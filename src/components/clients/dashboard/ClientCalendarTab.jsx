@@ -689,6 +689,75 @@ function HabitContent({ client, onDone }) {
   );
 }
 
+function CheckInContent({ dateStr, setDateStr, client, onDone }) {
+  const qc = useQueryClient();
+  const [saving, setSaving] = useState(false);
+  const [formId, setFormId] = useState('');
+  const [note, setNote] = useState('');
+
+  const { data: checkInForms = [] } = useQuery({
+    queryKey: ['checkin-forms'],
+    queryFn: () => base44.entities.CheckInForm.filter({ is_active: true }, '-created_date', 50),
+  });
+
+  const save = async () => {
+    setSaving(true);
+    await base44.entities.CheckIn.create({
+      client_id: client.id,
+      client_name: client.name,
+      date: dateStr,
+      review_status: 'pending',
+      coach_notes: note || undefined,
+      form_id: formId || undefined,
+      team_id: client.team_id,
+    });
+    qc.invalidateQueries({ queryKey: ['cal-checkins', client.id] });
+    onDone();
+  };
+
+  const selectedForm = checkInForms.find(f => f.id === formId);
+
+  return (
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Check-in Form</label>
+          <select className={inputCls} value={formId} onChange={e => setFormId(e.target.value)}>
+            <option value="">— No specific form (general check-in) —</option>
+            {checkInForms.map(f => (
+              <option key={f.id} value={f.id}>{f.name}{f.frequency ? ` · ${f.frequency.replace('_', ' ')}` : ''}</option>
+            ))}
+          </select>
+          {selectedForm && (
+            <p className="text-[11px] text-[#6B7280] mt-1">
+              {selectedForm.questions?.length || 0} questions · {selectedForm.frequency?.replace('_', ' ')}
+            </p>
+          )}
+          {checkInForms.length === 0 && (
+            <p className="text-[11px] text-[#6B7280] mt-1">No forms created yet — a general check-in will be scheduled.</p>
+          )}
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Coach Note (optional)</label>
+          <input className={inputCls} placeholder="Any notes for this check-in…" value={note} onChange={e => setNote(e.target.value)} />
+        </div>
+      </div>
+
+      <button onClick={save} disabled={saving}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{ background: '#2563EB' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Schedule Check-in'}
+      </button>
+    </div>
+  );
+}
+
 function SimpleContent({ dateStr, setDateStr, client, onDone, actType }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
@@ -702,9 +771,6 @@ function SimpleContent({ dateStr, setDateStr, client, onDone, actType }) {
     if (actType === 'weighin') {
       await base44.entities.WeighIn.create({ client_id: client.id, weight: parseFloat(weight), date: dateStr, note: note || undefined, team_id: client.team_id });
       qc.invalidateQueries({ queryKey: ['cal-weighins', client.id] });
-    } else if (actType === 'checkin') {
-      await base44.entities.CheckIn.create({ client_id: client.id, client_name: client.name, date: dateStr, status: 'pending', coach_notes: note || undefined, team_id: client.team_id });
-      qc.invalidateQueries({ queryKey: ['cal-checkins', client.id] });
     }
     onDone();
   };
@@ -716,14 +782,10 @@ function SimpleContent({ dateStr, setDateStr, client, onDone, actType }) {
           <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
           <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
         </div>
-        {actType === 'weighin' ? (
-          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Weight (lbs)</label><input type="number" step="0.1" className={inputCls} placeholder="175.5" value={weight} onChange={e => setWeight(e.target.value)} /></div>
-        ) : (
-          <p className="text-xs text-[#6B7280]">Schedule a check-in on {dateStr}. The client will be prompted to complete it.</p>
-        )}
+        <div><label className="text-xs font-semibold text-[#374151] block mb-1">Weight (lbs)</label><input type="number" step="0.1" className={inputCls} placeholder="175.5" value={weight} onChange={e => setWeight(e.target.value)} /></div>
         <div><label className="text-xs font-semibold text-[#374151] block mb-1">Note (optional)</label><input className={inputCls} placeholder="Any notes…" value={note} onChange={e => setNote(e.target.value)} /></div>
       </div>
-      <button onClick={save} disabled={saving || (actType === 'weighin' && !weight)}
+      <button onClick={save} disabled={saving || !weight}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: cfg?.color || '#2563EB' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
       </button>
@@ -749,6 +811,9 @@ function AddEventModal({ day, client, onClose }) {
     }
     if (activeType === 'habit') {
       return <HabitContent client={client} onDone={onClose} />;
+    }
+    if (activeType === 'checkin') {
+      return <CheckInContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
     }
     return <SimpleContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} actType={activeType} />;
   };
