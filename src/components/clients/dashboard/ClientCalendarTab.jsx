@@ -10,8 +10,11 @@ import {
 } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, Plus, X, ClipboardList,
-  Phone, Target, Zap, Scale, Dumbbell, CheckCircle2, Circle, Loader2, RefreshCw
+  Phone, Target, Zap, Scale, Dumbbell, CheckCircle2, Circle, Loader2, RefreshCw, LayoutTemplate
 } from 'lucide-react';
+import ReactDOM from 'react-dom';
+import TemplatePickerSheet from './goals/TemplatePickerSheet';
+import HabitFormModal from './habits/HabitFormModal';
 
 // ── Event type config ─────────────────────────────────────────────────────────
 const TYPES = {
@@ -442,16 +445,7 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
   );
 }
 
-const HABIT_SUGGESTIONS = [
-  { name: 'Morning vitamins', emoji: '💊' },
-  { name: 'Drink 3L water',   emoji: '💧' },
-  { name: 'Sleep 8hrs',       emoji: '😴' },
-  { name: '10k steps',        emoji: '👟' },
-  { name: 'Workout',          emoji: '🏋️' },
-  { name: 'Healthy meal',     emoji: '🥗' },
-  { name: 'Meditate',         emoji: '🧘' },
-  { name: 'Read 20 min',      emoji: '📖' },
-];
+
 
 const GOAL_TYPES = [
   { key: 'numeric', label: 'Numeric' },
@@ -467,22 +461,17 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
   const [targetValue, setTargetValue] = useState('');
   const [unit, setUnit] = useState('');
   const [note, setNote] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [appliedTemplate, setAppliedTemplate] = useState(null);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
-  const { data: templates = [] } = useQuery({
-    queryKey: ['goal-templates'],
-    queryFn: () => base44.entities.GoalTemplate.list('-created_date', 50),
-  });
-
-  const applyTemplate = (tmplId) => {
-    setSelectedTemplate(tmplId);
-    const tmpl = templates.find(t => t.id === tmplId);
-    if (!tmpl) return;
+  const applyTemplate = (tmpl) => {
+    setAppliedTemplate(tmpl);
     setName(tmpl.name || '');
     setGoalType(tmpl.goal_type || 'simple');
     setTargetValue(tmpl.target_value ?? '');
     setUnit(tmpl.unit || '');
     setNote(tmpl.notes || '');
+    setShowTemplatePicker(false);
   };
 
   const save = async () => {
@@ -507,185 +496,106 @@ function GoalContent({ dateStr, setDateStr, client, onDone }) {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between">
-      <div className="space-y-3">
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Due Date</label>
-          <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
-        </div>
+    <>
+      <div className="flex-1 flex flex-col justify-between">
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1">Due Date</label>
+            <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+          </div>
 
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Template</label>
-          <select className={inputCls} value={selectedTemplate} onChange={e => applyTemplate(e.target.value)}>
-            <option value="">— Pick a template or fill manually —</option>
-            {templates.map(t => (
-              <option key={t.id} value={t.id}>{t.name} ({t.goal_type})</option>
-            ))}
-          </select>
-        </div>
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Template</label>
+            <button
+              onClick={() => setShowTemplatePicker(true)}
+              className="w-full flex items-center gap-2 border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm bg-white hover:bg-gray-50 transition-colors text-left"
+            >
+              <LayoutTemplate className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+              <span className={appliedTemplate ? 'text-[#111827] font-semibold' : 'text-[#9CA3AF]'}>
+                {appliedTemplate ? appliedTemplate.name : '— Choose a template —'}
+              </span>
+            </button>
+          </div>
 
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Type</label>
-          <div className="flex gap-1.5">
-            {GOAL_TYPES.map(gt => (
-              <button key={gt.key} onClick={() => setGoalType(gt.key)}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${goalType === gt.key ? 'border-[#D97706] bg-amber-50 text-amber-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
-                {gt.label}
-              </button>
-            ))}
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Type</label>
+            <div className="flex gap-1.5">
+              {GOAL_TYPES.map(gt => (
+                <button key={gt.key} onClick={() => setGoalType(gt.key)}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${goalType === gt.key ? 'border-[#D97706] bg-amber-50 text-amber-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
+                  {gt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Name</label>
+            <input className={inputCls} placeholder="e.g. Reach 175 lbs" value={name} onChange={e => setName(e.target.value)} />
+          </div>
+
+          {goalType === 'numeric' && (
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-xs font-semibold text-[#374151] block mb-1">Target Value</label>
+                <input type="number" className={inputCls} placeholder="175" value={targetValue} onChange={e => setTargetValue(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-[#374151] block mb-1">Unit</label>
+                <input className={inputCls} placeholder="lbs, steps…" value={unit} onChange={e => setUnit(e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1">Notes (optional)</label>
+            <input className={inputCls} placeholder="Any context…" value={note} onChange={e => setNote(e.target.value)} />
           </div>
         </div>
 
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Name</label>
-          <input className={inputCls} placeholder="e.g. Reach 175 lbs" value={name} onChange={e => setName(e.target.value)} />
-        </div>
-
-        {goalType === 'numeric' && (
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1">Target Value</label>
-              <input type="number" className={inputCls} placeholder="175" value={targetValue} onChange={e => setTargetValue(e.target.value)} />
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1">Unit</label>
-              <input className={inputCls} placeholder="lbs, steps…" value={unit} onChange={e => setUnit(e.target.value)} />
-            </div>
-          </div>
-        )}
-
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Notes (optional)</label>
-          <input className={inputCls} placeholder="Any context…" value={note} onChange={e => setNote(e.target.value)} />
-        </div>
+        <button onClick={save} disabled={saving || !name.trim()}
+          className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+          style={{ background: '#D97706' }}>
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Goal to Calendar'}
+        </button>
       </div>
 
-      <button onClick={save} disabled={saving || !name.trim()}
-        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: '#D97706' }}>
-        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Goal to Calendar'}
-      </button>
-    </div>
+      {showTemplatePicker && ReactDOM.createPortal(
+        <TemplatePickerSheet onSelect={applyTemplate} onClose={() => setShowTemplatePicker(false)} />,
+        document.body
+      )}
+    </>
   );
 }
 
 function HabitContent({ client, onDone }) {
   const qc = useQueryClient();
-  const [saving, setSaving] = useState(false);
-  const [name, setName] = useState('');
-  const [emoji, setEmoji] = useState('');
-  const [frequency, setFrequency] = useState('daily');
-  const [daysOfWeek, setDaysOfWeek] = useState([1,2,3,4,5]);
-  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [showHabitForm, setShowHabitForm] = useState(true);
 
-  const DAY_LABELS = ['S','M','T','W','T','F','S'];
-
-  // Load all habits coach has created across clients as reusable templates
-  const { data: habitTemplates = [] } = useQuery({
-    queryKey: ['all-habits-templates'],
-    queryFn: async () => {
-      const habits = await base44.entities.Habit.list('-created_date', 100);
-      // Deduplicate by name
-      const seen = new Set();
-      return habits.filter(h => { if (seen.has(h.name)) return false; seen.add(h.name); return true; });
-    },
-  });
-
-  const applyHabitTemplate = (id) => {
-    setSelectedTemplate(id);
-    const h = habitTemplates.find(t => t.id === id);
-    if (!h) return;
-    setName(h.name || '');
-    setEmoji(h.emoji || '');
-    setFrequency(h.frequency || 'daily');
-    setDaysOfWeek(h.days_of_week?.length ? h.days_of_week : [1,2,3,4,5]);
-  };
-
-  const toggleDay = (d) => setDaysOfWeek(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
-
-  const save = async () => {
-    if (!name.trim()) return;
-    setSaving(true);
-    await base44.entities.Habit.create({
-      client_id: client.id,
-      name: name.trim(),
-      emoji: emoji || undefined,
-      frequency,
-      days_of_week: frequency === 'custom' ? daysOfWeek : [],
-      is_active: true,
-      team_id: client.team_id,
-    });
+  const handleSaved = () => {
     qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
     onDone();
   };
 
+  // Render the HabitFormModal directly via portal — it has all quick-add + emoji built in
   return (
-    <div className="flex-1 flex flex-col justify-between">
-      <div className="space-y-3">
-
-        {/* Habit template dropdown */}
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Habit Template</label>
-          <select className={inputCls} value={selectedTemplate} onChange={e => applyHabitTemplate(e.target.value)}>
-            <option value="">— Pick a template or fill manually —</option>
-            {habitTemplates.map(h => (
-              <option key={h.id} value={h.id}>{h.emoji ? `${h.emoji} ` : ''}{h.name}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Quick add chips */}
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1.5">Quick Add</label>
-          <div className="flex flex-wrap gap-1.5">
-            {HABIT_SUGGESTIONS.map(s => (
-              <button key={s.name} onClick={() => { setName(s.name); setEmoji(s.emoji); setSelectedTemplate(''); }}
-                className={`text-xs px-2.5 py-1 rounded-full border font-semibold transition-colors ${name === s.name ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280] hover:bg-purple-50'}`}>
-                {s.emoji} {s.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Habit Name</label>
-          <div className="flex gap-2">
-            <input type="text" maxLength={2} value={emoji} onChange={e => setEmoji(e.target.value)}
-              placeholder="😀" className={inputCls + ' w-12 text-center text-base'} />
-            <input className={inputCls + ' flex-1'} placeholder="e.g. Morning vitamins" value={name} onChange={e => setName(e.target.value)} />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-2">Frequency</label>
-          <div className="flex gap-2 mb-2">
-            {[{ key: 'daily', label: 'Every day' }, { key: 'custom', label: 'Specific days' }].map(f => (
-              <button key={f.key} onClick={() => setFrequency(f.key)}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-xl border-2 transition-all ${frequency === f.key ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
-                {f.label}
-              </button>
-            ))}
-          </div>
-          {frequency === 'custom' && (
-            <div className="flex gap-1.5 justify-center">
-              {DAY_LABELS.map((d, i) => (
-                <button key={i} onClick={() => toggleDay(i)}
-                  className="w-8 h-8 rounded-full text-xs font-bold transition-all"
-                  style={{ background: daysOfWeek.includes(i) ? '#7C3AED' : '#F3F4F6', color: daysOfWeek.includes(i) ? '#fff' : '#374151' }}>
-                  {d}
-                </button>
-              ))}
-            </div>
-          )}
+    <>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-3xl mb-2">⚡</p>
+          <p className="text-sm font-semibold text-[#374151]">Opening habit form…</p>
         </div>
       </div>
-
-      <button onClick={save} disabled={saving || !name.trim()}
-        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: '#7C3AED' }}>
-        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Habit'}
-      </button>
-    </div>
+      {showHabitForm && ReactDOM.createPortal(
+        <HabitFormModal
+          clientId={client.id}
+          habit={null}
+          onSaved={handleSaved}
+          onClose={onDone}
+        />,
+        document.body
+      )}
+    </>
   );
 }
 
