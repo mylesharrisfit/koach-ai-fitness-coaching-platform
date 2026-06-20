@@ -8,11 +8,36 @@
     "program_id": {
       "type": "string"
     },
+    "program_name": {
+      "type": "string"
+    },
+    "workout_name": {
+      "type": "string",
+      "description": "Name/label of the workout day"
+    },
     "workout_day_name": {
       "type": "string"
     },
     "workout_day_index": {
       "type": "number"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date this session is scheduled (YYYY-MM-DD)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "missed",
+        "skipped"
+      ],
+      "default": "scheduled"
+    },
+    "notes": {
+      "type": "string"
     },
     "completed_at": {
       "type": "string",
@@ -27,6 +52,12 @@
     },
     "session_note": {
       "type": "string"
+    },
+    "exercises": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
     },
     "exercise_logs": {
       "type": "array",
@@ -59,15 +90,17 @@
         }
       }
     },
+    "team_id": {
+      "type": "string",
+      "description": "Team ID this session belongs to"
+    },
     "description": {
       "type": "string",
-      "description": "Optional notes about this workout session",
       "maxLength": 1000
     }
   },
   "required": [
-    "client_id",
-    "program_id"
+    "client_id"
   ],
   "rls": {
     "create": {
@@ -89,6 +122,17 @@
           "data.client_id": "{{user.id}}"
         },
         {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
+        },
+        {
           "user_condition": {
             "role": "admin"
           }
@@ -104,6 +148,17 @@
           "data.client_id": "{{user.id}}"
         },
         {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
+        },
+        {
           "user_condition": {
             "role": "admin"
           }
@@ -117,6 +172,17 @@
         },
         {
           "data.client_id": "{{user.id}}"
+        },
+        {
+          "related_entity": {
+            "entity_name": "TeamMember",
+            "join": {
+              "team_id": "data.team_id"
+            },
+            "condition": {
+              "data.user_id": "{{user.id}}"
+            }
+          }
         },
         {
           "user_condition": {
