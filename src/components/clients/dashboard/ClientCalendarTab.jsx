@@ -442,10 +442,222 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
   );
 }
 
-function SimpleContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDone, actType }) {
+const HABIT_SUGGESTIONS = [
+  { name: 'Morning vitamins', emoji: '💊' },
+  { name: 'Drink 3L water',   emoji: '💧' },
+  { name: 'Sleep 8hrs',       emoji: '😴' },
+  { name: '10k steps',        emoji: '👟' },
+  { name: 'Workout',          emoji: '🏋️' },
+  { name: 'Healthy meal',     emoji: '🥗' },
+  { name: 'Meditate',         emoji: '🧘' },
+  { name: 'Read 20 min',      emoji: '📖' },
+];
+
+const GOAL_TYPES = [
+  { key: 'numeric', label: 'Numeric' },
+  { key: 'simple',  label: 'Simple'  },
+  { key: 'nutrition', label: 'Nutrition' },
+];
+
+function GoalContent({ dateStr, setDateStr, client, onDone }) {
   const qc = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState('');
+  const [goalType, setGoalType] = useState('simple');
+  const [targetValue, setTargetValue] = useState('');
+  const [unit, setUnit] = useState('');
+  const [note, setNote] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('');
+
+  const { data: templates = [] } = useQuery({
+    queryKey: ['goal-templates'],
+    queryFn: () => base44.entities.GoalTemplate.list('-created_date', 50),
+  });
+
+  const applyTemplate = (tmplId) => {
+    setSelectedTemplate(tmplId);
+    const tmpl = templates.find(t => t.id === tmplId);
+    if (!tmpl) return;
+    setName(tmpl.name || '');
+    setGoalType(tmpl.goal_type || 'simple');
+    setTargetValue(tmpl.target_value ?? '');
+    setUnit(tmpl.unit || '');
+    setNote(tmpl.notes || '');
+  };
+
+  const save = async () => {
+    if (!name.trim()) return;
+    setSaving(true);
+    const payload = {
+      client_id: client.id,
+      name: name.trim(),
+      goal_type: goalType,
+      status: 'active',
+      team_id: client.team_id,
+      notes: note || undefined,
+    };
+    if (goalType === 'numeric') {
+      payload.target_value = targetValue !== '' ? Number(targetValue) : undefined;
+      payload.unit = unit || undefined;
+    }
+    await base44.entities.Goal.create(payload);
+    qc.invalidateQueries({ queryKey: ['cal-goals', client.id] });
+    onDone();
+  };
+
+  return (
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <input type="date" className={inputCls} value={dateStr} onChange={e => setDateStr(e.target.value)} />
+        </div>
+
+        {templates.length > 0 && (
+          <div>
+            <label className="text-xs font-semibold text-[#374151] block mb-1">Use Template</label>
+            <select className={inputCls} value={selectedTemplate} onChange={e => applyTemplate(e.target.value)}>
+              <option value="">— Pick a template —</option>
+              {templates.map(t => (
+                <option key={t.id} value={t.id}>{t.name} ({t.goal_type})</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Type</label>
+          <div className="flex gap-1.5">
+            {GOAL_TYPES.map(gt => (
+              <button key={gt.key} onClick={() => setGoalType(gt.key)}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${goalType === gt.key ? 'border-[#D97706] bg-amber-50 text-amber-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
+                {gt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Name</label>
+          <input className={inputCls} placeholder="e.g. Reach 175 lbs" value={name} onChange={e => setName(e.target.value)} />
+        </div>
+
+        {goalType === 'numeric' && (
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-xs font-semibold text-[#374151] block mb-1">Target Value</label>
+              <input type="number" className={inputCls} placeholder="175" value={targetValue} onChange={e => setTargetValue(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-[#374151] block mb-1">Unit</label>
+              <input className={inputCls} placeholder="lbs, steps…" value={unit} onChange={e => setUnit(e.target.value)} />
+            </div>
+          </div>
+        )}
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Notes (optional)</label>
+          <input className={inputCls} placeholder="Any context…" value={note} onChange={e => setNote(e.target.value)} />
+        </div>
+      </div>
+
+      <button onClick={save} disabled={saving || !name.trim()}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{ background: '#D97706' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Goal'}
+      </button>
+    </div>
+  );
+}
+
+function HabitContent({ client, onDone }) {
+  const qc = useQueryClient();
+  const [saving, setSaving] = useState(false);
+  const [name, setName] = useState('');
+  const [emoji, setEmoji] = useState('');
+  const [frequency, setFrequency] = useState('daily');
+  const [daysOfWeek, setDaysOfWeek] = useState([1,2,3,4,5]);
+
+  const DAY_LABELS = ['S','M','T','W','T','F','S'];
+
+  const toggleDay = (d) => setDaysOfWeek(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]);
+
+  const save = async () => {
+    if (!name.trim()) return;
+    setSaving(true);
+    await base44.entities.Habit.create({
+      client_id: client.id,
+      name: name.trim(),
+      emoji: emoji || undefined,
+      frequency,
+      days_of_week: frequency === 'custom' ? daysOfWeek : [],
+      is_active: true,
+      team_id: client.team_id,
+    });
+    qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
+    onDone();
+  };
+
+  return (
+    <div className="flex-1 flex flex-col justify-between">
+      <div className="space-y-3">
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-2">Quick Add</label>
+          <div className="flex flex-wrap gap-1.5">
+            {HABIT_SUGGESTIONS.map(s => (
+              <button key={s.name} onClick={() => { setName(s.name); setEmoji(s.emoji); }}
+                className={`text-xs px-2.5 py-1 rounded-full border font-semibold transition-colors ${name === s.name ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280] hover:bg-purple-50'}`}>
+                {s.emoji} {s.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-1">Habit Name</label>
+          <div className="flex gap-2">
+            <input type="text" maxLength={2} value={emoji} onChange={e => setEmoji(e.target.value)}
+              placeholder="😀" className={inputCls + ' w-12 text-center text-base'} />
+            <input className={inputCls + ' flex-1'} placeholder="e.g. Morning vitamins" value={name} onChange={e => setName(e.target.value)} />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-[#374151] block mb-2">Frequency</label>
+          <div className="flex gap-2 mb-2">
+            {[{ key: 'daily', label: 'Every day' }, { key: 'custom', label: 'Specific days' }].map(f => (
+              <button key={f.key} onClick={() => setFrequency(f.key)}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-xl border-2 transition-all ${frequency === f.key ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
+                {f.label}
+              </button>
+            ))}
+          </div>
+          {frequency === 'custom' && (
+            <div className="flex gap-1.5 justify-center">
+              {DAY_LABELS.map((d, i) => (
+                <button key={i} onClick={() => toggleDay(i)}
+                  className="w-8 h-8 rounded-full text-xs font-bold transition-all"
+                  style={{ background: daysOfWeek.includes(i) ? '#7C3AED' : '#F3F4F6', color: daysOfWeek.includes(i) ? '#fff' : '#374151' }}>
+                  {d}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <button onClick={save} disabled={saving || !name.trim()}
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        style={{ background: '#7C3AED' }}>
+        {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add Habit'}
+      </button>
+    </div>
+  );
+}
+
+function SimpleContent({ dateStr, setDateStr, client, onDone, actType }) {
+  const qc = useQueryClient();
+  const [saving, setSaving] = useState(false);
   const [note, setNote] = useState('');
   const [weight, setWeight] = useState('');
 
@@ -459,12 +671,6 @@ function SimpleContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onD
     } else if (actType === 'checkin') {
       await base44.entities.CheckIn.create({ client_id: client.id, client_name: client.name, date: dateStr, status: 'pending', coach_notes: note || undefined, team_id: client.team_id });
       qc.invalidateQueries({ queryKey: ['cal-checkins', client.id] });
-    } else if (actType === 'goal') {
-      await base44.entities.Goal.create({ client_id: client.id, name, goal_type: 'simple', due_date: dateStr, status: 'active', team_id: client.team_id });
-      qc.invalidateQueries({ queryKey: ['cal-goals', client.id] });
-    } else if (actType === 'habit') {
-      await base44.entities.Habit.create({ client_id: client.id, name, emoji: '⚡', frequency: 'daily', is_active: true, team_id: client.team_id });
-      qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
     }
     onDone();
   };
@@ -478,14 +684,12 @@ function SimpleContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onD
         </div>
         {actType === 'weighin' ? (
           <div><label className="text-xs font-semibold text-[#374151] block mb-1">Weight (lbs)</label><input type="number" step="0.1" className={inputCls} placeholder="175.5" value={weight} onChange={e => setWeight(e.target.value)} /></div>
-        ) : actType === 'checkin' ? (
-          <p className="text-xs text-[#6B7280]">Schedule a check-in on {dateStr}. The client will be prompted to complete it.</p>
         ) : (
-          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Name</label><input className={inputCls} placeholder={actType === 'goal' ? 'e.g. Reach 175 lbs' : 'e.g. Morning vitamins'} value={name} onChange={e => setName(e.target.value)} /></div>
+          <p className="text-xs text-[#6B7280]">Schedule a check-in on {dateStr}. The client will be prompted to complete it.</p>
         )}
         <div><label className="text-xs font-semibold text-[#374151] block mb-1">Note (optional)</label><input className={inputCls} placeholder="Any notes…" value={note} onChange={e => setNote(e.target.value)} /></div>
       </div>
-      <button onClick={save} disabled={saving || (actType !== 'checkin' && actType !== 'weighin' && !name.trim()) || (actType === 'weighin' && !weight)}
+      <button onClick={save} disabled={saving || (actType === 'weighin' && !weight)}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: cfg?.color || '#2563EB' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
       </button>
@@ -506,7 +710,13 @@ function AddEventModal({ day, client, onClose }) {
     if (activeType === 'session') {
       return <SessionContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} />;
     }
-    return <SimpleContent dateStr={dateStr} setDateStr={setDateStr} repeat={repeat} setShowRepeat={setShowRepeat} client={client} onDone={onClose} actType={activeType} />;
+    if (activeType === 'goal') {
+      return <GoalContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} />;
+    }
+    if (activeType === 'habit') {
+      return <HabitContent client={client} onDone={onClose} />;
+    }
+    return <SimpleContent dateStr={dateStr} setDateStr={setDateStr} client={client} onDone={onClose} actType={activeType} />;
   };
 
   return (
