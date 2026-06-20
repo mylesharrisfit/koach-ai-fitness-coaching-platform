@@ -206,32 +206,37 @@ function RepeatModal({ repeat, onChange, onClose }) {
 
 // ── Generate all dates for a repeat config ────────────────────────────────────
 function generateRepeatDates(startDate, repeat) {
-  const dates = [];
+  const dates = new Set();
   const totalDays = repeat.forWeeks * 7;
+  const intervalWeeks = repeat.every || 1;
+
   if (repeat.freq === 'daily') {
-    for (let i = 0; i < totalDays; i += repeat.every) {
-      dates.push(addDays(startDate, i));
+    for (let i = 0; i < totalDays; i += intervalWeeks) {
+      dates.add(format(addDays(startDate, i), 'yyyy-MM-dd'));
     }
   } else if (repeat.freq === 'weekly' || repeat.freq === 'biweekly') {
-    const intervalDays = repeat.every * 7;
-    for (let week = 0; week * intervalDays < totalDays; week++) {
-      const weekStart = addDays(startDate, week * intervalDays);
-      // Find nearest Sunday of that week to iterate days
-      repeat.days.forEach(dayOfWeek => {
-        // Find the date in this week with this day-of-week
-        const startDow = startDate.getDay();
-        let diff = dayOfWeek - startDow + (week * intervalDays);
-        if (diff >= 0 && diff < totalDays) {
-          dates.push(addDays(startDate, diff));
-        }
-      });
-    }
+    const intervalDays = intervalWeeks * 7;
+    const startDow = startDate.getDay(); // 0=Sun
+    // For each target day-of-week, find its first occurrence >= startDate, then step by intervalDays
+    (repeat.days || []).forEach(targetDow => {
+      // How many days from startDate to the first occurrence of targetDow
+      let offset = targetDow - startDow;
+      if (offset < 0) offset += 7;
+      // Now step forward by intervalDays
+      let d = offset;
+      while (d < totalDays) {
+        dates.add(format(addDays(startDate, d), 'yyyy-MM-dd'));
+        d += intervalDays;
+      }
+    });
   } else if (repeat.freq === 'monthly') {
-    for (let m = 0; m < Math.ceil(repeat.forWeeks / 4); m++) {
-      dates.push(addDays(startDate, m * 28));
+    const months = Math.ceil(repeat.forWeeks / 4);
+    for (let m = 0; m < months; m++) {
+      dates.add(format(addDays(startDate, m * 28), 'yyyy-MM-dd'));
     }
   }
-  return [...new Set(dates.map(d => format(d, 'yyyy-MM-dd')))].sort();
+
+  return [...dates].sort();
 }
 
 // ── Activity type config for sidebar ─────────────────────────────────────────
