@@ -26,7 +26,7 @@ const TYPES = {
   workout:  { label: 'Workout',     color: '#EC4899', dot: '#F472B6', emoji: '💪', icon: Dumbbell },
 };
 
-function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions) {
+function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions, habits, habitCompletions) {
   const ev = [];
   checkIns.forEach(ci => {
     if (!ci.date) return;
@@ -51,6 +51,15 @@ function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions) {
     if (!ws.scheduled_date) return;
     ev.push({ id: `ws-${ws.id}`, date: ws.scheduled_date, type: 'workout',
       title: ws.workout_name || 'Workout', done: ws.status === 'completed' });
+  });
+  // Habits: show each HabitCompletion on its date
+  const habitsById = {};
+  (habits || []).forEach(h => { habitsById[h.id] = h; });
+  (habitCompletions || []).forEach(hc => {
+    if (!hc.date) return;
+    const habit = habitsById[hc.habit_id];
+    const title = habit ? `${habit.emoji ? habit.emoji + ' ' : ''}${habit.name}` : 'Habit';
+    ev.push({ id: `hc-${hc.id}`, date: hc.date, type: 'habit', title, done: !!hc.completed });
   });
   return ev;
 }
@@ -475,21 +484,31 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
   const save = async () => {
     if (!name.trim()) return;
     setSaving(true);
+    // Create one Habit record (habits are recurring by nature)
+    const habit = await base44.entities.Habit.create({
+      client_id: client.id,
+      name: name.trim(),
+      emoji: emoji || undefined,
+      frequency,
+      days_of_week: frequency === 'custom' ? daysOfWeek : [],
+      is_active: true,
+      team_id: client.team_id,
+    });
+    // Create HabitCompletion placeholder records for the scheduled dates so they appear on the calendar
     const baseDate = parseISO(dateStr);
     const datesToCreate = repeat ? generateRepeatDates(baseDate, repeat) : [dateStr];
     for (const d of datesToCreate) {
-      await base44.entities.Habit.create({
+      await base44.entities.HabitCompletion.create({
+        habit_id: habit.id,
         client_id: client.id,
-        name: name.trim(),
-        emoji: emoji || undefined,
-        frequency,
-        days_of_week: frequency === 'custom' ? daysOfWeek : [],
-        is_active: true,
+        date: d,
+        completed: false,
         team_id: client.team_id,
       });
       await new Promise(r => setTimeout(r, 50));
     }
-    qc.invalidateQueries({ queryKey: ['cal-habits', client.id] });
+    qc.invalidateQueries({ queryKey: ['habits', client.id] });
+    qc.invalidateQueries({ queryKey: ['habit-completions', client.id] });
     onDone();
   };
 
@@ -1003,9 +1022,19 @@ export default function ClientCalendarTab({ client }) {
     queryFn: () => base44.entities.WorkoutSession.filter({ client_id: client.id }, '-scheduled_date', 150),
     enabled: !!client?.id,
   });
+  const { data: habits = [] } = useQuery({
+    queryKey: ['habits', client?.id],
+    queryFn: () => base44.entities.Habit.filter({ client_id: client.id }),
+    enabled: !!client?.id,
+  });
+  const { data: habitCompletions = [] } = useQuery({
+    queryKey: ['habit-completions', client?.id],
+    queryFn: () => base44.entities.HabitCompletion.filter({ client_id: client.id }),
+    enabled: !!client?.id,
+  });
 
-  const events = useMemo(() => buildEvents(checkIns, goals, sessions, weighIns, workoutSessions),
-    [checkIns, goals, sessions, weighIns, workoutSessions]);
+  const events = useMemo(() => buildEvents(checkIns, goals, sessions, weighIns, workoutSessions, habits, habitCompletions),
+    [checkIns, goals, sessions, weighIns, workoutSessions, habits, habitCompletions]);
 
   // Build weeks for this month (Mon–Sun grid)
   const weeks = useMemo(() => {
