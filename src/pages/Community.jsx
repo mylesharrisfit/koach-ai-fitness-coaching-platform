@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Users } from 'lucide-react';
+import { Users, Trophy, Globe } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import GroupListView from '../components/community/GroupListView';
 import GroupDetailView from '../components/community/GroupDetailView';
 import GroupFormModal from '../components/community/GroupFormModal';
+import ChallengesHub from '../components/community/ChallengesHub';
 
 export default function Community() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -12,6 +14,7 @@ export default function Community() {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [editingGroup, setEditingGroup] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [mainTab, setMainTab] = useState('groups'); // 'groups' | 'challenges'
 
   useEffect(() => {
     base44.auth.me().then(user => {
@@ -58,10 +61,10 @@ export default function Community() {
         <div>
           <h1 className="text-xl font-semibold text-white">Community</h1>
           <p className="text-sm text-white/50 mt-0.5">
-            {liveGroup ? liveGroup.name : 'Your groups and communities'}
+            {liveGroup ? liveGroup.name : mainTab === 'challenges' ? 'Fitness challenges for your clients' : 'Your groups and communities'}
           </p>
         </div>
-        {!liveGroup && isCoach && (
+        {!liveGroup && isCoach && mainTab === 'groups' && (
           <button onClick={handleCreate}
             className="px-4 py-2 bg-[#2563EB] text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
             + Create Community
@@ -69,8 +72,26 @@ export default function Community() {
         )}
       </div>
 
-      {/* Detail view */}
-      {liveGroup ? (
+      {/* Main tab switcher (only show when not in group detail) */}
+      {!liveGroup && (
+        <div className="flex gap-1 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl p-1 w-fit">
+          <button onClick={() => setMainTab('groups')}
+            className={cn('flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+              mainTab === 'groups' ? 'bg-white shadow-sm text-[#0E1525]' : 'text-[#6B7280] hover:text-[#0E1525]')}>
+            <Globe className="w-4 h-4" /> Groups
+          </button>
+          <button onClick={() => setMainTab('challenges')}
+            className={cn('flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+              mainTab === 'challenges' ? 'bg-white shadow-sm text-[#0E1525]' : 'text-[#6B7280] hover:text-[#0E1525]')}>
+            <Trophy className="w-4 h-4" /> Challenges
+          </button>
+        </div>
+      )}
+
+      {/* Content */}
+      {mainTab === 'challenges' && !liveGroup ? (
+        <ChallengesHub isCoach={isCoach} user={currentUser} />
+      ) : liveGroup ? (
         <GroupDetailView
           group={liveGroup}
           clients={clients}

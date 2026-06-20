@@ -33,6 +33,7 @@ export const TIERS = {
       checkin_review: false,
       sales: false,
       community: false,
+      challenges: true,
       client_dashboard: false,
       // Granular feature flags
       ai_suggestions: false,
@@ -84,6 +85,7 @@ export const TIERS = {
       checkin_review: true,
       sales: false,
       community: false,
+      challenges: true,
       client_dashboard: true,
       // Granular
       ai_suggestions: false,
@@ -134,6 +136,7 @@ export const TIERS = {
       checkin_review: true,
       sales: true,
       community: true,
+      challenges: true,
       client_dashboard: true,
       // Granular — all Pro features
       ai_suggestions: true,
@@ -190,6 +193,7 @@ export const TIERS = {
       checkin_review: true,
       sales: true,
       community: true,
+      challenges: true,
       client_dashboard: true,
       ai_suggestions: true,
       analytics: true,
