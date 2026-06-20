@@ -2,11 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Plus, Dumbbell, Star, Download, AlertCircle, Search, X, Grid, List,
-  ChevronDown, Filter, Sparkles, LayoutGrid
+  Plus, Dumbbell, Star, Search, X, List,
+  ChevronDown, LayoutGrid
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { differenceInDays, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -116,8 +114,7 @@ export default function ExerciseLibrary() {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [editingExercise, setEditingExercise] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
-  const [importProgress, setImportProgress] = useState(null);
+
   const queryClient = useQueryClient();
 
   const { data: exercises = [], isLoading } = useQuery({
@@ -130,31 +127,7 @@ export default function ExerciseLibrary() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['exercises'] }),
   });
 
-  const importMutation = useMutation({
-    mutationFn: () => base44.functions.invoke('generateExerciseLibrary', {}),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] });
-      toast.success(`✅ Imported ${res.data?.count || 'exercises'}!`);
-      setImportOpen(false);
-      setImportProgress(null);
-    },
-    onError: (err) => { toast.error('Import failed: ' + err.message); setImportProgress(null); },
-  });
 
-  const seedMutation = useMutation({
-    mutationFn: () => base44.functions.invoke('seedExerciseLibrary', {}),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['exercises'] });
-      if (res.data?.message) {
-        toast.info(res.data.message);
-      } else {
-        toast.success(`✅ Seeded ${res.data?.count || 'exercises'} from public exercise database!`);
-      }
-      setImportOpen(false);
-      setImportProgress(null);
-    },
-    onError: (err) => { toast.error('Seed failed: ' + err.message); setImportProgress(null); },
-  });
 
   // Stats
   const stats = useMemo(() => {
@@ -212,12 +185,7 @@ export default function ExerciseLibrary() {
           <p className="text-xs mt-0.5 text-white/50">{exercises.length} exercises · {stats.custom} custom</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={() => setImportOpen(true)} disabled={importMutation.isPending}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
-            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>
-            <Download className="w-3.5 h-3.5" /> Import Library
-          </button>
-          <button onClick={() => { setEditingExercise(null); setShowForm(true); }}
+<button onClick={() => { setEditingExercise(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
             style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff', boxShadow: '0 2px 12px rgba(37,99,235,0.4)' }}>
             <Plus className="w-4 h-4" /> Add Exercise
@@ -351,11 +319,7 @@ export default function ExerciseLibrary() {
           <Dumbbell className="w-12 h-12 text-[#D1D5DB] mx-auto mb-4" />
           <p className="font-semibold text-[#374151]">No exercises found</p>
           <p className="text-sm text-[#9CA3AF] mt-1">Try adjusting your filters or add a new exercise</p>
-          {exercises.length === 0 && (
-            <button onClick={() => setImportOpen(true)} className="mt-4 px-4 py-2 rounded-xl text-sm font-semibold bg-primary text-white hover:bg-primary/90">
-              Import Exercise Library
-            </button>
-          )}
+
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -383,35 +347,7 @@ export default function ExerciseLibrary() {
       <ExerciseFormModal open={showForm} onOpenChange={setShowForm} exercise={editingExercise}
         onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['exercises'] }); setShowForm(false); }} />
 
-      {/* Import Modal */}
-      <Dialog open={importOpen} onOpenChange={setImportOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>Import Exercise Library</DialogTitle></DialogHeader>
-          <div className="space-y-4 py-4">
-            {/* Option 1: Public DB seed */}
-            <div className="rounded-xl border border-[#E5E7EB] p-4 space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                  <Download className="w-4 h-4 text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-[#111827]">Free Exercise Database (200+ exercises)</p>
-                  <p className="text-xs text-[#6B7280] mt-0.5">Real photos, step-by-step instructions, muscle groups, equipment. No AI credits used.</p>
-                </div>
-              </div>
-              <button
-                onClick={() => { setImportProgress(0); seedMutation.mutate(); }}
-                disabled={seedMutation.isPending || importMutation.isPending}
-                className="w-full px-4 py-2 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60"
-              >
-                {seedMutation.isPending ? 'Seeding...' : '⚡ Seed from Public Database'}
-              </button>
-            </div>
 
-            <button onClick={() => setImportOpen(false)} className="w-full text-sm text-[#6B7280] hover:text-[#374151]">Cancel</button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
