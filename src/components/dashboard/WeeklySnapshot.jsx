@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { format, startOfWeek, endOfWeek, subWeeks, subDays, eachDayOfInterval, parseISO, isWithinInterval } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, Cell } from 'recharts';
-import { TrendingUp, BarChart2 } from 'lucide-react';
+import { BarChart2 } from 'lucide-react';
 
 const RANGE_OPTIONS = [
   { key: 'this_week',  label: 'This Week' },

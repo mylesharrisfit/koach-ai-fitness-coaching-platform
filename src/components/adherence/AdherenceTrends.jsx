@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { subWeeks, parseISO, format, startOfWeek } from 'date-fns';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { averageAdherenceScore } from '@/lib/adherence';

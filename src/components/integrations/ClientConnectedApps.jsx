@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import {
   CheckCircle2, AlertCircle, TrendingUp, TrendingDown,
-  Moon, Footprints, Flame, Weight, Smartphone, Info,
+  Moon, Footprints, Flame, Smartphone, Info,
   Activity, Zap, Droplets
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

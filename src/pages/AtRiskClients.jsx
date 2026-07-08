@@ -4,15 +4,15 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   AlertTriangle, ChevronDown, ChevronUp, MessageSquare, Settings, ArrowRight,
-  ShieldCheck, Search, X, TrendingUp, TrendingDown, Zap, Briefcase, Calendar,
-  RefreshCw, Sparkles, ChevronRight, Check, Flag, BarChart2, Clock
+  ShieldCheck, Search, X, TrendingUp, Zap, Briefcase, Calendar,
+  RefreshCw, Sparkles, Check, Flag, Clock
 } from 'lucide-react';
-import { formatDistanceToNow, parseISO, differenceInDays, format } from 'date-fns';
+import { parseISO, differenceInDays, format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { averageAdherenceScore, scoreColor, calculateStreak, checkInScore } from '@/lib/adherence';
-import { getAtRiskClients, evaluateClientRisk, SEVERITY_CONFIG, FLAG_ICONS } from '@/lib/riskEngine';
+import { getAtRiskClients, SEVERITY_CONFIG, FLAG_ICONS } from '@/lib/riskEngine';
 import { toast } from 'sonner';
 
 /* ── Risk level helpers ── */

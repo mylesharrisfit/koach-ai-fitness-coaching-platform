@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Loader2, Check, Zap, ChevronRight, AlertCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { generateRecommendations, PRIORITY_STYLES, CATEGORY_ICONS } from '@/lib/decisionEngine';
+import { generateRecommendations, CATEGORY_ICONS } from '@/lib/decisionEngine';
 import { applyRecommendation, getConfirmText } from '@/lib/applyRecommendation';
 import { Link } from 'react-router-dom';
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Pin, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
 export default function PinnedNotes({ messages, onUnpin }) {

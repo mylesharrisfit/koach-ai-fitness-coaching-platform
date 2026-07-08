@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Star, Edit, Trash2, MoreHorizontal, Dumbbell, ExternalLink, Upload } from 'lucide-react';
+import { Play, Star, Edit, Trash2, MoreHorizontal, ExternalLink, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';

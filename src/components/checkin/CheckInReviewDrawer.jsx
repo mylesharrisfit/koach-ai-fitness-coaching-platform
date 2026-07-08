@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, X, CheckCircle2, AlertTriangle, Flag,
-  Moon, Zap, Heart, Scale, Dumbbell, Salad, Smile, Mic, MicOff,
+  Moon, Zap, Heart, Scale, Dumbbell, Salad, Mic, MicOff,
   MessageSquare, Lock, Loader2, Sparkles, ImageIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

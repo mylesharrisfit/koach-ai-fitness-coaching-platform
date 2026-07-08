@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Upload, Dumbbell, FileText, X, CheckCircle2, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Dumbbell, CheckCircle2, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';

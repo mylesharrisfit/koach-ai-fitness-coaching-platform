@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { differenceInDays, parseISO, format, startOfWeek, endOfWeek } from 'date-fns';
 import {
-  Users, TrendingDown, AlertTriangle, CheckCircle2,
+  Users, AlertTriangle, CheckCircle2,
   Dumbbell, Search, X, RefreshCw, FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

@@ -3,8 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Dumbbell, Salad, TrendingUp, Trophy, Shield, Activity, Apple,
   Sparkles, Bot, BarChart3,
-  DollarSign, UserPlus, ShoppingBag, Globe, BarChart2,
-  LayoutTemplate, Palette, Settings, CreditCard, FileText
+  DollarSign, UserPlus, ShoppingBag, Globe,
+  LayoutTemplate, Palette, Settings, CreditCard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';

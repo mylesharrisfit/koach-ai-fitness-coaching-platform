@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trophy, Target } from 'lucide-react';
+import { X, Trophy } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 
 const GOAL_LABELS = {

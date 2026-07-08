@@ -2,11 +2,10 @@ import React from 'react';
 import {
   Mail, Phone, Target, Calendar, DollarSign,
   Scale, TrendingUp, TrendingDown, Minus,
-  AlertTriangle, CheckCircle2, Activity, Flame,
+  AlertTriangle, Activity,
   Moon, Zap, ClipboardCheck, Tag
 } from 'lucide-react';
-import { format, formatDistanceToNow, differenceInDays } from 'date-fns';
-import { compositeAdherenceScore } from '@/lib/adherence';
+import { format, differenceInDays } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 const goalLabels = {

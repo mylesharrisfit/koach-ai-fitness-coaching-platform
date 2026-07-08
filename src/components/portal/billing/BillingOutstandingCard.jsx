@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, ChevronRight } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { format, differenceInDays, parseISO } from 'date-fns';
 
 const fmt = (n) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

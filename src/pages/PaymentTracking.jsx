@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format } from 'date-fns';
 import { Search, Download, ChevronDown, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import PaymentStatCards from '@/components/payments/PaymentStatCards';

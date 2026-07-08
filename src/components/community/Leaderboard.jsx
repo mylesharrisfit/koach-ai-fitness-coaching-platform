@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Trophy, Dumbbell, Footprints, Flame, Target, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Trophy, Dumbbell, Footprints, Flame, Target, TrendingDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { calculateStreak, averageAdherenceScore } from '@/lib/adherence';
 

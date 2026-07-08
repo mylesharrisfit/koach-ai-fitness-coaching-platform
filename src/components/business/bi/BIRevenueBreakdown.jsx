@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AlertTriangle, Crown, DollarSign } from 'lucide-react';
+import { AlertTriangle, Crown } from 'lucide-react';
 
 export default function BIRevenueBreakdown({ clients, payments }) {
   const activeClients = useMemo(() => clients.filter(c => c.lifecycle_status === 'active' || c.status === 'active'), [clients]);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { format } from 'date-fns';
 import { Lock } from 'lucide-react';

@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { differenceInDays, parseISO } from 'date-fns';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import { Dumbbell, TrendingUp, Clock, X, ChevronRight, CheckCircle2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import NoProgramPanel from '@/components/clients/NoProgramPanel';
 import QuickMessageModal from '@/components/clients/QuickMessageModal';
 

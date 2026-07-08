@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import RunMyDayCenter from './RunMyDayCenter';
 import { compositeAdherenceScore } from '@/lib/adherence';
-import RecommendationsWidget from './RecommendationsWidget';
 import DashboardKPIs from './DashboardKPIs';
 import TodaySchedule from './TodaySchedule';
 import WeeklySnapshot from './WeeklySnapshot';

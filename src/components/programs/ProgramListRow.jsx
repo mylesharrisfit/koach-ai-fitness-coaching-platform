@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, BarChart3, Users, MoreVertical, Eye, Zap } from 'lucide-react';
+import { Clock, BarChart3, MoreVertical, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,

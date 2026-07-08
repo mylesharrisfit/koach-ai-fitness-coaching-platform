@@ -1,8 +1,6 @@
 import React from 'react';
 import { X, Layers, Tag, Timer, Zap, Link, TrendingUp, BookOpen } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 
 const SET_TYPES = [
   { value: 'straight', label: 'Straight' },

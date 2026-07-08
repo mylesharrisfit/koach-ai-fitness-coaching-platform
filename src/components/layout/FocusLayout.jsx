@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { X, ChevronLeft } from 'lucide-react';
+import { Outlet, Link } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { SubscriptionContext } from './AppLayout';

@@ -30,7 +30,7 @@ export function useFoodSearch() {
       return;
     }
     doSearch(debouncedQuery, 1);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [debouncedQuery]);
 
   async function doSearch(q, pageNum) {

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import ProfileSectionCard from './ProfileSectionCard';
 import { toast } from 'sonner';
 

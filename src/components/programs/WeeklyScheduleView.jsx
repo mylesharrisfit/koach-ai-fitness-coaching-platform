@@ -1,6 +1,5 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { Dumbbell, Clock, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

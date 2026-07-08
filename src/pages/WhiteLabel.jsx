@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Check, Lock, Star, Eye, Download, QrCode, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Check, Lock, Eye, Download, QrCode, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import WLBrandIdentity from '@/components/white-label/WLBrandIdentity';
 import WLColorSystem from '@/components/white-label/WLColorSystem';

@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
 
 function Ring({ value, max, color, size = 80, label, icon }) {
   const pct = Math.min(1, (value || 0) / max);

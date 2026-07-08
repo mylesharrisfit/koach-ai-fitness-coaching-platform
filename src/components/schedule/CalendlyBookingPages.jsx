@@ -4,7 +4,6 @@ import { base44 } from '@/api/base44Client';
 import { getEventTypes } from '@/lib/calendly';
 import { Copy, Check, ExternalLink, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 export default function CalendlyBookingPages() {
   const [collapsed, setCollapsed] = useState(false);

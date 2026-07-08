@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Sparkles, Loader2, TrendingUp, Users, DollarSign, Clock, Target, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { differenceInDays, parseISO, startOfMonth, subMonths } from 'date-fns';
+import { differenceInDays, parseISO, startOfMonth } from 'date-fns';
 
 const INSIGHT_ICONS = { revenue: DollarSign, retention: Users, pricing: TrendingUp, efficiency: Clock, growth: Target };
 const INSIGHT_COLORS = { revenue: '#3B82F6', retention: '#8B5CF6', pricing: '#F59E0B', efficiency: '#06B6D4', growth: '#22C55E' };

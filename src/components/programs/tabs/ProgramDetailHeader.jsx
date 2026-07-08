@@ -1,6 +1,5 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Clock, BarChart3, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const CATEGORY_ICON = {

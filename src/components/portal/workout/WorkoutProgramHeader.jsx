@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { differenceInDays } from 'date-fns';
 
 export default function WorkoutProgramHeader({ program, client, sessions = [] }) {
   if (!program) return null;

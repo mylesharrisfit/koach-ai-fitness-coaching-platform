@@ -1,6 +1,6 @@
 import React from 'react';
 import { differenceInHours, differenceInDays, parseISO, format } from 'date-fns';
-import { ImageIcon, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { TIERS, TIER_ORDER, getUserTier } from '@/lib/subscription';
-import { Check, X, Zap, ArrowRight, Star } from 'lucide-react';
+import { Check, X, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';

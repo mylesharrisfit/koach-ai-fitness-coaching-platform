@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { differenceInWeeks, differenceInDays, format, parseISO } from 'date-fns';
+import { differenceInWeeks, differenceInDays, parseISO } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles, TrendingUp, TrendingDown, AlertTriangle, Trophy,
-  Target, Loader2, RefreshCw, ChevronDown, ChevronUp, Brain,
-  Zap, Shield, BarChart2, Clock
+  Sparkles, TrendingUp, AlertTriangle,
+  Target, Loader2, RefreshCw, ChevronDown, ChevronUp, Brain, BarChart2, Clock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Download, CreditCard, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { X, Download, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { format, parseISO, differenceInDays } from 'date-fns';
 
 const fmt = (n) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

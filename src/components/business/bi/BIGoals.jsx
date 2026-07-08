@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Target, Plus, Edit2, Check, X, Trophy } from 'lucide-react';
-import { parseISO, startOfMonth, endOfMonth } from 'date-fns';
+import { Target, Edit2, Check, X, Trophy } from 'lucide-react';
+import { parseISO, startOfMonth } from 'date-fns';
 
 const GOAL_PRESETS = [
   { key: 'mrr', label: 'Monthly Revenue Target', unit: '$', defaultVal: 5000 },

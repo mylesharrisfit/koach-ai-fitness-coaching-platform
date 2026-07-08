@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, X } from 'lucide-react';
-import { WLSection, WLRow, WLInput, WLDivider, WLToggle } from './WLHelpers';
+import { WLSection, WLRow, WLInput, WLDivider } from './WLHelpers';
 
 export default function WLCustomContent({ s, set, locked, enterpriseLocked }) {
   const pages = s.custom_pages || [];

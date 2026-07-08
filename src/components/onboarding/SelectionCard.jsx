@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export function SelectionCard({ label, description, icon: Icon, selected, onClick, size = 'md' }) {
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { format, parseISO, differenceInDays, addDays } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { ClipboardList, CheckCircle2, AlertCircle, Clock, ChevronRight, MessageSquare } from 'lucide-react';

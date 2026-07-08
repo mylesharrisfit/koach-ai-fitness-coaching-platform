@@ -6,7 +6,6 @@ import {
   ChevronDown, LayoutGrid
 } from 'lucide-react';
 import { differenceInDays, parseISO } from 'date-fns';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';

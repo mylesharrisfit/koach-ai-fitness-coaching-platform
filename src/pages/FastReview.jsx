@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import {
-  ChevronLeft, ChevronRight, CheckCircle2, Sparkles, MessageSquare,
+  ChevronLeft, CheckCircle2, Sparkles, MessageSquare,
   Flame, Footprints, Check, Loader2, Send, Moon, Zap,
   TrendingDown, TrendingUp, Minus, BookOpen, ChevronDown,
   ClipboardCheck, ChevronUp, AlertTriangle, X, Play,

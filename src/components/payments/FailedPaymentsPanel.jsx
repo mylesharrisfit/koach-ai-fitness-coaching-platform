@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlertTriangle, RefreshCcw, CreditCard, MessageSquare, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { format, parseISO, differenceInDays } from 'date-fns';
+import { parseISO, differenceInDays } from 'date-fns';
 
 const FAILURE_REASONS = {
   card_declined: 'Card declined',

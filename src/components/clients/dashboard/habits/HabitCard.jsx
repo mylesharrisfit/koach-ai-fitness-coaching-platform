@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Pencil, Trash2, Flame, EyeOff } from 'lucide-react';
-import { format, subDays, parseISO, isToday } from 'date-fns';
+import { format, subDays, parseISO } from 'date-fns';
 
 const DAY_LABELS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 

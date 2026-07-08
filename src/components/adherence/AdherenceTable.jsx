@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { differenceInDays, parseISO, subWeeks, startOfWeek } from 'date-fns';
+import { differenceInDays, parseISO, subWeeks } from 'date-fns';
 import { ArrowUp, ArrowDown, Minus, MessageSquare, User, Flag, ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { averageAdherenceScore, checkInScore, calculateStreak } from '@/lib/adherence';
+import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
 import { useNavigate } from 'react-router-dom';
 
 const FILTER_CHIPS = ['All', 'On Track', 'Needs Attention', 'At Risk', 'Inactive'];

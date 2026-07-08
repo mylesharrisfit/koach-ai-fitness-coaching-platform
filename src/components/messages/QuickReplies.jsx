@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
 
 const QUICK_REPLIES = [
   { label: '💪 Great work!', text: 'Great work this week! Keep it up 💪' },

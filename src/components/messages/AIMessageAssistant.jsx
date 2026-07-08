@@ -2,10 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { differenceInDays, parseISO } from 'date-fns';
 import {
-  Sparkles, Loader2, RefreshCw, Check, Edit3, X, ChevronDown,
-  Zap
+  Sparkles, Loader2, RefreshCw, Check, Edit3, X, ChevronDown
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 const TONE_OPTIONS = [
   { key: 'motivational', label: '🔥 More Motivational' },

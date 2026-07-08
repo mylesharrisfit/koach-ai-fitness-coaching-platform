@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { X, MessageSquare, Send, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 const SUGGESTED_TEMPLATE = "Hey [First Name], just checking in — how are things going? Let me know if you need anything! 💪";
 

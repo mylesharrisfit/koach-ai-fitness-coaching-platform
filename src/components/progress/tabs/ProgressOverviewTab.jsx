@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, parseISO, subWeeks, subMonths } from 'date-fns';
+import { format, parseISO, subWeeks } from 'date-fns';
 import {
-  AreaChart, Area, LineChart, Line, ReferenceLine,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  AreaChart, Area, Line, ReferenceLine,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { toast } from 'sonner';
-import { Sparkles, NotebookPen, Trophy, FileText } from 'lucide-react';
+import { NotebookPen, Trophy, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import AIProgressInsights from '../AIProgressInsights';
 import LogWeightModal from '../LogWeightModal';

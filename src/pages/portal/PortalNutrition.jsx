@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { format, subDays, parseISO } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf, Download } from 'lucide-react';
 import SupplementsTab from '@/components/nutrition/reference/SupplementsTab';
@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 import DailyMacroHeader from '@/components/portal/nutrition/DailyMacroHeader';
 import MealCard from '@/components/portal/nutrition/MealCard';
 import FoodSearchSheet from '@/components/portal/nutrition/FoodSearchSheet';
-import FoodDetailSheet from '@/components/nutrition/usda/FoodDetailSheet';
 import WaterTracker from '@/components/portal/nutrition/WaterTracker';
 import SupplementStack from '@/components/portal/nutrition/SupplementStack';
 import HydrationProtocol from '@/components/portal/nutrition/HydrationProtocol';

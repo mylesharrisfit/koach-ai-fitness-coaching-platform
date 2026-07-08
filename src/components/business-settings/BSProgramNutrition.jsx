@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dumbbell } from 'lucide-react';
-import { BSSection, BSRow, BSToggle, BSSelect, BSInput, BSTextarea, BSDivider } from './BSSection';
+import { BSSection, BSRow, BSSelect, BSInput, BSTextarea, BSDivider } from './BSSection';
 
 const MACRO_METHODS = [
   { value: 'manual', label: 'Manual (coach sets custom macros)' },

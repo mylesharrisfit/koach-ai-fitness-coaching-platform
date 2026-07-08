@@ -7,10 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import {
-  Mail, Send, Loader2, Eye, Users, ChevronRight,
-  Smartphone, Monitor, Search, CheckCircle2, X
+  Mail, Send, Loader2, Users, ChevronRight,
+  Smartphone, Monitor, Search, CheckCircle2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';

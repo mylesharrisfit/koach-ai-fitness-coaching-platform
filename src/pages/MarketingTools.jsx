@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion } from 'framer-motion';
-import { Link as LinkIcon, Share2, Mail, MessageSquare, TrendingUp, Zap } from 'lucide-react';
+import { Link as LinkIcon, Mail, MessageSquare, TrendingUp, Zap } from 'lucide-react';
 import MarketingLinksSection from '@/components/marketing/MarketingLinksSection';
 import QRCodeGenerator from '@/components/marketing/QRCodeGenerator';
 import EmailTemplateLibrary from '@/components/marketing/EmailTemplateLibrary';

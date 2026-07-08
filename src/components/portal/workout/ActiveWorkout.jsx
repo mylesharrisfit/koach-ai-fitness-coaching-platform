@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Plus, RefreshCw, SkipForward } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 
 /* ── Wake Lock ── */
 function useWakeLock() {

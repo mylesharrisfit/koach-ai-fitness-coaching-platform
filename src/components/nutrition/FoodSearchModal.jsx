@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { UtensilsCrossed, Plus } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
+import { UtensilsCrossed } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';

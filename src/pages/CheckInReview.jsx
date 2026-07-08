@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { checkInScore } from '@/lib/adherence';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 import CheckInStatsRow from '@/components/checkin/CheckInStatsRow';
 import CheckInReviewRow from '@/components/checkin/CheckInReviewRow';

@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import CommunityFeed from './CommunityFeed';
 import Leaderboard from './Leaderboard';
 import WeeklyChallenges from './WeeklyChallenges';
-import CommunityToggle from './CommunityToggle';
 
 const TABS = [
   { key: 'feed',        icon: MessageSquare, label: 'Feed',        settingKey: 'feed_enabled' },

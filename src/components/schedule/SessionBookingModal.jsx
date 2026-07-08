@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { format, parse, addMinutes, isBefore, isAfter, isSameDay } from 'date-fns';
-import { X, Search, Check, AlertCircle, Phone, Zap, Target, TrendingUp, HelpCircle, MessageSquare, User, Clock, Plus } from 'lucide-react';
+import { format, parse } from 'date-fns';
+import { X, Check, AlertCircle, Phone, Zap, Target, TrendingUp, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';

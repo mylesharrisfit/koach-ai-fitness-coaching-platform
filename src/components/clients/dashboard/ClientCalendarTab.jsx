@@ -3,10 +3,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  format, startOfWeek, endOfWeek, addWeeks, subWeeks,
+  format, startOfWeek, endOfWeek,
   eachDayOfInterval, isSameDay, isToday, parseISO, isSameMonth,
-  startOfMonth, endOfMonth, addMonths, subMonths, eachWeekOfInterval,
-  getDay, addDays
+  startOfMonth, endOfMonth, addMonths, subMonths, addDays
 } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, Plus, X, ClipboardList,
@@ -14,7 +13,6 @@ import {
 } from 'lucide-react';
 import ReactDOM from 'react-dom';
 import TemplatePickerSheet from './goals/TemplatePickerSheet';
-import HabitFormModal from './habits/HabitFormModal';
 
 // ── Event type config ─────────────────────────────────────────────────────────
 const TYPES = {

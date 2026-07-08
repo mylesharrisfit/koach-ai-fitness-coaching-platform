@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Dumbbell, Salad, Users, Package, Layers, Edit, Trash2, Copy, Check, EyeOff, UserPlus, ShoppingCart, Loader2, ExternalLink, Star, Download } from 'lucide-react';
+import { Dumbbell, Salad, Users, Package, Layers, Edit, Trash2, Copy, Check, EyeOff, UserPlus, ShoppingCart, Loader2, Star } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';

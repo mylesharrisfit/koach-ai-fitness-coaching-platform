@@ -3,8 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Plus, X, Send, Image as ImageIcon, EyeOff, MessageCircle,
-  MoreHorizontal, Flag, Megaphone, Pin, Trophy, ChevronDown, ChevronUp
+  Plus, X, Image as ImageIcon, EyeOff, Megaphone
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import PostCard from './PostCard';

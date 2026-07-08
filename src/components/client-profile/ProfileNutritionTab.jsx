@@ -1,15 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Apple, Utensils, Clock, TrendingUp, CheckCircle2,
-  XCircle, Minus, Plus, ChevronRight, BarChart3, Calendar
+  Apple, Utensils, CheckCircle2, Plus, ChevronRight, BarChart3, Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { format, subDays, isToday, parseISO } from 'date-fns';
+import { format, subDays, isToday } from 'date-fns';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function pct(val, max) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { X, ArrowRight, TrendingUp, AlertTriangle, Zap, Trophy, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, ArrowRight, TrendingUp, AlertTriangle, Zap, Trophy } from 'lucide-react';
 
 const TYPE_CONFIG = {
   performance: {

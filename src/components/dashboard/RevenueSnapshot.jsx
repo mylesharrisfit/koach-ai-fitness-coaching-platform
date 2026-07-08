@@ -1,5 +1,5 @@
 import React from 'react';
-import { DollarSign, TrendingUp, TrendingDown, Users, AlertTriangle } from 'lucide-react';
+import { DollarSign, TrendingUp, Users, AlertTriangle } from 'lucide-react';
 
 export default function RevenueSnapshot({ clients }) {
   const activeClients = clients.filter(c => c.status === 'active');

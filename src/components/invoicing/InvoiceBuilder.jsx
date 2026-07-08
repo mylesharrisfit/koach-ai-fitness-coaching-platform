@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { format, addDays } from 'date-fns';
-import { Plus, Trash2, ChevronDown, Search, X, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, Search } from 'lucide-react';
 
 const today = () => format(new Date(), 'yyyy-MM-dd');
 

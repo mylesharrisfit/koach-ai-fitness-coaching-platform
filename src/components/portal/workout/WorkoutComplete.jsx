@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Star, MessageSquare, Salad, Home } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Star, MessageSquare, Salad } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 /* Simple confetti burst using canvas */

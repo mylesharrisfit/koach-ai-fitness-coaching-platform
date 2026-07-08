@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { TrendingUp, TrendingDown, Minus, Scale, Moon, Zap, Brain, Footprints, Heart, Camera, BarChart2, Ruler } from 'lucide-react';
+import { TrendingUp, TrendingDown, Scale, Moon, Zap, Brain, Heart, Camera, BarChart2, Ruler } from 'lucide-react';
 import AIProgressAnalyzer from '@/components/progress/AIProgressAnalyzer';
 import { format } from 'date-fns';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, CartesianGrid, ReferenceLine, Legend
+  ResponsiveContainer, CartesianGrid, ReferenceLine
 } from 'recharts';
 import { cn } from '@/lib/utils';
 

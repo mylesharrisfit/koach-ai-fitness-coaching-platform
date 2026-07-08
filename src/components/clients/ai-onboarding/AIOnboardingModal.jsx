@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { X, Sparkles, Loader2, CheckCircle, ChevronLeft } from 'lucide-react';
+import { X, Sparkles, Loader2, CheckCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import AIOnboardingQuestionnaire from './AIOnboardingQuestionnaire';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { DollarSign, TrendingUp, Clock, AlertTriangle, BarChart2 } from 'lucide-react';
-import { format, startOfMonth, endOfMonth, subMonths, parseISO, isWithinInterval } from 'date-fns';
+import { startOfMonth, endOfMonth, subMonths, parseISO, isWithinInterval } from 'date-fns';
 
 function StatCard({ icon: Icon, label, value, sub, color, bg }) {
   return (

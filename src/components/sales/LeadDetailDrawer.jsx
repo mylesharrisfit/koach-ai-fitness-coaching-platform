@@ -3,7 +3,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { X, Mail, Phone, Instagram, MapPin, Flame, Zap, Snowflake, Plus, Pin, CheckCircle, Clock, AlertCircle, UserCheck } from 'lucide-react';
+import { X, Mail, Phone, Instagram, MapPin, Flame, Zap, Snowflake, Pin, Clock, AlertCircle, UserCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { differenceInDays, format, isValid } from 'date-fns';
 import { KANBAN_STAGES } from './KanbanBoard';

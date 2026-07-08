@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { hasFeature, withinLimit, getUserTier, FEATURE_INFO } from '@/lib/subscription';
+import { hasFeature, withinLimit, getUserTier } from '@/lib/subscription';
 
 /**
  * Hook to manage subscription gating and the upgrade modal.

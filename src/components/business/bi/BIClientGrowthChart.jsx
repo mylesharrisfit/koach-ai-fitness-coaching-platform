@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { subMonths, format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 
 function CustomTooltip({ active, payload, label }) {

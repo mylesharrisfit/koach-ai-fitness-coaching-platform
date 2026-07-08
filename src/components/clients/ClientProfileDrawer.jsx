@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import { X, Mail, Phone, Target, Calendar, DollarSign, Edit, Tag } from 'lucide-react';
+import React from 'react';
+import { X, Phone, Target, Calendar, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LifecycleBadge from './LifecycleBadge';
-import { AdherencePill } from '@/components/adherence/AdherenceScore';
 import ClientFeedbackHistory from './ClientFeedbackHistory';
 import { compositeAdherenceScore } from '@/lib/adherence';
-import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
 const goalLabels = {

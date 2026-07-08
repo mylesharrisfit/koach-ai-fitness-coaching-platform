@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Share2, MessageSquare, Mail, Instagram, Twitter, Award, ChevronRight, Gift } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Copy, Share2, MessageSquare, Mail, Instagram, Twitter, Award, Gift } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function PortalReferral({ user }) {

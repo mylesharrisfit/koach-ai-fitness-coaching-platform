@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrendingUp, GripVertical, Plus, X } from 'lucide-react';
-import { BSSection, BSRow, BSToggle, BSSelect, BSInput, BSTextarea, BSDivider } from './BSSection';
+import { BSSection, BSRow, BSToggle, BSInput } from './BSSection';
 
 const DEFAULT_STAGES = [
   { id: '1', label: 'New Lead' }, { id: '2', label: 'DM\'d' },

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, AlertCircle, Lightbulb } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ClientPickerStep from './assignment/ClientPickerStep';
 import ProgramSettingsStep from './assignment/ProgramSettingsStep';

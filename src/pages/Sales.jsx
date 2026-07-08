@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, TrendingUp, DollarSign, Target, Users, LayoutGrid, List, BarChart2, Search, Download } from 'lucide-react';
+import { Plus, TrendingUp, DollarSign, Target, Users, LayoutGrid, List, BarChart2, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import FunnelView from '../components/sales/FunnelView';
 import PaymentTracker from '../components/sales/PaymentTracker';
@@ -11,7 +11,6 @@ import KanbanBoard from '../components/sales/KanbanBoard';
 import LeadListView from '../components/sales/LeadListView';
 import LeadDetailDrawer from '../components/sales/LeadDetailDrawer';
 import AddLeadModal from '../components/sales/AddLeadModal';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 const PIPELINE_VIEWS = [

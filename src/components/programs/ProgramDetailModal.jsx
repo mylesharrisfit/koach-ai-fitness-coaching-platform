@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X, Target, Flame, BarChart3, Clock, UserPlus, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
 
 import ProgramOverviewTab from './tabs/ProgramOverviewTab';
 import ProgramWeeklyScheduleTab from './tabs/ProgramWeeklyScheduleTab';
@@ -48,6 +49,54 @@ export default function ProgramDetailModal({
   onEdit,
 }) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [sessions, setSessions] = useState([]);
+  const [sessionsLoaded, setSessionsLoaded] = useState(false);
+
+  // Pull real logged sessions for this program so the sidebar shows actual
+  // completion/progress instead of fabricated numbers.
+  useEffect(() => {
+    let active = true;
+    if (!program?.id) return;
+    setSessionsLoaded(false);
+    base44.entities.WorkoutSession.filter({ program_id: program.id })
+      .then(rows => { if (active) { setSessions(rows || []); setSessionsLoaded(true); } })
+      .catch(() => { if (active) { setSessions([]); setSessionsLoaded(true); } });
+    return () => { active = false; };
+  }, [program?.id]);
+
+  // Per-client completion (completed vs. all resolved sessions for this program).
+  const progressByClientId = useMemo(() => {
+    const map = {};
+    for (const s of sessions) {
+      if (!s.client_id) continue;
+      const m = map[s.client_id] || (map[s.client_id] = { completed: 0, total: 0 });
+      if (['completed', 'missed', 'skipped'].includes(s.status)) {
+        m.total += 1;
+        if (s.status === 'completed') m.completed += 1;
+      }
+    }
+    return map;
+  }, [sessions]);
+
+  // Aggregate program stats from real session data.
+  const programStats = useMemo(() => {
+    let completed = 0, total = 0, ratingSum = 0, ratingCount = 0;
+    for (const s of sessions) {
+      if (['completed', 'missed', 'skipped'].includes(s.status)) {
+        total += 1;
+        if (s.status === 'completed') completed += 1;
+      }
+      if (typeof s.session_rating === 'number') { ratingSum += s.session_rating; ratingCount += 1; }
+    }
+    return {
+      assignedCount: assignedClients.length,
+      completedSessions: completed,
+      totalSessions: total,
+      completionRate: total > 0 ? Math.round((completed / total) * 100) : null,
+      avgDifficulty: ratingCount > 0 ? (ratingSum / ratingCount).toFixed(1) : null,
+      loaded: sessionsLoaded,
+    };
+  }, [sessions, assignedClients.length, sessionsLoaded]);
 
   const typeLabel = CATEGORY_LABELS[program.category] || program.category || 'Program';
   const levelLabel = DIFFICULTY_LABELS[program.difficulty] || program.difficulty || '';
@@ -200,9 +249,10 @@ export default function ProgramDetailModal({
                   allClients={allClients}
                   programId={program.id}
                   programDurationWeeks={program.duration_weeks}
+                  progressByClientId={progressByClientId}
                   onAssign={onAssign}
                 />
-                <ProgramStatsPanel program={program} assignedClients={assignedClients} />
+                <ProgramStatsPanel stats={programStats} />
               </div>
             </div>
           </div>

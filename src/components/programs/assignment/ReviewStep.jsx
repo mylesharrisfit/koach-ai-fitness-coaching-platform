@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Check, Calendar, Bell, Clock } from 'lucide-react';
+import { Check, Bell, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function ReviewStep({

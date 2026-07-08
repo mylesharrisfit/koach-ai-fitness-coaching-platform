@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, MessageSquare, Trophy, Target, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Users, MessageSquare, Trophy, ChevronRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CommunityFeedTab from '@/components/portal/community/CommunityFeedTab';
 import CommunityGroupChat from '@/components/portal/community/CommunityGroupChat';

@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
 
 export default function BusinessMetricCard({ icon: Icon, label, value, sub, subColor, iconColor, iconBg, dark }) {
   if (dark) {

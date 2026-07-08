@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Dumbbell, Salad, Users, Package, Layers, BookOpen, Video, EyeOff, Star, Edit, Eye, ShoppingCart, Loader2, ExternalLink } from 'lucide-react';
+import { Dumbbell, Salad, Users, Package, Layers, EyeOff, Star, Edit, Eye, ShoppingCart, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 

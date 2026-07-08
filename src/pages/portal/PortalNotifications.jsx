@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { ArrowLeft, Bell, CheckCheck, Settings, ChevronRight } from 'lucide-react';
-import { formatDistanceToNow, isToday, isYesterday, isThisWeek, parseISO, format } from 'date-fns';
+import { ArrowLeft, CheckCheck, Settings, ChevronRight } from 'lucide-react';
+import { formatDistanceToNow, isToday, isYesterday, isThisWeek, format } from 'date-fns';
 
 /* ── Category config ── */
 const CAT = {

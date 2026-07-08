@@ -1,5 +1,5 @@
 import React from 'react';
-import { WLSection, WLRow, WLSelect, WLDivider } from './WLHelpers';
+import { WLSection, WLRow, WLSelect } from './WLHelpers';
 
 const FONTS = [
   { value: 'system', label: 'System Default (SF Pro / Roboto)' },

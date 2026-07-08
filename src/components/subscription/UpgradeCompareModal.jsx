@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Sparkles, ArrowRight, Lock } from 'lucide-react';
+import { X, Check, Sparkles, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TIERS, TIER_ORDER } from '@/lib/subscription';
 import { base44 } from '@/api/base44Client';

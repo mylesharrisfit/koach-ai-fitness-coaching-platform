@@ -1,5 +1,5 @@
 import React from 'react';
-import { differenceInDays, parseISO, format } from 'date-fns';
+import { differenceInDays, parseISO } from 'date-fns';
 import { TrendingDown, TrendingUp, Minus, AlertTriangle, CheckCircle2, Clock, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';

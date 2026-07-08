@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Bell, Sparkles, Loader2, X, ChevronRight, MessageSquare } from 'lucide-react';
+import { Bell, Sparkles, Loader2, X } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { base44 } from '@/api/base44Client';
-import { cn } from '@/lib/utils';
 
 const FOLLOW_UP_THRESHOLD_DAYS = 5;
 

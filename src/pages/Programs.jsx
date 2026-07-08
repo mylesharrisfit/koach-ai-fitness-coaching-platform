@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import {
-  Plus, Dumbbell, Lock, Zap, Search, SlidersHorizontal,
-  LayoutGrid, List, ChevronDown, X, Flame, Layers, Target, Sparkles, PenLine,
+import { Dumbbell, Search, SlidersHorizontal,
+  LayoutGrid, List, X, Sparkles, PenLine,
 } from 'lucide-react';
 import { hasFeature } from '@/lib/subscription';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ProgramCard from '../components/programs/ProgramCard';
@@ -18,7 +16,6 @@ import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { AnimatePresence } from 'framer-motion';
 

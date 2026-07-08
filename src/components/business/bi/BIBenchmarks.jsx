@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Award, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { differenceInDays } from 'date-fns';
 
 // Industry benchmarks (anonymous aggregate estimates)
 const BENCHMARKS = {

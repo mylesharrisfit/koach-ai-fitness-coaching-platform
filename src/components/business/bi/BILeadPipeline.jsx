@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Users, TrendingUp, Clock, Zap } from 'lucide-react';
-import { differenceInDays, parseISO } from 'date-fns';
+import { Clock, Zap } from 'lucide-react';
+import { differenceInDays } from 'date-fns';
 
 const SOURCE_COLORS = {
   instagram: '#E1306C',

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { subMonths, format, startOfMonth, parseISO } from 'date-fns';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { DollarSign } from 'lucide-react';
 
 export default function MRROverview({ clients, payments }) {
   const mrrData = useMemo(() => {

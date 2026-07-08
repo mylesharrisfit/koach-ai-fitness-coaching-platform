@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { format, parseISO } from 'date-fns';
-import { GripVertical, Check, X } from 'lucide-react';
+import React from 'react';
+import { GripVertical, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const sessionTypeIcons = {

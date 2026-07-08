@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
 import HabitCard from './HabitCard';
 import HabitFormModal from './HabitFormModal';
 

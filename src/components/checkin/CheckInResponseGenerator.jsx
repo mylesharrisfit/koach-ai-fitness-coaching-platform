@@ -5,7 +5,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Loader2, Check, Edit3, RotateCw, ChevronDown, ChevronUp, Target, Star } from 'lucide-react';
 import { generateCheckInResponse } from '@/lib/aiMessageAssistant';
-import { cn } from '@/lib/utils';
 
 export default function CheckInResponseGenerator({ client, checkIn, previousCheckIns = [], onInsert }) {
   const [loading, setLoading] = useState(false);

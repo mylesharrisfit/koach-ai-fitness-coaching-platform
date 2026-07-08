@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, ArrowRight, Upload, Users, Dumbbell, Salad, Send, Sparkles } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Users, Dumbbell, Salad, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import MigrationClientImport from '@/components/migration/MigrationClientImport';
 import MigrationWorkouts from '@/components/migration/MigrationWorkouts';

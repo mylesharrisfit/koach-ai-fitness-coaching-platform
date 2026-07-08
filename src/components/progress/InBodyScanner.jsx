@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Loader2, CheckCircle2, ChevronDown, ChevronRight, ArrowLeftRight, X, ScanLine, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowLeftRight, ScanLine, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';

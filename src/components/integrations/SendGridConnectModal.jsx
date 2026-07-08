@@ -3,11 +3,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { CheckCircle2, ExternalLink, Mail, Loader2 } from 'lucide-react';
+import { CheckCircle2, ExternalLink, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { sendEmail, isResendEnabled, testConnection } from '@/lib/sendgrid';
+import { sendEmail, isResendEnabled } from '@/lib/sendgrid';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function SendGridConnectModal({ open, onClose }) {

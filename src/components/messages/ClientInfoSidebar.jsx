@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { differenceInDays, parseISO, format } from 'date-fns';
-import { ExternalLink, ClipboardList, Salad, FileText } from 'lucide-react';
+import { ExternalLink, ClipboardList, Salad } from 'lucide-react';
 import { BADGE_CONFIG } from '@/lib/badges';
 import AIFollowUpChip from './AIFollowUpChip';
 

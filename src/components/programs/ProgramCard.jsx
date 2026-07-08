@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Clock, BarChart3, Dumbbell, MoreVertical, Users,
+import { BarChart3, Dumbbell, MoreVertical, Users,
   Flame, Zap, Layers, Target, Calendar,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';

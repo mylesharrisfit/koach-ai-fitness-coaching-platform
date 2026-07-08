@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Bookmark, Star } from 'lucide-react';
+import { ChevronDown, Bookmark } from 'lucide-react';
 import {
   SUPPLEMENTS, SUPPLEMENT_CATEGORIES,
   SUPPLEMENT_RATING_COLORS, SUPPLEMENT_CATEGORY_COLORS

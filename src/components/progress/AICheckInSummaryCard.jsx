@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Sparkles, Loader2, RefreshCw, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { differenceInDays, parseISO } from 'date-fns';
+import { Sparkles, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /* Generates a fast post-check-in summary card for the coach review panel */

@@ -4,9 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Edit, MessageSquare, Dumbbell, ClipboardCheck,
-  Scale, Activity, Footprints, Calendar, Mail, Phone,
-  TrendingUp, TrendingDown, Minus, AlertTriangle, CheckCircle2,
-  ChevronRight, MoreHorizontal
+  Scale, Activity, Calendar, Mail, Phone, AlertTriangle,
+  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

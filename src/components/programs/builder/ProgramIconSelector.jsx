@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Dumbbell, Flame, Zap, Trophy, Layers, Target,
-  TrendingUp, Wind, Heart, Zap as Lightning, MoreHorizontal
+  TrendingUp, Wind, Heart, Zap as Lightning
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

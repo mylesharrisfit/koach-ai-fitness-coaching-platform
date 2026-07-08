@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, CheckCircle2, Settings } from 'lucide-react';
-import { format, addMonths, addDays } from 'date-fns';
+import { format, addMonths } from 'date-fns';
 
 const BILLING_LABEL = { one_time: 'One-time', monthly: '/mo', quarterly: '/quarter', annual: '/year', custom: '' };
 

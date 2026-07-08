@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Trophy, Plus, Target, Flame, Dumbbell, Footprints, TrendingDown,
-  Droplets, Moon, Apple, X, Users, Calendar, CheckCircle2, Zap,
-  ChevronRight, Star, Clock, ArrowLeft
+  Trophy, Plus, Target, Flame, Dumbbell, Footprints, TrendingDown, Users, Calendar, Zap,
+  ChevronRight, Star, Clock
 } from 'lucide-react';
 import { format, differenceInDays, isAfter, isBefore, parseISO, addDays } from 'date-fns';
 import { cn } from '@/lib/utils';

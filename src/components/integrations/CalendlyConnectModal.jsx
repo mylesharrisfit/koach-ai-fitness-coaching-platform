@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ExternalLink, Calendar, Loader2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import { getCalendlyUser, getEventTypes, getScheduledEvents, isCalendlyEnabled } from '@/lib/calendly';
+import { getCalendlyUser, getEventTypes, getScheduledEvents } from '@/lib/calendly';
 import { addDays, startOfToday } from 'date-fns';
 
 export default function CalendlyConnectModal({ open, onClose }) {

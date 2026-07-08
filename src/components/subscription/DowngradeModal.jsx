@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { X, AlertTriangle, Check, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { X, AlertTriangle, Check } from 'lucide-react';
 import { TIERS, TIER_ORDER } from '@/lib/subscription';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';

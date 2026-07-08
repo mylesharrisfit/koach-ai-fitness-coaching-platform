@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Sparkles, X, Check, Edit3, RotateCw, ChevronDown, Loader2, Zap } from 'lucide-react';
+import { Sparkles, X, Check, Edit3, RotateCw, ChevronDown, Zap } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 

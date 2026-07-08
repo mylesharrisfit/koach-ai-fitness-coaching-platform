@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Copy, Edit, Trash2, Plus } from 'lucide-react';
+import { Copy, Trash2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const DESTINATION_OPTIONS = [

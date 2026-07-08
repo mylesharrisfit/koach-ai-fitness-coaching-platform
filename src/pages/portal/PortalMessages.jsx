@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format, isToday, isYesterday } from 'date-fns';
 import {
   Send, ArrowLeft, MessageSquare, Mic, Image as ImageIcon, Camera,
-  Paperclip, BarChart2, ClipboardList, Plus, X
+  Paperclip, BarChart2, ClipboardList, Plus
 } from 'lucide-react';
 
 /* ── helpers ── */

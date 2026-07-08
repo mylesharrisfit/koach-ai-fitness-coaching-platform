@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users, Sparkles, Loader2, RefreshCw } from 'lucide-react';
+import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users, Sparkles, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { format } from 'date-fns';

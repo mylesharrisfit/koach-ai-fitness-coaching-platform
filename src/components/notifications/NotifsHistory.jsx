@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Bell, CheckCheck, Filter } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Bell, CheckCheck } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 
 const MOCK_HISTORY = [

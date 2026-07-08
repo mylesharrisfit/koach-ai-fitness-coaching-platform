@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { TIERS, TIER_ORDER, FEATURE_INFO, getUserTier } from '@/lib/subscription';
 import { Check, X, Zap, ArrowRight, Sparkles, TrendingUp, Trophy, ShoppingBag,
   ClipboardList, DollarSign, Globe, Smartphone, Users, Palette, Code } from 'lucide-react';
@@ -44,17 +43,40 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
     if (tierKey === userTier.key) return;
     setSaving(tierKey);
     try {
-      await base44.auth.updateMe({ subscription_tier: tierKey });
-      const updated = await base44.auth.me();
-      if (onUserUpdate) onUserUpdate(updated);
-      const tier = TIERS[tierKey];
-      const isUpgrade = TIER_ORDER.indexOf(tierKey) > currentTierIndex;
-      toast.success(`${isUpgrade ? '🚀 Upgraded' : 'Switched'} to ${tier.name}!`, {
-        description: isUpgrade ? 'New features are unlocked instantly.' : undefined,
+      // Route every plan change through Stripe. The server verifies payment and
+      // is the only thing allowed to set subscription_tier — the browser never
+      // writes the tier directly (that would be a free-upgrade bypass).
+      const res = await base44.functions.invoke('stripeCheckout', {
+        action: 'checkout',
+        tier: tierKey,
+        billing_cycle: billing === 'yearly' ? 'annual' : 'monthly',
+        success_url: `${window.location.origin}/subscription?success=1`,
+        cancel_url: window.location.href,
       });
-      onClose();
+      const data = res?.data || {};
+
+      // New subscriber → redirect to Stripe Checkout to enter payment details.
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      // Existing subscriber → server applied a prorated plan change in Stripe.
+      if (data.upgraded) {
+        const updated = await base44.auth.me();
+        if (onUserUpdate) onUserUpdate(updated);
+        const tier = TIERS[tierKey];
+        const isUpgrade = TIER_ORDER.indexOf(tierKey) > currentTierIndex;
+        toast.success(`${isUpgrade ? '🚀 Upgraded' : 'Switched'} to ${tier.name}!`, {
+          description: 'Your plan change is now active.',
+        });
+        onClose();
+        return;
+      }
+
+      toast.error(data.error || 'Could not start checkout. Please try again.');
     } catch {
-      toast.error('Failed to switch plan. Please try again.');
+      toast.error('Failed to start checkout. Please try again.');
     } finally {
       setSaving(null);
     }
@@ -179,7 +201,7 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
         </div>
 
         <p className="text-center text-xs text-[#374151] pb-5">
-          Changes take effect immediately · No setup fees · Cancel anytime
+          Secure checkout via Stripe · No setup fees · Cancel anytime
         </p>
       </DialogContent>
     </Dialog>

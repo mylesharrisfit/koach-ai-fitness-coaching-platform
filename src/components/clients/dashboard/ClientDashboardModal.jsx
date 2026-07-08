@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { X, Edit, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import LifecycleBadge from '../LifecycleBadge';
 import LeadPipelinePanel from '../LeadPipelinePanel';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Droplets, Plus, Minus } from 'lucide-react';
+import { Droplets } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';

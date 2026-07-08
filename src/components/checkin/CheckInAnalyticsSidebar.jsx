@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { differenceInDays, parseISO, startOfWeek, isWithinInterval, subWeeks } from 'date-fns';
-import { TrendingUp, TrendingDown, Minus, Trophy, AlertTriangle, MessageSquare, Moon, Zap, Smile } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { parseISO, startOfWeek, subWeeks } from 'date-fns';
+import { TrendingUp, TrendingDown, Minus, MessageSquare, Moon, Smile } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { cn } from '@/lib/utils';
 import { checkInScore } from '@/lib/adherence';
 

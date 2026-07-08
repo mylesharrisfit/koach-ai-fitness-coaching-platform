@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RefreshCw, Filter, History, Settings } from 'lucide-react';
+import { Sparkles, RefreshCw, History, Settings } from 'lucide-react';
 import { generateInsights, dismissInsight, markNotRelevant, getNotRelevantTypes } from '@/lib/insightEngine';
 import InsightCard from '@/components/intelligence/InsightCard';
 import InsightHistory from '@/components/intelligence/InsightHistory';

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
@@ -19,7 +19,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { buildSessionEvent } from '@/lib/googleCalendar';
 import { sendZapierEvent } from '@/lib/zapier';
 import { createZoomMeeting } from '@/lib/zoom';
-import { getCalendlyUser, getEventTypes, getScheduledEvents, isCalendlyEnabled } from '@/lib/calendly';
+import { getScheduledEvents } from '@/lib/calendly';
 
 const SESSION_TYPE_COLORS = {
   check_in:  'bg-blue-500',

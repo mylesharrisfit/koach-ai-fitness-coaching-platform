@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Edit, Star, AlertTriangle, Clock, Timer, Play, X, CheckCircle } from 'lucide-react';
+import { Edit, Star, AlertTriangle, Clock, Timer, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const MUSCLE_TAG_COLORS = {

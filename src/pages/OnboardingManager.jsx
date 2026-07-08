@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import {
-  Link2, UserPlus, Check, Clock, Users, ChevronDown, ChevronUp,
-  Mail, Shield, AlertCircle, Send, Copy, Eye, CheckCircle2,
-  XCircle, Hourglass, Star, Sparkles, Lock, ChevronRight, X
+  Link2, UserPlus, Check, Users, ChevronDown, ChevronUp, Send, Copy, CheckCircle2, Hourglass, Star, Sparkles, ChevronRight, X
 } from 'lucide-react';
 import { hasFeature } from '@/lib/subscription';
 import { getMyTeamId } from '@/lib/teamUtils';

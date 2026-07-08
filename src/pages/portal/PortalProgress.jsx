@@ -1,11 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, parseISO, differenceInWeeks } from 'date-fns';
-import {
-  TrendingUp, TrendingDown, Minus, Scale, Flame, Dumbbell,
-  ClipboardList, Trophy, Plus, X, BarChart2, Camera, ChevronRight, Star
+import { Scale, Plus, X
 } from 'lucide-react';
 import AIProgressAnalyzer from '@/components/progress/AIProgressAnalyzer';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';

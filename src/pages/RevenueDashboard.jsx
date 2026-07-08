@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { DollarSign, TrendingUp, Users, AlertTriangle, XCircle, RefreshCw, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { RefreshCw, Plus } from 'lucide-react';
 import StripeRevenueSummary from '@/components/stripe/StripeRevenueSummary';
 import StripeRevenueChart from '@/components/stripe/StripeRevenueChart';
 import StripeSubscriptionTable from '@/components/stripe/StripeSubscriptionTable';

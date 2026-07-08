@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { CalendarClock, MessageCircle, PhoneCall, Send, FileText, Save, ChevronDown } from 'lucide-react';
+import { CalendarClock, MessageCircle, PhoneCall, Send, FileText, Save } from 'lucide-react';
 import { format } from 'date-fns';
 
 const PIPELINE_STAGES = [

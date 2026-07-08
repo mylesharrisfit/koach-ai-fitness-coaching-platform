@@ -1,13 +1,15 @@
-import React, { useMemo } from 'react';
-import { TrendingUp, Star, Users } from 'lucide-react';
+import React from 'react';
+import { TrendingUp, Gauge, Users } from 'lucide-react';
 
-export default function ProgramStatsPanel({ program, assignedClients = [] }) {
-  const stats = useMemo(() => {
-    const totalAssignments = Math.round(Math.max(assignedClients.length * 1.5, 5));
-    const avgCompletion    = Math.round(70 + Math.random() * 25);
-    const avgRating        = (Math.random() * 2 + 3.5).toFixed(1);
-    return { totalAssignments, avgCompletion, avgRating };
-  }, [program, assignedClients]);
+export default function ProgramStatsPanel({ stats = {} }) {
+  const {
+    assignedCount = 0,
+    completedSessions = 0,
+    totalSessions = 0,
+    completionRate = null,
+    avgDifficulty = null,
+    loaded = false,
+  } = stats;
 
   return (
     <div>
@@ -21,40 +23,44 @@ export default function ProgramStatsPanel({ program, assignedClients = [] }) {
           <div className="flex items-center justify-center gap-1 mb-1">
             <Users className="w-3.5 h-3.5" style={{ color: '#378ADD' }} />
           </div>
-          <p className="text-xl font-bold text-[#0E1525]">{stats.totalAssignments}</p>
+          <p className="text-xl font-bold text-[#0E1525]">{assignedCount}</p>
           <p className="text-[10px] text-[#9CA3AF] mt-0.5">Assigned</p>
         </div>
         <div className="rounded-xl border border-[#E7EAF3] bg-white p-3 text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
             <TrendingUp className="w-3.5 h-3.5" style={{ color: '#378ADD' }} />
           </div>
-          <p className="text-xl font-bold text-[#0E1525]">{stats.avgCompletion}%</p>
-          <p className="text-[10px] text-[#9CA3AF] mt-0.5">Avg Completion</p>
+          <p className="text-xl font-bold text-[#0E1525]">
+            {completionRate != null ? `${completionRate}%` : '—'}
+          </p>
+          <p className="text-[10px] text-[#9CA3AF] mt-0.5">Completion</p>
         </div>
       </div>
 
-      {/* Rating row */}
+      {/* Sessions logged — real data, honest empty state */}
       <div className="rounded-xl border border-[#E7EAF3] bg-white p-3 flex items-center gap-3">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#EEF2FF' }}>
-          <Star className="w-4 h-4" style={{ color: '#3730a3' }} />
+          <Gauge className="w-4 h-4" style={{ color: '#3730a3' }} />
         </div>
-        <div>
-          <p className="text-xs text-[#9CA3AF]">Average Rating</p>
-          <p className="text-sm font-bold text-[#0E1525]">
-            {stats.avgRating}
-            <span className="text-xs font-normal text-[#9CA3AF] ml-1">/ 5</span>
-          </p>
+        <div className="min-w-0">
+          <p className="text-xs text-[#9CA3AF]">Sessions Logged</p>
+          {loaded && totalSessions === 0 ? (
+            <p className="text-sm font-semibold text-[#9CA3AF]">No sessions yet</p>
+          ) : (
+            <p className="text-sm font-bold text-[#0E1525]">
+              {completedSessions}
+              <span className="text-xs font-normal text-[#9CA3AF] ml-1">/ {totalSessions} completed</span>
+            </p>
+          )}
         </div>
-        {/* Star dots */}
-        <div className="ml-auto flex gap-0.5">
-          {[1,2,3,4,5].map(s => (
-            <div
-              key={s}
-              className="w-2.5 h-2.5 rounded-sm"
-              style={{ background: s <= Math.round(parseFloat(stats.avgRating)) ? '#2563EB' : '#E7EAF3' }}
-            />
-          ))}
-        </div>
+        {avgDifficulty != null && (
+          <div className="ml-auto text-right">
+            <p className="text-[10px] text-[#9CA3AF]">Avg difficulty</p>
+            <p className="text-sm font-bold text-[#0E1525]">
+              {avgDifficulty}<span className="text-xs font-normal text-[#9CA3AF]"> / 10</span>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

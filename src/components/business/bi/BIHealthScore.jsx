@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { differenceInDays, parseISO, subMonths, startOfMonth } from 'date-fns';
+import { parseISO, subMonths, startOfMonth } from 'date-fns';
 
 function ScoreRing({ score, size = 120, stroke = 10 }) {
   const r = (size - stroke) / 2;

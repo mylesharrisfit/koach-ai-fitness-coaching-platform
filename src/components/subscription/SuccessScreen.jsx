@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
-import { TIERS } from '@/lib/subscription';
 import confetti from 'canvas-confetti';
 
 const PLAN_NAMES = {

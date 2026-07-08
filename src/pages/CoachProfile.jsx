@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Camera, Plus, X, Check, Globe, Instagram, Youtube,
-  MapPin, Clock, Award, Languages, ChevronDown, ExternalLink,
+  Camera, Plus, X, Check,
+  MapPin, Award, ChevronDown, ExternalLink,
   User, Briefcase, BookOpen, Eye
 } from 'lucide-react';
 

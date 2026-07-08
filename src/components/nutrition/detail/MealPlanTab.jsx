@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer, UtensilsCrossed } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { getFoodImageUrl, getMealImageUrl, getCategoryEmoji } from '@/lib/foodImages';
+import { getFoodImageUrl, getMealImageUrl } from '@/lib/foodImages';
 
 const SWAP_SUGGESTIONS = {
   chicken: ['Turkey breast (same macros)', 'Tilapia fillet', 'Egg whites (3 large)'],

@@ -1,6 +1,5 @@
 import React from 'react';
-import { averageAdherenceScore, calculateStreak, detectEarnedBadges, scoreColor, checkInScore } from '@/lib/adherence';
-import { BADGE_CONFIG } from '@/lib/badges';
+import { averageAdherenceScore, calculateStreak, detectEarnedBadges, checkInScore } from '@/lib/adherence';
 import { Flame, Moon, Dumbbell, Salad, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import AdherenceScore from './AdherenceScore';

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { format, subWeeks, startOfWeek } from 'date-fns';
+import { format, subWeeks } from 'date-fns';
 
 function Ring({ pct, size = 72, color, label, value }) {
   const r = (size - 8) / 2;

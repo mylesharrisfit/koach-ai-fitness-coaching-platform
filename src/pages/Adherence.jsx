@@ -12,7 +12,6 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import AdherencePanel from '../components/adherence/AdherencePanel';
-import AdherenceScore from '../components/adherence/AdherenceScore';
 import BadgeCard from '../components/adherence/BadgeCard';
 import BadgeUnlockToast from '../components/adherence/BadgeUnlockToast';
 import AdherenceTable from '../components/adherence/AdherenceTable';

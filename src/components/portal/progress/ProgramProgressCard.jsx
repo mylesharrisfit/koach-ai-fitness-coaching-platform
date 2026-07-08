@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { differenceInWeeks, format } from 'date-fns';
-import { Dumbbell, ArrowRight } from 'lucide-react';
+import { Dumbbell } from 'lucide-react';
 
 export default function ProgramProgressCard({ program, workoutSessions, client }) {
   const stats = useMemo(() => {

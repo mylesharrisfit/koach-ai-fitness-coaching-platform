@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Loader2, Check, ChevronDown, ChevronUp, Flame, Footprints, Dumbbell, Utensils, Zap, AlertTriangle } from 'lucide-react';
+import { Sparkles, Loader2, Check, ChevronDown, ChevronUp, Flame, Footprints, Dumbbell, Utensils, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';

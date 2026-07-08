@@ -5,7 +5,6 @@ import { X, Dumbbell, Check } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 function ClientProgramRow({ client, programs, onAssigned }) {
   const [selected, setSelected] = useState('');

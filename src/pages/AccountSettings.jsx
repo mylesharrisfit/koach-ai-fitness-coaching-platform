@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowLeft, Mail, Lock, Eye, EyeOff, Shield, Monitor, Smartphone,
+  ArrowLeft, Lock, Eye, EyeOff, Shield, Monitor, Smartphone,
   Tablet, Check, X, ChevronRight, AlertTriangle, Download, Trash2,
   Pause, RefreshCw, CreditCard, Calendar, ExternalLink, Globe,
   ToggleLeft, ToggleRight

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   MessageSquare, Flame, Footprints, ClipboardCheck,
-  Sparkles, Check, Loader2, Plus, Minus, ChevronUp, ChevronDown
+  Sparkles, Check, Loader2, ChevronUp, ChevronDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { User, ClipboardList, MoreVertical, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger

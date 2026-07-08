@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImagePlus, ArrowLeftRight, X } from 'lucide-react';
+import { ArrowLeftRight, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 

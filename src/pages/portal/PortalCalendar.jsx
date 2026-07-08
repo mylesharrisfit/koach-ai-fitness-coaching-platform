@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  format, startOfMonth, endOfMonth, eachDayOfInterval, getDay,
+  format, startOfMonth, endOfMonth, eachDayOfInterval,
   addMonths, subMonths, isSameDay, isSameMonth, isToday, parseISO,
   startOfWeek, endOfWeek
 } from 'date-fns';

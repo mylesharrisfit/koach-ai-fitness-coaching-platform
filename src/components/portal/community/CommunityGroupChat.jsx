@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Pin, Users } from 'lucide-react';
-import { formatDistanceToNow, format } from 'date-fns';
+import { Send, Users } from 'lucide-react';
+import { format } from 'date-fns';
 
 // We'll use CommunityPost with type='chat' as group chat messages
 const CHAT_CHANNEL = 'group_chat';

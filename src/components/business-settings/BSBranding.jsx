@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Palette, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { BSSection, BSRow, BSToggle, BSInput, BSTextarea, BSDivider } from './BSSection';
+import { BSSection, BSRow, BSInput, BSTextarea, BSDivider } from './BSSection';
 
 const BRAND_COLORS = ['#2563EB', '#7C3AED', '#DC2626', '#059669', '#D97706', '#0891B2', '#DB2777', '#374151'];
 

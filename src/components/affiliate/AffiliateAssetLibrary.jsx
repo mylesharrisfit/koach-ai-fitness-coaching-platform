@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Download, Lock } from 'lucide-react';
+import React from 'react';
+import { Download } from 'lucide-react';
 
 const ASSETS_BY_TYPE = {
   banners: [

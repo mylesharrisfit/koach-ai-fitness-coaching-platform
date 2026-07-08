@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 
 export default function CheckInReview({ form, responses, onBack, onSubmit, submitting, lastCheckIn }) {
   const scrollRef = useRef(null);

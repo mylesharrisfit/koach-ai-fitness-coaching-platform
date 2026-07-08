@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, MoreHorizontal, Flag, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { MessageCircle, MoreHorizontal, Flag, Send } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 const REACTIONS = [

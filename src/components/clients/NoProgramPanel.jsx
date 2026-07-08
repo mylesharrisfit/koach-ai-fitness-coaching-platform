@@ -5,7 +5,6 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { X, Dumbbell, Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 function ClientAssignRow({ client, programs, onAssigned }) {
   const [selected, setSelected] = useState('');

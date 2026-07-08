@@ -1,5 +1,5 @@
 import React from 'react';
-import { scoreColor, scoreBg, scoreLabel } from '@/lib/adherence';
+import { scoreColor, scoreLabel } from '@/lib/adherence';
 import { cn } from '@/lib/utils';
 
 /** Colour for SVG stroke — green 80+, yellow 60–79, red <60 */

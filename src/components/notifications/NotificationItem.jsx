@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { formatDistanceToNow, isToday, isYesterday, parseISO } from 'date-fns';
+import { formatDistanceToNow, isToday, isYesterday } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 const CATEGORY_CONFIG = {

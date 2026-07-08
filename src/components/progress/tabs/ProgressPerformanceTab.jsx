@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { format, parseISO, getWeek, getYear, startOfYear, eachDayOfInterval, endOfYear } from 'date-fns';
+import { format, parseISO, getWeek, startOfYear, eachDayOfInterval } from 'date-fns';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';

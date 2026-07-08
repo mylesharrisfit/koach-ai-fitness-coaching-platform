@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { format, addMonths, parseISO, isAfter, isBefore, addDays } from 'date-fns';
+import { format, parseISO, isAfter, isBefore, addDays } from 'date-fns';
 import { Calendar, AlertTriangle } from 'lucide-react';
 
 function Avatar({ name }) {

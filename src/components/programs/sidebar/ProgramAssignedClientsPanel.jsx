@@ -24,6 +24,7 @@ export default function ProgramAssignedClientsPanel({
   allClients = [],
   programId,
   programDurationWeeks = 12,
+  progressByClientId = {},
   onAssign,
 }) {
   return (
@@ -59,8 +60,10 @@ export default function ProgramAssignedClientsPanel({
         <>
           <div className="space-y-3 mb-4">
             {assignedClients.slice(0, 5).map((client) => {
-              const progress = Math.round(Math.random() * 100);
-              const currentWeek = Math.max(1, Math.floor((progress / 100) * programDurationWeeks));
+              const stat = progressByClientId[client.id];
+              const started = stat && stat.total > 0;
+              const progress = started ? Math.round((stat.completed / stat.total) * 100) : 0;
+              const currentWeek = started ? Math.max(1, Math.floor((progress / 100) * programDurationWeeks)) : null;
               const [bgColor, textColor] = getAvatarColor(client.name);
 
               return (
@@ -78,9 +81,11 @@ export default function ProgramAssignedClientsPanel({
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-[#1F2A44] truncate">{client.name}</p>
-                      <p className="text-[10px] text-[#9CA3AF]">Week {currentWeek} of {programDurationWeeks}</p>
+                      <p className="text-[10px] text-[#9CA3AF]">
+                        {started ? `Week ${currentWeek} of ${programDurationWeeks}` : 'Not started yet'}
+                      </p>
                     </div>
-                    <span className="text-[10px] font-bold text-[#2563EB]">{progress}%</span>
+                    {started && <span className="text-[10px] font-bold text-[#2563EB]">{progress}%</span>}
                   </div>
                   {/* Progress bar */}
                   <div className="ml-10 h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">

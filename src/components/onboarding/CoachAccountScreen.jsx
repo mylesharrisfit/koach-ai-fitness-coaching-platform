@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
-import OnboardingLayout from './OnboardingLayout';
 import { base44 } from '@/api/base44Client';
 
 export default function CoachAccountScreen({ onNext, onBack, data }) {

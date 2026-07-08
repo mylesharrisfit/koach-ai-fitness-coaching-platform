@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
-import { X, MessageSquare, User, Clock, AlertCircle, Play } from 'lucide-react';
+import { X, MessageSquare, User, Clock, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';

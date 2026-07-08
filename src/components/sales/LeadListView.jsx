@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { differenceInDays, format, isValid } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { ArrowUpDown, AlertCircle, CheckSquare, Square, Trash2, Tag, ArrowRight, Download } from 'lucide-react';
+import { ArrowUpDown, AlertCircle, CheckSquare, Square, Trash2, Download } from 'lucide-react';
 import { KANBAN_STAGES } from './KanbanBoard';
 import { toast } from 'sonner';
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, Download, AlertCircle, Zap } from 'lucide-react';
-import { format, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
+import { ExternalLink, Download, AlertCircle } from 'lucide-react';
+import { startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 function weekNutritionCompliance(checkIns, weekStart, weekEnd) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Eye, CreditCard, Download, ChevronDown } from 'lucide-react';
-import { format, parseISO, differenceInDays } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const STATUS_CONFIG = {
   paid: { label: 'Paid', bg: 'rgba(16,185,129,0.15)', color: '#10B981', border: 'rgba(16,185,129,0.25)' },

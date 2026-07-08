@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Users, TrendingUp, BarChart3, Zap, ArrowRight, CheckCircle2, Link2, CreditCard, Upload, Settings } from 'lucide-react';
+import { Users, TrendingUp, BarChart3, Zap, ArrowRight, Link2, CreditCard, Upload, Settings } from 'lucide-react';
 
 const stagger = {
   container: { animate: { transition: { staggerChildren: 0.07 } } },

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Lock } from 'lucide-react';
 
 export function WLSection({ title, emoji, description, locked, children }) {

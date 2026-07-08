@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, parseISO, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar, Video, MapPin, Phone, Clipboard, MessageSquare, Play, CalendarPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 
 const TYPE_LABELS = {
   video_call:   { label: 'Video Call',      Icon: Video },

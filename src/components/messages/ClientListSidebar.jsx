@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Megaphone, Check } from 'lucide-react';
+import { Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow, isToday, isYesterday, format } from 'date-fns';
 

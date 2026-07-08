@@ -5,7 +5,7 @@ import { format, differenceInDays, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import {
   ChevronDown, ChevronUp, AlertTriangle, TrendingDown, TrendingUp,
-  Minus, Clock, ImageIcon, MessageSquare, Moon, Zap, ExternalLink
+  Minus, Clock, ImageIcon, Moon, Zap, ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkInScore, compositeAdherenceScore, averageAdherenceScore, scoreColor, scoreBreakdown } from '@/lib/adherence';

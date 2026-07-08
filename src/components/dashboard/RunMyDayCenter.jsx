@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  MessageSquare, Dumbbell, ClipboardList, TrendingUp,
-  AlertTriangle, CheckCircle2, Zap, ChevronDown, ChevronUp,
-  Send, UserCheck, RefreshCw, CreditCard, Eye, ArrowUpRight,
+  MessageSquare, Dumbbell, ClipboardList, TrendingUp, CheckCircle2, Zap, ChevronDown, ChevronUp,
+  Send, UserCheck, Eye, ArrowUpRight,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { compositeAdherenceScore } from '@/lib/adherence';
 
 // ── Priority group configs ──────────────────────────────────────────────────

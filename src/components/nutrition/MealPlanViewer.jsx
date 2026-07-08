@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, RefreshCw, Loader2, ArrowLeftRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronUp, Loader2, ArrowLeftRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 function gramsToOz(g) {
   return g ? `${(g * 0.03527).toFixed(1)}oz` : null;

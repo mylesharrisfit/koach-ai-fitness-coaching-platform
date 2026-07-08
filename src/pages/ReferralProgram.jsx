@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Copy, Share2, Download, ChevronDown, ChevronUp, TrendingUp, Gift } from 'lucide-react';
+import { Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 const TIERS = [

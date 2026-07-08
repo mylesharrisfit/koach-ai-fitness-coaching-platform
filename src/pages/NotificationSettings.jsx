@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Bell, BellOff, Check, Clock, Mail, Smartphone, Monitor, ChevronDown, ChevronUp, History } from 'lucide-react';
+import { ArrowLeft, Bell, BellOff, Check, Clock, Mail, Smartphone, Monitor, History } from 'lucide-react';
 import { toast } from 'sonner';
 import { NToggle } from '@/components/notifications/NotifsHelpers';
 import NotifsClientActivity from '@/components/notifications/NotifsClientActivity';

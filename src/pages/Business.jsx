@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, parseISO, isPast } from 'date-fns';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { format } from 'date-fns';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 // Business Intelligence

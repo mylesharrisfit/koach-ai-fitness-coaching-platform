@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useTeamRole } from '@/lib/useTeamRole';
 import { ShieldAlert } from 'lucide-react';
-import { TIERS, TIER_ORDER, getUserTier, getLimit } from '@/lib/subscription';
+import { getUserTier, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
-import {
-  Check, Zap, Users, Dumbbell, Salad, AlertTriangle,
+import { Zap, Users, Dumbbell, Salad, AlertTriangle,
   ExternalLink, RefreshCw, Calendar, CreditCard, CheckCircle2, XCircle,
   Clock, Lock, RotateCcw, MessageCircle, ChevronDown
 } from 'lucide-react';

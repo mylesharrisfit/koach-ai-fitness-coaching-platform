@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Plus, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const UNITS = ['g', 'oz', 'cup', 'tbsp', 'tsp', 'piece', 'serving', 'ml'];

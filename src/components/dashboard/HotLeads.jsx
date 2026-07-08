@@ -2,7 +2,7 @@ import React from 'react';
 import { Flame, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { format, isAfter, subDays } from 'date-fns';
+import { isAfter, subDays } from 'date-fns';
 
 export default function HotLeads({ clients }) {
   const recent = clients

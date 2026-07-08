@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { ChevronLeft, CheckCircle, Dumbbell, Salad, ChevronDown, ChevronUp, Edit3 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
-import { toast } from 'sonner';
 
 export default function AIOnboardingReview({ client, program: initialProgram, mealPlan: initialMealPlan, onApprove, onBack }) {
   const [program, setProgram] = useState(initialProgram);

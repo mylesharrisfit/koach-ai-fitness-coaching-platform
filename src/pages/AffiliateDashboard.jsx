@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion } from 'framer-motion';
 import { TrendingUp, Users, Clock, Zap, Target } from 'lucide-react';
 import AffiliateEarningsOverview from '@/components/affiliate/AffiliateEarningsOverview';
 import AffiliateCommissionStructure from '@/components/affiliate/AffiliateCommissionStructure';

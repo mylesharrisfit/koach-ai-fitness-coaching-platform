@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Plus, Flame, Zap, Snowflake, AlertCircle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { format, differenceInDays, parseISO, isValid } from 'date-fns';
+import { format, differenceInDays, isValid } from 'date-fns';
 import confetti from 'canvas-confetti';
 
 export const KANBAN_STAGES = [

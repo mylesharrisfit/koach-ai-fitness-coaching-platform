@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   ArrowLeft, Play, Pause, RotateCcw, CheckCircle2, Circle,
-  ChevronDown, ChevronUp, Timer, Star, MessageSquare, Trophy, X
+  ChevronDown, ChevronUp, Timer, Trophy
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';

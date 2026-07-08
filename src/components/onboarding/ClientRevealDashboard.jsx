@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Flame, Droplets, Zap, Moon, Footprints, ChevronRight, BarChart3, TrendingUp } from 'lucide-react';
+import { Flame, Droplets, Zap, Footprints, ChevronRight, TrendingUp } from 'lucide-react';
 
 const stagger = { container: { animate: { transition: { staggerChildren: 0.07 } } }, item: { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.32, 0.72, 0, 1] } } } };
 

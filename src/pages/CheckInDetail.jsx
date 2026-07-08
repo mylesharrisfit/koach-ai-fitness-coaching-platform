@@ -5,12 +5,12 @@ import { format, differenceInDays, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, TrendingDown, TrendingUp, Minus, ChevronLeft, ChevronRight,
-  Moon, Zap, Brain, AlertTriangle, CheckCircle2, ClipboardCheck,
+  Moon, Zap, Brain, CheckCircle2, ClipboardCheck,
   MessageSquare, Flame, Footprints, Loader2, Check, Dumbbell, Utensils
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { checkInScore, averageAdherenceScore, scoreColor, scoreBg } from '@/lib/adherence';
+import { checkInScore, averageAdherenceScore, scoreColor } from '@/lib/adherence';
 import CheckInResponseBox from '@/components/checkin/CheckInResponseBox';
 import AIProgramSuggestions from '@/components/checkin/AIProgramSuggestions';
 import CheckInNutritionTab from '@/components/checkin/CheckInNutritionTab';
