@@ -58,23 +58,23 @@ export default function InvoiceFormModal({ invoice, onClose, onSave, existingInv
 
   const inputStyle = {
     width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 14,
-    background: '#F9FAFB', color: '#111', border: '1.5px solid #E5E7EB',
+    background: 'rgb(var(--background))', color: 'rgb(var(--foreground))', border: '1.5px solid rgb(var(--border))',
     outline: 'none', boxSizing: 'border-box',
   };
 
-  const labelStyle = { fontSize: 11, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5, display: 'block' };
+  const labelStyle = { fontSize: 11, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5, display: 'block' };
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+      <div style={{ background: 'rgb(var(--card))', borderRadius: 20, width: '100%', maxWidth: 560, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
         {/* Header */}
-        <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid rgb(var(--muted))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: '#111', margin: 0 }}>{isEdit ? 'Edit Invoice' : 'New Invoice'}</h2>
-            <p style={{ fontSize: 12, color: '#9CA3AF', margin: '2px 0 0' }}>{form.invoice_number}</p>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0 }}>{isEdit ? 'Edit Invoice' : 'New Invoice'}</h2>
+            <p style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))', margin: '2px 0 0' }}>{form.invoice_number}</p>
           </div>
-          <button onClick={onClose} style={{ background: '#F3F4F6', border: 'none', borderRadius: 8, padding: 8, cursor: 'pointer', display: 'flex' }}>
-            <X size={16} color="#6B7280" />
+          <button onClick={onClose} style={{ background: 'rgb(var(--muted))', border: 'none', borderRadius: 8, padding: 8, cursor: 'pointer', display: 'flex' }}>
+            <X size={16} color="rgb(var(--muted-foreground))" />
           </button>
         </div>
 
@@ -101,7 +101,7 @@ export default function InvoiceFormModal({ invoice, onClose, onSave, existingInv
               <div>
                 <label style={labelStyle}>Amount (USD) *</label>
                 <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#6B7280', fontSize: 14 }}>$</span>
+                  <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>$</span>
                   <input type="number" value={form.amount} onChange={e => set('amount', e.target.value)} placeholder="0.00" style={{ ...inputStyle, paddingLeft: 28 }} />
                 </div>
               </div>
@@ -162,12 +162,12 @@ export default function InvoiceFormModal({ invoice, onClose, onSave, existingInv
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '16px 24px', borderTop: '1px solid #F3F4F6', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0 }}>
-          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: '#F3F4F6', color: '#374151', border: 'none', cursor: 'pointer' }}>
+        <div style={{ padding: '16px 24px', borderTop: '1px solid rgb(var(--muted))', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0 }}>
+          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'rgb(var(--muted))', color: 'rgb(var(--foreground))', border: 'none', cursor: 'pointer' }}>
             Cancel
           </button>
           <button onClick={handleSave} disabled={!form.client_id || !form.amount}
-            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.client_id || !form.amount) ? '#E5E7EB' : 'linear-gradient(135deg, #2563EB, #7C3AED)', color: (!form.client_id || !form.amount) ? '#9CA3AF' : '#fff', border: 'none', cursor: (!form.client_id || !form.amount) ? 'not-allowed' : 'pointer' }}>
+            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.client_id || !form.amount) ? 'rgb(var(--border))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: (!form.client_id || !form.amount) ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: (!form.client_id || !form.amount) ? 'not-allowed' : 'pointer' }}>
             {isEdit ? 'Save Changes' : 'Create Invoice'}
           </button>
         </div>

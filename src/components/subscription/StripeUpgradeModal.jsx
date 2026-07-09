@@ -145,7 +145,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                 className={cn(
                   'px-4 py-1.5 rounded-full transition-all duration-200',
                   billing === 'monthly'
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow'
+                    ? 'bg-gradient-to-r from-primary to-primary text-white shadow'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
@@ -156,7 +156,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                 className={cn(
                   'px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5',
                   billing === 'annual'
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow'
+                    ? 'bg-gradient-to-r from-primary to-primary text-white shadow'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
@@ -199,7 +199,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                   )}
                   {isPro && !isCurrent && (
                     <div className="absolute -top-2.5 inset-x-0 flex justify-center">
-                      <span className="text-[9px] font-bold uppercase tracking-widest bg-emerald-500 text-white px-3 py-0.5 rounded-full">Most Popular</span>
+                      <span className="text-[9px] font-bold uppercase tracking-widest bg-success text-white px-3 py-0.5 rounded-full">Most Popular</span>
                     </div>
                   )}
                   {isCurrent && (
@@ -223,7 +223,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                     </div>
 
                     {billing === 'annual' ? (
-                      <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                      <span className="inline-block mt-1 text-[10px] font-semibold text-success bg-success/10 border border-success/20 px-2 py-0.5 rounded-full">
                         Save ${annualSave}/year
                       </span>
                     ) : (

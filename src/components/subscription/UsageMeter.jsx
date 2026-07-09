@@ -13,9 +13,9 @@ export default function UsageMeter({ user, limitKey, currentCount, label, onUpgr
   const nearLimit = pct >= 75;
   const atLimit = pct >= 100;
 
-  const barColor = atLimit ? 'bg-red-500' : pct >= 75 ? 'bg-yellow-500' : 'bg-green-500';
-  const textColor = atLimit ? 'text-red-500' : pct >= 75 ? 'text-yellow-500' : 'text-green-500';
-  const borderColor = atLimit ? 'border-red-500/30 bg-red-500/5' : pct >= 75 ? 'border-yellow-500/30 bg-yellow-500/5' : 'border-border/50 bg-secondary/20';
+  const barColor = atLimit ? 'bg-destructive' : pct >= 75 ? 'bg-warning' : 'bg-success';
+  const textColor = atLimit ? 'text-destructive' : pct >= 75 ? 'text-warning' : 'text-success';
+  const borderColor = atLimit ? 'border-destructive/30 bg-destructive/5' : pct >= 75 ? 'border-warning/30 bg-warning/5' : 'border-border/50 bg-secondary/20';
 
   return (
     <div className={cn("rounded-xl p-3 border text-xs transition-all", borderColor)}>

@@ -21,10 +21,10 @@ const TIER_FEATURES = {
 };
 
 const CARD_ACCENT = {
-  starter: '#94a3b8',
-  pro: '#3b82f6',
-  elite: '#8b5cf6',
-  enterprise: '#f59e0b',
+  starter: 'rgb(var(--muted-foreground))',
+  pro: 'rgb(var(--primary))',
+  elite: 'rgb(var(--ai))',
+  enterprise: 'rgb(var(--warning))',
 };
 
 export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: initialBilling, clientCount = 0, user, onClose, onUserUpdate }) {
@@ -98,14 +98,14 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] shadow-2xl">
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-sidebar shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <div>
             <h2 className="text-xl font-bold text-white">Upgrade to {toTier.name}</h2>
-            <p className="text-sm text-slate-400 mt-0.5">Review what you're gaining and confirm your upgrade</p>
+            <p className="text-sm text-muted-foreground mt-0.5">Review what you're gaining and confirm your upgrade</p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -114,37 +114,37 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
           {/* Plan comparison */}
           <div className="grid grid-cols-2 gap-4">
             {/* Current */}
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Current</p>
+            <div className="rounded-xl border border-white/10 bg-card/[0.03] p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Current</p>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full" style={{ background: CARD_ACCENT[fromTierKey] }} />
-                <span className="font-bold text-slate-300">{fromTier.name}</span>
+                <span className="font-bold text-border">{fromTier.name}</span>
               </div>
-              <div className="text-3xl font-bold text-slate-400">${fromPrice}<span className="text-sm font-normal text-slate-500">/mo</span></div>
+              <div className="text-3xl font-bold text-muted-foreground">${fromPrice}<span className="text-sm font-normal text-muted-foreground">/mo</span></div>
             </div>
             {/* New */}
             <div className="rounded-xl border border-white/20 p-4" style={{ background: `${CARD_ACCENT[toTierKey]}10`, borderColor: `${CARD_ACCENT[toTierKey]}30` }}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Upgrading to</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Upgrading to</p>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full" style={{ background: CARD_ACCENT[toTierKey] }} />
                 <span className="font-bold text-white">{toTier.name}</span>
               </div>
-              <div className="text-3xl font-bold text-white">${toPrice}<span className="text-sm font-normal text-slate-400">/mo</span></div>
+              <div className="text-3xl font-bold text-white">${toPrice}<span className="text-sm font-normal text-muted-foreground">/mo</span></div>
             </div>
           </div>
 
           {/* Price difference */}
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-center">
-            <span className="text-slate-400 text-sm">You'll pay </span>
+          <div className="rounded-xl border border-white/10 bg-card/[0.03] p-4 text-center">
+            <span className="text-muted-foreground text-sm">You'll pay </span>
             <span className="text-white font-bold">${Math.abs(diff)} more per month</span>
             {billing === 'monthly' && toPrices.annualSave > 0 && (
-              <p className="text-emerald-400 text-xs mt-1">💡 Switch to annual and save ${toPrices.annualSave}/year</p>
+              <p className="text-success text-xs mt-1">💡 Switch to annual and save ${toPrices.annualSave}/year</p>
             )}
           </div>
 
           {/* Billing toggle */}
           <div>
-            <p className="text-sm font-semibold text-slate-300 mb-3">Billing cycle</p>
+            <p className="text-sm font-semibold text-border mb-3">Billing cycle</p>
             <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10 w-fit">
               {['monthly', 'annual'].map(b => (
                 <button
@@ -152,11 +152,11 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
                   onClick={() => setBilling(b)}
                   className={cn(
                     'px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 capitalize',
-                    billing === b ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white' : 'text-slate-400 hover:text-white'
+                    billing === b ? 'bg-gradient-to-r from-primary to-ai text-white' : 'text-muted-foreground hover:text-white'
                   )}
                 >
                   {b}
-                  {b === 'annual' && <span className="ml-1.5 text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full">-20%</span>}
+                  {b === 'annual' && <span className="ml-1.5 text-[10px] bg-success/20 text-success px-1.5 py-0.5 rounded-full">-20%</span>}
                 </button>
               ))}
             </div>
@@ -164,15 +164,15 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
 
           {/* New features you're gaining */}
           <div>
-            <p className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-violet-400" /> What you're gaining
+            <p className="text-sm font-semibold text-border mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-ai" /> What you're gaining
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {newFeatures.map(f => (
-                <div key={f} className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-2">
-                  <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-                  <span className="text-xs text-slate-200">{f}</span>
-                  <span className="ml-auto text-[9px] font-bold uppercase bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full">NEW</span>
+                <div key={f} className="flex items-center gap-2 bg-success/5 border border-success/20 rounded-lg px-3 py-2">
+                  <Check className="w-3.5 h-3.5 text-success flex-shrink-0" />
+                  <span className="text-xs text-border">{f}</span>
+                  <span className="ml-auto text-[9px] font-bold uppercase bg-success/20 text-success px-1.5 py-0.5 rounded-full">NEW</span>
                 </div>
               ))}
             </div>
@@ -180,44 +180,44 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
 
           {/* Coupon */}
           <div>
-            <p className="text-sm font-semibold text-slate-300 mb-2">Promo code</p>
+            <p className="text-sm font-semibold text-border mb-2">Promo code</p>
             <div className="flex gap-2">
               <input
                 value={coupon}
                 onChange={e => setCoupon(e.target.value)}
                 placeholder="Enter code"
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50"
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
               />
               <button
                 onClick={handleApplyCoupon}
-                className="px-4 py-2 rounded-xl border border-white/10 text-sm text-slate-300 hover:bg-white/5 transition-colors"
+                className="px-4 py-2 rounded-xl border border-white/10 text-sm text-border hover:bg-white/5 transition-colors"
               >
                 Apply
               </button>
             </div>
             {couponApplied && (
-              <p className="text-emerald-400 text-xs mt-1.5">✓ {couponApplied.label}</p>
+              <p className="text-success text-xs mt-1.5">✓ {couponApplied.label}</p>
             )}
           </div>
 
           {/* Order summary */}
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 space-y-2.5">
+          <div className="rounded-xl border border-white/10 bg-card/[0.03] p-4 space-y-2.5">
             <p className="text-sm font-semibold text-white mb-3">Order Summary</p>
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">{toTier.name} plan ({billing})</span>
+              <span className="text-muted-foreground">{toTier.name} plan ({billing})</span>
               <span className="text-white">${toPrice}/mo</span>
             </div>
             {couponApplied && (
               <div className="flex justify-between text-sm">
-                <span className="text-emerald-400">Coupon ({couponApplied.code})</span>
-                <span className="text-emerald-400">-{couponApplied.pct}%</span>
+                <span className="text-success">Coupon ({couponApplied.code})</span>
+                <span className="text-success">-{couponApplied.pct}%</span>
               </div>
             )}
             <div className="border-t border-white/10 pt-2.5 flex justify-between">
               <span className="font-bold text-white">Due today</span>
               <span className="font-bold text-white">${totalToday}/mo</span>
             </div>
-            <p className="text-xs text-slate-500">Next billing: {nextBillingDate()}</p>
+            <p className="text-xs text-muted-foreground">Next billing: {nextBillingDate()}</p>
           </div>
 
           {/* CTA */}
@@ -226,14 +226,14 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
               onClick={handleConfirm}
               disabled={loading}
               className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', boxShadow: '0 0 20px rgba(139,92,246,0.3)' }}
+              style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgba(139,92,246,0.3)' }}
             >
               {loading ? 'Processing...' : `Start ${toTier.name} Plan →`}
             </button>
-            <p className="text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
+            <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
               <Lock className="w-3 h-3" /> Secured by Stripe · SSL Encrypted
             </p>
-            <button onClick={onClose} className="w-full text-center text-xs text-slate-500 hover:text-slate-300 transition-colors py-1">
+            <button onClick={onClose} className="w-full text-center text-xs text-muted-foreground hover:text-border transition-colors py-1">
               Maybe Later
             </button>
           </div>

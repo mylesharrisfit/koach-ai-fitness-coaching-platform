@@ -72,14 +72,14 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0f1e] shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-sidebar shadow-2xl">
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <h2 className="text-lg font-bold text-white">
             {step === 'reason' && "We're sorry to see you go 😢"}
             {step === 'offer' && 'Before you go...'}
             {step === 'done' && 'Cancellation confirmed'}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -88,7 +88,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
           {/* Step 1 — Reason */}
           {step === 'reason' && (
             <div className="space-y-5">
-              <p className="text-sm text-slate-400">Help us improve by telling us why you're leaving:</p>
+              <p className="text-sm text-muted-foreground">Help us improve by telling us why you're leaving:</p>
               <div className="space-y-2">
                 {REASONS.map(r => (
                   <button
@@ -96,14 +96,14 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                     onClick={() => setSelectedReason(r.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all ${
                       selectedReason === r.id
-                        ? 'border-blue-500/50 bg-blue-500/10 text-white'
-                        : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-white/20'
+                        ? 'border-primary/50 bg-primary/10 text-white'
+                        : 'border-white/10 bg-card/[0.03] text-border hover:border-white/20'
                     }`}
                   >
                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedReason === r.id ? 'border-blue-500 bg-blue-500' : 'border-slate-500'
+                      selectedReason === r.id ? 'border-primary bg-primary' : 'border-border'
                     }`}>
-                      {selectedReason === r.id && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      {selectedReason === r.id && <div className="w-1.5 h-1.5 rounded-full bg-card" />}
                     </div>
                     {r.label}
                   </button>
@@ -113,14 +113,14 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                 <button
                   onClick={handleContinue}
                   disabled={!selectedReason}
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Continue with cancellation
                 </button>
                 <button
                   onClick={onClose}
                   className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)' }}
+                  style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))' }}
                 >
                   Keep my plan
                 </button>
@@ -131,24 +131,24 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
           {/* Step 2 — Retention offer */}
           {step === 'offer' && offer && (
             <div className="space-y-5">
-              <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-5 text-center">
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 text-center">
                 <p className="text-lg font-bold text-white mb-2">{offer.headline}</p>
                 {offer.code && (
-                  <p className="text-xs text-slate-400">Use code: <span className="font-mono font-bold text-blue-400">{offer.code}</span></p>
+                  <p className="text-xs text-muted-foreground">Use code: <span className="font-mono font-bold text-primary">{offer.code}</span></p>
                 )}
               </div>
               <div className="space-y-2 pt-2">
                 <button
                   onClick={handleAcceptOffer}
                   className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', boxShadow: '0 0 20px rgba(139,92,246,0.25)' }}
+                  style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgba(139,92,246,0.25)' }}
                 >
                   {offer.cta}
                 </button>
                 <button
                   onClick={handleCancelAnyway}
                   disabled={loading}
-                  className="w-full text-center text-xs text-slate-500 hover:text-slate-300 transition-colors py-2"
+                  className="w-full text-center text-xs text-muted-foreground hover:text-border transition-colors py-2"
                 >
                   {loading ? 'Cancelling...' : 'Cancel anyway'}
                 </button>
@@ -159,23 +159,23 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
           {/* Step 3 — Done */}
           {step === 'done' && (
             <div className="space-y-5 text-center">
-              <div className="w-12 h-12 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center mx-auto">
-                <Check className="w-6 h-6 text-slate-300" />
+              <div className="w-12 h-12 rounded-full bg-sidebar border border-white/10 flex items-center justify-center mx-auto">
+                <Check className="w-6 h-6 text-border" />
               </div>
               <div>
                 <p className="text-white font-semibold mb-1">Your account remains active until</p>
-                <p className="text-blue-400 font-bold text-lg">{renewalDate}</p>
-                <p className="text-slate-400 text-sm mt-2">You keep all {userTier.name} features until then. Thank you for your feedback!</p>
+                <p className="text-primary font-bold text-lg">{renewalDate}</p>
+                <p className="text-muted-foreground text-sm mt-2">You keep all {userTier.name} features until then. Thank you for your feedback!</p>
               </div>
               <div className="space-y-2">
                 <button
                   onClick={handleReactivate}
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-blue-400 border border-blue-500/30 hover:bg-blue-500/10 transition-colors"
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-primary border border-primary/30 hover:bg-primary/10 transition-colors"
                 >
                   {loading ? 'Reactivating...' : 'Reactivate subscription'}
                 </button>
-                <button onClick={onClose} className="w-full text-xs text-slate-500 hover:text-slate-300 py-2 transition-colors">
+                <button onClick={onClose} className="w-full text-xs text-muted-foreground hover:text-border py-2 transition-colors">
                   Close
                 </button>
               </div>

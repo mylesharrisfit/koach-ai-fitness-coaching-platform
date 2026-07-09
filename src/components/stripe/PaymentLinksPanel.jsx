@@ -18,7 +18,7 @@ function CopyButton({ text }) {
         toast.success('Link copied!');
         setTimeout(() => setCopied(false), 2000);
       }}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111827] text-white text-xs font-semibold hover:bg-[#1F2A44] transition-colors"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sidebar text-white text-xs font-semibold hover:bg-sidebar transition-colors"
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
       {copied ? 'Copied!' : 'Copy Link'}
@@ -46,12 +46,12 @@ export default function PaymentLinksPanel() {
   const isValid = form.name.trim() && parseFloat(form.amount) > 0;
 
   return (
-    <div className="bg-white border border-[#E7EAF3] rounded-2xl p-5 shadow-sm">
+    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-lg bg-[#635BFF]/10 flex items-center justify-center">
           <Link className="w-3.5 h-3.5 text-[#635BFF]" />
         </div>
-        <h3 className="text-sm font-bold text-[#111827]">Create Payment Link</h3>
+        <h3 className="text-sm font-bold text-foreground">Create Payment Link</h3>
       </div>
 
       <div className="space-y-3">
@@ -98,8 +98,8 @@ export default function PaymentLinksPanel() {
         </Button>
 
         {generatedLink && (
-          <div className="mt-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-            <p className="text-xs font-semibold text-emerald-700 mb-1.5">Payment Link Ready</p>
+          <div className="mt-2 p-3 bg-success/10 border border-success rounded-xl">
+            <p className="text-xs font-semibold text-success mb-1.5">Payment Link Ready</p>
             <div className="flex items-center gap-2">
               <a
                 href={generatedLink}

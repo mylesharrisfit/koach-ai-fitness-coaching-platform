@@ -4,7 +4,7 @@ import { Calendar, AlertTriangle } from 'lucide-react';
 
 function Avatar({ name }) {
   const initials = (name || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-  const colors = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+  const colors = ['rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', 'rgb(var(--warning))', 'rgb(var(--destructive))'];
   const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
   return (
     <div style={{ width: 28, height: 28, borderRadius: 8, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color, flexShrink: 0 }}>
@@ -33,35 +33,35 @@ export default function UpcomingPayments({ invoices = [], payments = [] }) {
 
   if (upcoming.length === 0) {
     return (
-      <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #F3F4F6', padding: '24px', textAlign: 'center' }}>
-        <Calendar size={28} color="#D1D5DB" style={{ margin: '0 auto 8px' }} />
-        <p style={{ fontSize: 13, color: '#9CA3AF', margin: 0 }}>No upcoming payments in the next 30 days</p>
+      <div style={{ background: 'rgb(var(--card))', borderRadius: 14, border: '1px solid rgb(var(--muted))', padding: '24px', textAlign: 'center' }}>
+        <Calendar size={28} color="rgb(var(--muted-foreground))" style={{ margin: '0 auto 8px' }} />
+        <p style={{ fontSize: 13, color: 'rgb(var(--muted-foreground))', margin: 0 }}>No upcoming payments in the next 30 days</p>
       </div>
     );
   }
 
   return (
-    <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #F3F4F6', overflow: 'hidden' }}>
-      <div style={{ padding: '14px 16px', borderBottom: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div style={{ background: 'rgb(var(--card))', borderRadius: 14, border: '1px solid rgb(var(--muted))', overflow: 'hidden' }}>
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid rgb(var(--muted))', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Calendar size={15} color="#2563EB" />
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#111' }}>Upcoming Payments — Next 30 Days</span>
+          <Calendar size={15} color="rgb(var(--primary))" />
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'rgb(var(--foreground))' }}>Upcoming Payments — Next 30 Days</span>
         </div>
-        <span style={{ fontSize: 14, fontWeight: 800, color: '#16A34A' }}>${total.toFixed(2)} expected</span>
+        <span style={{ fontSize: 14, fontWeight: 800, color: 'rgb(var(--success))' }}>${total.toFixed(2)} expected</span>
       </div>
       {upcoming.map(inv => {
         const daysLeft = Math.ceil((parseISO(inv.due_date) - now) / 86400000);
         const atRisk = daysLeft <= 3;
         return (
-          <div key={inv.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '1px solid #F9FAFB', background: atRisk ? '#FFFBEB' : '#fff' }}>
+          <div key={inv.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '1px solid rgb(var(--background))', background: atRisk ? 'rgb(var(--warning))' : 'rgb(var(--card))' }}>
             <Avatar name={inv.client_name} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>{inv.client_name}</div>
-              <div style={{ fontSize: 11, color: '#9CA3AF' }}>{inv.description || inv.invoice_number}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--foreground))' }}>{inv.client_name}</div>
+              <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>{inv.description || inv.invoice_number}</div>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#111' }}>${Number(inv.amount).toFixed(2)}</div>
-              <div style={{ fontSize: 11, color: atRisk ? '#D97706' : '#9CA3AF', display: 'flex', alignItems: 'center', gap: 3, justifyContent: 'flex-end' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'rgb(var(--foreground))' }}>${Number(inv.amount).toFixed(2)}</div>
+              <div style={{ fontSize: 11, color: atRisk ? 'rgb(var(--warning))' : 'rgb(var(--muted-foreground))', display: 'flex', alignItems: 'center', gap: 3, justifyContent: 'flex-end' }}>
                 {atRisk && <AlertTriangle size={10} />}
                 Due {format(parseISO(inv.due_date), 'MMM d')} ({daysLeft}d)
               </div>

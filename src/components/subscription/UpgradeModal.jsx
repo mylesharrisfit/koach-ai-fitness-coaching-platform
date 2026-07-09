@@ -87,10 +87,10 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-[#E7EAF3]" style={{ background: '#FFFFFF' }}>
+      <DialogContent className="max-w-5xl p-0 overflow-hidden border-border" style={{ background: 'rgb(var(--card))' }}>
         {/* Header */}
-        <div className="relative p-6 pb-4 overflow-hidden border-b border-[#E7EAF3]">
-          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-[#F6F7FB] flex items-center justify-center text-[#374151] hover:text-[#1F2A44] transition-colors z-10">
+        <div className="relative p-6 pb-4 overflow-hidden border-b border-border">
+          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-foreground hover:text-foreground transition-colors z-10">
             <X className="w-4 h-4" />
           </button>
           <div className="relative z-10 flex items-center gap-4">
@@ -108,16 +108,16 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
               )}
             </div>
             {/* Billing toggle */}
-            <div className="flex items-center gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg p-1 text-xs font-semibold">
+            <div className="flex items-center gap-1 bg-muted border border-border rounded-lg p-1 text-xs font-semibold">
               <button
                 onClick={() => setBilling('monthly')}
-                className={cn('px-3 py-1.5 rounded-md transition-all', billing === 'monthly' ? 'bg-white text-[#1F2A44] shadow-sm' : 'text-[#374151] hover:text-[#1F2A44]')}
+                className={cn('px-3 py-1.5 rounded-md transition-all', billing === 'monthly' ? 'bg-card text-foreground shadow-sm' : 'text-foreground hover:text-foreground')}
               >
                 Monthly
               </button>
               <button
                 onClick={() => setBilling('yearly')}
-                className={cn('px-3 py-1.5 rounded-md transition-all flex items-center gap-1.5', billing === 'yearly' ? 'bg-white text-[#1F2A44] shadow-sm' : 'text-[#374151] hover:text-[#1F2A44]')}
+                className={cn('px-3 py-1.5 rounded-md transition-all flex items-center gap-1.5', billing === 'yearly' ? 'bg-card text-foreground shadow-sm' : 'text-foreground hover:text-foreground')}
               >
                 Yearly
                 <span className="text-[10px] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-full">-20%</span>
@@ -143,7 +143,7 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
                   'relative rounded-xl border flex flex-col transition-all',
                   isCurrent      ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20' :
                   isRecommended  ? 'border-accent/40 bg-accent/5 ring-1 ring-accent/20' :
-                                   'border-[#E7EAF3] bg-[#F6F7FB] hover:border-[#C9CEE0]'
+                                   'border-border bg-muted hover:border-border'
                 )}>
                   {isRecommended && (
                     <div className="absolute -top-2.5 inset-x-0 flex justify-center">
@@ -160,11 +160,11 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
                     </div>
                   )}
 
-                  <div className="p-4 pb-3 border-b border-[#E7EAF3]">
+                  <div className="p-4 pb-3 border-b border-border">
                     <p className={cn('font-heading font-bold text-sm mb-1', tier.color)}>{tier.name}</p>
                     <div className="flex items-end gap-1">
                       <span className="stat-number text-2xl font-heading font-bold">${price}</span>
-                      <span className="text-xs text-[#374151] mb-0.5">/mo</span>
+                      <span className="text-xs text-foreground mb-0.5">/mo</span>
                     </div>
                     {billing === 'yearly' && (
                       <p className="text-[10px] text-accent mt-0.5">Save ${Math.round((tier.price - price) * 12)}/yr</p>
@@ -175,7 +175,7 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
                     {TIER_SELLING_POINTS[tierKey].map(point => (
                       <div key={point} className="flex items-start gap-1.5">
                         <Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" />
-                        <span className="text-[11px] text-[#374151] leading-tight">{point}</span>
+                        <span className="text-[11px] text-foreground leading-tight">{point}</span>
                       </div>
                     ))}
                   </div>
@@ -200,7 +200,7 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
           </div>
         </div>
 
-        <p className="text-center text-xs text-[#374151] pb-5">
+        <p className="text-center text-xs text-foreground pb-5">
           Secure checkout via Stripe · No setup fees · Cancel anytime
         </p>
       </DialogContent>

@@ -12,10 +12,10 @@ function EmptyState({ archived }) {
   return (
     <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 24px', textAlign: 'center' }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>📦</div>
-      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', margin: '0 0 8px' }}>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: 'rgb(var(--foreground))', margin: '0 0 8px' }}>
         {archived ? 'No archived packages' : 'No packages yet'}
       </h3>
-      <p style={{ fontSize: 14, color: '#9CA3AF', margin: 0 }}>
+      <p style={{ fontSize: 14, color: 'rgb(var(--muted-foreground))', margin: 0 }}>
         {archived ? 'Archived packages will appear here.' : 'Create your first coaching package to start selling your services.'}
       </p>
     </div>
@@ -91,28 +91,28 @@ export default function Packages() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F9FAFB' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'rgb(var(--background))' }}>
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #F3F4F6', padding: '16px 24px', flexShrink: 0 }}>
+      <div style={{ background: 'rgb(var(--card))', borderBottom: '1px solid rgb(var(--muted))', padding: '16px 24px', flexShrink: 0 }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <button onClick={() => navigate('/business?tab=invoicing')}
-                style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, color: 'rgb(var(--muted-foreground))', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                 <ArrowLeft size={14} /> Business
               </button>
-              <span style={{ color: '#D1D5DB' }}>›</span>
+              <span style={{ color: 'rgb(var(--muted-foreground))' }}>›</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Package size={18} color="#2563EB" />
-                <h1 style={{ fontSize: 20, fontWeight: 800, color: '#111', margin: 0, letterSpacing: '-0.02em' }}>Coaching Packages</h1>
+                <Package size={18} color="rgb(var(--primary))" />
+                <h1 style={{ fontSize: 20, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0, letterSpacing: '-0.02em' }}>Coaching Packages</h1>
               </div>
             </div>
             <button onClick={() => { setEditingPkg(null); setShowForm(true); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
               <Plus size={16} /> Create Package
             </button>
           </div>
-          <p style={{ fontSize: 12, color: '#9CA3AF', margin: '6px 0 0 0' }}>
+          <p style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))', margin: '6px 0 0 0' }}>
             Bundle your services, set your prices, and let clients enroll online.
           </p>
 
@@ -123,10 +123,10 @@ export default function Packages() {
               { key: 'archived', label: 'Archived', count: archived.length },
             ].map(t => (
               <button key={t.key} onClick={() => setTab(t.key)}
-                style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === t.key ? 700 : 500, color: tab === t.key ? '#2563EB' : '#6B7280', border: 'none', borderBottom: `2px solid ${tab === t.key ? '#2563EB' : 'transparent'}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === t.key ? 700 : 500, color: tab === t.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))', border: 'none', borderBottom: `2px solid ${tab === t.key ? 'rgb(var(--primary))' : 'transparent'}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
                 {t.label}
                 {t.count > 0 && (
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: tab === t.key ? '#EFF6FF' : '#F3F4F6', color: tab === t.key ? '#2563EB' : '#9CA3AF' }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: tab === t.key ? 'rgb(var(--accent))' : 'rgb(var(--muted))', color: tab === t.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
                     {t.count}
                   </span>
                 )}
@@ -140,7 +140,7 @@ export default function Packages() {
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
           {isLoading ? (
-            <div style={{ textAlign: 'center', padding: 60, color: '#9CA3AF', fontSize: 14 }}>Loading packages…</div>
+            <div style={{ textAlign: 'center', padding: 60, color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>Loading packages…</div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
               {displayed.length === 0 ? (
