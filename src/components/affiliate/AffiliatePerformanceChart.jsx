@@ -12,11 +12,11 @@ const EARNINGS_DATA = [
 ];
 
 const FUNNEL_DATA = [
-  { stage: 'Clicks', value: 2450, color: 'rgb(var(--primary))' },
-  { stage: 'Signups', value: 1820, color: 'rgb(var(--ai))' },
-  { stage: 'Trials', value: 945, color: 'rgb(var(--warning))' },
-  { stage: 'Paid', value: 672, color: 'rgb(var(--success))' },
-  { stage: 'Active (30d)', value: 518, color: '#06B6D4' },
+  { stage: 'Clicks', value: 2450, color: 'var(--tc-primary)' },
+  { stage: 'Signups', value: 1820, color: 'var(--tc-ai)' },
+  { stage: 'Trials', value: 945, color: 'var(--tc-warning)' },
+  { stage: 'Paid', value: 672, color: 'var(--tc-success)' },
+  { stage: 'Active (30d)', value: 518, color: 'var(--kc-06b6d4)' },
 ];
 
 export default function AffiliatePerformanceChart({ profile }) {
@@ -43,11 +43,11 @@ export default function AffiliatePerformanceChart({ profile }) {
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={EARNINGS_DATA}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" />
-            <XAxis dataKey="date" stroke="rgb(var(--muted-foreground))" />
-            <YAxis stroke="rgb(var(--muted-foreground))" />
-            <Tooltip contentStyle={{ background: '#1F2937', border: 'none', borderRadius: 8 }} />
-            <Line type="monotone" dataKey="earnings" stroke="rgb(var(--primary))" strokeWidth={3} dot={{ fill: 'rgb(var(--primary))', r: 5 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
+            <XAxis dataKey="date" stroke="var(--tc-muted-foreground)" />
+            <YAxis stroke="var(--tc-muted-foreground)" />
+            <Tooltip contentStyle={{ background: 'var(--kc-1f2937)', border: 'none', borderRadius: 8 }} />
+            <Line type="monotone" dataKey="earnings" stroke="var(--tc-primary)" strokeWidth={3} dot={{ fill: 'var(--tc-primary)', r: 5 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

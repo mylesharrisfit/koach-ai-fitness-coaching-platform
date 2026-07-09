@@ -126,7 +126,7 @@ export default function AffiliateAssetLibrary({ tier }) {
             </ul>
           </div>
           <button className="w-full px-4 py-3 rounded-lg font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))' }}>
             Request Custom Assets
           </button>
         </div>

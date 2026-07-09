@@ -38,7 +38,7 @@ export default function AffiliateCommissionStructure({ profile }) {
                 }`}>
                 <p className="font-bold text-foreground">{t.tier}</p>
                 <p className="text-sm text-muted-foreground mt-1">{t.min}-{t.max === null ? '∞' : t.max} referrals</p>
-                <p className="text-2xl font-black mt-3" style={{ color: isCurrentTier ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
+                <p className="text-2xl font-black mt-3" style={{ color: isCurrentTier ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>
                   {t.rate}%
                 </p>
                 {isCurrentTier && (
@@ -85,7 +85,7 @@ export default function AffiliateCommissionStructure({ profile }) {
 
           <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }}
             className="mt-6 p-4 rounded-2xl"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-ai) 100%)' }}>
             <p className="text-white/80 text-sm">Monthly Recurring Revenue</p>
             <p className="text-4xl font-black text-white mt-1">
               ${monthlyEarnings.toFixed(2)}/month

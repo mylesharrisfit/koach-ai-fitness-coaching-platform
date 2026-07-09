@@ -4,10 +4,10 @@ import { base44 } from '@/api/base44Client';
 import { Download } from 'lucide-react';
 
 const STATUS_COLORS = {
-  trial: 'rgb(var(--warning))',
-  active: 'rgb(var(--success))',
-  churned: 'rgb(var(--destructive))',
-  paused: 'rgb(var(--muted-foreground))',
+  trial: 'var(--tc-warning)',
+  active: 'var(--tc-success)',
+  churned: 'var(--tc-destructive)',
+  paused: 'var(--tc-muted-foreground)',
 };
 
 export default function AffiliateReferralTable({ profile }) {
