@@ -66,17 +66,17 @@ export default function ProgramWeeklyScheduleTab({ program }) {
           const weekNum = weekIdx + 1;
 
           return (
-            <div key={weekIdx} className="border border-[#E7EAF3] rounded-lg overflow-hidden">
+            <div key={weekIdx} className="border border-border rounded-lg overflow-hidden">
               {/* Week Header */}
               <button
                 onClick={() => toggleWeek(weekIdx)}
-                className="w-full flex items-center gap-3 px-4 py-3 bg-[#F9FAFB] hover:bg-[#F3F4F6] transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 bg-background hover:bg-muted transition-colors"
               >
                 <ChevronDown
-                  className={cn('w-4 h-4 text-[#6B7280] transition-transform', isExpanded && 'rotate-180')}
+                  className={cn('w-4 h-4 text-muted-foreground transition-transform', isExpanded && 'rotate-180')}
                 />
-                <span className="font-semibold text-[#1F2A44]">Week {weekNum}</span>
-                <span className="text-xs text-[#9CA3AF] ml-auto">
+                <span className="font-semibold text-foreground">Week {weekNum}</span>
+                <span className="text-xs text-muted-foreground ml-auto">
                   {workoutsPerWeek.length} workouts + {restDaysPerWeek} rest day{restDaysPerWeek !== 1 ? 's' : ''}
                 </span>
               </button>
@@ -90,7 +90,7 @@ export default function ProgramWeeklyScheduleTab({ program }) {
                     exit={{ height: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 py-4 space-y-3 bg-white border-t border-[#E7EAF3]">
+                    <div className="px-4 py-4 space-y-3 bg-card border-t border-border">
                       {/* Training Days */}
                       {workoutsPerWeek.map((workout, dayIdx) => {
                         const dayKey = `day-${dayIdx}`;
@@ -99,19 +99,19 @@ export default function ProgramWeeklyScheduleTab({ program }) {
                         const estDuration = Math.round(exerciseCount * 5 + (workout.exercises?.reduce((sum, e) => sum + (e.sets || 3) * ((e.rest_seconds || 60) / 60), 0) || 30));
 
                         return (
-                          <div key={dayIdx} className="border border-[#E7EAF3] rounded-lg overflow-hidden">
+                          <div key={dayIdx} className="border border-border rounded-lg overflow-hidden">
                             <button
                               onClick={() => toggleDay(dayKey)}
-                              className="w-full flex items-center gap-3 px-3 py-3 bg-blue-50 hover:bg-blue-100 transition-colors"
+                              className="w-full flex items-center gap-3 px-3 py-3 bg-accent hover:bg-accent transition-colors"
                             >
                               <ChevronDown
-                                className={cn('w-4 h-4 text-blue-600 transition-transform', isDayExpanded && 'rotate-180')}
+                                className={cn('w-4 h-4 text-primary transition-transform', isDayExpanded && 'rotate-180')}
                               />
                               <div className="text-left flex-1 min-w-0">
-                                <div className="font-semibold text-blue-900 text-sm">
+                                <div className="font-semibold text-primary text-sm">
                                   {workout.day_name || `Day ${dayIdx + 1}`}
                                 </div>
-                                <div className="text-xs text-blue-700">
+                                <div className="text-xs text-primary">
                                   {exerciseCount} exercise{exerciseCount !== 1 ? 's' : ''} • ~{estDuration}m
                                 </div>
                               </div>
@@ -126,16 +126,16 @@ export default function ProgramWeeklyScheduleTab({ program }) {
                                   exit={{ height: 0 }}
                                   className="overflow-hidden"
                                 >
-                                  <div className="px-3 py-3 space-y-2 bg-white border-t border-blue-100">
+                                  <div className="px-3 py-3 space-y-2 bg-card border-t border-accent">
                                     {workout.exercises?.map((exercise, exIdx) => (
-                                      <div key={exIdx} className="text-sm pb-2 border-b border-[#F3F4F6] last:border-0">
+                                      <div key={exIdx} className="text-sm pb-2 border-b border-muted last:border-0">
                                         <div className="flex items-start gap-2 mb-1">
-                                          <span className="font-semibold text-[#1F2A44] flex-1">{exercise.name}</span>
+                                          <span className="font-semibold text-foreground flex-1">{exercise.name}</span>
                                           {exercise.notes && (
                                             <TooltipProvider>
                                               <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                  <Info className="w-3.5 h-3.5 text-[#9CA3AF] flex-shrink-0 cursor-help mt-0.5" />
+                                                  <Info className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0 cursor-help mt-0.5" />
                                                 </TooltipTrigger>
                                                 <TooltipContent side="left" className="max-w-xs text-xs">
                                                   {exercise.notes}
@@ -144,7 +144,7 @@ export default function ProgramWeeklyScheduleTab({ program }) {
                                             </TooltipProvider>
                                           )}
                                         </div>
-                                        <div className="text-xs text-[#6B7280] space-y-0.5">
+                                        <div className="text-xs text-muted-foreground space-y-0.5">
                                           <div>
                                             <strong>{exercise.sets}</strong> x <strong>{exercise.reps || '8-10'}</strong>
                                             {exercise.rest_seconds && ` • ${exercise.rest_seconds}s rest`}
@@ -164,13 +164,13 @@ export default function ProgramWeeklyScheduleTab({ program }) {
 
                       {/* Rest Days */}
                       {restDaysPerWeek > 0 && (
-                        <div className="flex items-center gap-3 px-3 py-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                        <div className="flex items-center gap-3 px-3 py-3 bg-success/10 rounded-lg border border-success">
                           <span className="text-xl">🛌</span>
                           <div>
-                            <div className="font-semibold text-emerald-900 text-sm">
+                            <div className="font-semibold text-success text-sm">
                               Rest Day{restDaysPerWeek !== 1 ? 's' : ''}
                             </div>
-                            <div className="text-xs text-emerald-700">{restDaysPerWeek} day{restDaysPerWeek !== 1 ? 's' : ''} per week</div>
+                            <div className="text-xs text-success">{restDaysPerWeek} day{restDaysPerWeek !== 1 ? 's' : ''} per week</div>
                           </div>
                         </div>
                       )}

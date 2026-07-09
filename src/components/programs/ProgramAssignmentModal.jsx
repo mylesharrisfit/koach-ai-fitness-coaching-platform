@@ -128,17 +128,17 @@ export default function ProgramAssignmentModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-border p-6 z-10">
+        <div className="sticky top-0 bg-card border-b border-border p-6 z-10">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-xl font-bold">Assign {program.title}</h2>
             <div className="flex gap-2">
               {program.difficulty && (
-                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-700">
+                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-warning/10 text-warning">
                   {program.difficulty.charAt(0).toUpperCase() + program.difficulty.slice(1)}
                 </span>
               )}
               {program.category && (
-                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700">
+                <span className="px-2 py-1 text-xs font-semibold rounded-full bg-accent text-primary">
                   {program.category}
                 </span>
               )}
@@ -155,7 +155,7 @@ export default function ProgramAssignmentModal({
                     currentStep === step.id
                       ? 'bg-primary text-white'
                       : currentStep > step.id
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-success/10 text-success'
                       : 'bg-secondary text-muted-foreground'
                   }`}
                 >
@@ -245,7 +245,7 @@ export default function ProgramAssignmentModal({
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white border-t border-border p-6 flex gap-3 justify-between">
+        <div className="sticky bottom-0 bg-card border-t border-border p-6 flex gap-3 justify-between">
           <div className="flex gap-2">
             {currentStep > 1 && (
               <Button
@@ -276,7 +276,7 @@ export default function ProgramAssignmentModal({
           ) : (
             <Button
               onClick={handleAssign}
-              className="bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 gap-2"
+              className="bg-gradient-to-r from-primary to-primary hover:opacity-90 gap-2"
             >
               Assign Program
             </Button>

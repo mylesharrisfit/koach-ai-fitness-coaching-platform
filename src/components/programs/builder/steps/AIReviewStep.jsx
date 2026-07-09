@@ -7,42 +7,42 @@ import { cn } from '@/lib/utils';
 
 
 const SECTION_COLOR = {
-  warmup:   '#F59E0B',
-  main:     '#2563EB',
-  finisher: '#EF4444',
-  cooldown: '#10B981',
+  warmup:   'rgb(var(--warning))',
+  main:     'rgb(var(--primary))',
+  finisher: 'rgb(var(--destructive))',
+  cooldown: 'rgb(var(--success))',
 };
 
 function RationaleCard({ rationale }) {
   if (!rationale) return null;
   return (
-    <div className="rounded-xl p-4 space-y-3 w-full" style={{ background: '#0E1525', wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}>
+    <div className="rounded-xl p-4 space-y-3 w-full" style={{ background: 'rgb(var(--sidebar))', wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}>
       <div className="flex items-center gap-2 mb-1">
-        <Zap className="w-4 h-4" style={{ color: '#85B7EB' }} />
-        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#85B7EB' }}>AI Coach Rationale</span>
+        <Zap className="w-4 h-4" style={{ color: 'rgb(var(--primary))' }} />
+        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--primary))' }}>AI Coach Rationale</span>
       </div>
       {rationale.split && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Split</p>
-          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.split}</p>
+          <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.split}</p>
         </div>
       )}
       {rationale.weekly_volume && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Weekly Volume</p>
-          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.weekly_volume}</p>
+          <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.weekly_volume}</p>
         </div>
       )}
       {rationale.rep_range_rationale && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Rep Ranges</p>
-          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.rep_range_rationale}</p>
+          <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.rep_range_rationale}</p>
         </div>
       )}
       {rationale.progression_approach && (
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563] mb-0.5">Progression</p>
-          <p className="text-xs text-[#D1D5DB] whitespace-pre-wrap break-words">{rationale.progression_approach}</p>
+          <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.progression_approach}</p>
         </div>
       )}
     </div>
@@ -55,55 +55,55 @@ function DayCard({ workout }) {
   const mainEx = (workout.exercises || []).filter(e => e.section === 'main' || !e.section).slice(0, 3);
 
   return (
-    <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid #E2E5EC' }}>
+    <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid rgb(var(--border))' }}>
       <button
         onClick={() => setOpen(v => !v)}
         className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-[#F8F9FB] transition-colors"
-        style={{ background: '#fff' }}
+        style={{ background: 'rgb(var(--card))' }}
       >
         <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold text-white"
-          style={{ background: '#0E1525' }}>
+          style={{ background: 'rgb(var(--sidebar))' }}>
           {workout.day_number}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-[#0E1525] truncate">{workout.day_name}</p>
+          <p className="text-sm font-semibold text-foreground truncate">{workout.day_name}</p>
           {workout.workout_notes && (
-            <p className="text-[11px] text-[#9CA3AF] truncate">{workout.workout_notes}</p>
+            <p className="text-[11px] text-muted-foreground truncate">{workout.workout_notes}</p>
           )}
         </div>
-        <span className="text-[11px] text-[#9CA3AF] flex-shrink-0">{exCount} exercises</span>
+        <span className="text-[11px] text-muted-foreground flex-shrink-0">{exCount} exercises</span>
         {open ? <ChevronUp className="w-3.5 h-3.5 text-[#C4C9D4]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#C4C9D4]" />}
       </button>
 
       {open && (
-        <div className="divide-y" style={{ borderTop: '0.5px solid #F3F4F6' }}>
+        <div className="divide-y" style={{ borderTop: '0.5px solid rgb(var(--muted))' }}>
           {(workout.exercises || []).map((ex, i) => (
-            <div key={i} className="flex items-start gap-2.5 px-3 py-2 bg-white">
+            <div key={i} className="flex items-start gap-2.5 px-3 py-2 bg-card">
               <div
                 className="w-1 rounded-full flex-shrink-0 mt-1"
-                style={{ height: 28, background: SECTION_COLOR[ex.section] || '#9CA3AF' }}
+                style={{ height: 28, background: SECTION_COLOR[ex.section] || 'rgb(var(--muted-foreground))' }}
               />
               {ex.image_url ? (
                 <img src={ex.image_url} alt={ex.name} className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
               ) : (
-                <div className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#F3F4F6]">
-                  <Dumbbell className="w-3.5 h-3.5 text-[#9CA3AF]" />
+                <div className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center bg-muted">
+                  <Dumbbell className="w-3.5 h-3.5 text-muted-foreground" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[#0E1525] truncate">{ex.name}</p>
-                <p className="text-[11px] text-[#6B7280]">
+                <p className="text-xs font-semibold text-foreground truncate">{ex.name}</p>
+                <p className="text-[11px] text-muted-foreground">
                   {ex.prescription || `${ex.sets} × ${ex.reps}${ex.rpe ? ` @ RPE ${ex.rpe}` : ''}`}
                 </p>
                 {ex.notes && (
-                  <p className="text-[10px] text-[#9CA3AF] mt-0.5 line-clamp-1">{ex.notes}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{ex.notes}</p>
                 )}
               </div>
               <span
                 className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full flex-shrink-0 mt-0.5"
                 style={{
-                  background: (SECTION_COLOR[ex.section] || '#9CA3AF') + '20',
-                  color: SECTION_COLOR[ex.section] || '#9CA3AF',
+                  background: (SECTION_COLOR[ex.section] || 'rgb(var(--muted-foreground))') + '20',
+                  color: SECTION_COLOR[ex.section] || 'rgb(var(--muted-foreground))',
                 }}
               >
                 {ex.section || 'main'}
@@ -148,9 +148,9 @@ export default function AIReviewStep({
           { label: 'Duration', value: `${program.duration_weeks || '—'} wks` },
           { label: 'Exercises', value: totalExercises },
         ].map(s => (
-          <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: '#F8F9FB', border: '0.5px solid #E2E5EC' }}>
-            <p className="text-lg font-bold text-[#0E1525]">{s.value}</p>
-            <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wider">{s.label}</p>
+          <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: '#F8F9FB', border: '0.5px solid rgb(var(--border))' }}>
+            <p className="text-lg font-bold text-foreground">{s.value}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
           </div>
         ))}
       </div>
@@ -161,7 +161,7 @@ export default function AIReviewStep({
       {/* Edit name / description */}
       <div className="space-y-3 pt-1">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">Program Name</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Program Name</p>
           <Input
             value={title}
             onChange={e => handleChange('title', e.target.value)}
@@ -169,7 +169,7 @@ export default function AIReviewStep({
           />
         </div>
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">Description</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Description</p>
           <Textarea
             value={description}
             onChange={e => handleChange('description', e.target.value)}
@@ -181,7 +181,7 @@ export default function AIReviewStep({
 
       {/* Schedule preview */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">Training Schedule</p>
+        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Training Schedule</p>
         <div className="space-y-2">
           {(program.workouts || []).map((workout, idx) => (
             <DayCard key={idx} workout={workout} />
@@ -191,18 +191,18 @@ export default function AIReviewStep({
 
       {/* Rating */}
       <div className="flex items-center gap-3 pt-2 pb-1">
-        <p className="text-xs font-semibold text-[#6B7280]">Rate this output:</p>
+        <p className="text-xs font-semibold text-muted-foreground">Rate this output:</p>
         <button
           onClick={() => onRating('up')}
-          className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', currentRating === 'up' ? 'text-white' : 'border border-[#E2E5EC] hover:border-[#2563EB]')}
-          style={currentRating === 'up' ? { background: '#2563EB' } : {}}
+          className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', currentRating === 'up' ? 'text-white' : 'border border-border hover:border-primary')}
+          style={currentRating === 'up' ? { background: 'rgb(var(--primary))' } : {}}
         >
           <ThumbsUp className="w-3.5 h-3.5" /> Good
         </button>
         <button
           onClick={() => onRating('down')}
-          className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', currentRating === 'down' ? 'text-white' : 'border border-[#E2E5EC] hover:border-red-400')}
-          style={currentRating === 'down' ? { background: '#EF4444' } : {}}
+          className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', currentRating === 'down' ? 'text-white' : 'border border-border hover:border-destructive')}
+          style={currentRating === 'down' ? { background: 'rgb(var(--destructive))' } : {}}
         >
           <ThumbsDown className="w-3.5 h-3.5" /> Needs work
         </button>

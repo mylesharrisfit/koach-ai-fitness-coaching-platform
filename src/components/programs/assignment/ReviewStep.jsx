@@ -37,7 +37,7 @@ export default function ReviewStep({
                 <AvatarFallback>{client.name.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <span className="text-sm font-medium">{client.name}</span>
-              <Check className="w-4 h-4 text-green-600 ml-auto" />
+              <Check className="w-4 h-4 text-success ml-auto" />
             </div>
           ))}
         </div>
@@ -70,7 +70,7 @@ export default function ReviewStep({
           {repeatProgram && (
             <div className="flex justify-between">
               <span className="text-muted-foreground">Repeat</span>
-              <span className="font-medium text-green-600">Auto-restart on completion</span>
+              <span className="font-medium text-success">Auto-restart on completion</span>
             </div>
           )}
         </div>
@@ -82,7 +82,7 @@ export default function ReviewStep({
         <div className="space-y-3">
           {notifyClient ? (
             <div className="flex items-start gap-3">
-              <Bell className="w-4 h-4 text-green-600 mt-0.5" />
+              <Bell className="w-4 h-4 text-success mt-0.5" />
               <div>
                 <p className="text-sm font-medium">Notification will be sent</p>
                 <p className="text-xs text-muted-foreground">Client will receive in-app notification and message</p>
@@ -104,7 +104,7 @@ export default function ReviewStep({
 
           {kickoffSession ? (
             <div className="flex items-start gap-3 pt-3 border-t border-border">
-              <Clock className="w-4 h-4 text-green-600 mt-0.5" />
+              <Clock className="w-4 h-4 text-success mt-0.5" />
               <div>
                 <p className="text-sm font-medium">Kickoff call scheduled</p>
                 <p className="text-xs text-muted-foreground">

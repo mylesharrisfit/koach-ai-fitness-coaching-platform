@@ -12,10 +12,10 @@ const CATEGORY_ICON = {
 };
 
 const DIFFICULTY_BADGE = {
-  beginner: 'bg-emerald-100 text-emerald-700',
-  intermediate: 'bg-blue-100 text-blue-700',
-  advanced: 'bg-purple-100 text-purple-700',
-  elite: 'bg-red-100 text-red-700',
+  beginner: 'bg-success/10 text-success',
+  intermediate: 'bg-accent text-primary',
+  advanced: 'bg-ai/10 text-ai',
+  elite: 'bg-destructive/10 text-destructive',
 };
 
 export default function ProgramDetailHeader({ program }) {

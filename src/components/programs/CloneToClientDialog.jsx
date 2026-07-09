@@ -44,11 +44,11 @@ export default function CloneToClientDialog({ open, onOpenChange, program }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="font-heading">Clone to Clients</DialogTitle>
-          <p className="text-sm text-[#374151]">Assign <span className="font-medium text-foreground">"{program?.title}"</span> to active clients instantly</p>
+          <p className="text-sm text-foreground">Assign <span className="font-medium text-foreground">"{program?.title}"</span> to active clients instantly</p>
         </DialogHeader>
 
         <div className="relative mt-2">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#374151]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground" />
           <Input
             placeholder="Search clients..."
             value={search}
@@ -59,7 +59,7 @@ export default function CloneToClientDialog({ open, onOpenChange, program }) {
 
         <div className="space-y-2 max-h-64 overflow-y-auto mt-1">
           {filtered.length === 0 ? (
-            <p className="text-center text-sm text-[#374151] py-6">No active clients found</p>
+            <p className="text-center text-sm text-foreground py-6">No active clients found</p>
           ) : filtered.map(client => (
             <button
               key={client.id}
@@ -77,7 +77,7 @@ export default function CloneToClientDialog({ open, onOpenChange, program }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{client.name}</p>
-                <p className="text-xs text-[#374151]">{client.goal?.replace('_', ' ')}</p>
+                <p className="text-xs text-foreground">{client.goal?.replace('_', ' ')}</p>
               </div>
               {selected.includes(client.id) && (
                 <Check className="w-4 h-4 text-primary flex-shrink-0" />
@@ -87,7 +87,7 @@ export default function CloneToClientDialog({ open, onOpenChange, program }) {
         </div>
 
         <div className="flex justify-between items-center pt-3 border-t border-border">
-          <span className="text-sm text-[#374151]">{selected.length} selected</span>
+          <span className="text-sm text-foreground">{selected.length} selected</span>
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button onClick={handleAssign} disabled={selected.length === 0}>

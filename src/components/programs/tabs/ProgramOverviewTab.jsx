@@ -36,13 +36,13 @@ export default function ProgramOverviewTab({ program }) {
       {/* Description + tags */}
       {program.description && (
         <div>
-          <p className="text-sm text-[#374151] leading-relaxed mb-3">{program.description}</p>
+          <p className="text-sm text-foreground leading-relaxed mb-3">{program.description}</p>
           <div className="flex flex-wrap gap-2">
             {tags.map(tag => (
               <span
                 key={tag}
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ background: '#EEF2FF', color: '#3730a3' }}
+                style={{ background: 'rgb(var(--accent))', color: '#3730a3' }}
               >
                 {tag}
               </span>
@@ -54,12 +54,12 @@ export default function ProgramOverviewTab({ program }) {
       {/* Equipment */}
       {allEquipment.size > 0 && (
         <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] mb-3">Equipment Needed</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Equipment Needed</h3>
           <div className="flex flex-wrap gap-2">
             {Array.from(allEquipment).map((equip) => (
               <div
                 key={equip}
-                className="flex items-center gap-2 px-3 py-2 bg-[#F3F4F6] rounded-lg text-sm text-[#1F2A44]"
+                className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-sm text-foreground"
               >
                 <span className="text-base">{EQUIPMENT_ICONS[equip] || '⚙️'}</span>
                 <span className="capitalize">{equip.replace('_', ' ')}</span>
@@ -71,30 +71,30 @@ export default function ProgramOverviewTab({ program }) {
 
       {/* Target Audience */}
       {program.target_audience && (
-        <div className="p-4 rounded-xl bg-blue-50 border-l-4 border-blue-500">
-          <h3 className="font-semibold text-blue-900 mb-1 text-sm">Who Is This Program For?</h3>
-          <p className="text-sm text-blue-800 leading-relaxed">{program.target_audience}</p>
+        <div className="p-4 rounded-xl bg-accent border-l-4 border-primary">
+          <h3 className="font-semibold text-primary mb-1 text-sm">Who Is This Program For?</h3>
+          <p className="text-sm text-primary leading-relaxed">{program.target_audience}</p>
         </div>
       )}
 
       {/* Goals & Results */}
       {program.goals && (
-        <div className="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-500">
-          <h3 className="font-semibold text-emerald-900 mb-1 text-sm">Program Goals & Expected Results</h3>
-          <p className="text-sm text-emerald-800 leading-relaxed">{program.goals}</p>
+        <div className="p-4 rounded-xl bg-success/10 border-l-4 border-success">
+          <h3 className="font-semibold text-success mb-1 text-sm">Program Goals & Expected Results</h3>
+          <p className="text-sm text-success leading-relaxed">{program.goals}</p>
         </div>
       )}
 
       {/* Progression Model */}
       {program.progression_model && (
-        <div className="p-4 rounded-xl bg-purple-50 border-l-4 border-purple-500">
-          <h3 className="font-semibold text-purple-900 mb-1 text-sm">Progression Model</h3>
-          <p className="text-sm text-purple-800 leading-relaxed">{program.progression_model}</p>
+        <div className="p-4 rounded-xl bg-ai/10 border-l-4 border-ai">
+          <h3 className="font-semibold text-ai mb-1 text-sm">Progression Model</h3>
+          <p className="text-sm text-ai leading-relaxed">{program.progression_model}</p>
         </div>
       )}
 
       {!program.description && !program.target_audience && !program.goals && !program.progression_model && (
-        <div className="text-center py-12 text-[#9CA3AF]">
+        <div className="text-center py-12 text-muted-foreground">
           <p className="text-sm">No additional details available for this program yet.</p>
         </div>
       )}

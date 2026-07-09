@@ -15,14 +15,14 @@ const CATEGORY_CONFIG = {
   fat_loss:    { bg: '#FAECE7', icon: '#993C1D', Icon: Flame,   label: 'Fat Loss'    },
   athletic:    { bg: '#E6FBF3', icon: '#1A6B4A', Icon: Target,  label: 'Athletic'    },
   mobility:    { bg: '#F0FBE6', icon: '#3A6B1A', Icon: Target,  label: 'Mobility'    },
-  custom:      { bg: '#F3F4F6', icon: '#6B7280', Icon: Dumbbell, label: 'Custom'     },
+  custom:      { bg: 'rgb(var(--muted))', icon: 'rgb(var(--muted-foreground))', Icon: Dumbbell, label: 'Custom'     },
 };
 
 const DIFFICULTY_BADGE = {
-  beginner:     'bg-emerald-50 text-emerald-700',
-  intermediate: 'bg-blue-50 text-blue-700',
-  advanced:     'bg-purple-50 text-purple-700',
-  elite:        'bg-red-50 text-red-600',
+  beginner:     'bg-success/10 text-success',
+  intermediate: 'bg-accent text-primary',
+  advanced:     'bg-ai/10 text-ai',
+  elite:        'bg-destructive/10 text-destructive',
 };
 
 export default function ProgramCard({
@@ -39,15 +39,15 @@ export default function ProgramCard({
 
   const cat = CATEGORY_CONFIG[program.category] || CATEGORY_CONFIG.custom;
   const CatIcon = cat.Icon;
-  const diffBadge = DIFFICULTY_BADGE[program.difficulty] || 'bg-gray-50 text-gray-600';
+  const diffBadge = DIFFICULTY_BADGE[program.difficulty] || 'bg-muted text-muted-foreground';
   const MAX_AVATARS = 3;
   const shown = clientsAssigned.slice(0, MAX_AVATARS);
   const extra = clientsAssigned.length - MAX_AVATARS;
 
   return (
     <div
-      className="bg-white rounded-xl flex flex-col transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
-      style={{ border: '0.5px solid #E2E5EC' }}
+      className="bg-card rounded-xl flex flex-col transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
+      style={{ border: '0.5px solid rgb(var(--border))' }}
     >
       <div className="p-4 flex flex-col gap-3 flex-1">
 
@@ -62,7 +62,7 @@ export default function ProgramCard({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
+              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-foreground hover:bg-muted transition-colors">
                 <MoreVertical className="w-3.5 h-3.5" />
               </button>
             </DropdownMenuTrigger>
@@ -80,7 +80,7 @@ export default function ProgramCard({
 
         {/* ── Title + goal pill ── */}
         <div>
-          <h3 className="text-sm font-bold text-[#0E1525] leading-snug line-clamp-2 mb-1.5">
+          <h3 className="text-sm font-bold text-foreground leading-snug line-clamp-2 mb-1.5">
             {program.title}
           </h3>
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -99,7 +99,7 @@ export default function ProgramCard({
         </div>
 
         {/* ── Meta row ── */}
-        <div className="flex items-center gap-3 text-[11px] text-[#9CA3AF]">
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
           {program.duration_weeks && (
             <div className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
@@ -122,12 +122,12 @@ export default function ProgramCard({
       </div>
 
       {/* ── Divider + Footer ── */}
-      <div style={{ borderTop: '0.5px solid #F3F4F6' }}>
+      <div style={{ borderTop: '0.5px solid rgb(var(--muted))' }}>
         <div className="px-4 py-3 flex items-center justify-between gap-2">
 
           {/* Client avatar stack or Unassigned pill */}
           {clientsAssigned.length === 0 ? (
-            <span className="text-[10px] font-medium text-[#9CA3AF] bg-[#F3F4F6] px-2.5 py-1 rounded-full">
+            <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2.5 py-1 rounded-full">
               Unassigned
             </span>
           ) : (
@@ -139,13 +139,13 @@ export default function ProgramCard({
                     {shown.map(c => (
                       <div
                         key={c.id}
-                        className="w-6 h-6 rounded-full bg-[#EEF4FF] text-[#2563EB] text-[9px] font-bold flex items-center justify-center ring-2 ring-white flex-shrink-0"
+                        className="w-6 h-6 rounded-full bg-accent/10 text-primary text-[9px] font-bold flex items-center justify-center ring-2 ring-white flex-shrink-0"
                       >
                         {c.name?.[0]?.toUpperCase()}
                       </div>
                     ))}
                   </div>
-                  <span className="text-[11px] font-medium text-[#6B7280]">
+                  <span className="text-[11px] font-medium text-muted-foreground">
                     {clientsAssigned.length} client{clientsAssigned.length !== 1 ? 's' : ''}
                     {extra > 0 && ` +${extra}`}
                   </span>
@@ -154,11 +154,11 @@ export default function ProgramCard({
               <PopoverContent className="w-44 p-2" align="start">
                 <div className="space-y-1">
                   {clientsAssigned.map(c => (
-                    <div key={c.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F6F7FB]">
-                      <div className="w-6 h-6 rounded-full bg-[#EEF4FF] text-[#2563EB] text-[9px] font-bold flex items-center justify-center flex-shrink-0">
+                    <div key={c.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-muted">
+                      <div className="w-6 h-6 rounded-full bg-accent/10 text-primary text-[9px] font-bold flex items-center justify-center flex-shrink-0">
                         {c.name?.[0]?.toUpperCase()}
                       </div>
-                      <span className="text-xs text-[#374151] truncate">{c.name}</span>
+                      <span className="text-xs text-foreground truncate">{c.name}</span>
                     </div>
                   ))}
                 </div>
@@ -170,7 +170,7 @@ export default function ProgramCard({
           <button
             onClick={onAssign}
             className="flex items-center gap-1 text-[11px] font-semibold text-white px-3 py-1.5 rounded-lg transition-opacity hover:opacity-90 flex-shrink-0"
-            style={{ background: '#2563EB' }}
+            style={{ background: 'rgb(var(--primary))' }}
           >
             <Users className="w-3 h-3" /> Assign
           </button>

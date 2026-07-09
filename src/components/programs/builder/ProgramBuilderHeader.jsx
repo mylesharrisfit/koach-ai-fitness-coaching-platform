@@ -21,7 +21,7 @@ export default function ProgramBuilderHeader({
   return (
     <div
       className="sticky top-0 z-20 flex items-center gap-3 px-5 py-3 flex-shrink-0"
-      style={{ background: '#0E1525', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+      style={{ background: 'rgb(var(--sidebar))', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
     >
       {/* Back */}
       <button
@@ -85,7 +85,7 @@ export default function ProgramBuilderHeader({
           onClick={onSave}
           disabled={isSaving}
           className="h-8 text-xs font-semibold px-4 gap-1.5"
-          style={{ background: '#2563EB', color: '#fff', border: 'none' }}
+          style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))', border: 'none' }}
         >
           <Save className="w-3.5 h-3.5" />
           {isSaving ? 'Saving...' : 'Save Program'}

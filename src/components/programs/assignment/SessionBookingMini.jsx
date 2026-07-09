@@ -20,7 +20,7 @@ export default function SessionBookingMini({ clients, onConfirm, onCancel }) {
   };
 
   return (
-    <Card className="p-4 bg-blue-50 border-blue-200">
+    <Card className="p-4 bg-accent border-primary">
       <div className="space-y-3">
         <div>
           <Label className="text-xs font-semibold">Date</Label>

@@ -25,17 +25,17 @@ import ExercisePickerModal from '@/components/programs/builder/ExercisePickerMod
    Constants
 ───────────────────────────────────────────────── */
 const SECTION_STYLES = {
-  warmup:   { bar: '#F59E0B', label: '🔥 Warm-Up' },
-  main:     { bar: '#2563EB', label: '💪 Main Work' },
-  finisher: { bar: '#EF4444', label: '⚡ Finisher' },
-  cooldown: { bar: '#10B981', label: '🧘 Cooldown' },
+  warmup:   { bar: 'rgb(var(--warning))', label: '🔥 Warm-Up' },
+  main:     { bar: 'rgb(var(--primary))', label: '💪 Main Work' },
+  finisher: { bar: 'rgb(var(--destructive))', label: '⚡ Finisher' },
+  cooldown: { bar: 'rgb(var(--success))', label: '🧘 Cooldown' },
 };
 
 const SET_TYPE_BADGE = {
-  superset: 'bg-purple-100 text-purple-700',
+  superset: 'bg-ai/10 text-ai',
   dropset:  'bg-orange-100 text-orange-700',
-  amrap:    'bg-red-100 text-red-700',
-  failure:  'bg-rose-100 text-rose-700',
+  amrap:    'bg-destructive/10 text-destructive',
+  failure:  'bg-destructive/10 text-destructive',
 };
 
 const EQUIPMENT_OPTIONS = ['No Equipment','Dumbbells','Barbell','Cables','Machines','Full Gym','Resistance Bands','Kettlebells'];
@@ -82,23 +82,23 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
   const handleSave = () => { onMetaChange(draft); onClose(); };
 
   const FieldLabel = ({ children }) => (
-    <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">{children}</p>
+    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">{children}</p>
   );
 
   const Stepper = ({ label, value, min = 1, max = 99, onChange }) => (
     <div>
       <FieldLabel>{label}</FieldLabel>
-      <div className="flex items-center rounded-xl overflow-hidden" style={{ border: '0.5px solid #E2E5EC' }}>
+      <div className="flex items-center rounded-xl overflow-hidden" style={{ border: '0.5px solid rgb(var(--border))' }}>
         <button
           onClick={() => onChange(Math.max(min, value - 1))}
-          className="w-10 h-9 flex items-center justify-center text-base font-medium text-[#6B7280] hover:bg-[#F3F4F6] transition-colors flex-shrink-0"
-          style={{ borderRight: '0.5px solid #E2E5EC' }}
+          className="w-10 h-9 flex items-center justify-center text-base font-medium text-muted-foreground hover:bg-muted transition-colors flex-shrink-0"
+          style={{ borderRight: '0.5px solid rgb(var(--border))' }}
         >−</button>
-        <span className="flex-1 text-center text-sm font-semibold text-[#0E1525]">{value}</span>
+        <span className="flex-1 text-center text-sm font-semibold text-foreground">{value}</span>
         <button
           onClick={() => onChange(Math.min(max, value + 1))}
-          className="w-10 h-9 flex items-center justify-center text-base font-medium text-[#6B7280] hover:bg-[#F3F4F6] transition-colors flex-shrink-0"
-          style={{ borderLeft: '0.5px solid #E2E5EC' }}
+          className="w-10 h-9 flex items-center justify-center text-base font-medium text-muted-foreground hover:bg-muted transition-colors flex-shrink-0"
+          style={{ borderLeft: '0.5px solid rgb(var(--border))' }}
         >+</button>
       </div>
     </div>
@@ -109,9 +109,9 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
       <DialogContent className="max-w-lg p-0 overflow-hidden gap-0" style={{ borderRadius: 16 }}>
 
         {/* ── HEADER ── */}
-        <div className="flex items-center gap-3 px-5 py-4" style={{ background: '#0E1525' }}>
+        <div className="flex items-center gap-3 px-5 py-4" style={{ background: 'rgb(var(--sidebar))' }}>
           <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(133,183,235,0.15)' }}>
-            <Settings2 className="w-4 h-4" style={{ color: '#85B7EB' }} />
+            <Settings2 className="w-4 h-4" style={{ color: 'rgb(var(--primary))' }} />
           </div>
           <DialogTitle className="flex-1 text-sm font-semibold text-white tracking-tight">Program settings</DialogTitle>
           <button
@@ -124,7 +124,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
         </div>
 
         {/* ── BODY ── */}
-        <div className="px-5 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 120px)', background: '#fff' }}>
+        <div className="px-5 py-5 space-y-5 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 120px)', background: 'rgb(var(--card))' }}>
 
           {/* Description */}
           <div>
@@ -134,8 +134,8 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
               value={draft.description || ''}
               onChange={e => u('description', e.target.value)}
               placeholder="What's this program about?"
-              className="w-full text-sm px-3 py-2.5 rounded-xl resize-none focus:outline-none transition-colors placeholder:text-[#C4C9D4] text-[#374151]"
-              style={{ border: '0.5px solid #E2E5EC', background: '#F8F9FB' }}
+              className="w-full text-sm px-3 py-2.5 rounded-xl resize-none focus:outline-none transition-colors placeholder:text-[#C4C9D4] text-foreground"
+              style={{ border: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}
             />
           </div>
 
@@ -148,7 +148,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
           {/* Difficulty — segmented control */}
           <div>
             <FieldLabel>Difficulty</FieldLabel>
-            <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid #E2E5EC' }}>
+            <div className="flex rounded-xl overflow-hidden" style={{ border: '0.5px solid rgb(var(--border))' }}>
               {DIFFICULTIES.map((d, idx) => {
                 const active = draft.difficulty === d;
                 return (
@@ -157,9 +157,9 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
                     onClick={() => u('difficulty', d)}
                     className="flex-1 py-2 text-xs font-semibold capitalize transition-colors"
                     style={{
-                      background: active ? '#2563EB' : '#fff',
-                      color: active ? '#fff' : '#9CA3AF',
-                      borderRight: idx < DIFFICULTIES.length - 1 ? '0.5px solid #E2E5EC' : 'none',
+                      background: active ? 'rgb(var(--primary))' : 'rgb(var(--card))',
+                      color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                      borderRight: idx < DIFFICULTIES.length - 1 ? '0.5px solid rgb(var(--border))' : 'none',
                     }}
                   >
                     {d}
@@ -174,7 +174,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Category</FieldLabel>
               <Select value={draft.category} onValueChange={v => u('category', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -185,7 +185,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Session length</FieldLabel>
               <Select value={draft.estimated_session_length || '60'} onValueChange={v => u('estimated_session_length', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -207,9 +207,9 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
                     onClick={() => toggleEquip(eq)}
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                     style={{
-                      background: on ? '#2563EB' : '#F8F9FB',
-                      color: on ? '#fff' : '#6B7280',
-                      border: on ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+                      background: on ? 'rgb(var(--primary))' : '#F8F9FB',
+                      color: on ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                      border: on ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                     }}
                   >
                     {eq}
@@ -224,7 +224,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Progression Model</FieldLabel>
               <Select value={draft.progression_model || 'linear'} onValueChange={v => u('progression_model', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -237,7 +237,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Deload Frequency</FieldLabel>
               <Select value={draft.deload_frequency || 'never'} onValueChange={v => u('deload_frequency', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid #E2E5EC', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -253,7 +253,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
         {/* ── FOOTER ── */}
         <div
           className="flex items-center justify-between px-5 py-3.5"
-          style={{ background: '#F8F9FB', borderTop: '0.5px solid #E2E5EC' }}
+          style={{ background: '#F8F9FB', borderTop: '0.5px solid rgb(var(--border))' }}
         >
           {/* Save as template toggle */}
           <button
@@ -262,29 +262,29 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
           >
             <div
               className="w-9 h-5 rounded-full transition-colors flex items-center px-0.5 flex-shrink-0"
-              style={{ background: draft.is_template ? '#2563EB' : '#D1D5DB' }}
+              style={{ background: draft.is_template ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}
             >
               <div
-                className="w-4 h-4 rounded-full bg-white shadow transition-transform"
+                className="w-4 h-4 rounded-full bg-card shadow transition-transform"
                 style={{ transform: draft.is_template ? 'translateX(16px)' : 'translateX(0)' }}
               />
             </div>
-            <span className="text-xs font-medium text-[#374151]">Save as template</span>
+            <span className="text-xs font-medium text-foreground">Save as template</span>
           </button>
 
           {/* Actions */}
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-[#374151] transition-colors hover:bg-[#F3F4F6]"
-              style={{ border: '0.5px solid #E2E5EC', background: '#fff' }}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+              style={{ border: '0.5px solid rgb(var(--border))', background: 'rgb(var(--card))' }}
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               className="px-5 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90"
-              style={{ background: '#2563EB' }}
+              style={{ background: 'rgb(var(--primary))' }}
             >
               Save
             </button>
@@ -314,37 +314,37 @@ function AssignClientModal({ open, onClose, programId, programTitle }) {
   return (
     <Dialog open={open} onOpenChange={v => !v && handleClose()}>
       <DialogContent className="max-w-sm rounded-2xl p-0 overflow-hidden">
-        <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid #E7EAF3' }}>
-          <DialogTitle className="text-base font-bold text-[#1F2A44]">Assign to Client</DialogTitle>
-          <p className="text-xs text-[#6B7280] mt-0.5">Select a client to assign <strong>"{programTitle}"</strong></p>
+        <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgb(var(--border))' }}>
+          <DialogTitle className="text-base font-bold text-foreground">Assign to Client</DialogTitle>
+          <p className="text-xs text-muted-foreground mt-0.5">Select a client to assign <strong>"{programTitle}"</strong></p>
         </div>
         {done ? (
           <div className="flex flex-col items-center py-10 px-5 text-center">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mb-3">
-              <Check className="w-6 h-6 text-emerald-500" />
+            <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mb-3">
+              <Check className="w-6 h-6 text-success" />
             </div>
-            <p className="text-sm font-semibold text-[#1F2A44]">Program assigned!</p>
+            <p className="text-sm font-semibold text-foreground">Program assigned!</p>
             <Button size="sm" variant="outline" className="mt-4" onClick={handleClose}>Done</Button>
           </div>
         ) : (
           <>
-            <div className="max-h-64 overflow-y-auto divide-y divide-[#F6F7FB] px-2 py-2">
+            <div className="max-h-64 overflow-y-auto divide-y divide-muted px-2 py-2">
               {clients.map(c => (
                 <button key={c.id} onClick={() => setSelected(c.id)}
                   className={cn('w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left',
-                    selected === c.id ? 'bg-[#EEF4FF] border border-blue-100' : 'hover:bg-[#F6F7FB]')}>
-                  <div className="w-8 h-8 rounded-full bg-[#EEF4FF] text-primary text-sm font-bold flex items-center justify-center flex-shrink-0">
+                    selected === c.id ? 'bg-accent/10 border border-accent' : 'hover:bg-muted')}>
+                  <div className="w-8 h-8 rounded-full bg-accent/10 text-primary text-sm font-bold flex items-center justify-center flex-shrink-0">
                     {c.name?.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#1F2A44] truncate">{c.name}</p>
-                    <p className="text-xs text-[#9CA3AF] truncate">{c.email}</p>
+                    <p className="text-sm font-semibold text-foreground truncate">{c.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{c.email}</p>
                   </div>
                   {selected === c.id && <Check className="w-4 h-4 text-primary flex-shrink-0" />}
                 </button>
               ))}
             </div>
-            <div className="p-4 flex gap-2" style={{ borderTop: '1px solid #E7EAF3' }}>
+            <div className="p-4 flex gap-2" style={{ borderTop: '1px solid rgb(var(--border))' }}>
               <Button variant="outline" className="flex-1 text-xs" onClick={handleClose}>Cancel</Button>
               <Button className="flex-1 text-xs" disabled={!selected || assignMutation.isPending} onClick={() => assignMutation.mutate()}>
                 {assignMutation.isPending ? 'Assigning...' : 'Assign Program'}
@@ -372,17 +372,17 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
       onClick={onClick}
       className={cn(
         'flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-pointer transition-all group',
-        isSelected ? 'border-[#2563EB] bg-[#F0F6FF]' : isDragging ? 'border-blue-200 bg-white shadow-lg' : 'border-[#EBEDF2] bg-white hover:border-blue-200 hover:bg-[#F8FBFF]'
+        isSelected ? 'border-primary bg-[#F0F6FF]' : isDragging ? 'border-primary bg-card shadow-lg' : 'border-border bg-card hover:border-primary hover:bg-[#F8FBFF]'
       )}
     >
       {/* Drag handle */}
-      <div {...dragProvided.dragHandleProps} onClick={e => e.stopPropagation()} className="cursor-grab flex-shrink-0 text-[#D1D5DB] hover:text-[#9CA3AF]">
+      <div {...dragProvided.dragHandleProps} onClick={e => e.stopPropagation()} className="cursor-grab flex-shrink-0 text-muted-foreground hover:text-muted-foreground">
         <GripVertical className="w-3.5 h-3.5" />
       </div>
 
       {/* Thumbnail */}
       <div className="w-10 h-10 rounded-lg flex-shrink-0 overflow-hidden relative"
-        style={{ background: '#0E1525' }}>
+        style={{ background: 'rgb(var(--sidebar))' }}>
         {thumb ? (
           <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
         ) : (
@@ -398,7 +398,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
       </div>
 
       {/* Name */}
-      <p className="w-28 flex-shrink-0 text-sm font-medium text-[#0E1525] truncate">
+      <p className="w-28 flex-shrink-0 text-sm font-medium text-foreground truncate">
         {ex.name || <span className="text-[#C4C9D4] font-normal">Unnamed</span>}
       </p>
 
@@ -409,13 +409,13 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
         onClick={e => e.stopPropagation()}
         onChange={e => onPrescriptionChange(e.target.value)}
         placeholder="3 × 8–12 reps"
-        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-[#E7EAF3] bg-[#F8F9FB] text-[#374151] placeholder:text-[#C4C9D4] focus:outline-none focus:border-[#2563EB] focus:bg-white transition-colors"
+        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-border bg-[#F8F9FB] text-foreground placeholder:text-[#C4C9D4] focus:outline-none focus:border-primary focus:bg-card transition-colors"
       />
 
       {/* Remove */}
       <button
         onClick={e => { e.stopPropagation(); onRemove(); }}
-        className="w-6 h-6 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 text-[#D1D5DB] hover:text-red-400 transition-all flex-shrink-0"
+        className="w-6 h-6 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all flex-shrink-0"
       >
         <X className="w-3 h-3" />
       </button>
@@ -465,7 +465,7 @@ function DayCard({
       if (item._type === 'section_label') {
         rows.push(
           <div key={`sl-${i}`} className="flex items-center gap-2 my-2">
-            <div className="h-px flex-1" style={{ background: '#E7EAF3' }} />
+            <div className="h-px flex-1" style={{ background: 'rgb(var(--border))' }} />
             <div className="flex items-center gap-1.5 group/sl">
               <input
                 type="text"
@@ -475,16 +475,16 @@ function DayCard({
                   updated[items[i].__origIdx] = { ...item, title: e.target.value };
                   onUpdateDay({ exercises: updated });
                 }}
-                className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] bg-transparent border-none focus:outline-none text-center w-20"
+                className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-transparent border-none focus:outline-none text-center w-20"
               />
               <button onClick={() => {
                 const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
                 onUpdateDay({ exercises: updated });
-              }} className="opacity-0 group-hover/sl:opacity-100 text-[#D1D5DB] hover:text-red-400 transition-all">
+              }} className="opacity-0 group-hover/sl:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                 <X className="w-2.5 h-2.5" />
               </button>
             </div>
-            <div className="h-px flex-1" style={{ background: '#E7EAF3' }} />
+            <div className="h-px flex-1" style={{ background: 'rgb(var(--border))' }} />
           </div>
         );
         i++;
@@ -495,7 +495,7 @@ function DayCard({
       if (item._type === 'note') {
         rows.push(
           <div key={`note-${i}`} className="rounded-xl px-3 py-2.5 my-1.5 relative group/note"
-            style={{ background: '#FFFBEB', border: '1px solid #FAC775' }}>
+            style={{ background: 'rgb(var(--warning))', border: '1px solid #FAC775' }}>
             <textarea
               rows={2}
               value={item.text || ''}
@@ -511,7 +511,7 @@ function DayCard({
             <button onClick={() => {
               const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
               onUpdateDay({ exercises: updated });
-            }} className="absolute top-2 right-2 opacity-0 group-hover/note:opacity-100 text-[#D1D5DB] hover:text-red-400 transition-all">
+            }} className="absolute top-2 right-2 opacity-0 group-hover/note:opacity-100 text-muted-foreground hover:text-destructive transition-all">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -532,8 +532,8 @@ function DayCard({
         rows.push(
           <div key={`ss-${i}`} className="mb-2">
             <div className="flex items-center gap-2 mb-1.5 group/ssh">
-              <div className="w-0.5 h-4 rounded-full flex-shrink-0" style={{ background: '#2563EB' }} />
-              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: '#2563EB' }}>
+              <div className="w-0.5 h-4 rounded-full flex-shrink-0" style={{ background: 'rgb(var(--primary))' }} />
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'rgb(var(--primary))' }}>
                 Superset {item.label || 'A'}
               </span>
               <input
@@ -545,16 +545,16 @@ function DayCard({
                   onUpdateDay({ exercises: updated });
                 }}
                 placeholder="Rest note..."
-                className="ml-2 flex-1 text-[10px] text-[#9CA3AF] bg-transparent border-none focus:outline-none"
+                className="ml-2 flex-1 text-[10px] text-muted-foreground bg-transparent border-none focus:outline-none"
               />
               <button onClick={() => {
                 const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
                 onUpdateDay({ exercises: updated });
-              }} className="opacity-0 group-hover/ssh:opacity-100 text-[#D1D5DB] hover:text-red-400 transition-all">
+              }} className="opacity-0 group-hover/ssh:opacity-100 text-muted-foreground hover:text-destructive transition-all">
                 <X className="w-2.5 h-2.5" />
               </button>
             </div>
-            <div className="pl-3 space-y-1.5" style={{ borderLeft: '2px solid #2563EB' }}>
+            <div className="pl-3 space-y-1.5" style={{ borderLeft: '2px solid rgb(var(--primary))' }}>
               {ssItems.map(({ ex, origIdx }) => (
                 <Draggable key={`ex-${globalDayIdx}-${origIdx}`} draggableId={`ex-${globalDayIdx}-${origIdx}`} index={origIdx}>
                   {(drag, snap) => (
@@ -607,13 +607,13 @@ function DayCard({
   const allItems = (day.exercises || []).map((ex, origIdx) => ({ ...ex, __origIdx: origIdx }));
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden mb-4" style={{ border: '0.5px solid #E2E5EC', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+    <div className="bg-card rounded-2xl overflow-hidden mb-4" style={{ border: '0.5px solid rgb(var(--border))', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
 
       {/* ── HEADER ── */}
-      <div className="px-4 pt-4 pb-3" style={{ borderBottom: '1px solid #F3F4F6' }}>
+      <div className="px-4 pt-4 pb-3" style={{ borderBottom: '1px solid rgb(var(--muted))' }}>
         <div className="flex items-start gap-2">
-          <GripVertical className="w-3.5 h-3.5 text-[#D1D5DB] cursor-grab flex-shrink-0 mt-1" />
-          <button onClick={() => setCollapsed(v => !v)} className="flex-shrink-0 text-[#9CA3AF] hover:text-[#374151] transition-colors mt-0.5">
+          <GripVertical className="w-3.5 h-3.5 text-muted-foreground cursor-grab flex-shrink-0 mt-1" />
+          <button onClick={() => setCollapsed(v => !v)} className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors mt-0.5">
             {collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
           </button>
 
@@ -628,11 +628,11 @@ function DayCard({
                 onChange={e => onUpdateDay({ day_name: e.target.value })}
                 onBlur={() => setEditingTitle(false)}
                 onKeyDown={e => e.key === 'Enter' && setEditingTitle(false)}
-                className="w-full text-sm font-bold text-[#0E1525] bg-transparent border-none focus:outline-none"
+                className="w-full text-sm font-bold text-foreground bg-transparent border-none focus:outline-none"
               />
             ) : (
               <button onClick={() => setEditingTitle(true)} className="text-left group/title flex items-center gap-1">
-                <span className="text-sm font-bold text-[#0E1525]">{day.day_name || 'Untitled Day'}</span>
+                <span className="text-sm font-bold text-foreground">{day.day_name || 'Untitled Day'}</span>
                 <span className="text-[10px] text-[#C4C9D4] opacity-0 group-hover/title:opacity-100 transition-opacity ml-1">edit</span>
               </button>
             )}
@@ -641,36 +641,36 @@ function DayCard({
             <div className="flex items-center gap-2 mt-0.5 flex-wrap">
               {/* Session time — editable inline */}
               <div className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-[#9CA3AF]" />
+                <Clock className="w-3 h-3 text-muted-foreground" />
                 <input
                   type="text"
                   value={sessionTime}
                   onChange={e => onUpdateDay({ session_time: e.target.value })}
                   placeholder="45 min"
-                  className="text-[11px] text-[#6B7280] bg-transparent border-none focus:outline-none w-14"
+                  className="text-[11px] text-muted-foreground bg-transparent border-none focus:outline-none w-14"
                 />
               </div>
-              <span className="text-[#E2E5EC] text-[10px]">·</span>
-              <span className="text-[11px] text-[#6B7280]">{exCount} {exCount === 1 ? 'exercise' : 'exercises'}</span>
-              <span className="text-[#E2E5EC] text-[10px]">·</span>
-              <span className="text-[10px] font-medium text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded-full">{workoutType}</span>
+              <span className="text-border text-[10px]">·</span>
+              <span className="text-[11px] text-muted-foreground">{exCount} {exCount === 1 ? 'exercise' : 'exercises'}</span>
+              <span className="text-border text-[10px]">·</span>
+              <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{workoutType}</span>
             </div>
 
             {/* Equipment chips */}
             {derivedEquipment.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
                 {derivedEquipment.map(eq => (
-                  <span key={eq} className="text-[10px] font-medium text-[#6B7280] bg-[#F8F9FB] border border-[#E7EAF3] px-2 py-0.5 rounded-full">{eq}</span>
+                  <span key={eq} className="text-[10px] font-medium text-muted-foreground bg-[#F8F9FB] border border-border px-2 py-0.5 rounded-full">{eq}</span>
                 ))}
               </div>
             )}
           </div>
 
           <div className="flex items-center gap-1 flex-shrink-0">
-            <button onClick={onDuplicateDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
+            <button onClick={onDuplicateDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-foreground hover:bg-muted transition-colors">
               <Copy className="w-3.5 h-3.5" />
             </button>
-            <button onClick={onRemoveDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-red-400 hover:bg-red-50 transition-colors">
+            <button onClick={onRemoveDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-destructive hover:bg-destructive/10 transition-colors">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -687,7 +687,7 @@ function DayCard({
               value={day.workout_notes || ''}
               onChange={e => onUpdateDay({ workout_notes: e.target.value })}
               placeholder="Workout notes / bio — warmup intent, focus, coaching cues for the client..."
-              className="w-full text-xs px-3 py-2.5 rounded-xl border border-[#E7EAF3] bg-[#F8F9FB] text-[#374151] placeholder:text-[#C4C9D4] focus:outline-none focus:border-[#93C5FD] resize-none transition-colors"
+              className="w-full text-xs px-3 py-2.5 rounded-xl border border-border bg-[#F8F9FB] text-foreground placeholder:text-[#C4C9D4] focus:outline-none focus:border-primary resize-none transition-colors"
             />
           </div>
 
@@ -708,7 +708,7 @@ function DayCard({
             <button
               onClick={() => onOpenPicker ? onOpenPicker('main') : onAddExercise('main')}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
-              style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+              style={{ border: '1.5px dashed rgb(var(--accent))', color: 'rgb(var(--primary))', background: 'transparent' }}
             >
               <Plus className="w-3.5 h-3.5" /> Add exercise
             </button>
@@ -718,8 +718,8 @@ function DayCard({
                 const updated = [...(day.exercises || []), newSupersetGroup(), { ...newExercise('main'), superset_group: grpLabel }];
                 onUpdateDay({ exercises: updated });
               }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2563EB] transition-all"
-              style={{ border: '1.5px dashed #BFDBFE', background: 'transparent' }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-primary transition-all"
+              style={{ border: '1.5px dashed rgb(var(--accent))', background: 'transparent' }}
             >
               <Zap className="w-3.5 h-3.5" /> Superset
             </button>
@@ -728,8 +728,8 @@ function DayCard({
                 const updated = [...(day.exercises || []), newNoteBlock()];
                 onUpdateDay({ exercises: updated });
               }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#6B7280] transition-all"
-              style={{ border: '1.5px dashed #E7EAF3', background: 'transparent' }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted-foreground transition-all"
+              style={{ border: '1.5px dashed rgb(var(--border))', background: 'transparent' }}
             >
               <AlignLeft className="w-3.5 h-3.5" /> Note
             </button>
@@ -738,8 +738,8 @@ function DayCard({
                 const updated = [...(day.exercises || []), newSectionLabel('Section')];
                 onUpdateDay({ exercises: updated });
               }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#6B7280] transition-all"
-              style={{ border: '1.5px dashed #E7EAF3', background: 'transparent' }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted-foreground transition-all"
+              style={{ border: '1.5px dashed rgb(var(--border))', background: 'transparent' }}
             >
               <Type className="w-3.5 h-3.5" /> Label
             </button>
@@ -1062,17 +1062,17 @@ export default function ProgramBuilder() {
   const selectedExData = selectedEx ? workouts[selectedEx.dayIdx]?.exercises?.[selectedEx.exIdx] || null : null;
   const canAssign = !!(savedId || existingProgram?.id);
 
-  const diffColor = { beginner: '#10B981', intermediate: '#2563EB', advanced: '#7C3AED', elite: '#EF4444' };
+  const diffColor = { beginner: 'rgb(var(--success))', intermediate: 'rgb(var(--primary))', advanced: 'rgb(var(--ai))', elite: 'rgb(var(--destructive))' };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: '#F6F7FB' }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: 'rgb(var(--muted))' }}>
 
       {/* ── TOP BAR ── */}
-      <div className="bg-white flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E5EC' }}>
+      <div className="bg-card flex-shrink-0" style={{ borderBottom: '0.5px solid rgb(var(--border))' }}>
         <div className="flex items-start gap-4 px-6 py-4">
           {/* Back */}
           <button onClick={() => navigate('/programs')}
-            className="flex items-center gap-1.5 text-[#9CA3AF] hover:text-[#374151] transition-colors mt-1 flex-shrink-0">
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors mt-1 flex-shrink-0">
             <ArrowLeft className="w-4 h-4" />
           </button>
 
@@ -1082,10 +1082,10 @@ export default function ProgramBuilder() {
               value={meta.title}
               onChange={e => { setMeta(m => ({ ...m, title: e.target.value })); trackChange(); }}
               placeholder="Program name..."
-              className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-[#0E1525] font-semibold placeholder:text-[#C4C9D4]"
+              className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-foreground font-semibold placeholder:text-[#C4C9D4]"
               style={{ fontSize: 18 }}
             />
-            <p className="text-xs text-[#9CA3AF] mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {hasUnsavedChanges ? 'Draft · unsaved changes' : lastSaved ? `Saved · ${lastSaved}` : 'Draft'}
             </p>
           </div>
@@ -1094,19 +1094,19 @@ export default function ProgramBuilder() {
           <div className="flex items-center gap-2 flex-shrink-0 mt-1">
             {canAssign && (
               <button onClick={() => setShowAssign(true)}
-                className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[#6B7280] hover:text-[#374151] px-3 py-1.5 rounded-lg border border-[#E7EAF3] hover:border-[#D1D5DB] transition-all">
+                className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg border border-border hover:border-muted-foreground transition-all">
                 <Users className="w-3.5 h-3.5" /> Assign
               </button>
             )}
             <button
-              className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[#6B7280] hover:text-[#374151] px-3 py-1.5 rounded-lg border border-[#E7EAF3] hover:border-[#D1D5DB] transition-all">
+              className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg border border-border hover:border-muted-foreground transition-all">
               <Eye className="w-3.5 h-3.5" /> Preview
             </button>
             <button
               onClick={handleSave}
               disabled={saveMutation.isPending}
               className="flex items-center gap-1.5 text-xs font-semibold text-white px-4 py-1.5 rounded-lg transition-opacity hover:opacity-90 disabled:opacity-60"
-              style={{ background: '#2563EB' }}
+              style={{ background: 'rgb(var(--primary))' }}
             >
               <Save className="w-3.5 h-3.5" />
               {saveMutation.isPending ? 'Saving...' : 'Save'}
@@ -1124,16 +1124,16 @@ export default function ProgramBuilder() {
             { icon: Clock,     text: `${meta.estimated_session_length} min` },
             ...(meta.category && meta.category !== 'custom' ? [{ icon: Wrench, text: meta.category.replace('_', ' ') }] : []),
           ].map((chip, i) => (
-            <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] flex-shrink-0">
-              <chip.icon className="w-3 h-3 flex-shrink-0" style={{ color: chip.color || '#9CA3AF' }} />
-              <span className="text-xs font-medium capitalize" style={{ color: chip.color || '#374151' }}>{chip.text}</span>
+            <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-muted-foreground flex-shrink-0">
+              <chip.icon className="w-3 h-3 flex-shrink-0" style={{ color: chip.color || 'rgb(var(--muted-foreground))' }} />
+              <span className="text-xs font-medium capitalize" style={{ color: chip.color || 'rgb(var(--foreground))' }}>{chip.text}</span>
             </div>
           ))}
 
           <button
             onClick={() => setShowSettings(true)}
             className="flex items-center gap-1 text-xs font-semibold flex-shrink-0 ml-1 hover:opacity-80 transition-opacity"
-            style={{ color: '#2563EB' }}
+            style={{ color: 'rgb(var(--primary))' }}
           >
             <Settings2 className="w-3.5 h-3.5" /> Edit settings
           </button>
@@ -1141,12 +1141,12 @@ export default function ProgramBuilder() {
       </div>
 
       {/* ── SCHEDULE MODE + WEEK TABS ── */}
-      <div className="bg-white flex-shrink-0" style={{ borderBottom: '0.5px solid #E2E5EC' }}>
+      <div className="bg-card flex-shrink-0" style={{ borderBottom: '0.5px solid rgb(var(--border))' }}>
 
         {/* Schedule control row */}
         <div className="px-6 pt-3 pb-2 flex items-center gap-4">
           {/* Segmented toggle */}
-          <div className="flex rounded-xl overflow-hidden flex-shrink-0" style={{ border: '0.5px solid #E2E5EC' }}>
+          <div className="flex rounded-xl overflow-hidden flex-shrink-0" style={{ border: '0.5px solid rgb(var(--border))' }}>
             {[
               { mode: 'repeat',   label: 'Repeat weekly',   Icon: RefreshCw },
               { mode: 'progress', label: 'Progress weekly',  Icon: Layers },
@@ -1158,9 +1158,9 @@ export default function ProgramBuilder() {
                   onClick={() => switchScheduleMode(mode)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold transition-colors"
                   style={{
-                    background: active ? '#2563EB' : '#fff',
-                    color: active ? '#fff' : '#9CA3AF',
-                    borderRight: mode === 'repeat' ? '0.5px solid #E2E5EC' : 'none',
+                    background: active ? 'rgb(var(--primary))' : 'rgb(var(--card))',
+                    color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                    borderRight: mode === 'repeat' ? '0.5px solid rgb(var(--border))' : 'none',
                   }}
                 >
                   <Icon className="w-3 h-3" />
@@ -1172,11 +1172,11 @@ export default function ProgramBuilder() {
 
           {/* Helper text */}
           {scheduleMode === 'repeat' ? (
-            <p className="text-[11px] text-[#9CA3AF] flex-1 min-w-0 truncate">
-              Build one week — it repeats for all <strong className="text-[#374151]">{meta.duration_weeks}</strong> weeks. Edit once, applies everywhere.
+            <p className="text-[11px] text-muted-foreground flex-1 min-w-0 truncate">
+              Build one week — it repeats for all <strong className="text-foreground">{meta.duration_weeks}</strong> weeks. Edit once, applies everywhere.
             </p>
           ) : (
-            <p className="text-[11px] text-[#9CA3AF] flex-1 min-w-0 truncate">
+            <p className="text-[11px] text-muted-foreground flex-1 min-w-0 truncate">
               Each week is independent — perfect for progressive overload.
             </p>
           )}
@@ -1185,11 +1185,11 @@ export default function ProgramBuilder() {
         {/* Week tabs (progress mode only) or "Weekly template" pill (repeat mode) */}
         {scheduleMode === 'repeat' ? (
           <div className="px-6 pb-3 flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold text-white flex-shrink-0" style={{ background: '#0E1525' }}>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold text-white flex-shrink-0" style={{ background: 'rgb(var(--sidebar))' }}>
               <RefreshCw className="w-3 h-3" />
               Weekly template
             </div>
-            <span className="text-[10px] text-[#9CA3AF]">repeats × {meta.duration_weeks}</span>
+            <span className="text-[10px] text-muted-foreground">repeats × {meta.duration_weeks}</span>
           </div>
         ) : (
           <div className="px-6 pb-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
@@ -1199,8 +1199,8 @@ export default function ProgramBuilder() {
                   onClick={() => setActiveWeek(i)}
                   className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all"
                   style={{
-                    background: safeWeek === i ? '#0E1525' : '#F3F4F6',
-                    color: safeWeek === i ? '#fff' : '#6B7280',
+                    background: safeWeek === i ? 'rgb(var(--foreground))' : 'rgb(var(--muted))',
+                    color: safeWeek === i ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
                   }}
                 >
                   Week {w.weekNum}
@@ -1213,7 +1213,7 @@ export default function ProgramBuilder() {
                   <PopoverTrigger asChild>
                     <button
                       onClick={e => e.stopPropagation()}
-                      className="ml-0.5 w-5 h-5 flex items-center justify-center rounded-full text-[#C4C9D4] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors"
+                      className="ml-0.5 w-5 h-5 flex items-center justify-center rounded-full text-[#C4C9D4] hover:text-foreground hover:bg-muted transition-colors"
                       title="Copy week to…"
                     >
                       <Copy className="w-2.5 h-2.5" />
@@ -1221,23 +1221,23 @@ export default function ProgramBuilder() {
                   </PopoverTrigger>
                   <PopoverContent align="start" sideOffset={6} className="p-0 w-52">
                     <div className="px-3 pt-3 pb-1">
-                      <p className="text-xs font-bold text-[#0E1525] mb-2">Copy Week {w.weekNum} to…</p>
+                      <p className="text-xs font-bold text-foreground mb-2">Copy Week {w.weekNum} to…</p>
                       {/* Select all */}
                       <button
                         onClick={() => {
                           const others = weeks.map((_, idx) => idx).filter(idx => idx !== i);
                           setCopyTargets(copyTargets.length === others.length ? [] : others);
                         }}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F3F4F6] transition-colors mb-1"
+                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors mb-1"
                       >
                         <div className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0"
                           style={{
-                            background: copyTargets.length === weeks.length - 1 ? '#2563EB' : '#fff',
-                            borderColor: copyTargets.length === weeks.length - 1 ? '#2563EB' : '#D1D5DB',
+                            background: copyTargets.length === weeks.length - 1 ? 'rgb(var(--primary))' : 'rgb(var(--card))',
+                            borderColor: copyTargets.length === weeks.length - 1 ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
                           }}>
                           {copyTargets.length === weeks.length - 1 && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
-                        <span className="text-xs text-[#374151] font-medium">Select all weeks</span>
+                        <span className="text-xs text-foreground font-medium">Select all weeks</span>
                       </button>
                       <div className="space-y-0.5 max-h-36 overflow-y-auto">
                         {weeks.filter((_, idx) => idx !== i).map((tw, _) => {
@@ -1247,27 +1247,27 @@ export default function ProgramBuilder() {
                             <button
                               key={tIdx}
                               onClick={() => setCopyTargets(ct => checked ? ct.filter(x => x !== tIdx) : [...ct, tIdx])}
-                              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F3F4F6] transition-colors"
+                              className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-muted transition-colors"
                             >
                               <div className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0"
                                 style={{
-                                  background: checked ? '#2563EB' : '#fff',
-                                  borderColor: checked ? '#2563EB' : '#D1D5DB',
+                                  background: checked ? 'rgb(var(--primary))' : 'rgb(var(--card))',
+                                  borderColor: checked ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
                                 }}>
                                 {checked && <Check className="w-2.5 h-2.5 text-white" />}
                               </div>
-                              <span className="text-xs text-[#374151]">Week {tw.weekNum}</span>
+                              <span className="text-xs text-foreground">Week {tw.weekNum}</span>
                             </button>
                           );
                         })}
                       </div>
                     </div>
-                    <div className="px-3 py-2.5" style={{ borderTop: '0.5px solid #E7EAF3' }}>
+                    <div className="px-3 py-2.5" style={{ borderTop: '0.5px solid rgb(var(--border))' }}>
                       <button
                         onClick={() => copyWeekToTargets(i, copyTargets)}
                         disabled={copyTargets.length === 0}
                         className="w-full py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity disabled:opacity-40"
-                        style={{ background: '#2563EB' }}
+                        style={{ background: 'rgb(var(--primary))' }}
                       >
                         Copy to {copyTargets.length > 0 ? `${copyTargets.length} week${copyTargets.length !== 1 ? 's' : ''}` : 'weeks'}
                       </button>
@@ -1279,7 +1279,7 @@ export default function ProgramBuilder() {
             <button
               onClick={addWeek}
               className="flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all"
-              style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+              style={{ border: '1.5px dashed rgb(var(--accent))', color: 'rgb(var(--primary))', background: 'transparent' }}
             >
               <Plus className="w-3 h-3" /> Week
             </button>
@@ -1291,7 +1291,7 @@ export default function ProgramBuilder() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* ── LEFT: Exercise Library Panel ── */}
-        <div className="hidden lg:flex flex-col w-60 xl:w-64 flex-shrink-0 overflow-hidden" style={{ borderRight: '0.5px solid #E2E5EC' }}>
+        <div className="hidden lg:flex flex-col w-60 xl:w-64 flex-shrink-0 overflow-hidden" style={{ borderRight: '0.5px solid rgb(var(--border))' }}>
           <ExerciseLibraryPanel
             onAddExercise={(libEntry) => {
               if (pickerState) {
@@ -1320,12 +1320,12 @@ export default function ProgramBuilder() {
         <div className="flex-1 overflow-y-auto">
           {workouts.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-5 text-center py-24 px-8">
-              <div className="w-14 h-14 rounded-2xl bg-[#EEF2FF] flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center">
                 <Dumbbell className="w-7 h-7 text-[#3730a3]" />
               </div>
               <div>
-                <h2 className="font-bold text-[17px] text-[#0E1525]">Start building</h2>
-                <p className="text-sm text-[#9CA3AF] mt-1">
+                <h2 className="font-bold text-[17px] text-foreground">Start building</h2>
+                <p className="text-sm text-muted-foreground mt-1">
                   {scheduleMode === 'repeat'
                     ? 'Add your weekly template to get started'
                     : 'Add your first week to get started'}
@@ -1343,7 +1343,7 @@ export default function ProgramBuilder() {
                   }
                 }}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
-                style={{ background: '#2563EB' }}>
+                style={{ background: 'rgb(var(--primary))' }}>
                 <Plus className="w-4 h-4" /> {scheduleMode === 'repeat' ? 'Build template' : 'Add Week 1'}
               </button>
             </div>
@@ -1371,7 +1371,7 @@ export default function ProgramBuilder() {
                 <button
                   onClick={() => { const days = [...workouts, newDay(workouts.length)]; setWorkouts(days); trackChange(); }}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all mb-10"
-                  style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+                  style={{ border: '1.5px dashed rgb(var(--accent))', color: 'rgb(var(--primary))', background: 'transparent' }}
                 >
                   <Plus className="w-4 h-4" /> Add training day
                 </button>
@@ -1404,7 +1404,7 @@ export default function ProgramBuilder() {
                 <button
                   onClick={addDay}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all mb-10"
-                  style={{ border: '1.5px dashed #BFDBFE', color: '#2563EB', background: 'transparent' }}
+                  style={{ border: '1.5px dashed rgb(var(--accent))', color: 'rgb(var(--primary))', background: 'transparent' }}
                 >
                   <Plus className="w-4 h-4" /> Add training day
                 </button>
@@ -1415,7 +1415,7 @@ export default function ProgramBuilder() {
 
         {/* ── RIGHT: Exercise detail panel ── */}
         {selectedExData && (
-          <div className="hidden lg:flex flex-col w-72 xl:w-80 flex-shrink-0 overflow-hidden" style={{ borderLeft: '0.5px solid #E2E5EC' }}>
+          <div className="hidden lg:flex flex-col w-72 xl:w-80 flex-shrink-0 overflow-hidden" style={{ borderLeft: '0.5px solid rgb(var(--border))' }}>
             <ExerciseDetailsPanel
               exercise={selectedExData}
               onChange={updateSelectedExercise}

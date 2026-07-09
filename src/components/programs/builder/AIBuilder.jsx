@@ -190,7 +190,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
             onClick={() => handleSaveProgram(reviewData)}
             disabled={loading || !(reviewData?.title ?? generatedProgram?.title)}
             className="gap-2 text-sm font-semibold"
-            style={{ background: '#2563EB' }}
+            style={{ background: 'rgb(var(--primary))' }}
           >
             <Check className="w-4 h-4" />
             {loading ? 'Saving...' : 'Save & Open Builder'}

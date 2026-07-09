@@ -31,9 +31,9 @@ const ChipSelect = ({ value, onChange, options, single = false }) => (
           }}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
           style={{
-            background: isActive ? '#2563EB' : '#F8F9FB',
-            color: isActive ? '#fff' : '#6B7280',
-            border: isActive ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+            background: isActive ? 'rgb(var(--primary))' : '#F8F9FB',
+            color: isActive ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+            border: isActive ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
           }}
         >
           {opt}
@@ -44,7 +44,7 @@ const ChipSelect = ({ value, onChange, options, single = false }) => (
 );
 
 const FieldLabel = ({ children, optional }) => (
-  <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">
+  <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
     {children} {optional && <span className="normal-case tracking-normal font-normal text-[#C4C9D4]">— optional</span>}
   </p>
 );
@@ -190,9 +190,9 @@ export default function AIProfileStep({ onSubmit }) {
                 onClick={() => u('days_per_week', d)}
                 className="w-9 h-9 rounded-lg text-sm font-semibold transition-all"
                 style={{
-                  background: form.days_per_week === d ? '#2563EB' : '#F8F9FB',
-                  color: form.days_per_week === d ? '#fff' : '#6B7280',
-                  border: form.days_per_week === d ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+                  background: form.days_per_week === d ? 'rgb(var(--primary))' : '#F8F9FB',
+                  color: form.days_per_week === d ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                  border: form.days_per_week === d ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                 }}
               >{d}</button>
             ))}
@@ -266,7 +266,7 @@ export default function AIProfileStep({ onSubmit }) {
             { key: 'current_ohp', label: 'OHP' },
           ].map(({ key, label }) => (
             <div key={key} className="flex items-center gap-2">
-              <span className="text-xs text-[#9CA3AF] w-20 flex-shrink-0">{label}</span>
+              <span className="text-xs text-muted-foreground w-20 flex-shrink-0">{label}</span>
               <Input
                 type="text"
                 value={form[key]}
@@ -284,7 +284,7 @@ export default function AIProfileStep({ onSubmit }) {
           onClick={handleSubmit}
           disabled={!isComplete}
           className="gap-2 text-sm font-semibold"
-          style={{ background: '#2563EB' }}
+          style={{ background: 'rgb(var(--primary))' }}
         >
           Next <ChevronRight className="w-4 h-4" />
         </Button>

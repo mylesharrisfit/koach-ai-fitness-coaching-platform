@@ -10,19 +10,19 @@ import {
 import { Button } from '@/components/ui/button';
 
 const DIFFICULTY_BADGE = {
-  beginner: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  intermediate: 'bg-blue-50 text-blue-700 border-blue-100',
-  advanced: 'bg-purple-50 text-purple-700 border-purple-100',
-  elite: 'bg-red-50 text-red-600 border-red-100',
+  beginner: 'bg-success/10 text-success border-success',
+  intermediate: 'bg-accent text-primary border-accent',
+  advanced: 'bg-ai/10 text-ai border-ai',
+  elite: 'bg-destructive/10 text-destructive border-destructive',
 };
 
 const CATEGORY_COLOR = {
-  strength: 'text-purple-600',
-  hypertrophy: 'text-blue-600',
+  strength: 'text-ai',
+  hypertrophy: 'text-primary',
   fat_loss: 'text-orange-600',
   athletic: 'text-teal-600',
   mobility: 'text-lime-600',
-  custom: 'text-[#6B7280]',
+  custom: 'text-muted-foreground',
 };
 
 function estSessionMins(program) {
@@ -46,7 +46,7 @@ export default function ProgramListRow({
   const restDays = 7 - (program.days_per_week || 0);
 
   return (
-    <div className="flex items-center gap-4 px-4 py-3 bg-white border border-[#E7EAF3] rounded-lg hover:border-blue-200 hover:shadow-sm transition-all">
+    <div className="flex items-center gap-4 px-4 py-3 bg-card border border-border rounded-lg hover:border-primary hover:shadow-sm transition-all">
       {/* Difficulty Badge */}
       <div className="w-20 flex-shrink-0">
         <span className={cn('text-[11px] font-semibold px-2 py-1 rounded-lg border capitalize inline-block', DIFFICULTY_BADGE[program.difficulty] || DIFFICULTY_BADGE.beginner)}>
@@ -56,14 +56,14 @@ export default function ProgramListRow({
 
       {/* Title & Description */}
       <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-semibold text-[#1F2A44] truncate">{program.title}</h4>
+        <h4 className="text-sm font-semibold text-foreground truncate">{program.title}</h4>
         {program.description && (
-          <p className="text-xs text-[#9CA3AF] truncate">{program.description}</p>
+          <p className="text-xs text-muted-foreground truncate">{program.description}</p>
         )}
       </div>
 
       {/* Stats */}
-      <div className="flex items-center gap-4 text-xs text-[#6B7280] flex-shrink-0">
+      <div className="flex items-center gap-4 text-xs text-muted-foreground flex-shrink-0">
         {program.duration_weeks && (
           <span className="flex items-center gap-1 whitespace-nowrap">
             <Clock className="w-3.5 h-3.5" />
@@ -84,22 +84,22 @@ export default function ProgramListRow({
       {/* Clients Assigned */}
       <div className="w-20 flex-shrink-0 text-center">
         {clientsAssigned.length > 0 ? (
-          <span className="text-xs font-semibold text-[#1F2A44]">
+          <span className="text-xs font-semibold text-foreground">
             {clientsAssigned.length} client{clientsAssigned.length !== 1 ? 's' : ''}
           </span>
         ) : (
-          <span className="text-xs text-[#9CA3AF]">—</span>
+          <span className="text-xs text-muted-foreground">—</span>
         )}
       </div>
 
       {/* Progress */}
       <div className="w-24 flex-shrink-0 text-center">
         {clientsInProgress.length > 0 ? (
-          <span className="text-xs font-medium text-blue-600">
+          <span className="text-xs font-medium text-primary">
             {clientsInProgress.length} in progress
           </span>
         ) : (
-          <span className="text-xs text-[#9CA3AF]">—</span>
+          <span className="text-xs text-muted-foreground">—</span>
         )}
       </div>
 

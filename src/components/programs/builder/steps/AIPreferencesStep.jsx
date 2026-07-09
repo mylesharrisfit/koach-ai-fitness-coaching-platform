@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Zap } from 'lucide-react';
 
 const FieldLabel = ({ children, optional }) => (
-  <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">
+  <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
     {children} {optional && <span className="normal-case tracking-normal font-normal text-[#C4C9D4]">— optional</span>}
   </p>
 );
@@ -96,9 +96,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 onClick={() => selectDuration(d)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: active ? '#2563EB' : '#F8F9FB',
-                  color: active ? '#fff' : '#6B7280',
-                  border: active ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+                  background: active ? 'rgb(var(--primary))' : '#F8F9FB',
+                  color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                  border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                 }}
               >
                 {d} wks
@@ -111,9 +111,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
             onClick={() => { setIsCustomDuration(true); setCustomDuration(''); u('duration', ''); }}
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
             style={{
-              background: isCustomDuration ? '#2563EB' : '#F8F9FB',
-              color: isCustomDuration ? '#fff' : '#6B7280',
-              border: isCustomDuration ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+              background: isCustomDuration ? 'rgb(var(--primary))' : '#F8F9FB',
+              color: isCustomDuration ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+              border: isCustomDuration ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
             }}
           >
             Custom
@@ -131,7 +131,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
               className="h-8 text-sm w-24"
               autoFocus
             />
-            <span className="text-xs text-[#9CA3AF]">weeks (1–52)</span>
+            <span className="text-xs text-muted-foreground">weeks (1–52)</span>
           </div>
         )}
       </div>
@@ -149,9 +149,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 onClick={() => u('progression_style', opt.value)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: active ? '#2563EB' : '#F8F9FB',
-                  color: active ? '#fff' : '#6B7280',
-                  border: active ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+                  background: active ? 'rgb(var(--primary))' : '#F8F9FB',
+                  color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                  border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                 }}
               >
                 {opt.label}
@@ -159,7 +159,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
             );
           })}
         </div>
-        <p className="text-[11px] text-[#9CA3AF] mt-1.5">
+        <p className="text-[11px] text-muted-foreground mt-1.5">
           {form.progression_style === 'linear' && 'Add weight each session. Best for beginners–intermediate.'}
           {form.progression_style === 'undulating' && 'Vary rep ranges each session (strength / hypertrophy / endurance). Best for intermediate+.'}
           {form.progression_style === 'block' && 'Accumulation → Intensification → Realization phases. Best for advanced.'}
@@ -167,10 +167,10 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       </div>
 
       {/* Deload */}
-      <div className="flex items-start justify-between p-3 rounded-xl" style={{ border: '0.5px solid #E2E5EC', background: '#F8F9FB' }}>
+      <div className="flex items-start justify-between p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-[#0E1525]">Include Deload Weeks</p>
-          <p className="text-[11px] text-[#9CA3AF] mt-0.5">Reduced volume weeks to aid recovery and adaptation</p>
+          <p className="text-sm font-semibold text-foreground">Include Deload Weeks</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Reduced volume weeks to aid recovery and adaptation</p>
           {form.include_deload && (
             <div className="mt-2">
               <Select value={form.deload_frequency} onValueChange={v => u('deload_frequency', v)}>
@@ -188,17 +188,17 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       </div>
 
       {/* Cardio */}
-      <div className="p-3 rounded-xl" style={{ border: '0.5px solid #E2E5EC', background: '#F8F9FB' }}>
+      <div className="p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}>
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#0E1525]">Include Cardio / Conditioning</p>
-            <p className="text-[11px] text-[#9CA3AF] mt-0.5">Add conditioning work to the schedule</p>
+            <p className="text-sm font-semibold text-foreground">Include Cardio / Conditioning</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Add conditioning work to the schedule</p>
           </div>
           <Switch checked={form.include_cardio} onCheckedChange={v => u('include_cardio', v)} />
         </div>
         {form.include_cardio && (
           <div className="mt-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">Select type(s)</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Select type(s)</p>
             <div className="flex flex-wrap gap-1.5">
               {CARDIO_OPTIONS.map(type => {
                 const active = (form.cardio_types || []).includes(type);
@@ -209,9 +209,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                     onClick={() => toggleCardioType(type)}
                     className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-all"
                     style={{
-                      background: active ? '#2563EB' : '#fff',
-                      color: active ? '#fff' : '#6B7280',
-                      border: active ? '1px solid #2563EB' : '0.5px solid #D1D5DB',
+                      background: active ? 'rgb(var(--primary))' : 'rgb(var(--card))',
+                      color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                      border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--muted-foreground))',
                     }}
                   >
                     {type}
@@ -220,7 +220,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
               })}
             </div>
             {(form.cardio_types || []).length === 0 && (
-              <p className="text-[11px] text-[#EF4444] mt-1.5">Select at least one cardio type</p>
+              <p className="text-[11px] text-destructive mt-1.5">Select at least one cardio type</p>
             )}
           </div>
         )}
@@ -243,7 +243,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
           onClick={handleSubmit}
           disabled={isLoading || !isValid || (form.include_cardio && (form.cardio_types || []).length === 0)}
           className="gap-2 text-sm font-semibold"
-          style={{ background: '#2563EB' }}
+          style={{ background: 'rgb(var(--primary))' }}
         >
           <Zap className="w-4 h-4" />
           {isLoading ? 'Generating...' : 'Generate Program'}

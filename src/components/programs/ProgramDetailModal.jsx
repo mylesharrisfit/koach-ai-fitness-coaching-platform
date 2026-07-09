@@ -115,16 +115,16 @@ export default function ProgramDetailModal({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
         transition={{ duration: 0.18 }}
-        className="w-full max-w-5xl h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+        className="w-full max-w-5xl h-[90vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden"
       >
         {/* ── HEADER ── */}
-        <div style={{ background: '#0E1525' }} className="px-6 sm:px-8 pt-6 pb-5 flex-shrink-0">
+        <div style={{ background: 'rgb(var(--sidebar))' }} className="px-6 sm:px-8 pt-6 pb-5 flex-shrink-0">
           {/* Top row: type pill + action buttons + close */}
           <div className="flex items-start justify-between gap-3 mb-3">
             {/* Type pill */}
             <span
               className="text-xs font-semibold px-2.5 py-1 rounded-full"
-              style={{ background: 'rgba(55,138,221,0.18)', color: '#85B7EB' }}
+              style={{ background: 'rgba(55,138,221,0.18)', color: 'rgb(var(--primary))' }}
             >
               {typeLabel}
             </span>
@@ -135,7 +135,7 @@ export default function ProgramDetailModal({
                 onClick={onAssign}
                 size="sm"
                 className="h-8 px-3 text-xs font-semibold gap-1.5"
-                style={{ background: '#2563EB', color: '#fff', border: 'none' }}
+                style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))', border: 'none' }}
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 Assign
@@ -172,7 +172,7 @@ export default function ProgramDetailModal({
         </div>
 
         {/* ── STAT ROW (white strip) ── */}
-        <div className="flex items-center gap-0 border-b border-[#E7EAF3] bg-white flex-shrink-0">
+        <div className="flex items-center gap-0 border-b border-border bg-card flex-shrink-0">
           {stats.map((stat, i) => {
             const Icon = stat.icon;
             return (
@@ -180,13 +180,13 @@ export default function ProgramDetailModal({
                 key={stat.key}
                 className={cn(
                   'flex items-center gap-2.5 px-5 py-3.5 flex-1',
-                  i !== stats.length - 1 && 'border-r border-[#E7EAF3]'
+                  i !== stats.length - 1 && 'border-r border-border'
                 )}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" style={{ color: '#378ADD' }} />
+                <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'rgb(var(--primary))' }} />
                 <div>
-                  <div className="text-[10px] text-[#9CA3AF] font-medium uppercase tracking-wide">{stat.label}</div>
-                  <div className="text-sm font-semibold" style={{ color: '#0E1525' }}>{stat.value}</div>
+                  <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</div>
+                  <div className="text-sm font-semibold" style={{ color: 'rgb(var(--foreground))' }}>{stat.value}</div>
                 </div>
               </div>
             );
@@ -196,14 +196,14 @@ export default function ProgramDetailModal({
         {/* ── CONTENT ── */}
         <div className="flex-1 overflow-hidden flex flex-col">
           {/* Tab nav */}
-          <div className="flex gap-0 px-6 sm:px-8 border-b border-[#E7EAF3] bg-white overflow-x-auto flex-shrink-0">
+          <div className="flex gap-0 px-6 sm:px-8 border-b border-border bg-card overflow-x-auto flex-shrink-0">
             {TAB_LIST.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className="pb-3 pt-3 px-3 text-sm font-semibold transition-colors relative whitespace-nowrap"
                 style={{
-                  color: activeTab === tab.id ? '#2563EB' : '#6B7280',
+                  color: activeTab === tab.id ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
                 }}
               >
                 {tab.label}
@@ -211,7 +211,7 @@ export default function ProgramDetailModal({
                   <motion.div
                     layoutId="progTabUnderline"
                     className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                    style={{ background: '#2563EB' }}
+                    style={{ background: 'rgb(var(--primary))' }}
                   />
                 )}
               </button>
@@ -242,7 +242,7 @@ export default function ProgramDetailModal({
             </div>
 
             {/* Sidebar */}
-            <div className="hidden lg:flex lg:w-[30%] flex-col border-l border-[#E7EAF3] overflow-y-auto bg-[#FAFBFC]">
+            <div className="hidden lg:flex lg:w-[30%] flex-col border-l border-border overflow-y-auto bg-muted">
               <div className="p-5 space-y-6">
                 <ProgramAssignedClientsPanel
                   assignedClients={assignedClients}

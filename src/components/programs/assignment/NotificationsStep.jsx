@@ -40,9 +40,9 @@ export default function NotificationsStep({
 
       {/* Notification Preview */}
       {notifyClient && (
-        <Card className="p-4 bg-blue-50 border-blue-200">
-          <p className="text-xs font-semibold text-blue-900 mb-3">Notification Preview</p>
-          <div className="bg-white rounded-lg p-3 border border-blue-100">
+        <Card className="p-4 bg-accent border-primary">
+          <p className="text-xs font-semibold text-primary mb-3">Notification Preview</p>
+          <div className="bg-card rounded-lg p-3 border border-accent">
             <p className="text-sm font-medium text-foreground">
               Your new program is ready! {program.title} starts {formattedDate}
             </p>
@@ -73,14 +73,14 @@ export default function NotificationsStep({
         {scheduleKickoff && (
           <div className="space-y-3">
             {kickoffSession ? (
-              <Card className="p-3 bg-green-50 border-green-200">
-                <div className="flex items-center gap-2 text-sm text-green-900">
+              <Card className="p-3 bg-success/10 border-success">
+                <div className="flex items-center gap-2 text-sm text-success">
                   <Calendar className="w-4 h-4" />
                   <span className="font-medium">
                     {format(new Date(kickoffSession.date + ' ' + kickoffSession.time), 'MMM d, yyyy • h:mm a')}
                   </span>
                 </div>
-                <p className="text-xs text-green-700 mt-2">
+                <p className="text-xs text-success mt-2">
                   Kickoff scheduled for {selectedClientData.length > 1 ? 'all selected clients' : selectedClientData[0]?.name}
                 </p>
                 <Button

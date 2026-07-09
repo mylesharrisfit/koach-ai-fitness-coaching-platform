@@ -8,10 +8,10 @@ function getInitials(name = '') {
 
 function getAvatarColor(name = '') {
   const colors = [
-    ['#DBEAFE', '#1D4ED8'],
-    ['#D1FAE5', '#065F46'],
-    ['#FEF3C7', '#92400E'],
-    ['#EDE9FE', '#5B21B6'],
+    ['rgb(var(--accent))', 'rgb(var(--primary))'],
+    ['rgb(var(--success))', 'rgb(var(--success))'],
+    ['rgb(var(--warning))', 'rgb(var(--warning))'],
+    ['rgb(var(--ai))', 'rgb(var(--ai))'],
     ['#FCE7F3', '#9D174D'],
     ['#FFEDD5', '#9A3412'],
   ];
@@ -30,12 +30,12 @@ export default function ProgramAssignedClientsPanel({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] flex items-center gap-1.5">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <Users className="w-3.5 h-3.5" />
           Assigned Clients
         </h3>
         {assignedClients.length > 0 && (
-          <span className="text-xs font-semibold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
             {assignedClients.length}
           </span>
         )}
@@ -43,15 +43,15 @@ export default function ProgramAssignedClientsPanel({
 
       {assignedClients.length === 0 ? (
         <div className="text-center py-6">
-          <div className="w-10 h-10 rounded-full bg-[#EEF2FF] flex items-center justify-center mx-auto mb-3">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-3">
             <Users className="w-5 h-5 text-[#3730a3]" />
           </div>
-          <p className="text-xs text-[#9CA3AF] mb-3">No clients assigned yet</p>
+          <p className="text-xs text-muted-foreground mb-3">No clients assigned yet</p>
           <Button
             size="sm"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs"
-            style={{ background: '#2563EB', color: '#fff' }}
+            style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Client
           </Button>
@@ -80,18 +80,18 @@ export default function ProgramAssignedClientsPanel({
                       }
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-[#1F2A44] truncate">{client.name}</p>
-                      <p className="text-[10px] text-[#9CA3AF]">
+                      <p className="text-xs font-semibold text-foreground truncate">{client.name}</p>
+                      <p className="text-[10px] text-muted-foreground">
                         {started ? `Week ${currentWeek} of ${programDurationWeeks}` : 'Not started yet'}
                       </p>
                     </div>
-                    {started && <span className="text-[10px] font-bold text-[#2563EB]">{progress}%</span>}
+                    {started && <span className="text-[10px] font-bold text-primary">{progress}%</span>}
                   </div>
                   {/* Progress bar */}
-                  <div className="ml-10 h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">
+                  <div className="ml-10 h-1.5 bg-border rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ width: `${progress}%`, background: '#2563EB' }}
+                      style={{ width: `${progress}%`, background: 'rgb(var(--primary))' }}
                     />
                   </div>
                 </div>
@@ -100,7 +100,7 @@ export default function ProgramAssignedClientsPanel({
           </div>
 
           {assignedClients.length > 5 && (
-            <p className="text-xs text-[#9CA3AF] mb-3">
+            <p className="text-xs text-muted-foreground mb-3">
               +{assignedClients.length - 5} more client{assignedClients.length - 5 !== 1 ? 's' : ''}
             </p>
           )}
@@ -110,7 +110,7 @@ export default function ProgramAssignedClientsPanel({
             variant="outline"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs font-semibold"
-            style={{ color: '#2563EB', borderColor: '#2563EB' }}
+            style={{ color: 'rgb(var(--primary))', borderColor: 'rgb(var(--primary))' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign New
           </Button>

@@ -62,23 +62,23 @@ export default function SmartSuggestions({ selectedClients, program, allClients 
           animate={{ opacity: 1, y: 0 }}
           className={`flex gap-3 p-3 rounded-lg border ${
             suggestion.type === 'warning'
-              ? 'bg-amber-50 border-amber-200'
-              : 'bg-blue-50 border-blue-200'
+              ? 'bg-warning/10 border-warning'
+              : 'bg-accent border-primary'
           }`}
         >
           <suggestion.icon
             className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-              suggestion.type === 'warning' ? 'text-amber-700' : 'text-blue-700'
+              suggestion.type === 'warning' ? 'text-warning' : 'text-primary'
             }`}
           />
           <div>
             <p className={`text-sm font-semibold ${
-              suggestion.type === 'warning' ? 'text-amber-900' : 'text-blue-900'
+              suggestion.type === 'warning' ? 'text-warning' : 'text-primary'
             }`}>
               {suggestion.title}
             </p>
             <p className={`text-xs mt-0.5 ${
-              suggestion.type === 'warning' ? 'text-amber-700' : 'text-blue-700'
+              suggestion.type === 'warning' ? 'text-warning' : 'text-primary'
             }`}>
               {suggestion.message}
             </p>
