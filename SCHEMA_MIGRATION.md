@@ -17,6 +17,7 @@ Migration files (apply in order):
 | `20260709000500_system.sql` | automation, notifications, logs, AI conversations, import jobs, per-coach settings singletons (13 tables) |
 | `20260709000600_invite_token_hash.sql` | Step 1.5 Fix 1: `clients.invite_token` → `invite_token_hash` (sha256 hex), plaintext never stored |
 | `20260709000700_portal_column_privacy.sql` | Step 1.5 Fix 2: portal views hide `check_ins.internal_notes` + `coaching_sessions.zoom_*`; portal paths removed from those base tables |
+| `20260709000800_base44_observed_fields.sql` | Step 2 follow-up: columns observed in REAL Base44 data but undeclared in the .jsonc schemas (profiles coach-onboarding fields, check_in_forms counters, widened notifications.category CHECK) |
 
 All six migrations were applied end-to-end against Postgres 16 (with an
 `auth` schema shim) and exercised with a functional RLS test: coach↔coach
@@ -48,10 +49,26 @@ rehearsals. Properties:
   skipped counts print at the end. `clients.assigned_program_id`/
   `assigned_nutrition_id` are back-filled in a second pass (FK targets load
   after clients).
-- **Not yet run against production** — no Base44 API key exists in this
-  environment. It was rehearsed end-to-end against local Postgres with a
-  representative fixture (`scripts/fixtures/base44-sample.json`), twice for
-  idempotency; see the Step 2 PR/commit message for counts.
+- **Rehearsed against the REAL Base44 dataset** (exported via the Base44 MCP
+  connection into gitignored `migration-logs/base44-export.json` — contains
+  PII, never commit it): 1,029 rows across 27 non-empty entities;
+  **976 written, 53 skipped-with-reason**, and a second run produced
+  identical results (idempotent). The 53 skips are all explained:
+  - 32 notifications addressed to emails with no user account (22 demo
+    seeds, 8 to the client's email — clients get auth accounts in Step 3,
+    after which a re-run maps them), and 5 notifications + 8 invoices +
+    6 sessions referencing Base44 *sample/demo* clients (`sample-1..6`,
+    `1..6`) that no longer exist in the source;
+  - 1 nutrition plan with garbage AI macros (88,587,498,848,549 kcal —
+    numeric overflow, correctly rejected);
+  - 1 onboarding response whose `coach_id` holds the *client's* email and
+    has no creator to fall back to.
+  Real-data quirks the rehearsal surfaced and the script now handles:
+  `coach_id: "me"` literals (falls back to the row creator — opt-in per
+  entity, never for notification recipients), `created_by_id:
+  "service_..."` rows (created_by left null; flagged below), explicit JSON
+  nulls (stripped so Postgres defaults apply), and undeclared real columns
+  (migration `20260709000800`).
 
 ### 2b. Facade: `src/api/supabaseClient.js`
 
@@ -438,3 +455,17 @@ terminology). `User` → `profiles` (Supabase convention, 1:1 with
 9. **Settings singletons**: unique on `coach_id` (where not null). Legacy
    data with multiple rows per coach (keyed only by `created_by`) would need
    dedup during data migration.
+10. **Base44 `role: 'admin'` migrates verbatim into `profiles.role`** — in
+    Base44 the app owner/coach was 'admin'; in the new RLS model 'admin'
+    means PLATFORM admin with cross-tenant access. Correct for the current
+    single-owner app, but before onboarding more coaches, decide the Step 6
+    RBAC mapping (likely: only platform staff keep 'admin', coaches become
+    'user').
+11. **Rows created by Base44 service functions** (`created_by_id:
+    "service_..."` — 2 nutrition plans, 2 messages in real data) migrate
+    with `created_by = null`; coaches reach them via client/team paths
+    where those exist. Consider back-filling `created_by` from the
+    client's owning coach during the production run.
+12. **Notifications addressed to client emails** can't map until Step 3
+    creates portal auth accounts — re-run the Notification entity after
+    Step 3 (the script is idempotent, so this is safe).

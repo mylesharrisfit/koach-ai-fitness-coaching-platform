@@ -297,7 +297,8 @@ const SPECS = [
   { entity: 'BlockedTime', table: 'blocked_times', user: ['coach_id'] },
   { entity: 'BufferTime', table: 'buffer_times', user: ['coach_id'] },
   { entity: 'CoachAvailability', table: 'coach_availability', user: ['coach_id'] },
-  { entity: 'OnboardingResponse', table: 'onboarding_responses', user: ['coach_id'], row: ['client_id'] },
+  // real data contains the CLIENT's email in coach_id -> fall back to row creator
+  { entity: 'OnboardingResponse', table: 'onboarding_responses', user: ['coach_id'], userFallbackCreator: ['coach_id'], row: ['client_id'] },
   // business ----------------------------------------------------------------
   { entity: 'Lead', table: 'leads', row: ['converted_client_id'] },
   { entity: 'CoachingPackage', table: 'coaching_packages', row: ['auto_assign_program_id', 'auto_assign_nutrition_id'] },
@@ -343,7 +344,8 @@ const SPECS = [
     },
   },
   { entity: 'AIConversation', table: 'ai_conversations', row: ['client_id'] },
-  { entity: 'ClientImportJob', table: 'client_import_jobs', user: ['coach_id'] },
+  // real data contains coach_id='me' (old UI bug) -> fall back to row creator
+  { entity: 'ClientImportJob', table: 'client_import_jobs', user: ['coach_id'], userFallbackCreator: ['coach_id'] },
   {
     entity: 'BusinessSettings', table: 'business_settings', user: ['coach_id'],
     row: ['default_checkin_form_id', 'default_program_id', 'default_meal_plan_id', 'intake_form_id'],
@@ -373,7 +375,13 @@ async function resolveUser(value) {
   return userIdToUuid.get(v) ?? null;
 }
 
-const BUILTIN_DROP = new Set(['is_sample', 'app_id', 'entity_name', '_id']);
+// Base44 platform metadata + auth-layer state (auth state moves to Supabase
+// Auth in Step 3, not to profiles) — dropped intentionally, without log noise.
+const BUILTIN_DROP = new Set([
+  'is_sample', 'app_id', 'entity_name', '_id',
+  'disabled', 'disabled_reason', 'force_password_reset', 'is_verified',
+  'is_service', 'collaborator_role', '_app_role',
+]);
 
 async function transformRow(spec, raw) {
   const row = { ...raw };
@@ -392,7 +400,20 @@ async function transformRow(spec, raw) {
   for (const f of spec.user ?? []) {
     if (row[f] == null) continue;
     const mapped = await resolveUser(row[f]);
-    if (!mapped) throw new Error(`unresolved user reference ${f}=${row[f]}`);
+    if (!mapped) {
+      // Opt-in per spec: coach_id fields may fall back to the row creator
+      // (the creator IS the coach for these entities). Never used for
+      // recipient-style fields, where it would misroute data.
+      if (spec.userFallbackCreator?.includes(f) && createdBy) {
+        appendFileSync(
+          SKIP_LOG,
+          JSON.stringify({ entity: spec.entity, reason: `note: ${f}='${row[f]}' unresolved, used row creator`, base44_id: raw.id }) + '\n'
+        );
+        row[f] = createdBy;
+        continue;
+      }
+      throw new Error(`unresolved user reference ${f}=${row[f]}`);
+    }
     row[f] = mapped;
   }
   for (const f of spec.row ?? []) {
@@ -418,6 +439,12 @@ async function transformRow(spec, raw) {
   }
   for (const f of spec.defer ?? []) delete row[f]; // applied in second pass
   if (spec.transform) spec.transform(row);
+
+  // Base44 rows are schemaless: an explicit null means "unset". Strip nulls
+  // so Postgres column defaults (and NOT NULL defaults) apply instead.
+  for (const k of Object.keys(row)) {
+    if (row[k] === null || row[k] === undefined) delete row[k];
+  }
 
   // drop keys the target table doesn't have (logged, not silent)
   const cols = await sink.columns(spec.table);
