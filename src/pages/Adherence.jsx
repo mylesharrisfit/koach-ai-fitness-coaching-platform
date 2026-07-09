@@ -16,6 +16,8 @@ import BadgeCard from '../components/adherence/BadgeCard';
 import BadgeUnlockToast from '../components/adherence/BadgeUnlockToast';
 import AdherenceTable from '../components/adherence/AdherenceTable';
 import AdherenceTrends from '../components/adherence/AdherenceTrends';
+import AtRiskClients from './AtRiskClients';
+import { track } from '@/lib/telemetry';
 import AdherenceDetailDrawer from '../components/adherence/AdherenceDetailDrawer';
 import AdherenceLeaderboard from '../components/adherence/AdherenceLeaderboard';
 import { averageAdherenceScore, calculateStreak, checkInScore } from '@/lib/adherence';
@@ -98,6 +100,7 @@ function LeaderCard({ client, score, streak, rank, badgeCount }) {
 }
 
 export default function Adherence() {
+  const [view, setView] = useState('overview'); // 'overview' | 'atrisk' (At-Risk folded in here)
   const [awardOpen, setAwardOpen] = useState(false);
   const [awardForm, setAwardForm] = useState({ client_id: '', badge_key: 'pr_hit', earned_date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
   const [tierFilter, setTierFilter] = useState('All');
@@ -227,6 +230,17 @@ export default function Adherence() {
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Adherence</h1>
           <p className="text-sm mt-0.5 text-[#6B7280]">Monitor compliance · Spot trends · Coach smarter</p>
+          {/* At-Risk folded in as a tab (route /at-risk still works) */}
+          <div className="flex gap-1 bg-white/10 rounded-xl p-1 mt-3 w-fit">
+            {[{ k: 'overview', l: 'Overview' }, { k: 'atrisk', l: 'At-Risk' }].map(t => (
+              <button key={t.k}
+                onClick={() => { setView(t.k); track('nav.subtab', { parent: 'adherence', tab: t.k }); }}
+                className={cn('px-3 py-1 rounded-lg text-xs font-semibold transition-all',
+                  view === t.k ? 'bg-white text-[#111827]' : 'text-white/60 hover:text-white')}>
+                {t.l}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {/* Date range */}
@@ -257,6 +271,8 @@ export default function Adherence() {
         </div>
       </div>
 
+      {view === 'atrisk' ? <AtRiskClients embedded /> : (
+      <>
       {/* ── 4 Stat Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <div className="bg-white rounded-xl border border-blue-100 p-4 shadow-sm">
@@ -527,6 +543,9 @@ export default function Adherence() {
             </div>
           </div>
         </div>
+      )}
+
+      </>
       )}
 
       {/* ── Client Detail Drawer ── */}

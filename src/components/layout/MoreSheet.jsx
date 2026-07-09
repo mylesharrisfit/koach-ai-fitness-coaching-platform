@@ -1,50 +1,57 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Dumbbell, Salad, TrendingUp, Trophy, Shield, Activity, Apple,
+  Dumbbell, Salad, ClipboardList, Trophy, Activity, Apple,
   Sparkles, Bot, BarChart3,
-  DollarSign, UserPlus, ShoppingBag, Globe,
-  LayoutTemplate, Palette, Settings, CreditCard
+  UserPlus, ShoppingBag, Globe, Flame,
+  LayoutTemplate, Palette, Settings, CreditCard,
+  UsersRound, FileText, Mail, BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { track } from '@/lib/telemetry';
 
+// Mirrors the consolidated desktop IA: the bottom bar holds Home/Clients/
+// Messages/Calendar/Business; everything else lives here (routes preserved).
 const SECTIONS = [
   {
     title: 'COACHING',
     items: [
-      { icon: Dumbbell,       label: 'Programs',   path: '/programs' },
-      { icon: Salad,          label: 'Nutrition',  path: '/nutrition' },
-      { icon: TrendingUp,     label: 'Progress',   path: '/progress' },
-      { icon: Trophy,         label: 'Adherence',  path: '/adherence' },
-      { icon: Shield,         label: 'At-Risk',    path: '/at-risk' },
-      { icon: Activity,       label: 'Exercises',  path: '/exercises' },
+      { icon: Dumbbell,      label: 'Programs',   path: '/programs' },
+      { icon: Salad,         label: 'Nutrition',  path: '/nutrition' },
+      { icon: ClipboardList, label: 'Check-ins',  path: '/checkin-review' },
+      { icon: Trophy,        label: 'Adherence',  path: '/adherence' },
+      { icon: Activity,      label: 'Exercises',  path: '/exercises' },
+      { icon: Apple,         label: 'Food Library', path: '/food-library' },
     ],
   },
   {
-    title: 'AI TOOLS',
+    title: 'GROW',
     items: [
-      { icon: Sparkles,  label: 'AI Assistant', path: '/assistant' },
-      { icon: Bot,       label: 'Automations',  path: '/automations' },
-      { icon: BarChart3, label: 'Analytics',    path: '/analytics' },
+      { icon: UserPlus,    label: 'Leads',      path: '/sales' },
+      { icon: ShoppingBag, label: 'Store',      path: '/store' },
+      { icon: Globe,       label: 'Community',  path: '/community' },
+      { icon: Flame,       label: 'Challenges', path: '/challenges' },
     ],
   },
   {
-    title: 'BUSINESS',
+    title: 'AI',
     items: [
-      { icon: DollarSign,  label: 'Payments',  path: '/revenue' },
-      { icon: UserPlus,    label: 'Leads',     path: '/sales' },
-      { icon: ShoppingBag, label: 'Store',     path: '/store' },
-      { icon: Globe,       label: 'Community', path: '/community' },
+      { icon: Sparkles,  label: 'Assistant',   path: '/assistant' },
+      { icon: Bot,       label: 'Automations', path: '/automations' },
+      { icon: BarChart3, label: 'Analytics',   path: '/analytics' },
     ],
   },
   {
     title: 'TOOLS',
     items: [
-      { icon: LayoutTemplate, label: 'Templates',   path: '/coaching-templates' },
-      { icon: Apple,          label: 'Food Library', path: '/food-library' },
-      { icon: Palette,        label: 'White Label', path: '/white-label' },
-      { icon: Settings,       label: 'Settings',    path: '/settings' },
+      { icon: LayoutTemplate, label: 'Templates',      path: '/coaching-templates' },
+      { icon: Palette,        label: 'White Label',    path: '/white-label' },
+      { icon: UsersRound,     label: 'Team',           path: '/team' },
+      { icon: FileText,       label: 'Weekly Summary', path: '/weekly-summary' },
+      { icon: Mail,           label: 'Email Center',   path: '/email-center' },
+      { icon: BookOpen,       label: 'Onboarding',     path: '/onboarding-manager' },
+      { icon: Settings,       label: 'Settings',       path: '/settings' },
     ],
   },
 ];
@@ -94,7 +101,7 @@ export default function MoreSheet({ open, onClose }) {
                         <Link
                           key={item.path}
                           to={item.path}
-                          onClick={onClose}
+                          onClick={() => { track('nav.click', { path: item.path, label: item.label, surface: 'moresheet' }); onClose(); }}
                           className="flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all active:scale-95"
                         >
                           <div className={cn(

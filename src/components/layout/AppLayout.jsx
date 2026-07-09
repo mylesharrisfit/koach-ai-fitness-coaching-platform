@@ -10,6 +10,21 @@ import KoachLogo from '@/components/brand/KoachLogo';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import { ThemeToggleButton } from '@/components/settings/ThemeToggle';
 import { useBrandColor } from '@/lib/useBrandColor';
+import { CommandPaletteProvider, useCommandPalette } from '@/components/command/CommandPalette';
+import { Search } from 'lucide-react';
+
+function TopbarSearchButton() {
+  const { open } = useCommandPalette();
+  return (
+    <button
+      onClick={open}
+      className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+      aria-label="Search (Command K)"
+    >
+      <Search className="w-5 h-5" />
+    </button>
+  );
+}
 
 export const SubscriptionContext = createContext({
   user: null,
@@ -40,6 +55,7 @@ export default function AppLayout() {
 
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>
+      <CommandPaletteProvider>
       <div className="min-h-screen bg-background">
         {/* Desktop sidebar */}
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
@@ -55,6 +71,7 @@ export default function AppLayout() {
           </button>
           <KoachLogo size={28} rounded="rounded-xl" glow={false} bg={true} />
           <div className="flex items-center gap-1">
+            <TopbarSearchButton />
             <ThemeToggleButton onDark />
             <NotificationBell />
           </div>
@@ -114,6 +131,7 @@ export default function AppLayout() {
         user={user}
         onUserUpdate={setUser}
       />
+      </CommandPaletteProvider>
     </SubscriptionContext.Provider>
   );
 }

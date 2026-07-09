@@ -10,21 +10,46 @@ import {
   Dumbbell, Salad, ClipboardList,
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
-  Lock, UserPlus, Trophy, ShoppingBag,
-  Globe, Activity, Apple,
-  Shield, Palette, BookOpen, LayoutTemplate, Mail, FileText, UsersRound, Flame
+  Lock, UserPlus, Trophy, ShoppingBag, Search,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { hasFeature } from '@/lib/subscription';
 import { useTeamRole } from '@/lib/useTeamRole';
+import { useCommandPalette } from '@/components/command/CommandPalette';
+import { track } from '@/lib/telemetry';
 
+function SidebarSearchButton({ collapsed }) {
+  const { open } = useCommandPalette();
+  return (
+    <button
+      onClick={open}
+      title="Search (⌘K)"
+      className={cn(
+        'flex items-center gap-2.5 rounded-lg text-[13px] font-medium transition-colors w-full min-h-[40px]',
+        collapsed ? 'justify-center px-0' : 'px-3'
+      )}
+      style={{ color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}
+    >
+      <Search className="w-[16px] h-[16px] flex-shrink-0" />
+      {!collapsed && (
+        <>
+          <span className="flex-1 text-left">Search</span>
+          <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.08)' }}>⌘K</kbd>
+        </>
+      )}
+    </button>
+  );
+}
+
+// Consolidated to 13 visible items across 4 groups. Everything else lives in the
+// ⌘K command palette + Settings (routes are preserved — nothing is deleted).
+// At-Risk is folded into Adherence (surfaced there as a filter/tab).
 const NAV_GROUPS = [
   {
     label: 'MAIN',
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-      { icon: BookOpen, label: 'Onboarding', path: '/onboarding-manager' },
       { icon: Users, label: 'Clients', path: '/clients' },
       { icon: MessageSquare, label: 'Messages', path: '/messages' },
       { icon: Calendar, label: 'Calendar', path: '/schedule' },
@@ -37,38 +62,22 @@ const NAV_GROUPS = [
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
       { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
       { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
-      { icon: Flame, label: 'Challenges', path: '/challenges' },
-      { icon: Shield, label: 'At-Risk', path: '/at-risk' },
-      { icon: Activity, label: 'Exercises', path: '/exercises' },
-      { icon: Apple, label: 'Food Library', path: '/food-library' },
     ],
   },
   {
-    label: 'AI TOOLS',
-    items: [
-      { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
-      { icon: Bot, label: 'Automations', path: '/automations' },
-      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-    ],
-  },
-  {
-    label: 'BUSINESS',
+    label: 'GROW',
     items: [
       { icon: BarChart3, label: 'Business', path: '/business' },
-      { icon: Mail, label: 'Email Center', path: '/email-center' },
       { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },
       { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
-      { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
     ],
   },
   {
-   label: 'TOOLS',
-   items: [
-     { icon: FileText, label: 'Weekly Summary', path: '/weekly-summary' },
-     { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
-     { icon: Palette, label: 'White Label', path: '/white-label' },
-     { icon: UsersRound, label: 'Team', path: '/team' },
-   ],
+    label: 'AI',
+    items: [
+      { icon: Sparkles, label: 'Assistant', path: '/assistant', feature: 'assistant' },
+      { icon: Bot, label: 'Automations', path: '/automations' },
+    ],
   },
 ];
 
@@ -116,6 +125,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
   return (
     <Link
       to={item.path}
+      onClick={() => track('nav.click', { path: item.path, label: item.label })}
       title={collapsed ? item.label : undefined}
       className={cn(
         'relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[40px]',
@@ -153,6 +163,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
   if (mobileMode) {
     return (
       <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4 h-full">
+        <div onClick={onNavClick}><SidebarSearchButton collapsed={false} /></div>
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && (
@@ -224,6 +235,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
 
       {/* Nav */}
       <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4">
+        <SidebarSearchButton collapsed={collapsed} />
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
