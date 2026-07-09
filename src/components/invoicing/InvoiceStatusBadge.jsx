@@ -2,12 +2,12 @@ import React from 'react';
 import { CheckCircle2, AlertTriangle, Eye, Send, FileText, XCircle } from 'lucide-react';
 
 const STATUS_CONFIG = {
-  draft:     { label: 'Draft',     bg: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))', icon: FileText },
-  sent:      { label: 'Sent',      bg: 'rgb(var(--accent))', color: 'rgb(var(--primary))', icon: Send },
-  viewed:    { label: 'Viewed',    bg: 'rgb(var(--accent))', color: 'rgb(var(--primary))', icon: Eye },
-  paid:      { label: 'Paid',      bg: 'rgb(var(--success))', color: 'rgb(var(--success))', icon: CheckCircle2 },
-  overdue:   { label: 'Overdue',   bg: 'rgb(var(--destructive))', color: 'rgb(var(--destructive))', icon: AlertTriangle },
-  cancelled: { label: 'Cancelled', bg: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))', icon: XCircle },
+  draft:     { label: 'Draft',     bg: 'var(--tc-muted)', color: 'var(--tc-muted-foreground)', icon: FileText },
+  sent:      { label: 'Sent',      bg: 'var(--tc-accent)', color: 'var(--tc-primary)', icon: Send },
+  viewed:    { label: 'Viewed',    bg: 'var(--tc-accent)', color: 'var(--tc-primary)', icon: Eye },
+  paid:      { label: 'Paid',      bg: 'var(--tc-success)', color: 'var(--tc-success)', icon: CheckCircle2 },
+  overdue:   { label: 'Overdue',   bg: 'var(--tc-destructive)', color: 'var(--tc-destructive)', icon: AlertTriangle },
+  cancelled: { label: 'Cancelled', bg: 'var(--tc-muted)', color: 'var(--tc-muted-foreground)', icon: XCircle },
 };
 
 export default function InvoiceStatusBadge({ status }) {

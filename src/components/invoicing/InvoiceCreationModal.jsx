@@ -31,15 +31,15 @@ const DUE_OPTIONS = [
 ];
 
 const s = {
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 },
-  modal: { background: 'rgb(var(--card))', borderRadius: 20, width: '100%', maxWidth: '90vw', maxHeight: '92vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 80px rgba(0,0,0,0.25)' },
+  overlay: { position: 'fixed', inset: 0, background: 'color-mix(in srgb, black 55%, transparent)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 },
+  modal: { background: 'var(--tc-card)', borderRadius: 20, width: '100%', maxWidth: '90vw', maxHeight: '92vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 80px color-mix(in srgb, black 25%, transparent)' },
   col: { overflowY: 'auto', padding: '20px 24px', flex: 1 },
-  label: { display: 'block', fontSize: 11, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5 },
-  input: { width: '100%', padding: '9px 12px', borderRadius: 9, fontSize: 13, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', outline: 'none', boxSizing: 'border-box', color: 'rgb(var(--foreground))' },
+  label: { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5 },
+  input: { width: '100%', padding: '9px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' },
 };
 
 function SectionTitle({ children }) {
-  return <div style={{ fontSize: 12, fontWeight: 700, color: 'rgb(var(--foreground))', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12, paddingBottom: 6, borderBottom: '1px solid rgb(var(--muted))' }}>{children}</div>;
+  return <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--tc-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12, paddingBottom: 6, borderBottom: '1px solid var(--tc-muted)' }}>{children}</div>;
 }
 
 function Field({ label, children, half }) {
@@ -59,50 +59,50 @@ function InvoicePreview({ form, lineItems, coachName }) {
   const total = Math.max(0, subtotal - discountAmt + taxAmt);
 
   return (
-    <div style={{ background: 'rgb(var(--background))', border: '1px solid rgb(var(--border))', borderRadius: 14, padding: 24, minHeight: 400, fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ background: 'var(--tc-background)', border: '1px solid var(--tc-border)', borderRadius: 14, padding: 24, minHeight: 400, fontFamily: 'system-ui, sans-serif' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 900, background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOACH AI</div>
-          <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))', marginTop: 2 }}>{coachName || 'Your Coaching Business'}</div>
+          <div style={{ fontSize: 18, fontWeight: 900, background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOACH AI</div>
+          <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 2 }}>{coachName || 'Your Coaching Business'}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 20, fontWeight: 900, color: 'rgb(var(--foreground))' }}>INVOICE</div>
-          <div style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))' }}>{form.invoice_number || 'INV-XXXX'}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: 'var(--tc-foreground)' }}>INVOICE</div>
+          <div style={{ fontSize: 12, color: 'var(--tc-muted-foreground)' }}>{form.invoice_number || 'INV-XXXX'}</div>
         </div>
       </div>
 
       {/* Client + dates */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', marginBottom: 4 }}>Bill To</div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--foreground))' }}>{form.client_name || 'Client Name'}</div>
-          <div style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))' }}>{form.client_email || 'client@email.com'}</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', marginBottom: 4 }}>Bill To</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>{form.client_name || 'Client Name'}</div>
+          <div style={{ fontSize: 12, color: 'var(--tc-muted-foreground)' }}>{form.client_email || 'client@email.com'}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>Issue: {form.issue_date || today()}</div>
-          <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>Due: {form.due_date || '—'}</div>
+          <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Issue: {form.issue_date || today()}</div>
+          <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Due: {form.due_date || '—'}</div>
         </div>
       </div>
 
       {/* Line items */}
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 16 }}>
         <thead>
-          <tr style={{ background: 'rgb(var(--muted))' }}>
+          <tr style={{ background: 'var(--tc-muted)' }}>
             {['Description', 'Qty', 'Price', 'Total'].map((h, i) => (
-              <th key={h} style={{ padding: '6px 8px', fontSize: 10, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', textAlign: i > 0 ? 'right' : 'left' }}>{h}</th>
+              <th key={h} style={{ padding: '6px 8px', fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', textAlign: i > 0 ? 'right' : 'left' }}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {lineItems.length === 0 ? (
-            <tr><td colSpan={4} style={{ padding: '12px 8px', fontSize: 12, color: 'rgb(var(--muted-foreground))', textAlign: 'center' }}>Add line items…</td></tr>
+            <tr><td colSpan={4} style={{ padding: '12px 8px', fontSize: 12, color: 'var(--tc-muted-foreground)', textAlign: 'center' }}>Add line items…</td></tr>
           ) : lineItems.map((li, i) => (
-            <tr key={i} style={{ borderBottom: '1px solid rgb(var(--muted))' }}>
-              <td style={{ padding: '8px 8px', fontSize: 12, color: 'rgb(var(--foreground))' }}>{li.description || '—'}</td>
-              <td style={{ padding: '8px 8px', fontSize: 12, color: 'rgb(var(--foreground))', textAlign: 'right' }}>{li.qty}</td>
-              <td style={{ padding: '8px 8px', fontSize: 12, color: 'rgb(var(--foreground))', textAlign: 'right' }}>${Number(li.price || 0).toFixed(2)}</td>
-              <td style={{ padding: '8px 8px', fontSize: 12, fontWeight: 600, color: 'rgb(var(--foreground))', textAlign: 'right' }}>${(Number(li.qty) * Number(li.price) || 0).toFixed(2)}</td>
+            <tr key={i} style={{ borderBottom: '1px solid var(--tc-muted)' }}>
+              <td style={{ padding: '8px 8px', fontSize: 12, color: 'var(--tc-foreground)' }}>{li.description || '—'}</td>
+              <td style={{ padding: '8px 8px', fontSize: 12, color: 'var(--tc-foreground)', textAlign: 'right' }}>{li.qty}</td>
+              <td style={{ padding: '8px 8px', fontSize: 12, color: 'var(--tc-foreground)', textAlign: 'right' }}>${Number(li.price || 0).toFixed(2)}</td>
+              <td style={{ padding: '8px 8px', fontSize: 12, fontWeight: 600, color: 'var(--tc-foreground)', textAlign: 'right' }}>${(Number(li.qty) * Number(li.price) || 0).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
@@ -111,23 +111,23 @@ function InvoicePreview({ form, lineItems, coachName }) {
       {/* Totals */}
       <div style={{ marginLeft: 'auto', maxWidth: 200 }}>
         <Row label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
-        {discountAmt > 0 && <Row label={`Discount (${form.discount}${form.discountType})`} value={`-$${discountAmt.toFixed(2)}`} color="rgb(var(--warning))" />}
+        {discountAmt > 0 && <Row label={`Discount (${form.discount}${form.discountType})`} value={`-$${discountAmt.toFixed(2)}`} color="var(--tc-warning)" />}
         {taxAmt > 0 && <Row label={`Tax (${form.tax}%)`} value={`$${taxAmt.toFixed(2)}`} />}
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '2px solid rgb(var(--foreground))', marginTop: 4 }}>
-          <span style={{ fontSize: 14, fontWeight: 800, color: 'rgb(var(--foreground))' }}>Total</span>
-          <span style={{ fontSize: 16, fontWeight: 900, color: 'rgb(var(--foreground))' }}>${total.toFixed(2)}</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '2px solid var(--tc-foreground)', marginTop: 4 }}>
+          <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--tc-foreground)' }}>Total</span>
+          <span style={{ fontSize: 16, fontWeight: 900, color: 'var(--tc-foreground)' }}>${total.toFixed(2)}</span>
         </div>
       </div>
 
       {/* Pay button preview */}
       <div style={{ marginTop: 20, textAlign: 'center' }}>
-        <div style={{ display: 'inline-block', padding: '10px 28px', borderRadius: 10, background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: 'rgb(var(--card))', fontSize: 13, fontWeight: 700 }}>
+        <div style={{ display: 'inline-block', padding: '10px 28px', borderRadius: 10, background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-card)', fontSize: 13, fontWeight: 700 }}>
           Pay ${total.toFixed(2)} →
         </div>
       </div>
 
       {form.notes && (
-        <div style={{ marginTop: 16, padding: '10px 12px', background: 'rgb(var(--background))', borderRadius: 8, fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>
+        <div style={{ marginTop: 16, padding: '10px 12px', background: 'var(--tc-background)', borderRadius: 8, fontSize: 11, color: 'var(--tc-muted-foreground)' }}>
           <strong>Notes:</strong> {form.notes}
         </div>
       )}
@@ -137,7 +137,7 @@ function InvoicePreview({ form, lineItems, coachName }) {
 
 function Row({ label, value, color }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 12, color: color || 'rgb(var(--foreground))' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 12, color: color || 'var(--tc-foreground)' }}>
       <span>{label}</span><span>{value}</span>
     </div>
   );
@@ -253,18 +253,18 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
     <div style={s.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={s.modal}>
         {/* Header */}
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid rgb(var(--muted))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--tc-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0 }}>{isEdit ? 'Edit Invoice' : 'Create Invoice'}</h2>
-            <p style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))', margin: '2px 0 0' }}>{form.invoice_number}</p>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--tc-foreground)', margin: 0 }}>{isEdit ? 'Edit Invoice' : 'Create Invoice'}</h2>
+            <p style={{ fontSize: 12, color: 'var(--tc-muted-foreground)', margin: '2px 0 0' }}>{form.invoice_number}</p>
           </div>
-          <button onClick={onClose} style={{ background: 'rgb(var(--muted))', border: 'none', borderRadius: 8, padding: 8, cursor: 'pointer', display: 'flex' }}><X size={15} color="rgb(var(--muted-foreground))" /></button>
+          <button onClick={onClose} style={{ background: 'var(--tc-muted)', border: 'none', borderRadius: 8, padding: 8, cursor: 'pointer', display: 'flex' }}><X size={15} color="var(--tc-muted-foreground)" /></button>
         </div>
 
         {/* Body: 2 columns */}
         <div style={{ flex: 1, overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
           {/* LEFT: Builder */}
-          <div style={{ ...s.col, borderRight: '1px solid rgb(var(--muted))' }}>
+          <div style={{ ...s.col, borderRight: '1px solid var(--tc-muted)' }}>
 
             {/* RECIPIENT */}
             <SectionTitle>Recipient</SectionTitle>
@@ -275,7 +275,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
                 <option value="__new__">+ Add new client</option>
               </select>
             </Field>
-            {form.client_email && <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))', marginBottom: 14, marginTop: -10 }}>📧 {form.client_email}</div>}
+            {form.client_email && <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginBottom: 14, marginTop: -10 }}>📧 {form.client_email}</div>}
 
             {/* INVOICE DETAILS */}
             <SectionTitle>Invoice Details</SectionTitle>
@@ -317,9 +317,9 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             <SectionTitle>Line Items</SectionTitle>
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 8 }}>
               <thead>
-                <tr style={{ background: 'rgb(var(--background))' }}>
+                <tr style={{ background: 'var(--tc-background)' }}>
                   {['Description', 'Qty', 'Unit Price', 'Total', ''].map((h, i) => (
-                    <th key={i} style={{ padding: '6px 6px', fontSize: 10, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', textAlign: i >= 1 ? 'right' : 'left', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={i} style={{ padding: '6px 6px', fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', textAlign: i >= 1 ? 'right' : 'left', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -334,15 +334,15 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
                     </td>
                     <td style={{ padding: '4px 4px', width: 80 }}>
                       <div style={{ position: 'relative' }}>
-                        <span style={{ position: 'absolute', left: 6, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))', fontSize: 12 }}>$</span>
+                        <span style={{ position: 'absolute', left: 6, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', fontSize: 12 }}>$</span>
                         <input type="number" value={li.price} onChange={e => updateLine(i, 'price', e.target.value)} placeholder="0.00" style={{ ...s.input, fontSize: 12, textAlign: 'right', paddingLeft: 16, width: 76, padding: '9px 6px 9px 14px' }} />
                       </div>
                     </td>
-                    <td style={{ padding: '4px 4px', width: 70, textAlign: 'right', fontSize: 12, fontWeight: 600, color: 'rgb(var(--foreground))' }}>
+                    <td style={{ padding: '4px 4px', width: 70, textAlign: 'right', fontSize: 12, fontWeight: 600, color: 'var(--tc-foreground)' }}>
                       ${(Number(li.qty) * Number(li.price) || 0).toFixed(2)}
                     </td>
                     <td style={{ padding: '4px 0 4px 4px', width: 24 }}>
-                      <button onClick={() => removeLine(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgb(var(--muted-foreground))', padding: 2 }}><Trash2 size={12} /></button>
+                      <button onClick={() => removeLine(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--tc-muted-foreground)', padding: 2 }}><Trash2 size={12} /></button>
                     </td>
                   </tr>
                 ))}
@@ -351,18 +351,18 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
 
             <div style={{ display: 'flex', gap: 8, marginBottom: 16, position: 'relative' }}>
               <button onClick={() => setLineItems([...lineItems, { description: '', qty: 1, price: '' }])}
-                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'rgb(var(--accent))', color: 'rgb(var(--primary))', border: 'none', cursor: 'pointer' }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'var(--tc-accent)', color: 'var(--tc-primary)', border: 'none', cursor: 'pointer' }}>
                 <Plus size={12} /> Add Line Item
               </button>
               <button onClick={() => setShowPresets(p => !p)}
-                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))', border: 'none', cursor: 'pointer' }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'var(--tc-muted)', color: 'var(--tc-muted-foreground)', border: 'none', cursor: 'pointer' }}>
                 Presets <ChevronDown size={11} />
               </button>
               {showPresets && (
-                <div style={{ position: 'absolute', top: '100%', left: 0, background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: 10, padding: '6px 0', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 10, minWidth: 200 }}>
+                <div style={{ position: 'absolute', top: '100%', left: 0, background: 'var(--tc-card)', border: '1px solid var(--tc-border)', borderRadius: 10, padding: '6px 0', boxShadow: '0 8px 24px color-mix(in srgb, black 10%, transparent)', zIndex: 10, minWidth: 200 }}>
                   {LINE_PRESETS.map(p => (
-                    <button key={p} onClick={() => addPreset(p)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', fontSize: 13, color: 'rgb(var(--foreground))', cursor: 'pointer', textAlign: 'left' }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgb(var(--background))'}
+                    <button key={p} onClick={() => addPreset(p)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', fontSize: 13, color: 'var(--tc-foreground)', cursor: 'pointer', textAlign: 'left' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--tc-background)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'none'}>
                       {p}
                     </button>
@@ -373,13 +373,13 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
 
             {/* PRICING */}
             <SectionTitle>Pricing</SectionTitle>
-            <div style={{ background: 'rgb(var(--background))', borderRadius: 10, padding: '12px 14px', marginBottom: 14 }}>
+            <div style={{ background: 'var(--tc-background)', borderRadius: 10, padding: '12px 14px', marginBottom: 14 }}>
               <Row label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', margin: '8px 0' }}>
                 <label style={{ ...s.label, margin: 0, flex: 1 }}>Discount</label>
                 <input type="number" value={form.discount} onChange={e => set('discount', e.target.value)} placeholder="0" style={{ ...s.input, width: 70, padding: '6px 8px', fontSize: 12 }} />
                 <button onClick={() => set('discountType', form.discountType === '%' ? '$' : '%')}
-                  style={{ padding: '6px 12px', borderRadius: 7, background: 'rgb(var(--border))', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>
+                  style={{ padding: '6px 12px', borderRadius: 7, background: 'var(--tc-border)', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>
                   {form.discountType}
                 </button>
               </div>
@@ -387,9 +387,9 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
                 <label style={{ ...s.label, margin: 0, flex: 1 }}>Tax %</label>
                 <input type="number" value={form.tax} onChange={e => set('tax', e.target.value)} placeholder="0" style={{ ...s.input, width: 70, padding: '6px 8px', fontSize: 12 }} />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0 0', borderTop: '1.5px solid rgb(var(--border))' }}>
-                <span style={{ fontSize: 14, fontWeight: 800, color: 'rgb(var(--foreground))' }}>Total</span>
-                <span style={{ fontSize: 16, fontWeight: 900, color: 'rgb(var(--foreground))' }}>${total.toFixed(2)}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0 0', borderTop: '1.5px solid var(--tc-border)' }}>
+                <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--tc-foreground)' }}>Total</span>
+                <span style={{ fontSize: 16, fontWeight: 900, color: 'var(--tc-foreground)' }}>${total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -398,7 +398,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
               {[['stripe', '⚡ Stripe'], ['manual', '💸 Manual'], ['both', '🔀 Both']].map(([v, label]) => (
                 <button key={v} onClick={() => set('payment_method', v)}
-                  style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${form.payment_method === v ? 'rgb(var(--primary))' : 'rgb(var(--border))'}`, background: form.payment_method === v ? 'rgb(var(--accent))' : 'rgb(var(--card))', fontSize: 12, fontWeight: 600, color: form.payment_method === v ? 'rgb(var(--primary))' : 'rgb(var(--foreground))', cursor: 'pointer' }}>
+                  style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${form.payment_method === v ? 'var(--tc-primary)' : 'var(--tc-border)'}`, background: form.payment_method === v ? 'var(--tc-accent)' : 'var(--tc-card)', fontSize: 12, fontWeight: 600, color: form.payment_method === v ? 'var(--tc-primary)' : 'var(--tc-foreground)', cursor: 'pointer' }}>
                   {label}
                 </button>
               ))}
@@ -408,12 +408,12 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             <SectionTitle>Recurring Invoice</SectionTitle>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: form.recurring ? 12 : 16 }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--foreground))' }}>Make this a recurring invoice</div>
-                <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>Auto-generate at set intervals</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>Make this a recurring invoice</div>
+                <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Auto-generate at set intervals</div>
               </div>
               <button onClick={() => set('recurring', !form.recurring)}
-                style={{ width: 44, height: 24, borderRadius: 9999, background: form.recurring ? 'rgb(var(--primary))' : 'rgb(var(--border))', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
-                <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'rgb(var(--card))', position: 'absolute', top: 4, left: form.recurring ? 24 : 4, transition: 'left 0.2s' }} />
+                style={{ width: 44, height: 24, borderRadius: 9999, background: form.recurring ? 'var(--tc-primary)' : 'var(--tc-border)', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+                <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--tc-card)', position: 'absolute', top: 4, left: form.recurring ? 24 : 4, transition: 'left 0.2s' }} />
               </button>
             </div>
             {form.recurring && (
@@ -454,34 +454,34 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             {/* LATE FEE */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--foreground))' }}>Late fee policy</div>
-                <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>Charge {form.late_fee_pct}% per month if overdue</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>Late fee policy</div>
+                <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Charge {form.late_fee_pct}% per month if overdue</div>
               </div>
               <button onClick={() => set('late_fee', !form.late_fee)}
-                style={{ width: 44, height: 24, borderRadius: 9999, background: form.late_fee ? 'rgb(var(--primary))' : 'rgb(var(--border))', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
-                <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'rgb(var(--card))', position: 'absolute', top: 4, left: form.late_fee ? 24 : 4, transition: 'left 0.2s' }} />
+                style={{ width: 44, height: 24, borderRadius: 9999, background: form.late_fee ? 'var(--tc-primary)' : 'var(--tc-border)', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+                <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--tc-card)', position: 'absolute', top: 4, left: form.late_fee ? 24 : 4, transition: 'left 0.2s' }} />
               </button>
             </div>
           </div>
 
           {/* RIGHT: Live Preview */}
-          <div style={{ ...s.col, background: 'rgb(var(--background))' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Live Preview</div>
+          <div style={{ ...s.col, background: 'var(--tc-background)' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Live Preview</div>
             <InvoicePreview form={form} lineItems={lineItems} coachName={coachName} />
           </div>
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '12px 24px', borderTop: '1px solid rgb(var(--muted))', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0, background: 'rgb(var(--card))' }}>
-          <button onClick={onClose} style={{ padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgb(var(--muted))', color: 'rgb(var(--foreground))', border: 'none', cursor: 'pointer' }}>
+        <div style={{ padding: '12px 24px', borderTop: '1px solid var(--tc-muted)', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0, background: 'var(--tc-card)' }}>
+          <button onClick={onClose} style={{ padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'var(--tc-muted)', color: 'var(--tc-foreground)', border: 'none', cursor: 'pointer' }}>
             Cancel
           </button>
           <button onClick={handleSaveDraft} disabled={saving}
-            style={{ padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgb(var(--card))', color: 'rgb(var(--foreground))', border: '1.5px solid rgb(var(--border))', cursor: 'pointer' }}>
+            style={{ padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'var(--tc-card)', color: 'var(--tc-foreground)', border: '1.5px solid var(--tc-border)', cursor: 'pointer' }}>
             Save as Draft
           </button>
           <button onClick={handleSend} disabled={saving || !form.client_id}
-            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'rgb(var(--border))' : 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: (!form.client_id || saving) ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px rgb(var(--primary) / 0.25)' }}>
+            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'var(--tc-border)' : 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: (!form.client_id || saving) ? 'var(--tc-muted-foreground)' : 'var(--tc-card)', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
             {saving ? 'Saving…' : 'Send Invoice →'}
           </button>
         </div>
