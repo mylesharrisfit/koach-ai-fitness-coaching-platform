@@ -30,13 +30,13 @@ function SidebarSearchButton({ collapsed }) {
         'flex items-center gap-2.5 rounded-lg text-[13px] font-medium transition-colors w-full min-h-[40px]',
         collapsed ? 'justify-center px-0' : 'px-3'
       )}
-      style={{ color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}
+      style={{ color: 'color-mix(in srgb, white 50%, transparent)', background: 'color-mix(in srgb, white 4%, transparent)' }}
     >
       <Search className="w-[16px] h-[16px] flex-shrink-0" />
       {!collapsed && (
         <>
           <span className="flex-1 text-left">Search</span>
-          <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.08)' }}>⌘K</kbd>
+          <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}>⌘K</kbd>
         </>
       )}
     </button>
@@ -109,7 +109,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
       <button
         onClick={() => onUpgrade?.(item.feature)}
         className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors min-h-[40px]"
-        style={{ color: 'rgba(255,255,255,0.2)' }}
+        style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}
         title={collapsed ? item.label : undefined}
       >
         <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
@@ -135,12 +135,12 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
           : 'hover:text-white'
       )}
       style={{
-        color: isActive ? 'rgb(var(--sidebar-accent-foreground))' : 'rgba(255,255,255,0.38)',
-        background: isActive ? 'rgb(var(--sidebar-primary) / 0.14)' : 'transparent',
+        color: isActive ? 'var(--tc-sidebar-accent-foreground)' : 'color-mix(in srgb, white 38%, transparent)',
+        background: isActive ? 'color-mix(in srgb, var(--tc-sidebar-primary) 14%, transparent)' : 'transparent',
       }}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: 'rgb(var(--sidebar-primary))' }} />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: 'var(--tc-sidebar-primary)' }} />
       )}
       <item.icon className={cn('w-[16px] h-[16px] flex-shrink-0 transition-colors')} />
       {!collapsed && <span className="flex-1">{item.label}</span>}
@@ -168,7 +168,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && (
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}>
                 {group.label}
               </p>
             )}
@@ -187,7 +187,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               <Link
                 to={item.path}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all min-h-[44px]"
-                style={{ color: 'rgba(255,255,255,0.35)' }}
+                style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}
               >
                 <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
                 <span>{item.label}</span>
@@ -197,7 +197,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           <button
             onClick={() => base44.auth.logout()}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all w-full min-h-[44px]"
-            style={{ color: 'rgba(255,255,255,0.25)' }}
+            style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}
           >
             <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
             <span>Logout</span>
@@ -213,13 +213,13 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         'fixed left-0 top-0 h-screen z-50 flex-col transition-all duration-200 hidden md:flex',
         collapsed ? 'w-[56px]' : 'w-[210px]'
       )}
-      style={{ background: 'rgb(var(--sidebar-background))', borderRight: '1px solid rgb(var(--sidebar-border))' }}
+      style={{ background: 'var(--tc-sidebar-background)', borderRight: '1px solid var(--tc-sidebar-border)' }}
     >
       {/* Logo */}
       <div className={cn(
         'h-[56px] flex items-center flex-shrink-0',
         collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
-      )} style={{ borderBottom: '1px solid rgb(var(--sidebar-border))' }}>
+      )} style={{ borderBottom: '1px solid var(--tc-sidebar-border)' }}>
         <KoachLogo size={32} rounded="rounded-xl" glow={true} bg={true} />
         {!collapsed && (
           <>
@@ -240,7 +240,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}>
                 {group.label}
               </p>
             )}
@@ -254,7 +254,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
       </nav>
 
       {/* Bottom */}
-      <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid color-mix(in srgb, white 5%, transparent)' }}>
         {ALL_BOTTOM_ITEMS.filter(item => !item.ownerOnly || isOwner).map(item => {
           return (
             <Link
@@ -262,9 +262,9 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               to={item.path}
               title={collapsed ? item.label : undefined}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all"
-              style={{ color: 'rgba(255,255,255,0.35)' }}
-              onMouseEnter={e => e.currentTarget.style.color = 'rgb(var(--sidebar-accent-foreground))'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
+              style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--tc-sidebar-accent-foreground)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, white 35%, transparent)'}
             >
               <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
               {!collapsed && <span>{item.label}</span>}
@@ -276,9 +276,9 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           onClick={() => base44.auth.logout()}
           title={collapsed ? 'Logout' : undefined}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all w-full"
-          style={{ color: 'rgba(255,255,255,0.25)' }}
-          onMouseEnter={e => e.currentTarget.style.color = 'rgb(var(--destructive))'}
-          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.25)'}
+          style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--tc-destructive)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, white 25%, transparent)'}
         >
           <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
           {!collapsed && <span>Logout</span>}
@@ -287,9 +287,9 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         <button
           onClick={() => setCollapsed(c => !c)}
           className="flex items-center justify-center w-full py-2 rounded-lg transition-all mt-1"
-          style={{ color: 'rgba(255,255,255,0.2)' }}
-          onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
+          style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'color-mix(in srgb, white 60%, transparent)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, white 20%, transparent)'}
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

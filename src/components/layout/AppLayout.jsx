@@ -19,7 +19,7 @@ function TopbarSearchButton() {
   return (
     <button
       onClick={open}
-      className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+      className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-[var(--kc-w-10)] transition-colors"
       aria-label="Search (Command K)"
     >
       <Search className="w-5 h-5" />
@@ -65,7 +65,7 @@ export default function AppLayout() {
         <div className="fixed top-0 left-0 right-0 z-30 flex md:hidden items-center justify-between px-4 h-14 bg-sidebar border-b border-sidebar-border">
           <button
             onClick={() => setMobileSidebarOpen(true)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-[var(--kc-w-10)] transition-colors"
             aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
@@ -93,12 +93,12 @@ export default function AppLayout() {
                   <KoachLogo size={28} rounded="rounded-xl" glow={true} bg={true} />
                   <div>
                     <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
-                    <span className="block text-[9px] tracking-[0.12em] uppercase mt-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>Coaching OS</span>
+                    <span className="block text-[9px] tracking-[0.12em] uppercase mt-0.5" style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}>Coaching OS</span>
                   </div>
                 </div>
                 <button
                   onClick={() => setMobileSidebarOpen(false)}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+                  className="w-9 h-9 flex items-center justify-center rounded-xl text-white/40 hover:text-white hover:bg-[var(--kc-w-10)] transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
