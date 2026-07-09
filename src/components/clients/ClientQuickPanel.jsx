@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+// Step 2 cutover: Clients/CRM surface runs on Supabase via the base44-shaped
+// facade — call sites unchanged. Other pages remain on base44Client for now.
+import { supabase as base44 } from '@/api/supabaseClient';
 import {
   X, Edit, ExternalLink, Dumbbell, Salad, ClipboardCheck, MessageSquare,
   Phone, Target, Calendar, TrendingUp, Users, Plus, Send, CheckCircle2,

@@ -1,4 +1,4 @@
-# Schema Migration: Base44 → Supabase (Step 1 of 6)
+# Schema Migration: Base44 → Supabase (Steps 1–2)
 
 This document covers **Step 1 only**: porting the 63 Base44 entities
 (`base44/entities/*.jsonc`) to Postgres tables with row-level security, as
@@ -22,6 +22,89 @@ All six migrations were applied end-to-end against Postgres 16 (with an
 `auth` schema shim) and exercised with a functional RLS test: coach↔coach
 isolation, team access, portal-claim access, wrong-claim denial, anon
 default-deny, and the admin-self-promotion guard.
+
+## Step 2 — Data-access layer swap (facade + data migration)
+
+### 2a. One-time data migration: `scripts/migrate-base44-to-supabase.mjs`
+
+Run manually (`npm run migrate:base44 -- <flags>`), never as part of a build.
+Source is the Base44 API (`BASE44_APP_ID` + `BASE44_API_KEY`, paginated
+`list()`) or `--fixture <file.json>`; sink is a real project
+(`SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`) or `POSTGRES_URL` for local
+rehearsals. Properties:
+
+- **Idempotent**: every row id is a deterministic UUIDv5 of the Base44 id
+  and all writes are `upsert ... on conflict (id)` — re-runs converge.
+- **Users**: Base44 `User` rows become `auth.users` (created by email via
+  the admin API, or looked up if they exist) + a `profiles` upsert; all
+  user references (ids **or** emails — Base44 mixed both on
+  BlockedTime/BufferTime/CoachAvailability/CoachDefaults/ReminderSettings/
+  OnboardingResponse/Notification.recipient_id) resolve through that map.
+- **Invite tokens**: plaintext `invite_token` from the old system is
+  sha256-hashed into `invite_token_hash` in-flight; plaintext is never
+  written. This script is the only place plaintext tokens are ever read.
+- **Nothing dropped silently**: unmappable rows and dropped unknown columns
+  land in `<out-dir>/skipped.jsonl` with reasons; per-entity read/written/
+  skipped counts print at the end. `clients.assigned_program_id`/
+  `assigned_nutrition_id` are back-filled in a second pass (FK targets load
+  after clients).
+- **Not yet run against production** — no Base44 API key exists in this
+  environment. It was rehearsed end-to-end against local Postgres with a
+  representative fixture (`scripts/fixtures/base44-sample.json`), twice for
+  idempotency; see the Step 2 PR/commit message for counts.
+
+### 2b. Facade: `src/api/supabaseClient.js`
+
+Same shape as `base44Client`, so cutover is an import swap:
+`import { supabase as base44 } from '@/api/supabaseClient'`.
+
+- `entities.{Entity}.list(sort, limit) / filter(criteria, sort, limit) /
+  get(id) / create(data) / update(id, data) / delete(id)` — wraps
+  `.from(<table>)` using the entity→table map above (incl. `Session` →
+  `coaching_sessions`, `User` → `profiles`). `subscribe()` is a warn+no-op
+  until Realtime is ported.
+- Field compatibility: outgoing `created_date`/`updated_date`/
+  `created_by_id` (sort keys, filter keys, payloads) translate to
+  `created_at`/`updated_at`/`created_by`; returned rows get read-only
+  `created_date`/`updated_date`/`created_by_id` aliases.
+- `auth.me()` = Supabase session user ⋈ `profiles` row. Divergences from
+  base44.auth.me(): requires a Supabase Auth session (Step 3) and rejects
+  when signed out (same contract, different login flow); `full_name` comes
+  from profiles (seeded from signup metadata); everything else pages read
+  (`id`, `email`, `role`, `subscription_tier`, `billing_status`,
+  `stripe_*`, `subscription_renewal_date`,
+  `subscription_cancel_at_period_end`, `created_date`) is present.
+  `auth.updateMe()` updates the own profiles row (privileged columns still
+  blocked by the DB trigger); `auth.logout()` = signOut + redirect;
+  `auth.redirectToLogin()` targets `/login` (Step 3 defines the page).
+- `functions.invoke(name, payload)` → Supabase Edge Functions, returning
+  `{ data }` so `res.data.x` call sites keep working. Until Step 5 deploys
+  a given function, invoking it rejects — intentionally not swallowed.
+- **Portal context**: import `supabasePortal` (same shape) in
+  `src/pages/portal/*` ONLY. It routes `CheckIn` →
+  `check_ins_portal_view` (CRUD) and `Session`/`CoachingSession` →
+  `coaching_sessions_portal_view` (read-only; `create/update/delete`
+  throw). All other entities behave as in the coach facade.
+- Env: `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (lazily read on first
+  call so pages still on base44 build/run without them).
+
+### 2c. Cutover status
+
+Migrated to the facade (import swap only, call sites untouched):
+`src/pages/Clients.jsx`, `src/pages/ClientProfile.jsx`,
+`src/components/clients/ClientQuickPanel.jsx`. Everything else remains on
+`base44Client` pending review of this pattern. Known cross-backend seams
+until the rest cuts over: `src/lib/teamUtils.js` (getMyTeamId),
+`src/lib/zapier.js`, email helpers, and the shared modals opened from the
+Clients page still read/write Base44 — during the transition window the
+Clients list itself is Supabase-backed while those side features are not.
+
+Facade verification without a live Supabase project:
+`npm run verify:facade` (with `POSTGRES_URL`) injects a small PostgREST-style
+driver into the facade's test seam and replays the Clients module's exact
+call shapes against the migrated local database **with RLS enforced** —
+including portal-view routing, read-only enforcement, and cross-tenant
+denial. 21/21 checks pass.
 
 ## Global conventions
 
