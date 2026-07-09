@@ -15,6 +15,7 @@ Migration files (apply in order):
 | `20260709000300_business.sql` | leads, packages, listings, invoices, payments, marketing, testimonials, referrals, affiliates (17 tables) |
 | `20260709000400_community.sql` | groups, challenges, posts, comments, badges, community settings (6 tables) |
 | `20260709000500_system.sql` | automation, notifications, logs, AI conversations, import jobs, per-coach settings singletons (13 tables) |
+| `20260709000600_invite_token_hash.sql` | Step 1.5 Fix 1: `clients.invite_token` → `invite_token_hash` (sha256 hex), plaintext never stored |
 
 All six migrations were applied end-to-end against Postgres 16 (with an
 `auth` schema shim) and exercised with a functional RLS test: coach↔coach
@@ -81,10 +82,17 @@ then satisfied Base44 rules like `data.client_id == user.id`.
    `app.is_portal_client()` accepts either path, so **no policy changes are
    needed in Step 3**.
 
-Policies never read `invite_token` itself; the token is only ever compared
-server-side. `clients.invite_token` is `unique` (fast service-role lookup).
-Because there is no anon-readable path to `clients`, tokens are not
-enumerable through the API.
+Policies never read the invite token; portal access only ever routes through
+`app.is_portal_client()` (verified by grep — no policy references the
+column). Since Step 1.5, the column is `invite_token_hash` (`unique`, sha256
+hex — see `20260709000600_invite_token_hash.sql`): the plaintext token
+exists only inside the emailed `/client-setup/<token>` link. **Step 4/5
+contract:** the re-platformed `sendClientInvite` must store
+`sha256(token)` while emailing the plaintext, and the re-platformed
+`validateInviteToken` must hash the incoming token before its service-role
+lookup (`encode(digest(token, 'sha256'), 'hex')`), then check
+`invite_token_expires`. Because there is no anon-readable path to
+`clients`, hashes are not enumerable through the API either.
 
 **What the portal claim grants** (exactly one client's data):
 read/write own `check_ins`, `daily_logs`, `food_logs`, `in_body_scans`,
@@ -96,10 +104,8 @@ read/write own `check_ins`, `daily_logs`, `food_logs`, `in_body_scans`,
 they're a member of.
 
 **Security note / second-look items:**
-- The invite token is stored in plaintext (as in Base44). Since only the
-  service role can read it, that's acceptable, but hashing it (store
-  `sha256(token)`, look up by hash) is a cheap hardening step — recommended
-  before Step 5.
+- ~~The invite token is stored in plaintext~~ — resolved in Step 1.5
+  (`invite_token_hash`, see above).
 - A minted portal JWT should be short-lived (≤ 1 hour, refresh via the same
   token exchange) since it can't be revoked server-side.
 - `check_ins.internal_notes` ("not visible to client") and
@@ -315,7 +321,10 @@ terminology). `User` → `profiles` (Supabase convention, 1:1 with
 6. **`coach_settings.zoom_access_token`** is a live OAuth secret in a
    user-readable row (as in Base44). Recommend moving to Supabase Vault or
    an edge-function-only store during Step 5.
-7. **Invite-token hashing** (see portal section) — recommended before Step 5.
+7. ~~**Invite-token hashing**~~ — **resolved (Step 1.5, Fix 1)**: column
+   renamed to `invite_token_hash` (sha256 hex, rename chosen over additive
+   since no data exists yet); Step 4/5 functions must hash before compare
+   (contract documented in the portal section and the migration header).
 8. **`challenges.participants` spoofing**: a coach could list another
    coach's client ids as participants, making the challenge visible to those
    clients. Same class of (minor) injection existed in Base44; a validation
