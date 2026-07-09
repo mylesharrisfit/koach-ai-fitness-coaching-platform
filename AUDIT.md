@@ -153,3 +153,116 @@ build client-acquisition funnels/referral/marketplace; plan the native app (Capa
 
 **Bottom line:** a broad, mostly-real app with a soft security floor and a backend it's mid-divorce
 from. Secure it in days, migrate deliberately, finish three faked features, and it genuinely competes.
+
+---
+
+# UI/UX Migration (Phases 1–3)
+
+Work done to prepare the app for white-label theming, dark mode, and a lower-cognitive-load
+coach experience. Behavior preserved throughout; shadcn/ui + Radix + Vite kept.
+
+## Phase 1 — Design-system tokenization + dark mode + white label
+
+**New foundation**
+- `src/index.css`: added a `.dark` token block (RGB triplets) so content surfaces flip while the
+  matte-black sidebar stays dark in both modes. Body background now reads `rgb(var(--background))`
+  instead of a hardcoded hex.
+- `src/lib/theme.js`: `light | dark | system` preference, persisted to `localStorage` (`koach-theme`),
+  respects `prefers-color-scheme`, applied before first paint via `initTheme()` in `main.jsx`.
+  `useTheme()` hook + `setTheme`/`toggle`.
+- `src/lib/brand.js` + `src/lib/useBrandColor.js`: a coach's White Label `primary_color` overrides the
+  `--primary` token family at runtime (`--primary`, `--sidebar-primary`, `--ring`, `--chart-1`,
+  contrast-aware `--primary-foreground`). Works in light and dark. Mounted in `AppLayout`.
+- `src/lib/telemetry.js`: `track(event, props)` seam for the Nova event layer (dev console sink now;
+  `addTelemetrySink` for the future transport). **TODO(nova): wire the real transport.**
+- `ThemeToggle` (segmented, in Settings → Appearance) + `ThemeToggleButton` (compact, in the desktop
+  sidebar header and mobile topbar).
+
+**Token map (hex → token) applied to the shell**
+
+| Hardcoded value | Token / class |
+|---|---|
+| `#0D0D0D` / `#0A0A0A` sidebar & topbar bg | `bg-sidebar` (`--sidebar-background`) |
+| `rgba(255,255,255,0.05)` sidebar borders | `border-sidebar-border` |
+| `#2563EB` primary / active accent | `bg-primary` / `text-primary` (`--primary`, brandable) |
+| `rgba(59,130,246,0.12)` active pill, `#3B82F6` rail | `rgb(var(--sidebar-primary) / …)` (brandable) |
+| `#FFFFFF` content cards | `bg-card` |
+| `#111827` heading / dark tile | `text-foreground` / `bg-foreground` (or `bg-sidebar` for persistent-dark banners) |
+| `#9CA3AF`, `#6B7280`, `#374151` secondary text | `text-muted-foreground` |
+| `#E5E7EB`, `#E7EAF3` borders | `border-border` |
+| `#F3F4F6`, `#F6F7FB` subtle surfaces | `bg-muted` |
+| `#EF4444` / `#DC2626` | `text-destructive` / `bg-destructive` |
+| `#22C55E` / `#16A34A` | `success` token |
+| `#F59E0B` | `warning` token |
+
+**Files fully tokenized (zero hardcoded hex):** `AppLayout.jsx`, `Sidebar.jsx`, `BottomNav.jsx`,
+`MoreSheet.jsx`, `TodayView.jsx`.
+
+**Remaining UI debt (not done this pass):** the token map above is established, but ~8,000 hex/rgba
+occurrences remain across the other `src/components` and `src/pages` files (hot files: `#9ca3af` ×821,
+`#2563eb` ×632, `#374151` ×628, `#6b7280` ×627, `#e5e7eb` ×491). These are a mechanical page-by-page
+sweep using the map above, each requiring dark-mode QA — tracked as follow-up, not a blind global
+replace (the palette is only partly 1:1 with tokens, so a scripted swap would cause visual
+regressions). Also intentionally left as literals: `rgba(255,255,255,α)` opacities inside the
+matte-black sidebar, and the token definitions in `index.css` itself.
+
+## Phase 2 — Nav consolidation + ⌘K command palette
+
+**New IA (13 visible items):**
+- MAIN: Dashboard, Clients, Messages, Calendar
+- COACHING: Programs, Nutrition, Check-ins, Adherence
+- GROW: Business, Leads, Store
+- AI: Assistant, Automations
+- Bottom: Settings
+
+**Demoted to the command palette + Settings (routes preserved, nothing deleted):** Exercises, Food
+Library, Community, Challenges, Templates, White Label, Team, Weekly Summary, Email Center, Onboarding,
+Analytics. **At-Risk** is folded into `/adherence` as an Overview/At-Risk tab (the `/at-risk` route
+still works and is in the palette).
+
+**Command registry shape** (`src/lib/commandRegistry.js`) — registering a command is a one-object add:
+```js
+{ id: 'ai.run_my_day', title: 'Run My Day', section: 'AI', icon: Zap,
+  keywords: 'triage priorities', run: (ctx) => { ctx.track('ai.action', {…}); ctx.navigate('/'); ctx.close(); } }
+```
+`ctx = { navigate, setTheme, close, track }`. Sections: `AI` (quick-actions), `Create`, `Go to`
+(every route incl. demoted). `COMMANDS` = `[...ACTION_COMMANDS, ...ROUTE_COMMANDS]`. The palette
+(`src/components/command/CommandPalette.jsx`) is a global provider: ⌘K/Ctrl+K + `useCommandPalette().open()`,
+fuzzy search over title+keywords, built on the existing cmdk `command.jsx`.
+
+**Telemetry events exposed:** `nav.click`, `nav.subtab`, `command.open`, `command.invoke`,
+`ai.action`, `create`, `theme.change`, `brand.apply` (all via `track()` — currently dev-console sink).
+
+## Phase 3 — Dashboard prioritization + loading states
+
+- `TodayView`: **Run My Day (Action Center) pinned to the top** of the actionable stack; the remaining
+  sections (Today's Schedule, Weekly Snapshot, AI Insights, BI) are ordered by unresolved signal
+  (AI Insights promoted when clients need attention — stale check-in ≥10 days or adherence <65).
+- `DashboardSkeleton` + `ErrorState` (reusable, `src/components/shared/ErrorState.jsx`) wired into
+  `Dashboard.jsx` (skeleton on first load, error card with retry on failure).
+- `Clients.jsx`: added an error state (retry) alongside the existing skeleton + empty state; skeleton
+  tokenized to `bg-muted`.
+
+**Remaining UI debt:** extend skeleton/empty/error states to the other data-heavy widgets
+(Messages, Programs, Nutrition, Adherence tables) using the same `ErrorState` + `Skeleton` primitives;
+complete the hex→token sweep (above); replace the remaining native `alert()`/`confirm()` dialogs and
+14 "coming soon" stubs noted in §3.
+
+---
+
+# Phase 4 — Client Portal Review (PLANNED — not implemented)
+
+A dedicated later pass, kept separate from the coach app. Do **not** build in the current run.
+
+**Nav trim (6 → 5):** the client portal bottom nav currently has 6 items. Trim to **Home, Train,
+Schedule, Progress, Coach** — demote **Community** into Home (a feed card / secondary surface) rather
+than a primary tab. Five targets is the mobile sweet spot and matches the coach-side simplification.
+
+**"Simple + premium" UX review of the client screens**, to run then:
+- Apply the same token system to `src/pages/portal/*` and `src/components/portal/*` so the client app
+  inherits dark mode + white-label brand color (currently coach-only).
+- Reduce per-screen density; one primary action per screen; large touch targets.
+- Replace the portal's mock/placeholder spots flagged in the audit (saved payment methods `MockCard`,
+  the `User.list()` coach lookup in `PortalNutrition`, the abandoned `PortalReferral` broken entities).
+- Add skeleton/empty/error states to portal data loads for parity with the coach app.
+- QA every portal screen in light + dark and under a sample brand color.
