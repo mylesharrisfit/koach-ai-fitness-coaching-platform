@@ -10,7 +10,7 @@ function contrastRatio(hex1, hex2) {
     const toLinear = x => x <= 0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055,2.4);
     return 0.2126*toLinear(r) + 0.7152*toLinear(g) + 0.0722*toLinear(b);
   };
-  const l1 = lum(hex1||'rgb(var(--primary))'), l2 = lum(hex2||'rgb(var(--card))');
+  const l1 = lum(hex1||'var(--tc-primary)'), l2 = lum(hex2||'var(--tc-card)');
   const lighter = Math.max(l1,l2), darker = Math.min(l1,l2);
   return (lighter + 0.05) / (darker + 0.05);
 }
@@ -47,7 +47,7 @@ const GRADIENT_DIRS = [
 
 export default function WLColorSystem({ s, set, locked }) {
   const gradAngle = s.gradient_direction === 'custom' ? `${s.gradient_angle || 135}deg` : (s.gradient_direction || '135deg');
-  const gradPreview = `linear-gradient(${gradAngle}, ${s.primary_color || 'rgb(var(--primary))'}, ${s.secondary_color || 'rgb(var(--ai))'})`;
+  const gradPreview = `linear-gradient(${gradAngle}, ${s.primary_color || 'var(--tc-primary)'}, ${s.secondary_color || 'var(--tc-ai)'})`;
 
   return (
     <WLSection title="Color System" emoji="🎨"
@@ -56,11 +56,11 @@ export default function WLColorSystem({ s, set, locked }) {
       <WLRow label="Primary brand color" hint="Buttons, active states, links, highlights">
         <WLColorPicker value={s.primary_color} onChange={v => set('primary_color', v)} />
         <div className="mt-3 flex gap-2 flex-wrap">
-          <button className="px-4 py-1.5 rounded-lg text-sm font-bold text-white" style={{ background: s.primary_color || 'rgb(var(--primary))' }}>Button</button>
-          <span className="px-2 py-1.5 text-sm font-semibold" style={{ color: s.primary_color || 'rgb(var(--primary))' }}>Link text</span>
-          <div className="w-6 h-6 rounded-full" style={{ background: s.primary_color || 'rgb(var(--primary))' }} />
+          <button className="px-4 py-1.5 rounded-lg text-sm font-bold text-white" style={{ background: s.primary_color || 'var(--tc-primary)' }}>Button</button>
+          <span className="px-2 py-1.5 text-sm font-semibold" style={{ color: s.primary_color || 'var(--tc-primary)' }}>Link text</span>
+          <div className="w-6 h-6 rounded-full" style={{ background: s.primary_color || 'var(--tc-primary)' }} />
         </div>
-        <ContrastCheck fg={s.primary_color || 'rgb(var(--primary))'} bg={s.card_color || 'rgb(var(--card))'} />
+        <ContrastCheck fg={s.primary_color || 'var(--tc-primary)'} bg={s.card_color || 'var(--tc-card)'} />
       </WLRow>
 
       <WLRow label="Secondary brand color" hint="Gradients, accents, badges">
@@ -101,7 +101,7 @@ export default function WLColorSystem({ s, set, locked }) {
           <WLColorPicker value={s.text_secondary} onChange={v => set('text_secondary', v)} label="Secondary text" />
           <WLColorPicker value={s.link_color} onChange={v => set('link_color', v)} label="Links" />
         </div>
-        <ContrastCheck fg={s.text_primary || 'rgb(var(--foreground))'} bg={s.bg_color || 'rgb(var(--muted))'} />
+        <ContrastCheck fg={s.text_primary || 'var(--tc-foreground)'} bg={s.bg_color || 'var(--tc-muted)'} />
       </WLRow>
     </WLSection>
   );

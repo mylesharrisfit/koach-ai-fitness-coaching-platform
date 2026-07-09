@@ -23,10 +23,10 @@ const LOGIN_BG_TYPES = [
   { value: 'image', label: 'Image' },
 ];
 const DOMAIN_STATUS = {
-  pending: { icon: Clock, color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', label: 'Pending DNS setup' },
-  verified: { icon: CheckCircle, color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', label: 'Domain verified' },
-  active: { icon: CheckCircle, color: 'rgb(var(--success))', bg: 'rgb(var(--success))', label: 'Active & live' },
-  error: { icon: AlertCircle, color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive))', label: 'DNS error — check records' },
+  pending: { icon: Clock, color: 'var(--tc-warning)', bg: 'var(--tc-warning)', label: 'Pending DNS setup' },
+  verified: { icon: CheckCircle, color: 'var(--tc-primary)', bg: 'var(--tc-accent)', label: 'Domain verified' },
+  active: { icon: CheckCircle, color: 'var(--tc-success)', bg: 'var(--tc-success)', label: 'Active & live' },
+  error: { icon: AlertCircle, color: 'var(--tc-destructive)', bg: 'var(--tc-destructive)', label: 'DNS error — check records' },
 };
 
 export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpriseLocked }) {

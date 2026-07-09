@@ -4,7 +4,7 @@ import { Lock } from 'lucide-react';
 export function WLSection({ title, emoji, description, locked, children }) {
   return (
     <div className={`bg-card rounded-2xl border overflow-hidden transition-opacity ${locked ? 'border-border opacity-60' : 'border-border'}`}
-      style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+      style={{ boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)' }}>
       <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/60">
         <div className="flex items-center gap-2">
           <span className="text-base">{emoji}</span>
@@ -37,7 +37,7 @@ export function WLToggle({ value, onChange, label, disabled }) {
     <button onClick={() => !disabled && onChange(!value)} disabled={disabled} type="button"
       className={`flex items-center gap-2 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
       <div className="relative rounded-full transition-all flex-shrink-0"
-        style={{ width: 40, height: 22, background: value ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--border))' }}>
+        style={{ width: 40, height: 22, background: value ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-border)' }}>
         <div className="absolute top-0.5 rounded-full bg-card shadow transition-all"
           style={{ width: 18, height: 18, left: value ? 20 : 2, transition: 'left 0.15s' }} />
       </div>
@@ -57,10 +57,10 @@ export function WLColorPicker({ value, onChange, label }) {
   return (
     <div className="flex items-center gap-3">
       <div className="relative w-10 h-10 rounded-xl border-2 border-border overflow-hidden flex-shrink-0 cursor-pointer">
-        <input type="color" value={value || 'rgb(var(--primary))'} onChange={e => onChange(e.target.value)}
+        <input type="color" value={value || 'var(--tc-primary)'} onChange={e => onChange(e.target.value)}
           className="absolute -inset-2 w-16 h-16 cursor-pointer border-none outline-none opacity-100" />
       </div>
-      <input value={value || ''} onChange={e => onChange(e.target.value)} placeholder="rgb(var(--primary))"
+      <input value={value || ''} onChange={e => onChange(e.target.value)} placeholder="var(--tc-primary)"
         className="w-28 px-3 py-2 rounded-xl border border-border text-foreground text-sm font-mono focus:outline-none focus:border-primary" />
       {label && <span className="text-sm text-muted-foreground">{label}</span>}
     </div>

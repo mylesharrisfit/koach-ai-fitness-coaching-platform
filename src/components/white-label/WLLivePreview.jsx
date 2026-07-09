@@ -17,13 +17,13 @@ const DEVICES = [
 ];
 
 function PortalMockup({ s, screen }) {
-  const primary = s.primary_color || 'rgb(var(--primary))';
-  const secondary = s.secondary_color || 'rgb(var(--ai))';
-  const bg = s.bg_color || 'rgb(var(--muted))';
-  const card = s.card_color || 'rgb(var(--card))';
-  const textPrimary = s.text_primary || 'rgb(var(--foreground))';
-  const textSecondary = s.text_secondary || 'rgb(var(--muted-foreground))';
-  const navBg = s.portal_nav_bg === 'brand' ? primary : s.portal_nav_bg === 'dark' ? '#0A0A0A' : 'rgb(var(--card))';
+  const primary = s.primary_color || 'var(--tc-primary)';
+  const secondary = s.secondary_color || 'var(--tc-ai)';
+  const bg = s.bg_color || 'var(--tc-muted)';
+  const card = s.card_color || 'var(--tc-card)';
+  const textPrimary = s.text_primary || 'var(--tc-foreground)';
+  const textSecondary = s.text_secondary || 'var(--tc-muted-foreground)';
+  const navBg = s.portal_nav_bg === 'brand' ? primary : s.portal_nav_bg === 'dark' ? 'var(--kc-0a0a0a)' : 'var(--tc-card)';
   const grad = `linear-gradient(${s.gradient_direction || '135deg'}, ${primary}, ${secondary})`;
   const businessName = s.business_name || 'Your App';
 
@@ -110,7 +110,7 @@ function PortalMockup({ s, screen }) {
       </div>
 
       {/* Bottom Nav */}
-      <div className="flex items-center flex-shrink-0 py-1.5 px-1" style={{ background: navBg, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+      <div className="flex items-center flex-shrink-0 py-1.5 px-1" style={{ background: navBg, borderTop: '1px solid color-mix(in srgb, black 6%, transparent)' }}>
         {SCREENS.map(sc => {
           const isActive = sc.id === screen;
           return (
@@ -147,8 +147,8 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
           <button key={d.id} onClick={() => setDevice(d.id)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
-              background: device === d.id ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
-              color: device === d.id ? 'white' : 'rgb(var(--muted-foreground))',
+              background: device === d.id ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+              color: device === d.id ? 'white' : 'var(--tc-muted-foreground)',
             }}>
             <d.icon className="w-3 h-3" />
             {d.label}
@@ -162,9 +162,9 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
           <button key={sc.id} onClick={() => setScreen(sc.id)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 transition-all"
             style={{
-              background: screen === sc.id ? 'rgb(var(--foreground))' : 'rgb(var(--muted))',
-              color: screen === sc.id ? 'white' : 'rgb(var(--muted-foreground))',
-              border: screen === sc.id ? 'none' : '1px solid rgb(var(--border))',
+              background: screen === sc.id ? 'var(--tc-foreground)' : 'var(--tc-muted)',
+              color: screen === sc.id ? 'white' : 'var(--tc-muted-foreground)',
+              border: screen === sc.id ? 'none' : '1px solid var(--tc-border)',
             }}>
             <sc.icon className="w-3 h-3" />
             {sc.label}
@@ -191,8 +191,8 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
 
   if (modal) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.5)' }}>
-        <div className="bg-card rounded-3xl w-full max-w-sm" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'color-mix(in srgb, black 50%, transparent)' }}>
+        <div className="bg-card rounded-3xl w-full max-w-sm" style={{ boxShadow: '0 20px 60px color-mix(in srgb, black 20%, transparent)' }}>
           <div className="h-[600px]">{previewContent}</div>
         </div>
       </div>
@@ -201,7 +201,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
 
   return (
     <div className="sticky top-4 bg-card rounded-2xl border border-border h-[600px]"
-      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+      style={{ boxShadow: '0 4px 20px color-mix(in srgb, black 8%, transparent)' }}>
       {previewContent}
     </div>
   );

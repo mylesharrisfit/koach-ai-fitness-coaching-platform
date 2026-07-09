@@ -6,7 +6,7 @@ export default function WLPublish({ s, onPublish, onSaveDraft, onRollback, onPre
   const history = s.publish_history || [];
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+    <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)' }}>
       <div className="flex items-center gap-2 px-6 py-4 border-b border-border bg-muted/60">
         <span className="text-base">🚀</span>
         <h2 className="font-bold text-foreground text-sm">Publish Settings</h2>
@@ -24,7 +24,7 @@ export default function WLPublish({ s, onPublish, onSaveDraft, onRollback, onPre
         <div className="flex flex-col sm:flex-row gap-3">
           <button onClick={onPublish} disabled={publishing}
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white text-sm disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.25)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
             {publishing
               ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               : <Rocket className="w-4 h-4" />

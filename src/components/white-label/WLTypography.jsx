@@ -48,7 +48,7 @@ export default function WLTypography({ s, set, locked, enterpriseLocked }) {
             Your progress this week has been incredible. Keep pushing toward your goals!
           </p>
           <div className="flex gap-2 mt-3">
-            <button className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ fontFamily: font, fontWeight: 600, background: s.primary_color || 'rgb(var(--primary))' }}>
+            <button className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ fontFamily: font, fontWeight: 600, background: s.primary_color || 'var(--tc-primary)' }}>
               Start Workout
             </button>
             <button className="px-4 py-2 rounded-xl text-sm font-medium border border-border text-foreground" style={{ fontFamily: font }}>

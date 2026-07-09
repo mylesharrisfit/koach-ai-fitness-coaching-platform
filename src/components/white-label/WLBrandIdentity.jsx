@@ -42,7 +42,7 @@ export default function WLBrandIdentity({ s, set, locked }) {
           {/* Phone mockup preview */}
           <div className="flex flex-col items-center gap-2">
             <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-border flex items-center justify-center flex-shrink-0"
-              style={{ background: s.app_icon_url ? 'transparent' : s.app_icon_bg_color || 'rgb(var(--primary))' }}>
+              style={{ background: s.app_icon_url ? 'transparent' : s.app_icon_bg_color || 'var(--tc-primary)' }}>
               {s.app_icon_url
                 ? <img src={s.app_icon_url} alt="icon" className="w-full h-full object-cover" />
                 : <span className="text-white text-xl font-black">{(s.business_name || s.app_name || 'K')[0]}</span>
