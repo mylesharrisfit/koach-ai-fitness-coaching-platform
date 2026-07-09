@@ -31,9 +31,9 @@ const ChipSelect = ({ value, onChange, options, single = false }) => (
           }}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
           style={{
-            background: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-            color: isActive ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
-            border: isActive ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
+            background: isActive ? 'var(--tc-primary)' : 'var(--tc-muted)',
+            color: isActive ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+            border: isActive ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
           }}
         >
           {opt}
@@ -45,7 +45,7 @@ const ChipSelect = ({ value, onChange, options, single = false }) => (
 
 const FieldLabel = ({ children, optional }) => (
   <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-    {children} {optional && <span className="normal-case tracking-normal font-normal text-[#C4C9D4]">— optional</span>}
+    {children} {optional && <span className="normal-case tracking-normal font-normal text-[var(--kc-c4c9d4)]">— optional</span>}
   </p>
 );
 
@@ -190,9 +190,9 @@ export default function AIProfileStep({ onSubmit }) {
                 onClick={() => u('days_per_week', d)}
                 className="w-9 h-9 rounded-lg text-sm font-semibold transition-all"
                 style={{
-                  background: form.days_per_week === d ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-                  color: form.days_per_week === d ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
-                  border: form.days_per_week === d ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
+                  background: form.days_per_week === d ? 'var(--tc-primary)' : 'var(--tc-muted)',
+                  color: form.days_per_week === d ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  border: form.days_per_week === d ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
                 }}
               >{d}</button>
             ))}
@@ -284,7 +284,7 @@ export default function AIProfileStep({ onSubmit }) {
           onClick={handleSubmit}
           disabled={!isComplete}
           className="gap-2 text-sm font-semibold"
-          style={{ background: 'rgb(var(--primary))' }}
+          style={{ background: 'var(--tc-primary)' }}
         >
           Next <ChevronRight className="w-4 h-4" />
         </Button>

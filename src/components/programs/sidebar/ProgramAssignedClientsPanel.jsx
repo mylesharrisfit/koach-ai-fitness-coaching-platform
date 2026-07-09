@@ -8,12 +8,12 @@ function getInitials(name = '') {
 
 function getAvatarColor(name = '') {
   const colors = [
-    ['rgb(var(--accent))', 'rgb(var(--primary))'],
-    ['rgb(var(--success))', 'rgb(var(--success))'],
-    ['rgb(var(--warning))', 'rgb(var(--warning))'],
-    ['rgb(var(--ai))', 'rgb(var(--ai))'],
-    ['#FCE7F3', '#9D174D'],
-    ['rgb(var(--warning))', '#9A3412'],
+    ['var(--tc-accent)', 'var(--tc-primary)'],
+    ['var(--tc-success)', 'var(--tc-success)'],
+    ['var(--tc-warning)', 'var(--tc-warning)'],
+    ['var(--tc-ai)', 'var(--tc-ai)'],
+    ['var(--kc-fce7f3)', 'var(--kc-9d174d)'],
+    ['var(--tc-warning)', 'var(--kc-9a3412)'],
   ];
   const i = name.charCodeAt(0) % colors.length;
   return colors[i];
@@ -44,14 +44,14 @@ export default function ProgramAssignedClientsPanel({
       {assignedClients.length === 0 ? (
         <div className="text-center py-6">
           <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-3">
-            <Users className="w-5 h-5 text-[#3730a3]" />
+            <Users className="w-5 h-5 text-[var(--kc-3730a3)]" />
           </div>
           <p className="text-xs text-muted-foreground mb-3">No clients assigned yet</p>
           <Button
             size="sm"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs"
-            style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))' }}
+            style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Client
           </Button>
@@ -91,7 +91,7 @@ export default function ProgramAssignedClientsPanel({
                   <div className="ml-10 h-1.5 bg-border rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ width: `${progress}%`, background: 'rgb(var(--primary))' }}
+                      style={{ width: `${progress}%`, background: 'var(--tc-primary)' }}
                     />
                   </div>
                 </div>
@@ -110,7 +110,7 @@ export default function ProgramAssignedClientsPanel({
             variant="outline"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs font-semibold"
-            style={{ color: 'rgb(var(--primary))', borderColor: 'rgb(var(--primary))' }}
+            style={{ color: 'var(--tc-primary)', borderColor: 'var(--tc-primary)' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign New
           </Button>

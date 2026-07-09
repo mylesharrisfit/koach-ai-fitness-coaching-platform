@@ -118,13 +118,13 @@ export default function ProgramDetailModal({
         className="w-full max-w-5xl h-[90vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden"
       >
         {/* ── HEADER ── */}
-        <div style={{ background: 'rgb(var(--sidebar))' }} className="px-6 sm:px-8 pt-6 pb-5 flex-shrink-0">
+        <div style={{ background: 'var(--tc-sidebar)' }} className="px-6 sm:px-8 pt-6 pb-5 flex-shrink-0">
           {/* Top row: type pill + action buttons + close */}
           <div className="flex items-start justify-between gap-3 mb-3">
             {/* Type pill */}
             <span
               className="text-xs font-semibold px-2.5 py-1 rounded-full"
-              style={{ background: 'rgba(55,138,221,0.18)', color: 'rgb(var(--primary))' }}
+              style={{ background: 'color-mix(in srgb, var(--tc-primary) 18%, transparent)', color: 'var(--tc-primary)' }}
             >
               {typeLabel}
             </span>
@@ -135,7 +135,7 @@ export default function ProgramDetailModal({
                 onClick={onAssign}
                 size="sm"
                 className="h-8 px-3 text-xs font-semibold gap-1.5"
-                style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))', border: 'none' }}
+                style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)', border: 'none' }}
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 Assign
@@ -144,8 +144,8 @@ export default function ProgramDetailModal({
                 onClick={onEdit}
                 size="sm"
                 variant="ghost"
-                className="h-8 px-3 text-xs font-semibold text-white gap-1.5 hover:bg-white/10"
-                style={{ border: '0.5px solid rgba(255,255,255,0.5)', background: 'transparent' }}
+                className="h-8 px-3 text-xs font-semibold text-white gap-1.5 hover:bg-[var(--kc-w-10)]"
+                style={{ border: '0.5px solid color-mix(in srgb, white 50%, transparent)', background: 'transparent' }}
               >
                 <Pencil className="w-3.5 h-3.5" />
                 Edit
@@ -153,7 +153,7 @@ export default function ProgramDetailModal({
               <button
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-                style={{ background: 'rgba(255,255,255,0.08)' }}
+                style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}
               >
                 <X className="w-4 h-4 text-white/80" />
               </button>
@@ -165,7 +165,7 @@ export default function ProgramDetailModal({
             {program.title}
           </h2>
           {program.description && (
-            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: 'color-mix(in srgb, white 60%, transparent)' }}>
               {program.description}
             </p>
           )}
@@ -183,10 +183,10 @@ export default function ProgramDetailModal({
                   i !== stats.length - 1 && 'border-r border-border'
                 )}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'rgb(var(--primary))' }} />
+                <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--tc-primary)' }} />
                 <div>
                   <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</div>
-                  <div className="text-sm font-semibold" style={{ color: 'rgb(var(--foreground))' }}>{stat.value}</div>
+                  <div className="text-sm font-semibold" style={{ color: 'var(--tc-foreground)' }}>{stat.value}</div>
                 </div>
               </div>
             );
@@ -203,7 +203,7 @@ export default function ProgramDetailModal({
                 onClick={() => setActiveTab(tab.id)}
                 className="pb-3 pt-3 px-3 text-sm font-semibold transition-colors relative whitespace-nowrap"
                 style={{
-                  color: activeTab === tab.id ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+                  color: activeTab === tab.id ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)',
                 }}
               >
                 {tab.label}
@@ -211,7 +211,7 @@ export default function ProgramDetailModal({
                   <motion.div
                     layoutId="progTabUnderline"
                     className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                    style={{ background: 'rgb(var(--primary))' }}
+                    style={{ background: 'var(--tc-primary)' }}
                   />
                 )}
               </button>

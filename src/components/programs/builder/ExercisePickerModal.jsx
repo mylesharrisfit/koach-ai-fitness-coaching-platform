@@ -61,17 +61,17 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
 
       {/* Panel */}
       <div className="relative w-full max-w-lg bg-card rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col"
-        style={{ height: '85vh', maxHeight: '640px', boxShadow: '0 -4px 40px rgba(0,0,0,0.15)' }}>
+        style={{ height: '85vh', maxHeight: '640px', boxShadow: '0 -4px 40px color-mix(in srgb, black 15%, transparent)' }}>
 
         {/* Header */}
-        <div className="flex-shrink-0 px-4 pt-4 pb-3" style={{ background: 'rgb(var(--sidebar))' }}>
+        <div className="flex-shrink-0 px-4 pt-4 pb-3" style={{ background: 'var(--tc-sidebar)' }}>
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-0.5">Add Exercise</p>
               <h3 className="text-sm font-bold text-white">{dayName ? `→ ${dayName}` : 'Pick from library'}</h3>
             </div>
             <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.1)' }}>
+              style={{ background: 'color-mix(in srgb, white 10%, transparent)' }}>
               <X className="w-3.5 h-3.5 text-white/70" />
             </button>
           </div>
@@ -86,25 +86,25 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full h-9 text-sm pl-9 pr-3 rounded-xl text-white placeholder:text-white/30 focus:outline-none"
-              style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
+              style={{ background: 'color-mix(in srgb, white 8%, transparent)', border: '1px solid color-mix(in srgb, white 10%, transparent)' }}
             />
           </div>
         </div>
 
         {/* Filter bar */}
         <div className="flex-shrink-0 px-4 py-2.5 flex items-center gap-2 overflow-x-auto scrollbar-hide"
-          style={{ background: 'rgb(var(--muted))', borderBottom: '0.5px solid rgb(var(--border))' }}>
+          style={{ background: 'var(--tc-muted)', borderBottom: '0.5px solid var(--tc-border)' }}>
 
           {/* Muscle chips */}
           <button onClick={() => setMuscleFilter('')}
             className="text-[10px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0 transition-colors"
-            style={{ background: !muscleFilter ? 'rgb(var(--primary))' : 'rgb(var(--muted))', color: !muscleFilter ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))' }}>
+            style={{ background: !muscleFilter ? 'var(--tc-primary)' : 'var(--tc-muted)', color: !muscleFilter ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}>
             All
           </button>
           {MUSCLE_OPTIONS.map(m => (
             <button key={m} onClick={() => setMuscleFilter(muscleFilter === m ? '' : m)}
               className="text-[10px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap flex-shrink-0 capitalize transition-colors"
-              style={{ background: muscleFilter === m ? 'rgb(var(--primary))' : 'rgb(var(--muted))', color: muscleFilter === m ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))' }}>
+              style={{ background: muscleFilter === m ? 'var(--tc-primary)' : 'var(--tc-muted)', color: muscleFilter === m ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}>
               {m.replace(/_/g, ' ')}
             </button>
           ))}
@@ -113,7 +113,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
           <div className="relative flex-shrink-0 ml-1">
             <button onClick={() => setShowEquipDrop(v => !v)}
               className="h-6 flex items-center gap-1 px-2.5 rounded-full text-[10px] font-semibold transition-colors"
-              style={{ background: equipFilter ? 'rgb(var(--primary))' : 'rgb(var(--muted))', color: equipFilter ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))', border: '0.5px solid rgb(var(--border))' }}>
+              style={{ background: equipFilter ? 'var(--tc-primary)' : 'var(--tc-muted)', color: equipFilter ? 'var(--tc-card)' : 'var(--tc-muted-foreground)', border: '0.5px solid var(--tc-border)' }}>
               <span className="capitalize">{equipFilter ? equipFilter.replace(/_/g, ' ') : 'Equipment'}</span>
               <ChevronDown className="w-2.5 h-2.5" />
             </button>
@@ -159,12 +159,12 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent/40 transition-colors text-left"
                   >
                     {/* Thumbnail */}
-                    <div className="w-11 h-11 rounded-xl flex-shrink-0 overflow-hidden" style={{ background: 'rgb(var(--sidebar))' }}>
+                    <div className="w-11 h-11 rounded-xl flex-shrink-0 overflow-hidden" style={{ background: 'var(--tc-sidebar)' }}>
                       {thumb ? (
                         <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Dumbbell className="w-5 h-5 text-[#4B5563]" />
+                          <Dumbbell className="w-5 h-5 text-[var(--kc-4b5563)]" />
                         </div>
                       )}
                     </div>
@@ -182,14 +182,14 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
                           <span className="text-[10px] text-muted-foreground capitalize">{ex.equipment.replace(/_/g, ' ')}</span>
                         )}
                         {ex.difficulty && (
-                          <span className="text-[10px] text-[#C4C9D4] capitalize">· {ex.difficulty}</span>
+                          <span className="text-[10px] text-[var(--kc-c4c9d4)] capitalize">· {ex.difficulty}</span>
                         )}
                       </div>
                     </div>
 
                     {/* Add indicator */}
                     <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: 'rgb(var(--accent))' }}>
+                      style={{ background: 'var(--tc-accent)' }}>
                       <span className="text-sm font-bold text-primary">+</span>
                     </div>
                   </button>
@@ -200,11 +200,11 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
         </div>
 
         {/* Custom exercise fallback */}
-        <div className="flex-shrink-0 px-4 py-3" style={{ borderTop: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}>
+        <div className="flex-shrink-0 px-4 py-3" style={{ borderTop: '0.5px solid var(--tc-border)', background: 'var(--tc-muted)' }}>
           <button
             onClick={handleCustom}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-card transition-all"
-            style={{ border: '1.5px dashed rgb(var(--muted-foreground))' }}
+            style={{ border: '1.5px dashed var(--tc-muted-foreground)' }}
           >
             <Pencil className="w-3.5 h-3.5" />
             Add custom exercise (type a name manually)

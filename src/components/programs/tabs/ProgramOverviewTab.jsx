@@ -42,7 +42,7 @@ export default function ProgramOverviewTab({ program }) {
               <span
                 key={tag}
                 className="text-xs font-medium px-2.5 py-1 rounded-full"
-                style={{ background: 'rgb(var(--accent))', color: '#3730a3' }}
+                style={{ background: 'var(--tc-accent)', color: 'var(--kc-3730a3)' }}
               >
                 {tag}
               </span>

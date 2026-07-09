@@ -148,7 +148,7 @@ export default function ExerciseLibraryPicker({ open, onClose, onSelect }) {
             <div className="text-center py-14">
               <Dumbbell className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <p className="text-sm text-muted-foreground font-medium">No exercises found</p>
-              <p className="text-xs text-[#C4C9D4] mt-1">Try adjusting filters or add a custom exercise</p>
+              <p className="text-xs text-[var(--kc-c4c9d4)] mt-1">Try adjusting filters or add a custom exercise</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -186,7 +186,7 @@ export default function ExerciseLibraryPicker({ open, onClose, onSelect }) {
                       )}
                     </div>
                   </div>
-                  <Plus className="w-4 h-4 text-[#C4C9D4] group-hover:text-primary transition-colors flex-shrink-0" />
+                  <Plus className="w-4 h-4 text-[var(--kc-c4c9d4)] group-hover:text-primary transition-colors flex-shrink-0" />
                 </button>
               ))}
             </div>

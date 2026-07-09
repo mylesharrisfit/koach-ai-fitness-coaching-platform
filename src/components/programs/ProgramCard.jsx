@@ -10,12 +10,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 /* ── Goal-based colour palette ── */
 const CATEGORY_CONFIG = {
-  strength:    { bg: '#E6F1FB', icon: '#185FA5', Icon: Zap,     label: 'Strength'    },
-  hypertrophy: { bg: '#EEEDFE', icon: '#3C3489', Icon: Layers,  label: 'Hypertrophy' },
-  fat_loss:    { bg: '#FAECE7', icon: '#993C1D', Icon: Flame,   label: 'Fat Loss'    },
-  athletic:    { bg: '#E6FBF3', icon: '#1A6B4A', Icon: Target,  label: 'Athletic'    },
-  mobility:    { bg: '#F0FBE6', icon: '#3A6B1A', Icon: Target,  label: 'Mobility'    },
-  custom:      { bg: 'rgb(var(--muted))', icon: 'rgb(var(--muted-foreground))', Icon: Dumbbell, label: 'Custom'     },
+  strength:    { bg: 'var(--kc-e6f1fb)', icon: 'var(--kc-185fa5)', Icon: Zap,     label: 'Strength'    },
+  hypertrophy: { bg: 'var(--kc-eeedfe)', icon: 'var(--kc-3c3489)', Icon: Layers,  label: 'Hypertrophy' },
+  fat_loss:    { bg: 'var(--kc-faece7)', icon: 'var(--kc-993c1d)', Icon: Flame,   label: 'Fat Loss'    },
+  athletic:    { bg: 'var(--kc-e6fbf3)', icon: 'var(--kc-1a6b4a)', Icon: Target,  label: 'Athletic'    },
+  mobility:    { bg: 'var(--kc-f0fbe6)', icon: 'var(--kc-3a6b1a)', Icon: Target,  label: 'Mobility'    },
+  custom:      { bg: 'var(--tc-muted)', icon: 'var(--tc-muted-foreground)', Icon: Dumbbell, label: 'Custom'     },
 };
 
 const DIFFICULTY_BADGE = {
@@ -47,7 +47,7 @@ export default function ProgramCard({
   return (
     <div
       className="bg-card rounded-xl flex flex-col transition-all duration-150 hover:shadow-md hover:-translate-y-0.5"
-      style={{ border: '0.5px solid rgb(var(--border))' }}
+      style={{ border: '0.5px solid var(--tc-border)' }}
     >
       <div className="p-4 flex flex-col gap-3 flex-1">
 
@@ -62,7 +62,7 @@ export default function ProgramCard({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C4C9D4] hover:text-foreground hover:bg-muted transition-colors">
+              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--kc-c4c9d4)] hover:text-foreground hover:bg-muted transition-colors">
                 <MoreVertical className="w-3.5 h-3.5" />
               </button>
             </DropdownMenuTrigger>
@@ -122,7 +122,7 @@ export default function ProgramCard({
       </div>
 
       {/* ── Divider + Footer ── */}
-      <div style={{ borderTop: '0.5px solid rgb(var(--muted))' }}>
+      <div style={{ borderTop: '0.5px solid var(--tc-muted)' }}>
         <div className="px-4 py-3 flex items-center justify-between gap-2">
 
           {/* Client avatar stack or Unassigned pill */}
@@ -170,7 +170,7 @@ export default function ProgramCard({
           <button
             onClick={onAssign}
             className="flex items-center gap-1 text-[11px] font-semibold text-white px-3 py-1.5 rounded-lg transition-opacity hover:opacity-90 flex-shrink-0"
-            style={{ background: 'rgb(var(--primary))' }}
+            style={{ background: 'var(--tc-primary)' }}
           >
             <Users className="w-3 h-3" /> Assign
           </button>

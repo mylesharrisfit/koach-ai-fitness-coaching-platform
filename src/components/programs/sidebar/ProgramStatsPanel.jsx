@@ -21,14 +21,14 @@ export default function ProgramStatsPanel({ stats = {} }) {
       <div className="grid grid-cols-2 gap-2 mb-2">
         <div className="rounded-xl border border-border bg-card p-3 text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <Users className="w-3.5 h-3.5" style={{ color: 'rgb(var(--primary))' }} />
+            <Users className="w-3.5 h-3.5" style={{ color: 'var(--tc-primary)' }} />
           </div>
           <p className="text-xl font-bold text-foreground">{assignedCount}</p>
           <p className="text-[10px] text-muted-foreground mt-0.5">Assigned</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-3 text-center">
           <div className="flex items-center justify-center gap-1 mb-1">
-            <TrendingUp className="w-3.5 h-3.5" style={{ color: 'rgb(var(--primary))' }} />
+            <TrendingUp className="w-3.5 h-3.5" style={{ color: 'var(--tc-primary)' }} />
           </div>
           <p className="text-xl font-bold text-foreground">
             {completionRate != null ? `${completionRate}%` : '—'}
@@ -39,8 +39,8 @@ export default function ProgramStatsPanel({ stats = {} }) {
 
       {/* Sessions logged — real data, honest empty state */}
       <div className="rounded-xl border border-border bg-card p-3 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgb(var(--accent))' }}>
-          <Gauge className="w-4 h-4" style={{ color: '#3730a3' }} />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'var(--tc-accent)' }}>
+          <Gauge className="w-4 h-4" style={{ color: 'var(--kc-3730a3)' }} />
         </div>
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">Sessions Logged</p>

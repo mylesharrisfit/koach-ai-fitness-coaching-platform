@@ -27,8 +27,8 @@ function FilterChip({ label, active, onClick }) {
       onClick={onClick}
       className="text-[10px] font-semibold px-2 py-1 rounded-full whitespace-nowrap transition-all flex-shrink-0 capitalize"
       style={{
-        background: active ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-        color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+        background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
+        color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
       }}
     >
       {label.replace(/_/g, ' ')}
@@ -43,12 +43,12 @@ function ExerciseCard({ ex, onAdd }) {
   return (
     <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-transparent hover:border-primary hover:bg-accent/40 transition-all text-left group cursor-pointer">
       {/* Thumbnail */}
-      <div className="w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden" style={{ background: 'rgb(var(--sidebar))' }}>
+      <div className="w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden" style={{ background: 'var(--tc-sidebar)' }}>
         {thumb ? (
           <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Dumbbell className="w-4 h-4 text-[#4B5563]" />
+            <Dumbbell className="w-4 h-4 text-[var(--kc-4b5563)]" />
           </div>
         )}
       </div>
@@ -73,7 +73,7 @@ function ExerciseCard({ ex, onAdd }) {
         <button
           onClick={e => { e.stopPropagation(); onAdd(ex); }}
           className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all text-white text-sm font-bold"
-          style={{ background: 'rgb(var(--primary))' }}
+          style={{ background: 'var(--tc-primary)' }}
           title="Add to selected day"
         >+</button>
       )}
@@ -110,10 +110,10 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
   const clearFilters = () => { setMuscleFilter(''); setEquipFilter(''); setDiffFilter(''); setSearch(''); };
 
   return (
-    <div className="flex flex-col h-full bg-card" style={{ borderRight: '0.5px solid rgb(var(--border))' }}>
+    <div className="flex flex-col h-full bg-card" style={{ borderRight: '0.5px solid var(--tc-border)' }}>
 
       {/* ── HEADER ── */}
-      <div className="px-3 pt-3 pb-2 flex-shrink-0" style={{ borderBottom: '0.5px solid rgb(var(--muted))' }}>
+      <div className="px-3 pt-3 pb-2 flex-shrink-0" style={{ borderBottom: '0.5px solid var(--tc-muted)' }}>
         <div className="flex items-center justify-between mb-2">
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Exercise Library</p>
           {activeFilters > 0 && (
@@ -131,7 +131,7 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
             placeholder="Search..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full h-7 text-xs pl-7 pr-2 rounded-lg border border-border bg-muted focus:outline-none focus:border-primary placeholder:text-[#C4C9D4]"
+            className="w-full h-7 text-xs pl-7 pr-2 rounded-lg border border-border bg-muted focus:outline-none focus:border-primary placeholder:text-[var(--kc-c4c9d4)]"
           />
         </div>
 
@@ -151,9 +151,9 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
               onClick={() => { setShowEquip(v => !v); setShowDiff(false); }}
               className="w-full h-6 flex items-center justify-between px-2 rounded-lg text-[10px] font-semibold transition-colors"
               style={{
-                border: '0.5px solid rgb(var(--border))',
-                background: equipFilter ? 'rgb(var(--accent))' : 'rgb(var(--muted))',
-                color: equipFilter ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+                border: '0.5px solid var(--tc-border)',
+                background: equipFilter ? 'var(--tc-accent)' : 'var(--tc-muted)',
+                color: equipFilter ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)',
               }}
             >
               <span className="truncate capitalize">{equipFilter ? equipFilter.replace(/_/g, ' ') : 'Equipment'}</span>
@@ -180,9 +180,9 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
               onClick={() => { setShowDiff(v => !v); setShowEquip(false); }}
               className="w-full h-6 flex items-center justify-between px-2 rounded-lg text-[10px] font-semibold transition-colors"
               style={{
-                border: '0.5px solid rgb(var(--border))',
-                background: diffFilter ? 'rgb(var(--accent))' : 'rgb(var(--muted))',
-                color: diffFilter ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+                border: '0.5px solid var(--tc-border)',
+                background: diffFilter ? 'var(--tc-accent)' : 'var(--tc-muted)',
+                color: diffFilter ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)',
               }}
             >
               <span className="truncate capitalize">{diffFilter || 'Difficulty'}</span>
@@ -235,8 +235,8 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
       </div>
 
       {/* Footer */}
-      <div className="px-3 py-2 flex-shrink-0" style={{ borderTop: '0.5px solid rgb(var(--muted))' }}>
-        <p className="text-[9px] text-[#C4C9D4] text-center">
+      <div className="px-3 py-2 flex-shrink-0" style={{ borderTop: '0.5px solid var(--tc-muted)' }}>
+        <p className="text-[9px] text-[var(--kc-c4c9d4)] text-center">
           {filtered.length} of {exercises.length} exercises
         </p>
       </div>

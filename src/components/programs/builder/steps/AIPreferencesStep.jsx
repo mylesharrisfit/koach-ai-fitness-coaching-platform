@@ -9,7 +9,7 @@ import { Zap } from 'lucide-react';
 
 const FieldLabel = ({ children, optional }) => (
   <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-    {children} {optional && <span className="normal-case tracking-normal font-normal text-[#C4C9D4]">— optional</span>}
+    {children} {optional && <span className="normal-case tracking-normal font-normal text-[var(--kc-c4c9d4)]">— optional</span>}
   </p>
 );
 
@@ -96,9 +96,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 onClick={() => selectDuration(d)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: active ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-                  color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
-                  border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
+                  background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
+                  color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
                 }}
               >
                 {d} wks
@@ -111,9 +111,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
             onClick={() => { setIsCustomDuration(true); setCustomDuration(''); u('duration', ''); }}
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
             style={{
-              background: isCustomDuration ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-              color: isCustomDuration ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
-              border: isCustomDuration ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
+              background: isCustomDuration ? 'var(--tc-primary)' : 'var(--tc-muted)',
+              color: isCustomDuration ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+              border: isCustomDuration ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
             }}
           >
             Custom
@@ -149,9 +149,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 onClick={() => u('progression_style', opt.value)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: active ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-                  color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
-                  border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
+                  background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
+                  color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
                 }}
               >
                 {opt.label}
@@ -167,7 +167,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       </div>
 
       {/* Deload */}
-      <div className="flex items-start justify-between p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}>
+      <div className="flex items-start justify-between p-3 rounded-xl" style={{ border: '0.5px solid var(--tc-border)', background: 'var(--tc-muted)' }}>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">Include Deload Weeks</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">Reduced volume weeks to aid recovery and adaptation</p>
@@ -188,7 +188,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       </div>
 
       {/* Cardio */}
-      <div className="p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}>
+      <div className="p-3 rounded-xl" style={{ border: '0.5px solid var(--tc-border)', background: 'var(--tc-muted)' }}>
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-semibold text-foreground">Include Cardio / Conditioning</p>
@@ -209,9 +209,9 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                     onClick={() => toggleCardioType(type)}
                     className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-all"
                     style={{
-                      background: active ? 'rgb(var(--primary))' : 'rgb(var(--card))',
-                      color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
-                      border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--muted-foreground))',
+                      background: active ? 'var(--tc-primary)' : 'var(--tc-card)',
+                      color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                      border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-muted-foreground)',
                     }}
                   >
                     {type}
@@ -243,7 +243,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
           onClick={handleSubmit}
           disabled={isLoading || !isValid || (form.include_cardio && (form.cardio_types || []).length === 0)}
           className="gap-2 text-sm font-semibold"
-          style={{ background: 'rgb(var(--primary))' }}
+          style={{ background: 'var(--tc-primary)' }}
         >
           <Zap className="w-4 h-4" />
           {isLoading ? 'Generating...' : 'Generate Program'}

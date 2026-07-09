@@ -15,16 +15,16 @@ const CATEGORY_COLORS = {
 };
 
 const MUSCLE_GROUP_COLORS = {
-  chest: '#4f8ef7',
-  back: '#3dbd8a',
-  shoulders: '#a875e8',
-  biceps: '#4f8ef7',
-  triceps: '#4f8ef7',
-  legs: '#f45b5b',
-  glutes: '#f45b5b',
-  core: '#f5a623',
-  full_body: '#3dbd8a',
-  cardio: '#3dbd8a',
+  chest: 'var(--kc-4f8ef7)',
+  back: 'var(--kc-3dbd8a)',
+  shoulders: 'var(--kc-a875e8)',
+  biceps: 'var(--kc-4f8ef7)',
+  triceps: 'var(--kc-4f8ef7)',
+  legs: 'var(--kc-f45b5b)',
+  glutes: 'var(--kc-f45b5b)',
+  core: 'var(--kc-f5a623)',
+  full_body: 'var(--kc-3dbd8a)',
+  cardio: 'var(--kc-3dbd8a)',
 };
 
 function getMuscleGroupSummary(exercises) {
@@ -102,7 +102,7 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
                       <div className="mt-2 space-y-0.5">
                         {getMuscleGroupSummary(workout.exercises).map(([group, count]) => (
                           <div key={group} className="flex items-center gap-1">
-                            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: MUSCLE_GROUP_COLORS[group] || '#888' }} />
+                            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: MUSCLE_GROUP_COLORS[group] || 'var(--kc-888888)' }} />
                             <span className="text-[9px] text-foreground truncate">{group.replace('_', ' ')}</span>
                           </div>
                         ))}
