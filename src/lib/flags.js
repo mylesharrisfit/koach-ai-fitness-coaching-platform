@@ -9,4 +9,4 @@
  * light colors, so exposing the switch would break them. Flip to `true` only
  * once the tokenization sweep is complete and dark mode reads correctly app-wide.
  */
-export const darkModeEnabled = true;
+export const darkModeEnabled = false;
