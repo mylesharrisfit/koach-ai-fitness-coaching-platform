@@ -385,7 +385,7 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
               )}
             />
             <span className="text-[9px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
-            <span className="text-[8px] text-[#C4C9D4]">{format(day, 'd')}</span>
+            <span className="text-[8px] text-[var(--kc-c4c9d4)]">{format(day, 'd')}</span>
           </div>
         ))}
       </div>

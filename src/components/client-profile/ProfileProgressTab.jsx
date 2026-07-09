@@ -9,19 +9,19 @@ import {
 import { cn } from '@/lib/utils';
 
 const METRICS = [
-  { key: 'weight',        label: 'Scale Weight',    unit: 'lbs',  color: 'rgb(var(--primary))', icon: Scale },
-  { key: 'body_fat_pct',  label: 'Body Fat %',      unit: '%',    color: 'rgb(var(--ai))', icon: BarChart2 },
-  { key: 'sleep_hours',   label: 'Sleep',           unit: 'hrs',  color: 'rgb(var(--primary))', icon: Moon },
-  { key: 'energy_level',  label: 'Energy Level',    unit: '/5',   color: 'rgb(var(--warning))', icon: Zap },
-  { key: 'stress_level',  label: 'Stress Level',    unit: '/5',   color: 'rgb(var(--destructive))', icon: Brain },
-  { key: 'compliance_training',  label: 'Training Compliance', unit: '%', color: 'rgb(var(--primary))', icon: TrendingUp },
-  { key: 'compliance_nutrition', label: 'Nutrition Compliance', unit: '%', color: 'rgb(var(--success))', icon: Heart },
+  { key: 'weight',        label: 'Scale Weight',    unit: 'lbs',  color: 'var(--tc-primary)', icon: Scale },
+  { key: 'body_fat_pct',  label: 'Body Fat %',      unit: '%',    color: 'var(--tc-ai)', icon: BarChart2 },
+  { key: 'sleep_hours',   label: 'Sleep',           unit: 'hrs',  color: 'var(--tc-primary)', icon: Moon },
+  { key: 'energy_level',  label: 'Energy Level',    unit: '/5',   color: 'var(--tc-warning)', icon: Zap },
+  { key: 'stress_level',  label: 'Stress Level',    unit: '/5',   color: 'var(--tc-destructive)', icon: Brain },
+  { key: 'compliance_training',  label: 'Training Compliance', unit: '%', color: 'var(--tc-primary)', icon: TrendingUp },
+  { key: 'compliance_nutrition', label: 'Nutrition Compliance', unit: '%', color: 'var(--tc-success)', icon: Heart },
 ];
 
 const MEASUREMENT_KEYS = ['chest', 'waist', 'hips', 'arms', 'thighs'];
 
 const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😟' };
-const MOOD_COLOR = { great: 'rgb(var(--success))', good: 'rgb(var(--primary))', okay: 'rgb(var(--warning))', tired: 'rgb(var(--ai))', stressed: 'rgb(var(--destructive))' };
+const MOOD_COLOR = { great: 'var(--tc-success)', good: 'var(--tc-primary)', okay: 'var(--tc-warning)', tired: 'var(--tc-ai)', stressed: 'var(--tc-destructive)' };
 
 function StatPill({ label, value, unit, delta, deltaInvert = false, icon: Icon, color }) {
   const isPositive = delta > 0;
@@ -50,11 +50,11 @@ function MetricChart({ data, dataKey, label, unit, color, domain }) {
       <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4">{label}</h3>
       <ResponsiveContainer width="100%" height={160}>
         <LineChart data={data} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" />
-          <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-          <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} domain={domain || ['auto', 'auto']} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
+          <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+          <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} domain={domain || ['auto', 'auto']} />
           <Tooltip
-            contentStyle={{ border: '1px solid rgb(var(--border))', borderRadius: 12, fontSize: 12 }}
+            contentStyle={{ border: '1px solid var(--tc-border)', borderRadius: 12, fontSize: 12 }}
             formatter={(v) => [`${v}${unit}`, label]}
           />
           <Line type="monotone" dataKey={dataKey} stroke={color} strokeWidth={2.5} dot={{ r: 3, fill: color, strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
@@ -171,8 +171,8 @@ export default function ProfileProgressTab({ client, checkIns }) {
         <div className="space-y-4">
           {/* Summary pills */}
           <div className="grid grid-cols-2 gap-3">
-            <StatPill label="Starting Weight" value={first(weightData, 'weight')} unit=" lbs" icon={Scale} color="rgb(var(--primary))" />
-            <StatPill label="Current Weight" value={latest(weightData, 'weight')} unit=" lbs" icon={Scale} color="rgb(var(--primary))" />
+            <StatPill label="Starting Weight" value={first(weightData, 'weight')} unit=" lbs" icon={Scale} color="var(--tc-primary)" />
+            <StatPill label="Current Weight" value={latest(weightData, 'weight')} unit=" lbs" icon={Scale} color="var(--tc-primary)" />
             {delta(weightData, 'weight') !== null && (
               <StatPill
                 label="Total Change"
@@ -180,17 +180,17 @@ export default function ProfileProgressTab({ client, checkIns }) {
                 unit=" lbs"
                 delta={null}
                 icon={delta(weightData, 'weight') < 0 ? TrendingDown : TrendingUp}
-                color={delta(weightData, 'weight') < 0 ? 'rgb(var(--success))' : 'rgb(var(--destructive))'}
+                color={delta(weightData, 'weight') < 0 ? 'var(--tc-success)' : 'var(--tc-destructive)'}
               />
             )}
-            <StatPill label="Body Fat %" value={latest(bodyFatData, 'body_fat_pct')} unit="%" icon={BarChart2} color="rgb(var(--ai))" />
+            <StatPill label="Body Fat %" value={latest(bodyFatData, 'body_fat_pct')} unit="%" icon={BarChart2} color="var(--tc-ai)" />
           </div>
 
           {/* Weight trend */}
-          <MetricChart data={weightData} dataKey="weight" label="Scale Weight Trend" unit=" lbs" color="rgb(var(--primary))" />
+          <MetricChart data={weightData} dataKey="weight" label="Scale Weight Trend" unit=" lbs" color="var(--tc-primary)" />
 
           {/* Body fat trend */}
-          <MetricChart data={bodyFatData} dataKey="body_fat_pct" label="Body Fat % Trend" unit="%" color="rgb(var(--ai))" domain={[0, 50]} />
+          <MetricChart data={bodyFatData} dataKey="body_fat_pct" label="Body Fat % Trend" unit="%" color="var(--tc-ai)" domain={[0, 50]} />
 
           {/* Mini goal bar if target weight set */}
           {client.current_weight && client.target_weight && (
@@ -225,14 +225,14 @@ export default function ProfileProgressTab({ client, checkIns }) {
       {activeSection === 'wellness' && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
-            <StatPill label="Avg Sleep" value={avgSleep} unit="h" icon={Moon} color="rgb(var(--primary))" />
-            <StatPill label="Avg Energy" value={avgEnergy} unit="/5" icon={Zap} color="rgb(var(--warning))" />
-            <StatPill label="Avg Stress" value={avgStress} unit="/5" icon={Brain} color="rgb(var(--destructive))" />
+            <StatPill label="Avg Sleep" value={avgSleep} unit="h" icon={Moon} color="var(--tc-primary)" />
+            <StatPill label="Avg Energy" value={avgEnergy} unit="/5" icon={Zap} color="var(--tc-warning)" />
+            <StatPill label="Avg Stress" value={avgStress} unit="/5" icon={Brain} color="var(--tc-destructive)" />
           </div>
 
-          <MetricChart data={sleepData} dataKey="sleep_hours" label="Sleep Hours" unit="h" color="rgb(var(--primary))" domain={[0, 12]} />
-          <MetricChart data={energyData} dataKey="energy_level" label="Energy Level (1–5)" unit="/5" color="rgb(var(--warning))" domain={[1, 5]} />
-          <MetricChart data={stressData} dataKey="stress_level" label="Stress Level (1–5)" unit="/5" color="rgb(var(--destructive))" domain={[1, 5]} />
+          <MetricChart data={sleepData} dataKey="sleep_hours" label="Sleep Hours" unit="h" color="var(--tc-primary)" domain={[0, 12]} />
+          <MetricChart data={energyData} dataKey="energy_level" label="Energy Level (1–5)" unit="/5" color="var(--tc-warning)" domain={[1, 5]} />
+          <MetricChart data={stressData} dataKey="stress_level" label="Stress Level (1–5)" unit="/5" color="var(--tc-destructive)" domain={[1, 5]} />
 
           {/* Mood Timeline */}
           {moodData.length > 0 && (
@@ -251,10 +251,10 @@ export default function ProfileProgressTab({ client, checkIns }) {
                 <div className="mt-4">
                   <ResponsiveContainer width="100%" height={100}>
                     <BarChart data={moodData.slice(-14)} margin={{ top: 0, right: 8, left: -28, bottom: 0 }}>
-                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                      <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
                       <YAxis domain={[0, 5]} hide />
-                      <Tooltip contentStyle={{ border: '1px solid rgb(var(--border))', borderRadius: 12, fontSize: 11 }} formatter={(v, n, p) => [MOOD_EMOJI[p.payload.mood] + ' ' + p.payload.mood, 'Mood']} />
-                      <Bar dataKey="moodScore" radius={[4, 4, 0, 0]} fill="rgb(var(--primary))" />
+                      <Tooltip contentStyle={{ border: '1px solid var(--tc-border)', borderRadius: 12, fontSize: 11 }} formatter={(v, n, p) => [MOOD_EMOJI[p.payload.mood] + ' ' + p.payload.mood, 'Mood']} />
+                      <Bar dataKey="moodScore" radius={[4, 4, 0, 0]} fill="var(--tc-primary)" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -268,8 +268,8 @@ export default function ProfileProgressTab({ client, checkIns }) {
       {activeSection === 'compliance' && (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <StatPill label="Avg Training" value={avgTraining} unit="%" icon={TrendingUp} color="rgb(var(--primary))" />
-            <StatPill label="Avg Nutrition" value={avgNutrition} unit="%" icon={Heart} color="rgb(var(--success))" />
+            <StatPill label="Avg Training" value={avgTraining} unit="%" icon={TrendingUp} color="var(--tc-primary)" />
+            <StatPill label="Avg Nutrition" value={avgNutrition} unit="%" icon={Heart} color="var(--tc-success)" />
           </div>
 
           {/* Combined chart */}
@@ -283,13 +283,13 @@ export default function ProfileProgressTab({ client, checkIns }) {
                 <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4">Training & Nutrition Compliance</h3>
                 <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={combined} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" />
-                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} />
-                    <ReferenceLine y={80} stroke="rgb(var(--success))" strokeDasharray="4 4" strokeOpacity={0.5} />
-                    <Tooltip contentStyle={{ border: '1px solid rgb(var(--border))', borderRadius: 12, fontSize: 12 }} formatter={(v) => [`${v}%`]} />
-                    <Line type="monotone" dataKey="training" name="Training" stroke="rgb(var(--primary))" strokeWidth={2.5} dot={{ r: 3, fill: 'rgb(var(--primary))', strokeWidth: 0 }} connectNulls />
-                    <Line type="monotone" dataKey="nutrition" name="Nutrition" stroke="rgb(var(--success))" strokeWidth={2.5} dot={{ r: 3, fill: 'rgb(var(--success))', strokeWidth: 0 }} connectNulls />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                    <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} />
+                    <ReferenceLine y={80} stroke="var(--tc-success)" strokeDasharray="4 4" strokeOpacity={0.5} />
+                    <Tooltip contentStyle={{ border: '1px solid var(--tc-border)', borderRadius: 12, fontSize: 12 }} formatter={(v) => [`${v}%`]} />
+                    <Line type="monotone" dataKey="training" name="Training" stroke="var(--tc-primary)" strokeWidth={2.5} dot={{ r: 3, fill: 'var(--tc-primary)', strokeWidth: 0 }} connectNulls />
+                    <Line type="monotone" dataKey="nutrition" name="Nutrition" stroke="var(--tc-success)" strokeWidth={2.5} dot={{ r: 3, fill: 'var(--tc-success)', strokeWidth: 0 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
                 <div className="flex gap-5 mt-2 justify-center">
@@ -375,11 +375,11 @@ export default function ProfileProgressTab({ client, checkIns }) {
                 <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4 capitalize">{k} (inches)</h3>
                 <ResponsiveContainer width="100%" height={130}>
                   <LineChart data={measurementData[k]} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" />
-                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                    <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
-                    <Tooltip contentStyle={{ border: '1px solid rgb(var(--border))', borderRadius: 12, fontSize: 12 }} formatter={(v) => [`${v}"`, k]} />
-                    <Line type="monotone" dataKey={k} stroke="rgb(var(--ai))" strokeWidth={2} dot={{ r: 3, fill: 'rgb(var(--ai))', strokeWidth: 0 }} connectNulls />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
+                    <Tooltip contentStyle={{ border: '1px solid var(--tc-border)', borderRadius: 12, fontSize: 12 }} formatter={(v) => [`${v}"`, k]} />
+                    <Line type="monotone" dataKey={k} stroke="var(--tc-ai)" strokeWidth={2} dot={{ r: 3, fill: 'var(--tc-ai)', strokeWidth: 0 }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -390,7 +390,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
             <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-10 text-center">
               <Ruler className="w-8 h-8 text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No measurement data yet</p>
-              <p className="text-xs text-[#C4C9D4] mt-0.5">Add measurements in check-ins to see trends</p>
+              <p className="text-xs text-[var(--kc-c4c9d4)] mt-0.5">Add measurements in check-ins to see trends</p>
             </div>
           )}
         </div>
@@ -403,7 +403,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
             <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center">
               <Camera className="w-8 h-8 text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No progress photos yet</p>
-              <p className="text-xs text-[#C4C9D4] mt-0.5">Photos submitted with check-ins will appear here</p>
+              <p className="text-xs text-[var(--kc-c4c9d4)] mt-0.5">Photos submitted with check-ins will appear here</p>
             </div>
           ) : (
             checkIns.filter(ci => ci.photo_urls?.length).map(ci => (

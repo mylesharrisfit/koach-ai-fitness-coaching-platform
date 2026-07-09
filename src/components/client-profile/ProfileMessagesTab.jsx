@@ -109,12 +109,12 @@ export default function ProfileMessagesTab({ client, messages }) {
                       {msg.tag && (
                         <span className={cn(
                           'text-[9px] font-bold border rounded px-1 py-0.5',
-                          isCoach ? 'bg-white/20 text-white/80 border-white/30' : (TAG_STYLES[msg.tag] || TAG_STYLES.general)
+                          isCoach ? 'bg-[var(--kc-w-20)] text-white/80 border-white/30' : (TAG_STYLES[msg.tag] || TAG_STYLES.general)
                         )}>
                           {msg.tag}
                         </span>
                       )}
-                      <span className={cn('text-[10px]', isCoach ? 'text-white/60' : 'text-[#C4C9D4]')}>
+                      <span className={cn('text-[10px]', isCoach ? 'text-white/60' : 'text-[var(--kc-c4c9d4)]')}>
                         {msgDate(msg.created_date)}
                       </span>
                     </div>
