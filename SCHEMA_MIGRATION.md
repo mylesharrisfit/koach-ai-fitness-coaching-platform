@@ -16,6 +16,7 @@ Migration files (apply in order):
 | `20260709000400_community.sql` | groups, challenges, posts, comments, badges, community settings (6 tables) |
 | `20260709000500_system.sql` | automation, notifications, logs, AI conversations, import jobs, per-coach settings singletons (13 tables) |
 | `20260709000600_invite_token_hash.sql` | Step 1.5 Fix 1: `clients.invite_token` → `invite_token_hash` (sha256 hex), plaintext never stored |
+| `20260709000700_portal_column_privacy.sql` | Step 1.5 Fix 2: portal views hide `check_ins.internal_notes` + `coaching_sessions.zoom_*`; portal paths removed from those base tables |
 
 All six migrations were applied end-to-end against Postgres 16 (with an
 `auth` schema shim) and exercised with a functional RLS test: coach↔coach
@@ -95,25 +96,44 @@ lookup (`encode(digest(token, 'sha256'), 'hex')`), then check
 `clients`, hashes are not enumerable through the API either.
 
 **What the portal claim grants** (exactly one client's data):
-read/write own `check_ins`, `daily_logs`, `food_logs`, `in_body_scans`,
-`workout_sessions`, `messages`, `habit_completions`; read own `clients` row,
-`habits`, `goals`, `invoices`, `payments`, `coaching_sessions`,
-`client_badges`, `ai_conversations`, assigned `workout_programs` /
-`nutrition_plans`, assigned active `check_in_forms`; submit + read own
-`testimonials`; read/participate in community groups/challenges/posts
-they're a member of.
+read/write own `daily_logs`, `food_logs`, `in_body_scans`,
+`workout_sessions`, `messages`, `habit_completions`; CRUD own check-ins
+**via `check_ins_portal_view` only** (base table is coach-only since Step
+1.5 Fix 2 — the view hides `internal_notes` and its CHECK OPTION prevents
+writing another client's rows); read own sessions **via
+`coaching_sessions_portal_view` only** (hides `zoom_meeting_id`,
+`zoom_join_url`, `zoom_start_url`, `zoom_password`; `meeting_link` — the
+client-facing join link — remains); read own `clients` row, `habits`,
+`goals`, `invoices`, `payments`, `client_badges`, `ai_conversations`,
+assigned `workout_programs` / `nutrition_plans`, assigned active
+`check_in_forms`; submit + read own `testimonials`; read/participate in
+community groups/challenges/posts they're a member of.
+
+**Portal-view naming convention:** `<base_table>_portal_view`. The views are
+deliberately *not* `security_invoker`: coaches and portal clients share the
+single `authenticated` role, so a table-level REVOKE or column grant cannot
+separate them, and an invoker view would require keeping the base-table
+portal SELECT policies — leaving the direct-read hole open. Instead the
+views (definer semantics, `security_barrier = true`) carry the same
+`app.is_portal_client(client_id)` predicate the base policies used, `WITH
+CASCADED CHECK OPTION` on the writable one. Coach-facing base-table
+policies are unchanged.
 
 **Security note / second-look items:**
 - ~~The invite token is stored in plaintext~~ — resolved in Step 1.5
   (`invite_token_hash`, see above).
 - A minted portal JWT should be short-lived (≤ 1 hour, refresh via the same
   token exchange) since it can't be revoked server-side.
-- `check_ins.internal_notes` ("not visible to client") and
-  `coaching_sessions.zoom_start_url`/`zoom_password` are protected only at
-  the row level, so a portal client with row access can technically select
-  those columns — **the exact same exposure existed in Base44**. Fix
-  candidates for a later step: move to a separate coach-only table, or serve
-  portal reads through a view that omits coach-private columns.
+- ~~`check_ins.internal_notes` / `coaching_sessions.zoom_*` column
+  exposure~~ — resolved in Step 1.5 Fix 2 via the portal views above.
+- **Step 2 swap list (tracked here so it isn't silently missed):** portal
+  pages must query the views instead of the base tables once the client
+  swap happens — `src/pages/portal/PortalCheckIn.jsx`,
+  `PortalProgress.jsx`, `PortalCalendar.jsx`, `PortalProfile.jsx` (CheckIn →
+  `check_ins_portal_view`) and `src/pages/portal/PortalCalendar.jsx`
+  (Session → `coaching_sessions_portal_view`). Coach-facing pages
+  (`ClientProfile`, `ClientDashboard`, check-in review, etc.) keep using the
+  base tables.
 
 ## Multi-coach teams
 
@@ -150,7 +170,7 @@ Legend for the RLS column: **C** = created_by (owning coach), **O** =
 | FoodItem | `food_items` | `created_by`/`coach_id` | C+`is_approved`+A / C(coach self) / C+A / C+A |
 | FoodLog | `food_logs` | client → `client_id` | C+O+P+A / O+P / O+P+A / C+O+P+A |
 | CheckInForm | `check_in_forms` | `created_by` | C+A+P(assigned, active) / C / C+A / C+A |
-| CheckIn | `check_ins` | client → `client_id` | C+O+P+A / O+P / O+P+A / C+O+P+A |
+| CheckIn | `check_ins` | client → `client_id` | base table coach-only: C+O+A / O / O+A / C+O+A; portal CRUD via `check_ins_portal_view` (no `internal_notes`) |
 | DailyLog | `daily_logs` | client → `client_id` | C+O+P+A / O+P / O+P+A / C+O+P+A |
 | WeighIn | `weigh_ins` | `created_by`, `team_id` | C+T+A / O / O+A / C+T+A (no portal access, as Base44) |
 | InBodyScan | `in_body_scans` | client → `client_id` | C+O+P+A / O+P / O+P+A / C+O+P+A |
@@ -160,7 +180,7 @@ Legend for the RLS column: **C** = created_by (owning coach), **O** =
 | GoalTemplate | `goal_templates` | `coach_id` | C+coach+A / coach-self / C+coach+A / C+coach+A |
 | SupplementLibrary | `supplement_library` | `created_by` | C+`is_public`+A / C / **A only** / **A only** (as Base44) |
 | Message | `messages` | client, `team_id` | C+O+T+P+A / O+P / O+P+A / C+A |
-| Session | **`coaching_sessions`** (renamed) | `created_by`, client | C+O+P+A / O / C+O+A / C+O+A |
+| Session | **`coaching_sessions`** (renamed) | `created_by`, client | base table coach-only: C+O+A / O / C+O+A / C+O+A; portal read via `coaching_sessions_portal_view` (no `zoom_*`) |
 | BlockedTime | `blocked_times` | `coach_id` | C+coach+A / coach-self / C+coach+A / C+coach+A |
 | BufferTime | `buffer_times` | `coach_id` (unique) | C+coach+A / coach-self / C+coach+A / A |
 | CoachAvailability | `coach_availability` | `coach_id` (unique per weekday) | C+coach+`is_public`(anon)+A / coach-self / C+coach+A / A |
@@ -310,8 +330,11 @@ terminology). `User` → `profiles` (Supabase convention, 1:1 with
    legacy rows may rely on `created_by` alone. RLS accepts either; consider
    backfilling `user_id := created_by` during data migration and making it
    `NOT NULL`.
-3. **`check_ins.internal_notes` / zoom join secrets**: column-level privacy
-   (see portal section) — split table or portal view?
+3. ~~**`check_ins.internal_notes` / zoom join secrets**~~ — **resolved
+   (Step 1.5, Fix 2)**: portal access moved to `check_ins_portal_view` /
+   `coaching_sessions_portal_view` (definer views with the portal predicate
+   built in + CHECK OPTION), coach-only columns excluded, portal paths
+   removed from the base-table policies; coaches unchanged.
 4. **`community_posts.author_id` dual-typed** (client id or coach/profile
    id, so no FK): split into `author_client_id` + `author_user_id`? Same for
    `post_comments.author_id`, `likes` arrays.
