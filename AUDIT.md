@@ -198,13 +198,44 @@ coach experience. Behavior preserved throughout; shadcn/ui + Radix + Vite kept.
 **Files fully tokenized (zero hardcoded hex):** `AppLayout.jsx`, `Sidebar.jsx`, `BottomNav.jsx`,
 `MoreSheet.jsx`, `TodayView.jsx`.
 
-**Remaining UI debt (not done this pass):** the token map above is established, but ~8,000 hex/rgba
-occurrences remain across the other `src/components` and `src/pages` files (hot files: `#9ca3af` ×821,
-`#2563eb` ×632, `#374151` ×628, `#6b7280` ×627, `#e5e7eb` ×491). These are a mechanical page-by-page
-sweep using the map above, each requiring dark-mode QA — tracked as follow-up, not a blind global
-replace (the palette is only partly 1:1 with tokens, so a scripted swap would cause visual
-regressions). Also intentionally left as literals: `rgba(255,255,255,α)` opacities inside the
-matte-black sidebar, and the token definitions in `index.css` itself.
+## Tokenization sweep (Batches A–G) — COMPLETE
+
+The full `src/components` + `src/pages` sweep is done via a deterministic transform
+(`scratchpad/tokenize.py`) applying the token map above. Raw literals dropped from ~6,750 to
+~1,470 across the tree. Dark mode was gated behind `darkModeEnabled` (`src/lib/flags.js`) during the
+sweep and **re-enabled (`true`) on completion** — the coach theme toggle (topbar + Settings →
+Appearance) is live again.
+
+**Verification of dark-mode safety (the metric that matters):**
+- `bg-white` literals: **0**
+- light `bg-gray/slate/zinc-50/100` literals: **0**
+- light arbitrary `bg-[#fXXXXX]` backgrounds: **7** (all saturated brand — `#FF4A00`, gold `#FFD700`,
+  pink `#FDF2F8` — render fine in both modes)
+- no `bg-foreground`/`bg-sidebar` paired with `text-white` traps
+
+**Context-aware rules applied** (beyond the base map): dark navy/black used as a *background*
+(`bg-[#111827]`, `bg-gray-900`, all-dark gradients, `background:'#…'`) → `bg-sidebar` (stays dark in
+both modes) so white text never lands on a flipped-to-light surface; the same values as *text* →
+`text-foreground`. Brand-colored `rgba()` tints → `rgb(var(--token) / α)`.
+
+**Token added beyond the original map:** `--ai` / `--ai-foreground` (violet) for AI/premium accents,
+registered in `tailwind.config.js` as the `ai` color (light `124 58 237`, dark `167 139 250`).
+
+**Intentionally left as literals (with reasons):**
+- `rgba(0,0,0,α)` (≈173) and `rgba(255,255,255,α)` (≈624) — opacity scrims / overlays on dark
+  surfaces; not tokenizable and correct in both modes.
+- **Fixed-dark screens:** `src/pages/ClientOnboarding.jsx`, `src/pages/PremiumOnboarding.jsx`, and
+  `src/components/onboarding/*RevealDashboard.jsx` / `Coach*Screen.jsx` — these are intentionally
+  always-dark experiences; their custom neutral grays (`#7A7A7A`, `#B3B3B3`, …) stay.
+- **Brand / integration colors:** `#FFD700` gold badges (`adherence/*`, `Challenges`), Zoom `#2D8CFF`
+  / Calendly `#006BFF` (`integrations/*`, `CalendlyConnectModal`, `CoachIntegrations`), `#FF4A00`
+  brand orange, pink `#EC4899` accents, and categorical schedule-block palettes
+  (`programs/WeeklyScheduleView`, `clients/dashboard/ClientCalendarTab`).
+- Token definitions in `index.css` and the matte-black sidebar's `rgba(255,255,255,α)` opacities.
+
+**Still open (smaller follow-ups):** extend skeleton/empty/error states to more data-heavy widgets;
+apply tokens to the client portal (`src/pages/portal/*`, deferred to Phase 4); replace remaining
+native `alert()`/`confirm()` dialogs and "coming soon" stubs.
 
 ## Phase 2 — Nav consolidation + ⌘K command palette
 
