@@ -5,12 +5,12 @@ function ScoreRing({ score, size = 120, stroke = 10 }) {
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;
   const progress = (score / 100) * circumference;
-  const color = score >= 75 ? 'rgb(var(--success))' : score >= 50 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const color = score >= 75 ? 'var(--tc-success)' : score >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgb(var(--muted))" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--tc-muted)" strokeWidth={stroke} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
           strokeDasharray={`${progress} ${circumference}`} strokeLinecap="round"
           style={{ transition: 'stroke-dasharray 1s ease' }} />
@@ -80,14 +80,14 @@ export default function BIHealthScore({ clients, checkIns, leads }) {
   }, [clients, checkIns, leads, mrr]);
 
   const categories = [
-    { label: 'Revenue Health', score: scores.revenueScore, color: scores.revenueScore >= 70 ? 'rgb(var(--success))' : scores.revenueScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
-    { label: 'Client Health', score: scores.clientScore, color: scores.clientScore >= 70 ? 'rgb(var(--success))' : scores.clientScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
-    { label: 'Growth Health', score: scores.growthScore, color: scores.growthScore >= 70 ? 'rgb(var(--success))' : scores.growthScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
-    { label: 'Operational', score: scores.operationalScore, color: scores.operationalScore >= 70 ? 'rgb(var(--success))' : scores.operationalScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
+    { label: 'Revenue Health', score: scores.revenueScore, color: scores.revenueScore >= 70 ? 'var(--tc-success)' : scores.revenueScore >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)' },
+    { label: 'Client Health', score: scores.clientScore, color: scores.clientScore >= 70 ? 'var(--tc-success)' : scores.clientScore >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)' },
+    { label: 'Growth Health', score: scores.growthScore, color: scores.growthScore >= 70 ? 'var(--tc-success)' : scores.growthScore >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)' },
+    { label: 'Operational', score: scores.operationalScore, color: scores.operationalScore >= 70 ? 'var(--tc-success)' : scores.operationalScore >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)' },
   ];
 
   const label = scores.overall >= 75 ? 'Excellent' : scores.overall >= 60 ? 'Good' : scores.overall >= 40 ? 'Needs Work' : 'Critical';
-  const labelColor = scores.overall >= 75 ? 'rgb(var(--success))' : scores.overall >= 60 ? 'rgb(var(--primary))' : scores.overall >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const labelColor = scores.overall >= 75 ? 'var(--tc-success)' : scores.overall >= 60 ? 'var(--tc-primary)' : scores.overall >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
 
   return (
     <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">

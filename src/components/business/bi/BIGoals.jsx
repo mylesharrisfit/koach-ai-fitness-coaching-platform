@@ -11,7 +11,7 @@ const GOAL_PRESETS = [
 function GoalCard({ goal, current, unit, onEdit }) {
   const pct = Math.min(100, goal.target > 0 ? Math.round((current / goal.target) * 100) : 0);
   const achieved = pct >= 100;
-  const color = achieved ? 'rgb(var(--success))' : pct >= 70 ? 'rgb(var(--warning))' : 'rgb(var(--primary))';
+  const color = achieved ? 'var(--tc-success)' : pct >= 70 ? 'var(--tc-warning)' : 'var(--tc-primary)';
 
   return (
     <div className={`p-3.5 rounded-xl border relative ${achieved ? 'border-success bg-success/10' : 'border-border bg-muted'}`}>

@@ -2,11 +2,11 @@ import React, { useMemo } from 'react';
 import { DollarSign, Users, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react';
 import { differenceInMonths, subMonths, startOfMonth, parseISO } from 'date-fns';
 
-function KPICard({ icon: Icon, label, value, sub, trend, trendLabel, color = 'rgb(var(--primary))', badge }) {
+function KPICard({ icon: Icon, label, value, sub, trend, trendLabel, color = 'var(--tc-primary)', badge }) {
   const isUp = (trend || 0) > 0;
   const isFlat = trend === 0 || trend === undefined;
   const TrendIcon = isFlat ? Minus : isUp ? ArrowUpRight : ArrowDownRight;
-  const trendColor = isFlat ? 'rgb(var(--muted-foreground))' : isUp ? 'rgb(var(--success))' : 'rgb(var(--destructive))';
+  const trendColor = isFlat ? 'var(--tc-muted-foreground)' : isUp ? 'var(--tc-success)' : 'var(--tc-destructive)';
 
   return (
     <div className="bg-card rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
@@ -87,8 +87,8 @@ export default function BIKPIRow({ clients, payments, checkIns }) {
         label="Monthly Recurring Revenue"
         value={`$${mrr.toLocaleString()}`}
         trend={mrrTrend}
-        color="rgb(var(--primary))"
-        badge={projectedMrr > mrr ? { label: `→ $${Math.round(projectedMrr).toLocaleString()} projected`, color: 'rgb(var(--success))' } : null}
+        color="var(--tc-primary)"
+        badge={projectedMrr > mrr ? { label: `→ $${Math.round(projectedMrr).toLocaleString()} projected`, color: 'var(--tc-success)' } : null}
       />
       <KPICard
         icon={Users}
@@ -96,22 +96,22 @@ export default function BIKPIRow({ clients, payments, checkIns }) {
         value={activeClients.length}
         trend={clientTrend}
         trendLabel="vs last month"
-        color="rgb(var(--ai))"
-        badge={{ label: `+${newThisMonth} new`, color: 'rgb(var(--ai))' }}
+        color="var(--tc-ai)"
+        badge={{ label: `+${newThisMonth} new`, color: 'var(--tc-ai)' }}
       />
       <KPICard
         icon={TrendingUp}
         label="Avg. Client LTV"
         value={avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—'}
         sub="Lifetime value estimate"
-        color="rgb(var(--warning))"
+        color="var(--tc-warning)"
       />
       <KPICard
         icon={TrendingDown}
         label="Churn / Completed"
         value={`${churnRate.toFixed(1)}%`}
         sub={`${completedClients} clients completed`}
-        color="rgb(var(--destructive))"
+        color="var(--tc-destructive)"
       />
     </div>
   );

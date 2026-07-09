@@ -6,7 +6,7 @@ export default function BusinessMetricCard({ icon: Icon, label, value, sub, subC
       <div className="bg-sidebar rounded-xl p-5">
         <div className="flex items-start justify-between mb-3">
           <span className="text-sm text-white/50 font-medium leading-tight">{label}</span>
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}>
             <Icon className="w-4 h-4 text-white/30" />
           </div>
         </div>

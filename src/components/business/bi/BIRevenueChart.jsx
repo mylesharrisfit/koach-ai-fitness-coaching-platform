@@ -82,32 +82,32 @@ export default function BIRevenueChart({ clients, payments }) {
         <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
           <defs>
             <linearGradient id="mrrGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
+              <stop offset="5%" stopColor="var(--tc-primary)" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="var(--tc-primary)" stopOpacity={0} />
             </linearGradient>
             <linearGradient id="newGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="rgb(var(--success))" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="rgb(var(--success))" stopOpacity={0} />
+              <stop offset="5%" stopColor="var(--tc-success)" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="var(--tc-success)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" />
-          <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false}
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" />
+          <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false}
             tickFormatter={v => `$${v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v}`} />
           <Tooltip content={<CustomTooltip />} />
           {milestones.map(m => (
-            <ReferenceLine key={m} y={m} stroke="rgb(var(--warning))" strokeDasharray="4 4"
-              label={{ value: `$${m >= 1000 ? m / 1000 + 'k' : m} MRR`, position: 'right', fontSize: 9, fill: 'rgb(var(--warning))' }} />
+            <ReferenceLine key={m} y={m} stroke="var(--tc-warning)" strokeDasharray="4 4"
+              label={{ value: `$${m >= 1000 ? m / 1000 + 'k' : m} MRR`, position: 'right', fontSize: 9, fill: 'var(--tc-warning)' }} />
           ))}
-          <Area type="monotone" dataKey="existingRevenue" name="Existing Clients" stroke="rgb(var(--primary))" strokeWidth={2} fill="url(#mrrGrad)" dot={false} />
-          <Area type="monotone" dataKey="newRevenue" name="New Clients" stroke="rgb(var(--success))" strokeWidth={2} fill="url(#newGrad)" dot={false} />
+          <Area type="monotone" dataKey="existingRevenue" name="Existing Clients" stroke="var(--tc-primary)" strokeWidth={2} fill="url(#mrrGrad)" dot={false} />
+          <Area type="monotone" dataKey="newRevenue" name="New Clients" stroke="var(--tc-success)" strokeWidth={2} fill="url(#newGrad)" dot={false} />
         </AreaChart>
       </ResponsiveContainer>
 
       <div className="flex gap-4 mt-2">
         {[
-          { color: 'rgb(var(--primary))', label: 'Existing Revenue' },
-          { color: 'rgb(var(--success))', label: 'New Client Revenue' },
+          { color: 'var(--tc-primary)', label: 'Existing Revenue' },
+          { color: 'var(--tc-success)', label: 'New Client Revenue' },
         ].map(l => (
           <div key={l.label} className="flex items-center gap-1.5">
             <div className="w-3 h-1.5 rounded-full" style={{ background: l.color }} />

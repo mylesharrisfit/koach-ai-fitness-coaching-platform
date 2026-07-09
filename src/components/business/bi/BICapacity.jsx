@@ -12,7 +12,7 @@ export default function BICapacity({ clients, user }) {
   const revenuePerSlot = planLimit > 0 ? Math.round(mrr / planLimit) : 0;
   const availableSlots = Math.max(0, planLimit - activeClients.length);
 
-  const color = utilizationPct >= 90 ? 'rgb(var(--destructive))' : utilizationPct >= 70 ? 'rgb(var(--warning))' : 'rgb(var(--success))';
+  const color = utilizationPct >= 90 ? 'var(--tc-destructive)' : utilizationPct >= 70 ? 'var(--tc-warning)' : 'var(--tc-success)';
 
   // Project weeks to capacity (assume ~2 new clients/month)
   const weeksToCapacity = availableSlots > 0 ? Math.round((availableSlots / 2) * 4.33) : 0;

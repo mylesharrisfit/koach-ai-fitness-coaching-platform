@@ -14,7 +14,7 @@ function BenchmarkRow({ label, coachVal, benchmarkVal, unit, isHigherBetter = tr
   const diff = coachVal - benchmarkVal;
   const pct = benchmarkVal > 0 ? Math.round((coachVal / benchmarkVal) * 100) : 100;
   const isBetter = isHigherBetter ? diff >= 0 : diff <= 0;
-  const color = isBetter ? 'rgb(var(--success))' : 'rgb(var(--destructive))';
+  const color = isBetter ? 'var(--tc-success)' : 'var(--tc-destructive)';
   const Icon = diff === 0 ? Minus : isBetter ? TrendingUp : TrendingDown;
 
   return (

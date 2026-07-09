@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { differenceInDays, parseISO, startOfMonth } from 'date-fns';
 
 const INSIGHT_ICONS = { revenue: DollarSign, retention: Users, pricing: TrendingUp, efficiency: Clock, growth: Target };
-const INSIGHT_COLORS = { revenue: 'rgb(var(--primary))', retention: 'rgb(var(--ai))', pricing: 'rgb(var(--warning))', efficiency: '#06B6D4', growth: 'rgb(var(--success))' };
+const INSIGHT_COLORS = { revenue: 'var(--tc-primary)', retention: 'var(--tc-ai)', pricing: 'var(--tc-warning)', efficiency: 'var(--kc-06b6d4)', growth: 'var(--tc-success)' };
 
 export default function BIAIInsights({ clients, checkIns, leads, payments }) {
   const [insights, setInsights] = useState(null);
@@ -106,7 +106,7 @@ Categories: revenue, retention, pricing, efficiency, growth`,
         <div className="space-y-3">
           {insights.map((ins, i) => {
             const Icon = INSIGHT_ICONS[ins.category] || TrendingUp;
-            const color = INSIGHT_COLORS[ins.category] || 'rgb(var(--muted-foreground))';
+            const color = INSIGHT_COLORS[ins.category] || 'var(--tc-muted-foreground)';
             return (
               <div key={i} className="p-3.5 rounded-xl border" style={{ borderColor: `${color}20`, background: `${color}05` }}>
                 <div className="flex items-start gap-3">

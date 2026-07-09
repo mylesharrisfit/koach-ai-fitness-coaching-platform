@@ -14,18 +14,18 @@ export default function AcquisitionTrends({ data, totalActive }) {
       <p className="stat-number text-3xl font-bold text-foreground mb-5">{totalActive} active</p>
       <ResponsiveContainer width="100%" height={160}>
         <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" vertical={false} />
-          <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} allowDecimals={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" vertical={false} />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} allowDecimals={false} />
           <Tooltip
-            contentStyle={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '10px', fontSize: 12 }}
+            contentStyle={{ background: 'var(--tc-card)', border: '1px solid var(--tc-border)', borderRadius: '10px', fontSize: 12 }}
             formatter={(value) => [value, 'New clients']}
           />
           <Bar dataKey="count" radius={[6, 6, 0, 0]}>
             {data.map((entry, index) => (
               <Cell
                 key={index}
-                fill={index === data.length - 1 ? 'rgb(var(--primary))' : 'rgb(var(--accent))'}
+                fill={index === data.length - 1 ? 'var(--tc-primary)' : 'var(--tc-accent)'}
               />
             ))}
           </Bar>

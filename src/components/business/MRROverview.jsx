@@ -50,18 +50,18 @@ export default function MRROverview({ clients, payments }) {
         <AreaChart data={mrrData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="mrrGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="rgb(var(--success))" stopOpacity={0.15} />
-              <stop offset="95%" stopColor="rgb(var(--success))" stopOpacity={0} />
+              <stop offset="5%" stopColor="var(--tc-success)" stopOpacity={0.15} />
+              <stop offset="95%" stopColor="var(--tc-success)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" vertical={false} />
-          <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" vertical={false} />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
           <Tooltip
-            contentStyle={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '10px', fontSize: 12 }}
+            contentStyle={{ background: 'var(--tc-card)', border: '1px solid var(--tc-border)', borderRadius: '10px', fontSize: 12 }}
             formatter={(value) => [`$${value.toLocaleString()}`, 'MRR']}
           />
-          <Area type="monotone" dataKey="mrr" stroke="rgb(var(--success))" strokeWidth={2} fill="url(#mrrGrad)" dot={{ fill: 'rgb(var(--success))', r: 3 }} />
+          <Area type="monotone" dataKey="mrr" stroke="var(--tc-success)" strokeWidth={2} fill="url(#mrrGrad)" dot={{ fill: 'var(--tc-success)', r: 3 }} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

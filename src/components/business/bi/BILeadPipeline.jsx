@@ -3,12 +3,12 @@ import { Clock, Zap } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 
 const SOURCE_COLORS = {
-  instagram: '#E1306C',
-  referral: 'rgb(var(--success))',
-  website: 'rgb(var(--primary))',
-  tiktok: '#000000',
-  youtube: 'rgb(var(--destructive))',
-  other: 'rgb(var(--muted-foreground))',
+  instagram: 'var(--kc-e1306c)',
+  referral: 'var(--tc-success)',
+  website: 'var(--tc-primary)',
+  tiktok: 'var(--kc-000000)',
+  youtube: 'var(--tc-destructive)',
+  other: 'var(--tc-muted-foreground)',
 };
 
 export default function BILeadPipeline({ leads }) {
@@ -85,10 +85,10 @@ export default function BILeadPipeline({ leads }) {
               const pct = Math.round((count / leads.length) * 100);
               return (
                 <div key={src} className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: SOURCE_COLORS[src] || 'rgb(var(--muted-foreground))' }} />
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: SOURCE_COLORS[src] || 'var(--tc-muted-foreground)' }} />
                   <p className="text-xs text-muted-foreground capitalize flex-1">{src}</p>
                   <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: SOURCE_COLORS[src] || 'rgb(var(--muted-foreground))' }} />
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: SOURCE_COLORS[src] || 'var(--tc-muted-foreground)' }} />
                   </div>
                   <span className="text-xs text-muted-foreground w-5 text-right">{count}</span>
                 </div>

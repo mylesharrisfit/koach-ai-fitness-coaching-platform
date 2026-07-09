@@ -55,13 +55,13 @@ export default function BIClientGrowthChart({ clients }) {
       </div>
       <ResponsiveContainer width="100%" height={220}>
         <ComposedChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" />
-          <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" />
+          <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="new" name="New Clients" fill="rgb(var(--success))" radius={[3, 3, 0, 0]} />
-          <Bar dataKey="churned" name="Churned" fill="rgb(var(--destructive))" radius={[0, 0, 3, 3]} />
-          <Line type="monotone" dataKey="total" name="Total Active" stroke="rgb(var(--primary))" strokeWidth={2.5} dot={{ fill: 'rgb(var(--primary))', r: 3 }} />
+          <Bar dataKey="new" name="New Clients" fill="var(--tc-success)" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="churned" name="Churned" fill="var(--tc-destructive)" radius={[0, 0, 3, 3]} />
+          <Line type="monotone" dataKey="total" name="Total Active" stroke="var(--tc-primary)" strokeWidth={2.5} dot={{ fill: 'var(--tc-primary)', r: 3 }} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

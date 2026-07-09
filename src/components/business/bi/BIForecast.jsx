@@ -2,9 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { TrendingUp, Minus, TrendingDown, Sliders } from 'lucide-react';
 
 const SCENARIOS = [
-  { key: 'conservative', label: 'Conservative', icon: TrendingDown, color: 'rgb(var(--destructive))', churnMult: 1.5, convMult: 0.5 },
-  { key: 'base', label: 'Base Case', icon: Minus, color: 'rgb(var(--warning))', churnMult: 1.0, convMult: 1.0 },
-  { key: 'optimistic', label: 'Optimistic', icon: TrendingUp, color: 'rgb(var(--success))', churnMult: 0.5, convMult: 1.5 },
+  { key: 'conservative', label: 'Conservative', icon: TrendingDown, color: 'var(--tc-destructive)', churnMult: 1.5, convMult: 0.5 },
+  { key: 'base', label: 'Base Case', icon: Minus, color: 'var(--tc-warning)', churnMult: 1.0, convMult: 1.0 },
+  { key: 'optimistic', label: 'Optimistic', icon: TrendingUp, color: 'var(--tc-success)', churnMult: 0.5, convMult: 1.5 },
 ];
 
 export default function BIForecast({ clients, leads }) {
@@ -79,7 +79,7 @@ export default function BIForecast({ clients, leads }) {
           <div key={f.label} className="text-center p-3 rounded-xl border" style={{ borderColor: `${scenario.color}30`, background: `${scenario.color}08` }}>
             <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-1">{f.label}</p>
             <p className="text-lg font-bold" style={{ color: scenario.color }}>${f.mrr.toLocaleString()}</p>
-            <p className="text-[10px]" style={{ color: f.change >= 0 ? 'rgb(var(--success))' : 'rgb(var(--destructive))' }}>
+            <p className="text-[10px]" style={{ color: f.change >= 0 ? 'var(--tc-success)' : 'var(--tc-destructive)' }}>
               {f.change >= 0 ? '+' : ''}{f.change.toLocaleString()}
             </p>
           </div>
@@ -103,7 +103,7 @@ export default function BIForecast({ clients, leads }) {
                 onChange={e => item.setter(Number(e.target.value))}
                 className="flex-1 accent-primary h-1" />
               <span className="text-xs font-bold text-foreground w-8 text-right">{item.value}{item.unit === '%' ? '%' : ''}</span>
-              <span className="text-[10px] font-semibold w-20 text-right" style={{ color: item.negative ? 'rgb(var(--destructive))' : 'rgb(var(--success))' }}>{item.hint}</span>
+              <span className="text-[10px] font-semibold w-20 text-right" style={{ color: item.negative ? 'var(--tc-destructive)' : 'var(--tc-success)' }}>{item.hint}</span>
             </div>
           ))}
         </div>

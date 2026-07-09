@@ -20,10 +20,10 @@ export default function BIDashboardCard() {
   }).length;
 
   const metrics = [
-    { label: 'MRR', value: `$${mrr.toLocaleString()}`, icon: DollarSign, color: 'rgb(var(--primary))' },
-    { label: 'Active', value: activeClients.length, icon: Users, color: 'rgb(var(--success))' },
-    { label: 'At Risk', value: atRisk, icon: TrendingUp, color: atRisk > 0 ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))' },
-    { label: 'New', value: `+${newThisMonth}`, icon: TrendingUp, color: 'rgb(var(--ai))' },
+    { label: 'MRR', value: `$${mrr.toLocaleString()}`, icon: DollarSign, color: 'var(--tc-primary)' },
+    { label: 'Active', value: activeClients.length, icon: Users, color: 'var(--tc-success)' },
+    { label: 'At Risk', value: atRisk, icon: TrendingUp, color: atRisk > 0 ? 'var(--tc-destructive)' : 'var(--tc-muted-foreground)' },
+    { label: 'New', value: `+${newThisMonth}`, icon: TrendingUp, color: 'var(--tc-ai)' },
   ];
 
   return (
