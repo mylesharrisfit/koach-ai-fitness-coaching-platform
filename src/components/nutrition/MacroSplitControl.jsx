@@ -49,7 +49,7 @@ function MacroSlider({ label, color, pct, grams, onChange, min = 5, max = 70 }) 
           onChange={e => onChange(Number(e.target.value))}
           className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
           style={{
-            background: `linear-gradient(to right, var(--slider-color) 0%, var(--slider-color) ${((pct - min) / (max - min)) * 100}%, rgb(var(--border)) ${((pct - min) / (max - min)) * 100}%, rgb(var(--border)) 100%)`,
+            background: `linear-gradient(to right, var(--slider-color) 0%, var(--slider-color) ${((pct - min) / (max - min)) * 100}%, var(--tc-border) ${((pct - min) / (max - min)) * 100}%, var(--tc-border) 100%)`,
           }}
         />
       </div>
@@ -104,15 +104,15 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
       {/* Sliders */}
       <div
         className="rounded-xl p-4 space-y-4"
-        style={{ background: 'rgb(var(--sidebar))' }}
+        style={{ background: 'var(--tc-sidebar)' }}
       >
         <style>{`
-          input[type=range]::-webkit-slider-thumb { background: rgb(var(--card)); }
-          input[type=range]::-moz-range-thumb { background: rgb(var(--card)); }
+          input[type=range]::-webkit-slider-thumb { background: var(--tc-card); }
+          input[type=range]::-moz-range-thumb { background: var(--tc-card); }
         `}</style>
 
         {/* Protein */}
-        <div style={{ '--slider-color': 'rgb(var(--destructive))' }}>
+        <div style={{ '--slider-color': 'var(--tc-destructive)' }}>
           <MacroSlider
             label="Protein"
             color="text-destructive"
@@ -123,7 +123,7 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
         </div>
 
         {/* Carbs */}
-        <div style={{ '--slider-color': 'rgb(var(--warning))' }}>
+        <div style={{ '--slider-color': 'var(--tc-warning)' }}>
           <MacroSlider
             label="Carbohydrates"
             color="text-warning"
@@ -134,7 +134,7 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
         </div>
 
         {/* Fats */}
-        <div style={{ '--slider-color': 'rgb(var(--primary))' }}>
+        <div style={{ '--slider-color': 'var(--tc-primary)' }}>
           <MacroSlider
             label="Fats"
             color="text-primary"
@@ -152,7 +152,7 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
         </div>
 
         {/* Total reminder */}
-        <p className="text-[10px] text-center font-semibold" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <p className="text-[10px] text-center font-semibold" style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}>
           {split.p + split.c + split.f === 100
             ? 'Total: 100% ✓'
             : `Total: ${split.p + split.c + split.f}% — adjusting automatically`}

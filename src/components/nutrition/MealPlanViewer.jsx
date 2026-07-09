@@ -113,7 +113,7 @@ function MealRow({ meal }) {
 
       {/* Expanded food list */}
       {expanded && foods.length > 0 && (
-        <div className="border-t border-[#F1F4FA] divide-y divide-muted">
+        <div className="border-t border-[var(--kc-f1f4fa)] divide-y divide-muted">
           {foods.map((food, i) => (
             <div key={i} className="px-4 py-2.5 flex items-center gap-3">
               <div className="flex-1 min-w-0">

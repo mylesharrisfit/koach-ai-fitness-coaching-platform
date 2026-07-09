@@ -62,7 +62,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[80] flex items-end"
-      style={{ background: 'rgba(0,0,0,0.5)' }}
+      style={{ background: 'color-mix(in srgb, black 50%, transparent)' }}
       onClick={onClose}>
       <motion.div
         initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
@@ -111,7 +111,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
           </div>
 
           {/* Calories — large */}
-          <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, #2563EB08, #7C3AED08)', border: '1px solid #2563EB22' }}>
+          <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-primary) 3.13725%, transparent), color-mix(in srgb, var(--tc-ai) 3.13725%, transparent))', border: '1px solid color-mix(in srgb, var(--tc-primary) 13.3333%, transparent)' }}>
             <p className="text-5xl font-black text-foreground">{m.calories}</p>
             <p className="text-sm text-muted-foreground font-semibold mt-1">calories</p>
             {dailyTargets?.calories && (
@@ -121,11 +121,11 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
 
           {/* Macro grid */}
           <div className="grid grid-cols-3 gap-2">
-            <MacroBox label="Protein" value={m.protein} color="rgb(var(--primary))"
+            <MacroBox label="Protein" value={m.protein} color="var(--tc-primary)"
               pct={dailyTargets?.protein ? pct(m.protein, dailyTargets.protein) : undefined} />
-            <MacroBox label="Carbs" value={m.carbs} color="rgb(var(--warning))"
+            <MacroBox label="Carbs" value={m.carbs} color="var(--tc-warning)"
               pct={dailyTargets?.carbs ? pct(m.carbs, dailyTargets.carbs) : undefined} />
-            <MacroBox label="Fats" value={m.fats} color="rgb(var(--success))"
+            <MacroBox label="Fats" value={m.fats} color="var(--tc-success)"
               pct={dailyTargets?.fats ? pct(m.fats, dailyTargets.fats) : undefined} />
           </div>
 
@@ -142,7 +142,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
           <div className="space-y-2 pt-2">
             <button onClick={handleAdd}
               className="w-full h-14 rounded-2xl font-black text-base text-white"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
               Add to {mealName || 'Meal'}
             </button>
             <button onClick={handleSave} disabled={saving}

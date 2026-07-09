@@ -35,9 +35,9 @@ function DonutChart({ protein, carbs, fats }) {
   const total = (protein * 4) + (carbs * 4) + (fats * 9);
   if (!total) return null;
   const data = [
-    { name: 'Protein', value: Math.round((protein * 4 / total) * 100), color: 'rgb(var(--primary))', grams: protein },
-    { name: 'Carbs',   value: Math.round((carbs * 4 / total) * 100),   color: '#F97316', grams: carbs },
-    { name: 'Fats',    value: Math.round((fats * 9 / total) * 100),    color: '#EAB308', grams: fats },
+    { name: 'Protein', value: Math.round((protein * 4 / total) * 100), color: 'var(--tc-primary)', grams: protein },
+    { name: 'Carbs',   value: Math.round((carbs * 4 / total) * 100),   color: 'var(--kc-f97316)', grams: carbs },
+    { name: 'Fats',    value: Math.round((fats * 9 / total) * 100),    color: 'var(--kc-eab308)', grams: fats },
   ];
   return (
     <div className="flex items-center gap-4">

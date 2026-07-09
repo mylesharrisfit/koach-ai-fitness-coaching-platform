@@ -77,7 +77,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
             )}
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <Button size="sm" className="gap-1.5 text-xs h-8 bg-sidebar text-white hover:bg-[#1F2937]" onClick={onAssign}>
+              <Button size="sm" className="gap-1.5 text-xs h-8 bg-sidebar text-white hover:bg-[var(--kc-1f2937)]" onClick={onAssign}>
                 <UserPlus className="w-3.5 h-3.5" /> Assign
               </Button>
               <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8 border-border text-foreground hover:bg-background" onClick={onEdit}>

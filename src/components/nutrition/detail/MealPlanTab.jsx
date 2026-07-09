@@ -179,7 +179,7 @@ function DailyTotalBar({ meals, targets }) {
   function StatusBar({ label, current, target, color }) {
     const pct = target ? Math.min((current / target) * 100, 100) : 0;
     const diff = target ? Math.abs(current - target) / target : 0;
-    const barColor = diff < 0.05 ? 'rgb(var(--success))' : diff < 0.15 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+    const barColor = diff < 0.05 ? 'var(--tc-success)' : diff < 0.15 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
     return (
       <div className="flex-1 min-w-0">
         <div className="flex justify-between text-[10px] mb-1">
@@ -194,13 +194,13 @@ function DailyTotalBar({ meals, targets }) {
   }
 
   return (
-    <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-border px-4 py-3 mt-4 rounded-b-xl">
+    <div className="sticky bottom-0 bg-[var(--kc-w-95)] backdrop-blur border-t border-border px-4 py-3 mt-4 rounded-b-xl">
       <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2">Daily totals vs target</p>
       <div className="flex gap-3">
-        <StatusBar label="Kcal"    current={totals.calories} target={targets.calories} color="rgb(var(--muted-foreground))" />
-        <StatusBar label="Protein" current={totals.protein}  target={targets.protein}  color="rgb(var(--primary))" />
-        <StatusBar label="Carbs"   current={totals.carbs}    target={targets.carbs}    color="#F97316" />
-        <StatusBar label="Fats"    current={totals.fats}     target={targets.fats}     color="#CA8A04" />
+        <StatusBar label="Kcal"    current={totals.calories} target={targets.calories} color="var(--tc-muted-foreground)" />
+        <StatusBar label="Protein" current={totals.protein}  target={targets.protein}  color="var(--tc-primary)" />
+        <StatusBar label="Carbs"   current={totals.carbs}    target={targets.carbs}    color="var(--kc-f97316)" />
+        <StatusBar label="Fats"    current={totals.fats}     target={targets.fats}     color="var(--kc-ca8a04)" />
       </div>
     </div>
   );

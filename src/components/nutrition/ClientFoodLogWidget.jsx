@@ -39,7 +39,7 @@ function MacroRing({ label, consumed, target, color }) {
           {/* fill */}
           <motion.circle
             cx="36" cy="36" r={R}
-            stroke={over ? 'rgb(var(--destructive))' : color}
+            stroke={over ? 'var(--tc-destructive)' : color}
             strokeWidth="6"
             fill="none"
             strokeLinecap="round"
@@ -237,9 +237,9 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
 
           {/* Macro rings row */}
           <div className="flex justify-around pt-2">
-            <MacroRing label="Protein"  consumed={totPro}  target={tPro}  color="rgb(var(--primary))" />
-            <MacroRing label="Carbs"    consumed={totCarb} target={tCarb} color="rgb(var(--warning))" />
-            <MacroRing label="Fats"     consumed={totFat}  target={tFat}  color="rgb(var(--destructive))" />
+            <MacroRing label="Protein"  consumed={totPro}  target={tPro}  color="var(--tc-primary)" />
+            <MacroRing label="Carbs"    consumed={totCarb} target={tCarb} color="var(--tc-warning)" />
+            <MacroRing label="Fats"     consumed={totFat}  target={tFat}  color="var(--tc-destructive)" />
           </div>
 
           {/* Macros hit banner */}

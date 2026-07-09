@@ -1303,8 +1303,8 @@ function Step4Result({ result }) {
             </p>
           )}
           <div className="flex justify-center gap-3 mt-2">
-            <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
-            <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
+            <span className="text-[11px] text-muted-foreground bg-[var(--kc-w-70)] px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
+            <span className="text-[11px] text-muted-foreground bg-[var(--kc-w-70)] px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-2">

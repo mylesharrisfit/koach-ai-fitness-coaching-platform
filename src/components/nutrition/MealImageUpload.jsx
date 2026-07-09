@@ -60,14 +60,14 @@ export default function MealImageUpload({ imageUrl, onChange, className }) {
           <button
             onClick={() => inputRef.current?.click()}
             title="Replace image"
-            className="p-1.5 rounded-lg bg-white/90 text-foreground hover:bg-card transition-colors"
+            className="p-1.5 rounded-lg bg-[var(--kc-w-90)] text-foreground hover:bg-card transition-colors"
           >
             <Camera className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleRemove}
             title="Remove image"
-            className="p-1.5 rounded-lg bg-white/90 text-destructive hover:bg-card transition-colors"
+            className="p-1.5 rounded-lg bg-[var(--kc-w-90)] text-destructive hover:bg-card transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
