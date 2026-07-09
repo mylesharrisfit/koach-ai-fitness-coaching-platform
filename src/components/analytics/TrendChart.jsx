@@ -13,20 +13,20 @@ const CustomTooltip = ({ active, payload, label, unit, formatter }) => {
   );
 };
 
-export default function TrendChart({ data, unit, color = 'rgb(var(--primary))', referenceValue, formatter, className }) {
+export default function TrendChart({ data, unit, color = 'var(--tc-primary)', referenceValue, formatter, className }) {
   return (
     <div className={cn('w-full h-40', className)}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" vertical={false} />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }}
+            tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }}
+            tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }}
             axisLine={false}
             tickLine={false}
           />
