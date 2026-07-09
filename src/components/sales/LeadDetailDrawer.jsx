@@ -21,12 +21,12 @@ const ACTIVITY_ICONS = {
 };
 
 function ScoreRing({ score }) {
-  const color = score >= 70 ? 'rgb(var(--success))' : score >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const color = score >= 70 ? 'var(--tc-success)' : score >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   const r = 22, circ = 2 * Math.PI * r;
   const dash = (score / 100) * circ;
   return (
     <svg width="52" height="52" className="absolute -top-1 -left-1 -rotate-90">
-      <circle cx="26" cy="26" r={r} fill="none" stroke="rgb(var(--muted))" strokeWidth="4" />
+      <circle cx="26" cy="26" r={r} fill="none" stroke="var(--tc-muted)" strokeWidth="4" />
       <circle cx="26" cy="26" r={r} fill="none" stroke={color} strokeWidth="4"
         strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
     </svg>
@@ -49,12 +49,12 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
 
   if (!lead) return null;
 
-  const avatarColors = ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', '#EC4899', '#14B8A6'];
+  const avatarColors = ['var(--tc-primary)', 'var(--tc-warning)', 'var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-success)', 'var(--kc-ec4899)', 'var(--kc-14b8a6)'];
   const avatarColor = avatarColors[lead.name.charCodeAt(0) % avatarColors.length];
   const initials = lead.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   const temp = getTemperature(lead);
   const score = lead.lead_score || 50;
-  const scoreColor = score >= 70 ? 'rgb(var(--success))' : score >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const scoreColor = score >= 70 ? 'var(--tc-success)' : score >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   const currentStage = KANBAN_STAGES.find(s => s.key === lead.stage);
 
   const handleStageChange = (stage) => {
@@ -108,7 +108,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
                 <h2 className="text-lg font-bold">{lead.name}</h2>
                 <div className="flex items-center gap-2 mt-0.5">
                   {lead.source && (
-                    <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-white/70">
+                    <span className="text-[10px] bg-[var(--kc-w-10)] px-2 py-0.5 rounded-full text-white/70">
                       {SOURCE_LABELS[lead.source] || lead.source}
                     </span>
                   )}
@@ -133,7 +133,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
 
           {/* Stage selector */}
           <Select value={lead.stage} onValueChange={handleStageChange}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white text-sm h-9">
+            <SelectTrigger className="bg-[var(--kc-w-10)] border-white/20 text-white text-sm h-9">
               <SelectValue placeholder="Move stage…" />
             </SelectTrigger>
             <SelectContent>
@@ -148,7 +148,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
             <button
               onClick={convertToClient}
               className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))' }}
+              style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))' }}
             >
               <UserCheck className="w-4 h-4" /> Convert to Client →
             </button>

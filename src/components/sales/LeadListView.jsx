@@ -22,7 +22,7 @@ function StageChip({ stage }) {
 }
 
 function ScoreBar({ score }) {
-  const color = score >= 70 ? 'rgb(var(--success))' : score >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const color = score >= 70 ? 'var(--tc-success)' : score >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -90,7 +90,7 @@ export default function LeadListView({ leads, onView, onUpdate, onDelete, search
           <button onClick={bulkDelete} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-destructive/20 text-destructive hover:bg-destructive/30">
             <Trash2 className="w-3 h-3" /> Delete
           </button>
-          <button onClick={exportCSV} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20">
+          <button onClick={exportCSV} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)]">
             <Download className="w-3 h-3" /> Export
           </button>
           <button onClick={() => setSelected([])} className="ml-auto text-white/50 hover:text-white">✕</button>
@@ -134,7 +134,7 @@ export default function LeadListView({ leads, onView, onUpdate, onDelete, search
                 <tr><td colSpan={10} className="text-center py-10 text-sm text-muted-foreground">No leads found</td></tr>
               )}
               {sorted.map(lead => {
-                const avatarColors = ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', '#EC4899'];
+                const avatarColors = ['var(--tc-primary)', 'var(--tc-warning)', 'var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-success)', 'var(--kc-ec4899)'];
                 const avatarColor = avatarColors[lead.name.charCodeAt(0) % avatarColors.length];
                 const initials = lead.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
                 const followOverdue = lead.follow_up_date && new Date(lead.follow_up_date) < new Date();

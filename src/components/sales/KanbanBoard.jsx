@@ -7,12 +7,12 @@ import { format, differenceInDays, isValid } from 'date-fns';
 import confetti from 'canvas-confetti';
 
 export const KANBAN_STAGES = [
-  { key: 'new_lead',      label: '🆕 New Lead',       color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', border: 'rgb(var(--accent))' },
-  { key: 'dmd',           label: '💬 DM\'d',           color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', border: 'rgb(var(--warning))' },
-  { key: 'call_booked',   label: '📞 Call Booked',     color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', border: 'rgb(var(--accent))' },
-  { key: 'proposal_sent', label: '📄 Proposal Sent',   color: 'rgb(var(--ai))', bg: 'rgb(var(--ai))', border: 'rgb(var(--ai))' },
-  { key: 'closed_won',    label: '🎉 Closed / Won',    color: 'rgb(var(--success))', bg: 'rgb(var(--success))', border: '#A7F3D0' },
-  { key: 'lost',          label: '❌ Lost',             color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' },
+  { key: 'new_lead',      label: '🆕 New Lead',       color: 'var(--tc-primary)', bg: 'var(--tc-accent)', border: 'var(--tc-accent)' },
+  { key: 'dmd',           label: '💬 DM\'d',           color: 'var(--tc-warning)', bg: 'var(--tc-warning)', border: 'var(--tc-warning)' },
+  { key: 'call_booked',   label: '📞 Call Booked',     color: 'var(--tc-primary)', bg: 'var(--tc-accent)', border: 'var(--tc-accent)' },
+  { key: 'proposal_sent', label: '📄 Proposal Sent',   color: 'var(--tc-ai)', bg: 'var(--tc-ai)', border: 'var(--tc-ai)' },
+  { key: 'closed_won',    label: '🎉 Closed / Won',    color: 'var(--tc-success)', bg: 'var(--tc-success)', border: 'var(--kc-a7f3d0)' },
+  { key: 'lost',          label: '❌ Lost',             color: 'var(--tc-destructive)', bg: 'var(--tc-destructive)', border: 'var(--tc-destructive)' },
 ];
 
 const SOURCE_LABELS = {
@@ -46,7 +46,7 @@ function KanbanLeadCard({ lead, index, onView }) {
   const days = daysInStage(lead);
   const isFollowUpOverdue = lead.follow_up_date && new Date(lead.follow_up_date) < new Date();
 
-  const avatarColors = ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', '#EC4899', '#14B8A6'];
+  const avatarColors = ['var(--tc-primary)', 'var(--tc-warning)', 'var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-success)', 'var(--kc-ec4899)', 'var(--kc-14b8a6)'];
   const avatarColor = avatarColors[lead.name.charCodeAt(0) % avatarColors.length];
 
   return (
