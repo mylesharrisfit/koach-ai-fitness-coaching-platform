@@ -14,7 +14,7 @@ const MUSCLE_COLORS = {
   triceps: { bg: 'rgb(var(--warning))', text: '#CA8A04' },
   legs: { bg: 'rgb(var(--success))', text: 'rgb(var(--success))' },
   glutes: { bg: '#FCE7F3', text: '#DB2777' },
-  core: { bg: '#FFEDD5', text: '#EA580C' },
+  core: { bg: 'rgb(var(--warning))', text: '#EA580C' },
   cardio: { bg: '#CFFAFE', text: '#0891B2' },
 };
 

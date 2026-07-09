@@ -409,7 +409,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                         'flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold transition-all w-full justify-center',
                         recording
                           ? 'bg-destructive/10 border-destructive text-destructive animate-pulse'
-                          : 'bg-muted border-border text-foreground hover:bg-[#F0F1F5]'
+                          : 'bg-muted border-border text-foreground hover:bg-muted'
                       )}
                     >
                       {recording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}

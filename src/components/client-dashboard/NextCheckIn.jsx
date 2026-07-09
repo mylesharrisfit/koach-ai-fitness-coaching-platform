@@ -16,13 +16,13 @@ export default function NextCheckIn({ daysUntil, nextDate, lastCheckIn, clientId
   return (
     <div className={cn(
       'rounded-2xl border shadow-sm overflow-hidden',
-      urgent ? 'bg-[#FFF7ED] border-[#FED7AA]' : 'bg-card border-border'
+      urgent ? 'bg-warning/10 border-warning' : 'bg-card border-border'
     )}>
       <div className="p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-              urgent ? 'bg-[#FED7AA]' : 'bg-muted')}>
+              urgent ? 'bg-warning' : 'bg-muted')}>
               {urgent
                 ? <AlertCircle className="w-5 h-5 text-[#EA580C]" />
                 : <ClipboardList className="w-5 h-5 text-muted-foreground" />

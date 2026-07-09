@@ -97,7 +97,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       {results.raw_text && (
-        <div className="bg-[#F8FAFF] border border-accent rounded-lg p-3 text-xs text-primary">
+        <div className="bg-muted border border-accent rounded-lg p-3 text-xs text-primary">
           🤖 {results.raw_text}
         </div>
       )}
@@ -151,7 +151,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
       </div>
 
       {/* Save */}
-      <div className="bg-[#F8FAFF] border border-accent rounded-xl p-4 space-y-3">
+      <div className="bg-muted border border-accent rounded-xl p-4 space-y-3">
         <p className="text-sm font-semibold text-foreground">Save to client profile</p>
         <Select value={clientId} onValueChange={setClientId}>
           <SelectTrigger className="h-9"><SelectValue placeholder="Select client" /></SelectTrigger>
@@ -501,7 +501,7 @@ Return null for any field not visible in the scan. Do not include markdown or co
       <div
         className={cn(
           'border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all',
-          dragOver ? 'border-primary bg-accent/10' : 'border-muted-foreground hover:border-primary hover:bg-[#F8FAFF]'
+          dragOver ? 'border-primary bg-accent/10' : 'border-muted-foreground hover:border-primary hover:bg-muted'
         )}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
@@ -519,7 +519,7 @@ Return null for any field not visible in the scan. Do not include markdown or co
       <AnimatePresence>
         {parsing && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="flex items-center gap-3 bg-[#F8FAFF] border border-accent rounded-xl p-4">
+            className="flex items-center gap-3 bg-muted border border-accent rounded-xl p-4">
             <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />
             <div>
               <p className="text-sm font-semibold text-primary">🤖 AI is reading your scan...</p>

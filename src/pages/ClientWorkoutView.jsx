@@ -139,7 +139,7 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
               const done = !!setLog.completed;
               return (
                 <div key={setIdx} className={cn('grid grid-cols-4 gap-2 items-center p-2 rounded-xl transition-colors',
-                  done ? 'bg-success/10' : 'bg-[#F8F9FD]')}>
+                  done ? 'bg-success/10' : 'bg-muted')}>
                   <span className={cn('text-sm font-bold', done ? 'text-success' : 'text-muted-foreground')}>
                     {setIdx + 1}
                   </span>
@@ -345,7 +345,7 @@ export default function ClientWorkoutView() {
           </button>
         </div>
         {/* Progress bar */}
-        <div className="h-1 bg-[#F0F4FF]">
+        <div className="h-1 bg-accent/10">
           <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progress * 100}%` }} />
         </div>
         <div className="px-4 py-1.5 flex items-center justify-between">

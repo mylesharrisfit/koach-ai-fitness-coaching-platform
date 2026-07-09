@@ -280,7 +280,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
         ))}
         <div ref={presetsRef} style={{ position: 'relative', display: 'inline-block' }}>
           <button type="button" onClick={() => setShowPresets(s => !s)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: '#F0F7FF', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--accent))', cursor: 'pointer' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'rgb(var(--accent))', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--accent))', cursor: 'pointer' }}>
             <Plus size={14} /> Add Line Item <ChevronDown size={12} />
           </button>
           {showPresets && (
@@ -356,7 +356,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
           <Toggle value={form.installments} onChange={v => set('installments', v)} />
         </div>
         {form.installments && (
-          <div style={{ background: '#F0F7FF', border: '1px solid rgb(var(--accent))', borderRadius: 10, padding: '14px' }}>
+          <div style={{ background: 'rgb(var(--accent))', border: '1px solid rgb(var(--accent))', borderRadius: 10, padding: '14px' }}>
             <div style={{ marginBottom: 10 }}>
               <label style={labelStyle}>Number of installments</label>
               <div style={{ display: 'flex', gap: 8 }}>

@@ -11,7 +11,7 @@ const INSIGHT_TYPES = {
   reengage:   { icon: MessageSquare,  gradient: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent)))', border: 'rgb(var(--accent))', iconBg: 'rgb(var(--primary))', tag: 'Re-engagement' },
   win:        { icon: Trophy,         gradient: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', border: 'rgb(var(--warning))', iconBg: 'rgb(var(--warning))', tag: 'Celebrate a Win' },
   upsell:     { icon: TrendingUp,     gradient: 'linear-gradient(135deg, rgb(var(--ai)), rgb(var(--ai)))', border: 'rgb(var(--ai))', iconBg: 'rgb(var(--ai))', tag: 'Upsell Opportunity' },
-  at_risk:    { icon: AlertTriangle,  gradient: 'linear-gradient(135deg, #fff7ed, #ffedd5)', border: '#fed7aa', iconBg: '#ea580c', tag: 'At-Risk Alert' },
+  at_risk:    { icon: AlertTriangle,  gradient: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', border: 'rgb(var(--warning))', iconBg: '#ea580c', tag: 'At-Risk Alert' },
   goal_check: { icon: Target,         gradient: 'linear-gradient(135deg, #f0f9ff, rgb(var(--accent)))', border: '#bae6fd', iconBg: 'rgb(var(--primary))', tag: 'Goal Check-in Due' },
 };
 

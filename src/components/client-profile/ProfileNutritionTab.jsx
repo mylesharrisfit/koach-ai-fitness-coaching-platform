@@ -181,7 +181,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
 
       {!isHabits && assigned.calories > 0 && (
         <div className="flex gap-2">
-          <MacroChip label="Calories" value={assigned.calories} unit="kcal" color="bg-[#FFF7ED] text-orange-700" />
+          <MacroChip label="Calories" value={assigned.calories} unit="kcal" color="bg-warning/10 text-orange-700" />
           {assigned.protein_g > 0 && <MacroChip label="Protein" value={assigned.protein_g} color="bg-accent text-primary" />}
           {assigned.carbs_g   > 0 && <MacroChip label="Carbs"   value={assigned.carbs_g}   color="bg-warning/10 text-warning" />}
           {assigned.fats_g    > 0 && <MacroChip label="Fats"    value={assigned.fats_g}     color="bg-destructive/10 text-destructive" />}
@@ -256,7 +256,7 @@ function TodayFoodLog({ client, assignedPlan }) {
 
       {/* Daily totals bar */}
       {logs.length > 0 && (
-        <div className="px-4 py-3 bg-[#F8F9FC] border-b border-border space-y-2">
+        <div className="px-4 py-3 bg-muted border-b border-border space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">Calories</span>
             <span className="font-semibold text-foreground tabular-nums">

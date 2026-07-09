@@ -528,7 +528,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         <div className="flex gap-1.5 flex-wrap px-4 pt-3 pb-1">
           {chips.map((r, i) => (
             <button key={i} onClick={() => { onChange(r.text); setShowQuickReplies(false); textareaRef.current?.focus(); }}
-              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#F0F4FF] border border-[#D6E2FF] text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors whitespace-nowrap">
+              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-accent/10 border border-[#D6E2FF] text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors whitespace-nowrap">
               {r.label}
             </button>
           ))}

@@ -14,8 +14,8 @@ const TYPE_CONFIG = {
   },
   risk: {
     icon: AlertTriangle,
-    gradient: 'linear-gradient(135deg, #fff7ed, #ffedd5)',
-    border: '#fed7aa',
+    gradient: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))',
+    border: 'rgb(var(--warning))',
     iconBg: '#ea580c',
     tag: 'Risk Alert',
     dot: '#ea580c',

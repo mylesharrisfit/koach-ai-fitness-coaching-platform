@@ -539,7 +539,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
 
       {/* ── Client notes ── */}
       {checkIn.notes && (
-        <div className="bg-[#FFFBF0] border border-warning rounded-xl p-3.5">
+        <div className="bg-warning/10 border border-warning rounded-xl p-3.5">
           <p className="text-[10px] font-bold uppercase tracking-wide text-warning mb-1.5">Client Notes</p>
           <p className="text-sm text-foreground leading-relaxed">{checkIn.notes}</p>
         </div>

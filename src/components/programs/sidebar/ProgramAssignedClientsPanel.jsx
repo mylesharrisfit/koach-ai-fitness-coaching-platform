@@ -13,7 +13,7 @@ function getAvatarColor(name = '') {
     ['rgb(var(--warning))', 'rgb(var(--warning))'],
     ['rgb(var(--ai))', 'rgb(var(--ai))'],
     ['#FCE7F3', '#9D174D'],
-    ['#FFEDD5', '#9A3412'],
+    ['rgb(var(--warning))', '#9A3412'],
   ];
   const i = name.charCodeAt(0) % colors.length;
   return colors[i];

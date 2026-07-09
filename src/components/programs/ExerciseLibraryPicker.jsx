@@ -154,7 +154,7 @@ export default function ExerciseLibraryPicker({ open, onClose, onSelect }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {filtered.map(ex => (
                 <button key={ex.id} onClick={() => { onSelect(ex); onClose(); }}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#F0F4FF] border border-transparent hover:border-primary/20 transition-all group text-left">
+                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/10 border border-transparent hover:border-primary/20 transition-all group text-left">
                   {/* Thumbnail or icon */}
                   <div className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {ex.thumbnail_url

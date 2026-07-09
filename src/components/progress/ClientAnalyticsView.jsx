@@ -206,7 +206,7 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
       )}
 
       {/* AI Summary */}
-      <div className="bg-[#F8FAFF] border border-accent rounded-xl p-4">
+      <div className="bg-muted border border-accent rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-primary" />

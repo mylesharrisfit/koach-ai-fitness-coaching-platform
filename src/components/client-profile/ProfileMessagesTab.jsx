@@ -53,7 +53,7 @@ export default function ProfileMessagesTab({ client, messages }) {
           value={text}
           onChange={e => setText(e.target.value)}
           rows={3}
-          className="resize-none border-border text-sm bg-[#F8F9FD] focus:bg-card rounded-xl mb-3 transition-colors"
+          className="resize-none border-border text-sm bg-muted focus:bg-card rounded-xl mb-3 transition-colors"
           onKeyDown={e => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && text.trim()) {
               sendMutation.mutate();

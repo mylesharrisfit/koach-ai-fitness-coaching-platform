@@ -151,7 +151,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
         ) : (
           <div className="space-y-4 mt-1">
             {/* Setup instructions */}
-            <div className="bg-[#F0F7FF] border border-accent rounded-xl p-4">
+            <div className="bg-accent/10 border border-accent rounded-xl p-4">
               <p className="text-xs font-semibold text-primary mb-2">Setup Instructions</p>
               <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
                 <li>Go to <a href="https://marketplace.zoom.us" target="_blank" className="text-[#2D8CFF] underline font-medium">marketplace.zoom.us</a></li>

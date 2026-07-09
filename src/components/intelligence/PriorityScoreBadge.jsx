@@ -6,7 +6,7 @@ export default function PriorityScoreBadge({ score }) {
   const color = score >= 7
     ? { bg: 'rgb(var(--destructive))', text: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' }
     : score >= 4
-    ? { bg: '#fff7ed', text: '#ea580c', border: '#fed7aa' }
+    ? { bg: 'rgb(var(--warning))', text: '#ea580c', border: 'rgb(var(--warning))' }
     : { bg: 'rgb(var(--success))', text: 'rgb(var(--success))', border: 'rgb(var(--success))' };
 
   return (

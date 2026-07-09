@@ -49,7 +49,7 @@ function ProfileTab() {
       <Link to="/business-settings"
         className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FFF7ED, rgb(var(--warning)))' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
             <Briefcase className="w-5 h-5 text-warning" />
           </div>
           <div>

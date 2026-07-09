@@ -107,7 +107,7 @@ function generateSmartTags(client, checkIns, messages) {
 
 const TAG_STYLES = {
   red:    { bg: 'rgb(var(--destructive))', text: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' },
-  orange: { bg: '#fff7ed', text: '#ea580c', border: '#fed7aa' },
+  orange: { bg: 'rgb(var(--warning))', text: '#ea580c', border: 'rgb(var(--warning))' },
   yellow: { bg: 'rgb(var(--warning))', text: '#ca8a04', border: 'rgb(var(--warning))' },
   green:  { bg: 'rgb(var(--success))', text: 'rgb(var(--success))', border: 'rgb(var(--success))' },
   blue:   { bg: 'rgb(var(--accent))', text: 'rgb(var(--primary))', border: 'rgb(var(--accent))' },

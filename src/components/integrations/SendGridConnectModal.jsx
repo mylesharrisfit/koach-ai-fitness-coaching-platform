@@ -104,7 +104,7 @@ export default function SendGridConnectModal({ open, onClose }) {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-[#F5F5F5] border border-border rounded-xl p-4">
+              <div className="bg-muted border border-border rounded-xl p-4">
                 <p className="text-xs font-semibold text-foreground mb-2">Setup Instructions</p>
                 <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
                   <li>Get your free API key at <a href="https://resend.com" target="_blank" className="text-black underline font-medium">resend.com</a></li>

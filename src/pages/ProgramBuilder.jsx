@@ -135,7 +135,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
               onChange={e => u('description', e.target.value)}
               placeholder="What's this program about?"
               className="w-full text-sm px-3 py-2.5 rounded-xl resize-none focus:outline-none transition-colors placeholder:text-[#C4C9D4] text-foreground"
-              style={{ border: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}
+              style={{ border: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}
             />
           </div>
 
@@ -174,7 +174,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Category</FieldLabel>
               <Select value={draft.category} onValueChange={v => u('category', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-muted" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -185,7 +185,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Session length</FieldLabel>
               <Select value={draft.estimated_session_length || '60'} onValueChange={v => u('estimated_session_length', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-muted" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -207,7 +207,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
                     onClick={() => toggleEquip(eq)}
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                     style={{
-                      background: on ? 'rgb(var(--primary))' : '#F8F9FB',
+                      background: on ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
                       color: on ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
                       border: on ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                     }}
@@ -224,7 +224,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Progression Model</FieldLabel>
               <Select value={draft.progression_model || 'linear'} onValueChange={v => u('progression_model', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-muted" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -237,7 +237,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             <div>
               <FieldLabel>Deload Frequency</FieldLabel>
               <Select value={draft.deload_frequency || 'never'} onValueChange={v => u('deload_frequency', v)}>
-                <SelectTrigger className="h-9 text-sm bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
+                <SelectTrigger className="h-9 text-sm bg-muted" style={{ border: '0.5px solid rgb(var(--border))', borderRadius: 10 }}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -253,7 +253,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
         {/* ── FOOTER ── */}
         <div
           className="flex items-center justify-between px-5 py-3.5"
-          style={{ background: '#F8F9FB', borderTop: '0.5px solid rgb(var(--border))' }}
+          style={{ background: 'rgb(var(--muted))', borderTop: '0.5px solid rgb(var(--border))' }}
         >
           {/* Save as template toggle */}
           <button
@@ -372,7 +372,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
       onClick={onClick}
       className={cn(
         'flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-pointer transition-all group',
-        isSelected ? 'border-primary bg-[#F0F6FF]' : isDragging ? 'border-primary bg-card shadow-lg' : 'border-border bg-card hover:border-primary hover:bg-[#F8FBFF]'
+        isSelected ? 'border-primary bg-accent/10' : isDragging ? 'border-primary bg-card shadow-lg' : 'border-border bg-card hover:border-primary hover:bg-muted'
       )}
     >
       {/* Drag handle */}
@@ -409,7 +409,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
         onClick={e => e.stopPropagation()}
         onChange={e => onPrescriptionChange(e.target.value)}
         placeholder="3 × 8–12 reps"
-        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-border bg-[#F8F9FB] text-foreground placeholder:text-[#C4C9D4] focus:outline-none focus:border-primary focus:bg-card transition-colors"
+        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-border bg-muted text-foreground placeholder:text-[#C4C9D4] focus:outline-none focus:border-primary focus:bg-card transition-colors"
       />
 
       {/* Remove */}
@@ -660,7 +660,7 @@ function DayCard({
             {derivedEquipment.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
                 {derivedEquipment.map(eq => (
-                  <span key={eq} className="text-[10px] font-medium text-muted-foreground bg-[#F8F9FB] border border-border px-2 py-0.5 rounded-full">{eq}</span>
+                  <span key={eq} className="text-[10px] font-medium text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-full">{eq}</span>
                 ))}
               </div>
             )}
@@ -687,7 +687,7 @@ function DayCard({
               value={day.workout_notes || ''}
               onChange={e => onUpdateDay({ workout_notes: e.target.value })}
               placeholder="Workout notes / bio — warmup intent, focus, coaching cues for the client..."
-              className="w-full text-xs px-3 py-2.5 rounded-xl border border-border bg-[#F8F9FB] text-foreground placeholder:text-[#C4C9D4] focus:outline-none focus:border-primary resize-none transition-colors"
+              className="w-full text-xs px-3 py-2.5 rounded-xl border border-border bg-muted text-foreground placeholder:text-[#C4C9D4] focus:outline-none focus:border-primary resize-none transition-colors"
             />
           </div>
 

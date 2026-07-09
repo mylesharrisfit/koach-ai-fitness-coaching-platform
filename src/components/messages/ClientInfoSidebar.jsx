@@ -111,15 +111,15 @@ export default function ClientInfoSidebar({ client, checkIns = [], badges = [], 
       <div className="p-4 border-b border-border space-y-2">
         <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Quick Actions</p>
         <button onClick={() => navigate(`/client-profile?clientId=${client.id}`)}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-[#F0F4FF] hover:text-primary transition-colors text-sm text-foreground font-medium">
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-accent/10 hover:text-primary transition-colors text-sm text-foreground font-medium">
           <ExternalLink className="w-3.5 h-3.5" /> View Full Profile
         </button>
         <button onClick={() => navigate(`/checkin-review?clientId=${client.id}`)}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-[#F0F4FF] hover:text-primary transition-colors text-sm text-foreground font-medium">
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-accent/10 hover:text-primary transition-colors text-sm text-foreground font-medium">
           <ClipboardList className="w-3.5 h-3.5" /> View Check-ins
         </button>
         <button onClick={() => navigate('/nutrition')}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-[#F0F4FF] hover:text-primary transition-colors text-sm text-foreground font-medium">
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-accent/10 hover:text-primary transition-colors text-sm text-foreground font-medium">
           <Salad className="w-3.5 h-3.5" /> View Nutrition
         </button>
       </div>

@@ -33,7 +33,7 @@ export default function ProgressPhotos({ checkIns }) {
       </div>
 
       {compareMode && (compareA || compareB) && (
-        <div className="p-4 bg-[#F8FAFF] border-b border-accent">
+        <div className="p-4 bg-muted border-b border-accent">
           <p className="text-xs text-primary mb-3 font-medium">
             {!compareA ? 'Select first photo' : !compareB ? 'Select second photo to compare' : 'Comparing:'}
           </p>

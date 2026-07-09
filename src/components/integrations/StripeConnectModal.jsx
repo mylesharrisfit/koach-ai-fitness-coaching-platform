@@ -53,7 +53,7 @@ export default function StripeConnectModal({ open, onClose }) {
           ) : null}
 
           {/* Setup instructions */}
-          <div className="bg-[#F5F4FF] border border-[#635BFF]/20 rounded-xl p-4">
+          <div className="bg-ai/10 border border-[#635BFF]/20 rounded-xl p-4">
             <p className="text-xs font-semibold text-[#635BFF] mb-2">Setup Instructions</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="text-[#635BFF] underline font-medium">dashboard.stripe.com/apikeys</a></li>

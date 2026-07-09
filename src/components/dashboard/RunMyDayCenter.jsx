@@ -34,7 +34,7 @@ const GROUP_CONFIG = {
     badgeBg: 'rgb(var(--accent))',
     badgeText: 'rgb(var(--primary))',
     badgeBorder: 'rgb(var(--accent))',
-    headerBg: '#f0f6ff',
+    headerBg: 'rgb(var(--accent))',
     dot: 'rgb(var(--primary))',
   },
 };

@@ -96,7 +96,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 onClick={() => selectDuration(d)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: active ? 'rgb(var(--primary))' : '#F8F9FB',
+                  background: active ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
                   color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
                   border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                 }}
@@ -111,7 +111,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
             onClick={() => { setIsCustomDuration(true); setCustomDuration(''); u('duration', ''); }}
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
             style={{
-              background: isCustomDuration ? 'rgb(var(--primary))' : '#F8F9FB',
+              background: isCustomDuration ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
               color: isCustomDuration ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
               border: isCustomDuration ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
             }}
@@ -149,7 +149,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 onClick={() => u('progression_style', opt.value)}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: active ? 'rgb(var(--primary))' : '#F8F9FB',
+                  background: active ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
                   color: active ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
                   border: active ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                 }}
@@ -167,7 +167,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       </div>
 
       {/* Deload */}
-      <div className="flex items-start justify-between p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}>
+      <div className="flex items-start justify-between p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">Include Deload Weeks</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">Reduced volume weeks to aid recovery and adaptation</p>
@@ -188,7 +188,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
       </div>
 
       {/* Cardio */}
-      <div className="p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}>
+      <div className="p-3 rounded-xl" style={{ border: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}>
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-semibold text-foreground">Include Cardio / Conditioning</p>

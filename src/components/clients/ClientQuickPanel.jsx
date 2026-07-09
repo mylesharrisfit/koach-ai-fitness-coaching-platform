@@ -218,7 +218,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
         </div>
 
         {/* ── Tabs ── */}
-        <div className="flex overflow-x-auto border-b border-border flex-shrink-0 bg-[#F8F9FD]">
+        <div className="flex overflow-x-auto border-b border-border flex-shrink-0 bg-muted">
           {TABS.map(t => (
             <button
               key={t.key}

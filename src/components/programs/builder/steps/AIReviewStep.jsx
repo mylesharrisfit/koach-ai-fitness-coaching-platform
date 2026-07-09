@@ -58,7 +58,7 @@ function DayCard({ workout }) {
     <div className="rounded-xl overflow-hidden" style={{ border: '0.5px solid rgb(var(--border))' }}>
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-[#F8F9FB] transition-colors"
+        className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-muted transition-colors"
         style={{ background: 'rgb(var(--card))' }}
       >
         <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold text-white"
@@ -148,7 +148,7 @@ export default function AIReviewStep({
           { label: 'Duration', value: `${program.duration_weeks || '—'} wks` },
           { label: 'Exercises', value: totalExercises },
         ].map(s => (
-          <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: '#F8F9FB', border: '0.5px solid rgb(var(--border))' }}>
+          <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: 'rgb(var(--muted))', border: '0.5px solid rgb(var(--border))' }}>
             <p className="text-lg font-bold text-foreground">{s.value}</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
           </div>

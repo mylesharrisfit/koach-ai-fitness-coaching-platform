@@ -96,7 +96,7 @@ function ZapierModal({ open, onClose, settings }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-[#FFF7ED] border border-[#FED7AA] rounded-xl p-4">
+          <div className="bg-warning/10 border border-warning rounded-xl p-4">
             <p className="text-xs font-semibold text-warning mb-2">Setup Instructions</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Go to <a href="https://zapier.com" target="_blank" rel="noreferrer" className="text-warning underline font-medium">zapier.com</a> and create a new Zap</li>
@@ -181,7 +181,7 @@ function ResendModal({ open, onClose, settings }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-[#F5F5F5] border border-border rounded-xl p-4">
+          <div className="bg-muted border border-border rounded-xl p-4">
             <p className="text-xs font-semibold text-foreground mb-2">Setup Instructions</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Get your free API key at <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-black underline font-medium">resend.com</a></li>

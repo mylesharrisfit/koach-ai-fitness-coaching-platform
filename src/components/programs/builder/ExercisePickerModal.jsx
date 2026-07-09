@@ -93,7 +93,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
 
         {/* Filter bar */}
         <div className="flex-shrink-0 px-4 py-2.5 flex items-center gap-2 overflow-x-auto scrollbar-hide"
-          style={{ background: '#F8F9FB', borderBottom: '0.5px solid rgb(var(--border))' }}>
+          style={{ background: 'rgb(var(--muted))', borderBottom: '0.5px solid rgb(var(--border))' }}>
 
           {/* Muscle chips */}
           <button onClick={() => setMuscleFilter('')}
@@ -200,7 +200,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
         </div>
 
         {/* Custom exercise fallback */}
-        <div className="flex-shrink-0 px-4 py-3" style={{ borderTop: '0.5px solid rgb(var(--border))', background: '#F8F9FB' }}>
+        <div className="flex-shrink-0 px-4 py-3" style={{ borderTop: '0.5px solid rgb(var(--border))', background: 'rgb(var(--muted))' }}>
           <button
             onClick={handleCustom}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-card transition-all"

@@ -83,7 +83,7 @@ function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibra
       </div>
 
       {expanded && (
-        <div className="border-t border-muted bg-[#FAFBFE] px-4 py-3 space-y-3">
+        <div className="border-t border-muted bg-muted px-4 py-3 space-y-3">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Layers className="w-3 h-3" />Set Type</Label>

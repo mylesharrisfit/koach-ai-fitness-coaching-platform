@@ -176,7 +176,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {(exercise.tempo || exercise.default_rest_seconds) && (
             <div className="grid grid-cols-2 gap-3">
               {exercise.tempo && (
-                <div className="bg-[#F8F9FB] rounded-xl p-3" style={{ border: '0.5px solid rgb(var(--border))' }}>
+                <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid rgb(var(--border))' }}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Timer className="w-3.5 h-3.5 text-primary" />
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tempo</span>
@@ -186,7 +186,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
                 </div>
               )}
               {exercise.default_rest_seconds && (
-                <div className="bg-[#F8F9FB] rounded-xl p-3" style={{ border: '0.5px solid rgb(var(--border))' }}>
+                <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid rgb(var(--border))' }}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Clock className="w-3.5 h-3.5 text-primary" />
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Rest Time</span>
@@ -204,7 +204,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">How to Perform</p>
               <div className="space-y-2.5">
                 {steps.map((step, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-[#F8F9FB]" style={{ border: '0.5px solid rgb(var(--border))' }}>
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted" style={{ border: '0.5px solid rgb(var(--border))' }}>
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-bold"
                       style={{ background: 'rgb(var(--primary))', minWidth: 24 }}>
                       {i + 1}

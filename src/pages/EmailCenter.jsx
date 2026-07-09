@@ -348,7 +348,7 @@ export default function EmailCenter() {
               <iframe
                 srcDoc={rendered.html || '<p style="padding:20px;color:#999;">Select a template to preview</p>'}
                 className="w-full border-0 rounded-xl shadow-sm"
-                style={{ minHeight: 520, background: 'white' }}
+                style={{ minHeight: 520, background: 'rgb(var(--card))' }}
                 title="Email Preview"
               />
             </div>

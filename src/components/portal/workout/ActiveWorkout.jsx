@@ -246,7 +246,7 @@ function getMuscleTag(name = '') {
   if (n.includes('tricep') || n.includes('pushdown')) return { label: 'Triceps', bg: 'rgb(var(--warning))', color: '#CA8A04' };
   if (n.includes('squat') || n.includes('leg') || n.includes('lunge') || n.includes('quad')) return { label: 'Legs', bg: 'rgb(var(--success))', color: 'rgb(var(--success))' };
   if (n.includes('glute') || n.includes('deadlift') || n.includes('rdl')) return { label: 'Glutes', bg: '#FCE7F3', color: '#DB2777' };
-  if (n.includes('plank') || n.includes('ab') || n.includes('core')) return { label: 'Core', bg: '#FFEDD5', color: '#EA580C' };
+  if (n.includes('plank') || n.includes('ab') || n.includes('core')) return { label: 'Core', bg: 'rgb(var(--warning))', color: '#EA580C' };
   return { label: 'Compound', bg: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))' };
 }
 

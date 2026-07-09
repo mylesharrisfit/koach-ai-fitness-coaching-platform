@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 const CATEGORY_STYLES = {
   workout:   { icon: Dumbbell, gradient: 'from-accent/10 to-accent/10', badge: 'bg-accent/10 text-primary' },
   nutrition: { icon: Salad,    gradient: 'from-success/10 to-success/10', badge: 'bg-success/10 text-success' },
-  coaching:  { icon: Users,    gradient: 'from-[#FFF7ED] to-warning/10', badge: 'bg-[#FFF7ED] text-warning' },
+  coaching:  { icon: Users,    gradient: 'from-warning/10 to-warning/10', badge: 'bg-warning/10 text-warning' },
   bundle:    { icon: Layers,   gradient: 'from-ai/10 to-ai/10', badge: 'bg-ai/10 text-ai' },
   other:     { icon: Package,  gradient: 'from-muted to-border', badge: 'bg-muted text-foreground' },
 };

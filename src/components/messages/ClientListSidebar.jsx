@@ -143,7 +143,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
               onClick={() => onSelectClient(client.id)}
               className={cn(
                 'w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-b border-muted relative',
-                isSelected ? 'bg-[#F0F4FF]' : 'hover:bg-background'
+                isSelected ? 'bg-accent/10' : 'hover:bg-background'
               )}
             >
               {isSelected && <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-r-full bg-primary" />}

@@ -76,7 +76,7 @@ export default function MacroRings({ logged, plan }) {
         <BigCalorieRing consumed={logged.calories || 0} target={targets.calories} />
         <div className="flex gap-4 flex-1 justify-around">
           <MiniRing value={logged.protein || 0} target={targets.protein} color="rgb(var(--primary))" trackColor="rgb(var(--accent))" label="Protein" />
-          <MiniRing value={logged.carbs || 0} target={targets.carbs} color="#F97316" trackColor="#FFEDD5" label="Carbs" />
+          <MiniRing value={logged.carbs || 0} target={targets.carbs} color="#F97316" trackColor="rgb(var(--warning))" label="Carbs" />
           <MiniRing value={logged.fats || 0} target={targets.fats} color="#EAB308" trackColor="rgb(var(--warning))" label="Fats" />
           <MiniRing value={(logged.water || 0) / 1000} target={targets.water / 1000} color="#06B6D4" trackColor="#CFFAFE" label="Water" unit="L" />
         </div>

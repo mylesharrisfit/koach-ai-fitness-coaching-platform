@@ -379,7 +379,7 @@ export default function AIProgressAnalyzer({
 
   // Coach-facing wrapper
   return (
-    <div className="bg-gradient-to-br from-[#F0F4FF] to-ai/10 border border-primary/20 rounded-2xl overflow-hidden">
+    <div className="bg-gradient-to-br from-accent/10 to-ai/10 border border-primary/20 rounded-2xl overflow-hidden">
       <button
         className="w-full flex items-center justify-between px-4 py-3"
         onClick={() => setExpanded(e => !e)}

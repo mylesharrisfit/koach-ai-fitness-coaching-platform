@@ -55,7 +55,7 @@ function CheckInCard({ ci, clientId }) {
     )}>
       {/* Header row */}
       <button
-        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-[#F8F9FD] transition-colors text-left"
+        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors text-left"
         onClick={() => setOpen(v => !v)}
       >
         <div className="w-9 h-9 rounded-xl bg-muted border border-border flex items-center justify-center text-base flex-shrink-0">

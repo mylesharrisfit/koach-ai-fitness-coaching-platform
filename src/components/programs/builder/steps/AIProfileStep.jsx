@@ -31,7 +31,7 @@ const ChipSelect = ({ value, onChange, options, single = false }) => (
           }}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
           style={{
-            background: isActive ? 'rgb(var(--primary))' : '#F8F9FB',
+            background: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
             color: isActive ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
             border: isActive ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
           }}
@@ -190,7 +190,7 @@ export default function AIProfileStep({ onSubmit }) {
                 onClick={() => u('days_per_week', d)}
                 className="w-9 h-9 rounded-lg text-sm font-semibold transition-all"
                 style={{
-                  background: form.days_per_week === d ? 'rgb(var(--primary))' : '#F8F9FB',
+                  background: form.days_per_week === d ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
                   color: form.days_per_week === d ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
                   border: form.days_per_week === d ? '1px solid rgb(var(--primary))' : '0.5px solid rgb(var(--border))',
                 }}

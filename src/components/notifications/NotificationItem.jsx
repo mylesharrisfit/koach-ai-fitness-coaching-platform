@@ -7,7 +7,7 @@ const CATEGORY_CONFIG = {
   client:      { bg: 'rgb(var(--accent))', color: 'rgb(var(--primary))', emoji: '👤' },
   message:     { bg: 'rgb(var(--ai))', color: 'rgb(var(--ai))', emoji: '💬' },
   payment:     { bg: 'rgb(var(--success))', color: 'rgb(var(--success))', emoji: '💳' },
-  atrisk:      { bg: '#FFF7ED', color: 'rgb(var(--warning))', emoji: '⚠️' },
+  atrisk:      { bg: 'rgb(var(--warning))', color: 'rgb(var(--warning))', emoji: '⚠️' },
   ai:          { bg: 'rgb(var(--accent))', color: '#4F46E5', emoji: '🤖' },
   checkin:     { bg: '#F0FDFA', color: '#0D9488', emoji: '📋' },
   schedule:    { bg: 'rgb(var(--warning))', color: '#CA8A04', emoji: '📅' },

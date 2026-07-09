@@ -14,7 +14,7 @@ const CAT = {
   message:     { emoji: '💬', bg: 'rgb(var(--ai))', color: 'rgb(var(--ai))', label: 'Coach' },
   achievement: { emoji: '🏆', bg: 'rgb(var(--warning))', color: 'rgb(var(--warning))', label: 'Achievement' },
   payment:     { emoji: '💳', bg: 'rgb(var(--success))', color: 'rgb(var(--success))', label: 'Payment' },
-  reminder:    { emoji: '⏰', bg: '#FFF7ED', color: '#EA580C', label: 'Reminder' },
+  reminder:    { emoji: '⏰', bg: 'rgb(var(--warning))', color: '#EA580C', label: 'Reminder' },
   celebration: { emoji: '🎉', bg: '#FDF4FF', color: '#A21CAF', label: 'Celebration' },
   system:      { emoji: '⚙️', bg: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))', label: 'System' },
   community:   { emoji: '👥', bg: '#F0F9FF', color: 'rgb(var(--primary))', label: 'Community' },
