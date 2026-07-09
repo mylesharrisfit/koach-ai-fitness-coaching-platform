@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import TodayView from '@/components/dashboard/TodayView';
 import TrialBanner from '@/components/dashboard/TrialBanner';
+import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
+import ErrorState from '@/components/shared/ErrorState';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
@@ -36,7 +38,12 @@ export default function Dashboard() {
     return () => { unsubCI(); unsubMsg(); unsubClient(); };
   }, [queryClient]);
 
-  const { data: clients = [] } = useQuery({
+  const {
+    data: clients = [],
+    isLoading: clientsLoading,
+    isError: clientsError,
+    refetch: refetchClients,
+  } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list('-created_date'),
   });
@@ -64,7 +71,18 @@ export default function Dashboard() {
   return (
     <>
       <TrialBanner user={dashUser} />
-      <TodayView clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
+      {clientsError ? (
+        <ErrorState
+          title="Couldn't load your dashboard"
+          message="We hit a problem loading your clients. Try again in a moment."
+          onRetry={() => refetchClients()}
+          className="min-h-[60vh]"
+        />
+      ) : clientsLoading && clients.length === 0 ? (
+        <DashboardSkeleton />
+      ) : (
+        <TodayView clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
+      )}
     </>
   );
 }

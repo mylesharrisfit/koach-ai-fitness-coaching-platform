@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Search, X, AlertTriangle, ArrowRight, Lock, SlidersHorizontal, AlignJustify, LayoutList, Upload, Trash2 } from 'lucide-react';
 import ImportClientsModal from '../components/clients/import/ImportClientsModal';
+import ErrorState from '@/components/shared/ErrorState';
 import ImportCleanupModal from '../components/clients/import/ImportCleanupModal';
 import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import { Link, useNavigate } from 'react-router-dom';
@@ -63,7 +64,7 @@ export default function Clients() {
   }, []);
 
   // Once clients load, set smart default if no saved preference
-  const { data: clients = [], isLoading } = useQuery({
+  const { data: clients = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['clients'],
     queryFn: () => base44.entities.Client.list('-created_date'),
   });
@@ -511,10 +512,16 @@ export default function Clients() {
 
       {/* ── Client list ── */}
       <div className="flex-1 overflow-y-auto bg-white">
-        {isLoading ? (
+        {isError ? (
+          <ErrorState
+            title="Couldn't load your clients"
+            message="There was a problem loading your roster. Try again in a moment."
+            onRetry={() => refetch()}
+          />
+        ) : isLoading ? (
           <div className="p-5 space-y-2">
             {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="h-14 bg-[#F6F7FB] rounded-xl animate-pulse" />
+              <div key={i} className="h-14 bg-muted rounded-xl animate-pulse" />
             ))}
           </div>
         ) : filteredClients.length === 0 ? (

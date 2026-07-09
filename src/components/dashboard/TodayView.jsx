@@ -78,6 +78,37 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const activeCount = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active').length;
 
+  // Count clients needing attention (stale check-in or low adherence). Drives
+  // whether AI Insights is promoted above the informational sections.
+  const flaggedCount = useMemo(() => {
+    let n = 0;
+    clients.forEach(c => {
+      const active = c.status === 'active' || c.lifecycle_status === 'active';
+      if (!active) return;
+      const cis = checkIns.filter(ci => ci.client_id === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+      const days = cis[0] ? differenceInDays(new Date(), parseISO(cis[0].date)) : 999;
+      if (days >= 10) { n++; return; }
+      if (cis.length >= 2) {
+        const s = compositeAdherenceScore(cis);
+        if (s !== null && s < 65) n++;
+      }
+    });
+    return n;
+  }, [clients, checkIns]);
+
+  // Sections below Run My Day, ordered by unresolved signal (highest first),
+  // stable within equal counts. Run My Day itself is always pinned to the top.
+  const orderedSections = useMemo(() => {
+    const secs = [
+      { key: 'schedule', count: 0, node: <TodaySchedule clients={clients} /> },
+      { key: 'insights', count: flaggedCount, node: clients.length > 0
+          ? <AIInsightsFeed clients={clients} checkIns={checkIns} messages={messages} /> : null },
+      { key: 'snapshot', count: 0, node: <WeeklySnapshot checkIns={checkIns} clients={clients} /> },
+      { key: 'bi', count: 0, node: clients.length > 0 ? <BIDashboardCard /> : null },
+    ].filter(s => s.node);
+    return secs.map((s, i) => ({ ...s, i })).sort((a, b) => b.count - a.count || a.i - b.i);
+  }, [clients, checkIns, messages, flaggedCount]);
+
   const [showBanner, setShowBanner] = useState(() => {
     return localStorage.getItem('koach_onboarding_complete') === '1' &&
            localStorage.getItem('koach_banner_dismissed') !== '1';
@@ -116,25 +147,16 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
         {showBanner && <FirstTimeBanner onDismiss={dismissBanner} />}
       </AnimatePresence>
 
-      {/* ── KPI Strip ──────────────────────────────── */}
+      {/* ── KPI Strip (context) ────────────────────── */}
       <DashboardKPIs clients={clients} checkIns={checkIns} payments={payments} />
 
-      {/* ── Today's Schedule ───────────────────────── */}
-      <TodaySchedule clients={clients} />
-
-      {/* ── Weekly Snapshot ─────────────────────────── */}
-      <WeeklySnapshot checkIns={checkIns} clients={clients} />
-
-      {/* ── Action Center ──────────────────────────── */}
+      {/* ── Run My Day — pinned to the top of the actionable stack ── */}
       <ActionCenterSection clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
 
-      {/* ── Business Intelligence Summary ───────────── */}
-      {clients.length > 0 && <BIDashboardCard />}
-
-      {/* ── AI Client Insights ─────────────────────── */}
-      {clients.length > 0 && (
-        <AIInsightsFeed clients={clients} checkIns={checkIns} messages={messages} />
-      )}
+      {/* ── Remaining sections, ordered by unresolved signal ── */}
+      {orderedSections.map(s => (
+        <React.Fragment key={s.key}>{s.node}</React.Fragment>
+      ))}
     </div>
   );
 }
