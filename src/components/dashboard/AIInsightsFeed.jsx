@@ -48,7 +48,7 @@ export default function AIInsightsFeed({ clients = [], checkIns = [], messages =
           <h2 className="text-sm font-bold text-foreground tracking-tight">AI Client Insights</h2>
           {totalCount > 0 && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: 'rgb(var(--ai))', color: 'rgb(var(--ai))', border: '1px solid rgb(var(--ai))' }}>
+              style={{ background: 'var(--tc-ai)', color: 'var(--tc-ai)', border: '1px solid var(--tc-ai)' }}>
               {totalCount}
             </span>
           )}
@@ -73,7 +73,7 @@ export default function AIInsightsFeed({ clients = [], checkIns = [], messages =
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl px-6 py-8 text-center"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: '1px solid rgb(var(--success))' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: '1px solid var(--tc-success)' }}>
           <div className="text-2xl mb-2">🎉</div>
           <p className="text-sm font-semibold text-foreground">No new insights right now — your clients are all on track!</p>
         </div>

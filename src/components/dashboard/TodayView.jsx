@@ -128,14 +128,14 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
           <h1 className="text-base sm:text-xl font-semibold text-white" style={{ letterSpacing: '-0.02em' }}>
             {greeting}, Coach
           </h1>
-          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>
             {format(new Date(), 'EEE, MMM d')} · {activeCount} active client{activeCount !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={() => navigate('/clients')}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 border min-h-[44px]"
-          style={{ background: 'rgba(255,255,255,0.1)', color: 'rgb(var(--sidebar-accent-foreground))', borderColor: 'rgba(255,255,255,0.2)' }}
+          style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
         >
           <UserPlus className="w-3.5 h-3.5" />
           Add Client

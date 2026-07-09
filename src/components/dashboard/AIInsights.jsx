@@ -7,12 +7,12 @@ import { cn } from '@/lib/utils';
 
 // ── Insight type configs ──────────────────────────────────────────────────────
 const INSIGHT_TYPES = {
-  upgrade:    { icon: Dumbbell,       gradient: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: 'rgb(var(--success))', iconBg: 'rgb(var(--success))', tag: 'Program Upgrade' },
-  reengage:   { icon: MessageSquare,  gradient: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent)))', border: 'rgb(var(--accent))', iconBg: 'rgb(var(--primary))', tag: 'Re-engagement' },
-  win:        { icon: Trophy,         gradient: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', border: 'rgb(var(--warning))', iconBg: 'rgb(var(--warning))', tag: 'Celebrate a Win' },
-  upsell:     { icon: TrendingUp,     gradient: 'linear-gradient(135deg, rgb(var(--ai)), rgb(var(--ai)))', border: 'rgb(var(--ai))', iconBg: 'rgb(var(--ai))', tag: 'Upsell Opportunity' },
-  at_risk:    { icon: AlertTriangle,  gradient: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', border: 'rgb(var(--warning))', iconBg: '#ea580c', tag: 'At-Risk Alert' },
-  goal_check: { icon: Target,         gradient: 'linear-gradient(135deg, #f0f9ff, rgb(var(--accent)))', border: '#bae6fd', iconBg: 'rgb(var(--primary))', tag: 'Goal Check-in Due' },
+  upgrade:    { icon: Dumbbell,       gradient: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: 'var(--tc-success)', iconBg: 'var(--tc-success)', tag: 'Program Upgrade' },
+  reengage:   { icon: MessageSquare,  gradient: 'linear-gradient(135deg, var(--tc-accent), var(--tc-accent))', border: 'var(--tc-accent)', iconBg: 'var(--tc-primary)', tag: 'Re-engagement' },
+  win:        { icon: Trophy,         gradient: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))', border: 'var(--tc-warning)', iconBg: 'var(--tc-warning)', tag: 'Celebrate a Win' },
+  upsell:     { icon: TrendingUp,     gradient: 'linear-gradient(135deg, var(--tc-ai), var(--tc-ai))', border: 'var(--tc-ai)', iconBg: 'var(--tc-ai)', tag: 'Upsell Opportunity' },
+  at_risk:    { icon: AlertTriangle,  gradient: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))', border: 'var(--tc-warning)', iconBg: 'var(--kc-ea580c)', tag: 'At-Risk Alert' },
+  goal_check: { icon: Target,         gradient: 'linear-gradient(135deg, var(--kc-f0f9ff), var(--tc-accent))', border: 'var(--kc-bae6fd)', iconBg: 'var(--tc-primary)', tag: 'Goal Check-in Due' },
 };
 
 // ── Data-driven insight generators ───────────────────────────────────────────
@@ -152,7 +152,7 @@ function generateInsights(clients, checkIns, messages) {
 function SkeletonCard() {
   return (
     <div className="rounded-2xl p-5 flex flex-col gap-3 animate-pulse"
-      style={{ background: 'rgb(var(--background))', border: '1px solid rgb(var(--muted))' }}>
+      style={{ background: 'var(--tc-background)', border: '1px solid var(--tc-muted)' }}>
       <div className="flex items-center gap-2.5">
         <div className="w-9 h-9 rounded-xl bg-border" />
         <div className="h-3.5 bg-border rounded w-20" />
@@ -179,7 +179,7 @@ function InsightCard({ insight, onDismiss }) {
       style={{
         background: cfg.gradient,
         border: `1px solid ${cfg.border}`,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        boxShadow: '0 2px 8px color-mix(in srgb, black 5%, transparent)',
       }}
     >
       {/* Top row: icon + tag + dismiss */}
@@ -213,7 +213,7 @@ function InsightCard({ insight, onDismiss }) {
         <button
           onClick={() => navigate(insight.actionPath)}
           className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg transition-all hover:opacity-90 active:scale-95"
-          style={{ background: cfg.iconBg, color: 'rgb(var(--card))' }}
+          style={{ background: cfg.iconBg, color: 'var(--tc-card)' }}
         >
           {insight.actionLabel}
           <ArrowRight className="w-3.5 h-3.5" />
@@ -260,7 +260,7 @@ export default function AIInsights({ clients = [], checkIns = [], messages = [] 
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" style={{ color: 'rgb(var(--ai))' }} />
+            <Sparkles className="w-4 h-4" style={{ color: 'var(--tc-ai)' }} />
             <h2 className="text-sm font-bold text-foreground tracking-tight">AI Insights</h2>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">Personalized recommendations based on your client data</p>
@@ -269,7 +269,7 @@ export default function AIInsights({ clients = [], checkIns = [], messages = [] 
           onClick={handleRefresh}
           disabled={isRefreshing}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all hover:bg-muted shrink-0 disabled:opacity-60"
-          style={{ border: '1px solid rgb(var(--border))', color: 'rgb(var(--muted-foreground))' }}
+          style={{ border: '1px solid var(--tc-border)', color: 'var(--tc-muted-foreground)' }}
         >
           <RefreshCw className={cn('w-3.5 h-3.5', isRefreshing && 'animate-spin')} />
           Refresh Insights
@@ -285,8 +285,8 @@ export default function AIInsights({ clients = [], checkIns = [], messages = [] 
         </div>
       ) : notEnoughData ? (
         <div className="rounded-2xl px-6 py-8 text-center"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--ai)), rgb(var(--ai)))', border: '1px solid rgb(var(--ai))' }}>
-          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: 'rgb(var(--ai))', opacity: 0.5 }} />
+          style={{ background: 'linear-gradient(135deg, var(--tc-ai), var(--tc-ai))', border: '1px solid var(--tc-ai)' }}>
+          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--tc-ai)', opacity: 0.5 }} />
           <p className="text-sm font-semibold text-foreground">Add more clients and check back soon</p>
           <p className="text-xs text-muted-foreground mt-1.5 max-w-sm mx-auto">
             AI Insights get smarter as your roster grows — start by adding clients and collecting check-ins.
@@ -294,7 +294,7 @@ export default function AIInsights({ clients = [], checkIns = [], messages = [] 
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl px-6 py-8 text-center"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: '1px solid rgb(var(--success))' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: '1px solid var(--tc-success)' }}>
           <div className="text-3xl mb-2">✅</div>
           <p className="text-sm font-semibold text-foreground">No new insights right now</p>
           <p className="text-xs text-muted-foreground mt-1.5">

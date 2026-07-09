@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 
 // Mini adherence bar shown under the % value
 function AdherenceBar({ pct }) {
-  const color = pct < 40 ? 'rgb(var(--destructive))' : 'rgb(var(--primary))';
+  const color = pct < 40 ? 'var(--tc-destructive)' : 'var(--tc-primary)';
   return (
-    <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: 'rgb(var(--muted))' }}>
+    <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: 'var(--tc-muted)' }}>
       <div
         className="h-full rounded-full transition-all"
         style={{ width: `${Math.min(pct, 100)}%`, background: color }}
@@ -23,17 +23,17 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
       <div
         className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:opacity-90 cursor-default"
         onClick={onClick}
-        style={{ background: 'rgb(var(--sidebar))', minHeight: 110 }}
+        style={{ background: 'var(--tc-sidebar)', minHeight: 110 }}
       >
         <div className="flex items-center justify-between">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'color-mix(in srgb, white 10%, transparent)' }}>
             <Icon className="w-4 h-4 text-white/70" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>{label}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'color-mix(in srgb, white 40%, transparent)' }}>{label}</p>
         </div>
         <div>
           <p className="text-3xl font-extrabold leading-none text-white" style={{ letterSpacing: '-0.03em' }}>{value}</p>
-          {sub && <p className="text-xs mt-1 font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>{sub}</p>}
+          {sub && <p className="text-xs mt-1 font-medium" style={{ color: 'color-mix(in srgb, white 40%, transparent)' }}>{sub}</p>}
           {extra}
         </div>
       </div>
@@ -44,13 +44,13 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
       className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default"
       onClick={onClick}
       style={{
-        background: 'rgb(var(--card))',
-        border: '1px solid rgb(var(--border))',
+        background: 'var(--tc-card)',
+        border: '1px solid var(--tc-border)',
         minHeight: 110,
       }}
     >
       <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgb(var(--background))' }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--tc-background)' }}>
           <Icon className="w-4 h-4 text-muted-foreground" />
         </div>
         <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{label}</p>
@@ -60,7 +60,7 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
           {value}
         </p>
         {sub && (
-          <p className="text-xs mt-1" style={{ color: subColor || 'rgb(var(--muted-foreground))' }}>{sub}</p>
+          <p className="text-xs mt-1" style={{ color: subColor || 'var(--tc-muted-foreground)' }}>{sub}</p>
         )}
         {extra}
       </div>
@@ -102,10 +102,10 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
     return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   }, [clients, checkIns]);
 
-  const adherenceColor = avgAdherence === null ? 'rgb(var(--muted-foreground))'
-    : avgAdherence >= 80 ? 'rgb(var(--success))'
-    : avgAdherence >= 50 ? 'rgb(var(--warning))'
-    : 'rgb(var(--destructive))';
+  const adherenceColor = avgAdherence === null ? 'var(--tc-muted-foreground)'
+    : avgAdherence >= 80 ? 'var(--tc-success)'
+    : avgAdherence >= 50 ? 'var(--tc-warning)'
+    : 'var(--tc-destructive)';
 
   // Pending reviews
   const pendingReviews = useMemo(() =>
@@ -183,9 +183,9 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
             : 'this month'
         }
         subColor={
-          monthRevenue === 0 ? 'rgb(var(--muted-foreground))'
-          : revenueTrend !== null && revenueTrend >= 0 ? 'rgb(var(--success))'
-          : 'rgb(var(--destructive))'
+          monthRevenue === 0 ? 'var(--tc-muted-foreground)'
+          : revenueTrend !== null && revenueTrend >= 0 ? 'var(--tc-success)'
+          : 'var(--tc-destructive)'
         }
         onClick={monthRevenue === 0 ? () => navigate('/revenue') : undefined}
       />

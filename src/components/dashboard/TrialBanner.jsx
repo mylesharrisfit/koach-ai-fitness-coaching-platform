@@ -39,7 +39,7 @@ export default function TrialBanner({ user }) {
           <button
             onClick={() => navigate('/subscription')}
             className="text-xs font-bold text-white px-3 py-1.5 rounded-lg transition-all"
-            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))' }}
+            style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))' }}
           >
             Upgrade Now
           </button>

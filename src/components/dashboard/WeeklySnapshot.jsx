@@ -54,7 +54,7 @@ function groupByDay(items, dateField, range, rangeKey) {
   }));
 }
 
-const GRAD_COLORS = ['rgb(var(--primary))', 'rgb(var(--primary))', 'rgb(var(--ai))'];
+const GRAD_COLORS = ['var(--tc-primary)', 'var(--tc-primary)', 'var(--tc-ai)'];
 
 function CustomBar(props) {
   const { x, y, width, height, index, total } = props;
@@ -130,17 +130,17 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
     return vals.length ? Math.round(vals.reduce((s, d) => s + d.count, 0) / vals.length) : 0;
   }, [complianceData]);
 
-  const axisStyle = { fontSize: 10, fill: 'rgb(var(--muted-foreground))' };
+  const axisStyle = { fontSize: 10, fill: 'var(--tc-muted-foreground)' };
 
   return (
     <div className="rounded-xl bg-card border border-border overflow-hidden"
-      style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
+      style={{ boxShadow: '0 1px 6px color-mix(in srgb, black 6%, transparent)' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgb(var(--ai) / 0.15))' }}>
-            <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgb(var(--ai))' }} />
+            style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-primary) 15%, transparent), color-mix(in srgb, var(--tc-ai) 15%, transparent))' }}>
+            <BarChart2 className="w-3.5 h-3.5" style={{ color: 'var(--tc-ai)' }} />
           </div>
           <h2 className="text-sm font-bold text-foreground">Weekly Snapshot</h2>
         </div>
@@ -167,12 +167,12 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
                 <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
                 <YAxis tick={axisStyle} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--tc-border)', boxShadow: '0 2px 8px color-mix(in srgb, black 8%, transparent)' }}
                   formatter={(v) => [v, 'Check-ins']}
                 />
                 <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                   {checkInData.map((_, i) => (
-                    <Cell key={i} fill={i < checkInData.length / 2 ? 'rgb(var(--primary))' : 'rgb(var(--primary))'} fillOpacity={_ .count === 0 ? 0.2 : 1} />
+                    <Cell key={i} fill={i < checkInData.length / 2 ? 'var(--tc-primary)' : 'var(--tc-primary)'} fillOpacity={_ .count === 0 ? 0.2 : 1} />
                   ))}
                 </Bar>
               </BarChart>
@@ -191,12 +191,12 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
                   <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
                   <YAxis tick={axisStyle} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--tc-border)', boxShadow: '0 2px 8px color-mix(in srgb, black 8%, transparent)' }}
                     formatter={(v) => [v, 'New Clients']}
                   />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                     {newClientData.map((entry, i) => (
-                      <Cell key={i} fill="rgb(var(--success))" fillOpacity={entry.count === 0 ? 0.2 : 1} />
+                      <Cell key={i} fill="var(--tc-success)" fillOpacity={entry.count === 0 ? 0.2 : 1} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -216,12 +216,12 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
                   <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
                   <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--tc-border)', boxShadow: '0 2px 8px color-mix(in srgb, black 8%, transparent)' }}
                     formatter={(v) => [`${v}%`, 'Compliance']}
                   />
                   <Line
-                    type="monotone" dataKey="count" stroke="rgb(var(--warning))"
-                    strokeWidth={2} dot={{ r: 3, fill: 'rgb(var(--warning))' }} activeDot={{ r: 5 }}
+                    type="monotone" dataKey="count" stroke="var(--tc-warning)"
+                    strokeWidth={2} dot={{ r: 3, fill: 'var(--tc-warning)' }} activeDot={{ r: 5 }}
                   />
                 </LineChart>
               </ResponsiveContainer>

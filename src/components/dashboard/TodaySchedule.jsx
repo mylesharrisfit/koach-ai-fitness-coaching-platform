@@ -13,18 +13,18 @@ const TYPE_LABELS = {
 };
 
 const STATUS_CONFIG = {
-  scheduled:  { label: 'Upcoming',   style: { background: 'rgb(var(--accent))', color: 'rgb(var(--primary))', border: 'rgb(var(--accent))' } },
-  completed:  { label: 'Completed',  style: { background: 'rgb(var(--background))', color: 'rgb(var(--muted-foreground))', border: 'rgb(var(--border))' } },
-  cancelled:  { label: 'Cancelled',  style: { background: 'rgb(var(--destructive))', color: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' } },
-  no_show:    { label: 'No Show',    style: { background: 'rgb(var(--destructive))', color: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' } },
+  scheduled:  { label: 'Upcoming',   style: { background: 'var(--tc-accent)', color: 'var(--tc-primary)', border: 'var(--tc-accent)' } },
+  completed:  { label: 'Completed',  style: { background: 'var(--tc-background)', color: 'var(--tc-muted-foreground)', border: 'var(--tc-border)' } },
+  cancelled:  { label: 'Cancelled',  style: { background: 'var(--tc-destructive)', color: 'var(--tc-destructive)', border: 'var(--tc-destructive)' } },
+  no_show:    { label: 'No Show',    style: { background: 'var(--tc-destructive)', color: 'var(--tc-destructive)', border: 'var(--tc-destructive)' } },
 };
 
 const AVATAR_COLORS = [
-  ['rgb(var(--primary))', 'rgb(var(--accent))'],
-  ['rgb(var(--ai))', 'rgb(var(--ai))'],
-  ['rgb(var(--success))', 'rgb(var(--success))'],
-  ['rgb(var(--warning))', 'rgb(var(--warning))'],
-  ['rgb(var(--destructive))', 'rgb(var(--destructive))'],
+  ['var(--tc-primary)', 'var(--tc-accent)'],
+  ['var(--tc-ai)', 'var(--tc-ai)'],
+  ['var(--tc-success)', 'var(--tc-success)'],
+  ['var(--tc-warning)', 'var(--tc-warning)'],
+  ['var(--tc-destructive)', 'var(--tc-destructive)'],
 ];
 function getAvatarColor(name = '') {
   const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
@@ -96,13 +96,13 @@ function SessionCard({ session, clients, onMessage }) {
       className="flex-shrink-0 w-64 rounded-xl p-4 flex flex-col gap-3 bg-card transition-all"
       style={{
         border: startingSoon
-          ? '1.5px solid #00d4ff'
+          ? '1.5px solid var(--kc-00d4ff)'
           : inProgress
-          ? '1.5px solid #00ff88'
-          : '1px solid rgb(var(--border))',
+          ? '1.5px solid var(--kc-00ff88)'
+          : '1px solid var(--tc-border)',
         boxShadow: startingSoon
-          ? '0 0 16px rgba(0,212,255,0.2), 0 2px 6px rgba(0,0,0,0.06)'
-          : '0 1px 4px rgba(0,0,0,0.05)',
+          ? '0 0 16px color-mix(in srgb, var(--kc-00d4ff) 20%, transparent), 0 2px 6px color-mix(in srgb, black 6%, transparent)'
+          : '0 1px 4px color-mix(in srgb, black 5%, transparent)',
       }}
     >
       {/* Top: avatar + name + badges */}
@@ -133,7 +133,7 @@ function SessionCard({ session, clients, onMessage }) {
         {/* In-progress badge */}
         {inProgress && (
           <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: 'rgb(var(--success))', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success))' }}>
+            style={{ background: 'var(--tc-success)', color: 'var(--tc-success)', border: '1px solid var(--tc-success)' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse inline-block" />
             In Progress
           </span>
@@ -142,7 +142,7 @@ function SessionCard({ session, clients, onMessage }) {
         {/* Starting soon badge */}
         {startingSoon && !inProgress && (
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: 'rgba(0,212,255,0.1)', color: '#0891b2', border: '1px solid rgba(0,212,255,0.3)' }}>
+            style={{ background: 'color-mix(in srgb, var(--kc-00d4ff) 10%, transparent)', color: 'var(--kc-0891b2)', border: '1px solid color-mix(in srgb, var(--kc-00d4ff) 30%, transparent)' }}>
             Starting Soon
           </span>
         )}
@@ -169,7 +169,7 @@ function SessionCard({ session, clients, onMessage }) {
               target="_blank"
               rel="noreferrer"
               className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
-              style={{ background: '#2D8CFF', color: 'white' }}
+              style={{ background: 'var(--kc-2d8cff)', color: 'white' }}
             >
               <Video className="w-3 h-3" /> Start Zoom
             </a>
@@ -177,7 +177,7 @@ function SessionCard({ session, clients, onMessage }) {
             <button
               onClick={() => navigate(`/schedule`)}
               className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
-              style={{ background: 'linear-gradient(135deg, #00d4ff, rgb(var(--primary)))', color: 'white' }}
+              style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))', color: 'white' }}
             >
               <Play className="w-3 h-3" /> Start
             </button>
@@ -185,7 +185,7 @@ function SessionCard({ session, clients, onMessage }) {
           <button
             onClick={() => onMessage && onMessage(session.client_id)}
             className="flex items-center justify-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-all hover:bg-muted"
-            style={{ border: '1px solid rgb(var(--border))', color: 'rgb(var(--foreground))' }}
+            style={{ border: '1px solid var(--tc-border)', color: 'var(--tc-foreground)' }}
           >
             <MessageSquare className="w-3 h-3" />
           </button>
@@ -221,13 +221,13 @@ export default function TodaySchedule({ clients = [] }) {
 
   return (
     <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden"
-      style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
+      style={{ boxShadow: '0 1px 6px color-mix(in srgb, black 6%, transparent)' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgba(0,212,255,0.15), rgba(99,102,241,0.15))' }}>
-            <Calendar className="w-3.5 h-3.5" style={{ color: 'rgb(var(--primary))' }} />
+            style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--kc-00d4ff) 15%, transparent), color-mix(in srgb, var(--tc-primary) 15%, transparent))' }}>
+            <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--tc-primary)' }} />
           </div>
           <h2 className="text-sm font-bold text-foreground">Today's Schedule</h2>
           <span className="text-xs text-muted-foreground font-medium">{format(new Date(), 'EEEE, MMM d')}</span>
@@ -235,7 +235,7 @@ export default function TodaySchedule({ clients = [] }) {
         <button
           onClick={() => navigate('/schedule')}
           className="text-xs font-semibold hover:opacity-70 transition-opacity"
-          style={{ color: 'rgb(var(--primary))' }}
+          style={{ color: 'var(--tc-primary)' }}
         >
           View Calendar →
         </button>
@@ -252,7 +252,7 @@ export default function TodaySchedule({ clients = [] }) {
         ) : todaySessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-6 text-center gap-3">
             <div className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: 'rgb(var(--muted))' }}>
+              style={{ background: 'var(--tc-muted)' }}>
               <Calendar className="w-5 h-5 text-border" />
             </div>
             <div>
@@ -262,7 +262,7 @@ export default function TodaySchedule({ clients = [] }) {
             <button
               onClick={() => navigate('/schedule')}
               className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all hover:bg-muted"
-              style={{ border: '1px solid rgb(var(--border))', color: 'rgb(var(--muted-foreground))' }}
+              style={{ border: '1px solid var(--tc-border)', color: 'var(--tc-muted-foreground)' }}
             >
               <CalendarPlus className="w-3 h-3 inline mr-1" />
               Schedule a Session

@@ -12,37 +12,37 @@ import { compositeAdherenceScore } from '@/lib/adherence';
 const GROUP_CONFIG = {
   critical: {
     label: 'Critical',
-    border: 'rgb(var(--destructive))',
-    badgeBg: 'rgb(var(--destructive))',
-    badgeText: 'rgb(var(--destructive))',
-    badgeBorder: 'rgb(var(--destructive))',
-    headerBg: '#fff5f5',
-    dot: 'rgb(var(--destructive))',
+    border: 'var(--tc-destructive)',
+    badgeBg: 'var(--tc-destructive)',
+    badgeText: 'var(--tc-destructive)',
+    badgeBorder: 'var(--tc-destructive)',
+    headerBg: 'var(--kc-fff5f5)',
+    dot: 'var(--tc-destructive)',
   },
   high: {
     label: 'High Priority',
-    border: 'rgb(var(--warning))',
-    badgeBg: 'rgb(var(--warning))',
-    badgeText: 'rgb(var(--warning))',
-    badgeBorder: 'rgb(var(--warning))',
-    headerBg: '#fffdf0',
-    dot: 'rgb(var(--warning))',
+    border: 'var(--tc-warning)',
+    badgeBg: 'var(--tc-warning)',
+    badgeText: 'var(--tc-warning)',
+    badgeBorder: 'var(--tc-warning)',
+    headerBg: 'var(--kc-fffdf0)',
+    dot: 'var(--tc-warning)',
   },
   informational: {
     label: 'Informational',
-    border: 'rgb(var(--primary))',
-    badgeBg: 'rgb(var(--accent))',
-    badgeText: 'rgb(var(--primary))',
-    badgeBorder: 'rgb(var(--accent))',
-    headerBg: 'rgb(var(--accent))',
-    dot: 'rgb(var(--primary))',
+    border: 'var(--tc-primary)',
+    badgeBg: 'var(--tc-accent)',
+    badgeText: 'var(--tc-primary)',
+    badgeBorder: 'var(--tc-accent)',
+    headerBg: 'var(--tc-accent)',
+    dot: 'var(--tc-primary)',
   },
 };
 
 // ── Avatar helpers ──────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
-  ['rgb(var(--primary))', 'rgb(var(--accent))'], ['rgb(var(--ai))', 'rgb(var(--ai))'], ['rgb(var(--success))', 'rgb(var(--success))'],
-  ['rgb(var(--warning))', 'rgb(var(--warning))'], ['rgb(var(--destructive))', 'rgb(var(--destructive))'],
+  ['var(--tc-primary)', 'var(--tc-accent)'], ['var(--tc-ai)', 'var(--tc-ai)'], ['var(--tc-success)', 'var(--tc-success)'],
+  ['var(--tc-warning)', 'var(--tc-warning)'], ['var(--tc-destructive)', 'var(--tc-destructive)'],
 ];
 function getAvatarColor(name = '') {
   const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
@@ -56,8 +56,8 @@ function Pill({ icon: Icon, label, onClick, variant = 'ghost' }) {
       onClick={e => { e.stopPropagation(); onClick(); }}
       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all shrink-0"
       style={variant === 'primary'
-        ? { background: 'rgb(var(--primary))', color: 'rgb(var(--card))' }
-        : { background: 'rgb(var(--muted))', color: 'rgb(var(--foreground))', border: '1px solid rgb(var(--border))' }
+        ? { background: 'var(--tc-primary)', color: 'var(--tc-card)' }
+        : { background: 'var(--tc-muted)', color: 'var(--tc-foreground)', border: '1px solid var(--tc-border)' }
       }
     >
       <Icon className="w-3 h-3 shrink-0" />
@@ -115,7 +115,7 @@ function ActionCard({ id, name, subtitle, flaggedDaysAgo, badge, priority, actio
           <button
             onClick={e => { e.stopPropagation(); onResolve(id); }}
             className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all ml-auto shrink-0 opacity-0 group-hover:opacity-100"
-            style={{ background: 'rgb(var(--success))', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success))' }}
+            style={{ background: 'var(--tc-success)', color: 'var(--tc-success)', border: '1px solid var(--tc-success)' }}
           >
             <CheckCircle2 className="w-2.5 h-2.5" /> Resolve
           </button>
@@ -133,7 +133,7 @@ function PriorityGroup({ priority, items, onResolve }) {
 
   return (
     <div className="rounded-xl overflow-hidden"
-      style={{ border: `1px solid ${cfg.badgeBorder}`, boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      style={{ border: `1px solid ${cfg.badgeBorder}`, boxShadow: '0 1px 4px color-mix(in srgb, black 4%, transparent)' }}>
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-3 px-4 py-3 transition-colors"
@@ -415,7 +415,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages, payments =
         <div className="flex items-center gap-2">
           {resolvedToday > 0 && (
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: 'rgb(var(--success))', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success))' }}>
+              style={{ background: 'var(--tc-success)', color: 'var(--tc-success)', border: '1px solid var(--tc-success)' }}>
               ✓ {resolvedToday} resolved today
             </span>
           )}
@@ -429,10 +429,10 @@ export default function RunMyDayCenter({ clients, checkIns, messages, payments =
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl bg-card text-center"
-          style={{ border: '1px solid rgb(var(--success))', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}
+          style={{ border: '1px solid var(--tc-success)', boxShadow: '0 1px 6px color-mix(in srgb, black 4%, transparent)' }}
         >
           <div className="w-14 h-14 rounded-full flex items-center justify-center"
-            style={{ background: 'rgb(var(--success))', border: '2px solid rgb(var(--success))' }}>
+            style={{ background: 'var(--tc-success)', border: '2px solid var(--tc-success)' }}>
             <CheckCircle2 className="w-7 h-7 text-success" />
           </div>
           <div>
