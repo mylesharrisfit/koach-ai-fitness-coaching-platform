@@ -6,15 +6,15 @@ import {
 
 function StatCard({ icon: Icon, label, value, sub, color, bg }) {
   return (
-    <div style={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--muted))', borderRadius: 14, padding: '16px 18px' }}>
+    <div style={{ background: 'var(--tc-card)', border: '1px solid var(--tc-muted)', borderRadius: 14, padding: '16px 18px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
         <div style={{ width: 32, height: 32, borderRadius: 9, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon size={15} color={color} />
         </div>
       </div>
-      <div style={{ fontSize: 22, fontWeight: 900, color: 'rgb(var(--foreground))', letterSpacing: '-0.02em' }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))', marginTop: 4 }}>{sub}</div>}
+      <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--tc-foreground)', letterSpacing: '-0.02em' }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 4 }}>{sub}</div>}
     </div>
   );
 }
@@ -58,11 +58,11 @@ export default function PaymentStatCards({ payments = [] }) {
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-      <StatCard icon={CheckCircle2} label="Collected This Month" value={fmt(collected)} sub="Payments received" color="rgb(var(--success))" bg="rgb(var(--success))" />
-      <StatCard icon={Clock} label="Pending" value={fmt(pending)} sub="Expected" color="rgb(var(--primary))" bg="rgb(var(--accent))" />
-      <StatCard icon={AlertTriangle} label="Overdue / Failed" value={fmt(overdue)} sub={`${payments.filter(p => p.status === 'failed').length} payments`} color="rgb(var(--destructive))" bg="rgb(var(--destructive))" />
-      <StatCard icon={RefreshCcw} label="Refunded" value={fmt(refunded)} sub="Total refunds" color="rgb(var(--warning))" bg="rgb(var(--warning))" />
-      <StatCard icon={TrendingUp} label="Net Revenue" value={fmt(net)} sub="Collected minus refunds" color="rgb(var(--ai))" bg="rgb(var(--ai))" />
+      <StatCard icon={CheckCircle2} label="Collected This Month" value={fmt(collected)} sub="Payments received" color="var(--tc-success)" bg="var(--tc-success)" />
+      <StatCard icon={Clock} label="Pending" value={fmt(pending)} sub="Expected" color="var(--tc-primary)" bg="var(--tc-accent)" />
+      <StatCard icon={AlertTriangle} label="Overdue / Failed" value={fmt(overdue)} sub={`${payments.filter(p => p.status === 'failed').length} payments`} color="var(--tc-destructive)" bg="var(--tc-destructive)" />
+      <StatCard icon={RefreshCcw} label="Refunded" value={fmt(refunded)} sub="Total refunds" color="var(--tc-warning)" bg="var(--tc-warning)" />
+      <StatCard icon={TrendingUp} label="Net Revenue" value={fmt(net)} sub="Collected minus refunds" color="var(--tc-ai)" bg="var(--tc-ai)" />
     </div>
   );
 }

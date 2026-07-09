@@ -19,19 +19,19 @@ export default function RefundModal({ payment, onClose, onConfirm }) {
   const refundAmt = type === 'full' ? Number(payment.amount) : Number(partialAmt || 0);
   const valid = reason && (type === 'full' || (partialAmt && Number(partialAmt) > 0 && Number(partialAmt) <= Number(payment.amount)));
 
-  const inputStyle = { width: '100%', padding: '9px 12px', borderRadius: 9, fontSize: 13, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', outline: 'none', boxSizing: 'border-box', color: 'rgb(var(--foreground))' };
-  const labelStyle = { display: 'block', fontSize: 11, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5 };
+  const inputStyle = { width: '100%', padding: '9px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' };
+  const labelStyle = { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5 };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ background: 'rgb(var(--card))', borderRadius: 18, width: '100%', maxWidth: 460, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
-        <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid rgb(var(--muted))', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, black 50%, transparent)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+      <div style={{ background: 'var(--tc-card)', borderRadius: 18, width: '100%', maxWidth: 460, overflow: 'hidden', boxShadow: '0 20px 60px color-mix(in srgb, black 20%, transparent)' }}>
+        <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid var(--tc-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <h2 style={{ fontSize: 17, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0 }}>Process Refund</h2>
-            <p style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))', margin: '2px 0 0' }}>{payment.client_name} · ${Number(payment.amount).toFixed(2)}</p>
+            <h2 style={{ fontSize: 17, fontWeight: 800, color: 'var(--tc-foreground)', margin: 0 }}>Process Refund</h2>
+            <p style={{ fontSize: 12, color: 'var(--tc-muted-foreground)', margin: '2px 0 0' }}>{payment.client_name} · ${Number(payment.amount).toFixed(2)}</p>
           </div>
-          <button onClick={onClose} style={{ background: 'rgb(var(--muted))', border: 'none', borderRadius: 8, padding: 7, cursor: 'pointer' }}>
-            <X size={15} color="rgb(var(--muted-foreground))" />
+          <button onClick={onClose} style={{ background: 'var(--tc-muted)', border: 'none', borderRadius: 8, padding: 7, cursor: 'pointer' }}>
+            <X size={15} color="var(--tc-muted-foreground)" />
           </button>
         </div>
 
@@ -42,9 +42,9 @@ export default function RefundModal({ payment, onClose, onConfirm }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {[['full', 'Full Refund', `$${Number(payment.amount).toFixed(2)}`], ['partial', 'Partial Refund', 'Custom amount']].map(([v, label, sub]) => (
                 <button key={v} onClick={() => setType(v)}
-                  style={{ padding: '10px 12px', borderRadius: 10, border: `1.5px solid ${type === v ? 'rgb(var(--primary))' : 'rgb(var(--border))'}`, background: type === v ? 'rgb(var(--accent))' : 'rgb(var(--card))', cursor: 'pointer', textAlign: 'left' }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: type === v ? 'rgb(var(--primary))' : 'rgb(var(--foreground))' }}>{label}</div>
-                  <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))' }}>{sub}</div>
+                  style={{ padding: '10px 12px', borderRadius: 10, border: `1.5px solid ${type === v ? 'var(--tc-primary)' : 'var(--tc-border)'}`, background: type === v ? 'var(--tc-accent)' : 'var(--tc-card)', cursor: 'pointer', textAlign: 'left' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: type === v ? 'var(--tc-primary)' : 'var(--tc-foreground)' }}>{label}</div>
+                  <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>{sub}</div>
                 </button>
               ))}
             </div>
@@ -54,7 +54,7 @@ export default function RefundModal({ payment, onClose, onConfirm }) {
             <div>
               <label style={labelStyle}>Refund Amount</label>
               <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))' }}>$</span>
+                <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)' }}>$</span>
                 <input type="number" value={partialAmt} onChange={e => setPartialAmt(e.target.value)}
                   placeholder={`Max $${Number(payment.amount).toFixed(2)}`}
                   style={{ ...inputStyle, paddingLeft: 26 }} />
@@ -83,21 +83,21 @@ export default function RefundModal({ payment, onClose, onConfirm }) {
               style={{ ...inputStyle, resize: 'none' }} />
           </div>
 
-          <div style={{ background: 'rgb(var(--destructive))', borderRadius: 10, padding: '10px 14px' }}>
-            <div style={{ fontSize: 12, color: 'rgb(var(--destructive))', fontWeight: 600 }}>
+          <div style={{ background: 'var(--tc-destructive)', borderRadius: 10, padding: '10px 14px' }}>
+            <div style={{ fontSize: 12, color: 'var(--tc-destructive)', fontWeight: 600 }}>
               Refunding ${refundAmt.toFixed(2)} — this action cannot be undone.
             </div>
-            <div style={{ fontSize: 11, color: 'rgb(var(--muted-foreground))', marginTop: 3 }}>Client will be notified by email. Processing may take 5–10 business days.</div>
+            <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 3 }}>Client will be notified by email. Processing may take 5–10 business days.</div>
           </div>
         </div>
 
         <div style={{ padding: '0 24px 20px', display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'rgb(var(--muted))', color: 'rgb(var(--foreground))', border: 'none', cursor: 'pointer' }}>
+          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'var(--tc-muted)', color: 'var(--tc-foreground)', border: 'none', cursor: 'pointer' }}>
             Cancel
           </button>
           <button onClick={() => valid && onConfirm({ type, amount: refundAmt, reason: reason === 'Other' ? otherReason : reason, note })}
             disabled={!valid}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: valid ? 'rgb(var(--destructive))' : 'rgb(var(--border))', color: valid ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))', border: 'none', cursor: valid ? 'pointer' : 'not-allowed' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: valid ? 'var(--tc-destructive)' : 'var(--tc-border)', color: valid ? 'var(--tc-card)' : 'var(--tc-muted-foreground)', border: 'none', cursor: valid ? 'pointer' : 'not-allowed' }}>
             <RefreshCcw size={14} /> Process Refund
           </button>
         </div>

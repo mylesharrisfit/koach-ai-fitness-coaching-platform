@@ -44,14 +44,14 @@ export default function MonthlySummaryTable({ invoices = [], payments = [] }) {
   };
 
   const fmt = (n) => `$${Number(n).toFixed(0)}`;
-  const th = { fontSize: 10, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '8px 12px', background: 'rgb(var(--background))', textAlign: 'right', whiteSpace: 'nowrap' };
-  const td = (bold, color) => ({ padding: '10px 12px', fontSize: 13, fontWeight: bold ? 700 : 500, color: color || 'rgb(var(--foreground))', textAlign: 'right', borderBottom: '1px solid rgb(var(--background))', whiteSpace: 'nowrap' });
+  const th = { fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '8px 12px', background: 'var(--tc-background)', textAlign: 'right', whiteSpace: 'nowrap' };
+  const td = (bold, color) => ({ padding: '10px 12px', fontSize: 13, fontWeight: bold ? 700 : 500, color: color || 'var(--tc-foreground)', textAlign: 'right', borderBottom: '1px solid var(--tc-background)', whiteSpace: 'nowrap' });
 
   return (
-    <div style={{ background: 'rgb(var(--card))', borderRadius: 14, border: '1px solid rgb(var(--muted))', overflow: 'hidden' }}>
-      <div style={{ padding: '14px 16px', borderBottom: '1px solid rgb(var(--muted))', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgb(var(--foreground))' }}>Monthly Financial Summary</span>
-        <button onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', color: 'rgb(var(--foreground))', cursor: 'pointer' }}>
+    <div style={{ background: 'var(--tc-card)', borderRadius: 14, border: '1px solid var(--tc-muted)', overflow: 'hidden' }}>
+      <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--tc-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--tc-foreground)' }}>Monthly Financial Summary</span>
+        <button onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', color: 'var(--tc-foreground)', cursor: 'pointer' }}>
           <Download size={12} /> Export CSV
         </button>
       </div>
@@ -70,24 +70,24 @@ export default function MonthlySummaryTable({ invoices = [], payments = [] }) {
           <tbody>
             {months.map(m => (
               <tr key={m.month}>
-                <td style={{ ...td(false), textAlign: 'left', fontWeight: 600, color: 'rgb(var(--foreground))' }}>{m.month}</td>
+                <td style={{ ...td(false), textAlign: 'left', fontWeight: 600, color: 'var(--tc-foreground)' }}>{m.month}</td>
                 <td style={td()}>{fmt(m.newRev)}</td>
                 <td style={td()}>{fmt(m.recRev)}</td>
-                <td style={td(false, m.refundAmt > 0 ? 'rgb(var(--warning))' : 'rgb(var(--muted-foreground))')}>
+                <td style={td(false, m.refundAmt > 0 ? 'var(--tc-warning)' : 'var(--tc-muted-foreground)')}>
                   {m.refundAmt > 0 ? `−${fmt(m.refundAmt)}` : '—'}
                 </td>
-                <td style={td(true, m.net > 0 ? 'rgb(var(--success))' : 'rgb(var(--destructive))')}>{fmt(m.net)}</td>
+                <td style={td(true, m.net > 0 ? 'var(--tc-success)' : 'var(--tc-destructive)')}>{fmt(m.net)}</td>
                 <td style={td()}>{m.clients}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
-            <tr style={{ background: 'rgb(var(--background))' }}>
-              <td style={{ ...td(true), textAlign: 'left', color: 'rgb(var(--foreground))' }}>Totals</td>
+            <tr style={{ background: 'var(--tc-background)' }}>
+              <td style={{ ...td(true), textAlign: 'left', color: 'var(--tc-foreground)' }}>Totals</td>
               <td style={td(true)}>{fmt(totals.newRev)}</td>
               <td style={td(true)}>{fmt(totals.recRev)}</td>
-              <td style={td(true, 'rgb(var(--warning))')}>{totals.refundAmt > 0 ? `−${fmt(totals.refundAmt)}` : '—'}</td>
-              <td style={td(true, 'rgb(var(--success))')}>{fmt(totals.net)}</td>
+              <td style={td(true, 'var(--tc-warning)')}>{totals.refundAmt > 0 ? `−${fmt(totals.refundAmt)}` : '—'}</td>
+              <td style={td(true, 'var(--tc-success)')}>{fmt(totals.net)}</td>
               <td style={td(true)}>{totals.clients}</td>
             </tr>
           </tfoot>
