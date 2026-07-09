@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Bell, CheckCheck, Filter } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Bell, CheckCheck } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 
 const MOCK_HISTORY = [
@@ -40,42 +40,42 @@ export default function NotifsHistory({ onClose }) {
   const unreadCount = items.filter(i => !i.read).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" style={{ background: 'color-mix(in srgb, black 50%, transparent)' }}>
       <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
-        className="bg-white w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[85vh] flex flex-col"
-        style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+        className="bg-card w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[85vh] flex flex-col"
+        style={{ boxShadow: '0 20px 60px color-mix(in srgb, black 15%, transparent)' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-2">
-            <Bell className="w-4 h-4 text-slate-600" />
-            <h3 className="font-bold text-slate-800">Notification History</h3>
+            <Bell className="w-4 h-4 text-muted-foreground" />
+            <h3 className="font-bold text-foreground">Notification History</h3>
             {unreadCount > 0 && (
-              <span className="text-xs font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              <span className="text-xs font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                 {unreadCount}
               </span>
             )}
           </div>
           <div className="flex items-center gap-2">
             {unreadCount > 0 && (
-              <button onClick={markAllRead} className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700">
+              <button onClick={markAllRead} className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary">
                 <CheckCheck className="w-3.5 h-3.5" /> Mark all read
               </button>
             )}
-            <button onClick={onClose} className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
-              <X className="w-3.5 h-3.5 text-slate-500" />
+            <button onClick={onClose} className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center hover:bg-border transition-colors">
+              <X className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="flex-shrink-0 px-4 py-3 border-b border-slate-100 space-y-2">
+        <div className="flex-shrink-0 px-4 py-3 border-b border-border space-y-2">
           <div className="flex gap-1 overflow-x-auto scrollbar-hide pb-0.5">
             {Object.entries(TYPE_LABELS).map(([val, label]) => (
               <button key={val} onClick={() => setFilter(val)}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 transition-all"
                 style={{
-                  background: filter === val ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9',
-                  color: filter === val ? 'white' : '#64748B',
+                  background: filter === val ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+                  color: filter === val ? 'white' : 'var(--tc-muted-foreground)',
                 }}>
                 {label}
               </button>
@@ -86,10 +86,10 @@ export default function NotifsHistory({ onClose }) {
               <button key={v} onClick={() => setReadFilter(v)}
                 className="px-3 py-1 rounded-lg text-xs font-semibold capitalize transition-all"
                 style={{
-                  background: readFilter === v ? '#1E293B' : '#F8FAFC',
-                  color: readFilter === v ? 'white' : '#94A3B8',
+                  background: readFilter === v ? 'var(--tc-foreground)' : 'var(--tc-muted)',
+                  color: readFilter === v ? 'white' : 'var(--tc-muted-foreground)',
                   border: '1px solid',
-                  borderColor: readFilter === v ? '#1E293B' : '#E2E8F0',
+                  borderColor: readFilter === v ? 'var(--tc-foreground)' : 'var(--tc-border)',
                 }}>
                 {v}
               </button>
@@ -101,22 +101,22 @@ export default function NotifsHistory({ onClose }) {
         <div className="flex-1 overflow-y-auto">
           {filtered.length === 0 ? (
             <div className="py-16 text-center">
-              <Bell className="w-10 h-10 text-slate-200 mx-auto mb-2" />
-              <p className="text-slate-400 text-sm">No notifications found</p>
+              <Bell className="w-10 h-10 text-border mx-auto mb-2" />
+              <p className="text-muted-foreground text-sm">No notifications found</p>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-muted">
               {filtered.map(n => (
                 <div key={n.id} onClick={() => markRead(n.id)}
-                  className={`flex items-start gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-50 transition-colors ${!n.read ? 'bg-blue-50/40' : ''}`}>
+                  className={`flex items-start gap-3 px-5 py-3.5 cursor-pointer hover:bg-muted transition-colors ${!n.read ? 'bg-accent/40' : ''}`}>
                   <span className="text-xl flex-shrink-0 mt-0.5">{n.emoji}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className={`text-sm font-semibold truncate ${n.read ? 'text-slate-700' : 'text-slate-900'}`}>{n.title}</p>
-                      {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />}
+                      <p className={`text-sm font-semibold truncate ${n.read ? 'text-foreground' : 'text-foreground'}`}>{n.title}</p>
+                      {!n.read && <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />}
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">{n.body}</p>
-                    <p className="text-[10px] text-slate-400 mt-1">{format(n.time, 'MMM d, h:mm a')}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{n.body}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">{format(n.time, 'MMM d, h:mm a')}</p>
                   </div>
                 </div>
               ))}
@@ -124,8 +124,8 @@ export default function NotifsHistory({ onClose }) {
           )}
         </div>
 
-        <div className="px-5 py-3 border-t border-slate-100 flex-shrink-0">
-          <p className="text-xs text-slate-400 text-center">Showing last 30 days</p>
+        <div className="px-5 py-3 border-t border-border flex-shrink-0">
+          <p className="text-xs text-muted-foreground text-center">Showing last 30 days</p>
         </div>
       </motion.div>
     </div>

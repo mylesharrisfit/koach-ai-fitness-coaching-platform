@@ -11,13 +11,13 @@ function VitaminCard({ item, isPortal }) {
   const [open, setOpen] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const typeColor = VITAMIN_TYPE_COLORS[item.type] || { bg: 'bg-slate-100', text: 'text-slate-600' };
+  const typeColor = VITAMIN_TYPE_COLORS[item.type] || { bg: 'bg-muted', text: 'text-muted-foreground' };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
+    <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-full px-4 py-3.5 flex items-start gap-3 text-left hover:bg-slate-50 transition-colors"
+        className="w-full px-4 py-3.5 flex items-start gap-3 text-left hover:bg-muted transition-colors"
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
@@ -25,20 +25,20 @@ function VitaminCard({ item, isPortal }) {
               {item.type}
             </span>
           </div>
-          <p className="font-bold text-sm text-slate-900">{item.name}</p>
-          <p className="text-xs text-slate-500 mt-0.5">RDA: {item.rda}</p>
+          <p className="font-bold text-sm text-foreground">{item.name}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">RDA: {item.rda}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {isPortal && (
             <button
               onClick={e => { e.stopPropagation(); setSaved(v => !v); }}
-              className={`p-1.5 rounded-lg transition-colors ${saved ? 'text-blue-600 bg-blue-50' : 'text-slate-300 hover:text-slate-500'}`}
+              className={`p-1.5 rounded-lg transition-colors ${saved ? 'text-primary bg-accent' : 'text-border hover:text-muted-foreground'}`}
             >
               <Bookmark className="w-3.5 h-3.5" fill={saved ? 'currentColor' : 'none'} />
             </button>
           )}
           <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-            <ChevronDown className="w-4 h-4 text-slate-300" />
+            <ChevronDown className="w-4 h-4 text-border" />
           </motion.div>
         </div>
       </button>
@@ -48,40 +48,40 @@ function VitaminCard({ item, isPortal }) {
           <motion.div
             initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
-            className="border-t border-slate-100 overflow-hidden"
+            className="border-t border-border overflow-hidden"
           >
             <div className="px-4 py-4 space-y-3">
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">What it does</p>
-                <p className="text-sm text-slate-700 leading-relaxed">{item.what_it_does}</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">What it does</p>
+                <p className="text-sm text-foreground leading-relaxed">{item.what_it_does}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {item.upper && (
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Upper limit</p>
-                    <p className="text-xs text-slate-700">{item.upper}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Upper limit</p>
+                    <p className="text-xs text-foreground">{item.upper}</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Best time</p>
-                  <p className="text-xs text-slate-700">{item.timing}</p>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Best time</p>
+                  <p className="text-xs text-foreground">{item.timing}</p>
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-red-500 uppercase tracking-wide mb-1">⚠️ Deficiency causes</p>
-                <p className="text-xs text-slate-700">{item.deficiency}</p>
+                <p className="text-[10px] font-bold text-destructive uppercase tracking-wide mb-1">⚠️ Deficiency causes</p>
+                <p className="text-xs text-foreground">{item.deficiency}</p>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">🍽️ Best food sources</p>
-                <p className="text-xs text-slate-700">{item.sources}</p>
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">🍽️ Best food sources</p>
+                <p className="text-xs text-foreground">{item.sources}</p>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wide mb-1">🎯 At risk</p>
-                <p className="text-xs text-slate-700">{item.at_risk}</p>
+                <p className="text-[10px] font-bold text-warning uppercase tracking-wide mb-1">🎯 At risk</p>
+                <p className="text-xs text-foreground">{item.at_risk}</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${item.with_food ? 'bg-amber-400' : 'bg-slate-300'}`} />
-                <p className="text-xs text-slate-500">{item.with_food ? 'Take with food' : 'Can take on empty stomach'}</p>
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${item.with_food ? 'bg-warning' : 'bg-border'}`} />
+                <p className="text-xs text-muted-foreground">{item.with_food ? 'Take with food' : 'Can take on empty stomach'}</p>
               </div>
             </div>
           </motion.div>
@@ -108,13 +108,13 @@ export default function VitaminsTab({ isPortal = false }) {
     <div className="space-y-3">
       <RefSearchBar value={search} onChange={setSearch} placeholder="Search vitamins & minerals..." />
       <RefFilterChips options={VITAMIN_TYPES} active={type} onChange={setType} />
-      <p className="text-xs text-slate-400">{filtered.length} vitamins & minerals</p>
+      <p className="text-xs text-muted-foreground">{filtered.length} vitamins & minerals</p>
       <div className="space-y-2">
         {filtered.map(item => (
           <VitaminCard key={item.id} item={item} isPortal={isPortal} />
         ))}
         {filtered.length === 0 && (
-          <p className="text-center text-sm text-slate-400 py-10">No vitamins match your search.</p>
+          <p className="text-center text-sm text-muted-foreground py-10">No vitamins match your search.</p>
         )}
       </div>
     </div>

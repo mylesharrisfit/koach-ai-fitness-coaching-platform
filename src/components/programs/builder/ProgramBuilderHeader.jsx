@@ -21,7 +21,7 @@ export default function ProgramBuilderHeader({
   return (
     <div
       className="sticky top-0 z-20 flex items-center gap-3 px-5 py-3 flex-shrink-0"
-      style={{ background: '#0E1525', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+      style={{ background: 'var(--tc-sidebar)', borderBottom: '1px solid color-mix(in srgb, white 8%, transparent)' }}
     >
       {/* Back */}
       <button
@@ -66,7 +66,7 @@ export default function ProgramBuilderHeader({
           <button
             onClick={onAssign}
             className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white px-3 py-1.5 rounded-lg transition-colors"
-            style={{ border: '0.5px solid rgba(255,255,255,0.2)' }}
+            style={{ border: '0.5px solid color-mix(in srgb, white 20%, transparent)' }}
           >
             <Users className="w-3.5 h-3.5" /> Assign
           </button>
@@ -75,7 +75,7 @@ export default function ProgramBuilderHeader({
         <button
           onClick={onPreview}
           className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-white/60 hover:text-white px-3 py-1.5 rounded-lg transition-colors"
-          style={{ border: '0.5px solid rgba(255,255,255,0.2)' }}
+          style={{ border: '0.5px solid color-mix(in srgb, white 20%, transparent)' }}
         >
           <Eye className="w-3.5 h-3.5" /> Preview
         </button>
@@ -85,7 +85,7 @@ export default function ProgramBuilderHeader({
           onClick={onSave}
           disabled={isSaving}
           className="h-8 text-xs font-semibold px-4 gap-1.5"
-          style={{ background: '#2563EB', color: '#fff', border: 'none' }}
+          style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)', border: 'none' }}
         >
           <Save className="w-3.5 h-3.5" />
           {isSaving ? 'Saving...' : 'Save Program'}

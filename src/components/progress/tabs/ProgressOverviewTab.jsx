@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, parseISO, subWeeks, subMonths } from 'date-fns';
+import { format, parseISO, subWeeks } from 'date-fns';
 import {
-  AreaChart, Area, LineChart, Line, ReferenceLine,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  AreaChart, Area, Line, ReferenceLine,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { toast } from 'sonner';
-import { Sparkles, NotebookPen, Trophy, FileText } from 'lucide-react';
+import { NotebookPen, Trophy, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import AIProgressInsights from '../AIProgressInsights';
 import LogWeightModal from '../LogWeightModal';
@@ -90,8 +90,8 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 shadow-lg text-xs">
-        <p className="font-semibold text-[#111827] mb-1">{label}</p>
+      <div className="bg-card border border-border rounded-lg px-3 py-2 shadow-lg text-xs">
+        <p className="font-semibold text-foreground mb-1">{label}</p>
         {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }}>{p.name}: {p.value} lbs</p>
         ))}
@@ -107,37 +107,37 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
           { label: 'Starting Weight', value: startWeight ? `${startWeight} lbs` : '—' },
           { label: 'Current Weight', value: currentWeight ? `${currentWeight} lbs` : '—', blue: true },
           { label: 'Goal Weight', value: goalWeight ? `${goalWeight} lbs` : '—', green: true },
-          { label: 'Total Change', value: totalChange !== null ? `${totalChange > 0 ? '+' : ''}${totalChange} lbs` : '—', color: totalChange < 0 ? 'text-emerald-600' : totalChange > 0 ? 'text-red-500' : '' },
+          { label: 'Total Change', value: totalChange !== null ? `${totalChange > 0 ? '+' : ''}${totalChange} lbs` : '—', color: totalChange < 0 ? 'text-success' : totalChange > 0 ? 'text-destructive' : '' },
           { label: 'Weeks Active', value: weeksActive || '—' },
           { label: 'Check-ins', value: checkIns.length },
           { label: 'Workouts', value: sessions.length },
         ].map(({ label, value, blue, green, color }) => (
-          <div key={label} className="bg-[#F9FAFB] rounded-xl p-3 border border-[#E5E7EB]">
-            <p className={cn('text-base font-bold', blue ? 'text-[#2563EB]' : green ? 'text-emerald-600' : color || 'text-[#111827]')}>{value}</p>
-            <p className="text-[10px] text-[#9CA3AF] mt-0.5 uppercase tracking-wide">{label}</p>
+          <div key={label} className="bg-background rounded-xl p-3 border border-border">
+            <p className={cn('text-base font-bold', blue ? 'text-primary' : green ? 'text-success' : color || 'text-foreground')}>{value}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wide">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Weight Chart */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+      <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-[#111827]">Weight Progress</h3>
-            {goalWeight && <p className="text-xs text-[#9CA3AF]">Goal: {goalWeight} lbs</p>}
+            <h3 className="text-sm font-semibold text-foreground">Weight Progress</h3>
+            {goalWeight && <p className="text-xs text-muted-foreground">Goal: {goalWeight} lbs</p>}
           </div>
           <div className="flex gap-1">
             {RANGES.map(r => (
               <button key={r.label} onClick={() => setRange(r.label)}
                 className={cn('px-2.5 py-1 text-[11px] rounded-lg font-medium transition-all',
-                  range === r.label ? 'bg-[#2563EB] text-white' : 'bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#2563EB]')}>
+                  range === r.label ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:border-primary')}>
                 {r.label}
               </button>
             ))}
           </div>
         </div>
         {chartData.length < 2 ? (
-          <div className="flex items-center justify-center h-48 text-[#9CA3AF] text-sm">
+          <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
             Not enough weight data — log at least 2 entries to see the chart.
           </div>
         ) : (
@@ -145,22 +145,22 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
             <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="wGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--tc-primary)" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="var(--tc-primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false}
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+              <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false}
                 domain={['auto', 'auto']} />
               <Tooltip content={<CustomTooltip />} />
               {goalWeight && (
-                <ReferenceLine y={goalWeight} stroke="#10B981" strokeDasharray="5 5" strokeWidth={1.5}
-                  label={{ value: `Goal ${goalWeight}`, position: 'right', fontSize: 10, fill: '#10B981' }} />
+                <ReferenceLine y={goalWeight} stroke="var(--tc-success)" strokeDasharray="5 5" strokeWidth={1.5}
+                  label={{ value: `Goal ${goalWeight}`, position: 'right', fontSize: 10, fill: 'var(--tc-success)' }} />
               )}
-              <Area type="monotone" dataKey="value" name="Weight" stroke="#2563EB" strokeWidth={2.5}
-                fill="url(#wGrad)" dot={{ r: 3, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
-              <Line type="monotone" dataKey="ma" name="Trend" stroke="#7C3AED" strokeWidth={1.5}
+              <Area type="monotone" dataKey="value" name="Weight" stroke="var(--tc-primary)" strokeWidth={2.5}
+                fill="url(#wGrad)" dot={{ r: 3, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
+              <Line type="monotone" dataKey="ma" name="Trend" stroke="var(--tc-ai)" strokeWidth={1.5}
                 strokeDasharray="4 2" dot={false} connectNulls />
             </AreaChart>
           </ResponsiveContainer>
@@ -168,26 +168,26 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       </div>
 
       {/* Progress Score Breakdown */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+      <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-[#111827]">Progress Score Breakdown</h3>
-          <div className={cn('text-2xl font-bold', score >= 70 ? 'text-emerald-600' : score >= 50 ? 'text-orange-500' : 'text-red-400')}>
-            {score}<span className="text-xs font-normal text-[#9CA3AF] ml-1">/100</span>
+          <h3 className="text-sm font-semibold text-foreground">Progress Score Breakdown</h3>
+          <div className={cn('text-2xl font-bold', score >= 70 ? 'text-success' : score >= 50 ? 'text-orange-500' : 'text-destructive')}>
+            {score}<span className="text-xs font-normal text-muted-foreground ml-1">/100</span>
           </div>
         </div>
         <div className="space-y-3">
           {[
-            { label: 'Weight Progress', value: scoreBreakdown.weight, color: '#10B981' },
-            { label: 'Training Compliance', value: scoreBreakdown.training, color: '#2563EB' },
-            { label: 'Nutrition Compliance', value: scoreBreakdown.nutrition, color: '#F59E0B' },
-            { label: 'Check-in Consistency', value: scoreBreakdown.consistency, color: '#7C3AED' },
+            { label: 'Weight Progress', value: scoreBreakdown.weight, color: 'var(--tc-success)' },
+            { label: 'Training Compliance', value: scoreBreakdown.training, color: 'var(--tc-primary)' },
+            { label: 'Nutrition Compliance', value: scoreBreakdown.nutrition, color: 'var(--tc-warning)' },
+            { label: 'Check-in Consistency', value: scoreBreakdown.consistency, color: 'var(--tc-ai)' },
           ].map(({ label, value, color }) => (
             <div key={label}>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-[#374151]">{label}</span>
-                <span className="font-semibold text-[#111827]">{value}%</span>
+                <span className="text-foreground">{label}</span>
+                <span className="font-semibold text-foreground">{value}%</span>
               </div>
-              <div className="h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ width: `${value}%`, background: color }} />
               </div>
             </div>
@@ -202,19 +202,19 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
           + Log Weight
         </button>
         <button onClick={() => setShowNoteModal(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB] transition-colors">
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background transition-colors">
           <NotebookPen className="w-3.5 h-3.5" /> Add Progress Note
         </button>
         <button
           onClick={() => toast.success('Progress report generation coming soon!')}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB] transition-colors">
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background transition-colors">
           <FileText className="w-3.5 h-3.5" /> Generate Report
         </button>
         <button
           onClick={() => {
             base44.integrations.Core.SendEmail({ to: client.email, subject: '🎉 You\'re crushing it!', body: `Hi ${client.name}! Your coach wants to celebrate your progress. Keep up the amazing work! 💪` }).then(() => toast.success('Celebration message sent!')).catch(() => toast.error('Could not send message'));
           }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors">
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-success bg-success/10 text-success hover:bg-success/10 transition-colors">
           <Trophy className="w-3.5 h-3.5" /> Celebrate Win
         </button>
       </div>
@@ -235,21 +235,21 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       {/* Add Note Modal */}
       {showNoteModal && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <h3 className="font-semibold text-[#111827]">Add Progress Note</h3>
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <h3 className="font-semibold text-foreground">Add Progress Note</h3>
             <div>
-              <label className="block text-xs text-[#6B7280] mb-1">Date</label>
+              <label className="block text-xs text-muted-foreground mb-1">Date</label>
               <input type="date" value={noteDate} onChange={e => setNoteDate(e.target.value)}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
             </div>
             <div>
-              <label className="block text-xs text-[#6B7280] mb-1">Note (private — coach only)</label>
+              <label className="block text-xs text-muted-foreground mb-1">Note (private — coach only)</label>
               <textarea rows={4} value={noteText} onChange={e => setNoteText(e.target.value)}
                 placeholder="e.g. Client mentioned stress at work this week — may explain weight fluctuation"
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-primary" />
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-primary" />
             </div>
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowNoteModal(false)} className="px-4 py-2 text-xs rounded-lg border border-[#E5E7EB] text-[#374151]">Cancel</button>
+              <button onClick={() => setShowNoteModal(false)} className="px-4 py-2 text-xs rounded-lg border border-border text-foreground">Cancel</button>
               <button onClick={() => noteMutation.mutate({ client_id: client.id, client_name: client.name, date: noteDate, internal_notes: noteText })}
                 disabled={!noteText.trim() || noteMutation.isPending}
                 className="px-4 py-2 text-xs rounded-lg bg-primary text-white font-semibold disabled:opacity-50">

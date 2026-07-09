@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { checkInScore } from '@/lib/adherence';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 import CheckInStatsRow from '@/components/checkin/CheckInStatsRow';
 import CheckInReviewRow from '@/components/checkin/CheckInReviewRow';
@@ -148,7 +147,7 @@ export default function CheckInReview() {
 
       {/* ── Header ── */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
-        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+        style={{ background: 'var(--tc-sidebar)' }}>
         <div>
           <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">Check-ins</h1>
           <p className="text-xs sm:text-sm mt-0.5 text-white/50">
@@ -158,14 +157,14 @@ export default function CheckInReview() {
         <div className="flex gap-2 flex-wrap">
           <button
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
           >
             <Bell className="w-3.5 h-3.5" /> Send Bulk Reminder
           </button>
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white transition-colors"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
             onClick={() => setMainTab('form_builder')}
           >
             <Plus className="w-3.5 h-3.5" /> New Check-in Form
@@ -177,7 +176,7 @@ export default function CheckInReview() {
       <CheckInStatsRow checkIns={checkIns} clients={clients} latestPerClient={latestPerClient} />
 
       {/* ── Main Tabs ── */}
-      <div className="flex gap-1 mb-6 bg-[#F3F4F6] rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
+      <div className="flex gap-1 mb-6 bg-muted rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
         {MAIN_TABS.map(tab => (
           <button
             key={tab.key}
@@ -185,15 +184,15 @@ export default function CheckInReview() {
             className={cn(
               'px-5 py-2 rounded-lg text-sm font-semibold transition-all',
               mainTab === tab.key
-                ? 'bg-white text-[#111827] shadow-sm'
-                : 'text-[#6B7280] hover:text-[#374151]'
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {tab.label}
             {tab.key === 'pending_review' && counts.pending > 0 && (
               <span className={cn(
                 'ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                mainTab === tab.key ? 'bg-orange-100 text-orange-600' : 'bg-[#E5E7EB] text-[#6B7280]'
+                mainTab === tab.key ? 'bg-orange-100 text-orange-600' : 'bg-border text-muted-foreground'
               )}>{counts.pending}</span>
             )}
           </button>
@@ -212,12 +211,12 @@ export default function CheckInReview() {
                     'flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all',
                     filter === f.key
                       ? 'bg-primary text-white'
-                      : 'bg-white border border-[#E5E7EB] text-[#374151] hover:border-[#D1D5DB]'
+                      : 'bg-card border border-border text-foreground hover:border-muted-foreground'
                   )}>
                   {f.label}
                   {f.key !== 'all' && counts[f.key] > 0 && (
                     <span className={cn('ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                      filter === f.key ? 'bg-white/20 text-white' : 'bg-[#F3F4F6]')}>
+                      filter === f.key ? 'bg-[var(--kc-w-20)] text-white' : 'bg-muted')}>
                       {counts[f.key]}
                     </span>
                   )}
@@ -247,8 +246,8 @@ export default function CheckInReview() {
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground mb-3">{missedClients.length} client{missedClients.length !== 1 ? 's' : ''} haven't submitted this week</p>
                 {missedClients.map(({ client, lastCI, daysAgo }) => (
-                  <div key={client.id} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-center gap-3 shadow-sm">
-                    <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 font-bold text-sm flex-shrink-0">
+                  <div key={client.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center text-warning font-bold text-sm flex-shrink-0">
                       {client.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -258,7 +257,7 @@ export default function CheckInReview() {
                       </p>
                     </div>
                     <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border',
-                      daysAgo === null || daysAgo > 21 ? 'bg-red-50 text-red-600 border-red-100' : 'bg-amber-50 text-amber-600 border-amber-100')}>
+                      daysAgo === null || daysAgo > 21 ? 'bg-destructive/10 text-destructive border-destructive' : 'bg-warning/10 text-warning border-warning')}>
                       {daysAgo !== null ? `${daysAgo}d` : 'Never'}
                     </span>
                     <div className="flex gap-1.5 flex-shrink-0">
@@ -269,7 +268,7 @@ export default function CheckInReview() {
                       </button>
                       <button
                         onClick={() => navigate(`/messages?clientId=${client.id}`)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#F3F4F6] border border-[#E5E7EB] text-[#374151] hover:bg-[#E5E7EB] transition-colors min-h-[36px]">
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-muted border border-border text-foreground hover:bg-border transition-colors min-h-[36px]">
                         <MessageSquare className="w-3 h-3" />
                       </button>
                     </div>

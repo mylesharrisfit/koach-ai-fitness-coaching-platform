@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, MoreHorizontal, Flag, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { MessageCircle, MoreHorizontal, Flag, Send } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 const REACTIONS = [
@@ -18,7 +18,7 @@ function Avatar({ name, isCoach, isAnon, size = 9 }) {
   return (
     <div className={`w-${size} h-${size} rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0`}
       style={{
-        background: isAnon ? '#94A3B8' : isCoach ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : 'linear-gradient(135deg, #10B981, #059669)',
+        background: isAnon ? 'rgb(var(--muted-foreground))' : isCoach ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))',
         width: size * 4, height: size * 4,
       }}>
       {initials}
@@ -31,13 +31,13 @@ function CommentItem({ comment }) {
     <div className="flex gap-2.5 py-2">
       <Avatar name={comment.author_name} isCoach={comment.is_coach} isAnon={!comment.author_name} size={8} />
       <div className="flex-1 min-w-0">
-        <div className="bg-slate-50 rounded-2xl px-3 py-2">
-          <p className="text-slate-900 text-xs font-bold">{comment.author_name || 'Community Member'}
-            {comment.is_coach && <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[8px] font-black text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>COACH</span>}
+        <div className="bg-muted rounded-2xl px-3 py-2">
+          <p className="text-foreground text-xs font-bold">{comment.author_name || 'Community Member'}
+            {comment.is_coach && <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[8px] font-black text-white" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>COACH</span>}
           </p>
-          <p className="text-slate-700 text-xs mt-0.5 leading-relaxed">{comment.content}</p>
+          <p className="text-foreground text-xs mt-0.5 leading-relaxed">{comment.content}</p>
         </div>
-        <p className="text-slate-300 text-[9px] mt-1 ml-2">
+        <p className="text-border text-[9px] mt-1 ml-2">
           {comment.created_date ? formatDistanceToNow(new Date(comment.created_date), { addSuffix: true }) : ''}
         </p>
       </div>
@@ -97,39 +97,39 @@ export default function PostCard({ post, user, myClient, queryClient }) {
   const totalReactions = Object.values(post.reactions || {}).reduce((sum, arr) => sum + (arr?.length || 0), 0);
 
   return (
-    <div className="bg-white mx-4 mb-3 rounded-2xl overflow-hidden"
-      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+    <div className="bg-card mx-4 mb-3 rounded-2xl overflow-hidden"
+      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-4 pb-2">
         <Avatar name={displayName} isCoach={post.is_coach} isAnon={post.is_anonymous} size={9} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-slate-900 font-bold text-sm">{displayName}</p>
+            <p className="text-foreground font-bold text-sm">{displayName}</p>
             {post.is_coach && (
               <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black text-white"
-                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>COACH</span>
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>COACH</span>
             )}
             {post.type === 'milestone' && (
-              <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black text-amber-700 bg-amber-50">MILESTONE</span>
+              <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black text-warning bg-warning/10">MILESTONE</span>
             )}
           </div>
-          <p className="text-slate-400 text-[10px]">{timeAgo}</p>
+          <p className="text-muted-foreground text-[10px]">{timeAgo}</p>
         </div>
         <div className="relative">
-          <button onClick={() => setShowMenu(!showMenu)} className="w-7 h-7 rounded-full bg-slate-50 flex items-center justify-center">
-            <MoreHorizontal className="w-4 h-4 text-slate-400" />
+          <button onClick={() => setShowMenu(!showMenu)} className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
+            <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
           </button>
           <AnimatePresence>
             {showMenu && (
               <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
-                className="absolute right-0 top-8 bg-white rounded-2xl shadow-xl border border-slate-100 z-10 min-w-[140px] overflow-hidden">
+                className="absolute right-0 top-8 bg-card rounded-2xl shadow-xl border border-border z-10 min-w-[140px] overflow-hidden">
                 <button onClick={() => { setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50">
-                  <Flag className="w-3.5 h-3.5 text-red-400" /> Report
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted">
+                  <Flag className="w-3.5 h-3.5 text-destructive" /> Report
                 </button>
                 <button onClick={() => { hidePost.mutate(); setShowMenu(false); }}
-                  className="w-full flex items-center gap-2 px-4 py-3 text-sm text-slate-700 hover:bg-slate-50">
-                  <span className="text-slate-400 text-sm">👁</span> Hide post
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted">
+                  <span className="text-muted-foreground text-sm">👁</span> Hide post
                 </button>
               </motion.div>
             )}
@@ -139,7 +139,7 @@ export default function PostCard({ post, user, myClient, queryClient }) {
 
       {/* Content */}
       <div className="px-4 pb-3">
-        <p className="text-slate-800 text-sm leading-relaxed">{post.content}</p>
+        <p className="text-foreground text-sm leading-relaxed">{post.content}</p>
       </div>
 
       {/* Media */}
@@ -162,9 +162,9 @@ export default function PostCard({ post, user, myClient, queryClient }) {
                 onClick={() => reactMutation.mutate({ key: r.key })}
                 className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold transition-all"
                 style={{
-                  background: reacted ? '#EFF6FF' : '#F8FAFC',
-                  border: `1.5px solid ${reacted ? '#BFDBFE' : '#F1F5F9'}`,
-                  color: reacted ? '#2563EB' : '#64748B',
+                  background: reacted ? 'rgb(var(--accent))' : 'rgb(var(--muted))',
+                  border: `1.5px solid ${reacted ? 'rgb(var(--accent))' : 'rgb(var(--muted))'}`,
+                  color: reacted ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
                 }}>
                 <span>{r.emoji}</span>
                 {count > 0 && <span>{count}</span>}
@@ -175,9 +175,9 @@ export default function PostCard({ post, user, myClient, queryClient }) {
       </div>
 
       {/* Footer actions */}
-      <div className="flex items-center gap-1 px-3 py-2 border-t border-slate-50">
+      <div className="flex items-center gap-1 px-3 py-2 border-t border-border">
         <button onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-slate-500 text-xs font-semibold hover:bg-slate-50 flex-1 justify-center">
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-muted-foreground text-xs font-semibold hover:bg-muted flex-1 justify-center">
           <MessageCircle className="w-3.5 h-3.5" />
           {comments.length > 0 || showComments ? `${comments.length} comments` : 'Comment'}
         </button>
@@ -187,25 +187,25 @@ export default function PostCard({ post, user, myClient, queryClient }) {
       <AnimatePresence>
         {showComments && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            className="border-t border-slate-50 overflow-hidden">
+            className="border-t border-border overflow-hidden">
             <div className="px-4 py-2">
               {comments.map(c => <CommentItem key={c.id} comment={c} />)}
             </div>
             {/* Comment input */}
-            <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-50">
+            <div className="flex items-center gap-2 px-4 py-3 border-t border-border">
               <Avatar name={user?.full_name} isCoach={false} isAnon={false} size={8} />
-              <div className="flex-1 flex items-center gap-2 bg-slate-50 rounded-2xl px-3 py-2 border border-slate-200">
+              <div className="flex-1 flex items-center gap-2 bg-muted rounded-2xl px-3 py-2 border border-border">
                 <input
                   value={commentText}
                   onChange={e => setCommentText(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && commentText.trim() && addComment.mutate(commentText.trim())}
                   placeholder="Add a comment..."
-                  className="flex-1 bg-transparent text-slate-800 text-sm outline-none placeholder-slate-300"
+                  className="flex-1 bg-transparent text-foreground text-sm outline-none placeholder-border"
                 />
                 <button onClick={() => commentText.trim() && addComment.mutate(commentText.trim())}
                   disabled={!commentText.trim()}
                   className="w-6 h-6 rounded-full flex items-center justify-center disabled:opacity-30"
-                  style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
                   <Send className="w-3 h-3 text-white" />
                 </button>
               </div>

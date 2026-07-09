@@ -20,7 +20,7 @@ export default function StatCard({ label, value, sub, trend, trendUp, icon: Icon
       {(sub || trend) && (
         <div className="flex items-center gap-2 mt-1">
           {trend && (
-            <span className={cn('flex items-center gap-0.5 text-xs font-semibold', trendUp ? 'text-green-600' : 'text-destructive')}>
+            <span className={cn('flex items-center gap-0.5 text-xs font-semibold', trendUp ? 'text-success' : 'text-destructive')}>
               {trendUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
               {trend}
             </span>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { X, Edit, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import LifecycleBadge from '../LifecycleBadge';
 import LeadPipelinePanel from '../LeadPipelinePanel';
@@ -111,11 +110,11 @@ function ComingSoon({ label }) {
   return (
     <div className="h-full flex items-center justify-center">
       <div className="text-center">
-        <div className="w-12 h-12 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center mx-auto mb-3">
+        <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-3">
           <span className="text-lg">📋</span>
         </div>
-        <p className="text-sm font-medium text-[#374151] capitalize">{label}</p>
-        <p className="text-xs text-[#9CA3AF] mt-1">Coming soon</p>
+        <p className="text-sm font-medium text-foreground capitalize">{label}</p>
+        <p className="text-xs text-muted-foreground mt-1">Coming soon</p>
       </div>
     </div>
   );
@@ -204,17 +203,17 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
       <div
-        className="relative w-full h-[95dvh] sm:h-[90vh] sm:max-w-[90vw] sm:rounded-xl rounded-t-2xl bg-white border border-[#E5E7EB] flex flex-col overflow-hidden"
+        className="relative w-full h-[95dvh] sm:h-[90vh] sm:max-w-[90vw] sm:rounded-xl rounded-t-2xl bg-card border border-border flex flex-col overflow-hidden"
         style={{ maxWidth: 1100 }}
         onClick={e => e.stopPropagation()}
       >
         {/* ── Navy header ── */}
-        <div className="flex-shrink-0" style={{ background: '#0E1525' }}>
+        <div className="flex-shrink-0" style={{ background: 'var(--tc-sidebar)' }}>
 
           {/* Client info row */}
           <div className="flex items-center gap-4 px-6 pt-5 pb-4">
             <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden"
-              style={{ background: '#1E2D45', border: '1.5px solid rgba(255,255,255,0.12)', color: '#93C5FD' }}>
+              style={{ background: 'var(--kc-1e2d45)', border: '1.5px solid color-mix(in srgb, white 12%, transparent)', color: 'var(--tc-primary)' }}>
               {localClient.avatar_url
                 ? <img src={localClient.avatar_url} alt={localClient.name} className="w-full h-full object-cover" />
                 : <span>{initials}</span>
@@ -225,35 +224,35 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                 <h2 className="text-base font-bold text-white leading-tight">{localClient.name}</h2>
                 <LifecycleBadge status={localClient.lifecycle_status || 'lead'} />
               </div>
-              <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{localClient.email}</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--tc-muted-foreground)' }}>{localClient.email}</p>
             </div>
             <div className="flex items-center gap-1 flex-shrink-0">
               <button onClick={onEdit} title="Edit client"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-                style={{ color: '#64748B' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
+                style={{ color: 'var(--tc-muted-foreground)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <Edit className="w-4 h-4" />
               </button>
               <button onClick={() => navigate(`/client-profile?id=${client.id}`)} title="Full Profile"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-                style={{ color: '#64748B' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
+                style={{ color: 'var(--tc-muted-foreground)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <ExternalLink className="w-4 h-4" />
               </button>
               <button onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors ml-1"
-                style={{ color: '#64748B' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748B'; }}>
+                style={{ color: 'var(--tc-muted-foreground)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           {/* ── PRIMARY nav: 5 main groups ── */}
-          <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ borderTop: '1px solid color-mix(in srgb, white 6%, transparent)' }}>
             {NAV_GROUPS.map(g => {
               // Hide Overview's Pipeline sub-tab group entirely for non-leads? No —
               // always show Overview. But hide entire group if all its subs are leadOnly and not a lead.
@@ -265,14 +264,14 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                   key={g.key}
                   onClick={() => handleGroupClick(g.key)}
                   className="relative px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0"
-                  style={{ color: isActive ? '#fff' : '#475569' }}
+                  style={{ color: isActive ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}
                 >
                   {g.label}
                   {isActive && (
                     <motion.div
                       layoutId="group-indicator"
                       className="absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full"
-                      style={{ background: '#2563EB' }}
+                      style={{ background: 'var(--tc-primary)' }}
                     />
                   )}
                 </button>
@@ -282,7 +281,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
           {/* ── SECONDARY nav: sub-tabs for the active group ── */}
           {visibleSubs.length > 1 && (
-            <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ background: 'rgba(255,255,255,0.04)', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+            <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ background: 'color-mix(in srgb, white 4%, transparent)', borderTop: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
               {visibleSubs.map(s => {
                 const isActive = activeTab === s.key;
                 return (
@@ -290,14 +289,14 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                     key={s.key}
                     onClick={() => handleSubTabClick(s.key)}
                     className="relative px-3 py-2 text-[11px] font-medium whitespace-nowrap transition-colors flex-shrink-0"
-                    style={{ color: isActive ? '#93C5FD' : '#475569' }}
+                    style={{ color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}
                   >
                     {s.label}
                     {isActive && (
                       <motion.div
                         layoutId="sub-indicator"
                         className="absolute bottom-0 left-0 right-0 h-[1.5px] rounded-t-full"
-                        style={{ background: '#93C5FD' }}
+                        style={{ background: 'var(--tc-primary)' }}
                       />
                     )}
                   </button>
@@ -308,7 +307,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
         </div>
 
         {/* ── Tab content — all original renderers untouched ── */}
-        <div className="flex-1 overflow-hidden bg-[#FAFAFA]">
+        <div className="flex-1 overflow-hidden bg-background">
 
           {activeTab === 'pipeline' && (
             <div className="h-full overflow-y-auto p-6 max-w-lg">

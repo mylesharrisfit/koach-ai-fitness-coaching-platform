@@ -25,21 +25,21 @@ function buildInsights(plans, clients) {
   }
 
   return [
-    { key: 'protein',   count: underProtein,    title: 'Under protein target',       label: 'Missing daily protein goals',   icon: TrendingDown,  numColor: 'text-[#DC2626]' },
-    { key: 'adherence', count: lowAdherence,     title: 'Low adherence',              label: 'Below 70% meal compliance',     icon: AlertTriangle, numColor: 'text-[#D97706]' },
-    { key: 'increase',  count: readyForIncrease, title: 'Ready for calorie increase', label: 'Consistent adherence weeks',    icon: TrendingUp,    numColor: 'text-[#16A34A]' },
-    { key: 'checkin',   count: missedCheckins,   title: 'Missed meal check-ins',      label: 'No log in 48+ hours',           icon: Bell,          numColor: 'text-[#111827]' },
+    { key: 'protein',   count: underProtein,    title: 'Under protein target',       label: 'Missing daily protein goals',   icon: TrendingDown,  numColor: 'text-destructive' },
+    { key: 'adherence', count: lowAdherence,     title: 'Low adherence',              label: 'Below 70% meal compliance',     icon: AlertTriangle, numColor: 'text-warning' },
+    { key: 'increase',  count: readyForIncrease, title: 'Ready for calorie increase', label: 'Consistent adherence weeks',    icon: TrendingUp,    numColor: 'text-success' },
+    { key: 'checkin',   count: missedCheckins,   title: 'Missed meal check-ins',      label: 'No log in 48+ hours',           icon: Bell,          numColor: 'text-foreground' },
   ];
 }
 
 function SkeletonCard() {
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 space-y-3 animate-pulse">
-      <div className="w-8 h-8 rounded-lg bg-[#F3F4F6]" />
-      <div className="w-10 h-6 rounded bg-[#F3F4F6]" />
+    <div className="rounded-xl border border-border bg-card p-4 space-y-3 animate-pulse">
+      <div className="w-8 h-8 rounded-lg bg-muted" />
+      <div className="w-10 h-6 rounded bg-muted" />
       <div className="space-y-1.5">
-        <div className="h-3 w-3/4 rounded bg-[#F3F4F6]" />
-        <div className="h-2.5 w-1/2 rounded bg-[#F3F4F6]" />
+        <div className="h-3 w-3/4 rounded bg-muted" />
+        <div className="h-2.5 w-1/2 rounded bg-muted" />
       </div>
     </div>
   );
@@ -67,12 +67,12 @@ export default function NutritionInsightCards() {
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 flex items-center gap-3"
+        className="rounded-xl border border-border bg-card px-4 py-3 flex items-center gap-3"
       >
-        <CheckCircle2 className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
+        <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
         <div>
-          <p className="text-sm font-medium text-[#111827]">All clients on track</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">No nutrition alerts at this time</p>
+          <p className="text-sm font-medium text-foreground">All clients on track</p>
+          <p className="text-xs text-muted-foreground mt-0.5">No nutrition alerts at this time</p>
         </div>
       </motion.div>
     );
@@ -88,15 +88,15 @@ export default function NutritionInsightCards() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: i * 0.05 }}
-            className="rounded-xl border border-[#E5E7EB] bg-white p-4 flex flex-col gap-2"
+            className="rounded-xl border border-border bg-card p-4 flex flex-col gap-2"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-              <Icon className="w-4 h-4 text-[#6B7280]" />
+            <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+              <Icon className="w-4 h-4 text-muted-foreground" />
             </div>
             <div>
               <div className={cn('text-2xl font-semibold leading-none', item.numColor)}>{item.count}</div>
-              <div className="text-sm font-medium text-[#111827] mt-1">{item.title}</div>
-              <div className="text-xs text-[#6B7280] mt-0.5">{item.label}</div>
+              <div className="text-sm font-medium text-foreground mt-1">{item.title}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{item.label}</div>
             </div>
           </motion.div>
         );

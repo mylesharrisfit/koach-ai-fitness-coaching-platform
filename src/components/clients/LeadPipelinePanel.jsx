@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,16 +7,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { CalendarClock, MessageCircle, PhoneCall, Send, FileText, Save, ChevronDown } from 'lucide-react';
+import { CalendarClock, MessageCircle, PhoneCall, Send, FileText, Save } from 'lucide-react';
 import { format } from 'date-fns';
 
 const PIPELINE_STAGES = [
-  { key: 'new_lead', label: 'New Lead', color: 'bg-gray-100 text-gray-600 border-gray-200' },
-  { key: 'dmd', label: "DM'd", color: 'bg-blue-50 text-blue-600 border-blue-100', icon: MessageCircle },
-  { key: 'call_booked', label: 'Call Booked', color: 'bg-amber-50 text-amber-600 border-amber-100', icon: PhoneCall },
-  { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-purple-50 text-purple-600 border-purple-100', icon: Send },
-  { key: 'closed', label: 'Closed 🎉', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-  { key: 'lost', label: 'Lost', color: 'bg-red-50 text-red-500 border-red-100' },
+  { key: 'new_lead', label: 'New Lead', color: 'bg-muted text-muted-foreground border-border' },
+  { key: 'dmd', label: "DM'd", color: 'bg-accent text-primary border-accent', icon: MessageCircle },
+  { key: 'call_booked', label: 'Call Booked', color: 'bg-warning/10 text-warning border-warning', icon: PhoneCall },
+  { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-ai/10 text-ai border-ai', icon: Send },
+  { key: 'closed', label: 'Closed 🎉', color: 'bg-success/10 text-success border-success' },
+  { key: 'lost', label: 'Lost', color: 'bg-destructive/10 text-destructive border-destructive' },
 ];
 
 export default function LeadPipelinePanel({ client, onUpdate }) {
@@ -46,7 +46,7 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
     <div className="space-y-4">
       {/* Pipeline stage selector */}
       <div>
-        <Label className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2 block">Pipeline Stage</Label>
+        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Pipeline Stage</Label>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {PIPELINE_STAGES.map(s => (
             <button
@@ -54,7 +54,7 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
               onClick={() => setStage(s.key)}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold transition-all',
-                stage === s.key ? s.color : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-[#D1D5DB]'
+                stage === s.key ? s.color : 'bg-card text-muted-foreground border-border hover:border-muted-foreground'
               )}
             >
               {s.icon && <s.icon className="w-3 h-3" />}
@@ -66,26 +66,26 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
 
       {/* Follow-up date */}
       <div>
-        <Label className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2 block flex items-center gap-1.5">
+        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block flex items-center gap-1.5">
           <CalendarClock className="w-3 h-3" /> Follow-up Reminder
         </Label>
         <Input
           type="date"
           value={followUp}
           onChange={e => setFollowUp(e.target.value)}
-          className={cn('h-9 text-sm', isOverdue ? 'border-red-300 text-red-600 focus-visible:ring-red-300' : '')}
+          className={cn('h-9 text-sm', isOverdue ? 'border-destructive text-destructive focus-visible:ring-destructive' : '')}
         />
         {isOverdue && (
-          <p className="text-xs text-red-500 mt-1 flex items-center gap-1">⚠️ Follow-up overdue since {format(new Date(followUp), 'MMM d')}</p>
+          <p className="text-xs text-destructive mt-1 flex items-center gap-1">⚠️ Follow-up overdue since {format(new Date(followUp), 'MMM d')}</p>
         )}
         {followUp && !isOverdue && (
-          <p className="text-xs text-[#9CA3AF] mt-1">Scheduled for {format(new Date(followUp), 'EEEE, MMM d, yyyy')}</p>
+          <p className="text-xs text-muted-foreground mt-1">Scheduled for {format(new Date(followUp), 'EEEE, MMM d, yyyy')}</p>
         )}
       </div>
 
       {/* Notes */}
       <div>
-        <Label className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2 block flex items-center gap-1.5">
+        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block flex items-center gap-1.5">
           <FileText className="w-3 h-3" /> CRM Notes
         </Label>
         <Textarea

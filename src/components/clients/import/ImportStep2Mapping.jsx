@@ -3,19 +3,19 @@ import { CheckCircle2, AlertTriangle, HelpCircle, Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const CONFIDENCE_CONFIG = {
-  high:     { icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', label: 'High' },
-  medium:   { icon: AlertTriangle, color: 'text-amber-500',  bg: 'bg-amber-50',   label: 'Medium' },
+  high:     { icon: CheckCircle2, color: 'text-success', bg: 'bg-success/10', label: 'High' },
+  medium:   { icon: AlertTriangle, color: 'text-warning',  bg: 'bg-warning/10',   label: 'Medium' },
   low:      { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50',  label: 'Low' },
-  unmapped: { icon: HelpCircle,    color: 'text-gray-400',   bg: 'bg-gray-100',   label: 'Unmapped' },
+  unmapped: { icon: HelpCircle,    color: 'text-muted-foreground',   bg: 'bg-muted',   label: 'Unmapped' },
 };
 
 export default function ImportStep2Mapping({ headers, mapping, confidence, koachFields, onMappingChange, aiLoading }) {
   if (aiLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-4">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-        <p className="text-sm font-semibold text-gray-700">AI is analyzing your columns…</p>
-        <p className="text-xs text-gray-400">This takes a few seconds</p>
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        <p className="text-sm font-semibold text-foreground">AI is analyzing your columns…</p>
+        <p className="text-xs text-muted-foreground">This takes a few seconds</p>
       </div>
     );
   }
@@ -32,15 +32,15 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
     // No fixed height or overflow here — the parent modal body owns scrolling
     <div className="flex flex-col gap-4">
       <div>
-        <h3 className="text-sm font-bold text-gray-900">Review AI column mapping</h3>
-        <p className="text-xs text-gray-500 mt-0.5">
+        <h3 className="text-sm font-bold text-foreground">Review AI column mapping</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">
           The AI has proposed a mapping for each column. Adjust any incorrect mappings using the dropdowns.
           Unmapped columns will be stored in client notes.
         </p>
       </div>
 
       {/* Summary stat */}
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-muted-foreground">
         {mappedCount} of {headers.length} columns mapped
         {unmappedCount > 0
           ? ` · ${unmappedCount} will be stored in notes`
@@ -48,9 +48,9 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
       </p>
 
       {/* Mapping table */}
-      <div className="border border-gray-100 rounded-xl overflow-hidden">
+      <div className="border border-border rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="grid gap-3 px-4 py-2 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-wider text-gray-400"
+        <div className="grid gap-3 px-4 py-2 bg-muted border-b border-border text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
           style={{ gridTemplateColumns: '1fr 20px minmax(180px,1.4fr) 90px' }}>
           <div>CSV Column</div>
           <div />
@@ -59,7 +59,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
         </div>
 
         {/* Rows — no max-h here; modal body scrolls */}
-        <div className="divide-y divide-gray-50">
+        <div className="divide-y divide-muted">
           {headers.map((col) => {
             const mapped = mapping[col] || '';
             const conf   = confidence[col] || 'unmapped';
@@ -72,16 +72,16 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                 style={{ gridTemplateColumns: '1fr 20px minmax(180px,1.4fr) 90px' }}
               >
                 {/* CSV column name */}
-                <div className="text-sm font-medium text-gray-800 truncate min-w-0" title={col}>
+                <div className="text-sm font-medium text-foreground truncate min-w-0" title={col}>
                   {col}
                 </div>
 
                 {/* Arrow */}
-                <div className="text-gray-300 text-xs text-center">→</div>
+                <div className="text-border text-xs text-center">→</div>
 
                 {/* KOACH field — sentinel or dropdown */}
                 {mapped === '__last_name__' ? (
-                  <div className="h-8 px-3 flex items-center text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md whitespace-nowrap overflow-hidden text-ellipsis">
+                  <div className="h-8 px-3 flex items-center text-xs text-success bg-success/10 border border-success rounded-md whitespace-nowrap overflow-hidden text-ellipsis">
                     Last Name → merged into Name ✓
                   </div>
                 ) : (
@@ -94,7 +94,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="__unmapped__">
-                        <span className="text-gray-400 italic">Unmapped (→ notes)</span>
+                        <span className="text-muted-foreground italic">Unmapped (→ notes)</span>
                       </SelectItem>
                       {(koachFields || []).map(f => (
                         <SelectItem
@@ -104,7 +104,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                         >
                           {f.label}
                           {usedFields.has(f.key) && mapped !== f.key && (
-                            <span className="text-gray-400 ml-1 text-[10px]">(taken)</span>
+                            <span className="text-muted-foreground ml-1 text-[10px]">(taken)</span>
                           )}
                         </SelectItem>
                       ))}

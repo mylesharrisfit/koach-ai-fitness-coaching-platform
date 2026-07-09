@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { X, AlertTriangle, Check, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { X, AlertTriangle, Check } from 'lucide-react';
 import { TIERS, TIER_ORDER } from '@/lib/subscription';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -78,26 +77,26 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
   if (confirmed) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0f1e] p-8 text-center shadow-2xl">
-          <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
-            <Check className="w-6 h-6 text-amber-400" />
+        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-sidebar p-8 text-center shadow-2xl">
+          <div className="w-12 h-12 rounded-full bg-warning/10 border border-warning/20 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-6 h-6 text-warning" />
           </div>
           <h3 className="text-xl font-bold text-white mb-2">Downgrade Confirmed</h3>
-          <p className="text-slate-400 text-sm mb-1">
+          <p className="text-muted-foreground text-sm mb-1">
             Your plan will change to <span className="text-white font-semibold">{toTier.name}</span> on <span className="text-white">{effectiveDate}</span>.
           </p>
-          <p className="text-slate-500 text-sm mb-6">You'll keep all {fromTier.name} features until then.</p>
+          <p className="text-muted-foreground text-sm mb-6">You'll keep all {fromTier.name} features until then.</p>
           <button
             onClick={handleUndo}
             disabled={loading}
-            className="text-sm text-blue-400 hover:text-blue-300 transition-colors underline"
+            className="text-sm text-primary hover:text-primary transition-colors underline"
           >
             {loading ? 'Undoing...' : 'Changed your mind? Undo downgrade'}
           </button>
           <div className="mt-6">
             <button
               onClick={onClose}
-              className="w-full py-2.5 rounded-xl text-sm font-semibold text-white border border-white/10 hover:bg-white/5 transition-colors"
+              className="w-full py-2.5 rounded-xl text-sm font-semibold text-white border border-white/10 hover:bg-[var(--kc-w-5)] transition-colors"
             >
               Close
             </button>
@@ -109,10 +108,10 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0a0f1e] shadow-2xl">
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-sidebar shadow-2xl">
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <h2 className="text-lg font-bold text-white">Downgrade to {toTier.name}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-muted-foreground hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -120,11 +119,11 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
         <div className="p-6 space-y-5">
           {/* Client over-limit warning */}
           {clientOverLimit && (
-            <div className="flex gap-3 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-              <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="flex gap-3 bg-warning/10 border border-warning/30 rounded-xl p-4">
+              <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-amber-300">Client limit exceeded</p>
-                <p className="text-xs text-amber-400/80 mt-0.5">
+                <p className="text-sm font-semibold text-warning">Client limit exceeded</p>
+                <p className="text-xs text-warning/80 mt-0.5">
                   You have {clientCount} clients but {toTier.name} only allows {newClientLimit}. You'll need to reduce your client count before the downgrade takes effect.
                 </p>
               </div>
@@ -132,20 +131,20 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
           )}
 
           {/* Effective date */}
-          <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4">
-            <p className="text-xs text-slate-400">Effective date</p>
+          <div className="bg-card/[0.03] border border-white/10 rounded-xl p-4">
+            <p className="text-xs text-muted-foreground">Effective date</p>
             <p className="text-white font-semibold mt-0.5">{effectiveDate}</p>
-            <p className="text-xs text-slate-500 mt-1">You keep all {fromTier.name} features until then.</p>
+            <p className="text-xs text-muted-foreground mt-1">You keep all {fromTier.name} features until then.</p>
           </div>
 
           {/* Features being lost */}
           <div>
-            <p className="text-sm font-semibold text-slate-300 mb-3">Features you'll lose</p>
+            <p className="text-sm font-semibold text-border mb-3">Features you'll lose</p>
             <div className="space-y-2">
               {losingFeatures.map(f => (
-                <div key={f} className="flex items-center gap-2 bg-red-500/5 border border-red-500/20 rounded-lg px-3 py-2">
-                  <span className="text-red-400 text-sm flex-shrink-0">❌</span>
-                  <span className="text-xs text-slate-300">{f}</span>
+                <div key={f} className="flex items-center gap-2 bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2">
+                  <span className="text-destructive text-sm flex-shrink-0">❌</span>
+                  <span className="text-xs text-border">{f}</span>
                 </div>
               ))}
             </div>
@@ -157,7 +156,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
             <button
               onClick={onClose}
               className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
-              style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)', boxShadow: '0 0 20px rgba(139,92,246,0.25)' }}
+              style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 25%, transparent)' }}
             >
               Keep {fromTier.name} Plan
             </button>
@@ -165,7 +164,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
             <button
               onClick={handleDowngrade}
               disabled={loading}
-              className="w-full py-2.5 rounded-xl text-sm font-semibold border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+              className="w-full py-2.5 rounded-xl text-sm font-semibold border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
             >
               {loading ? 'Processing...' : `Confirm Downgrade to ${toTier.name}`}
             </button>

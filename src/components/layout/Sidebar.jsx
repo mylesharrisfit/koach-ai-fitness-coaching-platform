@@ -3,27 +3,54 @@ import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { ThemeToggleButton } from '@/components/settings/ThemeToggle';
 
 import {
   LayoutDashboard, Users, MessageSquare, Calendar,
   Dumbbell, Salad, ClipboardList,
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
-  Lock, UserPlus, Trophy, ShoppingBag,
-  Globe, Smartphone, Activity, Apple,
-  Shield, Palette, BookOpen, LayoutTemplate, Mail, FileText, UsersRound, Flame
+  Lock, UserPlus, Trophy, ShoppingBag, Search,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { hasFeature } from '@/lib/subscription';
 import { useTeamRole } from '@/lib/useTeamRole';
+import { useCommandPalette } from '@/components/command/CommandPalette';
+import { track } from '@/lib/telemetry';
+import { darkModeEnabled } from '@/lib/flags';
 
+function SidebarSearchButton({ collapsed }) {
+  const { open } = useCommandPalette();
+  return (
+    <button
+      onClick={open}
+      title="Search (⌘K)"
+      className={cn(
+        'flex items-center gap-2.5 rounded-lg text-[13px] font-medium transition-colors w-full min-h-[40px]',
+        collapsed ? 'justify-center px-0' : 'px-3'
+      )}
+      style={{ color: 'color-mix(in srgb, white 50%, transparent)', background: 'color-mix(in srgb, white 4%, transparent)' }}
+    >
+      <Search className="w-[16px] h-[16px] flex-shrink-0" />
+      {!collapsed && (
+        <>
+          <span className="flex-1 text-left">Search</span>
+          <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}>⌘K</kbd>
+        </>
+      )}
+    </button>
+  );
+}
+
+// Consolidated to 13 visible items across 4 groups. Everything else lives in the
+// ⌘K command palette + Settings (routes are preserved — nothing is deleted).
+// At-Risk is folded into Adherence (surfaced there as a filter/tab).
 const NAV_GROUPS = [
   {
     label: 'MAIN',
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-      { icon: BookOpen, label: 'Onboarding', path: '/onboarding-manager' },
       { icon: Users, label: 'Clients', path: '/clients' },
       { icon: MessageSquare, label: 'Messages', path: '/messages' },
       { icon: Calendar, label: 'Calendar', path: '/schedule' },
@@ -36,38 +63,22 @@ const NAV_GROUPS = [
       { icon: Salad, label: 'Nutrition', path: '/nutrition' },
       { icon: ClipboardList, label: 'Check-ins', path: '/checkin-review', feature: 'checkin_review' },
       { icon: Trophy, label: 'Adherence', path: '/adherence', feature: 'adherence' },
-      { icon: Flame, label: 'Challenges', path: '/challenges' },
-      { icon: Shield, label: 'At-Risk', path: '/at-risk' },
-      { icon: Activity, label: 'Exercises', path: '/exercises' },
-      { icon: Apple, label: 'Food Library', path: '/food-library' },
     ],
   },
   {
-    label: 'AI TOOLS',
-    items: [
-      { icon: Sparkles, label: 'AI Assistant', path: '/assistant', feature: 'assistant' },
-      { icon: Bot, label: 'Automations', path: '/automations' },
-      { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-    ],
-  },
-  {
-    label: 'BUSINESS',
+    label: 'GROW',
     items: [
       { icon: BarChart3, label: 'Business', path: '/business' },
-      { icon: Mail, label: 'Email Center', path: '/email-center' },
       { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },
       { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },
-      { icon: Globe, label: 'Community', path: '/community', feature: 'community' },
     ],
   },
   {
-   label: 'TOOLS',
-   items: [
-     { icon: FileText, label: 'Weekly Summary', path: '/weekly-summary' },
-     { icon: LayoutTemplate, label: 'Templates', path: '/coaching-templates' },
-     { icon: Palette, label: 'White Label', path: '/white-label' },
-     { icon: UsersRound, label: 'Team', path: '/team' },
-   ],
+    label: 'AI',
+    items: [
+      { icon: Sparkles, label: 'Assistant', path: '/assistant', feature: 'assistant' },
+      { icon: Bot, label: 'Automations', path: '/automations' },
+    ],
   },
 ];
 
@@ -98,7 +109,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
       <button
         onClick={() => onUpgrade?.(item.feature)}
         className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm w-full text-left transition-colors min-h-[40px]"
-        style={{ color: 'rgba(255,255,255,0.2)' }}
+        style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}
         title={collapsed ? item.label : undefined}
       >
         <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
@@ -115,6 +126,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
   return (
     <Link
       to={item.path}
+      onClick={() => track('nav.click', { path: item.path, label: item.label })}
       title={collapsed ? item.label : undefined}
       className={cn(
         'relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[40px]',
@@ -123,22 +135,22 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
           : 'hover:text-white'
       )}
       style={{
-        color: isActive ? '#fff' : 'rgba(255,255,255,0.38)',
-        background: isActive ? 'rgba(59,130,246,0.12)' : 'transparent',
+        color: isActive ? 'var(--tc-sidebar-accent-foreground)' : 'color-mix(in srgb, white 38%, transparent)',
+        background: isActive ? 'color-mix(in srgb, var(--tc-sidebar-primary) 14%, transparent)' : 'transparent',
       }}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: '#3B82F6' }} />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: 'var(--tc-sidebar-primary)' }} />
       )}
       <item.icon className={cn('w-[16px] h-[16px] flex-shrink-0 transition-colors')} />
       {!collapsed && <span className="flex-1">{item.label}</span>}
       {!collapsed && showUnread && (
-        <span className="min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1 flex-shrink-0">
+        <span className="min-w-[18px] h-[18px] rounded-full bg-destructive text-white text-[10px] font-bold flex items-center justify-center px-1 flex-shrink-0">
           {unreadCount > 99 ? '99+' : unreadCount}
         </span>
       )}
       {collapsed && showUnread && (
-        <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500" />
+        <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-destructive" />
       )}
     </Link>
   );
@@ -152,10 +164,11 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
   if (mobileMode) {
     return (
       <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4 h-full">
+        <div onClick={onNavClick}><SidebarSearchButton collapsed={false} /></div>
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && (
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}>
                 {group.label}
               </p>
             )}
@@ -174,7 +187,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               <Link
                 to={item.path}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all min-h-[44px]"
-                style={{ color: 'rgba(255,255,255,0.35)' }}
+                style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}
               >
                 <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
                 <span>{item.label}</span>
@@ -184,7 +197,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           <button
             onClick={() => base44.auth.logout()}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all w-full min-h-[44px]"
-            style={{ color: 'rgba(255,255,255,0.25)' }}
+            style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}
           >
             <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
             <span>Logout</span>
@@ -200,13 +213,13 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         'fixed left-0 top-0 h-screen z-50 flex-col transition-all duration-200 hidden md:flex',
         collapsed ? 'w-[56px]' : 'w-[210px]'
       )}
-      style={{ background: '#0D0D0D', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+      style={{ background: 'var(--tc-sidebar-background)', borderRight: '1px solid var(--tc-sidebar-border)' }}
     >
       {/* Logo */}
       <div className={cn(
         'h-[56px] flex items-center flex-shrink-0',
         collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
-      )} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+      )} style={{ borderBottom: '1px solid var(--tc-sidebar-border)' }}>
         <KoachLogo size={32} rounded="rounded-xl" glow={true} bg={true} />
         {!collapsed && (
           <>
@@ -214,6 +227,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
             </div>
             <div className="flex items-center gap-1">
+              {darkModeEnabled && <ThemeToggleButton onDark />}
               <NotificationBell />
             </div>
           </>
@@ -222,10 +236,11 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
 
       {/* Nav */}
       <nav className="flex-1 py-3 px-2 overflow-y-auto space-y-4">
+        <SidebarSearchButton collapsed={collapsed} />
         {NAV_GROUPS.map((group, gi) => (
           <div key={gi}>
             {group.label && !collapsed && (
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] px-3 mb-1.5" style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}>
                 {group.label}
               </p>
             )}
@@ -239,7 +254,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
       </nav>
 
       {/* Bottom */}
-      <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      <div className="p-2 space-y-0.5" style={{ borderTop: '1px solid color-mix(in srgb, white 5%, transparent)' }}>
         {ALL_BOTTOM_ITEMS.filter(item => !item.ownerOnly || isOwner).map(item => {
           return (
             <Link
@@ -247,9 +262,9 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               to={item.path}
               title={collapsed ? item.label : undefined}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all"
-              style={{ color: 'rgba(255,255,255,0.35)' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
+              style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--tc-sidebar-accent-foreground)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, white 35%, transparent)'}
             >
               <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
               {!collapsed && <span>{item.label}</span>}
@@ -261,9 +276,9 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           onClick={() => base44.auth.logout()}
           title={collapsed ? 'Logout' : undefined}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all w-full"
-          style={{ color: 'rgba(255,255,255,0.25)' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
-          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.25)'}
+          style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--tc-destructive)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, white 25%, transparent)'}
         >
           <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
           {!collapsed && <span>Logout</span>}
@@ -272,9 +287,9 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         <button
           onClick={() => setCollapsed(c => !c)}
           className="flex items-center justify-center w-full py-2 rounded-lg transition-all mt-1"
-          style={{ color: 'rgba(255,255,255,0.2)' }}
-          onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
+          style={{ color: 'color-mix(in srgb, white 20%, transparent)' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'color-mix(in srgb, white 60%, transparent)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'color-mix(in srgb, white 20%, transparent)'}
           title={collapsed ? 'Expand' : 'Collapse'}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

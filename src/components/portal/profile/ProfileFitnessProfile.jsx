@@ -42,9 +42,9 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
                 onClick={() => { setValues(p => ({ ...p, goal: g })); setDirty(true); }}
                 className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
                 style={{
-                  background: values.goal === g ? 'rgba(59,130,246,0.25)' : 'rgba(255,255,255,0.06)',
-                  color: values.goal === g ? '#60A5FA' : 'rgba(255,255,255,0.4)',
-                  border: `1px solid ${values.goal === g ? 'rgba(59,130,246,0.4)' : 'transparent'}`,
+                  background: values.goal === g ? 'rgb(var(--primary) / 0.25)' : 'rgba(255,255,255,0.06)',
+                  color: values.goal === g ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.4)',
+                  border: `1px solid ${values.goal === g ? 'rgb(var(--primary) / 0.4)' : 'transparent'}`,
                 }}>
                 {g.replace('_', ' ')}
               </button>
@@ -56,7 +56,7 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
         <div>
           <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Injuries or Limitations</p>
           <textarea
-            className="w-full bg-transparent text-white/70 text-sm outline-none border border-white/10 rounded-xl p-3 focus:border-blue-500 transition-colors resize-none"
+            className="w-full bg-transparent text-white/70 text-sm outline-none border border-white/10 rounded-xl p-3 focus:border-primary transition-colors resize-none"
             rows={3}
             placeholder="e.g. Bad knees, shoulder impingement..."
             value={values.injuries}
@@ -70,7 +70,7 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
           <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             onClick={save}
             className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-white"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
             {saved ? '✓ Saved' : 'Save & Notify Coach'}
           </motion.button>
         )}

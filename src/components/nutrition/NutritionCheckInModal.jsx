@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -67,15 +67,15 @@ export default function NutritionCheckInModal({ open, onOpenChange, planId, clie
     setTimeout(() => { setDone(false); setRating(7); setNote(''); setWins([]); setIssues([]); }, 300);
   };
 
-  const ratingColor = rating >= 8 ? 'text-emerald-600' : rating >= 5 ? 'text-amber-600' : 'text-red-500';
+  const ratingColor = rating >= 8 ? 'text-success' : rating >= 5 ? 'text-warning' : 'text-destructive';
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-md max-h-[88vh] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl">
-        <div className="px-5 pt-5 pb-4 border-b border-[#E7EAF3] bg-white flex-shrink-0">
+        <div className="px-5 pt-5 pb-4 border-b border-border bg-card flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
-              <Salad className="w-4.5 h-4.5 text-green-600" />
+            <div className="w-9 h-9 rounded-xl bg-success/10 flex items-center justify-center">
+              <Salad className="w-4.5 h-4.5 text-success" />
             </div>
             <div>
               <DialogTitle className="font-heading font-bold text-base">Weekly Nutrition Check-In</DialogTitle>
@@ -87,7 +87,7 @@ export default function NutritionCheckInModal({ open, onOpenChange, planId, clie
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
           {done ? (
             <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
-              <CheckCircle2 className="w-14 h-14 text-emerald-500" />
+              <CheckCircle2 className="w-14 h-14 text-success" />
               <div>
                 <p className="text-lg font-bold text-foreground">Check-In Submitted!</p>
                 <p className="text-sm text-muted-foreground mt-1">Great work staying accountable. Your coach will review this.</p>
@@ -123,7 +123,7 @@ export default function NutritionCheckInModal({ open, onOpenChange, planId, clie
                       onClick={() => toggleTag(wins, setWins, w)}
                       className={cn(
                         'text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all',
-                        wins.includes(w) ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-white text-foreground border-[#E7EAF3] hover:border-emerald-300'
+                        wins.includes(w) ? 'bg-success text-white border-success' : 'bg-card text-foreground border-border hover:border-success'
                       )}
                     >
                       {w}
@@ -142,7 +142,7 @@ export default function NutritionCheckInModal({ open, onOpenChange, planId, clie
                       onClick={() => toggleTag(issues, setIssues, s)}
                       className={cn(
                         'text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all',
-                        issues.includes(s) ? 'bg-red-400 text-white border-red-400' : 'bg-white text-foreground border-[#E7EAF3] hover:border-red-300'
+                        issues.includes(s) ? 'bg-destructive text-white border-destructive' : 'bg-card text-foreground border-border hover:border-destructive'
                       )}
                     >
                       {s}
@@ -167,7 +167,7 @@ export default function NutritionCheckInModal({ open, onOpenChange, planId, clie
         </div>
 
         {!done && (
-          <div className="px-5 py-4 border-t border-[#E7EAF3] bg-white flex-shrink-0 flex justify-end gap-2">
+          <div className="px-5 py-4 border-t border-border bg-card flex-shrink-0 flex justify-end gap-2">
             <Button variant="outline" onClick={handleClose}>Cancel</Button>
             <Button onClick={submit} disabled={saving} className="gap-2">
               {saving ? 'Saving…' : 'Submit Check-In'}

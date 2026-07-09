@@ -87,7 +87,7 @@ export default function ClientPickerStep({ selectedClients, onSelectClients, all
                   isSelected
                     ? 'border-primary bg-primary/5'
                     : hasProgram
-                    ? 'border-amber-200 bg-amber-50'
+                    ? 'border-warning bg-warning/10'
                     : 'border-border hover:bg-secondary'
                 }`}
               >
@@ -106,14 +106,14 @@ export default function ClientPickerStep({ selectedClients, onSelectClients, all
                   {hasProgram ? (
                     <p className="text-xs text-muted-foreground">Currently on: {client.assigned_program_id}</p>
                   ) : (
-                    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-success/10 text-success">
                       No program assigned
                     </span>
                   )}
                 </div>
 
                 {hasProgram && (
-                  <div className="flex-shrink-0 flex items-center gap-1 text-amber-700">
+                  <div className="flex-shrink-0 flex items-center gap-1 text-warning">
                     <AlertCircle className="w-4 h-4" />
                     <span className="text-xs font-medium">Has program</span>
                   </div>

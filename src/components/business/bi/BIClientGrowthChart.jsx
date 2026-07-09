@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { subMonths, format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-gray-900 text-white rounded-xl p-3 shadow-xl text-xs min-w-[140px]">
-      <p className="font-bold mb-2 text-gray-300">{label}</p>
+    <div className="bg-sidebar text-white rounded-xl p-3 shadow-xl text-xs min-w-[140px]">
+      <p className="font-bold mb-2 text-border">{label}</p>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center gap-2 mb-1">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-gray-400">{p.name}:</span>
+          <span className="text-muted-foreground">{p.name}:</span>
           <span className="font-semibold">{p.value}</span>
         </div>
       ))}
@@ -48,20 +48,20 @@ export default function BIClientGrowthChart({ clients }) {
   }, [clients]);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <div className="mb-4">
-        <h3 className="text-sm font-bold text-gray-900">Client Growth</h3>
-        <p className="text-xs text-gray-400 mt-0.5">New clients, churn, and total active count</p>
+        <h3 className="text-sm font-bold text-foreground">Client Growth</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">New clients, churn, and total active count</p>
       </div>
       <ResponsiveContainer width="100%" height={220}>
         <ComposedChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
-          <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" />
+          <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="new" name="New Clients" fill="#22C55E" radius={[3, 3, 0, 0]} />
-          <Bar dataKey="churned" name="Churned" fill="#EF4444" radius={[0, 0, 3, 3]} />
-          <Line type="monotone" dataKey="total" name="Total Active" stroke="#3B82F6" strokeWidth={2.5} dot={{ fill: '#3B82F6', r: 3 }} />
+          <Bar dataKey="new" name="New Clients" fill="var(--tc-success)" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="churned" name="Churned" fill="var(--tc-destructive)" radius={[0, 0, 3, 3]} />
+          <Line type="monotone" dataKey="total" name="Total Active" stroke="var(--tc-primary)" strokeWidth={2.5} dot={{ fill: 'var(--tc-primary)', r: 3 }} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

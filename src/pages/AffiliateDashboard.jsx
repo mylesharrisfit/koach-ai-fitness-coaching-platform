@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion } from 'framer-motion';
 import { TrendingUp, Users, Clock, Zap, Target } from 'lucide-react';
 import AffiliateEarningsOverview from '@/components/affiliate/AffiliateEarningsOverview';
 import AffiliateCommissionStructure from '@/components/affiliate/AffiliateCommissionStructure';
@@ -12,10 +11,10 @@ import AffiliatePayoutCenter from '@/components/affiliate/AffiliatePayoutCenter'
 import AffiliateAssetLibrary from '@/components/affiliate/AffiliateAssetLibrary';
 
 const TIERS = {
-  bronze: { min: 0, max: 10, rate: 20, label: 'Bronze', color: '#92400E' },
-  silver: { min: 11, max: 25, rate: 25, label: 'Silver', color: '#4B5563' },
-  gold: { min: 26, max: 50, rate: 30, label: 'Gold', color: '#D97706' },
-  platinum: { min: 51, max: Infinity, rate: 35, label: 'Platinum', color: '#3B82F6' },
+  bronze: { min: 0, max: 10, rate: 20, label: 'Bronze', color: 'var(--tc-warning)' },
+  silver: { min: 11, max: 25, rate: 25, label: 'Silver', color: 'var(--kc-4b5563)' },
+  gold: { min: 26, max: 50, rate: 30, label: 'Gold', color: 'var(--tc-warning)' },
+  platinum: { min: 51, max: Infinity, rate: 35, label: 'Platinum', color: 'var(--tc-primary)' },
 };
 
 export default function AffiliateDashboard() {
@@ -38,27 +37,27 @@ export default function AffiliateDashboard() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <p className="text-slate-600">Loading affiliate dashboard...</p>
+      <div className="min-h-screen flex items-center justify-center bg-muted">
+        <p className="text-muted-foreground">Loading affiliate dashboard...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-muted to-card">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
+      <div className="bg-card border-b border-border sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-black text-slate-900">Affiliate Dashboard</h1>
+              <h1 className="text-3xl font-black text-foreground">Affiliate Dashboard</h1>
               <div className="flex items-center gap-3 mt-2">
                 <span className="px-3 py-1 rounded-full text-sm font-bold text-white"
                   style={{ background: tierConfig.color }}>
                   {tierLabel}
                 </span>
                 {profile.account_manager && (
-                  <span className="text-sm text-slate-600">Account Manager: {profile.account_manager}</span>
+                  <span className="text-sm text-muted-foreground">Account Manager: {profile.account_manager}</span>
                 )}
               </div>
             </div>
@@ -72,7 +71,7 @@ export default function AffiliateDashboard() {
         <AffiliateEarningsOverview profile={profile} />
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-slate-200">
+        <div className="flex gap-2 border-b border-border">
           {[
             { id: 'overview', label: 'Overview', icon: TrendingUp },
             { id: 'links', label: 'Affiliate Links', icon: Zap },
@@ -83,8 +82,8 @@ export default function AffiliateDashboard() {
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-3 font-bold border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-slate-600 hover:text-slate-900'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}>
               {tab.label}
             </button>

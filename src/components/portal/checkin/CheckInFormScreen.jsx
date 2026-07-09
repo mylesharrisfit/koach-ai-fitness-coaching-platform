@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Save, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -6,7 +6,7 @@ import { ArrowLeft, Save, ChevronLeft, ChevronRight } from 'lucide-react';
 function WeightQuestion({ question, value, onChange, lastValue }) {
   const [unit, setUnit] = useState('lbs');
   const trend = lastValue && value ? value - lastValue : null;
-  const trendColor = trend > 0 ? '#EF4444' : trend < 0 ? '#22C55E' : '#64748B';
+  const trendColor = trend > 0 ? 'rgb(var(--destructive))' : trend < 0 ? 'rgb(var(--success))' : 'rgb(var(--muted-foreground))';
   const trendEmoji = trend > 0 ? '↑' : trend < 0 ? '↓' : '→';
 
   return (
@@ -21,7 +21,7 @@ function WeightQuestion({ question, value, onChange, lastValue }) {
           style={{ background: 'rgba(255,255,255,0.1)' }}>−</button>
         <input type="number" value={value || ''} onChange={e => onChange(parseFloat(e.target.value) || 0)}
           className="w-24 text-center bg-transparent font-black focus:outline-none"
-          style={{ fontSize: 56, color: '#FFFFFF', lineHeight: 1 }}
+          style={{ fontSize: 56, color: 'rgb(var(--card))', lineHeight: 1 }}
           placeholder="0" />
         <button onClick={() => onChange(value + 1)}
           className="w-14 h-14 rounded-2xl font-black text-2xl flex items-center justify-center"
@@ -29,7 +29,7 @@ function WeightQuestion({ question, value, onChange, lastValue }) {
       </div>
       <button onClick={() => setUnit(u => u === 'lbs' ? 'kg' : 'lbs')}
         className="px-4 py-1.5 rounded-full text-xs font-bold mb-6"
-        style={{ background: 'rgba(59,130,246,0.2)', color: '#60A5FA' }}>{unit}</button>
+        style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))' }}>{unit}</button>
       {trend !== null && (
         <p className="text-sm font-semibold" style={{ color: trendColor }}>
           {trendEmoji} {Math.abs(trend).toFixed(1)} {unit} from last week
@@ -44,7 +44,7 @@ function ScaleQuestion({ question, value, onChange }) {
   const emojis = ['😫', '😕', '😐', '🙂', '😄'];
   const labels = ['Terrible', 'Poor', 'Okay', 'Good', 'Excellent'];
   const idx = Math.floor((value - 1) / 2);
-  const color = value <= 3 ? '#EF4444' : value <= 6 ? '#F59E0B' : '#22C55E';
+  const color = value <= 3 ? 'rgb(var(--destructive))' : value <= 6 ? 'rgb(var(--warning))' : 'rgb(var(--success))';
 
   return (
     <div className="flex flex-col items-center">
@@ -56,7 +56,7 @@ function ScaleQuestion({ question, value, onChange }) {
             onChange={e => onChange(parseInt(e.target.value))}
             className="w-full h-2 rounded-full appearance-none"
             style={{
-              background: `linear-gradient(to right, #EF4444 0%, #F59E0B 50%, #22C55E 100%)`,
+              background: `linear-gradient(to right, rgb(var(--destructive)) 0%, rgb(var(--warning)) 50%, rgb(var(--success)) 100%)`,
               WebkitAppearance: 'slider-horizontal',
             }} />
         </div>
@@ -87,9 +87,9 @@ function MoodQuestion({ question, value, onChange }) {
             onClick={() => onChange(Object.keys(moodLabels)[Object.values(moodLabels).indexOf(i)])}
             className="w-20 h-20 rounded-3xl flex items-center justify-center text-5xl transition-all"
             style={{
-              background: i === selectedIdx ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#FFFFFF',
-              border: i === selectedIdx ? '3px solid white' : '2px solid #E5E7EB',
-              boxShadow: i === selectedIdx ? '0 0 20px rgba(37,99,235,0.4)' : 'none',
+              background: i === selectedIdx ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--card))',
+              border: i === selectedIdx ? '3px solid white' : '2px solid rgb(var(--border))',
+              boxShadow: i === selectedIdx ? '0 0 20px rgb(var(--primary) / 0.4)' : 'none',
             }}>
             {emoji}
           </motion.button>
@@ -124,10 +124,10 @@ function MultipleChoiceQuestion({ question, value, onChange }) {
               className="w-full py-4 rounded-2xl text-center font-bold text-white transition-all"
               style={{
                 background: selected
-                  ? 'linear-gradient(135deg, rgba(37,99,235,0.3), rgba(99,102,241,0.2))'
+                  ? 'linear-gradient(135deg, rgb(var(--primary) / 0.3), rgba(99,102,241,0.2))'
                   : 'rgba(255,255,255,0.05)',
-                border: selected ? '2px solid #60A5FA' : '1px solid rgba(255,255,255,0.1)',
-                boxShadow: selected ? '0 0 16px rgba(37,99,235,0.2)' : 'none',
+                border: selected ? '2px solid rgb(var(--primary))' : '1px solid rgba(255,255,255,0.1)',
+                boxShadow: selected ? '0 0 16px rgb(var(--primary) / 0.2)' : 'none',
               }}>
               {selected && <span className="mr-2">✓</span>}
               {opt}
@@ -146,8 +146,8 @@ function YesNoQuestion({ question, value, onChange }) {
       <h2 className="text-white font-black text-2xl text-center mb-8">{question.label}</h2>
       <div className="flex gap-4">
         {[
-          { label: 'Yes ✓', val: true, color: '#10B981' },
-          { label: 'No ✗', val: false, color: '#EF4444' },
+          { label: 'Yes ✓', val: true, color: 'rgb(var(--success))' },
+          { label: 'No ✗', val: false, color: 'rgb(var(--destructive))' },
         ].map(btn => (
           <motion.button
             key={btn.label}
@@ -210,7 +210,7 @@ export default function CheckInFormScreen({ form, responses, onResponseChange, o
   if (!q) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900"
+    <div className="fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-sidebar via-sidebar to-sidebar"
       style={{ paddingTop: 'max(env(safe-area-inset-top), 14px)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 80px)' }}>
 
       {/* Header */}
@@ -226,7 +226,7 @@ export default function CheckInFormScreen({ form, responses, onResponseChange, o
 
       {/* Progress bar */}
       <div className="h-1 bg-white/10 mx-5 rounded-full overflow-hidden flex-shrink-0">
-        <motion.div animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+        <motion.div animate={{ width: `${progress}%` }} transition={{ duration: 0.5 }} className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
       </div>
 
       {/* Content */}
@@ -252,7 +252,7 @@ export default function CheckInFormScreen({ form, responses, onResponseChange, o
         </button>
         <button onClick={goNext}
           className="flex-1 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 text-white"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
           {currentQ === totalQ - 1 ? 'Review' : 'Next'} <ChevronRight className="w-4 h-4" />
         </button>
       </div>

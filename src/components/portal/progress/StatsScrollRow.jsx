@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 
-function StatCard({ emoji, label, value, sub, color = '#3B82F6' }) {
+function StatCard({ emoji, label, value, sub, color = 'rgb(var(--primary))' }) {
   return (
     <div className="flex-shrink-0 w-32 p-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
       <div className="text-xl mb-1">{emoji}</div>
       <p className="text-white font-bold text-lg leading-none" style={{ color }}>{value ?? '—'}</p>
-      {sub && <p className="text-[10px] mt-0.5" style={{ color: sub.startsWith('-') ? '#22C55E' : sub.startsWith('+') ? '#F59E0B' : 'rgba(255,255,255,0.3)' }}>{sub}</p>}
+      {sub && <p className="text-[10px] mt-0.5" style={{ color: sub.startsWith('-') ? 'rgb(var(--success))' : sub.startsWith('+') ? 'rgb(var(--warning))' : 'rgba(255,255,255,0.3)' }}>{sub}</p>}
       <p className="text-white/30 text-[9px] mt-0.5 font-semibold uppercase tracking-wider">{label}</p>
     </div>
   );
@@ -50,12 +50,12 @@ export default function StatsScrollRow({ client, checkIns, workoutSessions, badg
 
   return (
     <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4">
-      <StatCard emoji="⚖️" label="Current Weight" value={stats.currentWeight} sub={stats.change} color="#60A5FA" />
-      <StatCard emoji="📉" label="Total Change" value={stats.change || '—'} color={stats.change?.startsWith('-') ? '#22C55E' : '#F59E0B'} />
+      <StatCard emoji="⚖️" label="Current Weight" value={stats.currentWeight} sub={stats.change} color="rgb(var(--primary))" />
+      <StatCard emoji="📉" label="Total Change" value={stats.change || '—'} color={stats.change?.startsWith('-') ? 'rgb(var(--success))' : 'rgb(var(--warning))'} />
       <StatCard emoji="🔥" label="Week Streak" value={stats.streak} color="#F97316" />
-      <StatCard emoji="💪" label="Workouts Done" value={stats.workouts} color="#A78BFA" />
-      <StatCard emoji="📋" label="Check-ins" value={stats.checkIns} color="#34D399" />
-      <StatCard emoji="🏆" label="Achievements" value={stats.achievements} color="#FCD34D" />
+      <StatCard emoji="💪" label="Workouts Done" value={stats.workouts} color="rgb(var(--ai))" />
+      <StatCard emoji="📋" label="Check-ins" value={stats.checkIns} color="rgb(var(--success))" />
+      <StatCard emoji="🏆" label="Achievements" value={stats.achievements} color="rgb(var(--warning))" />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { format } from 'date-fns';
 import { Lock } from 'lucide-react';
@@ -15,8 +15,8 @@ const SHIMMER_STYLE = `
   50%       { opacity: 1; }
 }
 @keyframes eliteGlow {
-  0%, 100% { box-shadow: 0 0 16px 3px rgba(37,99,235,0.45), 0 0 40px 6px rgba(120,60,255,0.25); }
-  50%       { box-shadow: 0 0 28px 8px rgba(37,99,235,0.7),  0 0 60px 12px rgba(120,60,255,0.45); }
+  0%, 100% { box-shadow: 0 0 16px 3px color-mix(in srgb, var(--tc-primary) 45%, transparent), 0 0 40px 6px color-mix(in srgb, var(--kc-783cff) 25%, transparent); }
+  50%       { box-shadow: 0 0 28px 8px color-mix(in srgb, var(--tc-primary) 70%, transparent),  0 0 60px 12px color-mix(in srgb, var(--kc-783cff) 45%, transparent); }
 }
 `;
 
@@ -43,17 +43,17 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
     background: `radial-gradient(ellipse at 30% 20%, ${tier.bg}ee 0%, ${tier.bg} 100%)`,
     border: `1px solid ${hovered ? tier.accent : tier.border}`,
     boxShadow: hovered
-      ? `0 0 24px 6px ${tier.glowHover}, 0 8px 32px rgba(0,0,0,0.5)`
-      : `0 0 14px 2px ${tier.glow}, 0 4px 16px rgba(0,0,0,0.4)`,
+      ? `0 0 24px 6px ${tier.glowHover}, 0 8px 32px color-mix(in srgb, black 50%, transparent)`
+      : `0 0 14px 2px ${tier.glow}, 0 4px 16px color-mix(in srgb, black 40%, transparent)`,
     animation: isElite ? 'eliteGlow 2.4s ease-in-out infinite' : undefined,
   } : light ? {
-    background: '#F9FAFB',
-    border: '1px solid #E5E7EB',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    background: 'var(--tc-background)',
+    border: '1px solid var(--tc-border)',
+    boxShadow: '0 1px 3px color-mix(in srgb, black 6%, transparent)',
   } : {
-    background: '#18191F',
-    border: '1px solid rgba(255,255,255,0.06)',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+    background: 'var(--kc-18191f)',
+    border: '1px solid color-mix(in srgb, white 6%, transparent)',
+    boxShadow: '0 2px 8px color-mix(in srgb, black 30%, transparent)',
   };
 
   return (
@@ -72,7 +72,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
         <span
           className="pointer-events-none absolute inset-0 rounded-2xl"
           style={{
-            background: 'linear-gradient(135deg, transparent 40%, rgba(37,99,235,0.25) 50%, transparent 60%)',
+            background: 'linear-gradient(135deg, transparent 40%, color-mix(in srgb, var(--tc-primary) 25%, transparent) 50%, transparent 60%)',
             animation: 'borderPulse 2s ease-in-out infinite',
           }}
         />
@@ -83,7 +83,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
         <span
           className="pointer-events-none absolute inset-0"
           style={{
-            background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.13) 50%, transparent 65%)',
+            background: 'linear-gradient(105deg, transparent 35%, color-mix(in srgb, white 13%, transparent) 50%, transparent 65%)',
             animation: 'badgeShimmer 0.75s ease forwards',
           }}
         />
@@ -92,7 +92,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Lock overlay for unearned */}
       {!earned && (
         <span className="absolute top-2 right-2 opacity-40">
-          <Lock size={10} color={light ? '#D1D5DB' : '#9CA3AF'} />
+          <Lock size={10} color={light ? 'var(--tc-muted-foreground)' : 'var(--tc-muted-foreground)'} />
         </span>
       )}
 
@@ -109,7 +109,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Name */}
       <p
         className="text-[11px] font-bold leading-tight"
-        style={{ color: earned ? tier.text : (light ? '#111827' : '#4B5563') }}
+        style={{ color: earned ? tier.text : (light ? 'var(--tc-foreground)' : 'var(--kc-4b5563)') }}
       >
         {cfg.label}
       </p>
@@ -120,15 +120,15 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
         style={earned
           ? { background: `${tier.accent}22`, color: tier.accent, border: `1px solid ${tier.accent}55` }
           : light
-            ? { background: '#F3F4F6', color: '#9CA3AF', border: '1px solid #E5E7EB' }
-            : { background: 'rgba(255,255,255,0.04)', color: '#4B5563', border: '1px solid rgba(255,255,255,0.08)' }
+            ? { background: 'var(--tc-muted)', color: 'var(--tc-muted-foreground)', border: '1px solid var(--tc-border)' }
+            : { background: 'color-mix(in srgb, white 4%, transparent)', color: 'var(--kc-4b5563)', border: '1px solid color-mix(in srgb, white 8%, transparent)' }
         }
       >
         {tier.label}
       </span>
 
       {/* Description */}
-      <p className="text-[9px] leading-tight" style={{ color: earned ? `${tier.accent}99` : (light ? '#6B7280' : '#374151') }}>
+      <p className="text-[9px] leading-tight" style={{ color: earned ? `${tier.accent}99` : (light ? 'var(--tc-muted-foreground)' : 'var(--tc-foreground)') }}>
         {cfg.desc}
       </p>
 
@@ -152,13 +152,13 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Progress ring for unearned */}
       {showProgress && (
         <div className="flex flex-col items-center gap-0.5 mt-0.5">
-          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-[#E5E7EB]' : 'bg-[#1F2937]'}`}>
+          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-border' : 'bg-[var(--kc-1f2937)]'}`}>
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+              style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             />
           </div>
-          <span className="text-[9px] text-[#4B5563]">{progress}/{progressMax}</span>
+          <span className="text-[9px] text-[var(--kc-4b5563)]">{progress}/{progressMax}</span>
         </div>
       )}
     </motion.button>

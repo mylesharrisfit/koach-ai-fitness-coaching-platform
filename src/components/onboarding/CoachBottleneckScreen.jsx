@@ -40,13 +40,13 @@ export default function CoachBottleneckScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.93 }}
               className="flex flex-col items-center gap-2 py-4 px-2 rounded-2xl text-center transition-all"
               style={{
-                background: isSelected ? 'rgba(59,130,246,0.1)' : '#111',
-                border: isSelected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
-                boxShadow: isSelected ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'var(--tc-foreground)',
+                border: isSelected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 6%, transparent)',
+                boxShadow: isSelected ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
               }}
             >
               <span className="text-xl">{b.emoji}</span>
-              <span className="text-[11px] font-semibold leading-tight" style={{ color: isSelected ? '#fff' : '#7A7A7A' }}>
+              <span className="text-[11px] font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-7a7a7a)' }}>
                 {b.label}
               </span>
               {isSelected && (
@@ -54,7 +54,7 @@ export default function CoachBottleneckScreen({ onNext, onBack, data }) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="w-4 h-4 rounded-full flex items-center justify-center"
-                  style={{ background: '#3B82F6' }}
+                  style={{ background: 'var(--tc-primary)' }}
                 >
                   <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
                     <path d="M1.5 4L3 5.5L6.5 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

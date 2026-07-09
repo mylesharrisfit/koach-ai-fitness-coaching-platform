@@ -7,12 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { DollarSign, Plus, CheckCircle2, Clock, XCircle, TrendingUp } from 'lucide-react';
+import { Plus, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const STATUS_STYLE = {
-  paid: 'bg-emerald-500/10 text-emerald-400',
-  pending: 'bg-amber-500/10 text-amber-400',
+  paid: 'bg-success/10 text-success',
+  pending: 'bg-warning/10 text-warning',
   failed: 'bg-destructive/10 text-destructive',
   refunded: 'bg-muted text-muted-foreground',
 };
@@ -53,8 +53,8 @@ export default function PaymentTracker({ clients }) {
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Payment Tracker</h2>
           <div className="flex items-center gap-4 mt-2">
-            <span className="text-xs text-emerald-400 font-medium">${totalPaid.toLocaleString()} collected</span>
-            <span className="text-xs text-amber-400 font-medium">${totalPending.toLocaleString()} pending</span>
+            <span className="text-xs text-success font-medium">${totalPaid.toLocaleString()} collected</span>
+            <span className="text-xs text-warning font-medium">${totalPending.toLocaleString()} pending</span>
           </div>
         </div>
         <Button size="sm" onClick={() => setShowForm(true)}>
@@ -81,7 +81,7 @@ export default function PaymentTracker({ clients }) {
                 <div className="flex items-center gap-1 justify-end">
                   <Badge className={cn("text-[10px]", STATUS_STYLE[p.status])}>{p.status}</Badge>
                   {p.status === 'pending' && (
-                    <Button size="sm" variant="ghost" className="h-5 text-[10px] text-emerald-400 px-1"
+                    <Button size="sm" variant="ghost" className="h-5 text-[10px] text-success px-1"
                       onClick={() => updateMutation.mutate({ id: p.id, data: { status: 'paid', paid_date: new Date().toISOString().split('T')[0] } })}>
                       Mark Paid
                     </Button>

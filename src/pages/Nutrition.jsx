@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Plus, Sparkles, BookOpen, Users, Search, SlidersHorizontal, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
+import { Sparkles, BookOpen, Users, Search, SlidersHorizontal, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { sendZapierEvent } from '@/lib/zapier';
@@ -141,15 +141,15 @@ export default function Nutrition() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-8">
 
       {/* ── HEADER ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-sidebar rounded-xl p-4 sm:p-5">
         <div>
           <h1 className="text-xl font-heading font-bold text-white tracking-tight">Nutrition System</h1>
-          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
+          <p className="text-sm mt-1" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
            <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => setShowAIModal(true)}
           >
             <Sparkles className="w-4 h-4" />
@@ -157,7 +157,7 @@ export default function Nutrition() {
           </button>
           <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => setShowPDFModal(true)}
           >
             📄 Upload PDF
@@ -165,7 +165,7 @@ export default function Nutrition() {
           <button
             onClick={() => setShowLaunchModal(true)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
-            style={{ background: '#fff', color: '#111827' }}
+            style={{ background: 'var(--tc-card)', color: 'var(--tc-foreground)' }}
           >
             + New Plan
           </button>
@@ -182,7 +182,7 @@ export default function Nutrition() {
             <button
               key={tab.id}
               onClick={() => setMainTab(tab.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${mainTab === tab.id ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex-shrink-0 ${mainTab === tab.id ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <Icon className="w-3.5 h-3.5" />
               {tab.label}
@@ -211,13 +211,13 @@ export default function Nutrition() {
       {/* ── STATS ROW ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Total Plans', value: plans.length, icon: BookOpen, color: 'text-primary', bg: 'bg-blue-50 border-blue-100' },
-          { label: 'Macro Plans', value: plans.filter(p => p.tracking_mode !== 'habits').length, icon: SlidersHorizontal, color: 'text-amber-500', bg: 'bg-amber-50 border-amber-100' },
-          { label: 'Habit Plans', value: plans.filter(p => p.tracking_mode === 'habits').length, icon: Users, color: 'text-emerald-500', bg: 'bg-emerald-50 border-emerald-100' },
-          { label: 'Templates', value: plans.filter(p => p.is_template).length, icon: Sparkles, color: 'text-purple-500', bg: 'bg-purple-50 border-purple-100' },
+          { label: 'Total Plans', value: plans.length, icon: BookOpen, color: 'text-primary', bg: 'bg-accent border-accent' },
+          { label: 'Macro Plans', value: plans.filter(p => p.tracking_mode !== 'habits').length, icon: SlidersHorizontal, color: 'text-warning', bg: 'bg-warning/10 border-warning' },
+          { label: 'Habit Plans', value: plans.filter(p => p.tracking_mode === 'habits').length, icon: Users, color: 'text-success', bg: 'bg-success/10 border-success' },
+          { label: 'Templates', value: plans.filter(p => p.is_template).length, icon: Sparkles, color: 'text-ai', bg: 'bg-ai/10 border-ai' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className={`p-4 rounded-2xl border ${bg} flex items-center gap-3`}>
-            <div className="p-2 bg-white/70 rounded-xl">
+            <div className="p-2 bg-[var(--kc-w-70)] rounded-xl">
               <Icon className={`w-4 h-4 ${color}`} />
             </div>
             <div>
@@ -249,7 +249,7 @@ export default function Nutrition() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === tab ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === tab ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             >
               {tab}
               {tab !== 'All' && (
@@ -267,14 +267,14 @@ export default function Nutrition() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-56 bg-white rounded-2xl border border-[#E7EAF3] animate-pulse" />
+              <div key={i} className="h-56 bg-card rounded-2xl border border-border animate-pulse" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-20 rounded-2xl border-2 border-dashed border-[#E7EAF3]"
+            className="text-center py-20 rounded-2xl border-2 border-dashed border-border"
           >
             <Salad className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
             <p className="font-semibold text-foreground mb-1">

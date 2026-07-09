@@ -21,7 +21,7 @@ function OnboardingDots({ client, checkIns }) {
   return (
     <div className="flex items-center gap-0.5 ml-1" title={`Onboarding: ${done}/${steps.length} steps`}>
       {steps.map((s, i) => (
-        <div key={i} className={cn('w-1.5 h-1.5 rounded-full', s ? 'bg-emerald-400' : 'bg-[#D1D5DB]')} />
+        <div key={i} className={cn('w-1.5 h-1.5 rounded-full', s ? 'bg-success' : 'bg-muted-foreground')} />
       ))}
     </div>
   );
@@ -29,12 +29,12 @@ function OnboardingDots({ client, checkIns }) {
 
 // Lead pipeline stage badge
 const STAGE_COLORS = {
-  new_lead: 'text-gray-500',
-  dmd: 'text-blue-500',
-  call_booked: 'text-amber-500',
-  proposal_sent: 'text-purple-500',
-  closed: 'text-emerald-600',
-  lost: 'text-red-500',
+  new_lead: 'text-muted-foreground',
+  dmd: 'text-primary',
+  call_booked: 'text-warning',
+  proposal_sent: 'text-ai',
+  closed: 'text-success',
+  lost: 'text-destructive',
 };
 const STAGE_LABELS = {
   new_lead: 'New', dmd: "DM'd", call_booked: 'Call', proposal_sent: 'Proposal', closed: 'Closed', lost: 'Lost',
@@ -50,12 +50,12 @@ const GOAL_LABELS = {
 };
 
 const AVATAR_COLORS = [
-  ['bg-[#F3F4F6]', 'text-[#374151]'],
-  ['bg-[#F3F4F6]', 'text-[#374151]'],
-  ['bg-[#F3F4F6]', 'text-[#374151]'],
-  ['bg-[#F3F4F6]', 'text-[#374151]'],
-  ['bg-[#F3F4F6]', 'text-[#374151]'],
-  ['bg-[#F3F4F6]', 'text-[#374151]'],
+  ['bg-muted', 'text-foreground'],
+  ['bg-muted', 'text-foreground'],
+  ['bg-muted', 'text-foreground'],
+  ['bg-muted', 'text-foreground'],
+  ['bg-muted', 'text-foreground'],
+  ['bg-muted', 'text-foreground'],
 ];
 
 function getAvatarColor(name = '') {
@@ -65,20 +65,20 @@ function getAvatarColor(name = '') {
 
 function CheckInAge({ lastCheckIn }) {
   if (!lastCheckIn) return (
-    <span className="text-[10px] text-[#9CA3AF]">No check-ins yet</span>
+    <span className="text-[10px] text-muted-foreground">No check-ins yet</span>
   );
   const days = Math.floor((Date.now() - new Date(lastCheckIn.date)) / 86400000);
   const label = days === 0 ? 'Today' : days === 1 ? '1 day ago' : `${days} days ago`;
-  const color = days <= 7 ? 'text-[#16A34A]' : days <= 14 ? 'text-[#D97706]' : 'text-[#DC2626]';
+  const color = days <= 7 ? 'text-success' : days <= 14 ? 'text-warning' : 'text-destructive';
   return <span className={cn('text-[10px] font-medium', color)}>{label}</span>;
 }
 
 /* ── Adherence bar (expanded view) ── */
 function AdherenceBar({ score }) {
-  if (score === null) return <div className="h-1 w-full rounded-full bg-[#E5E7EB] mt-1" />;
-  const color = score >= 80 ? 'bg-[#16A34A]' : score >= 60 ? 'bg-[#D97706]' : 'bg-[#DC2626]';
+  if (score === null) return <div className="h-1 w-full rounded-full bg-border mt-1" />;
+  const color = score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-destructive';
   return (
-    <div className="h-1 w-full rounded-full bg-[#E5E7EB] mt-1 overflow-hidden">
+    <div className="h-1 w-full rounded-full bg-border mt-1 overflow-hidden">
       <div className={cn('h-full rounded-full transition-all', color)} style={{ width: `${Math.min(score, 100)}%` }} />
     </div>
   );
@@ -87,15 +87,15 @@ function AdherenceBar({ score }) {
 export default function ClientRow({ client, score, priorityScore, lastCheckIn, checkInCount = 0, compact = false, onEdit, onDelete, onStatusChange, onView, selected, onSelect }) {
   const initials = (client.name || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
   const [avatarBg, avatarText] = getAvatarColor(client.name);
-  const scoreColor = score === null ? '' : score >= 80 ? 'text-[#16A34A]' : score >= 60 ? 'text-[#D97706]' : 'text-[#DC2626]';
+  const scoreColor = score === null ? '' : score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive';
   const isLead = (client.lifecycle_status || 'lead') === 'lead';
 
   return (
     <div
       className={cn(
-        'flex items-center gap-3 px-4 bg-white border-b border-[#E5E7EB] hover:bg-[#F9FAFB] transition-colors cursor-pointer group',
+        'flex items-center gap-3 px-4 bg-card border-b border-border hover:bg-background transition-colors cursor-pointer group',
         compact ? 'py-2' : 'py-3',
-        selected && 'bg-[#F3F4F6] hover:bg-[#F3F4F6]'
+        selected && 'bg-muted hover:bg-muted'
       )}
       onClick={onView}
     >
@@ -103,7 +103,7 @@ export default function ClientRow({ client, score, priorityScore, lastCheckIn, c
       <div className="flex-shrink-0" onClick={e => { e.stopPropagation(); onSelect?.(); }}>
         {selected
           ? <CheckSquare className="w-4 h-4 text-primary" />
-          : <Square className="w-4 h-4 text-[#D1D5DB] opacity-0 group-hover:opacity-100 transition-opacity" />
+          : <Square className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
         }
       </div>
 
@@ -121,7 +121,7 @@ export default function ClientRow({ client, score, priorityScore, lastCheckIn, c
       {/* Name + email + (expanded: goal/tags/bar) */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <p className={cn('font-bold text-[#1F2A44] truncate leading-tight', compact ? 'text-xs' : 'text-sm')}>{client.name}</p>
+          <p className={cn('font-bold text-foreground truncate leading-tight', compact ? 'text-xs' : 'text-sm')}>{client.name}</p>
           {priorityScore !== null && priorityScore !== undefined && <PriorityScoreBadge score={priorityScore} />}
           {!compact && <OnboardingDots client={client} checkIns={checkInCount} />}
           {isLead && client.pipeline_stage && client.pipeline_stage !== 'new_lead' && (
@@ -130,24 +130,24 @@ export default function ClientRow({ client, score, priorityScore, lastCheckIn, c
             </span>
           )}
         </div>
-        <p className="text-xs text-[#6B7280] truncate leading-tight">{client.email}</p>
+        <p className="text-xs text-muted-foreground truncate leading-tight">{client.email}</p>
 
         {/* Expanded-only: goal + tags + adherence bar */}
         {!compact && (
           <>
             <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
               {client.goal ? (
-                <span className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#F3F4F6] text-[#374151] flex-shrink-0">
+                <span className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-muted text-foreground flex-shrink-0">
                   {GOAL_LABELS[client.goal] || client.goal}
                 </span>
               ) : (
-                <span className="text-[10px] text-[#C4C9D8] flex-shrink-0">No goal set</span>
+                <span className="text-[10px] text-muted-foreground flex-shrink-0">No goal set</span>
               )}
               {(client.tags || []).slice(0, 2).map(tag => (
-                <span key={tag} className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-[#F3F4F6] text-[#374151] flex-shrink-0">#{tag}</span>
+                <span key={tag} className="text-[10px] font-medium px-1.5 py-0 rounded-md bg-muted text-foreground flex-shrink-0">#{tag}</span>
               ))}
               {(client.tags || []).length > 2 && (
-                <span className="text-[10px] text-[#9CA3AF]">+{client.tags.length - 2}</span>
+                <span className="text-[10px] text-muted-foreground">+{client.tags.length - 2}</span>
               )}
             </div>
             <AdherenceBar score={score} />
@@ -165,27 +165,27 @@ export default function ClientRow({ client, score, priorityScore, lastCheckIn, c
         {score !== null ? (
           <>
             <span className={cn('font-bold tabular-nums leading-tight', compact ? 'text-xs' : 'text-sm', scoreColor)}>{score}%</span>
-            {compact && <span className="text-[10px] text-[#9CA3AF]">adherence</span>}
+            {compact && <span className="text-[10px] text-muted-foreground">adherence</span>}
           </>
         ) : (
-          <span className="text-xs text-[#C4C9D8]">—</span>
+          <span className="text-xs text-muted-foreground">—</span>
         )}
       </div>
 
       {/* Last check-in */}
       <div className="hidden lg:flex flex-col items-end flex-shrink-0 w-24">
         <CheckInAge lastCheckIn={lastCheckIn} />
-        <span className="text-[10px] text-[#9CA3AF]">check-in</span>
+        <span className="text-[10px] text-muted-foreground">check-in</span>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-1 flex-shrink-0 ml-1" onClick={e => e.stopPropagation()}>
-        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-[#374151]" onClick={onView}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-foreground" onClick={onView}>
           <ArrowRight className="w-4 h-4" />
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-[#374151]">
+            <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-foreground">
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -194,21 +194,21 @@ export default function ClientRow({ client, score, priorityScore, lastCheckIn, c
               <Edit className="w-4 h-4 mr-2" /> Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <div className="px-2 py-1 text-[10px] text-[#9CA3AF] font-semibold uppercase tracking-wide">Move to Stage</div>
+            <div className="px-2 py-1 text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">Move to Stage</div>
             {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
               <DropdownMenuItem key={s} onClick={() => onStatusChange(s)}>
                 <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {
-                  'bg-amber-400': s === 'lead',
-                  'bg-emerald-400': s === 'active',
-                  'bg-red-400': s === 'at_risk',
-                  'bg-blue-400': s === 'completed',
-                  'bg-purple-400': s === 'alumni',
+                  'bg-warning': s === 'lead',
+                  'bg-success': s === 'active',
+                  'bg-destructive': s === 'at_risk',
+                  'bg-primary': s === 'completed',
+                  'bg-ai': s === 'alumni',
                 })} />
                 {LIFECYCLE_CONFIG[s].label}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" onClick={onDelete}>
+            <DropdownMenuItem className="text-destructive" onClick={onDelete}>
               <Trash2 className="w-4 h-4 mr-2" /> Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

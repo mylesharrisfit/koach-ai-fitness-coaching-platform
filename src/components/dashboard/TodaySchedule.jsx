@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { format, parseISO, isToday } from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar, Video, MapPin, Phone, Clipboard, MessageSquare, Play, CalendarPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 
 const TYPE_LABELS = {
   video_call:   { label: 'Video Call',      Icon: Video },
@@ -14,18 +13,18 @@ const TYPE_LABELS = {
 };
 
 const STATUS_CONFIG = {
-  scheduled:  { label: 'Upcoming',   style: { background: '#eff6ff', color: '#2563eb', border: '#bfdbfe' } },
-  completed:  { label: 'Completed',  style: { background: '#f9fafb', color: '#6b7280', border: '#e5e7eb' } },
-  cancelled:  { label: 'Cancelled',  style: { background: '#fef2f2', color: '#dc2626', border: '#fecaca' } },
-  no_show:    { label: 'No Show',    style: { background: '#fef2f2', color: '#dc2626', border: '#fecaca' } },
+  scheduled:  { label: 'Upcoming',   style: { background: 'var(--tc-accent)', color: 'var(--tc-primary)', border: 'var(--tc-accent)' } },
+  completed:  { label: 'Completed',  style: { background: 'var(--tc-background)', color: 'var(--tc-muted-foreground)', border: 'var(--tc-border)' } },
+  cancelled:  { label: 'Cancelled',  style: { background: 'var(--tc-destructive)', color: 'var(--tc-destructive)', border: 'var(--tc-destructive)' } },
+  no_show:    { label: 'No Show',    style: { background: 'var(--tc-destructive)', color: 'var(--tc-destructive)', border: 'var(--tc-destructive)' } },
 };
 
 const AVATAR_COLORS = [
-  ['#3b82f6', '#dbeafe'],
-  ['#8b5cf6', '#ede9fe'],
-  ['#10b981', '#d1fae5'],
-  ['#f59e0b', '#fef3c7'],
-  ['#ef4444', '#fee2e2'],
+  ['var(--tc-primary)', 'var(--tc-accent)'],
+  ['var(--tc-ai)', 'var(--tc-ai)'],
+  ['var(--tc-success)', 'var(--tc-success)'],
+  ['var(--tc-warning)', 'var(--tc-warning)'],
+  ['var(--tc-destructive)', 'var(--tc-destructive)'],
 ];
 function getAvatarColor(name = '') {
   const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
@@ -94,16 +93,16 @@ function SessionCard({ session, clients, onMessage }) {
 
   return (
     <div
-      className="flex-shrink-0 w-64 rounded-xl p-4 flex flex-col gap-3 bg-white transition-all"
+      className="flex-shrink-0 w-64 rounded-xl p-4 flex flex-col gap-3 bg-card transition-all"
       style={{
         border: startingSoon
-          ? '1.5px solid #00d4ff'
+          ? '1.5px solid var(--kc-00d4ff)'
           : inProgress
-          ? '1.5px solid #00ff88'
-          : '1px solid #e5e7eb',
+          ? '1.5px solid var(--kc-00ff88)'
+          : '1px solid var(--tc-border)',
         boxShadow: startingSoon
-          ? '0 0 16px rgba(0,212,255,0.2), 0 2px 6px rgba(0,0,0,0.06)'
-          : '0 1px 4px rgba(0,0,0,0.05)',
+          ? '0 0 16px color-mix(in srgb, var(--kc-00d4ff) 20%, transparent), 0 2px 6px color-mix(in srgb, black 6%, transparent)'
+          : '0 1px 4px color-mix(in srgb, black 5%, transparent)',
       }}
     >
       {/* Top: avatar + name + badges */}
@@ -117,11 +116,11 @@ function SessionCard({ session, clients, onMessage }) {
             : initials}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-gray-800 truncate leading-tight">{clientName}</p>
+          <p className="text-sm font-bold text-foreground truncate leading-tight">{clientName}</p>
           <div className="flex items-center gap-1 mt-0.5 flex-wrap">
             <div className="flex items-center gap-1">
-              <TypeIcon className="w-3 h-3 text-gray-400" />
-              <span className="text-[10px] text-gray-400 font-medium">{typeConfig.label}</span>
+              <TypeIcon className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground font-medium">{typeConfig.label}</span>
             </div>
           </div>
         </div>
@@ -129,13 +128,13 @@ function SessionCard({ session, clients, onMessage }) {
 
       {/* Time + status badges */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-sm font-bold text-gray-700">{displayTime}</span>
+        <span className="text-sm font-bold text-foreground">{displayTime}</span>
 
         {/* In-progress badge */}
         {inProgress && (
           <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+            style={{ background: 'var(--tc-success)', color: 'var(--tc-success)', border: '1px solid var(--tc-success)' }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse inline-block" />
             In Progress
           </span>
         )}
@@ -143,7 +142,7 @@ function SessionCard({ session, clients, onMessage }) {
         {/* Starting soon badge */}
         {startingSoon && !inProgress && (
           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-            style={{ background: 'rgba(0,212,255,0.1)', color: '#0891b2', border: '1px solid rgba(0,212,255,0.3)' }}>
+            style={{ background: 'color-mix(in srgb, var(--kc-00d4ff) 10%, transparent)', color: 'var(--kc-0891b2)', border: '1px solid color-mix(in srgb, var(--kc-00d4ff) 30%, transparent)' }}>
             Starting Soon
           </span>
         )}
@@ -170,7 +169,7 @@ function SessionCard({ session, clients, onMessage }) {
               target="_blank"
               rel="noreferrer"
               className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
-              style={{ background: '#2D8CFF', color: 'white' }}
+              style={{ background: 'var(--kc-2d8cff)', color: 'white' }}
             >
               <Video className="w-3 h-3" /> Start Zoom
             </a>
@@ -178,15 +177,15 @@ function SessionCard({ session, clients, onMessage }) {
             <button
               onClick={() => navigate(`/schedule`)}
               className="flex-1 flex items-center justify-center gap-1 text-[11px] font-semibold px-2 py-1.5 rounded-lg transition-all"
-              style={{ background: 'linear-gradient(135deg, #00d4ff, #6366f1)', color: 'white' }}
+              style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))', color: 'white' }}
             >
               <Play className="w-3 h-3" /> Start
             </button>
           )}
           <button
             onClick={() => onMessage && onMessage(session.client_id)}
-            className="flex items-center justify-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-all hover:bg-gray-50"
-            style={{ border: '1px solid #e5e7eb', color: '#374151' }}
+            className="flex items-center justify-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-all hover:bg-muted"
+            style={{ border: '1px solid var(--tc-border)', color: 'var(--tc-foreground)' }}
           >
             <MessageSquare className="w-3 h-3" />
           </button>
@@ -221,22 +220,22 @@ export default function TodaySchedule({ clients = [] }) {
   };
 
   return (
-    <div className="rounded-xl bg-white border border-gray-100 shadow-sm overflow-hidden"
-      style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
+    <div className="rounded-xl bg-card border border-border shadow-sm overflow-hidden"
+      style={{ boxShadow: '0 1px 6px color-mix(in srgb, black 6%, transparent)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgba(0,212,255,0.15), rgba(99,102,241,0.15))' }}>
-            <Calendar className="w-3.5 h-3.5" style={{ color: '#6366f1' }} />
+            style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--kc-00d4ff) 15%, transparent), color-mix(in srgb, var(--tc-primary) 15%, transparent))' }}>
+            <Calendar className="w-3.5 h-3.5" style={{ color: 'var(--tc-primary)' }} />
           </div>
-          <h2 className="text-sm font-bold text-gray-900">Today's Schedule</h2>
-          <span className="text-xs text-gray-400 font-medium">{format(new Date(), 'EEEE, MMM d')}</span>
+          <h2 className="text-sm font-bold text-foreground">Today's Schedule</h2>
+          <span className="text-xs text-muted-foreground font-medium">{format(new Date(), 'EEEE, MMM d')}</span>
         </div>
         <button
           onClick={() => navigate('/schedule')}
           className="text-xs font-semibold hover:opacity-70 transition-opacity"
-          style={{ color: '#6366f1' }}
+          style={{ color: 'var(--tc-primary)' }}
         >
           View Calendar →
         </button>
@@ -247,23 +246,23 @@ export default function TodaySchedule({ clients = [] }) {
         {isLoading ? (
           <div className="flex gap-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="flex-shrink-0 w-64 h-36 rounded-xl bg-gray-100 animate-pulse" />
+              <div key={i} className="flex-shrink-0 w-64 h-36 rounded-xl bg-muted animate-pulse" />
             ))}
           </div>
         ) : todaySessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-6 text-center gap-3">
             <div className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: '#f8f9fa' }}>
-              <Calendar className="w-5 h-5 text-gray-300" />
+              style={{ background: 'var(--tc-muted)' }}>
+              <Calendar className="w-5 h-5 text-border" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-500">No sessions scheduled today</p>
-              <p className="text-xs text-gray-400 mt-0.5">Enjoy the day! 🌟</p>
+              <p className="text-sm font-semibold text-muted-foreground">No sessions scheduled today</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Enjoy the day! 🌟</p>
             </div>
             <button
               onClick={() => navigate('/schedule')}
-              className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all hover:bg-gray-50"
-              style={{ border: '1px solid #e5e7eb', color: '#6b7280' }}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all hover:bg-muted"
+              style={{ border: '1px solid var(--tc-border)', color: 'var(--tc-muted-foreground)' }}
             >
               <CalendarPlus className="w-3 h-3 inline mr-1" />
               Schedule a Session

@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils';
 import { CheckCircle2, Flag, Clock, ChevronDown } from 'lucide-react';
 
 const STATUS_CONFIG = {
-  pending:  { label: 'Pending',  icon: Clock,        bg: 'bg-amber-50 text-amber-600 border-amber-200',  dot: 'bg-amber-400' },
-  reviewed: { label: 'Reviewed', icon: CheckCircle2, bg: 'bg-emerald-50 text-emerald-600 border-emerald-200', dot: 'bg-emerald-500' },
-  flagged:  { label: 'Flagged',  icon: Flag,         bg: 'bg-red-50 text-red-500 border-red-200',        dot: 'bg-red-500' },
+  pending:  { label: 'Pending',  icon: Clock,        bg: 'bg-warning/10 text-warning border-warning',  dot: 'bg-warning' },
+  reviewed: { label: 'Reviewed', icon: CheckCircle2, bg: 'bg-success/10 text-success border-success', dot: 'bg-success' },
+  flagged:  { label: 'Flagged',  icon: Flag,         bg: 'bg-destructive/10 text-destructive border-destructive',        dot: 'bg-destructive' },
 };
 
 export default function CheckInStatusBadge({ checkIn, queryKey = 'checkins-review', compact = false }) {
@@ -50,7 +50,7 @@ export default function CheckInStatusBadge({ checkIn, queryKey = 'checkins-revie
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute top-full mt-1 left-0 z-50 bg-white border border-[#E7EAF3] rounded-xl shadow-lg overflow-hidden min-w-[130px]">
+          <div className="absolute top-full mt-1 left-0 z-50 bg-card border border-border rounded-xl shadow-lg overflow-hidden min-w-[130px]">
             {STATUSES.map(s => {
               const c = STATUS_CONFIG[s];
               const SIcon = c.icon;
@@ -59,12 +59,12 @@ export default function CheckInStatusBadge({ checkIn, queryKey = 'checkins-revie
                   key={s}
                   onClick={() => { mutation.mutate(s); setOpen(false); }}
                   className={cn(
-                    'w-full flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold hover:bg-[#F6F7FB] transition-colors text-left',
-                    status === s && 'bg-[#F6F7FB]'
+                    'w-full flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold hover:bg-muted transition-colors text-left',
+                    status === s && 'bg-muted'
                   )}
                 >
                   <span className={cn('w-2 h-2 rounded-full flex-shrink-0', c.dot)} />
-                  <SIcon className="w-3.5 h-3.5 text-[#6B7280]" />
+                  <SIcon className="w-3.5 h-3.5 text-muted-foreground" />
                   {c.label}
                 </button>
               );

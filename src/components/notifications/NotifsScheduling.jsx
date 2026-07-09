@@ -48,9 +48,9 @@ export default function NotifsScheduling({ s, set }) {
         description="Morning summary of today's scheduled sessions">
         <NDelivery value={d.daily_sessions.delivery} onChange={v => upd('daily_sessions', { delivery: v })} />
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-slate-500">at</span>
+          <span className="text-xs text-muted-foreground">at</span>
           <input type="time" value={d.daily_sessions.time || '07:00'} onChange={e => upd('daily_sessions', { time: e.target.value })}
-            className="px-2 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-blue-400 font-semibold text-slate-700" />
+            className="px-2 py-1.5 rounded-lg border border-border text-xs focus:outline-none focus:border-primary font-semibold text-foreground" />
         </div>
       </NRow>
     </NSection>

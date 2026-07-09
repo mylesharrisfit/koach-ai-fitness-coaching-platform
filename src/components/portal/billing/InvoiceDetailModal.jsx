@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Download, CreditCard, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { X, Download, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { format, parseISO, differenceInDays } from 'date-fns';
 
 const fmt = (n) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -20,7 +20,7 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
       onClick={e => e.target === e.currentTarget && onClose()}>
       <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 28 }}
         className="w-full overflow-y-auto"
-        style={{ background: '#111827', borderRadius: '24px 24px 0 0', maxHeight: '92vh', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        style={{ background: 'rgb(var(--sidebar))', borderRadius: '24px 24px 0 0', maxHeight: '92vh', paddingBottom: 'env(safe-area-inset-bottom)' }}>
 
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-2">
@@ -40,29 +40,29 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
 
         {/* Status banner */}
         {isPaid && (
-          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.25)' }}>
-            <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgb(var(--success) / 0.15)', border: '1px solid rgb(var(--success) / 0.25)' }}>
+            <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
             <div>
-              <p className="text-green-400 font-bold text-sm">Paid ✓</p>
+              <p className="text-success font-bold text-sm">Paid ✓</p>
               <p className="text-white/40 text-xs">{invoice.paid_date ? `Paid on ${fmtDate(invoice.paid_date)}` : 'Payment received'}</p>
             </div>
           </div>
         )}
 
         {invoice.status === 'overdue' && (
-          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.25)' }}>
-            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgb(var(--destructive) / 0.15)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
+            <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
             <div>
-              <p className="text-red-400 font-bold text-sm">Payment Overdue</p>
+              <p className="text-destructive font-bold text-sm">Payment Overdue</p>
               <p className="text-white/40 text-xs">Was due {fmtDate(invoice.due_date)}</p>
             </div>
           </div>
         )}
 
         {isUnpaid && invoice.status !== 'overdue' && daysUntilDue !== null && daysUntilDue <= 3 && (
-          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.25)' }}>
-            <Clock className="w-5 h-5 text-yellow-400 flex-shrink-0" />
-            <p className="text-yellow-400 font-bold text-sm">Due in {daysUntilDue} day{daysUntilDue !== 1 ? 's' : ''}</p>
+          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgb(var(--warning) / 0.15)', border: '1px solid rgb(var(--warning) / 0.25)' }}>
+            <Clock className="w-5 h-5 text-warning flex-shrink-0" />
+            <p className="text-warning font-bold text-sm">Due in {daysUntilDue} day{daysUntilDue !== 1 ? 's' : ''}</p>
           </div>
         )}
 
@@ -104,13 +104,13 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
           {isUnpaid && (
             <button onClick={() => { onClose(); onPay(invoice); }}
               className="w-full py-4 rounded-2xl text-base font-black text-white"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 8px 24px rgba(37,99,235,0.4)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 24px rgb(var(--primary) / 0.4)' }}>
               Pay Now — {fmt(invoice.amount)}
             </button>
           )}
           {isPaid && (
             <button className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-bold"
-              style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981', border: '1px solid rgba(16,185,129,0.25)' }}>
+              style={{ background: 'rgb(var(--success) / 0.15)', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success) / 0.25)' }}>
               <Download className="w-4 h-4" />
               Download Receipt
             </button>

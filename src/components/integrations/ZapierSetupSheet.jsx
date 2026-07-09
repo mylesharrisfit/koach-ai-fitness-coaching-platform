@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { CheckCircle2, Circle, Zap, Send, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Zap, Send, Clock, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -138,9 +138,9 @@ export default function ZapierSetupSheet({ open, onClose }) {
     <Sheet open={open} onOpenChange={v => !v && onClose()}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto p-0">
         {/* Header */}
-        <div className="bg-[#111827] px-6 pt-6 pb-5">
+        <div className="bg-sidebar px-6 pt-6 pb-5">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-9 h-9 rounded-xl bg-[#FF4A00] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[var(--kc-ff4a00)] flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
             <SheetTitle className="text-white text-lg font-bold">Connect Zapier to KOACH AI</SheetTitle>
@@ -152,10 +152,10 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Step 1: Webhook URL */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-[#111827] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
-              <p className="font-semibold text-[#111827] text-sm">Paste your Zapier Webhook URL</p>
+              <span className="w-6 h-6 rounded-full bg-sidebar text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <p className="font-semibold text-foreground text-sm">Paste your Zapier Webhook URL</p>
             </div>
-            <p className="text-xs text-[#6B7280] mb-3 leading-relaxed">
+            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
               In Zapier, create a new Zap → Trigger: <strong>Webhooks by Zapier</strong> → Event: <strong>Catch Hook</strong> → Copy the webhook URL and paste it here.
             </p>
             <Input
@@ -169,12 +169,12 @@ export default function ZapierSetupSheet({ open, onClose }) {
                 {testing ? 'Sending...' : 'Test Connection'}
               </Button>
               {testResult === 'success' && (
-                <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                <span className="flex items-center gap-1 text-xs text-success font-medium">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Connected
                 </span>
               )}
               {testResult === 'error' && (
-                <span className="flex items-center gap-1 text-xs text-red-500 font-medium">
+                <span className="flex items-center gap-1 text-xs text-destructive font-medium">
                   <AlertCircle className="w-3.5 h-3.5" /> Failed
                 </span>
               )}
@@ -184,28 +184,28 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Step 2: Events */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-[#111827] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
-              <p className="font-semibold text-[#111827] text-sm">Choose trigger events</p>
+              <span className="w-6 h-6 rounded-full bg-sidebar text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <p className="font-semibold text-foreground text-sm">Choose trigger events</p>
             </div>
             <div className="space-y-4">
               {EVENT_GROUPS.map(group => (
                 <div key={group.label}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-1.5">{group.label}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">{group.label}</p>
                   <div className="space-y-1">
                     {group.events.map(ev => (
                       <label key={ev.key}
-                        className="flex items-center gap-3 p-2.5 rounded-xl border border-[#E7EAF3] cursor-pointer hover:bg-[#F9FAFB] transition-colors">
+                        className="flex items-center gap-3 p-2.5 rounded-xl border border-border cursor-pointer hover:bg-background transition-colors">
                         <div
                           onClick={() => toggleEvent(ev.key)}
                           className={cn(
                             'w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer',
-                            selectedEvents.includes(ev.key) ? 'bg-[#111827] border-[#111827]' : 'border-[#D1D5DB]'
+                            selectedEvents.includes(ev.key) ? 'bg-sidebar border-foreground' : 'border-muted-foreground'
                           )}
                         >
                           {selectedEvents.includes(ev.key) && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
                         </div>
-                        <span className="text-sm text-[#374151]">{ev.label}</span>
-                        <span className="ml-auto text-[10px] font-mono text-[#9CA3AF]">{ev.key}</span>
+                        <span className="text-sm text-foreground">{ev.label}</span>
+                        <span className="ml-auto text-[10px] font-mono text-muted-foreground">{ev.key}</span>
                       </label>
                     ))}
                   </div>
@@ -217,11 +217,11 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Step 3: Send test */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-[#111827] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
-              <p className="font-semibold text-[#111827] text-sm">Send a test event</p>
+              <span className="w-6 h-6 rounded-full bg-sidebar text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <p className="font-semibold text-foreground text-sm">Send a test event</p>
             </div>
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-3 mb-3">
-              <pre className="text-xs text-[#374151] whitespace-pre-wrap font-mono">{JSON.stringify({
+            <div className="bg-background border border-border rounded-xl p-3 mb-3">
+              <pre className="text-xs text-foreground whitespace-pre-wrap font-mono">{JSON.stringify({
                 event: "test",
                 timestamp: new Date().toISOString(),
                 app: "KOACH AI",
@@ -237,14 +237,14 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Recent logs */}
           {logs.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">Recent Events</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Recent Events</p>
               <div className="space-y-1.5">
                 {logs.slice(0, 10).map(log => (
-                  <div key={log.id} className="flex items-center gap-3 p-2.5 rounded-xl border border-[#E7EAF3] bg-white">
-                    <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-emerald-400' : 'bg-red-400')} />
-                    <span className="text-xs font-mono text-[#374151] flex-1 truncate">{log.event_type}</span>
-                    {log.client_name && <span className="text-xs text-[#6B7280] truncate max-w-[100px]">{log.client_name}</span>}
-                    <span className="text-[10px] text-[#9CA3AF] flex items-center gap-1 flex-shrink-0">
+                  <div key={log.id} className="flex items-center gap-3 p-2.5 rounded-xl border border-border bg-card">
+                    <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-success' : 'bg-destructive')} />
+                    <span className="text-xs font-mono text-foreground flex-1 truncate">{log.event_type}</span>
+                    {log.client_name && <span className="text-xs text-muted-foreground truncate max-w-[100px]">{log.client_name}</span>}
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
                       <Clock className="w-3 h-3" />
                       {log.sent_at ? formatDistanceToNow(new Date(log.sent_at), { addSuffix: true }) : ''}
                     </span>
@@ -256,7 +256,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
 
           {/* Last triggered info */}
           {currentSettings?.zapier_last_triggered && (
-            <p className="text-xs text-[#9CA3AF] flex items-center gap-1">
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
               <Clock className="w-3 h-3" />
               Last triggered {formatDistanceToNow(new Date(currentSettings.zapier_last_triggered), { addSuffix: true })}
             </p>
@@ -264,7 +264,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
 
           {/* Save */}
           <Button
-            className="w-full bg-[#111827] hover:bg-[#1F2A44] text-white"
+            className="w-full bg-sidebar hover:bg-sidebar text-white"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending}
           >

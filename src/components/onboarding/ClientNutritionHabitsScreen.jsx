@@ -49,10 +49,10 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
               onClick={() => toggleFood(f)}
               className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
               style={{
-                background: favFoods.includes(f) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                border: favFoods.includes(f) ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                color: favFoods.includes(f) ? '#fff' : '#7A7A7A',
-                boxShadow: favFoods.includes(f) ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
+                background: favFoods.includes(f) ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                border: favFoods.includes(f) ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
+                color: favFoods.includes(f) ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                boxShadow: favFoods.includes(f) ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
               }}
             >
               {f}
@@ -62,16 +62,16 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
 
         {/* Dietary restrictions */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Any dietary restrictions?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Any dietary restrictions?</p>
           <div className="flex flex-wrap gap-2.5">
             {DIETS.map(d => (
               <motion.button key={d.id} whileTap={{ scale: 0.95 }}
                 onClick={() => setDiet(diet === d.id ? null : d.id)}
                 className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={{
-                  background: diet === d.id ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                  border: diet === d.id ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                  color: diet === d.id ? '#fff' : '#7A7A7A',
+                  background: diet === d.id ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                  border: diet === d.id ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
+                  color: diet === d.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
                 }}>{d.label}</motion.button>
             ))}
           </div>
@@ -79,17 +79,17 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
 
         {/* Meals per day */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>How many meals per day do you prefer?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>How many meals per day do you prefer?</p>
           <div className="grid grid-cols-2 gap-2.5">
             {MEALS.map(m => (
               <motion.button key={m.id} whileTap={{ scale: 0.95 }}
                 onClick={() => setMeals(m.id)}
                 className="py-4 rounded-2xl text-sm font-semibold transition-all"
                 style={{
-                  background: meals === m.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
-                  border: meals === m.id ? '1.5px solid rgba(59,130,246,0.45)' : '1.5px solid rgba(255,255,255,0.07)',
-                  color: meals === m.id ? '#fff' : '#7A7A7A',
-                  boxShadow: meals === m.id ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                  background: meals === m.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                  border: meals === m.id ? '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+                  color: meals === m.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  boxShadow: meals === m.id ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                 }}>{m.label}</motion.button>
             ))}
           </div>

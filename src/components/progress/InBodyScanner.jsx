@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Loader2, CheckCircle2, ChevronDown, ChevronRight, ArrowLeftRight, X, ScanLine, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, ArrowLeftRight, ScanLine, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
@@ -13,11 +13,11 @@ function ScoreRing({ score }) {
   const r = 28;
   const circ = 2 * Math.PI * r;
   const pct = Math.min(score / 100, 1);
-  const color = score >= 80 ? '#16A34A' : score >= 60 ? '#D97706' : '#DC2626';
+  const color = score >= 80 ? 'var(--tc-success)' : score >= 60 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   return (
     <div className="relative w-16 h-16 flex items-center justify-center">
       <svg width="64" height="64" className="-rotate-90">
-        <circle cx="32" cy="32" r={r} strokeWidth="5" stroke="#E5E7EB" fill="none" />
+        <circle cx="32" cy="32" r={r} strokeWidth="5" stroke="var(--tc-border)" fill="none" />
         <circle cx="32" cy="32" r={r} strokeWidth="5" stroke={color} fill="none"
           strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)}
           strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.8s ease' }} />
@@ -32,16 +32,16 @@ function BMIBar({ bmi }) {
   const clamp = Math.min(Math.max(bmi, 15), 40);
   const pct = ((clamp - 15) / 25) * 100;
   const label = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
-  const color = bmi < 18.5 ? '#93C5FD' : bmi < 25 ? '#16A34A' : bmi < 30 ? '#D97706' : '#DC2626';
+  const color = bmi < 18.5 ? 'var(--tc-primary)' : bmi < 25 ? 'var(--tc-success)' : bmi < 30 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   return (
     <div>
-      <div className="flex justify-between text-xs text-[#6B7280] mb-1">
+      <div className="flex justify-between text-xs text-muted-foreground mb-1">
         <span>15</span><span className="font-medium" style={{ color }}>{label}</span><span>40</span>
       </div>
-      <div className="h-2 bg-[#E5E7EB] rounded-full overflow-hidden">
+      <div className="h-2 bg-border rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
       </div>
-      <p className="text-center text-xs text-[#9CA3AF] mt-0.5">BMI: {bmi}</p>
+      <p className="text-center text-xs text-muted-foreground mt-0.5">BMI: {bmi}</p>
     </div>
   );
 }
@@ -61,15 +61,15 @@ function SegmentalDiagram({ data }) {
 
   return (
     <div>
-      <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-3">Segmental Analysis</p>
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Segmental Analysis</p>
       <div className="grid grid-cols-5 gap-2">
         {segments.map(seg => {
           if (seg.muscle == null) return null;
           return (
-            <div key={seg.label} className="flex flex-col items-center gap-1 bg-[#F9FAFB] rounded-lg p-2 text-center">
-              <p className="text-[9px] text-[#9CA3AF] font-semibold uppercase">{seg.label}</p>
-              <p className="text-sm font-bold text-[#111827]">{seg.muscle} <span className="text-[9px] font-normal text-[#9CA3AF]">lbs</span></p>
-              {seg.fat != null && <p className="text-[10px] text-[#D97706]">Fat: {seg.fat}</p>}
+            <div key={seg.label} className="flex flex-col items-center gap-1 bg-background rounded-lg p-2 text-center">
+              <p className="text-[9px] text-muted-foreground font-semibold uppercase">{seg.label}</p>
+              <p className="text-sm font-bold text-foreground">{seg.muscle} <span className="text-[9px] font-normal text-muted-foreground">lbs</span></p>
+              {seg.fat != null && <p className="text-[10px] text-warning">Fat: {seg.fat}</p>}
             </div>
           );
         })}
@@ -85,9 +85,9 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
   const metricRow = (label, value, unit, color) => {
     if (value == null) return null;
     return (
-      <div className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0">
-        <span className="text-sm text-[#374151]">{label}</span>
-        <span className="text-sm font-semibold" style={{ color: color || '#111827' }}>
+      <div className="flex items-center justify-between py-2 border-b border-muted last:border-0">
+        <span className="text-sm text-foreground">{label}</span>
+        <span className="text-sm font-semibold" style={{ color: color || 'var(--tc-foreground)' }}>
           {value}{unit}
         </span>
       </div>
@@ -97,53 +97,53 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       {results.raw_text && (
-        <div className="bg-[#F8FAFF] border border-[#DBEAFE] rounded-lg p-3 text-xs text-[#2563EB]">
+        <div className="bg-muted border border-accent rounded-lg p-3 text-xs text-primary">
           🤖 {results.raw_text}
         </div>
       )}
 
       {/* Body Composition */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
-        <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider mb-3">Body Composition</p>
+      <div className="bg-card border border-border rounded-xl p-4">
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Body Composition</p>
         {metricRow('Weight', results.weight_lbs, ' lbs')}
         {metricRow('Body Fat %', results.body_fat_percent, '%',
-          results.body_fat_percent > 25 ? '#DC2626' : results.body_fat_percent > 20 ? '#D97706' : '#16A34A')}
+          results.body_fat_percent > 25 ? 'var(--tc-destructive)' : results.body_fat_percent > 20 ? 'var(--tc-warning)' : 'var(--tc-success)')}
         {metricRow('Fat Mass', results.fat_mass_lbs, ' lbs')}
-        {metricRow('Lean Mass', results.lean_mass_lbs, ' lbs', '#16A34A')}
-        {metricRow('Muscle Mass', results.muscle_mass_lbs, ' lbs', '#2563EB')}
+        {metricRow('Lean Mass', results.lean_mass_lbs, ' lbs', 'var(--tc-success)')}
+        {metricRow('Muscle Mass', results.muscle_mass_lbs, ' lbs', 'var(--tc-primary)')}
         {metricRow('Total Body Water', results.total_body_water, ' L')}
       </div>
 
       {/* Segmental */}
       {(results.right_arm_muscle || results.trunk_muscle) && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+        <div className="bg-card border border-border rounded-xl p-4">
           <SegmentalDiagram data={results} />
         </div>
       )}
 
       {/* Health Indicators */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 space-y-4">
-        <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wider">Health Indicators</p>
+      <div className="bg-card border border-border rounded-xl p-4 space-y-4">
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Health Indicators</p>
         <div className="grid grid-cols-2 gap-4">
           {results.inbody_score != null && (
             <div className="flex flex-col items-center gap-1">
               <ScoreRing score={results.inbody_score} />
-              <p className="text-xs text-[#6B7280]">InBody Score</p>
+              <p className="text-xs text-muted-foreground">InBody Score</p>
             </div>
           )}
           {results.bmr != null && (
             <div className="flex flex-col items-center justify-center gap-1">
-              <p className="text-2xl font-bold text-[#111827]">{results.bmr}</p>
-              <p className="text-xs text-[#6B7280]">BMR (kcal/day)</p>
+              <p className="text-2xl font-bold text-foreground">{results.bmr}</p>
+              <p className="text-xs text-muted-foreground">BMR (kcal/day)</p>
             </div>
           )}
           {results.visceral_fat_level != null && (
             <div className="flex flex-col items-center justify-center gap-1">
               <p className="text-2xl font-bold"
-                style={{ color: results.visceral_fat_level < 10 ? '#16A34A' : results.visceral_fat_level < 15 ? '#D97706' : '#DC2626' }}>
+                style={{ color: results.visceral_fat_level < 10 ? 'var(--tc-success)' : results.visceral_fat_level < 15 ? 'var(--tc-warning)' : 'var(--tc-destructive)' }}>
                 {results.visceral_fat_level}
               </p>
-              <p className="text-xs text-[#6B7280]">Visceral Fat</p>
+              <p className="text-xs text-muted-foreground">Visceral Fat</p>
             </div>
           )}
         </div>
@@ -151,8 +151,8 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
       </div>
 
       {/* Save */}
-      <div className="bg-[#F8FAFF] border border-[#DBEAFE] rounded-xl p-4 space-y-3">
-        <p className="text-sm font-semibold text-[#111827]">Save to client profile</p>
+      <div className="bg-muted border border-accent rounded-xl p-4 space-y-3">
+        <p className="text-sm font-semibold text-foreground">Save to client profile</p>
         <Select value={clientId} onValueChange={setClientId}>
           <SelectTrigger className="h-9"><SelectValue placeholder="Select client" /></SelectTrigger>
           <SelectContent>
@@ -160,12 +160,12 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
           </SelectContent>
         </Select>
         {saved ? (
-          <div className="flex items-center gap-2 text-[#16A34A] text-sm font-medium">
+          <div className="flex items-center gap-2 text-success text-sm font-medium">
             <CheckCircle2 className="w-4 h-4" /> Scan saved! Progress charts updated.
           </div>
         ) : (
           <Button
-            className="w-full bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
+            className="w-full bg-primary text-white hover:bg-primary"
             disabled={!clientId || saving}
             onClick={() => onSave(clientId)}
           >
@@ -184,17 +184,17 @@ function ScanHistoryItem({ scan, onSelect, selected }) {
       onClick={() => onSelect(scan)}
       className={cn(
         'w-full text-left px-3 py-2.5 rounded-lg border transition-all',
-        selected ? 'bg-[#EFF6FF] border-[#BFDBFE]' : 'bg-white border-[#E5E7EB] hover:border-[#93C5FD]'
+        selected ? 'bg-accent/10 border-accent' : 'bg-card border-border hover:border-primary'
       )}
     >
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-[#111827]">{format(new Date(scan.scan_date), 'MMM d, yyyy')}</p>
-        {scan.inbody_score && <span className="text-xs font-bold text-[#2563EB]">Score: {scan.inbody_score}</span>}
+        <p className="text-sm font-medium text-foreground">{format(new Date(scan.scan_date), 'MMM d, yyyy')}</p>
+        {scan.inbody_score && <span className="text-xs font-bold text-primary">Score: {scan.inbody_score}</span>}
       </div>
       <div className="flex gap-3 mt-0.5">
-        {scan.weight_lbs && <span className="text-xs text-[#6B7280]">{scan.weight_lbs} lbs</span>}
-        {scan.body_fat_percent && <span className="text-xs text-[#6B7280]">{scan.body_fat_percent}% BF</span>}
-        {scan.muscle_mass_lbs && <span className="text-xs text-[#6B7280]">{scan.muscle_mass_lbs} lbs muscle</span>}
+        {scan.weight_lbs && <span className="text-xs text-muted-foreground">{scan.weight_lbs} lbs</span>}
+        {scan.body_fat_percent && <span className="text-xs text-muted-foreground">{scan.body_fat_percent}% BF</span>}
+        {scan.muscle_mass_lbs && <span className="text-xs text-muted-foreground">{scan.muscle_mass_lbs} lbs muscle</span>}
       </div>
     </button>
   );
@@ -484,13 +484,13 @@ Return null for any field not visible in the scan. Do not include markdown or co
     const va = a[field]; const vb = b[field];
     if (va == null && vb == null) return null;
     const diff = va != null && vb != null ? (vb - va).toFixed(1) : null;
-    const diffColor = diff === null ? '' : Number(diff) < 0 ? '#16A34A' : Number(diff) > 0 ? '#DC2626' : '#6B7280';
+    const diffColor = diff === null ? '' : Number(diff) < 0 ? 'var(--tc-success)' : Number(diff) > 0 ? 'var(--tc-destructive)' : 'var(--tc-muted-foreground)';
     return (
-      <div key={label} className="flex items-center justify-between py-1.5 border-b border-[#F3F4F6] last:border-0 text-sm">
-        <span className="text-[#6B7280] w-28">{label}</span>
-        <span className="font-medium text-[#111827] w-16 text-right">{va != null ? `${va}${unit}` : '—'}</span>
+      <div key={label} className="flex items-center justify-between py-1.5 border-b border-muted last:border-0 text-sm">
+        <span className="text-muted-foreground w-28">{label}</span>
+        <span className="font-medium text-foreground w-16 text-right">{va != null ? `${va}${unit}` : '—'}</span>
         {diff !== null && <span className="w-14 text-right font-semibold text-xs" style={{ color: diffColor }}>{Number(diff) >= 0 ? '+' : ''}{diff}{unit}</span>}
-        <span className="font-medium text-[#111827] w-16 text-right">{vb != null ? `${vb}${unit}` : '—'}</span>
+        <span className="font-medium text-foreground w-16 text-right">{vb != null ? `${vb}${unit}` : '—'}</span>
       </div>
     );
   };
@@ -501,7 +501,7 @@ Return null for any field not visible in the scan. Do not include markdown or co
       <div
         className={cn(
           'border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all',
-          dragOver ? 'border-[#2563EB] bg-[#EFF6FF]' : 'border-[#D1D5DB] hover:border-[#2563EB] hover:bg-[#F8FAFF]'
+          dragOver ? 'border-primary bg-accent/10' : 'border-muted-foreground hover:border-primary hover:bg-muted'
         )}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
@@ -510,20 +510,20 @@ Return null for any field not visible in the scan. Do not include markdown or co
       >
         <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png"
           onChange={e => handleFile(e.target.files[0])} />
-        <ScanLine className="w-10 h-10 mx-auto mb-3 text-[#9CA3AF]" />
-        <p className="font-medium text-[#374151]">Drop InBody scan here or click to upload</p>
-        <p className="text-xs text-[#9CA3AF] mt-1">Accepts: PDF, JPG, PNG</p>
+        <ScanLine className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+        <p className="font-medium text-foreground">Drop InBody scan here or click to upload</p>
+        <p className="text-xs text-muted-foreground mt-1">Accepts: PDF, JPG, PNG</p>
       </div>
 
       {/* Parsing state */}
       <AnimatePresence>
         {parsing && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="flex items-center gap-3 bg-[#F8FAFF] border border-[#DBEAFE] rounded-xl p-4">
-            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB] flex-shrink-0" />
+            className="flex items-center gap-3 bg-muted border border-accent rounded-xl p-4">
+            <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-[#2563EB]">🤖 AI is reading your scan...</p>
-              <p className="text-xs text-[#6B7280] mt-0.5">Extracting all metrics automatically</p>
+              <p className="text-sm font-semibold text-primary">🤖 AI is reading your scan...</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Extracting all metrics automatically</p>
             </div>
           </motion.div>
         )}
@@ -531,7 +531,7 @@ Return null for any field not visible in the scan. Do not include markdown or co
 
       {/* Error */}
       {parseError && (
-        <div className="flex items-start gap-2 bg-[#FEF2F2] border border-[#FCA5A5] rounded-xl p-4 text-sm text-[#DC2626]">
+        <div className="flex items-start gap-2 bg-destructive/10 border border-destructive rounded-xl p-4 text-sm text-destructive">
           <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
           {parseError}
         </div>
@@ -553,13 +553,13 @@ Return null for any field not visible in the scan. Do not include markdown or co
 
       {/* Scan history */}
       {scanHistory.length > 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
-            <p className="text-sm font-semibold text-[#111827]">Scan History ({scanHistory.length})</p>
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <p className="text-sm font-semibold text-foreground">Scan History ({scanHistory.length})</p>
             <button
               onClick={() => { setCompareMode(!compareMode); setComparePair([null, null]); }}
               className={cn('flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg border transition-all',
-                compareMode ? 'bg-[#EFF6FF] text-[#2563EB] border-[#BFDBFE]' : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#2563EB]')}
+                compareMode ? 'bg-accent/10 text-primary border-accent' : 'bg-card text-muted-foreground border-border hover:border-primary')}
             >
               <ArrowLeftRight className="w-3 h-3" /> Compare
             </button>
@@ -567,7 +567,7 @@ Return null for any field not visible in the scan. Do not include markdown or co
 
           <div className="p-3 space-y-2 max-h-64 overflow-y-auto">
             {compareMode && (
-              <p className="text-xs text-[#2563EB] px-1 pb-1">
+              <p className="text-xs text-primary px-1 pb-1">
                 {!comparePair[0] ? 'Select first scan' : !comparePair[1] ? 'Select second scan' : 'Comparing scans below ↓'}
               </p>
             )}
@@ -583,8 +583,8 @@ Return null for any field not visible in the scan. Do not include markdown or co
 
           {/* Compare table */}
           {compareMode && comparePair[0] && comparePair[1] && (
-            <div className="border-t border-[#E5E7EB] p-4">
-              <div className="flex items-center justify-between text-xs font-semibold text-[#6B7280] mb-2 px-1">
+            <div className="border-t border-border p-4">
+              <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground mb-2 px-1">
                 <span className="w-28">Metric</span>
                 <span className="w-16 text-right">{format(new Date(comparePair[0].scan_date), 'MMM d')}</span>
                 <span className="w-14 text-right">Change</span>

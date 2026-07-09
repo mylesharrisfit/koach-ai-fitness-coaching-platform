@@ -46,16 +46,16 @@ export default function QuickCheckInPanel({ client, onClose }) {
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
       <div
-        className="relative w-full max-w-sm bg-white h-full shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full max-w-sm bg-card h-full shadow-2xl flex flex-col overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0F2F8]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
             <ClipboardList className="w-4 h-4 text-primary" />
             <div>
-              <p className="font-bold text-[#1F2A44] text-sm">Log Check-in</p>
-              <p className="text-xs text-[#6B7280]">{client.name}</p>
+              <p className="font-bold text-foreground text-sm">Log Check-in</p>
+              <p className="text-xs text-muted-foreground">{client.name}</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
@@ -67,19 +67,19 @@ export default function QuickCheckInPanel({ client, onClose }) {
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* Weight */}
           <div>
-            <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Weight (lbs)</label>
+            <label className="text-xs font-semibold text-foreground mb-1.5 block">Weight (lbs)</label>
             <Input
               type="number"
               placeholder="e.g. 175"
               value={weight}
               onChange={e => setWeight(e.target.value)}
-              className="border-[#E7EAF3] bg-[#F6F7FB] text-sm"
+              className="border-border bg-muted text-sm"
             />
           </div>
 
           {/* Mood */}
           <div>
-            <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Mood</label>
+            <label className="text-xs font-semibold text-foreground mb-1.5 block">Mood</label>
             <div className="flex flex-wrap gap-2">
               {MOODS.map(m => (
                 <button
@@ -89,7 +89,7 @@ export default function QuickCheckInPanel({ client, onClose }) {
                     'px-3 py-1.5 rounded-lg text-xs font-medium border transition-all',
                     mood === m.key
                       ? 'bg-primary text-white border-primary'
-                      : 'bg-white text-[#374151] border-[#E7EAF3] hover:border-primary/40'
+                      : 'bg-card text-foreground border-border hover:border-primary/40'
                   )}
                 >
                   {m.label}
@@ -100,19 +100,19 @@ export default function QuickCheckInPanel({ client, onClose }) {
 
           {/* Notes */}
           <div>
-            <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Notes</label>
+            <label className="text-xs font-semibold text-foreground mb-1.5 block">Notes</label>
             <Textarea
               placeholder="Any wins, struggles, or feedback…"
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="min-h-[80px] text-sm border-[#E7EAF3] bg-[#F6F7FB] resize-none"
+              className="min-h-[80px] text-sm border-border bg-muted resize-none"
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-4 border-t border-[#F0F2F8] flex gap-2">
-          <Button variant="outline" className="flex-1 border-[#E7EAF3] text-xs" onClick={onClose}>Cancel</Button>
+        <div className="px-5 py-4 border-t border-border flex gap-2">
+          <Button variant="outline" className="flex-1 border-border text-xs" onClick={onClose}>Cancel</Button>
           <Button
             className="flex-1 text-xs"
             disabled={saveMutation.isPending}

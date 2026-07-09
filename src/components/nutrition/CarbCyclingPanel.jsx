@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
 const DAY_TYPES = [
-  { key: 'high', label: 'High Carb', color: 'bg-amber-500 text-white border-amber-500', badge: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { key: 'medium', label: 'Medium Carb', color: 'bg-blue-500 text-white border-blue-500', badge: 'bg-blue-100 text-blue-700 border-blue-200' },
-  { key: 'low', label: 'Low Carb', color: 'bg-emerald-500 text-white border-emerald-500', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  { key: 'high', label: 'High Carb', color: 'bg-warning text-white border-warning', badge: 'bg-warning/10 text-warning border-warning' },
+  { key: 'medium', label: 'Medium Carb', color: 'bg-primary text-white border-primary', badge: 'bg-accent text-primary border-primary' },
+  { key: 'low', label: 'Low Carb', color: 'bg-success text-white border-success', badge: 'bg-success/10 text-success border-success' },
   { key: 'none', label: 'Not Set', color: 'bg-secondary text-muted-foreground border-border', badge: 'bg-secondary text-muted-foreground border-border' },
 ];
 
@@ -32,7 +31,7 @@ export default function CarbCyclingPanel({ value = {}, onChange }) {
   return (
     <div className="space-y-4">
       {/* Toggle */}
-      <div className="flex items-center gap-4 p-3.5 bg-amber-50 border border-amber-100 rounded-xl">
+      <div className="flex items-center gap-4 p-3.5 bg-warning/10 border border-warning rounded-xl">
         <div className="flex-1">
           <p className="text-sm font-semibold text-foreground">Carb Cycling</p>
           <p className="text-xs text-muted-foreground mt-0.5">Assign high/medium/low carb days to the weekly schedule</p>
@@ -40,9 +39,9 @@ export default function CarbCyclingPanel({ value = {}, onChange }) {
         <button
           type="button"
           onClick={() => update({ enabled: !enabled })}
-          className={cn('w-11 h-6 rounded-full transition-all relative flex-shrink-0', enabled ? 'bg-primary' : 'bg-gray-200')}
+          className={cn('w-11 h-6 rounded-full transition-all relative flex-shrink-0', enabled ? 'bg-primary' : 'bg-border')}
         >
-          <div className={cn('w-5 h-5 rounded-full bg-white shadow absolute top-0.5 transition-all', enabled ? 'left-5' : 'left-0.5')} />
+          <div className={cn('w-5 h-5 rounded-full bg-card shadow absolute top-0.5 transition-all', enabled ? 'left-5' : 'left-0.5')} />
         </button>
       </div>
 
@@ -85,7 +84,7 @@ export default function CarbCyclingPanel({ value = {}, onChange }) {
                           onClick={() => setDay(day, dt.key === current ? 'none' : dt.key)}
                           className={cn(
                             'text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all',
-                            current === dt.key ? dt.color : 'bg-white text-muted-foreground border-[#E7EAF3] hover:border-primary/30'
+                            current === dt.key ? dt.color : 'bg-card text-muted-foreground border-border hover:border-primary/30'
                           )}
                         >
                           {dt.label.split(' ')[0]}

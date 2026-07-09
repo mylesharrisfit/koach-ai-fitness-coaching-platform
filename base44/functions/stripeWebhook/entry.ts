@@ -59,12 +59,20 @@ Deno.serve(async (req) => {
     const sig = req.headers.get('stripe-signature');
     const base44 = createClientFromRequest(req);
 
+    // Always verify the Stripe signature. Never trust an unsigned body — a
+    // forged event could drive free tier upgrades via syncSubscriptionToUser.
+    if (!webhookSecret) {
+      return Response.json({ error: 'STRIPE_WEBHOOK_SECRET is not configured' }, { status: 500 });
+    }
+    if (!sig) {
+      return Response.json({ error: 'Missing stripe-signature header' }, { status: 400 });
+    }
+
     let event;
-    if (webhookSecret && sig) {
+    try {
       event = await stripe.webhooks.constructEventAsync(rawBody, sig, webhookSecret);
-    } else {
-      const parsed = JSON.parse(rawBody);
-      event = parsed.data?.object ? parsed : { type: parsed.type, data: { object: parsed } };
+    } catch (err) {
+      return Response.json({ error: `Webhook signature verification failed: ${err.message}` }, { status: 400 });
     }
 
     const obj = event.data.object;

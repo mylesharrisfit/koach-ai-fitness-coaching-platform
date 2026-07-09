@@ -41,7 +41,7 @@ export default function BottomNav() {
       <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
 
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden bg-white border-t border-[#E5E7EB]"
+        className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden bg-card border-t border-border"
         style={{ height: '64px', paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {PRIMARY_NAV.map(item => {
@@ -56,17 +56,17 @@ export default function BottomNav() {
               className="flex flex-col items-center justify-center flex-1 gap-0.5 relative min-h-[44px]"
             >
               {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-[#2563EB]" />
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-primary" />
               )}
               <div className="relative">
-                <item.icon className={cn('w-5 h-5', isActive ? 'text-[#2563EB]' : 'text-[#9CA3AF]')} />
+                <item.icon className={cn('w-5 h-5', isActive ? 'text-primary' : 'text-muted-foreground')} />
                 {badge > 0 && (
-                  <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white bg-red-500">
+                  <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white bg-destructive">
                     {badge > 9 ? '9+' : badge}
                   </span>
                 )}
               </div>
-              <span className={cn('text-[9px] font-medium leading-tight', isActive ? 'text-[#2563EB] font-bold' : 'text-[#9CA3AF]')}>
+              <span className={cn('text-[9px] font-medium leading-tight', isActive ? 'text-primary font-bold' : 'text-muted-foreground')}>
                 {item.label}
               </span>
             </Link>
@@ -79,10 +79,10 @@ export default function BottomNav() {
           className="flex flex-col items-center justify-center flex-1 gap-0.5 relative min-h-[44px]"
         >
           {isMoreActive && (
-            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-[#2563EB]" />
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-b-full bg-primary" />
           )}
-          <MoreHorizontal className={cn('w-5 h-5', isMoreActive ? 'text-[#2563EB]' : 'text-[#9CA3AF]')} />
-          <span className={cn('text-[9px] font-medium', isMoreActive ? 'text-[#2563EB] font-bold' : 'text-[#9CA3AF]')}>More</span>
+          <MoreHorizontal className={cn('w-5 h-5', isMoreActive ? 'text-primary' : 'text-muted-foreground')} />
+          <span className={cn('text-[9px] font-medium', isMoreActive ? 'text-primary font-bold' : 'text-muted-foreground')}>More</span>
         </button>
       </nav>
     </>

@@ -8,7 +8,7 @@ const OPTIONS = [
   {
     id: 'ai',
     icon: Sparkles,
-    iconBg: 'bg-gradient-to-br from-blue-500 to-purple-600',
+    iconBg: 'bg-gradient-to-br from-primary to-ai',
     iconColor: 'text-white',
     title: 'AI Plan Builder',
     description: 'Answer a few questions and let AI generate a fully personalized plan in seconds',
@@ -67,7 +67,7 @@ export default function NewPlanLaunchModal({ open, onOpenChange, onSelectAI, onS
                   'hover:shadow-md',
                   isSelected
                     ? 'border-primary bg-accent/60 shadow-md'
-                    : 'border-border bg-white hover:border-primary/40 hover:bg-accent/30'
+                    : 'border-border bg-card hover:border-primary/40 hover:bg-accent/30'
                 )}
               >
                 {/* Selected checkmark */}
@@ -87,7 +87,7 @@ export default function NewPlanLaunchModal({ open, onOpenChange, onSelectAI, onS
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-bold text-foreground">{opt.title}</span>
                     {opt.badge && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent text-primary border border-accent">
                         {opt.badge}
                       </span>
                     )}

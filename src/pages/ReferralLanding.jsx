@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -57,37 +57,37 @@ export default function ReferralLanding() {
 
   if (!referral || !coach) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-muted">
         <div className="text-center">
-          <p className="text-slate-600 font-semibold">Loading...</p>
+          <p className="text-muted-foreground font-semibold">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       {/* Hero */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         className="pt-20 pb-12 px-5 text-center"
-        style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, var(--tc-muted) 0%, var(--tc-muted) 100%)' }}>
         
         {coach.avatar_url && (
           <img src={coach.avatar_url} alt={coach.first_name}
             className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-white"
-            style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }} />
+            style={{ boxShadow: '0 4px 16px color-mix(in srgb, black 10%, transparent)' }} />
         )}
 
-        <h1 className="text-slate-900 font-black text-3xl mb-2">
+        <h1 className="text-foreground font-black text-3xl mb-2">
           Meet Coach {coach.first_name}
         </h1>
 
-        <p className="text-slate-600 text-lg mb-6">
-          <span className="font-bold text-slate-900">{referrerClient?.name}</span> thinks you'd love working with them!
+        <p className="text-muted-foreground text-lg mb-6">
+          <span className="font-bold text-foreground">{referrerClient?.name}</span> thinks you'd love working with them!
         </p>
 
         {coach.short_bio && (
-          <p className="text-slate-600 max-w-2xl mx-auto mb-8">{coach.short_bio}</p>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">{coach.short_bio}</p>
         )}
 
         {/* Specialties */}
@@ -95,7 +95,7 @@ export default function ReferralLanding() {
           <div className="flex flex-wrap gap-2 justify-center mb-8">
             {coach.specialties.slice(0, 3).map((spec, i) => (
               <span key={i} className="px-4 py-2 rounded-full text-sm font-bold"
-                style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                style={{ background: 'var(--tc-accent)', color: 'var(--tc-primary)' }}>
                 {spec}
               </span>
             ))}
@@ -105,28 +105,28 @@ export default function ReferralLanding() {
 
       {/* What's included */}
       <div className="max-w-2xl mx-auto px-5 py-12">
-        <h2 className="text-2xl font-black text-slate-900 mb-6">What's Included</h2>
+        <h2 className="text-2xl font-black text-foreground mb-6">What's Included</h2>
         
         {packages.length > 0 && (
           <div className="space-y-4 mb-8">
             {packages.slice(0, 1).map(pkg => (
-              <div key={pkg.id} className="p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                <h3 className="font-bold text-slate-900 mb-3">{pkg.name}</h3>
-                <ul className="space-y-2 text-slate-700 text-sm">
+              <div key={pkg.id} className="p-5 rounded-2xl bg-muted border border-border">
+                <h3 className="font-bold text-foreground mb-3">{pkg.name}</h3>
+                <ul className="space-y-2 text-foreground text-sm">
                   {pkg.inclusions?.custom_program && (
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Personalized workout program</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-success" /> Personalized workout program</li>
                   )}
                   {pkg.inclusions?.weekly_checkins && (
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Weekly check-ins</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-success" /> Weekly check-ins</li>
                   )}
                   {pkg.inclusions?.meal_plan && (
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Meal plan & nutrition coaching</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-success" /> Meal plan & nutrition coaching</li>
                   )}
                   {pkg.inclusions?.unlimited_messaging && (
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> Unlimited messaging</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-success" /> Unlimited messaging</li>
                   )}
                   {pkg.custom_inclusions?.map((inc, i) => (
-                    <li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-500" /> {inc}</li>
+                    <li key={i} className="flex items-center gap-2"><Check className="w-4 h-4 text-success" /> {inc}</li>
                   ))}
                 </ul>
               </div>
@@ -138,29 +138,29 @@ export default function ReferralLanding() {
         {config?.reward_referred_friend_too && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
             className="p-6 rounded-2xl mb-8"
-            style={{ background: 'linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%)', border: '2px solid #F59E0B' }}>
-            <p className="text-amber-900 font-black text-lg text-center">
+            style={{ background: 'linear-gradient(135deg, var(--tc-warning) 0%, var(--tc-warning) 100%)', border: '2px solid var(--tc-warning)' }}>
+            <p className="text-warning font-black text-lg text-center">
               🎁 {config.new_client_reward_description || 'Special offer for new clients'}
             </p>
           </motion.div>
         )}
 
         {/* Social proof */}
-        <div className="flex items-center justify-center gap-2 p-4 rounded-xl bg-slate-50 mb-8">
-          <Users className="w-4 h-4 text-blue-600" />
-          <p className="text-slate-700 font-semibold">
+        <div className="flex items-center justify-center gap-2 p-4 rounded-xl bg-muted mb-8">
+          <Users className="w-4 h-4 text-primary" />
+          <p className="text-foreground font-semibold">
             Join other clients transforming their fitness
           </p>
         </div>
       </div>
 
       {/* CTA */}
-      <div className="px-5 py-12 bg-gradient-to-t from-slate-50">
+      <div className="px-5 py-12 bg-gradient-to-t from-muted">
         <button className="w-full max-w-2xl mx-auto block py-4 rounded-xl font-black text-white text-lg flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 8px 32px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 8px 32px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
           Claim Your Spot <ArrowRight className="w-5 h-5" />
         </button>
-        <p className="text-center text-slate-500 text-sm mt-4">
+        <p className="text-center text-muted-foreground text-sm mt-4">
           Start your transformation today
         </p>
       </div>

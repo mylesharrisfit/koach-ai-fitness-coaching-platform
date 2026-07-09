@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Dumbbell, Salad, Users, Package, Layers, BookOpen, Video, EyeOff, Star, Edit, Eye, ShoppingCart, Loader2, ExternalLink } from 'lucide-react';
+import { Dumbbell, Salad, Users, Package, Layers, EyeOff, Star, Edit, Eye, ShoppingCart, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const CATEGORY_STYLES = {
-  workout:   { badge: 'bg-[#EFF6FF] text-[#2563EB]',   icon: Dumbbell, gradient: 'from-[#EFF6FF] to-[#DBEAFE]' },
-  nutrition: { badge: 'bg-[#F0FDF4] text-[#16A34A]',   icon: Salad,    gradient: 'from-[#F0FDF4] to-[#DCFCE7]' },
-  coaching:  { badge: 'bg-[#FFF7ED] text-[#D97706]',   icon: Users,    gradient: 'from-[#FFF7ED] to-[#FEF3C7]' },
-  bundle:    { badge: 'bg-[#F5F3FF] text-[#7C3AED]',   icon: Layers,   gradient: 'from-[#F5F3FF] to-[#EDE9FE]' },
-  other:     { badge: 'bg-[#F3F4F6] text-[#374151]',   icon: Package,  gradient: 'from-[#F3F4F6] to-[#E5E7EB]' },
+  workout:   { badge: 'bg-accent/10 text-primary',   icon: Dumbbell, gradient: 'from-accent/10 to-accent/10' },
+  nutrition: { badge: 'bg-success/10 text-success',   icon: Salad,    gradient: 'from-success/10 to-success/10' },
+  coaching:  { badge: 'bg-warning/10 text-warning',   icon: Users,    gradient: 'from-warning/10 to-warning/10' },
+  bundle:    { badge: 'bg-ai/10 text-ai',   icon: Layers,   gradient: 'from-ai/10 to-ai/10' },
+  other:     { badge: 'bg-muted text-foreground',   icon: Package,  gradient: 'from-muted to-border' },
 };
 
 const TYPE_LABEL = {
@@ -45,7 +45,7 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
   };
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-200 group relative flex flex-col">
+    <div className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-200 group relative flex flex-col">
       {/* Thumbnail */}
       <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
         {listing.image_url ? (
@@ -62,15 +62,15 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
             {typeLabel}
           </span>
           {listing.is_free && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">FREE</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-success/10 text-success">FREE</span>
           )}
           {!listing.is_published && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F3F4F6] text-[#6B7280] flex items-center gap-1">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-muted text-muted-foreground flex items-center gap-1">
               <EyeOff className="w-2.5 h-2.5" /> Draft
             </span>
           )}
           {listing.payment_type === 'subscription' && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">Subscription</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-ai/10 text-ai">Subscription</span>
           )}
         </div>
 
@@ -78,13 +78,13 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
           <button
             onClick={() => onView(listing)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-[#111827] rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-card text-foreground rounded-lg text-xs font-semibold hover:bg-muted transition-colors"
           >
             <Eye className="w-3.5 h-3.5" /> View
           </button>
           <button
             onClick={() => onEdit(listing)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111827] text-white rounded-lg text-xs font-semibold hover:bg-black transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-sidebar text-white rounded-lg text-xs font-semibold hover:bg-black transition-colors"
           >
             <Edit className="w-3.5 h-3.5" /> Edit
           </button>
@@ -93,21 +93,21 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-bold text-[#111827] text-sm leading-tight">{listing.title}</h3>
+        <h3 className="font-bold text-foreground text-sm leading-tight">{listing.title}</h3>
         {listing.description && (
-          <p className="text-xs text-[#6B7280] mt-1 line-clamp-2 leading-relaxed">{listing.description}</p>
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{listing.description}</p>
         )}
 
         {listing.features?.length > 0 && (
           <div className="mt-2.5 space-y-1">
             {listing.features.slice(0, 3).map((f, i) => (
               <div key={i} className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-[#9CA3AF] flex-shrink-0" />
-                <p className="text-xs text-[#6B7280] truncate">{f}</p>
+                <div className="w-1 h-1 rounded-full bg-muted-foreground flex-shrink-0" />
+                <p className="text-xs text-muted-foreground truncate">{f}</p>
               </div>
             ))}
             {listing.features.length > 3 && (
-              <p className="text-[11px] text-[#9CA3AF]">+{listing.features.length - 3} more</p>
+              <p className="text-[11px] text-muted-foreground">+{listing.features.length - 3} more</p>
             )}
           </div>
         )}
@@ -116,24 +116,24 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-baseline gap-1.5">
               {listing.is_free ? (
-                <span className="text-lg font-bold text-emerald-600">Free</span>
+                <span className="text-lg font-bold text-success">Free</span>
               ) : (
                 <>
-                  <span className="text-lg font-bold text-[#111827]">${listing.price}</span>
+                  <span className="text-lg font-bold text-foreground">${listing.price}</span>
                   {listing.payment_type === 'subscription' && (
-                    <span className="text-[11px] text-[#9CA3AF]">/{listing.billing_frequency === 'monthly' ? 'mo' : listing.billing_frequency === 'annual' ? 'yr' : 'qtr'}</span>
+                    <span className="text-[11px] text-muted-foreground">/{listing.billing_frequency === 'monthly' ? 'mo' : listing.billing_frequency === 'annual' ? 'yr' : 'qtr'}</span>
                   )}
                   {isDiscounted && (
-                    <span className="text-xs text-[#9CA3AF] line-through">${listing.original_price}</span>
+                    <span className="text-xs text-muted-foreground line-through">${listing.original_price}</span>
                   )}
                 </>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-[#6B7280]">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               {listing.rating && (
-                <span className="flex items-center gap-0.5 font-semibold text-[#111827]">
-                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {listing.rating}
-                  {listing.rating_count > 0 && <span className="text-[#9CA3AF] font-normal">({listing.rating_count})</span>}
+                <span className="flex items-center gap-0.5 font-semibold text-foreground">
+                  <Star className="w-3 h-3 fill-warning text-warning" /> {listing.rating}
+                  {listing.rating_count > 0 && <span className="text-muted-foreground font-normal">({listing.rating_count})</span>}
                 </span>
               )}
               {listing.sales_count > 0 && (
@@ -148,13 +148,13 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
               onClick={handleBuyNow}
               disabled={buyingOut}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold text-white transition-all disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)' }}
+              style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))' }}
             >
               {buyingOut ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ShoppingCart className="w-3.5 h-3.5" /> Buy Now — ${listing.price}</>}
             </button>
           )}
           {listing.is_free && listing.is_published && (
-            <button className="w-full py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors">
+            <button className="w-full py-2 rounded-xl text-xs font-bold text-success bg-success/10 border border-success hover:bg-success/10 transition-colors">
               Get for Free
             </button>
           )}

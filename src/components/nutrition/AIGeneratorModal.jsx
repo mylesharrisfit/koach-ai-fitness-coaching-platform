@@ -204,11 +204,11 @@ const INITIAL_DETAILS = {
 };
 
 const WEIGHT_LOSS_RATES = [
-  { value: 0.25, label: '0.25 lbs/wk', desc: 'Very Gradual',     color: 'green',  badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
-  { value: 0.5,  label: '0.5 lbs/wk',  desc: 'Slow & Steady',    color: 'green',  badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
-  { value: 1,    label: '1 lb/wk',     desc: 'Moderate',          color: 'blue',   badgeColor: 'bg-blue-100 text-blue-700 border-blue-300',   recommended: true },
-  { value: 1.5,  label: '1.5 lbs/wk',  desc: 'Aggressive',        color: 'amber',  badgeColor: 'bg-amber-100 text-amber-700 border-amber-300' },
-  { value: 2,    label: '2 lbs/wk',    desc: 'Very Aggressive',   color: 'red',    badgeColor: 'bg-red-100 text-red-700 border-red-300',       warning: true },
+  { value: 0.25, label: '0.25 lbs/wk', desc: 'Very Gradual',     color: 'green',  badgeColor: 'bg-success/10 text-success border-success' },
+  { value: 0.5,  label: '0.5 lbs/wk',  desc: 'Slow & Steady',    color: 'green',  badgeColor: 'bg-success/10 text-success border-success' },
+  { value: 1,    label: '1 lb/wk',     desc: 'Moderate',          color: 'blue',   badgeColor: 'bg-accent text-primary border-primary',   recommended: true },
+  { value: 1.5,  label: '1.5 lbs/wk',  desc: 'Aggressive',        color: 'amber',  badgeColor: 'bg-warning/10 text-warning border-warning' },
+  { value: 2,    label: '2 lbs/wk',    desc: 'Very Aggressive',   color: 'red',    badgeColor: 'bg-destructive/10 text-destructive border-destructive',       warning: true },
 ];
 
 // ── Macro calculation ─────────────────────────────────────────────────────────
@@ -358,11 +358,11 @@ function AccordionSection({ icon: Icon, title, complete, children, defaultOpen =
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-2.5 px-4 py-3 bg-card hover:bg-secondary/30 transition-colors text-left"
       >
-        <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center shrink-0', complete ? 'bg-emerald-100' : 'bg-secondary')}>
-          {complete ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Icon className="w-3.5 h-3.5 text-muted-foreground" />}
+        <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center shrink-0', complete ? 'bg-success/10' : 'bg-secondary')}>
+          {complete ? <Check className="w-3.5 h-3.5 text-success" /> : <Icon className="w-3.5 h-3.5 text-muted-foreground" />}
         </div>
         <span className="text-sm font-bold flex-1">{title}</span>
-        {complete && <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">Done</span>}
+        {complete && <span className="text-[10px] font-semibold text-success bg-success/10 px-2 py-0.5 rounded-full">Done</span>}
         <ChevronDown className={cn('w-4 h-4 text-muted-foreground transition-transform', open && 'rotate-180')} />
       </button>
       <AnimatePresence initial={false}>
@@ -414,19 +414,19 @@ function WeightLossRateSelector({ value, onChange }) {
             className={cn(
               'relative flex flex-col items-start px-3 py-2 rounded-xl border-2 text-left transition-all text-xs',
               value === rate.value
-                ? rate.color === 'green'  ? 'border-emerald-500 bg-emerald-50'
-                : rate.color === 'blue'   ? 'border-blue-500 bg-blue-50'
-                : rate.color === 'amber'  ? 'border-amber-500 bg-amber-50'
-                : 'border-red-500 bg-red-50'
+                ? rate.color === 'green'  ? 'border-success bg-success/10'
+                : rate.color === 'blue'   ? 'border-primary bg-accent'
+                : rate.color === 'amber'  ? 'border-warning bg-warning/10'
+                : 'border-destructive bg-destructive/10'
                 : 'border-border bg-background hover:border-muted-foreground/40'
             )}
           >
             <div className="flex items-center gap-1.5">
               <span className={cn('font-bold', value === rate.value
-                ? rate.color === 'green'  ? 'text-emerald-700'
-                : rate.color === 'blue'   ? 'text-blue-700'
-                : rate.color === 'amber'  ? 'text-amber-700'
-                : 'text-red-700'
+                ? rate.color === 'green'  ? 'text-success'
+                : rate.color === 'blue'   ? 'text-primary'
+                : rate.color === 'amber'  ? 'text-warning'
+                : 'text-destructive'
                 : 'text-foreground'
               )}>
                 {rate.label}
@@ -435,7 +435,7 @@ function WeightLossRateSelector({ value, onChange }) {
             </div>
             <span className="text-[10px] text-muted-foreground mt-0.5">{rate.desc}</span>
             {rate.recommended && (
-              <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
+              <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white">
                 Recommended
               </span>
             )}
@@ -462,7 +462,7 @@ function Step1Goal({ goal, setGoal, details, setDetails }) {
         {GOALS.map(g => (
           <button key={g.id} onClick={() => { setGoal(g.id); u('goalSubtype', GOAL_SUBTYPES[g.id]?.[0] || ''); }}
             className={cn('flex flex-col items-start gap-1.5 p-3.5 rounded-2xl border-2 text-left transition-all duration-150 hover:shadow-md',
-              goal === g.id ? 'border-primary bg-accent/60' : 'border-border bg-white hover:border-primary/40')}
+              goal === g.id ? 'border-primary bg-accent/60' : 'border-border bg-card hover:border-primary/40')}
           >
             <div className="flex items-center justify-between w-full">
               <span className="text-xl">{g.emoji}</span>
@@ -765,16 +765,16 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
               {MEAL_COMPLEXITY.map(opt => {
                 const active = details.mealComplexity === opt.id;
                 const borderColor =
-                  opt.color === 'blue'   ? (active ? 'border-blue-500 bg-blue-50'     : 'border-border hover:border-blue-300') :
-                  opt.color === 'amber'  ? (active ? 'border-amber-500 bg-amber-50'   : 'border-border hover:border-amber-300') :
-                  opt.color === 'purple' ? (active ? 'border-purple-500 bg-purple-50' : 'border-border hover:border-purple-300') :
-                                          (active ? 'border-gray-400 bg-gray-50'     : 'border-border hover:border-gray-300');
+                  opt.color === 'blue'   ? (active ? 'border-primary bg-accent'     : 'border-border hover:border-primary') :
+                  opt.color === 'amber'  ? (active ? 'border-warning bg-warning/10'   : 'border-border hover:border-warning') :
+                  opt.color === 'purple' ? (active ? 'border-ai bg-ai/10' : 'border-border hover:border-ai') :
+                                          (active ? 'border-border bg-muted'     : 'border-border hover:border-border');
                 const labelColor =
                   active
-                    ? opt.color === 'blue'   ? 'text-blue-700'
-                    : opt.color === 'amber'  ? 'text-amber-700'
-                    : opt.color === 'purple' ? 'text-purple-700'
-                    : 'text-gray-700'
+                    ? opt.color === 'blue'   ? 'text-primary'
+                    : opt.color === 'amber'  ? 'text-warning'
+                    : opt.color === 'purple' ? 'text-ai'
+                    : 'text-foreground'
                     : 'text-foreground';
                 return (
                   <button
@@ -787,7 +787,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                       <span>{opt.emoji}</span>
                       <span className={`font-bold ${labelColor}`}>{opt.label}</span>
                       {opt.popular && (
-                        <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">Popular</span>
+                        <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white">Popular</span>
                       )}
                     </div>
                     <span className="text-[10px] text-muted-foreground mt-0.5">{opt.desc}</span>
@@ -962,7 +962,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                         <span className="text-base">{def.emoji || '💊'}</span>
                         <span className="text-sm font-bold text-foreground">{s}</span>
                         {def.timing && (
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-ai/10 text-ai">
                             {def.timing}
                           </span>
                         )}
@@ -1004,7 +1004,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                 onClick={() => setMacroApproach(opt.id)}
                 className={cn(
                   'px-4 py-2 transition-colors',
-                  macroApproach === opt.id ? 'bg-primary text-white' : 'bg-white text-muted-foreground hover:bg-secondary'
+                  macroApproach === opt.id ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-secondary'
                 )}
               >
                 {opt.label}
@@ -1101,7 +1101,7 @@ function Step3Generating({ onDone, macroPayload }) {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center">
+        <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center">
           <span className="text-2xl">❌</span>
         </div>
         <div>
@@ -1118,7 +1118,7 @@ function Step3Generating({ onDone, macroPayload }) {
   return (
     <div className="flex flex-col items-center justify-center py-10 gap-6">
       <motion.div animate={{ scale: [1, 1.15, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg"
+        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-ai flex items-center justify-center shadow-lg"
       >
         <Sparkles className="w-8 h-8 text-white" />
       </motion.div>
@@ -1132,7 +1132,7 @@ function Step3Generating({ onDone, macroPayload }) {
       </div>
       <div className="w-full max-w-xs">
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
-          <motion.div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />
+          <motion.div className="h-full bg-gradient-to-r from-primary to-ai rounded-full" animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />
         </div>
         <p className="text-xs text-muted-foreground text-right mt-1">{Math.round(progress)}%</p>
       </div>
@@ -1145,7 +1145,7 @@ function MealCard({ meal }) {
   const [open, setOpen] = useState(false);
   const isPre  = meal.type === 'pre_workout'  || meal.name?.toLowerCase().includes('pre-workout');
   const isPost = meal.type === 'post_workout' || meal.name?.toLowerCase().includes('post-workout');
-  const bg = isPre ? 'bg-amber-50 border-amber-200' : isPost ? 'bg-blue-50 border-blue-200' : 'bg-card border-border';
+  const bg = isPre ? 'bg-warning/10 border-warning' : isPost ? 'bg-accent border-primary' : 'bg-card border-border';
   const emoji = isPre ? '⚡' : isPost ? '💪' : '🍽️';
 
   return (
@@ -1160,9 +1160,9 @@ function MealCard({ meal }) {
           </div>
           <div className="flex gap-2 mt-1 flex-wrap">
             <span className="text-[10px] font-bold text-orange-600">{meal.calories} kcal</span>
-            <span className="text-[10px] font-semibold text-red-500">P {meal.protein}g</span>
-            <span className="text-[10px] font-semibold text-amber-500">C {meal.carbs}g</span>
-            <span className="text-[10px] font-semibold text-blue-500">F {meal.fats}g</span>
+            <span className="text-[10px] font-semibold text-destructive">P {meal.protein}g</span>
+            <span className="text-[10px] font-semibold text-warning">C {meal.carbs}g</span>
+            <span className="text-[10px] font-semibold text-primary">F {meal.fats}g</span>
           </div>
         </div>
         <ChevronDown className={cn('w-4 h-4 text-muted-foreground shrink-0 transition-transform', open && 'rotate-180')} />
@@ -1181,7 +1181,7 @@ function MealCard({ meal }) {
               />
               {/* Foods */}
               {meal.why_this_meal && (
-                <p className="text-[11px] text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-lg mt-1 italic">💡 {meal.why_this_meal}</p>
+                <p className="text-[11px] text-primary bg-accent px-2.5 py-1.5 rounded-lg mt-1 italic">💡 {meal.why_this_meal}</p>
               )}
 
               {meal.foods?.map((food, i) => (
@@ -1198,12 +1198,12 @@ function MealCard({ meal }) {
                       ) : (
                         <span className="text-[10px] text-muted-foreground">{food.amount_household || food.amount}</span>
                       )}
-                      {food.prep_method && <span className="text-[10px] text-purple-500 italic">{food.prep_method}</span>}
+                      {food.prep_method && <span className="text-[10px] text-ai italic">{food.prep_method}</span>}
                     </div>
                     <div className="flex gap-2 mt-0.5">
-                      <span className="text-[10px] text-red-400">P {food.protein}g</span>
-                      <span className="text-[10px] text-amber-400">C {food.carbs}g</span>
-                      <span className="text-[10px] text-blue-400">F {food.fats}g</span>
+                      <span className="text-[10px] text-destructive">P {food.protein}g</span>
+                      <span className="text-[10px] text-warning">C {food.carbs}g</span>
+                      <span className="text-[10px] text-primary">F {food.fats}g</span>
                     </div>
                   </div>
                 </div>
@@ -1219,8 +1219,8 @@ function MealCard({ meal }) {
               {(meal.option_b || meal.option_c) && (
                 <div className="mt-2 space-y-1">
                   {meal.option_b && (
-                    <div className="px-2.5 py-1.5 rounded-lg bg-green-50 border border-green-100">
-                      <span className="text-[10px] font-bold text-green-700">Option B (Quick): </span>
+                    <div className="px-2.5 py-1.5 rounded-lg bg-success/10 border border-success">
+                      <span className="text-[10px] font-bold text-success">Option B (Quick): </span>
                       <span className="text-[10px] text-foreground">{meal.option_b}</span>
                     </div>
                   )}
@@ -1276,44 +1276,44 @@ function Step4Result({ result }) {
           <p className="text-sm text-muted-foreground">Review the detailed meal plan below</p>
         </div>
         <button type="button" onClick={copyPlan} className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded-lg hover:bg-secondary">
-          {copied ? <ClipboardCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? <ClipboardCheck className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
 
       {/* Summary card */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 rounded-2xl p-4 space-y-3">
+      <div className="bg-gradient-to-br from-accent to-ai/10 border border-accent rounded-2xl p-4 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xl">{goalMeta?.emoji}</span>
-          <span className="text-sm font-bold px-3 py-1 rounded-full bg-white border border-primary/20 text-primary shadow-sm">{goalMeta?.label}</span>
-          {result.diet && <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white border border-border text-muted-foreground">{result.diet}</span>}
+          <span className="text-sm font-bold px-3 py-1 rounded-full bg-card border border-primary/20 text-primary shadow-sm">{goalMeta?.label}</span>
+          {result.diet && <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-card border border-border text-muted-foreground">{result.diet}</span>}
           <span className="text-xs text-muted-foreground ml-auto">{actLabel}</span>
         </div>
         <div className="text-center">
           <p className="text-4xl font-extrabold text-foreground tracking-tight">{result.calories}</p>
           <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">calories / day · ~{perMealCal} kcal per meal</p>
           {result.goal === 'fat_loss' && result.weightLossRate && (
-            <p className="text-[11px] text-blue-600 font-semibold mt-1">
+            <p className="text-[11px] text-primary font-semibold mt-1">
               Target: lose {result.weightLossRate} lb/week · {result.dailyDeficit} kcal/day deficit
             </p>
           )}
           {result.deficitCapped && (
-            <p className="text-[11px] text-amber-600 font-semibold mt-0.5 bg-amber-50 px-3 py-1 rounded-full inline-block">
+            <p className="text-[11px] text-warning font-semibold mt-0.5 bg-warning/10 px-3 py-1 rounded-full inline-block">
               ⚠️ Deficit capped to protect minimum healthy intake
             </p>
           )}
           <div className="flex justify-center gap-3 mt-2">
-            <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
-            <span className="text-[11px] text-muted-foreground bg-white/70 px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
+            <span className="text-[11px] text-muted-foreground bg-[var(--kc-w-70)] px-2 py-0.5 rounded-full border border-border">BMR: {result.bmr} kcal</span>
+            <span className="text-[11px] text-muted-foreground bg-[var(--kc-w-70)] px-2 py-0.5 rounded-full border border-border">TDEE: {result.tdee} kcal</span>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {[
-            { label: 'Protein', value: result.protein, color: 'text-red-500' },
-            { label: 'Carbs',   value: result.carbs,   color: 'text-amber-500' },
-            { label: 'Fats',    value: result.fats,    color: 'text-blue-500' },
+            { label: 'Protein', value: result.protein, color: 'text-destructive' },
+            { label: 'Carbs',   value: result.carbs,   color: 'text-warning' },
+            { label: 'Fats',    value: result.fats,    color: 'text-primary' },
           ].map(m => (
-            <div key={m.label} className="bg-white rounded-xl p-2.5 text-center shadow-sm">
+            <div key={m.label} className="bg-card rounded-xl p-2.5 text-center shadow-sm">
               <p className={cn('text-xl font-extrabold', m.color)}>{m.value}<span className="text-xs font-semibold text-muted-foreground">g</span></p>
               <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">{m.label}</p>
             </div>
@@ -1327,7 +1327,7 @@ function Step4Result({ result }) {
           {[['training', '🏋️ Training Day'], ['rest', '😴 Rest Day']].map(([id, label]) => (
             <button key={id} onClick={() => setDayTab(id)}
               className={cn('flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors',
-                dayTab === id ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                dayTab === id ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
               )}>
               {label}
             </button>
@@ -1384,20 +1384,20 @@ function Step4Result({ result }) {
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">💊 Supplement Protocol</p>
             {morning.length > 0 && (
               <div>
-                <p className="text-[11px] font-bold text-amber-600 uppercase tracking-wide mb-2">☀️ Morning Stack</p>
-                <div className="space-y-2">{morning.map(s => renderRow(s, 'Morning', 'bg-amber-100 text-amber-700'))}</div>
+                <p className="text-[11px] font-bold text-warning uppercase tracking-wide mb-2">☀️ Morning Stack</p>
+                <div className="space-y-2">{morning.map(s => renderRow(s, 'Morning', 'bg-warning/10 text-warning'))}</div>
               </div>
             )}
             {night.length > 0 && (
               <div>
-                <p className="text-[11px] font-bold text-indigo-600 uppercase tracking-wide mb-2 mt-3">🌙 Night Stack</p>
-                <div className="space-y-2">{night.map(s => renderRow(s, 'Before Bed', 'bg-indigo-100 text-indigo-700'))}</div>
+                <p className="text-[11px] font-bold text-primary uppercase tracking-wide mb-2 mt-3">🌙 Night Stack</p>
+                <div className="space-y-2">{night.map(s => renderRow(s, 'Before Bed', 'bg-accent text-primary'))}</div>
               </div>
             )}
             {!hasTiming && sups.length > 0 && (
-              <div className="space-y-2">{sups.map(s => renderRow(s, 'Daily', 'bg-purple-100 text-purple-700'))}</div>
+              <div className="space-y-2">{sups.map(s => renderRow(s, 'Daily', 'bg-ai/10 text-ai'))}</div>
             )}
-            <p className="text-[11px] text-amber-600 bg-amber-50 rounded-xl px-3 py-2">
+            <p className="text-[11px] text-warning bg-warning/10 rounded-xl px-3 py-2">
               ⚠️ General recommendations. Coach may adjust based on your specific needs.
             </p>
           </div>
@@ -1406,19 +1406,19 @@ function Step4Result({ result }) {
 
       {/* Hydration protocol */}
       {result.hydration && (
-        <div className="bg-sky-50 border border-sky-100 rounded-2xl p-4 space-y-2">
-          <p className="text-xs font-bold text-sky-700 uppercase tracking-wide">💧 Hydration Protocol</p>
-          <p className="text-sm font-bold text-sky-900">Daily Target: {result.hydration.daily_oz} oz / ~{Math.round(result.hydration.daily_oz * 0.0296)} L</p>
+        <div className="bg-accent border border-accent rounded-2xl p-4 space-y-2">
+          <p className="text-xs font-bold text-primary uppercase tracking-wide">💧 Hydration Protocol</p>
+          <p className="text-sm font-bold text-primary">Daily Target: {result.hydration.daily_oz} oz / ~{Math.round(result.hydration.daily_oz * 0.0296)} L</p>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             {[['Morning', result.hydration.morning], ['Pre-Workout', result.hydration.pre_workout], ['During', result.hydration.during_workout], ['Post-Workout', result.hydration.post_workout]].map(([label, val]) => val && (
-              <div key={label} className="bg-white rounded-lg px-2.5 py-1.5 border border-sky-100">
-                <p className="font-bold text-sky-700">{label}</p>
-                <p className="text-sky-600">{val}</p>
+              <div key={label} className="bg-card rounded-lg px-2.5 py-1.5 border border-accent">
+                <p className="font-bold text-primary">{label}</p>
+                <p className="text-primary">{val}</p>
               </div>
             ))}
           </div>
           {result.hydration.electrolytes && (
-            <p className="text-[11px] text-sky-600">⚡ {result.hydration.electrolytes}</p>
+            <p className="text-[11px] text-primary">⚡ {result.hydration.electrolytes}</p>
           )}
         </div>
       )}
@@ -1440,27 +1440,27 @@ function Step4Result({ result }) {
 
       {/* Coach notes */}
       {result.coach_notes && (
-        <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 space-y-3">
-          <p className="text-xs font-bold text-amber-700 uppercase tracking-wide">📋 Coach Notes</p>
+        <div className="bg-warning/10 border border-warning rounded-2xl p-4 space-y-3">
+          <p className="text-xs font-bold text-warning uppercase tracking-wide">📋 Coach Notes</p>
           {result.coach_notes.why_these_calories && (
-            <div><p className="text-[11px] font-bold text-amber-700">Why these calories</p><p className="text-xs text-foreground">{result.coach_notes.why_these_calories}</p></div>
+            <div><p className="text-[11px] font-bold text-warning">Why these calories</p><p className="text-xs text-foreground">{result.coach_notes.why_these_calories}</p></div>
           )}
           {result.coach_notes.key_priorities && (
-            <div><p className="text-[11px] font-bold text-amber-700">Key priorities</p><p className="text-xs text-foreground">{result.coach_notes.key_priorities}</p></div>
+            <div><p className="text-[11px] font-bold text-warning">Key priorities</p><p className="text-xs text-foreground">{result.coach_notes.key_priorities}</p></div>
           )}
           {result.coach_notes.first_2_weeks && (
-            <div><p className="text-[11px] font-bold text-amber-700">First 2 weeks</p><p className="text-xs text-foreground">{result.coach_notes.first_2_weeks}</p></div>
+            <div><p className="text-[11px] font-bold text-warning">First 2 weeks</p><p className="text-xs text-foreground">{result.coach_notes.first_2_weeks}</p></div>
           )}
           {result.coach_notes.body_type_advice && (
-            <div><p className="text-[11px] font-bold text-amber-700">Body type advice</p><p className="text-xs text-foreground">{result.coach_notes.body_type_advice}</p></div>
+            <div><p className="text-[11px] font-bold text-warning">Body type advice</p><p className="text-xs text-foreground">{result.coach_notes.body_type_advice}</p></div>
           )}
         </div>
       )}
 
       {/* Client notes */}
       {result.client_notes && (
-        <div className="bg-green-50 border border-green-100 rounded-2xl p-4">
-          <p className="text-xs font-bold text-green-700 uppercase tracking-wide mb-2">💬 Client Summary</p>
+        <div className="bg-success/10 border border-success rounded-2xl p-4">
+          <p className="text-xs font-bold text-success uppercase tracking-wide mb-2">💬 Client Summary</p>
           <p className="text-xs text-foreground leading-relaxed">{result.client_notes}</p>
         </div>
       )}
@@ -1485,15 +1485,15 @@ function Step4Result({ result }) {
         <div className="bg-secondary/40 border border-border rounded-2xl p-4">
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">📅 Weekly Overview</p>
           <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="bg-white rounded-xl p-2 border border-border">
+            <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">{result.weekly_overview.training_days || result.trainingDays || 4}</p>
               <p className="text-[10px] text-muted-foreground">Training Days</p>
             </div>
-            <div className="bg-white rounded-xl p-2 border border-border">
+            <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">{result.weekly_overview.avg_daily_calories || result.calories}</p>
               <p className="text-[10px] text-muted-foreground">Avg Daily Cal</p>
             </div>
-            <div className="bg-white rounded-xl p-2 border border-border">
+            <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">${result.weekly_overview.estimated_weekly_cost_usd || '—'}</p>
               <p className="text-[10px] text-muted-foreground">Est. Weekly Cost</p>
             </div>
@@ -1816,7 +1816,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
                   </Button>
                   <Button
                     onClick={goToAssign}
-                    className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
+                    className="flex-1 gap-2 bg-gradient-to-r from-primary to-ai hover:from-primary hover:to-ai border-0 text-white font-bold"
                   >
                     <UserPlus className="w-4 h-4" /> Save & Assign
                   </Button>
@@ -1845,7 +1845,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
                     size="sm"
                     disabled={!canNext()}
                     onClick={handleStartGenerating}
-                    className="flex-1 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
+                    className="flex-1 gap-2 bg-gradient-to-r from-primary to-ai hover:from-primary hover:to-ai border-0 text-white font-bold"
                   >
                     <Sparkles className="w-4 h-4" /> Generate Plan ✨
                   </Button>
@@ -1854,7 +1854,7 @@ export default function AIGeneratorModal({ open, onOpenChange, onApply }) {
                     size="sm"
                     disabled={!canNext()}
                     onClick={() => go(step + 1)}
-                    className="flex-1 sm:flex-none gap-1.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold"
+                    className="flex-1 sm:flex-none gap-1.5 bg-gradient-to-r from-primary to-ai hover:from-primary hover:to-ai border-0 text-white font-bold"
                   >
                     Next <ChevronRight className="w-4 h-4" />
                   </Button>

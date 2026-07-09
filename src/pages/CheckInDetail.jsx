@@ -5,12 +5,12 @@ import { format, differenceInDays, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, TrendingDown, TrendingUp, Minus, ChevronLeft, ChevronRight,
-  Moon, Zap, Brain, AlertTriangle, CheckCircle2, ClipboardCheck,
+  Moon, Zap, Brain, CheckCircle2, ClipboardCheck,
   MessageSquare, Flame, Footprints, Loader2, Check, Dumbbell, Utensils
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { checkInScore, averageAdherenceScore, scoreColor, scoreBg } from '@/lib/adherence';
+import { checkInScore, averageAdherenceScore, scoreColor } from '@/lib/adherence';
 import CheckInResponseBox from '@/components/checkin/CheckInResponseBox';
 import AIProgramSuggestions from '@/components/checkin/AIProgramSuggestions';
 import CheckInNutritionTab from '@/components/checkin/CheckInNutritionTab';
@@ -53,7 +53,7 @@ function PhotoGallery({ urls }) {
               {urls.map((_, i) => (
                 <button key={i} onClick={() => setIdx(i)} className={cn(
                   'w-2 h-2 rounded-full transition-all',
-                  i === idx ? 'bg-white scale-125' : 'bg-white/40'
+                  i === idx ? 'bg-card scale-125' : 'bg-[var(--kc-w-40)]'
                 )} />
               ))}
             </div>
@@ -71,7 +71,7 @@ function PhotoGallery({ urls }) {
 function ScoreBar({ label, value, max = 10, icon: Icon, good = v => v >= 7, warn = v => v >= 4 }) {
   if (value == null) return null;
   const pct = Math.round((value / max) * 100);
-  const color = good(value) ? 'bg-emerald-500' : warn(value) ? 'bg-amber-400' : 'bg-destructive';
+  const color = good(value) ? 'bg-success' : warn(value) ? 'bg-warning' : 'bg-destructive';
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
@@ -91,8 +91,8 @@ function ScoreBar({ label, value, max = 10, icon: Icon, good = v => v >= 7, warn
 /* ── Compliance row ── */
 function ComplianceRow({ label, value, icon: Icon }) {
   if (value == null) return null;
-  const color = value >= 80 ? 'text-emerald-400' : value >= 60 ? 'text-amber-400' : 'text-destructive';
-  const bg = value >= 80 ? 'bg-emerald-500/10 border-emerald-500/20' : value >= 60 ? 'bg-amber-500/10 border-amber-500/20' : 'bg-destructive/10 border-destructive/20';
+  const color = value >= 80 ? 'text-success' : value >= 60 ? 'text-warning' : 'text-destructive';
+  const bg = value >= 80 ? 'bg-success/10 border-success/20' : value >= 60 ? 'bg-warning/10 border-warning/20' : 'bg-destructive/10 border-destructive/20';
   return (
     <div className={cn('flex items-center justify-between p-3 rounded-xl border', bg)}>
       <div className="flex items-center gap-2.5">
@@ -101,7 +101,7 @@ function ComplianceRow({ label, value, icon: Icon }) {
       </div>
       <div className="flex items-center gap-2">
         <div className="w-24 h-1.5 bg-secondary/60 rounded-full overflow-hidden">
-          <div className={cn('h-full rounded-full', value >= 80 ? 'bg-emerald-500' : value >= 60 ? 'bg-amber-400' : 'bg-destructive')}
+          <div className={cn('h-full rounded-full', value >= 80 ? 'bg-success' : value >= 60 ? 'bg-warning' : 'bg-destructive')}
             style={{ width: `${value}%` }} />
         </div>
         <span className={cn('text-sm font-bold tabular-nums w-10 text-right', color)}>{value}%</span>
@@ -229,7 +229,7 @@ export default function CheckInDetail() {
           </p>
         </div>
         {isReviewed && (
-          <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full">
+          <span className="flex items-center gap-1 text-[11px] font-semibold text-success bg-success/10 border border-success/20 px-2 py-1 rounded-full">
             <CheckCircle2 className="w-3 h-3" /> Reviewed
           </span>
         )}
@@ -275,8 +275,8 @@ export default function CheckInDetail() {
         <div className="bg-card border border-border rounded-2xl p-5 flex items-center gap-5">
           <div className={cn(
             'w-20 h-20 rounded-2xl flex flex-col items-center justify-center flex-shrink-0 border-2',
-            thisScore >= 75 ? 'bg-emerald-500/10 border-emerald-500/30' :
-            thisScore >= 50 ? 'bg-amber-500/10 border-amber-500/30' :
+            thisScore >= 75 ? 'bg-success/10 border-success/30' :
+            thisScore >= 50 ? 'bg-warning/10 border-warning/30' :
             thisScore !== null ? 'bg-destructive/10 border-destructive/30' :
             'bg-secondary border-border'
           )}>
@@ -313,7 +313,7 @@ export default function CheckInDetail() {
               {weightDiff !== null && (
                 <div className={cn(
                   'flex items-center gap-1 text-base font-bold mb-1',
-                  Number(weightDiff) < 0 ? 'text-emerald-400' :
+                  Number(weightDiff) < 0 ? 'text-success' :
                   Number(weightDiff) > 0 ? 'text-destructive' : 'text-muted-foreground'
                 )}>
                   {Number(weightDiff) < 0 ? <TrendingDown className="w-5 h-5" /> :
@@ -453,7 +453,7 @@ export default function CheckInDetail() {
             title={!nutritionPlan ? 'No nutrition plan assigned' : 'Decrease calories by 150'}
           >
             {calAdjSaving ? <Loader2 className="w-4 h-4 animate-spin" /> :
-             calAdjDone ? <Check className="w-4 h-4 text-emerald-400" /> :
+             calAdjDone ? <Check className="w-4 h-4 text-success" /> :
              <Flame className="w-4 h-4" />}
             {calAdjDone ? 'Calories Adjusted' : 'Adjust Calories'}
           </Button>
@@ -466,7 +466,7 @@ export default function CheckInDetail() {
             disabled={cardioSaving || cardioDone}
           >
             {cardioSaving ? <Loader2 className="w-4 h-4 animate-spin" /> :
-             cardioDone ? <Check className="w-4 h-4 text-emerald-400" /> :
+             cardioDone ? <Check className="w-4 h-4 text-success" /> :
              <Footprints className="w-4 h-4" />}
             {cardioDone ? 'Cardio Updated' : 'Increase Cardio'}
           </Button>

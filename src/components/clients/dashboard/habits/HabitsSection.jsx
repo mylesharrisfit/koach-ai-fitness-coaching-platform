@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
 import HabitCard from './HabitCard';
 import HabitFormModal from './HabitFormModal';
 
@@ -92,14 +91,14 @@ export default function HabitsSection({ client }) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-gray-900">Habits</h3>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <h3 className="text-base font-bold text-foreground">Habits</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
               {active.length} active · {inactive.length} inactive
             </p>
           </div>
           <button
             onClick={handleAdd}
-            className="flex items-center gap-1.5 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 text-sm font-semibold text-white bg-ai hover:bg-ai px-4 py-2 rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Habit
           </button>
@@ -107,23 +106,23 @@ export default function HabitsSection({ client }) {
 
         {/* Loading */}
         {isLoading && (
-          <div className="text-center py-12 text-sm text-gray-400">Loading habits…</div>
+          <div className="text-center py-12 text-sm text-muted-foreground">Loading habits…</div>
         )}
 
         {/* Empty state */}
         {!isLoading && habits.length === 0 && (
           <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-white border border-gray-100 flex items-center justify-center mx-auto mb-4 shadow-sm">
-              <Sparkles className="w-7 h-7 text-purple-400" />
+            <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
+              <Sparkles className="w-7 h-7 text-ai" />
             </div>
-            <p className="text-sm font-bold text-gray-700 mb-1">No habits yet</p>
-            <p className="text-xs text-gray-400 mb-5">
+            <p className="text-sm font-bold text-foreground mb-1">No habits yet</p>
+            <p className="text-xs text-muted-foreground mb-5">
               Add daily or weekly habits to track for this client.
               <br />Common examples: Morning vitamins, Drink 3L water, 10k steps.
             </p>
             <button
               onClick={handleAdd}
-              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl transition-colors mx-auto"
+              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-ai hover:bg-ai px-5 py-2.5 rounded-xl transition-colors mx-auto"
             >
               <Plus className="w-4 h-4" /> Add First Habit
             </button>
@@ -134,9 +133,9 @@ export default function HabitsSection({ client }) {
         {active.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-0.5 h-3 rounded-full bg-purple-500" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Active</p>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-600">{active.length}</span>
+              <div className="w-0.5 h-3 rounded-full bg-ai" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Active</p>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-ai/10 text-ai">{active.length}</span>
             </div>
             {active.map(h => (
               <HabitCard
@@ -155,8 +154,8 @@ export default function HabitsSection({ client }) {
         {inactive.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-0.5 h-3 rounded-full bg-gray-300" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Inactive</p>
+              <div className="w-0.5 h-3 rounded-full bg-border" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Inactive</p>
             </div>
             {inactive.map(h => (
               <HabitCard

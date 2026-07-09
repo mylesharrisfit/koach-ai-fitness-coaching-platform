@@ -8,10 +8,10 @@ const ICON_MAP = { Users, TrendingUp, Sparkles, Zap };
 
 const COLOR_STYLES = {
   amber: {
-    wrapper: 'bg-amber-500/8 border-amber-500/25',
-    icon: 'bg-amber-500/15 text-amber-500',
-    cta: 'bg-amber-500 hover:bg-amber-600 text-white',
-    title: 'text-amber-600 dark:text-amber-400',
+    wrapper: 'bg-warning/8 border-warning/25',
+    icon: 'bg-warning/15 text-warning',
+    cta: 'bg-warning hover:bg-warning text-white',
+    title: 'text-warning dark:text-warning',
   },
   blue: {
     wrapper: 'bg-primary/8 border-primary/25',
@@ -20,10 +20,10 @@ const COLOR_STYLES = {
     title: 'text-primary',
   },
   purple: {
-    wrapper: 'bg-purple-500/8 border-purple-500/25',
-    icon: 'bg-purple-500/15 text-purple-500',
-    cta: 'bg-purple-600 hover:bg-purple-700 text-white',
-    title: 'text-purple-600 dark:text-purple-400',
+    wrapper: 'bg-ai/8 border-ai/25',
+    icon: 'bg-ai/15 text-ai',
+    cta: 'bg-ai hover:bg-ai text-white',
+    title: 'text-ai dark:text-ai',
   },
 };
 

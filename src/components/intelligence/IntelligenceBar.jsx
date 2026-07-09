@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { differenceInDays, parseISO } from 'date-fns';
 import { compositeAdherenceScore } from '@/lib/adherence';
 import { Dumbbell, TrendingUp, Clock, X, ChevronRight, CheckCircle2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import NoProgramPanel from '@/components/clients/NoProgramPanel';
 import QuickMessageModal from '@/components/clients/QuickMessageModal';
 
@@ -22,19 +21,19 @@ function isDismissed(key) {
 
 function InsightCard({ icon: Icon, label, sub, actions, onDismiss }) {
   return (
-    <div className="flex items-center gap-3 bg-white border border-[#E5E7EB] rounded-xl px-3.5 py-3 min-w-0">
-      <div className="w-7 h-7 rounded-lg bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-        <Icon className="w-3.5 h-3.5 text-[#6B7280]" />
+    <div className="flex items-center gap-3 bg-card border border-border rounded-xl px-3.5 py-3 min-w-0">
+      <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+        <Icon className="w-3.5 h-3.5 text-muted-foreground" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-[#111827] leading-tight">{label}</p>
-        {sub && <p className="text-[11px] text-[#9CA3AF] mt-0.5 truncate">{sub}</p>}
+        <p className="text-xs font-medium text-foreground leading-tight">{label}</p>
+        {sub && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{sub}</p>}
       </div>
       <div className="flex items-center gap-1.5 flex-shrink-0">
         {actions}
         <button
           onClick={onDismiss}
-          className="w-6 h-6 flex items-center justify-center rounded text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors"
+          className="w-6 h-6 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
           <X className="w-3 h-3" />
         </button>
@@ -84,7 +83,7 @@ export default function IntelligenceBar({ clients = [], checkIns = [] }) {
       actions: (
         <button
           onClick={() => setShowNoProgramPanel(true)}
-          className="flex items-center gap-1 text-[11px] font-medium text-[#374151] bg-[#F3F4F6] hover:bg-[#E5E7EB] px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+          className="flex items-center gap-1 text-[11px] font-medium text-foreground bg-muted hover:bg-border px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
         >
           <Dumbbell className="w-3 h-3" /> Assign
         </button>
@@ -99,7 +98,7 @@ export default function IntelligenceBar({ clients = [], checkIns = [] }) {
       actions: (
         <button
           onClick={() => setShowInactiveMessage(true)}
-          className="flex items-center gap-1 text-[11px] font-medium text-[#374151] bg-[#F3F4F6] hover:bg-[#E5E7EB] px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+          className="flex items-center gap-1 text-[11px] font-medium text-foreground bg-muted hover:bg-border px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
         >
           Message <ChevronRight className="w-3 h-3" />
         </button>
@@ -120,12 +119,12 @@ export default function IntelligenceBar({ clients = [], checkIns = [] }) {
   return (
     <>
       <div className="px-5 pt-3 flex-shrink-0">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-[#9CA3AF] mb-2">Insights</p>
+        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">Insights</p>
 
         {visible.length === 0 ? (
-          <div className="flex items-center gap-2.5 bg-white border border-[#E5E7EB] rounded-xl px-3.5 py-3">
-            <CheckCircle2 className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
-            <p className="text-xs font-medium text-[#374151]">All clients are on track</p>
+          <div className="flex items-center gap-2.5 bg-card border border-border rounded-xl px-3.5 py-3">
+            <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
+            <p className="text-xs font-medium text-foreground">All clients are on track</p>
           </div>
         ) : (
           <div className="space-y-2">

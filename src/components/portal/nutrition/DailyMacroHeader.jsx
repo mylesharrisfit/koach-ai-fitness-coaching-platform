@@ -10,10 +10,10 @@ function MacroBar({ label, consumed, target, color, emoji }) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-[11px]">
-        <span className="font-semibold text-slate-600">{emoji} {label}</span>
-        <span className="text-slate-400">{Math.round(consumed)}<span className="text-slate-300">/{target}g</span></span>
+        <span className="font-semibold text-muted-foreground">{emoji} {label}</span>
+        <span className="text-muted-foreground">{Math.round(consumed)}<span className="text-border">/{target}g</span></span>
       </div>
-      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+      <div className="h-2 rounded-full bg-muted overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
@@ -22,8 +22,8 @@ function MacroBar({ label, consumed, target, color, emoji }) {
           style={{ background: barColor }}
         />
       </div>
-      <p className="text-[10px] text-slate-400">
-        {pct > 100 ? <span className="text-red-500 font-semibold">Over by {Math.round(consumed - target)}g</span>
+      <p className="text-[10px] text-muted-foreground">
+        {pct > 100 ? <span className="text-destructive font-semibold">Over by {Math.round(consumed - target)}g</span>
           : `${Math.round(remaining)}g remaining`}
       </p>
     </div>
@@ -38,14 +38,14 @@ export default function DailyMacroHeader({ totals, targets }) {
   const calColor = getMacroColor(calPct);
 
   return (
-    <div className="bg-white mx-4 mb-3 rounded-[20px] p-4"
-      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+    <div className="bg-card mx-4 mb-3 rounded-[20px] p-4"
+      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
 
       <div className="flex items-center gap-4">
         {/* Donut */}
         <div className="relative flex-shrink-0">
           <svg width={120} height={120} style={{ transform: 'rotate(-90deg)' }}>
-            <circle cx={60} cy={60} r={r} fill="none" strokeWidth={12} stroke="#F1F5F9" />
+            <circle cx={60} cy={60} r={r} fill="none" strokeWidth={12} stroke="rgb(var(--muted))" />
             <motion.circle
               cx={60} cy={60} r={r} fill="none" strokeWidth={12}
               stroke={calColor}
@@ -57,8 +57,8 @@ export default function DailyMacroHeader({ totals, targets }) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <p className="text-xl font-black text-slate-900 leading-none">{Math.round(totals.calories)}</p>
-            <p className="text-[9px] text-slate-400 font-semibold mt-0.5">/ {targets.calories}</p>
+            <p className="text-xl font-black text-foreground leading-none">{Math.round(totals.calories)}</p>
+            <p className="text-[9px] text-muted-foreground font-semibold mt-0.5">/ {targets.calories}</p>
             <p className="text-[9px] font-bold mt-0.5" style={{ color: calColor }}>
               {calPct > 100 ? 'OVER' : `${Math.round(remaining)} left`}
             </p>

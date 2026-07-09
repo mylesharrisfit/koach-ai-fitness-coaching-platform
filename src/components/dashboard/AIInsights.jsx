@@ -7,12 +7,12 @@ import { cn } from '@/lib/utils';
 
 // ── Insight type configs ──────────────────────────────────────────────────────
 const INSIGHT_TYPES = {
-  upgrade:    { icon: Dumbbell,       gradient: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '#bbf7d0', iconBg: '#16a34a', tag: 'Program Upgrade' },
-  reengage:   { icon: MessageSquare,  gradient: 'linear-gradient(135deg, #eff6ff, #dbeafe)', border: '#bfdbfe', iconBg: '#2563eb', tag: 'Re-engagement' },
-  win:        { icon: Trophy,         gradient: 'linear-gradient(135deg, #fffbeb, #fef3c7)', border: '#fde68a', iconBg: '#d97706', tag: 'Celebrate a Win' },
-  upsell:     { icon: TrendingUp,     gradient: 'linear-gradient(135deg, #faf5ff, #ede9fe)', border: '#ddd6fe', iconBg: '#7c3aed', tag: 'Upsell Opportunity' },
-  at_risk:    { icon: AlertTriangle,  gradient: 'linear-gradient(135deg, #fff7ed, #ffedd5)', border: '#fed7aa', iconBg: '#ea580c', tag: 'At-Risk Alert' },
-  goal_check: { icon: Target,         gradient: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)', border: '#bae6fd', iconBg: '#0284c7', tag: 'Goal Check-in Due' },
+  upgrade:    { icon: Dumbbell,       gradient: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: 'var(--tc-success)', iconBg: 'var(--tc-success)', tag: 'Program Upgrade' },
+  reengage:   { icon: MessageSquare,  gradient: 'linear-gradient(135deg, var(--tc-accent), var(--tc-accent))', border: 'var(--tc-accent)', iconBg: 'var(--tc-primary)', tag: 'Re-engagement' },
+  win:        { icon: Trophy,         gradient: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))', border: 'var(--tc-warning)', iconBg: 'var(--tc-warning)', tag: 'Celebrate a Win' },
+  upsell:     { icon: TrendingUp,     gradient: 'linear-gradient(135deg, var(--tc-ai), var(--tc-ai))', border: 'var(--tc-ai)', iconBg: 'var(--tc-ai)', tag: 'Upsell Opportunity' },
+  at_risk:    { icon: AlertTriangle,  gradient: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))', border: 'var(--tc-warning)', iconBg: 'var(--kc-ea580c)', tag: 'At-Risk Alert' },
+  goal_check: { icon: Target,         gradient: 'linear-gradient(135deg, var(--kc-f0f9ff), var(--tc-accent))', border: 'var(--kc-bae6fd)', iconBg: 'var(--tc-primary)', tag: 'Goal Check-in Due' },
 };
 
 // ── Data-driven insight generators ───────────────────────────────────────────
@@ -152,17 +152,17 @@ function generateInsights(clients, checkIns, messages) {
 function SkeletonCard() {
   return (
     <div className="rounded-2xl p-5 flex flex-col gap-3 animate-pulse"
-      style={{ background: '#f9fafb', border: '1px solid #f3f4f6' }}>
+      style={{ background: 'var(--tc-background)', border: '1px solid var(--tc-muted)' }}>
       <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-xl bg-gray-200" />
-        <div className="h-3.5 bg-gray-200 rounded w-20" />
+        <div className="w-9 h-9 rounded-xl bg-border" />
+        <div className="h-3.5 bg-border rounded w-20" />
       </div>
       <div className="space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-3 bg-gray-200 rounded w-5/6" />
+        <div className="h-4 bg-border rounded w-3/4" />
+        <div className="h-3 bg-border rounded w-full" />
+        <div className="h-3 bg-border rounded w-5/6" />
       </div>
-      <div className="h-8 bg-gray-200 rounded-lg w-28 mt-1" />
+      <div className="h-8 bg-border rounded-lg w-28 mt-1" />
     </div>
   );
 }
@@ -179,7 +179,7 @@ function InsightCard({ insight, onDismiss }) {
       style={{
         background: cfg.gradient,
         border: `1px solid ${cfg.border}`,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        boxShadow: '0 2px 8px color-mix(in srgb, black 5%, transparent)',
       }}
     >
       {/* Top row: icon + tag + dismiss */}
@@ -198,14 +198,14 @@ function InsightCard({ insight, onDismiss }) {
           onClick={() => onDismiss(insight.id)}
           className="p-1 rounded-md opacity-40 hover:opacity-80 transition-opacity shrink-0 -mt-0.5 -mr-0.5"
         >
-          <X className="w-3.5 h-3.5 text-gray-500" />
+          <X className="w-3.5 h-3.5 text-muted-foreground" />
         </button>
       </div>
 
       {/* Headline + body */}
       <div>
-        <p className="text-sm font-bold text-gray-900 leading-snug">{insight.headline}</p>
-        <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{insight.body}</p>
+        <p className="text-sm font-bold text-foreground leading-snug">{insight.headline}</p>
+        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{insight.body}</p>
       </div>
 
       {/* Action */}
@@ -213,7 +213,7 @@ function InsightCard({ insight, onDismiss }) {
         <button
           onClick={() => navigate(insight.actionPath)}
           className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg transition-all hover:opacity-90 active:scale-95"
-          style={{ background: cfg.iconBg, color: '#fff' }}
+          style={{ background: cfg.iconBg, color: 'var(--tc-card)' }}
         >
           {insight.actionLabel}
           <ArrowRight className="w-3.5 h-3.5" />
@@ -260,16 +260,16 @@ export default function AIInsights({ clients = [], checkIns = [], messages = [] 
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" style={{ color: '#8b5cf6' }} />
-            <h2 className="text-sm font-bold text-gray-900 tracking-tight">AI Insights</h2>
+            <Sparkles className="w-4 h-4" style={{ color: 'var(--tc-ai)' }} />
+            <h2 className="text-sm font-bold text-foreground tracking-tight">AI Insights</h2>
           </div>
-          <p className="text-xs text-gray-400 mt-0.5">Personalized recommendations based on your client data</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Personalized recommendations based on your client data</p>
         </div>
         <button
           onClick={handleRefresh}
           disabled={isRefreshing}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all hover:bg-gray-50 shrink-0 disabled:opacity-60"
-          style={{ border: '1px solid #e5e7eb', color: '#6b7280' }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all hover:bg-muted shrink-0 disabled:opacity-60"
+          style={{ border: '1px solid var(--tc-border)', color: 'var(--tc-muted-foreground)' }}
         >
           <RefreshCw className={cn('w-3.5 h-3.5', isRefreshing && 'animate-spin')} />
           Refresh Insights
@@ -285,19 +285,19 @@ export default function AIInsights({ clients = [], checkIns = [], messages = [] 
         </div>
       ) : notEnoughData ? (
         <div className="rounded-2xl px-6 py-8 text-center"
-          style={{ background: 'linear-gradient(135deg, #faf5ff, #ede9fe)', border: '1px solid #ddd6fe' }}>
-          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: '#8b5cf6', opacity: 0.5 }} />
-          <p className="text-sm font-semibold text-gray-700">Add more clients and check back soon</p>
-          <p className="text-xs text-gray-400 mt-1.5 max-w-sm mx-auto">
+          style={{ background: 'linear-gradient(135deg, var(--tc-ai), var(--tc-ai))', border: '1px solid var(--tc-ai)' }}>
+          <Sparkles className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--tc-ai)', opacity: 0.5 }} />
+          <p className="text-sm font-semibold text-foreground">Add more clients and check back soon</p>
+          <p className="text-xs text-muted-foreground mt-1.5 max-w-sm mx-auto">
             AI Insights get smarter as your roster grows — start by adding clients and collecting check-ins.
           </p>
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl px-6 py-8 text-center"
-          style={{ background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '1px solid #bbf7d0' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: '1px solid var(--tc-success)' }}>
           <div className="text-3xl mb-2">✅</div>
-          <p className="text-sm font-semibold text-gray-700">No new insights right now</p>
-          <p className="text-xs text-gray-400 mt-1.5">
+          <p className="text-sm font-semibold text-foreground">No new insights right now</p>
+          <p className="text-xs text-muted-foreground mt-1.5">
             Your clients are looking great! Check back after more check-ins come in.
           </p>
         </div>

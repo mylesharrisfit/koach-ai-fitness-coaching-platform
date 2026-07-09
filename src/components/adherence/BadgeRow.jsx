@@ -36,20 +36,20 @@ export default function BadgeRow({ earnedKeys = [], max = 5, onAdd }) {
           );
         })}
         {overflow > 0 && (
-          <span className="text-xs text-[#6B7280] font-medium px-2 py-0.5 bg-[#1F2937] rounded-full border border-white/10">
+          <span className="text-xs text-muted-foreground font-medium px-2 py-0.5 bg-[var(--kc-1f2937)] rounded-full border border-white/10">
             +{overflow} more
           </span>
         )}
         {onAdd && (
           <button
             onClick={onAdd}
-            className="w-6 h-6 rounded-full border border-dashed border-[#374151] text-[#6B7280] hover:border-[#2563EB] hover:text-[#2563EB] transition-colors flex items-center justify-center text-sm font-bold"
+            className="w-6 h-6 rounded-full border border-dashed border-foreground text-muted-foreground hover:border-primary hover:text-primary transition-colors flex items-center justify-center text-sm font-bold"
           >
             +
           </button>
         )}
         {earnedKeys.length === 0 && (
-          <span className="text-xs text-[#4B5563] italic">No achievements yet</span>
+          <span className="text-xs text-[var(--kc-4b5563)] italic">No achievements yet</span>
         )}
       </div>
     </TooltipProvider>

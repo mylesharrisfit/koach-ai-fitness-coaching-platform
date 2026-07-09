@@ -30,28 +30,28 @@ export default function BSOnboarding({ s, set, forms }) {
 
   return (
     <BSSection icon={BookOpen} title="Onboarding Settings" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">New Client Onboarding Flow</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">New Client Onboarding Flow</p>
       <BSRow label="Onboarding checklist" hint="Toggle steps on/off for new clients">
         <div className="space-y-2">
           {items.map(item => (
-            <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <GripVertical className="w-4 h-4 text-slate-300 flex-shrink-0" />
+            <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted border border-border">
+              <GripVertical className="w-4 h-4 text-border flex-shrink-0" />
               <BSToggle value={item.enabled} onChange={() => toggleItem(item.id)} />
               {item.custom ? (
                 <input value={item.label} onChange={e => updateLabel(item.id, e.target.value)}
-                  className="flex-1 bg-transparent text-sm text-slate-700 focus:outline-none" />
+                  className="flex-1 bg-transparent text-sm text-foreground focus:outline-none" />
               ) : (
-                <span className={`flex-1 text-sm ${item.enabled ? 'text-slate-700' : 'text-slate-400 line-through'}`}>{item.label}</span>
+                <span className={`flex-1 text-sm ${item.enabled ? 'text-foreground' : 'text-muted-foreground line-through'}`}>{item.label}</span>
               )}
               {item.custom && (
-                <button onClick={() => removeItem(item.id)} className="text-slate-400 hover:text-red-400 transition-colors">
+                <button onClick={() => removeItem(item.id)} className="text-muted-foreground hover:text-destructive transition-colors">
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
           ))}
           <button onClick={addCustom}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-primary bg-accent border border-primary hover:bg-accent transition-colors">
             <Plus className="w-4 h-4" /> Add Custom Step
           </button>
         </div>
@@ -59,13 +59,13 @@ export default function BSOnboarding({ s, set, forms }) {
       <BSRow label="Completion deadline" hint="Days clients have to complete onboarding">
         <div className="flex items-center gap-2">
           <BSInput type="number" value={s.onboarding_deadline_days} onChange={v => set('onboarding_deadline_days', v)} min={1} className="w-24" />
-          <span className="text-sm text-slate-500">days</span>
+          <span className="text-sm text-muted-foreground">days</span>
         </div>
       </BSRow>
       <BSRow label="Remind if incomplete after">
         <div className="flex items-center gap-2">
           <BSInput type="number" value={s.onboarding_remind_days} onChange={v => set('onboarding_remind_days', v)} min={1} className="w-24" />
-          <span className="text-sm text-slate-500">days</span>
+          <span className="text-sm text-muted-foreground">days</span>
         </div>
       </BSRow>
       <BSRow label="Notify coach on completion">
@@ -73,7 +73,7 @@ export default function BSOnboarding({ s, set, forms }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Welcome Package</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Welcome Package</p>
       <BSRow label="Auto-send welcome email">
         <div className="space-y-2">
           <BSToggle value={s.welcome_email_enabled} onChange={v => set('welcome_email_enabled', v)} />
@@ -93,7 +93,7 @@ export default function BSOnboarding({ s, set, forms }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Intake Form</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Intake Form</p>
       <BSRow label="Default intake form">
         <BSSelect value={s.intake_form_id || ''} onChange={v => set('intake_form_id', v)}
           options={[{ value: '', label: '— None —' }, ...forms.map(f => ({ value: f.id, label: f.name }))]} />
@@ -104,7 +104,7 @@ export default function BSOnboarding({ s, set, forms }) {
       <BSRow label="Reminder if incomplete after">
         <div className="flex items-center gap-2">
           <BSInput type="number" value={s.intake_reminder_days} onChange={v => set('intake_reminder_days', v)} min={1} className="w-24" />
-          <span className="text-sm text-slate-500">days</span>
+          <span className="text-sm text-muted-foreground">days</span>
         </div>
       </BSRow>
     </BSSection>

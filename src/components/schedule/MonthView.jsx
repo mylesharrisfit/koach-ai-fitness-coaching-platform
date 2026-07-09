@@ -7,13 +7,13 @@ import { cn } from '@/lib/utils';
 import SessionDetailPopover from './SessionDetailPopover';
 
 const typeColors = {
-  video_call: 'bg-blue-500 text-white',
-  in_person: 'bg-emerald-500 text-white',
-  check_in: 'bg-blue-500 text-white',
-  program_review: 'bg-violet-500 text-white',
-  onboarding: 'bg-emerald-500 text-white',
-  progress_review: 'bg-amber-500 text-white',
-  consultation: 'bg-gray-400 text-white',
+  video_call: 'bg-primary text-white',
+  in_person: 'bg-success text-white',
+  check_in: 'bg-primary text-white',
+  program_review: 'bg-ai text-white',
+  onboarding: 'bg-success text-white',
+  progress_review: 'bg-warning text-white',
+  consultation: 'bg-muted-foreground text-white',
 };
 
 export default function MonthView({ currentDate, sessions, onDayClick, onEditSession, clients = [] }) {
@@ -38,11 +38,11 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-[#E7EAF3] shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
         {/* Day labels */}
-        <div className="grid grid-cols-7 border-b border-[#E7EAF3]">
+        <div className="grid grid-cols-7 border-b border-border">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-            <div key={d} className="py-2.5 text-center text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">
+            <div key={d} className="py-2.5 text-center text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
               {d}
             </div>
           ))}
@@ -50,7 +50,7 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
 
         {/* Weeks */}
         {weeks.map((week, wi) => (
-          <div key={wi} className="grid grid-cols-7 border-b border-[#E7EAF3] last:border-b-0">
+          <div key={wi} className="grid grid-cols-7 border-b border-border last:border-b-0">
             {week.map(day => {
               const isToday = isSameDay(day, today);
               const inMonth = isSameMonth(day, currentDate);
@@ -63,14 +63,14 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
                   key={day.toISOString()}
                   onClick={() => onDayClick(day)}
                   className={cn(
-                    'min-h-[90px] p-1.5 border-r border-[#E7EAF3] last:border-r-0 cursor-pointer hover:bg-[#F6F7FB] transition-colors',
-                    !inMonth && 'bg-[#FAFAFA]'
+                    'min-h-[90px] p-1.5 border-r border-border last:border-r-0 cursor-pointer hover:bg-muted transition-colors',
+                    !inMonth && 'bg-background'
                   )}
                 >
                   {/* Date number */}
                   <div className={cn(
                     'w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold mb-1',
-                    isToday ? 'bg-primary text-white' : inMonth ? 'text-[#1F2A44]' : 'text-[#C4C9D8]'
+                    isToday ? 'bg-primary text-white' : inMonth ? 'text-foreground' : 'text-muted-foreground'
                   )}>
                     {format(day, 'd')}
                   </div>
@@ -87,7 +87,7 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
                           className={cn(
                             'w-full text-left text-[10px] font-medium px-1.5 py-0.5 rounded truncate cursor-pointer hover:opacity-90 transition-opacity',
                             typeColors[s.type] || 'bg-primary text-white',
-                            isCancelled && 'bg-red-500 text-white line-through'
+                            isCancelled && 'bg-destructive text-white line-through'
                           )}
                         >
                           {s.time ? `${s.time} ` : ''}{s.title}
@@ -95,7 +95,7 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
                       );
                     })}
                     {extra > 0 && (
-                      <div className="text-[10px] font-semibold text-[#6B7280] pl-1">
+                      <div className="text-[10px] font-semibold text-muted-foreground pl-1">
                         +{extra} more
                       </div>
                     )}

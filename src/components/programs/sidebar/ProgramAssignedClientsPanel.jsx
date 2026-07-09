@@ -8,12 +8,12 @@ function getInitials(name = '') {
 
 function getAvatarColor(name = '') {
   const colors = [
-    ['#DBEAFE', '#1D4ED8'],
-    ['#D1FAE5', '#065F46'],
-    ['#FEF3C7', '#92400E'],
-    ['#EDE9FE', '#5B21B6'],
-    ['#FCE7F3', '#9D174D'],
-    ['#FFEDD5', '#9A3412'],
+    ['var(--tc-accent)', 'var(--tc-primary)'],
+    ['var(--tc-success)', 'var(--tc-success)'],
+    ['var(--tc-warning)', 'var(--tc-warning)'],
+    ['var(--tc-ai)', 'var(--tc-ai)'],
+    ['var(--kc-fce7f3)', 'var(--kc-9d174d)'],
+    ['var(--tc-warning)', 'var(--kc-9a3412)'],
   ];
   const i = name.charCodeAt(0) % colors.length;
   return colors[i];
@@ -24,17 +24,18 @@ export default function ProgramAssignedClientsPanel({
   allClients = [],
   programId,
   programDurationWeeks = 12,
+  progressByClientId = {},
   onAssign,
 }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-[#9CA3AF] flex items-center gap-1.5">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <Users className="w-3.5 h-3.5" />
           Assigned Clients
         </h3>
         {assignedClients.length > 0 && (
-          <span className="text-xs font-semibold text-[#6B7280] bg-[#F3F4F6] px-2 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
             {assignedClients.length}
           </span>
         )}
@@ -42,15 +43,15 @@ export default function ProgramAssignedClientsPanel({
 
       {assignedClients.length === 0 ? (
         <div className="text-center py-6">
-          <div className="w-10 h-10 rounded-full bg-[#EEF2FF] flex items-center justify-center mx-auto mb-3">
-            <Users className="w-5 h-5 text-[#3730a3]" />
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-3">
+            <Users className="w-5 h-5 text-[var(--kc-3730a3)]" />
           </div>
-          <p className="text-xs text-[#9CA3AF] mb-3">No clients assigned yet</p>
+          <p className="text-xs text-muted-foreground mb-3">No clients assigned yet</p>
           <Button
             size="sm"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs"
-            style={{ background: '#2563EB', color: '#fff' }}
+            style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Client
           </Button>
@@ -59,8 +60,10 @@ export default function ProgramAssignedClientsPanel({
         <>
           <div className="space-y-3 mb-4">
             {assignedClients.slice(0, 5).map((client) => {
-              const progress = Math.round(Math.random() * 100);
-              const currentWeek = Math.max(1, Math.floor((progress / 100) * programDurationWeeks));
+              const stat = progressByClientId[client.id];
+              const started = stat && stat.total > 0;
+              const progress = started ? Math.round((stat.completed / stat.total) * 100) : 0;
+              const currentWeek = started ? Math.max(1, Math.floor((progress / 100) * programDurationWeeks)) : null;
               const [bgColor, textColor] = getAvatarColor(client.name);
 
               return (
@@ -77,16 +80,18 @@ export default function ProgramAssignedClientsPanel({
                       }
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-[#1F2A44] truncate">{client.name}</p>
-                      <p className="text-[10px] text-[#9CA3AF]">Week {currentWeek} of {programDurationWeeks}</p>
+                      <p className="text-xs font-semibold text-foreground truncate">{client.name}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {started ? `Week ${currentWeek} of ${programDurationWeeks}` : 'Not started yet'}
+                      </p>
                     </div>
-                    <span className="text-[10px] font-bold text-[#2563EB]">{progress}%</span>
+                    {started && <span className="text-[10px] font-bold text-primary">{progress}%</span>}
                   </div>
                   {/* Progress bar */}
-                  <div className="ml-10 h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden">
+                  <div className="ml-10 h-1.5 bg-border rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ width: `${progress}%`, background: '#2563EB' }}
+                      style={{ width: `${progress}%`, background: 'var(--tc-primary)' }}
                     />
                   </div>
                 </div>
@@ -95,7 +100,7 @@ export default function ProgramAssignedClientsPanel({
           </div>
 
           {assignedClients.length > 5 && (
-            <p className="text-xs text-[#9CA3AF] mb-3">
+            <p className="text-xs text-muted-foreground mb-3">
               +{assignedClients.length - 5} more client{assignedClients.length - 5 !== 1 ? 's' : ''}
             </p>
           )}
@@ -105,7 +110,7 @@ export default function ProgramAssignedClientsPanel({
             variant="outline"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs font-semibold"
-            style={{ color: '#2563EB', borderColor: '#2563EB' }}
+            style={{ color: 'var(--tc-primary)', borderColor: 'var(--tc-primary)' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign New
           </Button>

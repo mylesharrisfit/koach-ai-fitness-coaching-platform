@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Search, X, Layout, LayoutList } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -10,12 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
+
 
 const CATEGORIES = [
   { value: 'fat_loss', label: 'Fat Loss' },
@@ -79,7 +74,7 @@ export default function ProgramSearchFilter({
     <div className="space-y-4">
       {/* Search Bar */}
       <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
           <Search className="w-4 h-4" />
         </div>
         <Input
@@ -87,12 +82,12 @@ export default function ProgramSearchFilter({
           placeholder="Search programs by name, goal, or exercise type..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 h-10 bg-white border border-[#E7EAF3]"
+          className="pl-10 h-10 bg-card border border-border"
         />
         {searchQuery && (
           <button
             onClick={() => onSearchChange('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#374151] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -101,13 +96,13 @@ export default function ProgramSearchFilter({
 
       {/* Search Results Count */}
       {searchQuery && (
-        <div className="text-xs text-[#6B7280]">
+        <div className="text-xs text-muted-foreground">
           {resultCount} result{resultCount !== 1 ? 's' : ''} found
         </div>
       )}
 
       {/* Filter Bar */}
-      <div className="flex items-center gap-2 pb-3 border-b border-[#E7EAF3] flex-wrap">
+      <div className="flex items-center gap-2 pb-3 border-b border-border flex-wrap">
         {/* Difficulty Dropdown */}
         <Select value={difficulty} onValueChange={onDifficultyChange}>
           <SelectTrigger className="w-40 h-9 text-sm">
@@ -132,7 +127,7 @@ export default function ProgramSearchFilter({
                 'text-xs font-medium px-3 py-1.5 rounded-lg border transition-all whitespace-nowrap',
                 categories.includes(cat.value)
                   ? 'bg-primary text-white border-primary'
-                  : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-primary hover:text-primary'
+                  : 'bg-card text-muted-foreground border-border hover:border-primary hover:text-primary'
               )}
             >
               {cat.label}
@@ -199,7 +194,7 @@ export default function ProgramSearchFilter({
                 'text-xs font-medium px-2.5 py-1 rounded-lg border transition-all whitespace-nowrap',
                 status === st.value
                   ? 'bg-primary text-white border-primary'
-                  : 'bg-white text-[#6B7280] border-[#E7EAF3] hover:border-primary hover:text-primary'
+                  : 'bg-card text-muted-foreground border-border hover:border-primary hover:text-primary'
               )}
             >
               {st.label}
@@ -239,21 +234,21 @@ export default function ProgramSearchFilter({
 
           {/* Filters Count Badge */}
           {activeFiltersCount > 0 && (
-            <span className="text-xs font-medium text-[#6B7280] px-2 py-1 bg-[#F6F7FB] rounded-lg border border-[#E7EAF3]">
+            <span className="text-xs font-medium text-muted-foreground px-2 py-1 bg-muted rounded-lg border border-border">
               Filters {activeFiltersCount}
             </span>
           )}
         </div>
 
         {/* Layout Toggle */}
-        <div className="flex items-center gap-1 bg-[#F6F7FB] border border-[#E7EAF3] rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-muted border border-border rounded-lg p-1">
           <button
             onClick={() => onLayoutChange('grid')}
             className={cn(
               'flex items-center justify-center w-8 h-8 rounded-md transition-all',
               layout === 'grid'
                 ? 'bg-primary text-white'
-                : 'text-[#9CA3AF] hover:text-[#374151]'
+                : 'text-muted-foreground hover:text-foreground'
             )}
             title="Grid view"
           >
@@ -265,7 +260,7 @@ export default function ProgramSearchFilter({
               'flex items-center justify-center w-8 h-8 rounded-md transition-all',
               layout === 'list'
                 ? 'bg-primary text-white'
-                : 'text-[#9CA3AF] hover:text-[#374151]'
+                : 'text-muted-foreground hover:text-foreground'
             )}
             title="List view"
           >

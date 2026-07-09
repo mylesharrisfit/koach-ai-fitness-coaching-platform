@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, CreditCard, FileText, Receipt, AlertCircle, Gift } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
+import { ChevronLeft, CreditCard, FileText, Receipt, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import BillingCurrentPackage from '@/components/portal/billing/BillingCurrentPackage';
 import BillingOutstandingCard from '@/components/portal/billing/BillingOutstandingCard';
@@ -88,9 +88,9 @@ export default function PortalBilling({ user }) {
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition-all"
               style={{
-                background: activeTab === tab.key ? 'rgba(59,130,246,0.2)' : 'transparent',
-                color: activeTab === tab.key ? '#60A5FA' : 'rgba(255,255,255,0.35)',
-                border: activeTab === tab.key ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
+                background: activeTab === tab.key ? 'rgb(var(--primary) / 0.2)' : 'transparent',
+                color: activeTab === tab.key ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.35)',
+                border: activeTab === tab.key ? '1px solid rgb(var(--primary) / 0.3)' : '1px solid transparent',
               }}>
               <tab.icon className="w-3 h-3" />
               {tab.label}
@@ -123,15 +123,15 @@ export default function PortalBilling({ user }) {
               onPay={setPayingInvoice}
             />
             {/* Referral card */}
-            <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(37,99,235,0.15))', border: '1px solid rgba(124,58,237,0.25)' }}>
+            <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgb(var(--ai) / 0.15), rgb(var(--primary) / 0.15))', border: '1px solid rgb(var(--ai) / 0.25)' }}>
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(124,58,237,0.2)' }}>
-                  <Gift className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgb(var(--ai) / 0.2)' }}>
+                  <Gift className="w-5 h-5 text-ai" />
                 </div>
                 <div className="flex-1">
                   <p className="text-white font-bold text-sm">Refer a Friend</p>
                   <p className="text-white/40 text-xs mt-0.5">Love KOACH AI? Share it and earn rewards!</p>
-                  <button className="mt-3 text-xs font-bold px-4 py-2 rounded-lg" style={{ background: 'rgba(124,58,237,0.3)', color: '#C4B5FD', border: '1px solid rgba(124,58,237,0.4)' }}
+                  <button className="mt-3 text-xs font-bold px-4 py-2 rounded-lg" style={{ background: 'rgb(var(--ai) / 0.3)', color: 'rgb(var(--ai))', border: '1px solid rgb(var(--ai) / 0.4)' }}
                     onClick={() => {
                       const link = `${window.location.origin}/join?ref=${myClient?.id || ''}`;
                       navigator.clipboard.writeText(link);

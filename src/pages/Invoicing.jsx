@@ -32,8 +32,8 @@ function EmptyState() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 24px', textAlign: 'center' }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>💰</div>
-      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', margin: '0 0 8px' }}>No invoices yet</h3>
-      <p style={{ fontSize: 14, color: '#9CA3AF', margin: 0 }}>Create your first invoice to start getting paid 💰</p>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--tc-foreground)', margin: '0 0 8px' }}>No invoices yet</h3>
+      <p style={{ fontSize: 14, color: 'var(--tc-muted-foreground)', margin: 0 }}>Create your first invoice to start getting paid 💰</p>
     </div>
   );
 }
@@ -167,20 +167,20 @@ export default function Invoicing() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F9FAFB' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--tc-background)' }}>
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #F3F4F6', padding: '16px 24px', flexShrink: 0 }}>
+      <div style={{ background: 'var(--tc-card)', borderBottom: '1px solid var(--tc-muted)', padding: '16px 24px', flexShrink: 0 }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#111', margin: 0, letterSpacing: '-0.02em' }}>Invoicing & Payments</h1>
-            <p style={{ fontSize: 12, color: '#9CA3AF', margin: '2px 0 0' }}>Manage billing, track payments, and get paid</p>
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: 'var(--tc-foreground)', margin: 0, letterSpacing: '-0.02em' }}>Invoicing & Payments</h1>
+            <p style={{ fontSize: 12, color: 'var(--tc-muted-foreground)', margin: '2px 0 0' }}>Manage billing, track payments, and get paid</p>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => { setEditingInvoice(null); setShowForm(true); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
               <Plus size={16} /> New Invoice
             </button>
-            <button onClick={() => navigate('/packages')} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: '#fff', color: '#374151', border: '1.5px solid #E5E7EB', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/packages')} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'var(--tc-card)', color: 'var(--tc-foreground)', border: '1.5px solid var(--tc-border)', cursor: 'pointer' }}>
               <Package size={15} /> Manage Packages
             </button>
           </div>
@@ -201,13 +201,13 @@ export default function Invoicing() {
             {/* Left: Tabs + List */}
             <div>
               {/* Tabs */}
-              <div style={{ background: '#fff', borderRadius: '14px 14px 0 0', border: '1px solid #F3F4F6', borderBottom: 'none', padding: '0 16px', display: 'flex', gap: 4, overflowX: 'auto' }}>
+              <div style={{ background: 'var(--tc-card)', borderRadius: '14px 14px 0 0', border: '1px solid var(--tc-muted)', borderBottom: 'none', padding: '0 16px', display: 'flex', gap: 4, overflowX: 'auto' }}>
                 {TABS.map(tab => (
                   <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                    style={{ padding: '12px 14px', fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, color: activeTab === tab.key ? '#2563EB' : '#6B7280', border: 'none', borderBottom: `2px solid ${activeTab === tab.key ? '#2563EB' : 'transparent'}`, background: 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    style={{ padding: '12px 14px', fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, color: activeTab === tab.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', border: 'none', borderBottom: `2px solid ${activeTab === tab.key ? 'var(--tc-primary)' : 'transparent'}`, background: 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
                     {tab.label}
                     {counts[tab.key] > 0 && (
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: activeTab === tab.key ? '#EFF6FF' : '#F3F4F6', color: activeTab === tab.key ? '#2563EB' : '#9CA3AF' }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: activeTab === tab.key ? 'var(--tc-accent)' : 'var(--tc-muted)', color: activeTab === tab.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>
                         {counts[tab.key]}
                       </span>
                     )}
@@ -216,33 +216,33 @@ export default function Invoicing() {
               </div>
 
               {/* Filter bar */}
-              <div style={{ background: '#fff', borderLeft: '1px solid #F3F4F6', borderRight: '1px solid #F3F4F6', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ background: 'var(--tc-card)', borderLeft: '1px solid var(--tc-muted)', borderRight: '1px solid var(--tc-muted)', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 {/* Search */}
                 <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-                  <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
+                  <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)' }} />
                   <input value={search} onChange={e => setSearch(e.target.value)}
                     placeholder="Search by client or invoice #…"
-                    style={{ width: '100%', padding: '8px 12px 8px 34px', borderRadius: 9, fontSize: 13, background: '#F9FAFB', border: '1.5px solid #E5E7EB', outline: 'none', boxSizing: 'border-box', color: '#111' }} />
+                    style={{ width: '100%', padding: '8px 12px 8px 34px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' }} />
                 </div>
                 {/* Sort */}
                 <div style={{ position: 'relative' }}>
                   <select value={sort} onChange={e => setSort(e.target.value)}
-                    style={{ padding: '8px 32px 8px 12px', borderRadius: 9, fontSize: 13, background: '#F9FAFB', border: '1.5px solid #E5E7EB', outline: 'none', color: '#374151', appearance: 'none', cursor: 'pointer' }}>
+                    style={{ padding: '8px 32px 8px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', color: 'var(--tc-foreground)', appearance: 'none', cursor: 'pointer' }}>
                     {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
-                  <ChevronDown size={12} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF', pointerEvents: 'none' }} />
+                  <ChevronDown size={12} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', pointerEvents: 'none' }} />
                 </div>
                 {/* Export */}
                 <button onClick={exportCSV}
-                  style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: '#F9FAFB', border: '1.5px solid #E5E7EB', color: '#374151', cursor: 'pointer' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', color: 'var(--tc-foreground)', cursor: 'pointer' }}>
                   <Download size={13} /> Export CSV
                 </button>
               </div>
 
               {/* Invoice List */}
-              <div style={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
+              <div style={{ background: 'var(--tc-card)', border: '1px solid var(--tc-muted)', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
                 {isLoading ? (
-                  <div style={{ padding: 40, textAlign: 'center', color: '#9CA3AF', fontSize: 14 }}>Loading invoices…</div>
+                  <div style={{ padding: 40, textAlign: 'center', color: 'var(--tc-muted-foreground)', fontSize: 14 }}>Loading invoices…</div>
                 ) : filtered.length === 0 ? (
                   <EmptyState />
                 ) : (

@@ -4,10 +4,10 @@ import { Droplets, CheckCircle2, XCircle, Clock, Pill, Flame, Dumbbell, Zap, Lea
 import { motion, AnimatePresence } from 'framer-motion';
 
 const GOAL_META = {
-  fat_loss:    { emoji: '🔥', label: 'Fat Loss',    color: 'text-red-600',    bg: 'bg-red-50',    border: 'border-red-100',   icon: Flame },
-  muscle_gain: { emoji: '💪', label: 'Muscle Gain', color: 'text-blue-600',   bg: 'bg-blue-50',   border: 'border-blue-100',  icon: Dumbbell },
-  performance: { emoji: '⚡', label: 'Performance', color: 'text-amber-600',  bg: 'bg-amber-50',  border: 'border-amber-100', icon: Zap },
-  maintenance: { emoji: '🌿', label: 'Maintenance', color: 'text-emerald-600',bg: 'bg-emerald-50',border: 'border-emerald-100',icon: Leaf },
+  fat_loss:    { emoji: '🔥', label: 'Fat Loss',    color: 'text-destructive',    bg: 'bg-destructive/10',    border: 'border-destructive',   icon: Flame },
+  muscle_gain: { emoji: '💪', label: 'Muscle Gain', color: 'text-primary',   bg: 'bg-accent',   border: 'border-accent',  icon: Dumbbell },
+  performance: { emoji: '⚡', label: 'Performance', color: 'text-warning',  bg: 'bg-warning/10',  border: 'border-warning', icon: Zap },
+  maintenance: { emoji: '🌿', label: 'Maintenance', color: 'text-success',bg: 'bg-success/10',border: 'border-success',icon: Leaf },
 };
 
 const PRIORITIZE_BY_GOAL = {
@@ -35,9 +35,9 @@ function DonutChart({ protein, carbs, fats }) {
   const total = (protein * 4) + (carbs * 4) + (fats * 9);
   if (!total) return null;
   const data = [
-    { name: 'Protein', value: Math.round((protein * 4 / total) * 100), color: '#3B82F6', grams: protein },
-    { name: 'Carbs',   value: Math.round((carbs * 4 / total) * 100),   color: '#F97316', grams: carbs },
-    { name: 'Fats',    value: Math.round((fats * 9 / total) * 100),    color: '#EAB308', grams: fats },
+    { name: 'Protein', value: Math.round((protein * 4 / total) * 100), color: 'var(--tc-primary)', grams: protein },
+    { name: 'Carbs',   value: Math.round((carbs * 4 / total) * 100),   color: 'var(--kc-f97316)', grams: carbs },
+    { name: 'Fats',    value: Math.round((fats * 9 / total) * 100),    color: 'var(--kc-eab308)', grams: fats },
   ];
   return (
     <div className="flex items-center gap-4">
@@ -85,9 +85,9 @@ const DEFAULT_NIGHT = [
 function SupStack({ title, emoji, items, badgeColor }) {
   const [open, setOpen] = useState(true);
   return (
-    <div className="border border-[#E7EAF3] rounded-xl overflow-hidden">
+    <div className="border border-border rounded-xl overflow-hidden">
       <button onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-2 px-4 py-2.5 bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+        className="w-full flex items-center gap-2 px-4 py-2.5 bg-muted hover:bg-muted transition-colors text-left">
         <span className="text-base">{emoji}</span>
         <span className="text-xs font-bold text-foreground flex-1">{title}</span>
         <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
@@ -101,7 +101,7 @@ function SupStack({ title, emoji, items, badgeColor }) {
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-[#E7EAF3] bg-white">
+                  <tr className="border-b border-border bg-card">
                     <th className="text-left px-4 py-2 text-muted-foreground font-semibold">Supplement</th>
                     <th className="text-left px-3 py-2 text-muted-foreground font-semibold">Dose</th>
                     <th className="text-left px-3 py-2 text-muted-foreground font-semibold hidden sm:table-cell">Why it matters</th>
@@ -109,7 +109,7 @@ function SupStack({ title, emoji, items, badgeColor }) {
                 </thead>
                 <tbody>
                   {items.map((s, i) => (
-                    <tr key={i} className="border-b border-[#F3F4F6] last:border-0 bg-white">
+                    <tr key={i} className="border-b border-muted last:border-0 bg-card">
                       <td className="px-4 py-2.5">
                         <div className="flex items-center gap-2">
                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${badgeColor}`}>
@@ -153,15 +153,15 @@ function SupplementSection({ supplements }) {
       </h4>
       <div className="space-y-3">
         {morning.length > 0 && (
-          <SupStack title="Morning Stack" emoji="☀️" items={morning} badgeColor="bg-amber-100 text-amber-700" />
+          <SupStack title="Morning Stack" emoji="☀️" items={morning} badgeColor="bg-warning/10 text-warning" />
         )}
         {night.length > 0 && (
-          <SupStack title="Night Stack" emoji="🌙" items={night} badgeColor="bg-indigo-100 text-indigo-700" />
+          <SupStack title="Night Stack" emoji="🌙" items={night} badgeColor="bg-accent text-primary" />
         )}
         {other.length > 0 && (
-          <SupStack title="Other Supplements" emoji="💊" items={other} badgeColor="bg-slate-100 text-slate-600" />
+          <SupStack title="Other Supplements" emoji="💊" items={other} badgeColor="bg-muted text-muted-foreground" />
         )}
-        <p className="text-[11px] text-amber-600 bg-amber-50 rounded-xl px-3 py-2">
+        <p className="text-[11px] text-warning bg-warning/10 rounded-xl px-3 py-2">
           ⚠️ General recommendations. Coach may adjust based on your specific needs.
         </p>
       </div>
@@ -202,13 +202,13 @@ export default function OverviewTab({ plan }) {
 
       {/* BMR / TDEE info banner */}
       {hasBMR && (
-        <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-muted-foreground flex-wrap gap-y-1">
+        <div className="flex items-center gap-2 px-4 py-3 bg-muted border border-border rounded-xl text-xs text-muted-foreground flex-wrap gap-y-1">
           {plan.bmr && <span><span className="font-semibold text-foreground">BMR:</span> {plan.bmr} kcal</span>}
-          {plan.bmr && plan.tdee && <span className="text-slate-300">·</span>}
+          {plan.bmr && plan.tdee && <span className="text-border">·</span>}
           {plan.tdee && <span><span className="font-semibold text-foreground">TDEE:</span> {plan.tdee} kcal</span>}
           {deficit && deficit > 0 && (
             <>
-              <span className="text-slate-300">·</span>
+              <span className="text-border">·</span>
               <span><span className="font-semibold text-foreground">Deficit:</span> {deficit} kcal/day</span>
             </>
           )}
@@ -227,7 +227,7 @@ export default function OverviewTab({ plan }) {
       {!isHabits && (plan.protein_g || plan.carbs_g || plan.fats_g) ? (
         <div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Macro Ratio</h4>
-          <div className="bg-white border border-[#E7EAF3] rounded-xl p-4">
+          <div className="bg-card border border-border rounded-xl p-4">
             <DonutChart protein={plan.protein_g || 0} carbs={plan.carbs_g || 0} fats={plan.fats_g || 0} />
           </div>
         </div>
@@ -252,12 +252,12 @@ export default function OverviewTab({ plan }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Prioritize
+            <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Prioritize
           </h4>
           <div className="space-y-1.5">
             {prioritize.map((f, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
                 <span className="text-foreground">{f}</span>
               </div>
             ))}
@@ -265,12 +265,12 @@ export default function OverviewTab({ plan }) {
         </div>
         <div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-            <XCircle className="w-3.5 h-3.5 text-red-400" /> Avoid
+            <XCircle className="w-3.5 h-3.5 text-destructive" /> Avoid
           </h4>
           <div className="space-y-1.5">
             {avoid.map((f, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
-                <div className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-destructive flex-shrink-0" />
                 <span className="text-foreground">{f}</span>
               </div>
             ))}
@@ -279,8 +279,8 @@ export default function OverviewTab({ plan }) {
       </div>
 
       {/* Hydration */}
-      <div className="flex items-center gap-3 p-3.5 bg-blue-50 border border-blue-100 rounded-xl">
-        <Droplets className="w-5 h-5 text-blue-500 flex-shrink-0" />
+      <div className="flex items-center gap-3 p-3.5 bg-accent border border-accent rounded-xl">
+        <Droplets className="w-5 h-5 text-primary flex-shrink-0" />
         <div>
           <p className="text-sm font-semibold text-foreground">Hydration Goal</p>
           <p className="text-xs text-muted-foreground">Aim for 3–4 litres of water per day. Add electrolytes during intense training days.</p>

@@ -16,15 +16,15 @@ function calcStreak(clientCIs) {
 
 function StatCard({ label, value, dot, iconBg, iconColor, children }) {
   return (
-    <div className={cn('bg-white rounded-xl border p-4 shadow-sm', `border-${dot.split('-')[1]}-100`)}>
+    <div className={cn('bg-card rounded-xl border p-4 shadow-sm', `border-${dot.split('-')[1]}-100`)}>
       <div className="flex items-center justify-between mb-3">
         <div className={cn('w-2 h-2 rounded-full', dot)} />
         <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', iconBg)}>
           {children}
         </div>
       </div>
-      <p className="text-2xl font-bold text-[#111827]">{value}</p>
-      <p className="text-xs text-[#6B7280] mt-0.5">{label}</p>
+      <p className="text-2xl font-bold text-foreground">{value}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
     </div>
   );
 }
@@ -62,48 +62,48 @@ export default function CheckInStatsRow({ checkIns, clients, latestPerClient }) 
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-      <div className="bg-white rounded-xl border border-orange-100 p-4 shadow-sm">
+      <div className="bg-card rounded-xl border border-orange-100 p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <div className="w-2 h-2 rounded-full bg-orange-400" />
           <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50">
             <Clock className="w-4 h-4 text-orange-500" />
           </div>
         </div>
-        <p className="text-2xl font-bold text-[#111827]">{stats.pending}</p>
-        <p className="text-xs text-[#6B7280] mt-0.5">Pending Reviews</p>
+        <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Pending Reviews</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-emerald-100 p-4 shadow-sm">
+      <div className="bg-card rounded-xl border border-success p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
-          <div className="w-2 h-2 rounded-full bg-emerald-400" />
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-50">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          <div className="w-2 h-2 rounded-full bg-success" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-success/10">
+            <CheckCircle2 className="w-4 h-4 text-success" />
           </div>
         </div>
-        <p className="text-2xl font-bold text-[#111827]">{stats.reviewedThisWeek}</p>
-        <p className="text-xs text-[#6B7280] mt-0.5">Reviewed This Week</p>
+        <p className="text-2xl font-bold text-foreground">{stats.reviewedThisWeek}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Reviewed This Week</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-blue-100 p-4 shadow-sm">
+      <div className="bg-card rounded-xl border border-accent p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
-          <div className="w-2 h-2 rounded-full bg-blue-400" />
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
-            <TrendingUp className="w-4 h-4 text-blue-500" />
+          <div className="w-2 h-2 rounded-full bg-primary" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent">
+            <TrendingUp className="w-4 h-4 text-primary" />
           </div>
         </div>
-        <p className="text-2xl font-bold text-[#111827]">{stats.responseRate}%</p>
-        <p className="text-xs text-[#6B7280] mt-0.5">Avg Response Rate</p>
+        <p className="text-2xl font-bold text-foreground">{stats.responseRate}%</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Avg Response Rate</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-purple-100 p-4 shadow-sm">
+      <div className="bg-card rounded-xl border border-ai p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
-          <div className="w-2 h-2 rounded-full bg-purple-400" />
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-50">
-            <Flame className="w-4 h-4 text-purple-500" />
+          <div className="w-2 h-2 rounded-full bg-ai" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-ai/10">
+            <Flame className="w-4 h-4 text-ai" />
           </div>
         </div>
-        <p className="text-2xl font-bold text-[#111827]">{stats.streakLeaders}</p>
-        <p className="text-xs text-[#6B7280] mt-0.5">Streak Leaders</p>
+        <p className="text-2xl font-bold text-foreground">{stats.streakLeaders}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Streak Leaders</p>
       </div>
     </div>
   );

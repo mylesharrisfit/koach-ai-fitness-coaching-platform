@@ -8,7 +8,7 @@ import { getFoodImageUrl } from '@/lib/foodImages';
 function PlanBadge({ plan }) {
   const label = plan.is_template ? 'Template' : plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking';
   return (
-    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-muted text-foreground border border-border">
       {label}
     </span>
   );
@@ -24,13 +24,13 @@ function MacroRow({ plan }) {
   ].filter(i => i.value);
   if (!items.length) return null;
   return (
-    <div className="flex items-center justify-between bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-2">
+    <div className="flex items-center justify-between bg-background border border-border rounded-lg px-3 py-2">
       {items.map((item, i) => (
         <React.Fragment key={item.label}>
-          {i > 0 && <div className="w-px h-4 bg-[#E5E7EB]" />}
+          {i > 0 && <div className="w-px h-4 bg-border" />}
           <div className="flex flex-col items-center">
-            <span className="text-xs font-semibold text-[#111827]">{item.value}{item.unit || ''}</span>
-            <span className="text-[10px] text-[#9CA3AF] uppercase tracking-wide">{item.label}</span>
+            <span className="text-xs font-semibold text-foreground">{item.value}{item.unit || ''}</span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</span>
           </div>
         </React.Fragment>
       ))}
@@ -41,21 +41,21 @@ function MacroRow({ plan }) {
 function DropdownMenu({ onEdit, onAssign, onDuplicate, onDelete, onClose }) {
   return (
     <div
-      className="absolute top-8 right-0 z-20 w-44 bg-white border border-[#E5E7EB] rounded-xl shadow-sm py-1 overflow-hidden"
+      className="absolute top-8 right-0 z-20 w-44 bg-card border border-border rounded-xl shadow-sm py-1 overflow-hidden"
       onMouseLeave={onClose}
     >
       {[
         { icon: Pencil, label: 'Edit Plan',      action: onEdit,      style: '' },
         { icon: Users,  label: 'Assign Clients', action: onAssign,    style: '' },
         { icon: Copy,   label: 'Duplicate',       action: onDuplicate, style: '' },
-        { icon: Trash2, label: 'Delete',          action: onDelete,    style: 'text-[#DC2626]' },
+        { icon: Trash2, label: 'Delete',          action: onDelete,    style: 'text-destructive' },
       ].map(({ icon: Icon, label, action, style }) => (
         <button
           key={label}
           onClick={(e) => { e.stopPropagation(); action(); onClose(); }}
-          className={cn('flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-medium hover:bg-[#F9FAFB] transition-colors text-left', style || 'text-[#374151]')}
+          className={cn('flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-medium hover:bg-background transition-colors text-left', style || 'text-foreground')}
         >
-          <Icon className="w-3.5 h-3.5 flex-shrink-0 text-[#9CA3AF]" />
+          <Icon className="w-3.5 h-3.5 flex-shrink-0 text-muted-foreground" />
           {label}
         </button>
       ))}
@@ -77,7 +77,7 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
         transition={{ duration: 0.2, delay: index * 0.04 }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => { setHovered(false); setMenuOpen(false); }}
-        className="relative bg-white border border-[#E5E7EB] rounded-xl overflow-hidden hover:border-[#D1D5DB] transition-colors duration-150 flex flex-col"
+        className="relative bg-card border border-border rounded-xl overflow-hidden hover:border-muted-foreground transition-colors duration-150 flex flex-col"
       >
         {/* Body */}
         <div className="p-4 flex flex-col gap-3 flex-1">
@@ -89,7 +89,7 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
                 initial={{ opacity: 0 }}
                 animate={{ opacity: hovered || menuOpen ? 1 : 0 }}
                 onClick={(e) => { e.stopPropagation(); setMenuOpen(o => !o); }}
-                className="p-1.5 rounded-lg hover:bg-[#F3F4F6] text-[#9CA3AF] hover:text-[#374151] transition-colors"
+                className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
               >
                 <MoreHorizontal className="w-4 h-4" />
               </motion.button>
@@ -107,9 +107,9 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
 
           {/* Title + description */}
           <div>
-            <h3 className="font-semibold text-sm text-[#111827] leading-tight line-clamp-1">{plan.title}</h3>
+            <h3 className="font-semibold text-sm text-foreground leading-tight line-clamp-1">{plan.title}</h3>
             {plan.description && (
-              <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-2 leading-relaxed">{plan.description}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">{plan.description}</p>
             )}
           </div>
 
@@ -117,9 +117,9 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-3 border-t border-[#E5E7EB] flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-xs text-[#6B7280]">
-            <Users className="w-3.5 h-3.5 text-[#9CA3AF]" />
+        <div className="px-4 py-3 border-t border-border flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Users className="w-3.5 h-3.5 text-muted-foreground" />
             <span>{clientCount} {clientCount === 1 ? 'client' : 'clients'}</span>
             {plan.meals?.[0]?.foods?.slice(0, 3).map((food, i) => (
               <img
@@ -137,7 +137,7 @@ export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, on
             animate={{ opacity: hovered ? 1 : 0 }}
             transition={{ duration: 0.12 }}
             onClick={() => setDetailOpen(true)}
-            className="flex items-center gap-1 text-xs font-medium text-[#2563EB] hover:text-blue-700 transition-colors"
+            className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary transition-colors"
           >
             View <ArrowRight className="w-3 h-3" />
           </motion.button>

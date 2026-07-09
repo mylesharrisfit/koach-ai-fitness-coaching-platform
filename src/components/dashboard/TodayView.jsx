@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import RunMyDayCenter from './RunMyDayCenter';
 import { compositeAdherenceScore } from '@/lib/adherence';
-import RecommendationsWidget from './RecommendationsWidget';
 import DashboardKPIs from './DashboardKPIs';
 import TodaySchedule from './TodaySchedule';
 import WeeklySnapshot from './WeeklySnapshot';
@@ -48,10 +47,9 @@ function ActionCenterSection({ clients, checkIns, messages, payments }) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-bold text-gray-900 tracking-tight">Action Center</h2>
+          <h2 className="text-sm font-bold text-foreground tracking-tight">Action Center</h2>
           {totalUnresolved > 0 && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' }}>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
               {totalUnresolved}
             </span>
           )}
@@ -59,12 +57,12 @@ function ActionCenterSection({ clients, checkIns, messages, payments }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setRefreshKey(k => k + 1)}
-            className="p-1 rounded-md hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+            className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
             title="Refresh action items"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
-          <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+          <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium bg-muted text-muted-foreground border border-border">
             <Zap className="w-2.5 h-2.5" /> AI
           </span>
         </div>
@@ -80,6 +78,37 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const activeCount = clients.filter(c => c.status === 'active' || c.lifecycle_status === 'active').length;
 
+  // Count clients needing attention (stale check-in or low adherence). Drives
+  // whether AI Insights is promoted above the informational sections.
+  const flaggedCount = useMemo(() => {
+    let n = 0;
+    clients.forEach(c => {
+      const active = c.status === 'active' || c.lifecycle_status === 'active';
+      if (!active) return;
+      const cis = checkIns.filter(ci => ci.client_id === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+      const days = cis[0] ? differenceInDays(new Date(), parseISO(cis[0].date)) : 999;
+      if (days >= 10) { n++; return; }
+      if (cis.length >= 2) {
+        const s = compositeAdherenceScore(cis);
+        if (s !== null && s < 65) n++;
+      }
+    });
+    return n;
+  }, [clients, checkIns]);
+
+  // Sections below Run My Day, ordered by unresolved signal (highest first),
+  // stable within equal counts. Run My Day itself is always pinned to the top.
+  const orderedSections = useMemo(() => {
+    const secs = [
+      { key: 'schedule', count: 0, node: <TodaySchedule clients={clients} /> },
+      { key: 'insights', count: flaggedCount, node: clients.length > 0
+          ? <AIInsightsFeed clients={clients} checkIns={checkIns} messages={messages} /> : null },
+      { key: 'snapshot', count: 0, node: <WeeklySnapshot checkIns={checkIns} clients={clients} /> },
+      { key: 'bi', count: 0, node: clients.length > 0 ? <BIDashboardCard /> : null },
+    ].filter(s => s.node);
+    return secs.map((s, i) => ({ ...s, i })).sort((a, b) => b.count - a.count || a.i - b.i);
+  }, [clients, checkIns, messages, flaggedCount]);
+
   const [showBanner, setShowBanner] = useState(() => {
     return localStorage.getItem('koach_onboarding_complete') === '1' &&
            localStorage.getItem('koach_banner_dismissed') !== '1';
@@ -94,19 +123,19 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-4 sm:py-8 space-y-5 sm:space-y-7 pb-24">
 
       {/* ── Header ─────────────────────────────────── */}
-      <div className="flex items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-6">
+      <div className="flex items-center justify-between gap-3 bg-sidebar rounded-xl p-4 sm:p-6">
         <div>
           <h1 className="text-base sm:text-xl font-semibold text-white" style={{ letterSpacing: '-0.02em' }}>
             {greeting}, Coach
           </h1>
-          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>
             {format(new Date(), 'EEE, MMM d')} · {activeCount} active client{activeCount !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={() => navigate('/clients')}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 border min-h-[44px]"
-          style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+          style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
         >
           <UserPlus className="w-3.5 h-3.5" />
           Add Client
@@ -118,25 +147,16 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
         {showBanner && <FirstTimeBanner onDismiss={dismissBanner} />}
       </AnimatePresence>
 
-      {/* ── KPI Strip ──────────────────────────────── */}
+      {/* ── KPI Strip (context) ────────────────────── */}
       <DashboardKPIs clients={clients} checkIns={checkIns} payments={payments} />
 
-      {/* ── Today's Schedule ───────────────────────── */}
-      <TodaySchedule clients={clients} />
-
-      {/* ── Weekly Snapshot ─────────────────────────── */}
-      <WeeklySnapshot checkIns={checkIns} clients={clients} />
-
-      {/* ── Action Center ──────────────────────────── */}
+      {/* ── Run My Day — pinned to the top of the actionable stack ── */}
       <ActionCenterSection clients={clients} checkIns={checkIns} messages={messages} payments={payments} />
 
-      {/* ── Business Intelligence Summary ───────────── */}
-      {clients.length > 0 && <BIDashboardCard />}
-
-      {/* ── AI Client Insights ─────────────────────── */}
-      {clients.length > 0 && (
-        <AIInsightsFeed clients={clients} checkIns={checkIns} messages={messages} />
-      )}
+      {/* ── Remaining sections, ordered by unresolved signal ── */}
+      {orderedSections.map(s => (
+        <React.Fragment key={s.key}>{s.node}</React.Fragment>
+      ))}
     </div>
   );
 }

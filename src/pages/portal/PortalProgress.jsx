@@ -1,11 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, parseISO, differenceInWeeks } from 'date-fns';
-import {
-  TrendingUp, TrendingDown, Minus, Scale, Flame, Dumbbell,
-  ClipboardList, Trophy, Plus, X, BarChart2, Camera, ChevronRight, Star
+import { Scale, Plus, X
 } from 'lucide-react';
 import AIProgressAnalyzer from '@/components/progress/AIProgressAnalyzer';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, ReferenceLine } from 'recharts';
@@ -56,8 +54,8 @@ function WeightChart({ checkIns, client }) {
 
   if (!data.length) return (
     <div className="p-8 text-center">
-      <Scale className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-      <p className="text-slate-400 text-sm font-semibold">Log your starting weight to begin tracking! 💪</p>
+      <Scale className="w-10 h-10 text-border mx-auto mb-3" />
+      <p className="text-muted-foreground text-sm font-semibold">Log your starting weight to begin tracking! 💪</p>
     </div>
   );
 
@@ -68,9 +66,9 @@ function WeightChart({ checkIns, client }) {
           <button key={r} onClick={() => setRange(r)}
             className="px-3 py-1 rounded-full text-xs font-bold flex-shrink-0 transition-all"
             style={{
-              background: range === r ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F8FAFC',
-              color: range === r ? 'white' : '#94A3B8',
-              border: range === r ? 'none' : '1px solid #F1F5F9',
+              background: range === r ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
+              color: range === r ? 'white' : 'rgb(var(--muted-foreground))',
+              border: range === r ? 'none' : '1px solid rgb(var(--muted))',
             }}>
             {r}
           </button>
@@ -78,47 +76,47 @@ function WeightChart({ checkIns, client }) {
       </div>
       <ResponsiveContainer width="100%" height={160}>
         <LineChart data={data} margin={{ left: -20, right: 10 }}>
-          <XAxis dataKey="date" tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fill: '#94A3B8', fontSize: 9 }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
-          <Tooltip contentStyle={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: 12, color: '#0F172A', fontSize: 11, boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }} />
-          {goalW && <ReferenceLine y={goalW} stroke="rgba(34,197,94,0.4)" strokeDasharray="4 4" />}
-          <Line type="monotone" dataKey="weight" stroke="#3B82F6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#3B82F6' }} />
+          <XAxis dataKey="date" tick={{ fill: 'rgb(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fill: 'rgb(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+          <Tooltip contentStyle={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: 12, color: 'rgb(var(--foreground))', fontSize: 11, boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }} />
+          {goalW && <ReferenceLine y={goalW} stroke="rgb(var(--success) / 0.4)" strokeDasharray="4 4" />}
+          <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: 'rgb(var(--primary))' }} />
         </LineChart>
       </ResponsiveContainer>
       <div className="flex items-center justify-between mt-4 text-xs">
         <div className="text-center">
-          <p className="text-slate-400">Start</p>
-          <p className="text-slate-800 font-black">{startW ? `${startW} lbs` : '—'}</p>
+          <p className="text-muted-foreground">Start</p>
+          <p className="text-foreground font-black">{startW ? `${startW} lbs` : '—'}</p>
         </div>
         <div className="flex-1 flex items-center justify-center gap-1">
-          <div className="h-px flex-1 bg-slate-200" />
+          <div className="h-px flex-1 bg-border" />
           {startW && currentW && (
-            <span className={`text-xs font-black px-2 ${currentW < startW ? 'text-emerald-500' : 'text-red-400'}`}>
+            <span className={`text-xs font-black px-2 ${currentW < startW ? 'text-success' : 'text-destructive'}`}>
               {currentW < startW ? '↓' : '↑'} {Math.abs(currentW - startW).toFixed(1)} lbs
             </span>
           )}
-          <div className="h-px flex-1 bg-slate-200" />
+          <div className="h-px flex-1 bg-border" />
         </div>
         <div className="text-center">
-          <p className="text-slate-400">Now</p>
-          <p className="text-blue-600 font-black">{currentW ? `${Number(currentW).toFixed(1)} lbs` : '—'}</p>
+          <p className="text-muted-foreground">Now</p>
+          <p className="text-primary font-black">{currentW ? `${Number(currentW).toFixed(1)} lbs` : '—'}</p>
         </div>
         {goalW && (
           <>
             <div className="flex-1 flex items-center justify-center">
-              <div className="h-px flex-1 bg-slate-200" />
-              <span className="text-slate-300 text-xs px-1">→</span>
-              <div className="h-px flex-1 bg-slate-200" />
+              <div className="h-px flex-1 bg-border" />
+              <span className="text-border text-xs px-1">→</span>
+              <div className="h-px flex-1 bg-border" />
             </div>
             <div className="text-center">
-              <p className="text-slate-400">Goal</p>
-              <p className="text-emerald-600 font-black">{goalW} lbs</p>
+              <p className="text-muted-foreground">Goal</p>
+              <p className="text-success font-black">{goalW} lbs</p>
             </div>
           </>
         )}
       </div>
       {goalW && currentW && (
-        <p className="text-slate-400 text-xs text-center mt-2 font-semibold">
+        <p className="text-muted-foreground text-xs text-center mt-2 font-semibold">
           {Math.abs(currentW - goalW).toFixed(1)} lbs to go
         </p>
       )}
@@ -130,8 +128,8 @@ function WeightChart({ checkIns, client }) {
 function ScoreRing({ score }) {
   const r = 52; const circ = 2 * Math.PI * r;
   const dash = (score / 100) * circ;
-  const color = score >= 80 ? '#10B981' : score >= 60 ? '#2563EB' : score >= 40 ? '#F59E0B' : '#EF4444';
-  const trackColor = score >= 80 ? '#D1FAE5' : score >= 60 ? '#DBEAFE' : score >= 40 ? '#FEF3C7' : '#FEE2E2';
+  const color = score >= 80 ? 'rgb(var(--success))' : score >= 60 ? 'rgb(var(--primary))' : score >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const trackColor = score >= 80 ? 'rgb(var(--success))' : score >= 60 ? 'rgb(var(--accent))' : score >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-32 h-32">
@@ -144,11 +142,11 @@ function ScoreRing({ score }) {
             transition={{ duration: 1.2, ease: 'easeOut' }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-black text-slate-900">{score}</span>
-          <span className="text-slate-400 text-[9px]">/100</span>
+          <span className="text-3xl font-black text-foreground">{score}</span>
+          <span className="text-muted-foreground text-[9px]">/100</span>
         </div>
       </div>
-      <p className="text-slate-600 text-sm font-semibold mt-2">{scoreLabel(score)}</p>
+      <p className="text-muted-foreground text-sm font-semibold mt-2">{scoreLabel(score)}</p>
     </div>
   );
 }
@@ -156,12 +154,12 @@ function ScoreRing({ score }) {
 /* ── Stat Chip ── */
 function StatChip({ emoji, value, label, sub }) {
   return (
-    <div className="flex-shrink-0 bg-white p-4 rounded-2xl min-w-[100px] text-center"
-      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+    <div className="flex-shrink-0 bg-card p-4 rounded-2xl min-w-[100px] text-center"
+      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
       <div className="text-xl mb-1">{emoji}</div>
-      <p className="text-slate-900 font-black text-base leading-none">{value}</p>
-      {sub && <p className="text-blue-500 text-[9px] mt-0.5 font-semibold">{sub}</p>}
-      <p className="text-slate-400 text-[9px] mt-0.5">{label}</p>
+      <p className="text-foreground font-black text-base leading-none">{value}</p>
+      {sub && <p className="text-primary text-[9px] mt-0.5 font-semibold">{sub}</p>}
+      <p className="text-muted-foreground text-[9px] mt-0.5">{label}</p>
     </div>
   );
 }
@@ -182,15 +180,15 @@ const ACHIEVEMENTS = [
 function AchievementBadge({ badge, earned, onClick }) {
   return (
     <motion.button whileTap={{ scale: 0.93 }} onClick={() => onClick(badge)}
-      className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-white border"
+      className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-card border"
       style={{
-        borderColor: earned ? '#FDE68A' : '#F1F5F9',
-        background: earned ? '#FFFBEB' : '#FFFFFF',
-        boxShadow: earned ? '0 2px 12px rgba(245,158,11,0.15)' : '0 1px 4px rgba(0,0,0,0.05)',
+        borderColor: earned ? 'rgb(var(--warning))' : 'rgb(var(--muted))',
+        background: earned ? 'rgb(var(--warning))' : 'rgb(var(--card))',
+        boxShadow: earned ? '0 2px 12px rgb(var(--warning) / 0.15)' : '0 1px 4px rgba(0,0,0,0.05)',
         filter: earned ? 'none' : 'grayscale(1) opacity(0.5)',
       }}>
       <span className="text-2xl">{badge.emoji}</span>
-      <p className="text-slate-500 text-[9px] font-bold text-center leading-tight">{badge.name}</p>
+      <p className="text-muted-foreground text-[9px] font-bold text-center leading-tight">{badge.name}</p>
     </motion.button>
   );
 }
@@ -214,11 +212,11 @@ function LogModal({ client, onClose, onSaved }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end" style={{ background: 'rgba(0,0,0,0.4)' }}>
       <motion.div initial={{ y: 300 }} animate={{ y: 0 }} exit={{ y: 300 }}
-        className="w-full rounded-t-3xl p-5 pb-8 bg-white" style={{ boxShadow: '0 -8px 32px rgba(0,0,0,0.1)' }}>
+        className="w-full rounded-t-3xl p-5 pb-8 bg-card" style={{ boxShadow: '0 -8px 32px rgba(0,0,0,0.1)' }}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-slate-900 font-black text-base">Log Update</h3>
-          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center">
-            <X className="w-4 h-4 text-slate-500" />
+          <h3 className="text-foreground font-black text-base">Log Update</h3>
+          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center">
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
         <div className="flex gap-2 mb-4">
@@ -226,9 +224,9 @@ function LogModal({ client, onClose, onSaved }) {
             <button key={t} onClick={() => setTab(t)}
               className="px-4 py-2 rounded-2xl text-xs font-bold capitalize transition-all"
               style={{
-                background: tab === t ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F8FAFC',
-                color: tab === t ? 'white' : '#94A3B8',
-                border: tab === t ? 'none' : '1.5px solid #F1F5F9',
+                background: tab === t ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
+                color: tab === t ? 'white' : 'rgb(var(--muted-foreground))',
+                border: tab === t ? 'none' : '1.5px solid rgb(var(--muted))',
               }}>
               {t}
             </button>
@@ -238,25 +236,25 @@ function LogModal({ client, onClose, onSaved }) {
           <div className="space-y-3">
             <input type="number" value={weight} onChange={e => setWeight(e.target.value)}
               placeholder="Enter weight (lbs)"
-              className="w-full px-4 py-4 rounded-2xl text-slate-900 bg-slate-50 border border-slate-200 outline-none text-center text-2xl font-black placeholder-slate-300 focus:border-blue-300" />
+              className="w-full px-4 py-4 rounded-2xl text-foreground bg-muted border border-border outline-none text-center text-2xl font-black placeholder-border focus:border-primary" />
           </div>
         )}
         {tab === 'measurements' && (
           <div className="space-y-2">
             {['chest', 'waist', 'hips', 'arms', 'thighs'].map(f => (
-              <div key={f} className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-100">
-                <span className="text-slate-500 text-sm capitalize w-16 font-semibold">{f}</span>
+              <div key={f} className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-muted border border-border">
+                <span className="text-muted-foreground text-sm capitalize w-16 font-semibold">{f}</span>
                 <input type="number" value={measurements[f] || ''} placeholder="—"
                   onChange={e => setMeasurements(prev => ({ ...prev, [f]: e.target.value ? Number(e.target.value) : null }))}
-                  className="flex-1 bg-transparent text-slate-800 text-sm text-right outline-none font-bold" />
-                <span className="text-slate-400 text-xs">in</span>
+                  className="flex-1 bg-transparent text-foreground text-sm text-right outline-none font-bold" />
+                <span className="text-muted-foreground text-xs">in</span>
               </div>
             ))}
           </div>
         )}
         <button onClick={save}
           className="w-full py-4 rounded-2xl font-black text-white text-sm mt-4"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
           Save Update
         </button>
       </motion.div>
@@ -323,16 +321,16 @@ export default function PortalProgress({ user }) {
   const ciAdh = sorted.length > 0 ? Math.min(100, (sorted.length / Math.max(1, differenceInWeeks(new Date(), firstCI ? parseISO(firstCI.date) : new Date()) + 1)) * 100) : 0;
 
   return (
-    <div className="pb-28 space-y-5" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+    <div className="pb-28 space-y-5" style={{ background: 'rgb(var(--muted))', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="bg-white px-5 pt-14 pb-4 flex items-center justify-between" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+      <div className="bg-card px-5 pt-14 pb-4 flex items-center justify-between" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <div>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Progress</p>
-          <h1 className="text-slate-900 text-2xl font-black mt-0.5">My Progress</h1>
+          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Progress</p>
+          <h1 className="text-foreground text-2xl font-black mt-0.5">My Progress</h1>
         </div>
         <button onClick={() => setShowLog(true)}
           className="px-4 py-2.5 rounded-2xl text-sm font-bold text-white flex items-center gap-1.5"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 12px rgba(37,99,235,0.25)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 12px rgb(var(--primary) / 0.25)' }}>
           <Plus className="w-4 h-4" /> Log Update
         </button>
       </div>
@@ -340,8 +338,8 @@ export default function PortalProgress({ user }) {
       <div className="px-5 space-y-5">
 
       {/* Score Card */}
-      <div className="bg-white p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Overall Score</p>
+      <div className="bg-card p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
+        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-4">Overall Score</p>
         <div className="flex items-center justify-between">
           <ScoreRing score={score} />
           <div className="flex-1 ml-6 space-y-2.5">
@@ -352,12 +350,12 @@ export default function PortalProgress({ user }) {
               { label: 'Mindset', pct: sorted.length ? Math.round(sorted.slice(0, 4).reduce((s, ci) => s + (ci.energy_level || 5) * 10, 0) / Math.min(4, sorted.length)) : 50 },
             ].map(({ label, pct }) => (
               <div key={label}>
-                <div className="flex justify-between text-[10px] text-slate-400 mb-0.5 font-semibold">
+                <div className="flex justify-between text-[10px] text-muted-foreground mb-0.5 font-semibold">
                   <span>{label}</span><span>{pct}%</span>
                 </div>
-                <div className="h-1.5 rounded-full overflow-hidden bg-slate-100">
+                <div className="h-1.5 rounded-full overflow-hidden bg-muted">
                   <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8 }}
-                    className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+                    className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
                 </div>
               </div>
             ))}
@@ -376,10 +374,10 @@ export default function PortalProgress({ user }) {
       </div>
 
       {/* Weight Journey */}
-      <div className="bg-white p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+      <div className="bg-card p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
         <div className="flex items-center justify-between mb-4">
-          <p className="text-slate-800 font-bold text-sm">⚖️ Weight Journey</p>
-          <button onClick={() => setShowLog(true)} className="text-blue-600 text-xs font-semibold flex items-center gap-1">
+          <p className="text-foreground font-bold text-sm">⚖️ Weight Journey</p>
+          <button onClick={() => setShowLog(true)} className="text-primary text-xs font-semibold flex items-center gap-1">
             <Plus className="w-3 h-3" /> Log
           </button>
         </div>
@@ -387,13 +385,13 @@ export default function PortalProgress({ user }) {
       </div>
 
       {/* Consistency */}
-      <div className="bg-white p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-        <p className="text-slate-800 font-bold text-sm mb-4">📊 My Consistency</p>
+      <div className="bg-card p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
+        <p className="text-foreground font-bold text-sm mb-4">📊 My Consistency</p>
         <div className="flex justify-around">
           {[
-            { label: 'Workouts', pct: Math.round(trainingAdh), color: '#2563EB', track: '#DBEAFE' },
-            { label: 'Nutrition', pct: Math.round(nutritionAdh), color: '#10B981', track: '#D1FAE5' },
-            { label: 'Check-ins', pct: Math.round(ciAdh), color: '#7C3AED', track: '#EDE9FE' },
+            { label: 'Workouts', pct: Math.round(trainingAdh), color: 'rgb(var(--primary))', track: 'rgb(var(--accent))' },
+            { label: 'Nutrition', pct: Math.round(nutritionAdh), color: 'rgb(var(--success))', track: 'rgb(var(--success))' },
+            { label: 'Check-ins', pct: Math.round(ciAdh), color: 'rgb(var(--ai))', track: 'rgb(var(--ai))' },
           ].map(({ label, pct, color, track }) => {
             const r = 28; const circ = 2 * Math.PI * r;
             return (
@@ -408,10 +406,10 @@ export default function PortalProgress({ user }) {
                       transition={{ duration: 1 }} />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-slate-700 text-xs font-black">{pct}%</span>
+                    <span className="text-foreground text-xs font-black">{pct}%</span>
                   </div>
                 </div>
-                <p className="text-slate-400 text-[10px] font-semibold">{label}</p>
+                <p className="text-muted-foreground text-[10px] font-semibold">{label}</p>
               </div>
             );
           })}
@@ -420,15 +418,15 @@ export default function PortalProgress({ user }) {
 
       {/* Program */}
       {myProgram && (
-        <div className="bg-white p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-          <p className="text-slate-800 font-bold text-sm mb-3">💪 My Program</p>
-          <p className="text-slate-700 text-sm font-semibold">{myProgram.title}</p>
-          <p className="text-slate-400 text-xs mb-3">{myProgram.duration_weeks} week program</p>
+        <div className="bg-card p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
+          <p className="text-foreground font-bold text-sm mb-3">💪 My Program</p>
+          <p className="text-foreground text-sm font-semibold">{myProgram.title}</p>
+          <p className="text-muted-foreground text-xs mb-3">{myProgram.duration_weeks} week program</p>
           <div className="flex items-center gap-2">
-            <div className="flex-1 h-2 rounded-full overflow-hidden bg-slate-100">
-              <div className="h-full rounded-full" style={{ width: `${Math.min(100, (sessions.length / Math.max(1, (myProgram.workouts?.length || 4) * (myProgram.duration_weeks || 8))) * 100)}%`, background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+            <div className="flex-1 h-2 rounded-full overflow-hidden bg-muted">
+              <div className="h-full rounded-full" style={{ width: `${Math.min(100, (sessions.length / Math.max(1, (myProgram.workouts?.length || 4) * (myProgram.duration_weeks || 8))) * 100)}%`, background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
             </div>
-            <span className="text-slate-400 text-xs">{sessions.length} sessions</span>
+            <span className="text-muted-foreground text-xs">{sessions.length} sessions</span>
           </div>
         </div>
       )}
@@ -444,7 +442,7 @@ export default function PortalProgress({ user }) {
 
       {/* Achievements */}
       <div>
-        <p className="text-slate-800 font-bold text-sm mb-3">🏆 My Achievements</p>
+        <p className="text-foreground font-bold text-sm mb-3">🏆 My Achievements</p>
         <div className="grid grid-cols-4 gap-2">
           {achievements.map(a => (
             <AchievementBadge key={a.id} badge={a} earned={a.earned} onClick={setBadgeDetail} />
@@ -460,15 +458,15 @@ export default function PortalProgress({ user }) {
           <div className="fixed inset-0 z-50 flex items-center justify-center px-8" style={{ background: 'rgba(0,0,0,0.7)' }}
             onClick={() => setBadgeDetail(null)}>
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-              className="p-6 rounded-3xl text-center max-w-xs w-full bg-white"
+              className="p-6 rounded-3xl text-center max-w-xs w-full bg-card"
               style={{ boxShadow: '0 16px 48px rgba(0,0,0,0.15)' }}
               onClick={e => e.stopPropagation()}>
               <div className="text-5xl mb-3">{badgeDetail.emoji}</div>
-              <p className="text-slate-900 font-black text-base">{badgeDetail.name}</p>
-              <p className="text-slate-500 text-sm mt-1">{badgeDetail.desc}</p>
+              <p className="text-foreground font-black text-base">{badgeDetail.name}</p>
+              <p className="text-muted-foreground text-sm mt-1">{badgeDetail.desc}</p>
               {badgeDetail.earned
-                ? <p className="text-emerald-500 text-xs mt-3 font-bold">✓ Earned!</p>
-                : <p className="text-slate-300 text-xs mt-3">Keep going to unlock this!</p>
+                ? <p className="text-success text-xs mt-3 font-bold">✓ Earned!</p>
+                : <p className="text-border text-xs mt-3">Keep going to unlock this!</p>
               }
             </motion.div>
           </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer, UtensilsCrossed } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { getFoodImageUrl, getMealImageUrl, getCategoryEmoji } from '@/lib/foodImages';
+import { getFoodImageUrl, getMealImageUrl } from '@/lib/foodImages';
 
 const SWAP_SUGGESTIONS = {
   chicken: ['Turkey breast (same macros)', 'Tilapia fillet', 'Egg whites (3 large)'],
@@ -29,7 +29,7 @@ function FoodRow({ food }) {
   const fats     = food.fats     || 0;
 
   return (
-    <div className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0 group/food">
+    <div className="flex items-center justify-between py-2 border-b border-muted last:border-0 group/food">
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <img
           src={getFoodImageUrl(name, 48)}
@@ -44,9 +44,9 @@ function FoodRow({ food }) {
         </div>
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground flex-shrink-0">
           {calories > 0 && <span className="font-semibold text-foreground">{calories} kcal</span>}
-          {protein  > 0 && <span className="text-blue-500 font-medium">{protein}p</span>}
+          {protein  > 0 && <span className="text-primary font-medium">{protein}p</span>}
           {carbs    > 0 && <span className="text-orange-500 font-medium">{carbs}c</span>}
-          {fats     > 0 && <span className="text-yellow-600 font-medium">{fats}f</span>}
+          {fats     > 0 && <span className="text-warning font-medium">{fats}f</span>}
         </div>
       </div>
       <Popover>
@@ -82,13 +82,13 @@ function MealTotals({ foods }) {
   if (!totals.calories && !totals.protein) return null;
 
   return (
-    <div className="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-[#E7EAF3]">
+    <div className="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-border">
       <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Meal total:</span>
       <div className="flex items-center gap-2 text-[11px]">
         <span className="font-bold text-foreground">{totals.calories} kcal</span>
-        <span className="text-blue-500 font-semibold">{totals.protein}g P</span>
+        <span className="text-primary font-semibold">{totals.protein}g P</span>
         <span className="text-orange-500 font-semibold">{totals.carbs}g C</span>
-        <span className="text-yellow-600 font-semibold">{totals.fats}g F</span>
+        <span className="text-warning font-semibold">{totals.fats}g F</span>
       </div>
     </div>
   );
@@ -103,7 +103,7 @@ function MealCard({ meal, index }) {
   const heroImage = meal.image_url || getMealImageUrl(mealName, foods);
 
   return (
-    <div className="bg-white border border-[#E7EAF3] rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
       {heroImage ? (
         <img
           src={heroImage}
@@ -113,8 +113,8 @@ function MealCard({ meal, index }) {
           onError={e => { e.target.style.display = 'none'; e.target.nextSibling?.style && (e.target.nextSibling.style.display = 'flex'); }}
         />
       ) : (
-        <div className="w-full h-20 flex items-center justify-center bg-[#F3F4F6]">
-          <UtensilsCrossed className="w-7 h-7 text-[#D1D5DB]" />
+        <div className="w-full h-20 flex items-center justify-center bg-muted">
+          <UtensilsCrossed className="w-7 h-7 text-muted-foreground" />
         </div>
       )}
       <button
@@ -133,7 +133,7 @@ function MealCard({ meal, index }) {
               </span>
             )}
             {meal.prepTime && (
-              <span className="flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100">
+              <span className="flex items-center gap-0.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-warning/10 text-warning border border-warning">
                 <Timer className="w-3 h-3" /> {meal.prepTime}
               </span>
             )}
@@ -179,7 +179,7 @@ function DailyTotalBar({ meals, targets }) {
   function StatusBar({ label, current, target, color }) {
     const pct = target ? Math.min((current / target) * 100, 100) : 0;
     const diff = target ? Math.abs(current - target) / target : 0;
-    const barColor = diff < 0.05 ? '#22C55E' : diff < 0.15 ? '#F59E0B' : '#EF4444';
+    const barColor = diff < 0.05 ? 'var(--tc-success)' : diff < 0.15 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
     return (
       <div className="flex-1 min-w-0">
         <div className="flex justify-between text-[10px] mb-1">
@@ -194,13 +194,13 @@ function DailyTotalBar({ meals, targets }) {
   }
 
   return (
-    <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-[#E7EAF3] px-4 py-3 mt-4 rounded-b-xl">
+    <div className="sticky bottom-0 bg-[var(--kc-w-95)] backdrop-blur border-t border-border px-4 py-3 mt-4 rounded-b-xl">
       <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2">Daily totals vs target</p>
       <div className="flex gap-3">
-        <StatusBar label="Kcal"    current={totals.calories} target={targets.calories} color="#6B7280" />
-        <StatusBar label="Protein" current={totals.protein}  target={targets.protein}  color="#3B82F6" />
-        <StatusBar label="Carbs"   current={totals.carbs}    target={targets.carbs}    color="#F97316" />
-        <StatusBar label="Fats"    current={totals.fats}     target={targets.fats}     color="#CA8A04" />
+        <StatusBar label="Kcal"    current={totals.calories} target={targets.calories} color="var(--tc-muted-foreground)" />
+        <StatusBar label="Protein" current={totals.protein}  target={targets.protein}  color="var(--tc-primary)" />
+        <StatusBar label="Carbs"   current={totals.carbs}    target={targets.carbs}    color="var(--kc-f97316)" />
+        <StatusBar label="Fats"    current={totals.fats}     target={targets.fats}     color="var(--kc-ca8a04)" />
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { compositeAdherenceScore, scoreColor, scoreLabel } from '@/lib/adherence
 import { cn } from '@/lib/utils';
 
 function ScoreBar({ score }) {
-  const color = score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-destructive';
+  const color = score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-destructive';
   return (
     <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
       <div className={cn('h-full rounded-full transition-all duration-700', color)} style={{ width: `${score}%` }} />
@@ -15,7 +15,7 @@ function ScoreBar({ score }) {
 
 function ClientScoreRow({ client, score }) {
   const color = scoreColor(score);
-  const dotColor = score === null ? 'bg-muted-foreground' : score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-destructive';
+  const dotColor = score === null ? 'bg-muted-foreground' : score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-destructive';
 
   return (
     <div className="flex items-center gap-3">
@@ -73,8 +73,8 @@ export default function AdherenceOverview({ clients, checkIns }) {
 
         {/* Traffic lights */}
         <div className="flex items-center gap-3 text-xs">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 inline-block"/><span className="text-muted-foreground">{green}</span></span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400 inline-block"/><span className="text-muted-foreground">{yellow}</span></span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success inline-block"/><span className="text-muted-foreground">{green}</span></span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning inline-block"/><span className="text-muted-foreground">{yellow}</span></span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-destructive inline-block"/><span className="text-muted-foreground">{red}</span></span>
         </div>
       </div>

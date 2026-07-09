@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Bell, X, CheckCheck, Settings, ChevronDown, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { isToday, isYesterday, isThisWeek, parseISO } from 'date-fns';
+import { isToday, isYesterday, isThisWeek } from 'date-fns';
 import NotificationItem from './NotificationItem';
 
 const TABS = [
@@ -38,8 +38,8 @@ function EmptyState({ tab }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       <div className="text-5xl mb-4">🎉</div>
-      <p className="font-bold text-slate-700 text-base">You're all caught up!</p>
-      <p className="text-sm text-slate-400 mt-1">
+      <p className="font-bold text-foreground text-base">You're all caught up!</p>
+      <p className="text-sm text-muted-foreground mt-1">
         {tab === 'all' ? 'No new notifications' : `No ${tab} notifications`}
       </p>
     </div>
@@ -51,11 +51,11 @@ function GroupSection({ group, collapsed, onToggle, onMarkRead, onDismiss, onClo
     <div>
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-2 px-4 py-2 bg-slate-50 border-y border-slate-100 hover:bg-slate-100 transition-colors"
+        className="w-full flex items-center gap-2 px-4 py-2 bg-muted border-y border-border hover:bg-muted transition-colors"
       >
-        {collapsed ? <ChevronRight className="w-3 h-3 text-slate-400" /> : <ChevronDown className="w-3 h-3 text-slate-400" />}
-        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">{group.label}</span>
-        <span className="text-[10px] text-slate-300 font-semibold ml-auto">{group.items.length}</span>
+        {collapsed ? <ChevronRight className="w-3 h-3 text-muted-foreground" /> : <ChevronDown className="w-3 h-3 text-muted-foreground" />}
+        <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">{group.label}</span>
+        <span className="text-[10px] text-border font-semibold ml-auto">{group.items.length}</span>
       </button>
       {!collapsed && group.items.map(n => (
         <NotificationItem key={n.id} n={n} onMarkRead={onMarkRead} onDismiss={onDismiss} onClose={onClose} />
@@ -88,8 +88,8 @@ export default function NotificationCenter({ notifications, unreadCount, loading
   const toggleGroup = (key) => setCollapsedGroups(prev => ({ ...prev, [key]: !prev[key] }));
 
   const panelClass = isMobile
-    ? 'fixed inset-0 z-50 flex flex-col bg-white'
-    : 'w-[420px] max-h-[calc(100vh-80px)] bg-white rounded-2xl border border-slate-200 flex flex-col overflow-hidden';
+    ? 'fixed inset-0 z-50 flex flex-col bg-card'
+    : 'w-[420px] max-h-[calc(100vh-80px)] bg-card rounded-2xl border border-border flex flex-col overflow-hidden';
 
   return (
     <motion.div
@@ -98,16 +98,16 @@ export default function NotificationCenter({ notifications, unreadCount, loading
       exit={isMobile ? { x: '100%' } : { opacity: 0, scale: 0.97, y: -8 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       className={panelClass}
-      style={isMobile ? {} : { boxShadow: '0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06)', background: '#fff' }}
+      style={isMobile ? {} : { boxShadow: '0 20px 60px color-mix(in srgb, black 18%, transparent), 0 0 0 1px color-mix(in srgb, black 6%, transparent)', background: 'var(--tc-card)' }}
     >
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 flex-shrink-0">
+      <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border flex-shrink-0">
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <Bell className="w-4 h-4 text-slate-600 flex-shrink-0" />
-          <span className="font-black text-slate-900 text-[15px]">Notifications</span>
+          <Bell className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+          <span className="font-black text-foreground text-[15px]">Notifications</span>
           {unreadCount > 0 && (
             <span className="px-2 py-0.5 rounded-full text-[10px] font-black text-white"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               {unreadCount > 99 ? '99+' : unreadCount} unread
             </span>
           )}
@@ -115,23 +115,23 @@ export default function NotificationCenter({ notifications, unreadCount, loading
         <div className="flex items-center gap-1 flex-shrink-0">
           {unreadCount > 0 && (
             <button onClick={markAllRead}
-              className="flex items-center gap-1 text-[11px] text-blue-600 font-bold hover:text-blue-800 transition-colors px-2 py-1 rounded-lg hover:bg-blue-50">
+              className="flex items-center gap-1 text-[11px] text-primary font-bold hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-accent">
               <CheckCheck className="w-3.5 h-3.5" /> Mark all read
             </button>
           )}
           <Link to="/notification-settings" onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+            className="w-8 h-8 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
             <Settings className="w-4 h-4" />
           </Link>
           <button onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+            className="w-8 h-8 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-1 px-3 py-2 border-b border-slate-100 overflow-x-auto scrollbar-hide flex-shrink-0">
+      <div className="flex gap-1 px-3 py-2 border-b border-border overflow-x-auto scrollbar-hide flex-shrink-0">
         {TABS.map(t => {
           const isActive = tab === t.id;
           const count = t.id === 'unread' ? unreadCount
@@ -141,14 +141,14 @@ export default function NotificationCenter({ notifications, unreadCount, loading
             <button key={t.id} onClick={() => setTab(t.id)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold flex-shrink-0 transition-all whitespace-nowrap"
               style={{
-                background: isActive ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F8FAFC',
-                color: isActive ? 'white' : '#64748B',
-                border: isActive ? 'none' : '1px solid #E2E8F0',
+                background: isActive ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+                color: isActive ? 'white' : 'var(--tc-muted-foreground)',
+                border: isActive ? 'none' : '1px solid var(--tc-border)',
               }}>
               {t.label}
               {count > 0 && (
                 <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
-                  style={{ background: isActive ? 'rgba(255,255,255,0.25)' : '#E2E8F0', color: isActive ? 'white' : '#64748B' }}>
+                  style={{ background: isActive ? 'color-mix(in srgb, white 25%, transparent)' : 'var(--tc-border)', color: isActive ? 'white' : 'var(--tc-muted-foreground)' }}>
                   {count}
                 </span>
               )}
@@ -161,7 +161,7 @@ export default function NotificationCenter({ notifications, unreadCount, loading
       <div className="flex-1 overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-primary border-t-blue-600 rounded-full animate-spin" />
           </div>
         ) : groups.length === 0 ? (
           <EmptyState tab={tab} />
@@ -176,9 +176,9 @@ export default function NotificationCenter({ notifications, unreadCount, loading
 
         {/* Bottom link */}
         {notifications.length > 0 && (
-          <div className="px-4 py-4 text-center border-t border-slate-100">
+          <div className="px-4 py-4 text-center border-t border-border">
             <Link to="/notification-settings" onClick={onClose}
-              className="text-xs text-slate-400 hover:text-blue-600 font-semibold transition-colors">
+              className="text-xs text-muted-foreground hover:text-primary font-semibold transition-colors">
               Manage Notification Preferences →
             </Link>
           </div>

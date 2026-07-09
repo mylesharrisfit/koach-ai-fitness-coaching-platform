@@ -54,25 +54,25 @@ function QuestionCard({ question, index, onChange, onDelete, onMove, total }) {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-      <div className="flex items-center gap-2 px-4 py-3 cursor-pointer hover:bg-[#F9FAFB] transition-colors"
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="flex items-center gap-2 px-4 py-3 cursor-pointer hover:bg-background transition-colors"
         onClick={() => setExpanded(e => !e)}>
-        <GripVertical className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-        <span className="text-xs font-bold text-[#9CA3AF] w-5">{index + 1}.</span>
-        <span className="text-sm font-semibold text-[#111827] flex-1 truncate">{question.label || 'Untitled question'}</span>
-        <span className="text-[10px] text-[#9CA3AF] bg-[#F3F4F6] px-2 py-0.5 rounded-full capitalize">
+        <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+        <span className="text-xs font-bold text-muted-foreground w-5">{index + 1}.</span>
+        <span className="text-sm font-semibold text-foreground flex-1 truncate">{question.label || 'Untitled question'}</span>
+        <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full capitalize">
           {QUESTION_TYPES.find(t => t.type === question.type)?.label || question.type}
         </span>
-        {question.required && <span className="text-[10px] text-red-500 font-bold">Required</span>}
+        {question.required && <span className="text-[10px] text-destructive font-bold">Required</span>}
         <button onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          className="p-1 text-[#9CA3AF] hover:text-red-500 transition-colors flex-shrink-0">
+          className="p-1 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0">
           <Trash2 className="w-3.5 h-3.5" />
         </button>
-        {expanded ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+        {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </div>
 
       {expanded && (
-        <div className="border-t border-[#E5E7EB] p-4 space-y-3">
+        <div className="border-t border-border p-4 space-y-3">
           <Input
             value={question.label}
             onChange={e => onChange({ label: e.target.value })}
@@ -84,13 +84,13 @@ function QuestionCard({ question, index, onChange, onDelete, onMove, total }) {
             <select
               value={question.type}
               onChange={e => onChange({ type: e.target.value })}
-              className="text-xs border border-[#E5E7EB] rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-primary/40 bg-white"
+              className="text-xs border border-border rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-primary/40 bg-card"
             >
               {QUESTION_TYPES.map(t => (
                 <option key={t.type} value={t.type}>{t.icon} {t.label}</option>
               ))}
             </select>
-            <label className="flex items-center gap-1.5 text-xs text-[#374151] cursor-pointer">
+            <label className="flex items-center gap-1.5 text-xs text-foreground cursor-pointer">
               <input type="checkbox" checked={question.required}
                 onChange={e => onChange({ required: e.target.checked })}
                 className="rounded" />
@@ -100,7 +100,7 @@ function QuestionCard({ question, index, onChange, onDelete, onMove, total }) {
 
           {question.type === 'multiple_choice' && (
             <div className="space-y-1.5">
-              <p className="text-[10px] font-semibold text-[#6B7280] uppercase">Options</p>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase">Options</p>
               {(question.options || []).map((opt, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <Input
@@ -116,7 +116,7 @@ function QuestionCard({ question, index, onChange, onDelete, onMove, total }) {
                   <button onClick={() => {
                     const opts = (question.options || []).filter((_, j) => j !== i);
                     onChange({ options: opts });
-                  }} className="text-[#9CA3AF] hover:text-red-500 transition-colors">
+                  }} className="text-muted-foreground hover:text-destructive transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -193,13 +193,13 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
     <div className="space-y-6">
       {/* Sub-header */}
       <div className="flex items-center gap-3">
-        <button onClick={onClose} className="flex items-center gap-1.5 text-sm text-[#6B7280] hover:text-[#111827] transition-colors font-medium">
+        <button onClick={onClose} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
           <ArrowLeft className="w-4 h-4" /> Back to Forms
         </button>
-        <span className="text-[#D1D5DB]">/</span>
-        <span className="text-sm font-semibold text-[#111827]">{form?.id ? 'Edit Form' : 'New Form'}</span>
+        <span className="text-muted-foreground">/</span>
+        <span className="text-sm font-semibold text-foreground">{form?.id ? 'Edit Form' : 'New Form'}</span>
         <div className="ml-auto">
-          <Button onClick={handleSave} disabled={saveMutation.isPending} style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          <Button onClick={handleSave} disabled={saveMutation.isPending} style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {saveMutation.isPending ? 'Saving...' : (form?.id ? 'Save Changes' : 'Create Form')}
           </Button>
         </div>
@@ -210,53 +210,53 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
         <div className="lg:col-span-2 space-y-4">
 
           {/* Basic info */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 space-y-4">
-            <h3 className="font-bold text-sm text-[#111827]">Form Details</h3>
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+            <h3 className="font-bold text-sm text-foreground">Form Details</h3>
             <div>
-              <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Form Name *</label>
+              <label className="text-xs font-semibold text-foreground mb-1.5 block">Form Name *</label>
               <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Weekly Check-in" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Description</label>
+              <label className="text-xs font-semibold text-foreground mb-1.5 block">Description</label>
               <textarea
                 rows={2}
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Optional description shown to clients..."
-                className="w-full rounded-xl border border-[#E7EAF3] bg-white px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40"
+                className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Frequency</label>
+                <label className="text-xs font-semibold text-foreground mb-1.5 block">Frequency</label>
                 <select value={frequency} onChange={e => setFrequency(e.target.value)}
-                  className="w-full text-sm border border-[#E5E7EB] rounded-lg px-3 py-2 focus:outline-none focus:border-primary/40 bg-white">
+                  className="w-full text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-primary/40 bg-card">
                   {FREQUENCIES.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Due Day</label>
+                <label className="text-xs font-semibold text-foreground mb-1.5 block">Due Day</label>
                 <select value={dueDay} onChange={e => setDueDay(Number(e.target.value))}
-                  className="w-full text-sm border border-[#E5E7EB] rounded-lg px-3 py-2 focus:outline-none focus:border-primary/40 bg-white">
+                  className="w-full text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-primary/40 bg-card">
                   {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
                 </select>
               </div>
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#374151] mb-1.5 block">Send reminder</label>
+              <label className="text-xs font-semibold text-foreground mb-1.5 block">Send reminder</label>
               <div className="flex items-center gap-2">
                 <input type="number" min="1" max="72" value={reminderHours}
                   onChange={e => setReminderHours(Number(e.target.value))}
-                  className="w-20 text-sm border border-[#E5E7EB] rounded-lg px-3 py-2 focus:outline-none focus:border-primary/40 text-center" />
-                <span className="text-sm text-[#6B7280]">hours before due date</span>
+                  className="w-20 text-sm border border-border rounded-lg px-3 py-2 focus:outline-none focus:border-primary/40 text-center" />
+                <span className="text-sm text-muted-foreground">hours before due date</span>
               </div>
             </div>
           </div>
 
           {/* Questions */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+          <div className="bg-card border border-border rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-sm text-[#111827]">Questions ({questions.length})</h3>
+              <h3 className="font-bold text-sm text-foreground">Questions ({questions.length})</h3>
               <div className="flex gap-2">
                 <button onClick={() => setShowPresets(v => !v)}
                   className="flex items-center gap-1.5 text-xs font-semibold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary/5 transition-colors">
@@ -264,7 +264,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                 </button>
                 <button onClick={() => addQuestion()}
                   className="flex items-center gap-1.5 text-xs font-semibold text-white px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+                  style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                   <Plus className="w-3.5 h-3.5" /> Add
                 </button>
               </div>
@@ -272,8 +272,8 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
 
             {/* Preset library */}
             {showPresets && (
-              <div className="mb-4 p-4 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl">
-                <p className="text-xs font-bold text-[#374151] mb-3 uppercase tracking-wide">Preset Question Library</p>
+              <div className="mb-4 p-4 bg-background border border-border rounded-xl">
+                <p className="text-xs font-bold text-foreground mb-3 uppercase tracking-wide">Preset Question Library</p>
                 <div className="grid sm:grid-cols-2 gap-2">
                   {PRESET_QUESTIONS.map(p => (
                     <button key={p.preset_key} onClick={() => addPreset(p)}
@@ -281,7 +281,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                         'text-left text-xs px-3 py-2.5 rounded-lg border transition-colors',
                         questions.some(q => q.preset_key === p.preset_key)
                           ? 'bg-primary/5 border-primary/20 text-primary font-semibold cursor-default'
-                          : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-primary/30 hover:bg-primary/5'
+                          : 'bg-card border-border text-foreground hover:border-primary/30 hover:bg-primary/5'
                       )}>
                       <span className="mr-1.5">{QUESTION_TYPES.find(t => t.type === p.type)?.icon}</span>
                       {p.label}
@@ -293,7 +293,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
             )}
 
             {questions.length === 0 ? (
-              <div className="text-center py-10 text-[#9CA3AF]">
+              <div className="text-center py-10 text-muted-foreground">
                 <ClipboardList className="w-10 h-10 mx-auto mb-2 opacity-30" />
                 <p className="text-sm">No questions yet. Add from presets or create custom ones.</p>
               </div>
@@ -318,8 +318,8 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
         {/* Right: Settings */}
         <div className="space-y-4">
           {/* Form Settings */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 space-y-4">
-            <h3 className="font-bold text-sm text-[#111827]">Settings</h3>
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
+            <h3 className="font-bold text-sm text-foreground">Settings</h3>
             {[
               { key: 'require_photo', label: 'Require photo submission' },
               { key: 'allow_late', label: 'Allow late submissions' },
@@ -327,15 +327,15 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
               { key: 'auto_thankyou', label: 'Auto-send thank you message' },
             ].map(({ key, label }) => (
               <label key={key} className="flex items-center justify-between cursor-pointer">
-                <span className="text-sm text-[#374151]">{label}</span>
+                <span className="text-sm text-foreground">{label}</span>
                 <button
                   onClick={() => setSettings(s => ({ ...s, [key]: !s[key] }))}
                   className={cn(
                     'w-11 h-6 rounded-full transition-colors relative',
-                    settings[key] ? 'bg-primary' : 'bg-[#D1D5DB]'
+                    settings[key] ? 'bg-primary' : 'bg-muted-foreground'
                   )}>
                   <span className={cn(
-                    'absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform',
+                    'absolute top-1 w-4 h-4 bg-card rounded-full shadow transition-transform',
                     settings[key] ? 'translate-x-6' : 'translate-x-1'
                   )} />
                 </button>
@@ -344,8 +344,8 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
           </div>
 
           {/* Assign to */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 space-y-3">
-            <h3 className="font-bold text-sm text-[#111827]">Assign To</h3>
+          <div className="bg-card border border-border rounded-xl p-5 space-y-3">
+            <h3 className="font-bold text-sm text-foreground">Assign To</h3>
             {[
               { value: 'all', label: 'All active clients' },
               { value: 'specific', label: 'Specific clients' },
@@ -355,7 +355,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                   checked={assignTo === opt.value}
                   onChange={() => setAssignTo(opt.value)}
                   className="accent-primary" />
-                <span className="text-sm text-[#374151]">{opt.label}</span>
+                <span className="text-sm text-foreground">{opt.label}</span>
               </label>
             ))}
 
@@ -363,13 +363,13 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
               <div className="mt-3 space-y-2">
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                   <input
                     type="text"
                     value={clientSearch}
                     onChange={e => setClientSearch(e.target.value)}
                     placeholder="Search clients..."
-                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-[#E5E7EB] rounded-lg focus:outline-none focus:border-primary/40 bg-white"
+                    className="w-full pl-8 pr-3 py-1.5 text-xs border border-border rounded-lg focus:outline-none focus:border-primary/40 bg-card"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                         <div key={client.id}
                           className={cn(
                             'rounded-lg border p-2.5 transition-all',
-                            isSelected ? 'border-primary/30 bg-primary/5' : 'border-[#E5E7EB] bg-white hover:border-[#D1D5DB]'
+                            isSelected ? 'border-primary/30 bg-primary/5' : 'border-border bg-card hover:border-muted-foreground'
                           )}>
                           <label className="flex items-center gap-2 cursor-pointer">
                             <input
@@ -399,17 +399,17 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                               }}
                               className="accent-primary rounded flex-shrink-0"
                             />
-                            <span className="text-xs font-semibold text-[#111827] flex-1 truncate">{client.name}</span>
+                            <span className="text-xs font-semibold text-foreground flex-1 truncate">{client.name}</span>
                           </label>
 
                           {isSelected && (
                             <div className="mt-2 flex items-center gap-2 pl-5">
-                              <Calendar className="w-3 h-3 text-[#9CA3AF] flex-shrink-0" />
-                              <span className="text-[10px] text-[#6B7280]">Due:</span>
+                              <Calendar className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                              <span className="text-[10px] text-muted-foreground">Due:</span>
                               <select
                                 value={clientDay}
                                 onChange={e => setClientSchedules(prev => ({ ...prev, [client.id]: Number(e.target.value) }))}
-                                className="text-[10px] border border-[#E5E7EB] rounded px-1.5 py-0.5 focus:outline-none focus:border-primary/40 bg-white flex-1"
+                                className="text-[10px] border border-border rounded px-1.5 py-0.5 focus:outline-none focus:border-primary/40 bg-card flex-1"
                               >
                                 {DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}
                               </select>
@@ -421,7 +421,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                 </div>
 
                 {selectedClientIds.length > 0 && (
-                  <p className="text-[10px] text-[#6B7280] pt-1">
+                  <p className="text-[10px] text-muted-foreground pt-1">
                     {selectedClientIds.length} client{selectedClientIds.length !== 1 ? 's' : ''} selected
                   </p>
                 )}
@@ -431,7 +431,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
 
           {/* Save */}
           <Button onClick={handleSave} disabled={saveMutation.isPending} className="w-full"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {saveMutation.isPending ? 'Saving...' : (form?.id ? 'Save Changes' : 'Create Form')}
           </Button>
         </div>

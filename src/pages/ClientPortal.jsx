@@ -3,7 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Home, Dumbbell, Salad, BarChart2, MessageSquare, Users, CalendarDays } from 'lucide-react';
+import { Home, Dumbbell, BarChart2, MessageSquare, Users, CalendarDays } from 'lucide-react';
 import { addDays, parseISO, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
 import PortalProfile from '@/pages/portal/PortalProfile';
@@ -77,10 +77,10 @@ function BottomNav({ user, hideForActiveWorkout }) {
   if (hideForActiveWorkout || hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white"
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card"
       style={{
-        borderTop: '1px solid #F1F5F9',
-        boxShadow: '0 -4px 24px rgba(0,0,0,0.07)',
+        borderTop: '1px solid var(--tc-muted)',
+        boxShadow: '0 -4px 24px color-mix(in srgb, black 7%, transparent)',
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}>
       <div className="flex">
@@ -94,24 +94,24 @@ function BottomNav({ user, hideForActiveWorkout }) {
               {isActive && (
                 <motion.div layoutId="nav-indicator"
                   className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
-                  style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+                  style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-ai))' }} />
               )}
               <div className="relative">
                 <item.icon
                   className="w-5 h-5 transition-all"
                   strokeWidth={isActive ? 2.5 : 1.8}
-                  style={{ color: isActive ? '#2563EB' : '#94A3B8' }}
+                  style={{ color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}
                 />
                 {badge && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
                     className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-black text-white px-1"
-                    style={{ background: badge === '!' ? '#EF4444' : '#2563EB' }}>
+                    style={{ background: badge === '!' ? 'var(--tc-destructive)' : 'var(--tc-primary)' }}>
                     {badge}
                   </motion.div>
                 )}
               </div>
               <span className="text-[10px] font-semibold transition-all"
-                style={{ color: isActive ? '#2563EB' : '#94A3B8' }}>
+                style={{ color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>
                 {item.label}
               </span>
             </Link>
@@ -167,7 +167,7 @@ export default function ClientPortal() {
   };
 
   return (
-    <div className="fixed inset-0" style={{ background: '#F8F9FA' }}>
+    <div className="fixed inset-0" style={{ background: 'var(--tc-muted)' }}>
       <div className="absolute inset-0 overflow-y-auto">
         <Routes>
           <Route path="/"          element={<PortalHome user={user} />} />

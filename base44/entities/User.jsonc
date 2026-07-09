@@ -8,8 +8,8 @@
         "admin",
         "user"
       ],
-      "default": "admin",
-      "description": "User role in the app"
+      "default": "user",
+      "description": "User role in the app. Defaults to 'user' (client); coaches must be promoted to 'admin' explicitly. 'admin' bypasses RLS, so this must never default to admin."
     },
     "subscription_tier": {
       "type": "string",

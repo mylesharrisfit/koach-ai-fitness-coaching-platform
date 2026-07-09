@@ -36,10 +36,10 @@ export default function NotifsAI({ s, set }) {
         description="Your Monday morning business and client summary">
         <NDelivery value={d.weekly_digest.delivery} onChange={v => upd('weekly_digest', { delivery: v })} options={['off', 'push', 'email', 'push_email']} />
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-slate-500">at</span>
+          <span className="text-xs text-muted-foreground">at</span>
           <input type="time" value={d.weekly_digest.time || '08:00'} onChange={e => upd('weekly_digest', { time: e.target.value })}
-            className="px-2 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-blue-400 font-semibold text-slate-700" />
-          <span className="text-xs text-slate-500">Monday</span>
+            className="px-2 py-1.5 rounded-lg border border-border text-xs focus:outline-none focus:border-primary font-semibold text-foreground" />
+          <span className="text-xs text-muted-foreground">Monday</span>
         </div>
       </NRow>
 

@@ -48,8 +48,8 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
           <button key={u} onClick={() => setUnits(u)}
             className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
-              background: units === u ? 'rgba(59,130,246,0.3)' : 'transparent',
-              color: units === u ? '#60A5FA' : 'rgba(255,255,255,0.3)',
+              background: units === u ? 'rgb(var(--primary) / 0.3)' : 'transparent',
+              color: units === u ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)',
             }}>
             {u === 'imperial' ? 'Imperial' : 'Metric'}
           </button>
@@ -66,7 +66,7 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
             <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">{label}</p>
             <input
               type={key === 'height' ? 'text' : 'number'}
-              className="w-full bg-transparent text-white text-base outline-none border-b border-white/10 pb-1 focus:border-blue-500 transition-colors"
+              className="w-full bg-transparent text-white text-base outline-none border-b border-white/10 pb-1 focus:border-primary transition-colors"
               value={values[key]}
               placeholder={`Enter ${label.toLowerCase()}`}
               onChange={e => { setValues(p => ({ ...p, [key]: e.target.value })); setDirty(true); }}
@@ -81,7 +81,7 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
           <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             onClick={save}
             className="mt-5 w-full py-3 rounded-xl font-bold text-sm text-white"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
             {saved ? '✓ Saved' : 'Save Body Stats'}
           </motion.button>
         )}

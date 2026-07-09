@@ -180,9 +180,9 @@ export default function UploadPDFModal({ open, onOpenChange, onSubmit }) {
             <div className="grid grid-cols-4 gap-2">
               {[
                 { field: 'calories', label: 'Calories', unit: 'kcal', val: calories, set: setCalories, color: 'text-orange-600' },
-                { field: 'protein', label: 'Protein', unit: 'g', val: protein, set: setProtein, color: 'text-blue-600' },
-                { field: 'carbs', label: 'Carbs', unit: 'g', val: carbs, set: setCarbs, color: 'text-amber-600' },
-                { field: 'fats', label: 'Fats', unit: 'g', val: fats, set: setFats, color: 'text-red-500' },
+                { field: 'protein', label: 'Protein', unit: 'g', val: protein, set: setProtein, color: 'text-primary' },
+                { field: 'carbs', label: 'Carbs', unit: 'g', val: carbs, set: setCarbs, color: 'text-warning' },
+                { field: 'fats', label: 'Fats', unit: 'g', val: fats, set: setFats, color: 'text-destructive' },
               ].map(({ field, label, unit, val, set, color }) => (
                 <div key={field}>
                   <label className={`text-[10px] font-semibold ${color} block mb-1`}>

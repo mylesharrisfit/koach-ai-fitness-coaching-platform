@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import {
-  Plus, Dumbbell, Lock, Zap, Search, SlidersHorizontal,
-  LayoutGrid, List, ChevronDown, X, Flame, Layers, Target, Sparkles, PenLine,
+import { Dumbbell, Search, SlidersHorizontal,
+  LayoutGrid, List, X, Sparkles, PenLine,
 } from 'lucide-react';
 import { hasFeature } from '@/lib/subscription';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ProgramCard from '../components/programs/ProgramCard';
@@ -18,7 +16,6 @@ import IntelligenceBar from '@/components/intelligence/IntelligenceBar';
 import LimitBanner from '@/components/subscription/LimitBanner';
 import { useUpgradeModal } from '@/components/layout/AppLayout';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { AnimatePresence } from 'framer-motion';
 
@@ -62,7 +59,7 @@ function FiltersPanel({ filters, onChange }) {
 
   const Section = ({ label, children }) => (
     <div>
-      <p className="text-[10px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">{label}</p>
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{label}</p>
       <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
   );
@@ -72,9 +69,9 @@ function FiltersPanel({ filters, onChange }) {
       onClick={onClick}
       className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors"
       style={{
-        background: active ? '#2563EB' : '#F3F4F6',
-        color: active ? '#fff' : '#6B7280',
-        border: active ? '1px solid #2563EB' : '0.5px solid #E2E5EC',
+        background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
+        color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+        border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
       }}
     >
       {label}
@@ -267,13 +264,13 @@ export default function Programs() {
   const assignedClientCount = allClients.filter(c => c.assigned_program_id).length;
 
   return (
-    <div className="min-h-screen" style={{ background: '#F6F7FB' }}>
+    <div className="min-h-screen" style={{ background: 'var(--tc-muted)' }}>
 
       {/* ── NAVY HEADER ── */}
-      <div className="px-6 py-5 flex items-center justify-between" style={{ background: '#0E1525' }}>
+      <div className="px-6 py-5 flex items-center justify-between" style={{ background: 'var(--tc-sidebar)' }}>
         <div>
           <h1 className="text-lg font-bold text-white">Programs</h1>
-          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          <p className="text-xs mt-0.5" style={{ color: 'color-mix(in srgb, white 45%, transparent)' }}>
             {programs.length} program{programs.length !== 1 ? 's' : ''} · {assignedClientCount} client{assignedClientCount !== 1 ? 's' : ''} assigned
           </p>
         </div>
@@ -285,7 +282,7 @@ export default function Programs() {
               openCreateModal('ai');
             }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-            style={{ background: '#2563EB' }}
+            style={{ background: 'var(--tc-primary)' }}
           >
             <Sparkles className="w-4 h-4" />
             Build with AI
@@ -297,7 +294,7 @@ export default function Programs() {
               openBuilder();
             }}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-white/80 hover:text-white transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', border: '1px solid color-mix(in srgb, white 15%, transparent)' }}
           >
             <PenLine className="w-4 h-4" />
             <span className="hidden sm:inline">From scratch</span>
@@ -313,17 +310,17 @@ export default function Programs() {
         <div className="flex items-center gap-2">
           {/* Search */}
           <div className="relative flex-1 min-w-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search programs..."
-              className="w-full h-9 pl-8 pr-3 text-sm rounded-xl bg-white focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-[#374151] placeholder:text-[#C4C9D4]"
-              style={{ border: '0.5px solid #E2E5EC' }}
+              className="w-full h-9 pl-8 pr-3 text-sm rounded-xl bg-card focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-[var(--kc-c4c9d4)]"
+              style={{ border: '0.5px solid var(--tc-border)' }}
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#C4C9D4] hover:text-[#374151]">
+              <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--kc-c4c9d4)] hover:text-foreground">
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
@@ -335,15 +332,15 @@ export default function Programs() {
               <button
                 className="flex items-center gap-1.5 h-9 px-3 rounded-xl text-sm font-medium transition-colors relative"
                 style={{
-                  background: activeFilterCount > 0 ? '#EFF6FF' : '#fff',
-                  color: activeFilterCount > 0 ? '#2563EB' : '#374151',
-                  border: activeFilterCount > 0 ? '0.5px solid #BFDBFE' : '0.5px solid #E2E5EC',
+                  background: activeFilterCount > 0 ? 'var(--tc-accent)' : 'var(--tc-card)',
+                  color: activeFilterCount > 0 ? 'var(--tc-primary)' : 'var(--tc-foreground)',
+                  border: activeFilterCount > 0 ? '0.5px solid var(--tc-accent)' : '0.5px solid var(--tc-border)',
                 }}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 Filters
                 {activeFilterCount > 0 && (
-                  <span className="w-4 h-4 rounded-full text-[9px] font-bold bg-[#2563EB] text-white flex items-center justify-center">
+                  <span className="w-4 h-4 rounded-full text-[9px] font-bold bg-primary text-white flex items-center justify-center">
                     {activeFilterCount}
                   </span>
                 )}
@@ -363,7 +360,7 @@ export default function Programs() {
               />
               {activeFilterCount > 0 && (
                 <div className="px-4 pb-3">
-                  <button onClick={() => { clearAll(); setFilterOpen(false); }} className="text-xs text-[#EF4444] font-medium hover:underline">
+                  <button onClick={() => { clearAll(); setFilterOpen(false); }} className="text-xs text-destructive font-medium hover:underline">
                     Clear all filters
                   </button>
                 </div>
@@ -374,8 +371,8 @@ export default function Programs() {
           {/* Sort */}
           <Select value={sort} onValueChange={setSort}>
             <SelectTrigger
-              className="h-9 w-36 text-sm bg-white"
-              style={{ border: '0.5px solid #E2E5EC', borderRadius: 12 }}
+              className="h-9 w-36 text-sm bg-card"
+              style={{ border: '0.5px solid var(--tc-border)', borderRadius: 12 }}
             >
               <SelectValue />
             </SelectTrigger>
@@ -385,15 +382,15 @@ export default function Programs() {
           </Select>
 
           {/* Layout toggle */}
-          <div className="flex rounded-xl overflow-hidden flex-shrink-0" style={{ border: '0.5px solid #E2E5EC' }}>
+          <div className="flex rounded-xl overflow-hidden flex-shrink-0" style={{ border: '0.5px solid var(--tc-border)' }}>
             {[{ v: 'grid', Icon: LayoutGrid }, { v: 'list', Icon: List }].map(({ v, Icon }) => (
               <button
                 key={v}
                 onClick={() => setLayout(v)}
                 className="w-9 h-9 flex items-center justify-center transition-colors"
                 style={{
-                  background: layout === v ? '#0E1525' : '#fff',
-                  color: layout === v ? '#fff' : '#9CA3AF',
+                  background: layout === v ? 'var(--tc-foreground)' : 'var(--tc-card)',
+                  color: layout === v ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
                 }}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -408,8 +405,8 @@ export default function Programs() {
             {activeChips.map(chip => (
               <span
                 key={chip.key}
-                className="flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#EFF6FF] text-[#2563EB]"
-                style={{ border: '0.5px solid #BFDBFE' }}
+                className="flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-accent/10 text-primary"
+                style={{ border: '0.5px solid var(--tc-accent)' }}
               >
                 {chip.label}
                 <button onClick={chip.onRemove} className="ml-0.5 hover:opacity-70">
@@ -417,7 +414,7 @@ export default function Programs() {
                 </button>
               </span>
             ))}
-            <button onClick={clearAll} className="text-[11px] text-[#9CA3AF] hover:text-[#374151] transition-colors">
+            <button onClick={clearAll} className="text-[11px] text-muted-foreground hover:text-foreground transition-colors">
               Clear all
             </button>
           </div>
@@ -428,41 +425,41 @@ export default function Programs() {
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {[1,2,3,4].map(i => (
-                <div key={i} className="h-52 bg-white rounded-xl animate-pulse" style={{ border: '0.5px solid #E2E5EC' }} />
+                <div key={i} className="h-52 bg-card rounded-xl animate-pulse" style={{ border: '0.5px solid var(--tc-border)' }} />
               ))}
             </div>
           ) : programs.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
-              <div className="w-14 h-14 rounded-2xl bg-[#EFF6FF] flex items-center justify-center mx-auto mb-4">
-                <Dumbbell className="w-6 h-6 text-[#2563EB]" />
+            <div className="text-center py-16 bg-card rounded-xl" style={{ border: '0.5px solid var(--tc-border)' }}>
+              <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                <Dumbbell className="w-6 h-6 text-primary" />
               </div>
-              <p className="font-bold text-[#0E1525]">No programs yet</p>
-              <p className="text-sm text-[#6B7280] mt-1 mb-6">Create your first program in seconds with AI, or build from scratch.</p>
+              <p className="font-bold text-foreground">No programs yet</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-6">Create your first program in seconds with AI, or build from scratch.</p>
               <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={() => openCreateModal('ai')}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                  style={{ background: '#2563EB' }}
+                  style={{ background: 'var(--tc-primary)' }}
                 >
                   <Sparkles className="w-4 h-4" /> Build with AI
                 </button>
                 <button
                   onClick={() => openBuilder()}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-[#374151] transition-colors hover:bg-[#F3F4F6]"
-                  style={{ border: '0.5px solid #E2E5EC' }}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                  style={{ border: '0.5px solid var(--tc-border)' }}
                 >
                   <PenLine className="w-4 h-4" /> From scratch
                 </button>
               </div>
             </div>
           ) : filteredPrograms.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-xl" style={{ border: '0.5px solid #E2E5EC' }}>
-              <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
-                <Dumbbell className="w-6 h-6 text-[#9CA3AF]" />
+            <div className="text-center py-20 bg-card rounded-xl" style={{ border: '0.5px solid var(--tc-border)' }}>
+              <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+                <Dumbbell className="w-6 h-6 text-muted-foreground" />
               </div>
-              <p className="font-semibold text-[#0E1525]">No programs match</p>
-              <p className="text-sm text-[#6B7280] mt-1 mb-5">Try adjusting your search or filters.</p>
-              <button onClick={clearAll} className="px-4 py-2 rounded-xl text-sm font-semibold border text-[#374151]" style={{ border: '0.5px solid #E2E5EC' }}>
+              <p className="font-semibold text-foreground">No programs match</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-5">Try adjusting your search or filters.</p>
+              <button onClick={clearAll} className="px-4 py-2 rounded-xl text-sm font-semibold border text-foreground" style={{ border: '0.5px solid var(--tc-border)' }}>
                 Clear filters
               </button>
             </div>
@@ -489,20 +486,20 @@ export default function Programs() {
               {/* Dashed "New program" tile — split CTAs */}
               <div
                 className="rounded-xl flex flex-col items-center justify-center gap-3 py-8 px-4"
-                style={{ border: '1.5px dashed #D1D5DB', background: 'transparent' }}
+                style={{ border: '1.5px dashed var(--tc-muted-foreground)', background: 'transparent' }}
               >
-                <p className="text-xs font-semibold text-[#9CA3AF]">New program</p>
+                <p className="text-xs font-semibold text-muted-foreground">New program</p>
                 <button
                   onClick={() => openCreateModal('ai')}
                   className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90"
-                  style={{ background: '#2563EB' }}
+                  style={{ background: 'var(--tc-primary)' }}
                 >
                   <Sparkles className="w-3.5 h-3.5" /> Build with AI
                 </button>
                 <button
                   onClick={() => openBuilder()}
-                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-[#6B7280] transition-colors hover:bg-[#F3F4F6]"
-                  style={{ border: '0.5px solid #E2E5EC', background: '#fff' }}
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted"
+                  style={{ border: '0.5px solid var(--tc-border)', background: 'var(--tc-card)' }}
                 >
                   <PenLine className="w-3.5 h-3.5" /> From scratch
                 </button>

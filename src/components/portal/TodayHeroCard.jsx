@@ -21,16 +21,16 @@ export default function TodayHeroCard({ program, todayWorkout, workoutDone, onSt
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
       className="mx-5 rounded-2xl overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #1E293B 100%)', border: '1px solid rgba(59,130,246,0.25)' }}>
+      style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, rgb(var(--foreground)) 100%)', border: '1px solid rgb(var(--primary) / 0.25)' }}>
       {/* Program badge */}
       <div className="px-5 pt-4 pb-3">
-        <p className="text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-2">{program.title}</p>
+        <p className="text-primary text-[10px] font-bold uppercase tracking-widest mb-2">{program.title}</p>
 
         {isRestDay ? (
           <>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                <Moon className="w-5 h-5 text-blue-300" />
+                <Moon className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <p className="text-white font-bold text-lg">Rest Day 🛌</p>
@@ -44,12 +44,12 @@ export default function TodayHeroCard({ program, todayWorkout, workoutDone, onSt
         ) : workoutDone ? (
           <>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
-                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgb(var(--success) / 0.15)' }}>
+                <CheckCircle2 className="w-5 h-5 text-success" />
               </div>
               <div>
                 <p className="text-white font-bold text-lg">Workout Complete ✅</p>
-                <p className="text-emerald-400 text-xs font-semibold">Great work today!</p>
+                <p className="text-success text-xs font-semibold">Great work today!</p>
               </div>
             </div>
             <p className="text-white/50 text-sm">{todayWorkout.day_name} — {todayWorkout.exercises?.length || 0} exercises</p>
@@ -66,7 +66,7 @@ export default function TodayHeroCard({ program, todayWorkout, workoutDone, onSt
             {/* Exercise preview */}
             {todayWorkout.exercises?.slice(0, 3).map((ex, i) => (
               <div key={i} className="flex items-center gap-2 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                 <p className="text-white/60 text-xs">{ex.name} · {ex.sets}×{ex.reps}</p>
               </div>
             ))}
@@ -75,7 +75,7 @@ export default function TodayHeroCard({ program, todayWorkout, workoutDone, onSt
             )}
             <button onClick={onStartWorkout}
               className="mt-4 w-full py-3.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 20px rgba(59,130,246,0.4)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 20px rgb(var(--primary) / 0.4)' }}>
               <Play className="w-4 h-4" fill="white" /> Start Workout
             </button>
           </>

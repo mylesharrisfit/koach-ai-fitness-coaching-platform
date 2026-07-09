@@ -17,11 +17,11 @@ function MiniRing({ value, target, color, trackColor, label, unit = 'g', size = 
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <p className="font-black leading-none" style={{ color, fontSize: size > 80 ? 18 : 11 }}>{Math.round(value)}</p>
-          {size > 80 && <p className="text-slate-400 text-[10px] mt-0.5">{unit}</p>}
+          {size > 80 && <p className="text-muted-foreground text-[10px] mt-0.5">{unit}</p>}
         </div>
       </div>
-      <p className="text-slate-500 text-[9px] font-bold text-center">{label}</p>
-      <p className="text-slate-400 text-[8px] text-center">{Math.round(remaining)}{unit} left</p>
+      <p className="text-muted-foreground text-[9px] font-bold text-center">{label}</p>
+      <p className="text-muted-foreground text-[8px] text-center">{Math.round(remaining)}{unit} left</p>
     </div>
   );
 }
@@ -39,23 +39,23 @@ function BigCalorieRing({ consumed, target }) {
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
           <defs>
             <linearGradient id="calGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#F59E0B" />
-              <stop offset="100%" stopColor="#EF4444" />
+              <stop offset="0%" stopColor="rgb(var(--warning))" />
+              <stop offset="100%" stopColor="rgb(var(--destructive))" />
             </linearGradient>
           </defs>
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke} stroke="#FEF3C7" />
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke} stroke="rgb(var(--warning))" />
           <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke}
-            stroke={over ? '#EF4444' : 'url(#calGrad2)'}
+            stroke={over ? 'rgb(var(--destructive))' : 'url(#calGrad2)'}
             strokeDasharray={circ} strokeDashoffset={offset}
             strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.7s ease' }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <p className="text-slate-900 font-black text-2xl leading-none">{Math.round(consumed)}</p>
-          <p className="text-slate-400 text-[10px] mt-0.5">of {target}</p>
-          <p className="text-slate-400 text-[9px]">kcal</p>
+          <p className="text-foreground font-black text-2xl leading-none">{Math.round(consumed)}</p>
+          <p className="text-muted-foreground text-[10px] mt-0.5">of {target}</p>
+          <p className="text-muted-foreground text-[9px]">kcal</p>
         </div>
       </div>
-      <p className="text-slate-500 text-xs mt-1 font-semibold">
+      <p className="text-muted-foreground text-xs mt-1 font-semibold">
         {over ? `${Math.round(consumed - target)} over` : `${Math.round(target - consumed)} remaining`}
       </p>
     </div>
@@ -71,13 +71,13 @@ export default function MacroRings({ logged, plan }) {
     water: 3000,
   };
   return (
-    <div className="mx-4 bg-white p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+    <div className="mx-4 bg-card p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
       <div className="flex items-center gap-6">
         <BigCalorieRing consumed={logged.calories || 0} target={targets.calories} />
         <div className="flex gap-4 flex-1 justify-around">
-          <MiniRing value={logged.protein || 0} target={targets.protein} color="#2563EB" trackColor="#DBEAFE" label="Protein" />
-          <MiniRing value={logged.carbs || 0} target={targets.carbs} color="#F97316" trackColor="#FFEDD5" label="Carbs" />
-          <MiniRing value={logged.fats || 0} target={targets.fats} color="#EAB308" trackColor="#FEF9C3" label="Fats" />
+          <MiniRing value={logged.protein || 0} target={targets.protein} color="rgb(var(--primary))" trackColor="rgb(var(--accent))" label="Protein" />
+          <MiniRing value={logged.carbs || 0} target={targets.carbs} color="#F97316" trackColor="rgb(var(--warning))" label="Carbs" />
+          <MiniRing value={logged.fats || 0} target={targets.fats} color="#EAB308" trackColor="rgb(var(--warning))" label="Fats" />
           <MiniRing value={(logged.water || 0) / 1000} target={targets.water / 1000} color="#06B6D4" trackColor="#CFFAFE" label="Water" unit="L" />
         </div>
       </div>

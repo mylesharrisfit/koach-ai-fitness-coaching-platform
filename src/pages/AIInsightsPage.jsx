@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RefreshCw, Filter, History, Settings } from 'lucide-react';
+import { Sparkles, RefreshCw, History, Settings } from 'lucide-react';
 import { generateInsights, dismissInsight, markNotRelevant, getNotRelevantTypes } from '@/lib/insightEngine';
 import InsightCard from '@/components/intelligence/InsightCard';
 import InsightHistory from '@/components/intelligence/InsightHistory';
@@ -74,24 +74,24 @@ export default function AIInsightsPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-0.5">
-            <Sparkles className="w-5 h-5 text-violet-500" />
-            <h1 className="text-lg font-bold text-gray-900">AI Client Insights</h1>
+            <Sparkles className="w-5 h-5 text-ai" />
+            <h1 className="text-lg font-bold text-foreground">AI Client Insights</h1>
           </div>
-          <p className="text-xs text-gray-400">Automatically analyzed from your client data — updated daily</p>
+          <p className="text-xs text-muted-foreground">Automatically analyzed from your client data — updated daily</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setView(v => v === 'history' ? 'insights' : 'history')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${view === 'history' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${view === 'history' ? 'bg-sidebar text-white border-border' : 'bg-card text-muted-foreground border-border hover:bg-muted'}`}>
             <History className="w-3.5 h-3.5" />
             History
           </button>
           <button onClick={() => setView(v => v === 'preferences' ? 'insights' : 'preferences')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${view === 'preferences' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${view === 'preferences' ? 'bg-sidebar text-white border-border' : 'bg-card text-muted-foreground border-border hover:bg-muted'}`}>
             <Settings className="w-3.5 h-3.5" />
             Preferences
           </button>
           <button onClick={handleRefresh} disabled={isRefreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all disabled:opacity-60">
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-card text-muted-foreground hover:bg-muted transition-all disabled:opacity-60">
             <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
             Refresh
           </button>
@@ -109,12 +109,12 @@ export default function AIInsightsPage() {
               <button key={tab} onClick={() => setActiveTab(tab)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
                   activeTab === tab
-                    ? 'bg-gray-900 text-white border-gray-900'
-                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+                    ? 'bg-sidebar text-white border-border'
+                    : 'bg-card text-muted-foreground border-border hover:border-border'
                 }`}>
                 {tab}
                 {counts[tab] > 0 && (
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'}`}>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-[var(--kc-w-20)] text-white' : 'bg-muted text-muted-foreground'}`}>
                     {counts[tab]}
                   </span>
                 )}
@@ -126,16 +126,16 @@ export default function AIInsightsPage() {
           {isRefreshing ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-48 rounded-2xl bg-gray-100 animate-pulse" />
+                <div key={i} className="h-48 rounded-2xl bg-muted animate-pulse" />
               ))}
             </div>
           ) : visible.length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="rounded-2xl px-6 py-16 text-center"
-              style={{ background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '1px solid #bbf7d0' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: '1px solid var(--tc-success)' }}>
               <div className="text-4xl mb-3">🎉</div>
-              <p className="text-base font-bold text-gray-700">No new insights right now</p>
-              <p className="text-sm text-gray-400 mt-1.5 max-w-md mx-auto">
+              <p className="text-base font-bold text-foreground">No new insights right now</p>
+              <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
                 Your clients are all on track! Check back after more check-ins come in, or click Refresh.
               </p>
             </motion.div>

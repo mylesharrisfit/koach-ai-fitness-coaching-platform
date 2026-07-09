@@ -133,17 +133,17 @@ export default function ClientForm({ open, onOpenChange, onSubmit, client }) {
           {!client && (
             <div
               onClick={() => setSendInvite(v => !v)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${sendInvite ? 'bg-blue-50 border-blue-200' : 'bg-[#F6F7FB] border-[#E7EAF3]'}`}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${sendInvite ? 'bg-accent border-primary' : 'bg-muted border-border'}`}
             >
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${sendInvite ? 'bg-primary/10' : 'bg-[#E7EAF3]'}`}>
-                <Mail className={`w-4 h-4 ${sendInvite ? 'text-primary' : 'text-[#9CA3AF]'}`} />
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${sendInvite ? 'bg-primary/10' : 'bg-border'}`}>
+                <Mail className={`w-4 h-4 ${sendInvite ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               <div className="flex-1">
-                <p className={`text-sm font-semibold ${sendInvite ? 'text-[#1F2A44]' : 'text-[#6B7280]'}`}>Send invite email</p>
-                <p className="text-xs text-[#6B7280]">Client receives a welcome email to set up their profile</p>
+                <p className={`text-sm font-semibold ${sendInvite ? 'text-foreground' : 'text-muted-foreground'}`}>Send invite email</p>
+                <p className="text-xs text-muted-foreground">Client receives a welcome email to set up their profile</p>
               </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${sendInvite ? 'bg-primary border-primary' : 'bg-white border-[#D1D5DB]'}`}>
-                {sendInvite && <div className="w-2 h-2 rounded-full bg-white" />}
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${sendInvite ? 'bg-primary border-primary' : 'bg-card border-muted-foreground'}`}>
+                {sendInvite && <div className="w-2 h-2 rounded-full bg-card" />}
               </div>
             </div>
           )}

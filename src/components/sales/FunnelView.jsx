@@ -29,18 +29,18 @@ export default function FunnelView({ leads, onStageClick, selectedStage }) {
               <button
                 onClick={() => onStageClick(isSelected ? null : stage.key)}
                 className={cn(
-                  "flex-1 rounded-xl border p-4 transition-all text-left bg-white border-[#E5E7EB]",
-                  isSelected ? "ring-2 ring-[#111827]/20 scale-105 shadow-lg" : "hover:opacity-90"
+                  "flex-1 rounded-xl border p-4 transition-all text-left bg-card border-border",
+                  isSelected ? "ring-2 ring-foreground/20 scale-105 shadow-lg" : "hover:opacity-90"
                 )}
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <stage.icon className="w-4 h-4 text-[#6B7280]" />
-                  <span className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">{stage.label}</span>
+                  <stage.icon className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{stage.label}</span>
                 </div>
-                <p className="text-3xl font-heading font-bold text-[#111827]">{count}</p>
+                <p className="text-3xl font-heading font-bold text-foreground">{count}</p>
                 <p className="text-xs text-muted-foreground mt-1">{pct}% of total</p>
-                <div className="mt-3 h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
-                  <div className="h-full rounded-full bg-[#111827] transition-all" style={{ width: `${pct}%` }} />
+                <div className="mt-3 h-1.5 bg-border rounded-full overflow-hidden">
+                  <div className="h-full rounded-full bg-sidebar transition-all" style={{ width: `${pct}%` }} />
                 </div>
               </button>
               {idx < STAGES.length - 1 && (

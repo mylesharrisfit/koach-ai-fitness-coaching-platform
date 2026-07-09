@@ -74,25 +74,25 @@ export default function QuickLog({ log, onChange }) {
       </button>
 
       <div className="grid grid-cols-2 gap-3">
-        <LogButton icon={Salad} label="Meals" value={log?.meals_logged} max={4} active={log?.meals_logged >= 3} activeColor="border-emerald-500/30 text-emerald-500" onIncrement={() => set('meals_logged', (log?.meals_logged || 0) + 1)} onDecrement={() => set('meals_logged', (log?.meals_logged || 0) - 1)} />
+        <LogButton icon={Salad} label="Meals" value={log?.meals_logged} max={4} active={log?.meals_logged >= 3} activeColor="border-success/30 text-success" onIncrement={() => set('meals_logged', (log?.meals_logged || 0) + 1)} onDecrement={() => set('meals_logged', (log?.meals_logged || 0) - 1)} />
         <LogButton icon={Droplets} label="Water" value={log?.water_glasses} max={8} active={log?.water_glasses >= 6} activeColor="border-cyan-500/30 text-cyan-500" onIncrement={() => set('water_glasses', (log?.water_glasses || 0) + 1)} onDecrement={() => set('water_glasses', (log?.water_glasses || 0) - 1)} />
       </div>
 
       <div className="bg-card border border-border rounded-2xl p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <Footprints className="w-4 h-4 text-amber-400" />
+            <Footprints className="w-4 h-4 text-warning" />
             <span className="text-xs font-medium">Steps</span>
           </div>
           <span className="text-xs text-muted-foreground">{(log?.steps || 0).toLocaleString()} / 10,000</span>
         </div>
         <div className="h-2 bg-secondary rounded-full overflow-hidden mb-3">
-          <div className="h-full bg-amber-400 rounded-full transition-all" style={{ width: `${Math.min(100, ((log?.steps || 0) / 10000) * 100)}%` }} />
+          <div className="h-full bg-warning rounded-full transition-all" style={{ width: `${Math.min(100, ((log?.steps || 0) / 10000) * 100)}%` }} />
         </div>
         <div className="flex gap-2">
           {[1000, 2000, 5000].map(n => (
             <button key={n} onClick={() => set('steps', (log?.steps || 0) + n)}
-              className="flex-1 py-1.5 text-xs rounded-xl bg-secondary/50 hover:bg-amber-400/10 hover:text-amber-400 transition-colors font-medium">
+              className="flex-1 py-1.5 text-xs rounded-xl bg-secondary/50 hover:bg-warning/10 hover:text-warning transition-colors font-medium">
               +{n.toLocaleString()}
             </button>
           ))}

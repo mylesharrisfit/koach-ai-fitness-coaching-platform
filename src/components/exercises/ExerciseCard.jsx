@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Star, Edit, Trash2, MoreHorizontal, Dumbbell, ExternalLink, Upload } from 'lucide-react';
+import { Play, Star, Edit, Trash2, MoreHorizontal, ExternalLink, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -41,8 +41,8 @@ function MediaThumbnail({ url, imageUrl, thumbnailUrl, name }) {
           onError={e => { e.target.style.display = 'none'; }} />
         {url && (
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-              <Play className="w-4 h-4 text-gray-900 ml-0.5" fill="currentColor" />
+            <div className="w-10 h-10 rounded-full bg-[var(--kc-w-90)] flex items-center justify-center shadow-lg">
+              <Play className="w-4 h-4 text-foreground ml-0.5" fill="currentColor" />
             </div>
           </div>
         )}
@@ -51,11 +51,11 @@ function MediaThumbnail({ url, imageUrl, thumbnailUrl, name }) {
   }
 
   return (
-    <div className="w-full h-full bg-[#F3F4F6] flex flex-col items-center justify-center gap-2">
-      <div className="w-10 h-10 rounded-full bg-[#EEF4FF] flex items-center justify-center">
+    <div className="w-full h-full bg-muted flex flex-col items-center justify-center gap-2">
+      <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
         <Play className="w-4 h-4 text-primary ml-0.5" />
       </div>
-      <span className="text-xs text-[#9CA3AF]">{url ? 'Video' : 'No demo'}</span>
+      <span className="text-xs text-muted-foreground">{url ? 'Video' : 'No demo'}</span>
     </div>
   );
 }
@@ -105,13 +105,13 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
   return (
     <div
       className={cn(
-        "group bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden hover:border-primary/20 hover:shadow-md transition-all cursor-pointer shadow-sm",
+        "group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/20 hover:shadow-md transition-all cursor-pointer shadow-sm",
         compact && "flex gap-3 p-3 items-center"
       )}
       onClick={onView}
     >
       {!compact && (
-        <div className="relative h-44 bg-[#F6F7FB] overflow-hidden">
+        <div className="relative h-44 bg-muted overflow-hidden">
           <MediaThumbnail url={exercise.video_url} imageUrl={exercise.image_url} thumbnailUrl={exercise.thumbnail_url} name={exercise.name} />
           {exercise.is_coach_branded && (
             <div className="absolute top-2 left-2 flex items-center gap-1 bg-chart-4/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
@@ -121,9 +121,9 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
           {exercise.difficulty && (
             <div className={cn(
               "absolute bottom-2 left-2 text-[10px] font-bold px-2.5 py-1 rounded-lg capitalize",
-              exercise.difficulty === 'beginner' ? 'bg-green-100/90 text-green-900' :
-              exercise.difficulty === 'intermediate' ? 'bg-amber-100/90 text-amber-900' :
-              'bg-red-100/90 text-red-900'
+              exercise.difficulty === 'beginner' ? 'bg-success/90 text-success' :
+              exercise.difficulty === 'intermediate' ? 'bg-warning/90 text-warning' :
+              'bg-destructive/90 text-destructive'
             )}>
               {exercise.difficulty}
             </div>
@@ -132,7 +132,7 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
             {exercise.video_url && (
               <Button
                 size="icon"
-                className="h-7 w-7 bg-white/90 hover:bg-white text-gray-900 shadow"
+                className="h-7 w-7 bg-[var(--kc-w-90)] hover:bg-card text-foreground shadow"
                 onClick={handleOpenVideo}
               >
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -159,9 +159,9 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
       <div className={cn("p-4", compact && "p-0 flex-1")}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h3 className={cn("font-heading font-semibold leading-tight truncate text-[#1F2A44]", compact ? "text-sm" : "text-base")}>{exercise.name}</h3>
+            <h3 className={cn("font-heading font-semibold leading-tight truncate text-foreground", compact ? "text-sm" : "text-base")}>{exercise.name}</h3>
             {exercise.description && !compact && (
-            <p className="text-xs text-[#374151] mt-1 line-clamp-2">{exercise.description}</p>
+            <p className="text-xs text-foreground mt-1 line-clamp-2">{exercise.description}</p>
             )}
           </div>
           {compact && exercise.video_url && (

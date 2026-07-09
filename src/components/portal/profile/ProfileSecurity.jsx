@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import ProfileSectionCard from './ProfileSectionCard';
 import { toast } from 'sonner';
 
@@ -14,7 +13,7 @@ function PasswordStrength({ password }) {
   ].filter(Boolean).length;
 
   const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
-  const colors = ['', '#EF4444', '#F59E0B', '#3B82F6', '#10B981', '#22C55E'];
+  const colors = ['', 'rgb(var(--destructive))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--success))', 'rgb(var(--success))'];
 
   return password ? (
     <div className="mt-1.5">
@@ -56,7 +55,7 @@ export default function ProfileSecurity() {
         ].map(({ label, value, onChange, show, setShow, showStrength }) => (
           <div key={label}>
             <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">{label}</p>
-            <div className="flex items-center gap-2 border-b border-white/10 pb-1 focus-within:border-blue-500 transition-colors">
+            <div className="flex items-center gap-2 border-b border-white/10 pb-1 focus-within:border-primary transition-colors">
               <input
                 type={show ? 'text' : 'password'}
                 className="flex-1 bg-transparent text-white/80 text-sm outline-none"
@@ -74,7 +73,7 @@ export default function ProfileSecurity() {
 
         <button onClick={handleUpdate}
           className="w-full py-3 rounded-xl font-bold text-sm text-white"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
           Update Password
         </button>
 
@@ -85,7 +84,7 @@ export default function ProfileSecurity() {
             <p className="text-white/30 text-[10px]">Extra layer of security</p>
           </div>
           <span className="text-[10px] px-2 py-1 rounded-full font-bold"
-            style={{ background: 'rgba(251,191,36,0.15)', color: '#FBB724' }}>Coming Soon</span>
+            style={{ background: 'rgb(var(--warning) / 0.15)', color: '#FBB724' }}>Coming Soon</span>
         </div>
       </div>
     </ProfileSectionCard>

@@ -38,17 +38,17 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
   const allDone = completed === total;
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-[#E5E7EB] shadow-sm">
-      <p className="text-xs font-bold uppercase tracking-widest text-[#9CA3AF] mb-4">Today's Progress</p>
+    <div className="bg-card rounded-2xl p-5 border border-border shadow-sm">
+      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Today's Progress</p>
 
       <div className="flex items-center gap-5 mb-5">
         {/* Big ring */}
         <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={10}
-              stroke={allDone ? 'rgba(22,163,74,0.12)' : 'rgba(37,99,235,0.08)'} />
+              stroke={allDone ? 'color-mix(in srgb, var(--tc-success) 12%, transparent)' : 'color-mix(in srgb, var(--tc-primary) 8%, transparent)'} />
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={10}
-              stroke={allDone ? '#16A34A' : '#2563EB'}
+              stroke={allDone ? 'var(--tc-success)' : 'var(--tc-primary)'}
               strokeDasharray={circ}
               strokeDashoffset={offset}
               strokeLinecap="round"
@@ -59,8 +59,8 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
             {allDone
               ? <span className="text-3xl">🎉</span>
               : <>
-                  <span className="text-3xl font-bold leading-none" style={{ color: '#111827', letterSpacing: '-0.04em' }}>{pct}%</span>
-                  <span className="text-[11px] text-[#9CA3AF] mt-0.5 font-medium">today</span>
+                  <span className="text-3xl font-bold leading-none" style={{ color: 'var(--tc-foreground)', letterSpacing: '-0.04em' }}>{pct}%</span>
+                  <span className="text-[11px] text-muted-foreground mt-0.5 font-medium">today</span>
                 </>
             }
           </div>
@@ -70,15 +70,15 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
         <div className="flex-1">
           {allDone ? (
             <>
-              <p className="text-base font-bold text-[#111827] leading-tight">All goals crushed! 💪</p>
-              <p className="text-sm text-[#6B7280] mt-1">You're on a roll. Keep the streak alive.</p>
+              <p className="text-base font-bold text-foreground leading-tight">All goals crushed! 💪</p>
+              <p className="text-sm text-muted-foreground mt-1">You're on a roll. Keep the streak alive.</p>
             </>
           ) : (
             <>
-              <p className="text-base font-bold text-[#111827] leading-tight">
+              <p className="text-base font-bold text-foreground leading-tight">
                 {completed} of {total} goals done
               </p>
-              <p className="text-sm text-[#6B7280] mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {total - completed} left to complete today
               </p>
             </>
@@ -88,7 +88,7 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
           <div className="flex gap-1.5 mt-3">
             {Array.from({ length: total }, (_, i) => (
               <div key={i} className="h-2 flex-1 rounded-full transition-all"
-                style={{ background: i < completed ? (allDone ? '#16A34A' : '#2563EB') : '#F3F4F6' }} />
+                style={{ background: i < completed ? (allDone ? 'var(--tc-success)' : 'var(--tc-primary)') : 'var(--tc-muted)' }} />
             ))}
           </div>
         </div>
@@ -101,20 +101,20 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
           return (
             <div key={key} className={cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all',
-              done ? 'bg-[#F0FDF4]' : 'bg-[#F9FAFB]'
+              done ? 'bg-success/10' : 'bg-background'
             )}>
               <div className={cn('w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0',
-                done ? 'bg-[#DCFCE7]' : 'bg-white border border-[#E5E7EB]')}>
-                <Icon className={cn('w-3.5 h-3.5', done ? 'text-[#16A34A]' : 'text-[#9CA3AF]')} />
+                done ? 'bg-success/10' : 'bg-card border border-border')}>
+                <Icon className={cn('w-3.5 h-3.5', done ? 'text-success' : 'text-muted-foreground')} />
               </div>
-              <span className={cn('flex-1 text-sm font-medium', done ? 'text-[#15803D] line-through decoration-[#86EFAC]' : 'text-[#374151]')}>
+              <span className={cn('flex-1 text-sm font-medium', done ? 'text-success line-through decoration-success' : 'text-foreground')}>
                 {label}
               </span>
               <div className="flex items-center gap-1.5">
-                <span className={cn('text-xs font-semibold', done ? 'text-[#16A34A]' : 'text-[#9CA3AF]')}>{text}</span>
+                <span className={cn('text-xs font-semibold', done ? 'text-success' : 'text-muted-foreground')}>{text}</span>
                 {done
-                  ? <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
-                  : <Circle className="w-4 h-4 text-[#D1D5DB]" />
+                  ? <CheckCircle2 className="w-4 h-4 text-success" />
+                  : <Circle className="w-4 h-4 text-muted-foreground" />
                 }
               </div>
             </div>

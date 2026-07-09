@@ -45,19 +45,19 @@ export default function AIFollowUpChip({ client, allMessages, checkIns = [], onI
     <div className={cn(
       'rounded-xl border p-3 mx-3 mb-2',
       urgency === 'high'
-        ? 'bg-red-50 border-red-100'
-        : 'bg-amber-50 border-amber-100'
+        ? 'bg-destructive/10 border-destructive'
+        : 'bg-warning/10 border-warning'
     )}>
       <div className="flex items-start gap-2 mb-2">
-        <Sparkles className={cn('w-3.5 h-3.5 mt-0.5 flex-shrink-0', urgency === 'high' ? 'text-red-400' : 'text-amber-400')} />
+        <Sparkles className={cn('w-3.5 h-3.5 mt-0.5 flex-shrink-0', urgency === 'high' ? 'text-destructive' : 'text-warning')} />
         <div className="flex-1 min-w-0">
-          <p className={cn('text-[11px] font-semibold leading-tight', urgency === 'high' ? 'text-red-700' : 'text-amber-700')}>
+          <p className={cn('text-[11px] font-semibold leading-tight', urgency === 'high' ? 'text-destructive' : 'text-warning')}>
             Follow-up suggested
           </p>
-          <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{label}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{label}</p>
         </div>
         <button onClick={() => setDismissed(true)} className="flex-shrink-0 p-0.5 hover:opacity-60 transition-opacity">
-          <X className="w-3 h-3 text-gray-400" />
+          <X className="w-3 h-3 text-muted-foreground" />
         </button>
       </div>
       <button
@@ -66,8 +66,8 @@ export default function AIFollowUpChip({ client, allMessages, checkIns = [], onI
         className={cn(
           'w-full flex items-center justify-center gap-1.5 text-[11px] font-semibold py-1.5 rounded-lg transition-colors',
           urgency === 'high'
-            ? 'bg-red-500 hover:bg-red-600 text-white'
-            : 'bg-amber-500 hover:bg-amber-600 text-white'
+            ? 'bg-destructive hover:bg-destructive text-white'
+            : 'bg-warning hover:bg-warning text-white'
         )}
       >
         {loading ? (

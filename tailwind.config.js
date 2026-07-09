@@ -60,6 +60,10 @@ module.exports = {
         ring:    'rgb(var(--ring))',
         success: 'rgb(var(--success))',
         warning: 'rgb(var(--warning))',
+        ai: {
+          DEFAULT:    'rgb(var(--ai))',
+          foreground: 'rgb(var(--ai-foreground))',
+        },
         chart: {
           '1': 'rgb(var(--chart-1))',
           '2': 'rgb(var(--chart-2))',

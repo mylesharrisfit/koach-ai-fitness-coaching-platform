@@ -9,7 +9,7 @@ import { compositeAdherenceScore } from '@/lib/adherence';
 
 function AdherencePill({ score }) {
   if (score === null) return null;
-  const color = score >= 75 ? 'bg-emerald-500/15 text-emerald-400' : score >= 50 ? 'bg-amber-500/15 text-amber-400' : 'bg-destructive/15 text-destructive';
+  const color = score >= 75 ? 'bg-success/15 text-success' : score >= 50 ? 'bg-warning/15 text-warning' : 'bg-destructive/15 text-destructive';
   return <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', color)}>{score}%</span>;
 }
 
@@ -20,7 +20,7 @@ function RiskClientRow({ entry, allCheckIns }) {
   const clientCheckIns = allCheckIns.filter(ci => ci.client_id === client.id);
   const avgScore = compositeAdherenceScore(clientCheckIns);
 
-  const ringColor = riskScore >= 60 ? 'border-destructive/50 bg-destructive/10 text-destructive' : riskScore >= 30 ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-border bg-secondary text-muted-foreground';
+  const ringColor = riskScore >= 60 ? 'border-destructive/50 bg-destructive/10 text-destructive' : riskScore >= 30 ? 'border-warning/50 bg-warning/10 text-warning' : 'border-border bg-secondary text-muted-foreground';
 
   return (
     <div className={cn('rounded-xl border bg-secondary/20 overflow-hidden', highFlags.length > 0 ? 'border-destructive/25' : 'border-border')}>
@@ -71,7 +71,7 @@ function RiskClientRow({ entry, allCheckIns }) {
               <li key={f.key} className="flex items-start gap-2 text-xs text-muted-foreground">
                 <span className={cn('w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0', {
                   'bg-destructive': f.severity === 'high',
-                  'bg-amber-400': f.severity === 'medium',
+                  'bg-warning': f.severity === 'medium',
                   'bg-muted-foreground': f.severity === 'low',
                 })} />
                 {f.detail}
@@ -122,7 +122,7 @@ export default function NeedsAttentionWidget({ clients, checkIns }) {
               <p className="text-xs text-muted-foreground">
                 {highCount > 0 && <span className="text-destructive font-medium">{highCount} high risk</span>}
                 {highCount > 0 && midCount > 0 && <span className="text-muted-foreground"> · </span>}
-                {midCount > 0 && <span className="text-amber-400 font-medium">{midCount} medium</span>}
+                {midCount > 0 && <span className="text-warning font-medium">{midCount} medium</span>}
               </p>
             )}
           </div>

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   ArrowLeft, Play, Pause, RotateCcw, CheckCircle2, Circle,
-  ChevronDown, ChevronUp, Timer, Star, MessageSquare, Trophy, X
+  ChevronDown, ChevronUp, Timer, Trophy
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -35,12 +35,12 @@ function RestTimer({ seconds, onDone }) {
   const secs = remaining % 60;
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-[#0A0A0A] rounded-2xl border border-white/10">
+    <div className="flex items-center gap-3 p-3 bg-sidebar rounded-2xl border border-white/10">
       {/* Circular progress */}
       <div className="relative w-14 h-14 flex-shrink-0">
         <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
-          <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
-          <circle cx="28" cy="28" r="24" fill="none" stroke="#3B82F6" strokeWidth="4"
+          <circle cx="28" cy="28" r="24" fill="none" stroke="color-mix(in srgb, white 8%, transparent)" strokeWidth="4" />
+          <circle cx="28" cy="28" r="24" fill="none" stroke="var(--tc-primary)" strokeWidth="4"
             strokeDasharray={`${2 * Math.PI * 24}`}
             strokeDashoffset={`${2 * Math.PI * 24 * (1 - pct / 100)}`}
             strokeLinecap="round" className="transition-all duration-1000" />
@@ -58,7 +58,7 @@ function RestTimer({ seconds, onDone }) {
           className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" fill="currentColor" />}
         </button>
-        <button onClick={reset} className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white/60">
+        <button onClick={reset} className="w-9 h-9 rounded-xl bg-[var(--kc-w-10)] flex items-center justify-center text-white/60">
           <RotateCcw className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -74,11 +74,11 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
   const allDone = completedSets === ex.sets;
 
   return (
-    <div className={cn('rounded-2xl overflow-hidden border', allDone ? 'border-emerald-200 bg-emerald-50/50' : 'border-[#E7EAF3] bg-white')}>
+    <div className={cn('rounded-2xl overflow-hidden border', allDone ? 'border-success bg-success/50' : 'border-border bg-card')}>
       {/* Header */}
       <button className="w-full flex items-center gap-3 px-4 py-3.5 text-left" onClick={() => setExpanded(v => !v)}>
         <div className={cn('w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold',
-          allDone ? 'bg-emerald-500 text-white' : 'bg-[#EEF4FF] text-primary')}>
+          allDone ? 'bg-success text-white' : 'bg-accent/10 text-primary')}>
           {allDone ? <CheckCircle2 className="w-4 h-4" /> : exIdx + 1}
         </div>
         <div className="flex-1 min-w-0">
@@ -91,7 +91,7 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
         </div>
         <div className="flex items-center gap-2">
           <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-full',
-            allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-secondary text-muted-foreground')}>
+            allDone ? 'bg-success/10 text-success' : 'bg-secondary text-muted-foreground')}>
             {completedSets}/{ex.sets}
           </span>
           {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
@@ -99,7 +99,7 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
       </button>
 
       {expanded && (
-        <div className="border-t border-[#F5F7FB] px-4 pb-4 space-y-3">
+        <div className="border-t border-[var(--kc-f5f7fb)] px-4 pb-4 space-y-3">
           {/* Video embed */}
           {(ex.video_url || ex._library_exercise?.video_url) && (
             <div className="mt-3">
@@ -120,8 +120,8 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
 
           {/* Coaching notes */}
           {ex.notes && (
-            <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl">
-              <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1">Coach Notes</p>
+            <div className="p-3 bg-warning/10 border border-warning rounded-xl">
+              <p className="text-[10px] font-bold text-warning uppercase tracking-wider mb-1">Coach Notes</p>
               <p className="text-xs text-foreground leading-relaxed">{ex.notes}</p>
             </div>
           )}
@@ -139,8 +139,8 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
               const done = !!setLog.completed;
               return (
                 <div key={setIdx} className={cn('grid grid-cols-4 gap-2 items-center p-2 rounded-xl transition-colors',
-                  done ? 'bg-emerald-50' : 'bg-[#F8F9FD]')}>
-                  <span className={cn('text-sm font-bold', done ? 'text-emerald-600' : 'text-muted-foreground')}>
+                  done ? 'bg-success/10' : 'bg-muted')}>
+                  <span className={cn('text-sm font-bold', done ? 'text-success' : 'text-muted-foreground')}>
                     {setIdx + 1}
                   </span>
                   <Input
@@ -148,20 +148,20 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
                     placeholder="lbs"
                     value={setLog.weight || ''}
                     onChange={e => onLogSet(exIdx, setIdx, 'weight', Number(e.target.value))}
-                    className={cn('h-8 text-center text-xs border-[#E7EAF3] p-1', done && 'border-emerald-200 bg-emerald-50')}
+                    className={cn('h-8 text-center text-xs border-border p-1', done && 'border-success bg-success/10')}
                   />
                   <Input
                     type="number"
                     placeholder={ex.reps}
                     value={setLog.reps || ''}
                     onChange={e => onLogSet(exIdx, setIdx, 'reps', Number(e.target.value))}
-                    className={cn('h-8 text-center text-xs border-[#E7EAF3] p-1', done && 'border-emerald-200 bg-emerald-50')}
+                    className={cn('h-8 text-center text-xs border-border p-1', done && 'border-success bg-success/10')}
                   />
                   <button onClick={() => onLogSet(exIdx, setIdx, 'completed', !done)}
                     className="flex justify-center">
                     {done
-                      ? <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                      : <Circle className="w-6 h-6 text-[#D1D5DB]" />}
+                      ? <CheckCircle2 className="w-6 h-6 text-success" />
+                      : <Circle className="w-6 h-6 text-muted-foreground" />}
                   </button>
                 </div>
               );
@@ -201,10 +201,10 @@ function CompleteModal({ open, onClose, onSubmit }) {
   const [note, setNote] = useState('');
   return open ? (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-sm bg-white rounded-3xl p-6 space-y-5 shadow-2xl">
+      <div className="w-full max-w-sm bg-card rounded-3xl p-6 space-y-5 shadow-2xl">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-            <Trophy className="w-8 h-8 text-emerald-500" />
+          <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-3">
+            <Trophy className="w-8 h-8 text-success" />
           </div>
           <h2 className="font-bold text-xl text-foreground">Session Complete!</h2>
           <p className="text-sm text-muted-foreground mt-1">Great work. Log how it felt.</p>
@@ -218,9 +218,9 @@ function CompleteModal({ open, onClose, onSubmit }) {
               <button key={n} onClick={() => setRating(n)}
                 className={cn('w-9 h-9 rounded-xl text-sm font-bold border transition-all',
                   n === rating ? 'bg-primary text-white border-primary' :
-                  n <= 3 ? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50' :
-                  n <= 7 ? 'border-amber-200 text-amber-700 hover:bg-amber-50' :
-                  'border-red-200 text-red-700 hover:bg-red-50')}>
+                  n <= 3 ? 'border-success text-success hover:bg-success/10' :
+                  n <= 7 ? 'border-warning text-warning hover:bg-warning/10' :
+                  'border-destructive text-destructive hover:bg-destructive/10')}>
                 {n}
               </button>
             ))}
@@ -234,7 +234,7 @@ function CompleteModal({ open, onClose, onSubmit }) {
             onChange={e => setNote(e.target.value)}
             placeholder="Session note (optional) — how did it feel? any PRs?"
             rows={3}
-            className="w-full px-3 py-2.5 text-sm rounded-xl border border-[#E7EAF3] resize-none focus:outline-none focus:border-primary/40 text-foreground"
+            className="w-full px-3 py-2.5 text-sm rounded-xl border border-border resize-none focus:outline-none focus:border-primary/40 text-foreground"
           />
         </div>
 
@@ -326,9 +326,9 @@ export default function ClientWorkoutView() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F6F7FB]">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-[#E7EAF3] shadow-sm">
+      <div className="sticky top-0 z-10 bg-card border-b border-border shadow-sm">
         <div className="flex items-center gap-3 px-4 py-3">
           <button onClick={() => navigate(-1)} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-secondary">
             <ArrowLeft className="w-4 h-4 text-muted-foreground" />
@@ -339,13 +339,13 @@ export default function ClientWorkoutView() {
           </div>
           <button onClick={() => setShowComplete(true)}
             className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all',
-              progress === 1 ? 'bg-emerald-500 text-white' : 'bg-primary text-white')}>
+              progress === 1 ? 'bg-success text-white' : 'bg-primary text-white')}>
             <CheckCircle2 className="w-3.5 h-3.5" />
             {progress === 1 ? 'Finish!' : 'Complete'}
           </button>
         </div>
         {/* Progress bar */}
-        <div className="h-1 bg-[#F0F4FF]">
+        <div className="h-1 bg-accent/10">
           <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progress * 100}%` }} />
         </div>
         <div className="px-4 py-1.5 flex items-center justify-between">

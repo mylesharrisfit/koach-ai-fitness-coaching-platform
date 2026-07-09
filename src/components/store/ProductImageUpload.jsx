@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Upload, X, ImageIcon } from 'lucide-react';
+import { X, ImageIcon } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 
@@ -25,9 +25,9 @@ export default function ProductImageUpload({ value, onChange, className, label =
 
   return (
     <div className={className}>
-      {label && <p className="text-xs font-semibold text-[#374151] mb-1.5">{label}</p>}
+      {label && <p className="text-xs font-semibold text-foreground mb-1.5">{label}</p>}
       {value ? (
-        <div className="relative rounded-xl overflow-hidden border border-[#E5E7EB]" style={{ aspectRatio: '16/9' }}>
+        <div className="relative rounded-xl overflow-hidden border border-border" style={{ aspectRatio: '16/9' }}>
           <img src={value} alt="Product" className="w-full h-full object-cover" />
           <button
             type="button"
@@ -45,21 +45,21 @@ export default function ProductImageUpload({ value, onChange, className, label =
           onDrop={onDrop}
           className={cn(
             'flex flex-col items-center justify-center rounded-xl border-2 border-dashed cursor-pointer transition-all',
-            'bg-[#F9FAFB] hover:bg-[#F3F4F6]',
-            dragging ? 'border-blue-400 bg-blue-50' : 'border-[#E5E7EB]',
+            'bg-background hover:bg-muted',
+            dragging ? 'border-primary bg-accent' : 'border-border',
           )}
           style={{ aspectRatio: '16/9' }}
         >
           {uploading ? (
-            <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-primary/30 border-t-blue-500 rounded-full animate-spin" />
           ) : (
             <>
-              <div className="w-10 h-10 rounded-xl bg-[#E5E7EB] flex items-center justify-center mb-2">
-                <ImageIcon className="w-5 h-5 text-[#9CA3AF]" />
+              <div className="w-10 h-10 rounded-xl bg-border flex items-center justify-center mb-2">
+                <ImageIcon className="w-5 h-5 text-muted-foreground" />
               </div>
-              <p className="text-xs font-semibold text-[#374151]">Drop image or click to upload</p>
-              <p className="text-[11px] text-[#9CA3AF] mt-0.5">{tip}</p>
-              <p className="text-[10px] text-[#D1D5DB] mt-1">JPG, PNG, WEBP</p>
+              <p className="text-xs font-semibold text-foreground">Drop image or click to upload</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{tip}</p>
+              <p className="text-[10px] text-muted-foreground mt-1">JPG, PNG, WEBP</p>
             </>
           )}
         </div>

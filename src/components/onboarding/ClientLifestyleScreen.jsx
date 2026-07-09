@@ -5,7 +5,7 @@ import OnboardingLayout from './OnboardingLayout';
 function PickRow({ label, options, value, onChange }) {
   return (
     <div className="space-y-2.5">
-      <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>{label}</p>
+      <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>{label}</p>
       <div className="flex gap-2.5">
         {options.map(o => (
           <motion.button
@@ -14,10 +14,10 @@ function PickRow({ label, options, value, onChange }) {
             whileTap={{ scale: 0.95 }}
             className="flex-1 py-3.5 rounded-2xl text-sm font-medium transition-all"
             style={{
-              background: value === o.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
-              border: value === o.id ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.07)',
-              color: value === o.id ? '#fff' : '#7A7A7A',
-              boxShadow: value === o.id ? '0 0 20px rgba(59,130,246,0.12)' : 'none',
+              background: value === o.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+              border: value === o.id ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+              color: value === o.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+              boxShadow: value === o.id ? '0 0 20px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
             }}
           >{o.label}</motion.button>
         ))}

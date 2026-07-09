@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Sparkles, Loader2, RefreshCw, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { differenceInDays, parseISO } from 'date-fns';
+import { Sparkles, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /* Generates a fast post-check-in summary card for the coach review panel */
@@ -50,10 +49,10 @@ Generate JSON:
 }
 
 const SENTIMENT_CONFIG = {
-  great: { border: 'border-emerald-300', bg: 'bg-emerald-50', dot: 'bg-emerald-500', label: '🟢 Strong week' },
-  good: { border: 'border-blue-300', bg: 'bg-blue-50', dot: 'bg-blue-500', label: '🔵 Good week' },
-  okay: { border: 'border-amber-300', bg: 'bg-amber-50', dot: 'bg-amber-500', label: '🟡 Average week' },
-  concerning: { border: 'border-red-300', bg: 'bg-red-50', dot: 'bg-red-500', label: '🔴 Needs attention' },
+  great: { border: 'border-success', bg: 'bg-success/10', dot: 'bg-success', label: '🟢 Strong week' },
+  good: { border: 'border-primary', bg: 'bg-accent', dot: 'bg-primary', label: '🔵 Good week' },
+  okay: { border: 'border-warning', bg: 'bg-warning/10', dot: 'bg-warning', label: '🟡 Average week' },
+  concerning: { border: 'border-destructive', bg: 'bg-destructive/10', dot: 'bg-destructive', label: '🔴 Needs attention' },
 };
 
 export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [], autoGenerate = true }) {
@@ -94,19 +93,19 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
   const cfg = SENTIMENT_CONFIG[summary?.sentiment] || SENTIMENT_CONFIG.okay;
 
   return (
-    <div className={cn('rounded-2xl border p-4 space-y-3', summary ? `${cfg.border} ${cfg.bg}` : 'border-[#E7EAF3] bg-white')}>
+    <div className={cn('rounded-2xl border p-4 space-y-3', summary ? `${cfg.border} ${cfg.bg}` : 'border-border bg-card')}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
-          <p className="text-xs font-bold text-[#9CA3AF] uppercase tracking-wide">AI Check-in Summary</p>
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">AI Check-in Summary</p>
         </div>
         <div className="flex items-center gap-2">
           {summary && (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/70 border border-current/20">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[var(--kc-w-70)] border border-current/20">
               {cfg.label}
             </span>
           )}
-          <button onClick={generate} disabled={loading} className="p-1 rounded-lg hover:bg-black/5 transition-colors text-[#6B7280]">
+          <button onClick={generate} disabled={loading} className="p-1 rounded-lg hover:bg-black/5 transition-colors text-muted-foreground">
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
           </button>
         </div>
@@ -115,29 +114,29 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
       {loading && (
         <div className="flex items-center gap-2 py-2">
           <Loader2 className="w-4 h-4 animate-spin text-primary" />
-          <span className="text-xs text-[#6B7280]">Analyzing check-in data...</span>
+          <span className="text-xs text-muted-foreground">Analyzing check-in data...</span>
         </div>
       )}
 
       {summary && !loading && (
         <div className="space-y-3">
-          <p className="text-sm text-[#374151] leading-relaxed">{summary.summary}</p>
+          <p className="text-sm text-foreground leading-relaxed">{summary.summary}</p>
 
           {summary.week_vs_prev && (
-            <p className="text-xs text-[#6B7280] italic">{summary.week_vs_prev}</p>
+            <p className="text-xs text-muted-foreground italic">{summary.week_vs_prev}</p>
           )}
 
           {summary.coaching_focus && (
-            <div className="flex items-start gap-2 bg-white/80 rounded-xl p-2.5">
+            <div className="flex items-start gap-2 bg-[var(--kc-w-80)] rounded-xl p-2.5">
               <span className="text-primary text-xs font-bold flex-shrink-0">🎯 Focus:</span>
-              <p className="text-xs text-[#374151] font-semibold">{summary.coaching_focus}</p>
+              <p className="text-xs text-foreground font-semibold">{summary.coaching_focus}</p>
             </div>
           )}
 
           {summary.key_wins?.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {summary.key_wins.map((w, i) => (
-                <span key={i} className="text-[11px] font-medium px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">✓ {w}</span>
+                <span key={i} className="text-[11px] font-medium px-2 py-1 bg-success/10 text-success rounded-full">✓ {w}</span>
               ))}
             </div>
           )}
@@ -145,7 +144,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
           {summary.red_flags?.filter(Boolean).length > 0 && (
             <div className="space-y-1">
               {summary.red_flags.filter(Boolean).map((f, i) => (
-                <div key={i} className="flex items-start gap-1.5 text-xs text-red-600">
+                <div key={i} className="flex items-start gap-1.5 text-xs text-destructive">
                   <span className="flex-shrink-0">⚠️</span> {f}
                 </div>
               ))}

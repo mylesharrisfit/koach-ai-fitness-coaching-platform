@@ -42,7 +42,7 @@ export default function BSScheduling({ s, set }) {
 
   return (
     <BSSection icon={Calendar} title="Scheduling & Availability" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Working Hours</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Working Hours</p>
       <BSRow label="Day availability" hint="Set hours for each day">
         <div className="space-y-2">
           {DAYS.map(day => {
@@ -50,28 +50,28 @@ export default function BSScheduling({ s, set }) {
             return (
               <div key={day} className="flex items-center gap-3">
                 <BSToggle value={d.enabled} onChange={v => updateDay(day, 'enabled', v)} />
-                <span className="text-sm font-medium text-slate-600 w-24 flex-shrink-0">{day.slice(0, 3)}</span>
+                <span className="text-sm font-medium text-muted-foreground w-24 flex-shrink-0">{day.slice(0, 3)}</span>
                 {d.enabled && (
                   <>
                     <input type="time" value={d.start || '09:00'} onChange={e => updateDay(day, 'start', e.target.value)}
-                      className="px-2 py-1.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
-                    <span className="text-slate-400 text-sm">to</span>
+                      className="px-2 py-1.5 rounded-lg border border-border text-sm focus:outline-none focus:border-primary" />
+                    <span className="text-muted-foreground text-sm">to</span>
                     <input type="time" value={d.end || '18:00'} onChange={e => updateDay(day, 'end', e.target.value)}
-                      className="px-2 py-1.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
+                      className="px-2 py-1.5 rounded-lg border border-border text-sm focus:outline-none focus:border-primary" />
                   </>
                 )}
-                {!d.enabled && <span className="text-slate-400 text-sm italic">Off</span>}
+                {!d.enabled && <span className="text-muted-foreground text-sm italic">Off</span>}
               </div>
             );
           })}
-          <button onClick={copyMonToWeekdays} className="text-xs text-blue-600 font-semibold hover:underline mt-1">
+          <button onClick={copyMonToWeekdays} className="text-xs text-primary font-semibold hover:underline mt-1">
             Copy Monday to all weekdays
           </button>
         </div>
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Response Time</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Response Time</p>
       <BSRow label="Expected response time" hint="Shown to clients in their app">
         <BSSelect value={s.response_time} onChange={v => set('response_time', v)} options={RESPONSE_TIMES} />
       </BSRow>
@@ -86,7 +86,7 @@ export default function BSScheduling({ s, set }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Session Booking</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Session Booking</p>
       <BSRow label="Allow session requests">
         <BSToggle value={s.allow_session_requests} onChange={v => set('allow_session_requests', v)} />
       </BSRow>
@@ -96,15 +96,15 @@ export default function BSScheduling({ s, set }) {
             {sessionTypes.map(st => (
               <div key={st.id} className="flex items-center gap-2">
                 <input value={st.name} onChange={e => updateSession(st.id, 'name', e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
+                  className="flex-1 px-3 py-2 rounded-xl border border-border text-sm focus:outline-none focus:border-primary" />
                 <BSInput type="number" value={st.duration} onChange={v => updateSession(st.id, 'duration', v)} min={15} className="w-20" />
-                <span className="text-sm text-slate-500 flex-shrink-0">min</span>
-                <button onClick={() => removeSession(st.id)} className="text-slate-400 hover:text-red-400 transition-colors flex-shrink-0">
+                <span className="text-sm text-muted-foreground flex-shrink-0">min</span>
+                <button onClick={() => removeSession(st.id)} className="text-muted-foreground hover:text-destructive transition-colors flex-shrink-0">
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ))}
-            <button onClick={addSessionType} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors">
+            <button onClick={addSessionType} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-primary bg-accent border border-primary hover:bg-accent transition-colors">
               <Plus className="w-4 h-4" /> Add Session Type
             </button>
           </div>
@@ -112,7 +112,7 @@ export default function BSScheduling({ s, set }) {
         <BSRow label="Booking notice required">
           <div className="flex items-center gap-2">
             <BSInput type="number" value={s.booking_notice_hours} onChange={v => set('booking_notice_hours', v)} min={0} className="w-24" />
-            <span className="text-sm text-slate-500">hours in advance</span>
+            <span className="text-sm text-muted-foreground">hours in advance</span>
           </div>
         </BSRow>
         <BSRow label="Max sessions per client/month" hint="0 = unlimited">

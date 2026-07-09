@@ -60,14 +60,14 @@ export default function MealImageUpload({ imageUrl, onChange, className }) {
           <button
             onClick={() => inputRef.current?.click()}
             title="Replace image"
-            className="p-1.5 rounded-lg bg-white/90 text-[#0E1525] hover:bg-white transition-colors"
+            className="p-1.5 rounded-lg bg-[var(--kc-w-90)] text-foreground hover:bg-card transition-colors"
           >
             <Camera className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleRemove}
             title="Remove image"
-            className="p-1.5 rounded-lg bg-white/90 text-red-500 hover:bg-white transition-colors"
+            className="p-1.5 rounded-lg bg-[var(--kc-w-90)] text-destructive hover:bg-card transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -83,7 +83,7 @@ export default function MealImageUpload({ imageUrl, onChange, className }) {
       onClick={() => inputRef.current?.click()}
       disabled={uploading}
       className={cn(
-        'flex items-center justify-center gap-2 rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] text-[#9CA3AF] hover:border-[#2563EB] hover:text-[#2563EB] hover:bg-[#EFF6FF] transition-all text-xs font-medium',
+        'flex items-center justify-center gap-2 rounded-xl border border-dashed border-muted-foreground bg-background text-muted-foreground hover:border-primary hover:text-primary hover:bg-accent/10 transition-all text-xs font-medium',
         className
       )}
       style={{ height: 48 }}
@@ -131,9 +131,9 @@ async function compressImage(file, maxWidth, quality) {
 export function MealImagePlaceholder({ className }) {
   return (
     <div
-      className={cn('flex items-center justify-center bg-[#F3F4F6] rounded-xl', className)}
+      className={cn('flex items-center justify-center bg-muted rounded-xl', className)}
     >
-      <UtensilsCrossed className="w-6 h-6 text-[#D1D5DB]" />
+      <UtensilsCrossed className="w-6 h-6 text-muted-foreground" />
     </div>
   );
 }

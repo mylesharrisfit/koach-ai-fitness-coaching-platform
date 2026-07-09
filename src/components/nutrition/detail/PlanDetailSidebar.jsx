@@ -6,11 +6,11 @@ import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 
 const LIFECYCLE_COLORS = {
-  active:    'bg-emerald-100 text-emerald-700',
-  lead:      'bg-blue-100 text-blue-700',
-  at_risk:   'bg-red-100 text-red-700',
-  completed: 'bg-gray-100 text-gray-600',
-  alumni:    'bg-purple-100 text-purple-700',
+  active:    'bg-success/10 text-success',
+  lead:      'bg-accent text-primary',
+  at_risk:   'bg-destructive/10 text-destructive',
+  completed: 'bg-muted text-muted-foreground',
+  alumni:    'bg-ai/10 text-ai',
 };
 
 function getInitials(name) {
@@ -18,7 +18,7 @@ function getInitials(name) {
 }
 
 function getAvatarColor(name) {
-  const colors = ['bg-blue-200 text-blue-800', 'bg-purple-200 text-purple-800', 'bg-emerald-200 text-emerald-800', 'bg-amber-200 text-amber-800', 'bg-red-200 text-red-800'];
+  const colors = ['bg-primary text-primary', 'bg-ai text-ai', 'bg-success text-success', 'bg-warning text-warning', 'bg-destructive text-destructive'];
   const idx = (name || '').charCodeAt(0) % colors.length;
   return colors[idx];
 }
@@ -64,14 +64,14 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
         ) : (
           <div className="space-y-2">
             {assignedClients.map((c) => (
-              <div key={c.id} className="flex items-center gap-2.5 p-2.5 bg-white border border-[#E7EAF3] rounded-xl">
+              <div key={c.id} className="flex items-center gap-2.5 p-2.5 bg-card border border-border rounded-xl">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(c.name)}`}>
                   {getInitials(c.name)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold text-foreground truncate">{c.name}</p>
                   {c.lifecycle_status && (
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${LIFECYCLE_COLORS[c.lifecycle_status] || 'bg-gray-100 text-gray-600'}`}>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${LIFECYCLE_COLORS[c.lifecycle_status] || 'bg-muted text-muted-foreground'}`}>
                       {c.lifecycle_status}
                     </span>
                   )}
@@ -83,7 +83,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
 
         <Button
           size="sm"
-          className="w-full mt-3 gap-1.5 text-xs h-8 bg-gradient-to-r from-primary to-blue-500 text-white border-0"
+          className="w-full mt-3 gap-1.5 text-xs h-8 bg-gradient-to-r from-primary to-primary text-white border-0"
           onClick={onAssign}
         >
           <UserPlus className="w-3.5 h-3.5" /> Assign to New Client
@@ -103,7 +103,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
             plan.weekly_loss_rate ? { label: 'Weekly loss target', value: `${plan.weekly_loss_rate} lb/week`,               icon: Scale } : null,
             plan.meal_complexity   ? { label: 'Meal complexity',   value: COMPLEXITY_LABELS[plan.meal_complexity] || plan.meal_complexity, icon: UtensilsCrossed } : null,
           ].filter(Boolean).map(({ label, value, icon: Icon }) => (
-            <div key={label} className="flex items-center justify-between py-2 border-b border-[#F3F4F6] last:border-0">
+            <div key={label} className="flex items-center justify-between py-2 border-b border-muted last:border-0">
               <span className="text-xs text-muted-foreground">{label}</span>
               <span className="text-xs font-bold text-foreground">{value}</span>
             </div>
@@ -127,7 +127,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
           </h4>
           <div className="flex flex-wrap gap-1.5">
             {supplements.map((s, i) => (
-              <span key={i} className="px-2.5 py-1 rounded-full bg-purple-50 border border-purple-100 text-xs font-semibold text-purple-700">
+              <span key={i} className="px-2.5 py-1 rounded-full bg-ai/10 border border-ai text-xs font-semibold text-ai">
                 {s.name || s}
               </span>
             ))}

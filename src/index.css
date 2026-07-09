@@ -49,6 +49,39 @@
 
     --success: 34 197 94;
     --warning: 245 158 11;
+    /* AI / premium accent (violet) — used by assistant, AI generators, etc. */
+    --ai: 124 58 237;
+    --ai-foreground: 255 255 255;
+  }
+
+  /* Dark mode — only content surfaces flip; the sidebar tokens intentionally
+     inherit from :root so the matte-black identity stays in both modes.
+     White-label brand overrides (--primary family) are applied at runtime on
+     top of whichever mode is active. */
+  .dark {
+    --background: 12 13 16;
+    --foreground: 237 238 240;
+    --card: 24 25 28;
+    --card-foreground: 237 238 240;
+    --popover: 24 25 28;
+    --popover-foreground: 237 238 240;
+    --primary: 59 130 246;
+    --primary-foreground: 255 255 255;
+    --secondary: 33 35 40;
+    --secondary-foreground: 237 238 240;
+    --muted: 33 35 40;
+    --muted-foreground: 148 153 163;
+    --accent: 30 41 59;
+    --accent-foreground: 191 219 254;
+    --destructive: 248 113 113;
+    --destructive-foreground: 255 255 255;
+    --border: 39 41 47;
+    --input: 39 41 47;
+    --ring: 59 130 246;
+    --success: 52 211 153;
+    --warning: 251 191 36;
+    --ai: 167 139 250;
+    --ai-foreground: 255 255 255;
   }
 }
 
@@ -62,7 +95,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #F9FAFB;
+    background-color: rgb(var(--background));
   }
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
@@ -124,3 +157,176 @@ input[type='range']::-moz-range-thumb {
     padding: 10px;
   }
 }
+
+/* @companion-tokens-start */
+@layer base {
+  /* @companion-tokens: color values for inline styles (kept out of JSX). */
+  :root {
+    --tc-accent: rgb(var(--accent));
+    --tc-ai: rgb(var(--ai));
+    --tc-background: rgb(var(--background));
+    --tc-border: rgb(var(--border));
+    --tc-card: rgb(var(--card));
+    --tc-destructive: rgb(var(--destructive));
+    --tc-foreground: rgb(var(--foreground));
+    --tc-muted: rgb(var(--muted));
+    --tc-muted-foreground: rgb(var(--muted-foreground));
+    --tc-primary: rgb(var(--primary));
+    --tc-sidebar: rgb(var(--sidebar-background));
+    --tc-sidebar-accent-foreground: rgb(var(--sidebar-accent-foreground));
+    --tc-sidebar-background: rgb(var(--sidebar-background));
+    --tc-sidebar-border: rgb(var(--sidebar-border));
+    --tc-sidebar-primary: rgb(var(--sidebar-primary));
+    --tc-success: rgb(var(--success));
+    --tc-warning: rgb(var(--warning));
+    --kc-000000: #000000;
+    --kc-003087: #003087;
+    --kc-0057d0: #0057d0;
+    --kc-005ee0: #005ee0;
+    --kc-006bff: #006bff;
+    --kc-0078ff: #0078ff;
+    --kc-007dc5: #007dc5;
+    --kc-0093d0: #0093d0;
+    --kc-00b0b9: #00b0b9;
+    --kc-00d4ff: #00d4ff;
+    --kc-00ff88: #00ff88;
+    --kc-03111a: #03111a;
+    --kc-06b6d4: #06b6d4;
+    --kc-0891b2: #0891b2;
+    --kc-0a0a0a: #0a0a0a;
+    --kc-0d0d0d: #0d0d0d;
+    --kc-0d9488: #0d9488;
+    --kc-0f0f1a: #0f0f1a;
+    --kc-0f1117: #0f1117;
+    --kc-120c35: #120c35;
+    --kc-141414: #141414;
+    --kc-1428a0: #1428a0;
+    --kc-14b8a6: #14b8a6;
+    --kc-161616: #161616;
+    --kc-161820: #161820;
+    --kc-18191f: #18191f;
+    --kc-185fa5: #185fa5;
+    --kc-1a0f00: #1a0f00;
+    --kc-1a1000: #1a1000;
+    --kc-1a1040: #1a1040;
+    --kc-1a1608: #1a1608;
+    --kc-1a2744: #1a2744;
+    --kc-1a2a4a: #1a2a4a;
+    --kc-1a6b4a: #1a6b4a;
+    --kc-1a7aee: #1a7aee;
+    --kc-1a82e2: #1a82e2;
+    --kc-1e1a3a: #1e1a3a;
+    --kc-1e2d45: #1e2d45;
+    --kc-1f2937: #1f2937;
+    --kc-222222: #222222;
+    --kc-25d366: #25d366;
+    --kc-262627: #262627;
+    --kc-2681f2: #2681f2;
+    --kc-2c2414: #2c2414;
+    --kc-2ca01c: #2ca01c;
+    --kc-2d3a55: #2d3a55;
+    --kc-2d8cff: #2d8cff;
+    --kc-2e2e2e: #2e2e2e;
+    --kc-333333: #333333;
+    --kc-34a853: #34a853;
+    --kc-3730a3: #3730a3;
+    --kc-3a3a3a: #3a3a3a;
+    --kc-3a6b1a: #3a6b1a;
+    --kc-3c3489: #3c3489;
+    --kc-3dbd8a: #3dbd8a;
+    --kc-4285f4: #4285f4;
+    --kc-444444: #444444;
+    --kc-4a154b: #4a154b;
+    --kc-4a4a4a: #4a4a4a;
+    --kc-4b5563: #4b5563;
+    --kc-4f46e5: #4f46e5;
+    --kc-4f8ef7: #4f8ef7;
+    --kc-555555: #555555;
+    --kc-5850ea: #5850ea;
+    --kc-5a5a5a: #5a5a5a;
+    --kc-62d7ff: #62d7ff;
+    --kc-635bff: #635bff;
+    --kc-666666: #666666;
+    --kc-6772e5: #6772e5;
+    --kc-6a6a6a: #6a6a6a;
+    --kc-6b6b6b: #6b6b6b;
+    --kc-783cff: #783cff;
+    --kc-7a7a7a: #7a7a7a;
+    --kc-84cc16: #84cc16;
+    --kc-854f0b: #854f0b;
+    --kc-888888: #888888;
+    --kc-993c1d: #993c1d;
+    --kc-999999: #999999;
+    --kc-9a3412: #9a3412;
+    --kc-9a9a9a: #9a9a9a;
+    --kc-9d174d: #9d174d;
+    --kc-a7f3d0: #a7f3d0;
+    --kc-a875e8: #a875e8;
+    --kc-b3b3b3: #b3b3b3;
+    --kc-b8860b: #b8860b;
+    --kc-bae6fd: #bae6fd;
+    --kc-c0c0c0: #c0c0c0;
+    --kc-c2410c: #c2410c;
+    --kc-c3c3c3: #c3c3c3;
+    --kc-c4c4c4: #c4c4c4;
+    --kc-c4c9d4: #c4c9d4;
+    --kc-ca8a04: #ca8a04;
+    --kc-cccccc: #cccccc;
+    --kc-cd7f32: #cd7f32;
+    --kc-d10d0d: #d10d0d;
+    --kc-d4a017: #d4a017;
+    --kc-d6e2ff: #d6e2ff;
+    --kc-d8d0ff: #d8d0ff;
+    --kc-db2777: #db2777;
+    --kc-e04000: #e04000;
+    --kc-e1306c: #e1306c;
+    --kc-e6f1fb: #e6f1fb;
+    --kc-e6fbf3: #e6fbf3;
+    --kc-e85c2c: #e85c2c;
+    --kc-ea4335: #ea4335;
+    --kc-ea580c: #ea580c;
+    --kc-eab308: #eab308;
+    --kc-eaecf5: #eaecf5;
+    --kc-ec4899: #ec4899;
+    --kc-ece5ff: #ece5ff;
+    --kc-eceef5: #eceef5;
+    --kc-eeedfe: #eeedfe;
+    --kc-f0f8ff: #f0f8ff;
+    --kc-f0f9ff: #f0f9ff;
+    --kc-f0fbe6: #f0fbe6;
+    --kc-f0fdfa: #f0fdfa;
+    --kc-f1f4fa: #f1f4fa;
+    --kc-f45b5b: #f45b5b;
+    --kc-f472b6: #f472b6;
+    --kc-f5a623: #f5a623;
+    --kc-f5f7fb: #f5f7fb;
+    --kc-f97316: #f97316;
+    --kc-fac775: #fac775;
+    --kc-faece7: #faece7;
+    --kc-fb923c: #fb923c;
+    --kc-fbbc05: #fbbc05;
+    --kc-fc4c02: #fc4c02;
+    --kc-fce7f3: #fce7f3;
+    --kc-fdf2f8: #fdf2f8;
+    --kc-fef08a: #fef08a;
+    --kc-ff0000: #ff0000;
+    --kc-ff3b30: #ff3b30;
+    --kc-ff4a00: #ff4a00;
+    --kc-ffd700: #ffd700;
+    --kc-fff5f5: #fff5f5;
+    --kc-fffdf0: #fffdf0;
+    --kc-w-5: rgba(255,255,255,0.05);
+    --kc-w-10: rgba(255,255,255,0.10);
+    --kc-w-15: rgba(255,255,255,0.15);
+    --kc-w-20: rgba(255,255,255,0.20);
+    --kc-w-30: rgba(255,255,255,0.30);
+    --kc-w-40: rgba(255,255,255,0.40);
+    --kc-w-50: rgba(255,255,255,0.50);
+    --kc-w-60: rgba(255,255,255,0.60);
+    --kc-w-70: rgba(255,255,255,0.70);
+    --kc-w-80: rgba(255,255,255,0.80);
+    --kc-w-90: rgba(255,255,255,0.90);
+    --kc-w-95: rgba(255,255,255,0.95);
+  }
+}
+/* @companion-tokens-end */

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, startOfWeek, addDays, subDays, isSameDay } from 'date-fns';
+import { startOfWeek, addDays, subDays, isSameDay } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Settings } from 'lucide-react';
 import WorkoutProgramHeader from '@/components/portal/workout/WorkoutProgramHeader';
@@ -130,10 +130,10 @@ export default function PortalWorkouts({ user, onActiveWorkoutChange }) {
 
   if (!myProgram) {
     return (
-      <div className="pb-24 pt-16 px-5 text-center" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+      <div className="pb-24 pt-16 px-5 text-center" style={{ background: 'rgb(var(--muted))', minHeight: '100vh' }}>
         <p className="text-5xl mb-4">🏋️</p>
-        <p className="text-slate-800 font-bold text-lg">No program assigned yet</p>
-        <p className="text-slate-400 text-sm mt-2">Your coach is building something great for you 💪</p>
+        <p className="text-foreground font-bold text-lg">No program assigned yet</p>
+        <p className="text-muted-foreground text-sm mt-2">Your coach is building something great for you 💪</p>
       </div>
     );
   }
@@ -164,12 +164,12 @@ export default function PortalWorkouts({ user, onActiveWorkoutChange }) {
         )}
       </AnimatePresence>
 
-      <div className="pb-28 space-y-5" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+      <div className="pb-28 space-y-5" style={{ background: 'rgb(var(--muted))', minHeight: '100vh' }}>
         {/* Page header */}
-        <div className="bg-white px-5 flex items-center justify-between" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 14px)', paddingBottom: 14, boxShadow: '0 1px 0 #F1F5F9' }}>
-          <h1 className="text-slate-900 font-black text-[28px] leading-tight">Train</h1>
-          <button className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#F8FAFC' }}>
-            <Settings className="w-5 h-5 text-slate-400" />
+        <div className="bg-card px-5 flex items-center justify-between" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 14px)', paddingBottom: 14, boxShadow: '0 1px 0 rgb(var(--muted))' }}>
+          <h1 className="text-foreground font-black text-[28px] leading-tight">Train</h1>
+          <button className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgb(var(--muted))' }}>
+            <Settings className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
@@ -191,10 +191,10 @@ export default function PortalWorkouts({ user, onActiveWorkoutChange }) {
             <button key={tab} onClick={() => setActiveTab(tab)}
               className={cn('flex-1 py-3 rounded-2xl text-sm font-bold transition-all capitalize')}
               style={{
-                background: activeTab === tab ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#FFFFFF',
-                color: activeTab === tab ? '#FFFFFF' : '#94A3B8',
-                border: activeTab === tab ? 'none' : '1.5px solid #F1F5F9',
-                boxShadow: activeTab === tab ? '0 4px 12px rgba(37,99,235,0.25)' : '0 1px 4px rgba(0,0,0,0.04)',
+                background: activeTab === tab ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--card))',
+                color: activeTab === tab ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+                border: activeTab === tab ? 'none' : '1.5px solid rgb(var(--muted))',
+                boxShadow: activeTab === tab ? '0 4px 12px rgb(var(--primary) / 0.25)' : '0 1px 4px rgba(0,0,0,0.04)',
               }}>
               {tab === 'schedule' ? '📅 Schedule' : '📋 History'}
             </button>

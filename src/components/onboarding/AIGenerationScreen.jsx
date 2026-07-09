@@ -34,23 +34,23 @@ function GenerationCard({ item }) {
       className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500"
       style={{
         background: status === 'done'
-          ? 'rgba(34,197,94,0.06)'
+          ? 'color-mix(in srgb, var(--tc-success) 6%, transparent)'
           : status === 'loading'
-          ? 'rgba(59,130,246,0.07)'
-          : 'rgba(255,255,255,0.03)',
+          ? 'color-mix(in srgb, var(--tc-primary) 7%, transparent)'
+          : 'color-mix(in srgb, white 3%, transparent)',
         border: status === 'done'
-          ? '1.5px solid rgba(34,197,94,0.25)'
+          ? '1.5px solid color-mix(in srgb, var(--tc-success) 25%, transparent)'
           : status === 'loading'
-          ? '1.5px solid rgba(59,130,246,0.25)'
-          : '1.5px solid rgba(255,255,255,0.06)',
+          ? '1.5px solid color-mix(in srgb, var(--tc-primary) 25%, transparent)'
+          : '1.5px solid color-mix(in srgb, white 6%, transparent)',
       }}
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#3A3A3A' : '#fff' }}>
+        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-3a3a3a)' : 'var(--tc-card)' }}>
           {item.label}
         </p>
-        <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'rgba(34,197,94,0.8)' : '#5A5A5A' }}>
+        <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 80%, transparent)' : 'var(--kc-5a5a5a)' }}>
           {status === 'done' ? 'Complete' : status === 'loading' ? 'Processing...' : 'Queued'}
         </p>
       </div>
@@ -58,7 +58,7 @@ function GenerationCard({ item }) {
         {status === 'loading' && (
           <motion.div
             className="w-4 h-4 rounded-full border-2"
-            style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+            style={{ borderColor: 'var(--tc-primary)', borderTopColor: 'transparent' }}
             animate={{ rotate: 360 }}
             transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
           />
@@ -69,7 +69,7 @@ function GenerationCard({ item }) {
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 300 }}
             className="w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ background: '#22C55E' }}
+            style={{ background: 'var(--tc-success)' }}
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -103,12 +103,12 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
   }, [allDone]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: 'var(--tc-sidebar)' }}>
       {/* Pulsing glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <motion.div
           className="w-[700px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.09) 0%, transparent 65%)', filter: 'blur(60px)' }}
+          style={{ background: 'radial-gradient(circle, color-mix(in srgb, var(--tc-primary) 9%, transparent) 0%, transparent 65%)', filter: 'blur(60px)' }}
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 4, repeat: Infinity }}
         />
@@ -120,22 +120,22 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-3"
         >
-          <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'var(--tc-primary)' }}>
             KOACH AI Engine
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
             Building your system…
           </h2>
-          <p className="text-sm" style={{ color: '#7A7A7A' }}>
+          <p className="text-sm" style={{ color: 'var(--kc-7a7a7a)' }}>
             Personalizing everything based on your profile
           </p>
         </motion.div>
 
         {/* Progress bar */}
-        <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+        <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'color-mix(in srgb, white 6%, transparent)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             initial={{ width: '0%' }}
             animate={{ width: allDone ? '100%' : `${(doneCount / items.length) * 92}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -156,7 +156,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               className="text-center py-2"
             >
-              <p className="text-sm font-semibold" style={{ color: '#22C55E' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--tc-success)' }}>
                 ✓ Your system is ready
               </p>
             </motion.div>

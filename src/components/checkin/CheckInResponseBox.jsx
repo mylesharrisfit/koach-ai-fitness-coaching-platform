@@ -3,7 +3,6 @@ import { Sparkles, Loader2, BookOpen, Check, ChevronDown, Send, RefreshCw, Penci
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { base44 } from '@/api/base44Client';
-import { cn } from '@/lib/utils';
 
 const TEMPLATES = [
   { label: 'Great Check-in', text: "Awesome check-in this week! Your consistency is really showing. Keep up the great work and let's build on this momentum! 💪" },

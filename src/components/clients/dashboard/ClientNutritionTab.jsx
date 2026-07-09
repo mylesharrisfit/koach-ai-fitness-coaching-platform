@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, Download, AlertCircle, Zap } from 'lucide-react';
-import { format, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
+import { ExternalLink, Download, AlertCircle } from 'lucide-react';
+import { startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 function weekNutritionCompliance(checkIns, weekStart, weekEnd) {
@@ -17,18 +17,18 @@ function Ring({ pct = 0, label, size = 72, active = false }) {
   const r = (size - 10) / 2;
   const circ = 2 * Math.PI * r;
   const dash = Math.max(0, Math.min(pct / 100, 1)) * circ;
-  const activeColor = '#2563EB';
-  const inactiveColor = '#9CA3AF';
+  const activeColor = 'var(--tc-primary)';
+  const inactiveColor = 'var(--tc-muted-foreground)';
 
   return (
     <div className={cn('flex flex-col items-center gap-1.5', active && 'scale-105')}>
       <div className="relative rounded-full">
         <svg width={size} height={size} className="-rotate-90">
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E5E7EB" strokeWidth={active ? 7 : 5} />
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--tc-border)" strokeWidth={active ? 7 : 5} />
           <circle
             cx={size / 2} cy={size / 2} r={r}
             fill="none"
-            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : '#E5E7EB'}
+            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : 'var(--tc-border)'}
             strokeWidth={active ? 7 : 5}
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
@@ -36,12 +36,12 @@ function Ring({ pct = 0, label, size = 72, active = false }) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={cn('font-bold tabular-nums leading-none', active ? 'text-sm' : 'text-xs')}
-            style={{ color: active ? activeColor : '#6B7280' }}>
+            style={{ color: active ? activeColor : 'var(--tc-muted-foreground)' }}>
             {pct}%
           </span>
         </div>
       </div>
-      <p className="text-[10px] font-semibold leading-tight" style={{ color: active ? '#0E1525' : '#9CA3AF' }}>
+      <p className="text-[10px] font-semibold leading-tight" style={{ color: active ? 'var(--tc-foreground)' : 'var(--tc-muted-foreground)' }}>
         {label}
       </p>
     </div>
@@ -62,7 +62,7 @@ function PDFViewer({ pdfUrl, fileName }) {
           Download
         </a>
       </div>
-      <div className="rounded-xl border border-border overflow-hidden bg-white" style={{ height: '600px' }}>
+      <div className="rounded-xl border border-border overflow-hidden bg-card" style={{ height: '600px' }}>
         <iframe
           src={pdfUrl}
           title="Nutrition Plan PDF"
@@ -79,12 +79,12 @@ function MealSection({ title, meals = [] }) {
 
   return (
     <div className="border-t border-border pt-4">
-      <h4 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#94A3B8' }}>
+      <h4 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
         {title}
       </h4>
       <div className="space-y-2">
         {meals.map((meal, i) => (
-          <div key={i} className="bg-white border border-border rounded-lg p-3 text-sm">
+          <div key={i} className="bg-card border border-border rounded-lg p-3 text-sm">
             <p className="font-semibold text-foreground mb-1">{meal.name || `Meal ${i + 1}`}</p>
             {meal.foods && meal.foods.length > 0 && (
               <ul className="text-xs text-muted-foreground space-y-0.5 ml-2">
@@ -127,15 +127,15 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
     return (
       <div className="h-full flex items-center justify-center p-6">
         <div className="text-center max-w-sm">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center mx-auto mb-3">
-            <AlertCircle className="w-6 h-6 text-amber-600" />
+          <div className="w-12 h-12 rounded-xl bg-warning/10 border border-warning flex items-center justify-center mx-auto mb-3">
+            <AlertCircle className="w-6 h-6 text-warning" />
           </div>
           <p className="font-semibold text-foreground mb-1">No Nutrition Plan Assigned</p>
           <p className="text-xs text-muted-foreground mb-4">This client doesn't have a meal plan yet.</p>
           <button
             onClick={() => navigate('/nutrition')}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all"
-            style={{ background: '#2563EB' }}
+            style={{ background: 'var(--tc-primary)' }}
           >
             <ExternalLink className="w-3.5 h-3.5" />
             Create Plan
@@ -146,7 +146,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6 space-y-5 bg-[#f8f9fa]">
+    <div className="h-full overflow-y-auto p-6 space-y-5 bg-muted">
       {/* Header with title and plan type */}
       <div>
         <div className="flex items-start justify-between gap-4 mb-3">
@@ -155,13 +155,13 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
                 style={{
-                  background: nutritionPlan.plan_type === 'pdf' ? '#f3e8ff' : '#e0f2fe',
-                  color: nutritionPlan.plan_type === 'pdf' ? '#7c3aed' : '#0369a1',
+                  background: nutritionPlan.plan_type === 'pdf' ? 'var(--tc-ai)' : 'var(--tc-accent)',
+                  color: nutritionPlan.plan_type === 'pdf' ? 'var(--tc-ai)' : 'var(--tc-primary)',
                 }}>
                 {nutritionPlan.plan_type === 'pdf' ? '📄 PDF Plan' : '🍽️ Structured Plan'}
               </span>
               {nutritionPlan.tracking_mode && (
-                <span className="text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-white border border-border">
+                <span className="text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-card border border-border">
                   {nutritionPlan.tracking_mode === 'macros' ? '📊 Macro Tracking' : '✓ Habit Mode'}
                 </span>
               )}
@@ -185,18 +185,18 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Daily Macro Targets */}
       {nutritionPlan.plan_type === 'structured' && (
-        <div className="bg-white rounded-xl border border-border shadow-sm p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#94A3B8' }}>
+        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
             Daily Targets
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: 'Calories', value: nutritionPlan.calories, unit: 'kcal', icon: '🔥', color: '#EA580C' },
-              { label: 'Protein', value: nutritionPlan.protein_g, unit: 'g', icon: '💪', color: '#2563EB' },
-              { label: 'Carbs', value: nutritionPlan.carbs_g, unit: 'g', icon: '🌾', color: '#D97706' },
-              { label: 'Fats', value: nutritionPlan.fats_g, unit: 'g', icon: '🥑', color: '#DC2626' },
+              { label: 'Calories', value: nutritionPlan.calories, unit: 'kcal', icon: '🔥', color: 'var(--kc-ea580c)' },
+              { label: 'Protein', value: nutritionPlan.protein_g, unit: 'g', icon: '💪', color: 'var(--tc-primary)' },
+              { label: 'Carbs', value: nutritionPlan.carbs_g, unit: 'g', icon: '🌾', color: 'var(--tc-warning)' },
+              { label: 'Fats', value: nutritionPlan.fats_g, unit: 'g', icon: '🥑', color: 'var(--tc-destructive)' },
             ].map(({ label, value, unit, icon, color }) => (
-              <div key={label} className="rounded-lg p-3 bg-gradient-to-br from-white to-slate-50 border border-border">
+              <div key={label} className="rounded-lg p-3 bg-gradient-to-br from-card to-muted border border-border">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-lg">{icon}</span>
                   <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color }}>
@@ -212,16 +212,16 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       )}
 
       {/* Compliance Trends */}
-      <div className="bg-white rounded-xl border border-border shadow-sm p-4">
+      <div className="bg-card rounded-xl border border-border shadow-sm p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>
+          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>
             Adherence
           </h3>
           {recentCompliance !== null && (
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
               style={{
-                background: recentCompliance >= 75 ? '#d1fae5' : recentCompliance >= 50 ? '#fef3c7' : '#fee2e2',
-                color: recentCompliance >= 75 ? '#059669' : recentCompliance >= 50 ? '#d97706' : '#dc2626',
+                background: recentCompliance >= 75 ? 'var(--tc-success)' : recentCompliance >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)',
+                color: recentCompliance >= 75 ? 'var(--tc-success)' : recentCompliance >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)',
               }}>
               {recentCompliance}% Avg
             </span>
@@ -245,8 +245,8 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Meal Plan Overview (Structured Plans) */}
       {nutritionPlan.plan_type === 'structured' && (
-        <div className="bg-white rounded-xl border border-border shadow-sm p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#94A3B8' }}>
+        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
             Meal Plan
           </h3>
           {nutritionPlan.meals && nutritionPlan.meals.length > 0 ? (
@@ -267,8 +267,8 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Hydration */}
           {nutritionPlan.hydration && (
-            <div className="bg-white rounded-xl border border-border shadow-sm p-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#0369a1' }}>
+            <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-primary)' }}>
                 💧 Hydration Protocol
               </h3>
               <div className="text-xs text-foreground space-y-1.5">
@@ -296,8 +296,8 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
           {/* Supplements */}
           {nutritionPlan.supplements && nutritionPlan.supplements.length > 0 && (
-            <div className="bg-white rounded-xl border border-border shadow-sm p-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#9333ea' }}>
+            <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-ai)' }}>
                 💊 Supplements
               </h3>
               <ul className="space-y-2">
@@ -316,8 +316,8 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Shopping List */}
       {nutritionPlan.shopping_list && nutritionPlan.shopping_list.length > 0 && (
-        <div className="bg-white rounded-xl border border-border shadow-sm p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#94A3B8' }}>
+        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
             🛒 Shopping List
           </h3>
           <ul className="grid grid-cols-2 gap-2">
@@ -333,14 +333,14 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Coach Notes */}
       {nutritionPlan.coach_notes && (
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#0369a1' }}>
+        <div className="bg-accent border border-accent rounded-xl p-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--tc-primary)' }}>
             📝 Coach Notes
           </h3>
           {typeof nutritionPlan.coach_notes === 'string' ? (
-            <p className="text-xs text-blue-900">{nutritionPlan.coach_notes}</p>
+            <p className="text-xs text-primary">{nutritionPlan.coach_notes}</p>
           ) : (
-            <div className="text-xs text-blue-900 space-y-1.5">
+            <div className="text-xs text-primary space-y-1.5">
               {Object.entries(nutritionPlan.coach_notes).map(([key, value]) => (
                 <p key={key}><span className="font-semibold capitalize">{key.replace(/_/g, ' ')}:</span> {value}</p>
               ))}
@@ -351,18 +351,18 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* PDF Viewer (for PDF plans) */}
       {nutritionPlan.plan_type === 'pdf' && nutritionPlan.pdf_file_url && (
-        <div className="bg-white rounded-xl border border-border shadow-sm p-4">
+        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
           <PDFViewer pdfUrl={nutritionPlan.pdf_file_url} fileName={`${nutritionPlan.title}.pdf`} />
         </div>
       )}
 
       {/* Summary for PDF plans */}
       {nutritionPlan.plan_type === 'pdf' && nutritionPlan.client_notes && (
-        <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#b45309' }}>
+        <div className="bg-warning/10 border border-warning rounded-xl p-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--tc-warning)' }}>
             📋 Plan Summary
           </h3>
-          <p className="text-xs text-amber-900 leading-relaxed">{nutritionPlan.client_notes}</p>
+          <p className="text-xs text-warning leading-relaxed">{nutritionPlan.client_notes}</p>
         </div>
       )}
     </div>

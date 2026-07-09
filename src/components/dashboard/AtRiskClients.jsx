@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AlertTriangle, ArrowRight, ChevronDown, ChevronUp, MessageSquare, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { getAtRiskClients, SEVERITY_CONFIG } from '@/lib/riskEngine';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';

@@ -3,48 +3,46 @@ import { useNavigate } from 'react-router-dom';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  MessageSquare, Dumbbell, ClipboardList, TrendingUp,
-  AlertTriangle, CheckCircle2, Zap, ChevronDown, ChevronUp,
-  Send, UserCheck, RefreshCw, CreditCard, Eye, ArrowUpRight,
+  MessageSquare, Dumbbell, ClipboardList, TrendingUp, CheckCircle2, Zap, ChevronDown, ChevronUp,
+  Send, UserCheck, Eye, ArrowUpRight,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { compositeAdherenceScore } from '@/lib/adherence';
 
 // ── Priority group configs ──────────────────────────────────────────────────
 const GROUP_CONFIG = {
   critical: {
     label: 'Critical',
-    border: '#ef4444',
-    badgeBg: '#fef2f2',
-    badgeText: '#dc2626',
-    badgeBorder: '#fecaca',
-    headerBg: '#fff5f5',
-    dot: '#ef4444',
+    border: 'var(--tc-destructive)',
+    badgeBg: 'var(--tc-destructive)',
+    badgeText: 'var(--tc-destructive)',
+    badgeBorder: 'var(--tc-destructive)',
+    headerBg: 'var(--kc-fff5f5)',
+    dot: 'var(--tc-destructive)',
   },
   high: {
     label: 'High Priority',
-    border: '#f59e0b',
-    badgeBg: '#fffbeb',
-    badgeText: '#d97706',
-    badgeBorder: '#fde68a',
-    headerBg: '#fffdf0',
-    dot: '#f59e0b',
+    border: 'var(--tc-warning)',
+    badgeBg: 'var(--tc-warning)',
+    badgeText: 'var(--tc-warning)',
+    badgeBorder: 'var(--tc-warning)',
+    headerBg: 'var(--kc-fffdf0)',
+    dot: 'var(--tc-warning)',
   },
   informational: {
     label: 'Informational',
-    border: '#3b82f6',
-    badgeBg: '#eff6ff',
-    badgeText: '#2563eb',
-    badgeBorder: '#bfdbfe',
-    headerBg: '#f0f6ff',
-    dot: '#3b82f6',
+    border: 'var(--tc-primary)',
+    badgeBg: 'var(--tc-accent)',
+    badgeText: 'var(--tc-primary)',
+    badgeBorder: 'var(--tc-accent)',
+    headerBg: 'var(--tc-accent)',
+    dot: 'var(--tc-primary)',
   },
 };
 
 // ── Avatar helpers ──────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
-  ['#3b82f6', '#dbeafe'], ['#8b5cf6', '#ede9fe'], ['#10b981', '#d1fae5'],
-  ['#f59e0b', '#fef3c7'], ['#ef4444', '#fee2e2'],
+  ['var(--tc-primary)', 'var(--tc-accent)'], ['var(--tc-ai)', 'var(--tc-ai)'], ['var(--tc-success)', 'var(--tc-success)'],
+  ['var(--tc-warning)', 'var(--tc-warning)'], ['var(--tc-destructive)', 'var(--tc-destructive)'],
 ];
 function getAvatarColor(name = '') {
   const idx = (name.charCodeAt(0) || 0) % AVATAR_COLORS.length;
@@ -58,8 +56,8 @@ function Pill({ icon: Icon, label, onClick, variant = 'ghost' }) {
       onClick={e => { e.stopPropagation(); onClick(); }}
       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all shrink-0"
       style={variant === 'primary'
-        ? { background: '#3B82F6', color: '#fff' }
-        : { background: '#F3F4F6', color: '#374151', border: '1px solid #E5E7EB' }
+        ? { background: 'var(--tc-primary)', color: 'var(--tc-card)' }
+        : { background: 'var(--tc-muted)', color: 'var(--tc-foreground)', border: '1px solid var(--tc-border)' }
       }
     >
       <Icon className="w-3 h-3 shrink-0" />
@@ -81,7 +79,7 @@ function ActionCard({ id, name, subtitle, flaggedDaysAgo, badge, priority, actio
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, x: 40, height: 0 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="flex items-start gap-3 px-4 py-3.5 border-b border-gray-50 last:border-b-0 hover:bg-gray-50/60 transition-colors group"
+      className="flex items-start gap-3 px-4 py-3.5 border-b border-border last:border-b-0 hover:bg-muted/60 transition-colors group"
       style={{ borderLeft: `3px solid ${cfg.border}` }}
     >
       {/* Avatar */}
@@ -91,14 +89,14 @@ function ActionCard({ id, name, subtitle, flaggedDaysAgo, badge, priority, actio
       >
         {initials}
         {priority === 'critical' && (
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-destructive rounded-full border border-white animate-pulse" />
         )}
       </div>
 
       {/* Body */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-gray-900 truncate max-w-[140px]">{name}</span>
+          <span className="text-sm font-semibold text-foreground truncate max-w-[140px]">{name}</span>
           {badge && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0"
               style={{ background: cfg.badgeBg, color: cfg.badgeText, borderColor: cfg.badgeBorder }}>
@@ -106,9 +104,9 @@ function ActionCard({ id, name, subtitle, flaggedDaysAgo, badge, priority, actio
             </span>
           )}
         </div>
-        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{subtitle}</p>
+        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{subtitle}</p>
         {flaggedDaysAgo != null && (
-          <p className="text-[10px] text-gray-400 mt-0.5">
+          <p className="text-[10px] text-muted-foreground mt-0.5">
             {flaggedDaysAgo === 0 ? 'Flagged today' : `Flagged ${flaggedDaysAgo}d ago`}
           </p>
         )}
@@ -117,7 +115,7 @@ function ActionCard({ id, name, subtitle, flaggedDaysAgo, badge, priority, actio
           <button
             onClick={e => { e.stopPropagation(); onResolve(id); }}
             className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all ml-auto shrink-0 opacity-0 group-hover:opacity-100"
-            style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}
+            style={{ background: 'var(--tc-success)', color: 'var(--tc-success)', border: '1px solid var(--tc-success)' }}
           >
             <CheckCircle2 className="w-2.5 h-2.5" /> Resolve
           </button>
@@ -135,7 +133,7 @@ function PriorityGroup({ priority, items, onResolve }) {
 
   return (
     <div className="rounded-xl overflow-hidden"
-      style={{ border: `1px solid ${cfg.badgeBorder}`, boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+      style={{ border: `1px solid ${cfg.badgeBorder}`, boxShadow: '0 1px 4px color-mix(in srgb, black 4%, transparent)' }}>
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-3 px-4 py-3 transition-colors"
@@ -145,14 +143,14 @@ function PriorityGroup({ priority, items, onResolve }) {
         }}
       >
         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: cfg.dot }} />
-        <span className="text-sm font-bold text-gray-900 flex-1 text-left">{cfg.label}</span>
+        <span className="text-sm font-bold text-foreground flex-1 text-left">{cfg.label}</span>
         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0"
           style={{ background: cfg.badgeBg, color: cfg.badgeText, borderColor: cfg.badgeBorder }}>
           {items.length}
         </span>
         {open
-          ? <ChevronUp className="w-3.5 h-3.5 text-gray-400" />
-          : <ChevronDown className="w-3.5 h-3.5 text-gray-400" />}
+          ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground" />
+          : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />}
       </button>
 
       <AnimatePresence initial={false}>
@@ -162,7 +160,7 @@ function PriorityGroup({ priority, items, onResolve }) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="bg-white overflow-hidden"
+            className="bg-card overflow-hidden"
           >
             <AnimatePresence>
               {items.map(item => (
@@ -417,7 +415,7 @@ export default function RunMyDayCenter({ clients, checkIns, messages, payments =
         <div className="flex items-center gap-2">
           {resolvedToday > 0 && (
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-              style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>
+              style={{ background: 'var(--tc-success)', color: 'var(--tc-success)', border: '1px solid var(--tc-success)' }}>
               ✓ {resolvedToday} resolved today
             </span>
           )}
@@ -430,16 +428,16 @@ export default function RunMyDayCenter({ clients, checkIns, messages, payments =
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl bg-white text-center"
-          style={{ border: '1px solid #bbf7d0', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}
+          className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl bg-card text-center"
+          style={{ border: '1px solid var(--tc-success)', boxShadow: '0 1px 6px color-mix(in srgb, black 4%, transparent)' }}
         >
           <div className="w-14 h-14 rounded-full flex items-center justify-center"
-            style={{ background: '#dcfce7', border: '2px solid #bbf7d0' }}>
-            <CheckCircle2 className="w-7 h-7 text-green-500" />
+            style={{ background: 'var(--tc-success)', border: '2px solid var(--tc-success)' }}>
+            <CheckCircle2 className="w-7 h-7 text-success" />
           </div>
           <div>
-            <p className="text-base font-bold text-gray-900">All clients are on track</p>
-            <p className="text-sm text-gray-400 mt-0.5">Great work, Coach! 🎉</p>
+            <p className="text-base font-bold text-foreground">All clients are on track</p>
+            <p className="text-sm text-muted-foreground mt-0.5">Great work, Coach! 🎉</p>
           </div>
         </motion.div>
       ) : (

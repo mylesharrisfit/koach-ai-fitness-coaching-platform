@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImagePlus, ArrowLeftRight, X } from 'lucide-react';
+import { ArrowLeftRight, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 
@@ -21,9 +21,9 @@ export default function ProgressPhotos({ checkIns }) {
   };
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB]">
-        <h3 className="text-sm font-semibold text-[#111827]">Progress Photos</h3>
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+        <h3 className="text-sm font-semibold text-foreground">Progress Photos</h3>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={() => { setCompareMode(!compareMode); setCompareA(null); setCompareB(null); }}
             className="gap-1.5 h-7 text-xs">
@@ -33,8 +33,8 @@ export default function ProgressPhotos({ checkIns }) {
       </div>
 
       {compareMode && (compareA || compareB) && (
-        <div className="p-4 bg-[#F8FAFF] border-b border-[#DBEAFE]">
-          <p className="text-xs text-[#2563EB] mb-3 font-medium">
+        <div className="p-4 bg-muted border-b border-accent">
+          <p className="text-xs text-primary mb-3 font-medium">
             {!compareA ? 'Select first photo' : !compareB ? 'Select second photo to compare' : 'Comparing:'}
           </p>
           {compareA && compareB && (
@@ -42,7 +42,7 @@ export default function ProgressPhotos({ checkIns }) {
               {[compareA, compareB].map((p, i) => (
                 <div key={i} className="relative">
                   <img src={p.url} alt="compare" className="w-full aspect-[3/4] object-cover rounded-lg" />
-                  <p className="text-center text-xs text-[#6B7280] mt-1">{format(new Date(p.date), 'MMM d, yyyy')}</p>
+                  <p className="text-center text-xs text-muted-foreground mt-1">{format(new Date(p.date), 'MMM d, yyyy')}</p>
                   <button onClick={() => i === 0 ? setCompareA(null) : setCompareB(null)}
                     className="absolute top-2 right-2 bg-black/50 rounded-full p-0.5">
                     <X className="w-3 h-3 text-white" />
@@ -61,7 +61,7 @@ export default function ProgressPhotos({ checkIns }) {
             <div
               key={i}
               onClick={() => compareMode ? selectForCompare(photo) : null}
-              className={`relative rounded-lg overflow-hidden cursor-pointer group ${compareMode ? 'ring-2 ' + (selected ? 'ring-[#2563EB]' : 'ring-transparent hover:ring-[#93C5FD]') : ''}`}
+              className={`relative rounded-lg overflow-hidden cursor-pointer group ${compareMode ? 'ring-2 ' + (selected ? 'ring-primary' : 'ring-transparent hover:ring-primary') : ''}`}
             >
               <img src={photo.url} alt="progress" className="w-full aspect-square object-cover" />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5">

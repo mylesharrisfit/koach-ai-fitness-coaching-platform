@@ -36,6 +36,9 @@ export default [
     },
     rules: {
       "no-unused-vars": "off",
+      // Catch references to undefined variables/components — the explicit rules
+      // block below replaces the recommended preset, so no-undef must be re-added.
+      "no-undef": "error",
       "react/jsx-uses-vars": "error",
       "react/jsx-uses-react": "error",
       "unused-imports/no-unused-imports": "error",
@@ -55,6 +58,8 @@ export default [
         { ignore: ["cmdk-input-wrapper", "toast-close"] },
       ],
       "react-hooks/rules-of-hooks": "error",
+      // Surfaces stale-data bugs from missing effect/memo dependencies.
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
 ];

@@ -2,9 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { TrendingUp, Minus, TrendingDown, Sliders } from 'lucide-react';
 
 const SCENARIOS = [
-  { key: 'conservative', label: 'Conservative', icon: TrendingDown, color: '#EF4444', churnMult: 1.5, convMult: 0.5 },
-  { key: 'base', label: 'Base Case', icon: Minus, color: '#F59E0B', churnMult: 1.0, convMult: 1.0 },
-  { key: 'optimistic', label: 'Optimistic', icon: TrendingUp, color: '#22C55E', churnMult: 0.5, convMult: 1.5 },
+  { key: 'conservative', label: 'Conservative', icon: TrendingDown, color: 'var(--tc-destructive)', churnMult: 1.5, convMult: 0.5 },
+  { key: 'base', label: 'Base Case', icon: Minus, color: 'var(--tc-warning)', churnMult: 1.0, convMult: 1.0 },
+  { key: 'optimistic', label: 'Optimistic', icon: TrendingUp, color: 'var(--tc-success)', churnMult: 0.5, convMult: 1.5 },
 ];
 
 export default function BIForecast({ clients, leads }) {
@@ -54,18 +54,18 @@ export default function BIForecast({ clients, leads }) {
   const ScenarioIcon = scenario.icon;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-bold text-gray-900">Revenue Forecast</h3>
-          <p className="text-xs text-gray-400 mt-0.5">30 / 60 / 90 day projections</p>
+          <h3 className="text-sm font-bold text-foreground">Revenue Forecast</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">30 / 60 / 90 day projections</p>
         </div>
         <div className="flex gap-1">
           {SCENARIOS.map(s => {
             const Icon = s.icon;
             return (
               <button key={s.key} onClick={() => setActiveScenario(s.key)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${activeScenario === s.key ? 'text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${activeScenario === s.key ? 'text-white shadow-sm' : 'bg-muted text-muted-foreground hover:bg-border'}`}
                 style={activeScenario === s.key ? { background: s.color } : {}}>
                 <Icon className="w-3 h-3" /> {s.label}
               </button>
@@ -77,19 +77,19 @@ export default function BIForecast({ clients, leads }) {
       <div className="grid grid-cols-3 gap-3 mb-5">
         {forecast.map(f => (
           <div key={f.label} className="text-center p-3 rounded-xl border" style={{ borderColor: `${scenario.color}30`, background: `${scenario.color}08` }}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase mb-1">{f.label}</p>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-1">{f.label}</p>
             <p className="text-lg font-bold" style={{ color: scenario.color }}>${f.mrr.toLocaleString()}</p>
-            <p className="text-[10px]" style={{ color: f.change >= 0 ? '#22C55E' : '#EF4444' }}>
+            <p className="text-[10px]" style={{ color: f.change >= 0 ? 'var(--tc-success)' : 'var(--tc-destructive)' }}>
               {f.change >= 0 ? '+' : ''}{f.change.toLocaleString()}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="border-t border-gray-100 pt-4">
+      <div className="border-t border-border pt-4">
         <div className="flex items-center gap-1.5 mb-3">
           <Sliders className="w-3.5 h-3.5 text-primary" />
-          <p className="text-xs font-bold text-gray-700">What-if Scenarios</p>
+          <p className="text-xs font-bold text-foreground">What-if Scenarios</p>
         </div>
         <div className="space-y-2">
           {[
@@ -98,12 +98,12 @@ export default function BIForecast({ clients, leads }) {
             { label: 'Price increase', value: whatIfPriceIncrease, setter: setWhatIfPriceIncrease, max: 50, unit: '%', hint: `+$${Math.round(mrr * (whatIfPriceIncrease / 100)).toLocaleString()}/mo` },
           ].map(item => (
             <div key={item.label} className="flex items-center gap-3">
-              <p className="text-xs text-gray-600 w-32 flex-shrink-0">{item.label}</p>
+              <p className="text-xs text-muted-foreground w-32 flex-shrink-0">{item.label}</p>
               <input type="range" min={0} max={item.max} value={item.value}
                 onChange={e => item.setter(Number(e.target.value))}
                 className="flex-1 accent-primary h-1" />
-              <span className="text-xs font-bold text-gray-700 w-8 text-right">{item.value}{item.unit === '%' ? '%' : ''}</span>
-              <span className="text-[10px] font-semibold w-20 text-right" style={{ color: item.negative ? '#EF4444' : '#22C55E' }}>{item.hint}</span>
+              <span className="text-xs font-bold text-foreground w-8 text-right">{item.value}{item.unit === '%' ? '%' : ''}</span>
+              <span className="text-[10px] font-semibold w-20 text-right" style={{ color: item.negative ? 'var(--tc-destructive)' : 'var(--tc-success)' }}>{item.hint}</span>
             </div>
           ))}
         </div>

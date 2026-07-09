@@ -51,7 +51,7 @@ export default function TopRecommendationBadge({ checkIn, client, allClientCIs =
     return (
       <div className={cn(
         'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-semibold flex-wrap',
-        stage === 'done' ? 'opacity-60 bg-emerald-500/8 border-emerald-500/20 text-emerald-400' : styles.badge
+        stage === 'done' ? 'opacity-60 bg-success/8 border-success/20 text-success' : styles.badge
       )}>
         <span className="flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
         <span className="truncate max-w-[150px]">
@@ -156,7 +156,7 @@ export default function TopRecommendationBadge({ checkIn, client, allClientCIs =
         )}
 
         {stage === 'done' && (
-          <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-emerald-400">
+          <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-bold text-success">
             <Check className="w-3.5 h-3.5" /> {successMsg}
           </div>
         )}

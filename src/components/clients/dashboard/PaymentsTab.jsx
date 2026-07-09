@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createStripeCustomer, sendStripeInvoice, getClientInvoices } from '@/lib/stripe';
 import { sendZapierEvent } from '@/lib/zapier';
@@ -19,11 +19,11 @@ const QUICK_CHARGES = [
 ];
 
 const STATUS_STYLES = {
-  paid:   'bg-emerald-50 text-emerald-700 border-emerald-100',
-  open:   'bg-blue-50 text-blue-700 border-blue-100',
-  void:   'bg-gray-50 text-gray-500 border-gray-200',
-  uncollectible: 'bg-red-50 text-red-600 border-red-100',
-  draft:  'bg-yellow-50 text-yellow-700 border-yellow-100',
+  paid:   'bg-success/10 text-success border-success',
+  open:   'bg-accent text-primary border-accent',
+  void:   'bg-muted text-muted-foreground border-border',
+  uncollectible: 'bg-destructive/10 text-destructive border-destructive',
+  draft:  'bg-warning/10 text-warning border-warning',
 };
 
 export default function PaymentsTab({ client }) {
@@ -89,10 +89,10 @@ export default function PaymentsTab({ client }) {
   };
 
   const billingStatusStyle = {
-    active:    'bg-emerald-50 text-emerald-700 border-emerald-100',
-    past_due:  'bg-red-50 text-red-600 border-red-100',
-    cancelled: 'bg-gray-50 text-gray-500 border-gray-200',
-    none:      'bg-gray-50 text-gray-400 border-gray-200',
+    active:    'bg-success/10 text-success border-success',
+    past_due:  'bg-destructive/10 text-destructive border-destructive',
+    cancelled: 'bg-muted text-muted-foreground border-border',
+    none:      'bg-muted text-muted-foreground border-border',
   };
 
   return (
@@ -100,15 +100,15 @@ export default function PaymentsTab({ client }) {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Total Paid', value: `$${totalPaid.toFixed(2)}`, icon: CheckCircle2, color: 'text-emerald-600' },
-          { label: 'Outstanding', value: `$${outstanding.toFixed(2)}`, icon: AlertTriangle, color: 'text-amber-600' },
-          { label: 'Billing', value: client?.billing_status || 'none', icon: DollarSign, color: 'text-blue-600' },
+          { label: 'Total Paid', value: `$${totalPaid.toFixed(2)}`, icon: CheckCircle2, color: 'text-success' },
+          { label: 'Outstanding', value: `$${outstanding.toFixed(2)}`, icon: AlertTriangle, color: 'text-warning' },
+          { label: 'Billing', value: client?.billing_status || 'none', icon: DollarSign, color: 'text-primary' },
         ].map(s => (
-          <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-3 flex items-center gap-2">
+          <div key={s.label} className="bg-card border border-border rounded-xl p-3 flex items-center gap-2">
             <s.icon className={cn('w-4 h-4 flex-shrink-0', s.color)} />
             <div className="min-w-0">
-              <p className="text-xs font-bold text-[#111827] truncate">{s.value}</p>
-              <p className="text-[10px] text-[#9CA3AF]">{s.label}</p>
+              <p className="text-xs font-bold text-foreground truncate">{s.value}</p>
+              <p className="text-[10px] text-muted-foreground">{s.label}</p>
             </div>
           </div>
         ))}
@@ -116,7 +116,7 @@ export default function PaymentsTab({ client }) {
 
       {/* Quick Charge */}
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">Quick Charge</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Quick Charge</p>
         <div className="grid grid-cols-2 gap-2">
           {QUICK_CHARGES.map(item => (
             <button
@@ -125,13 +125,13 @@ export default function PaymentsTab({ client }) {
               className={cn(
                 'p-3 border rounded-xl text-left transition-all',
                 selectedCharge?.label === item.label
-                  ? 'border-[#111827] bg-[#111827] text-white'
-                  : 'border-[#E5E7EB] hover:border-[#111827] bg-white'
+                  ? 'border-foreground bg-sidebar text-white'
+                  : 'border-border hover:border-foreground bg-card'
               )}
             >
               <p className="text-sm font-semibold">{item.label}</p>
               {item.amount && (
-                <p className={cn('text-xs mt-0.5', selectedCharge?.label === item.label ? 'text-white/60' : 'text-[#6B7280]')}>
+                <p className={cn('text-xs mt-0.5', selectedCharge?.label === item.label ? 'text-white/60' : 'text-muted-foreground')}>
                   ${item.amount}
                 </p>
               )}
@@ -168,7 +168,7 @@ export default function PaymentsTab({ client }) {
 
         {selectedCharge && (
           <Button
-            className="w-full mt-3 bg-[#111827] hover:bg-[#1F2A44]"
+            className="w-full mt-3 bg-sidebar hover:bg-sidebar"
             onClick={() => handleCharge(selectedCharge)}
             disabled={sending}
           >
@@ -185,40 +185,40 @@ export default function PaymentsTab({ client }) {
 
       {/* Invoice History */}
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-[#9CA3AF] mb-2">Invoice History</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Invoice History</p>
         {!client?.stripe_customer_id ? (
-          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 text-center">
-            <p className="text-xs text-[#9CA3AF]">No Stripe customer yet. Send an invoice to create one.</p>
+          <div className="bg-background border border-border rounded-xl p-4 text-center">
+            <p className="text-xs text-muted-foreground">No Stripe customer yet. Send an invoice to create one.</p>
           </div>
         ) : invoicesLoading ? (
           <div className="space-y-2">
-            {[1, 2, 3].map(i => <div key={i} className="h-12 bg-gray-100 rounded-xl animate-pulse" />)}
+            {[1, 2, 3].map(i => <div key={i} className="h-12 bg-muted rounded-xl animate-pulse" />)}
           </div>
         ) : invoices.length === 0 ? (
-          <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4 text-center">
-            <p className="text-xs text-[#9CA3AF]">No invoices yet</p>
+          <div className="bg-background border border-border rounded-xl p-4 text-center">
+            <p className="text-xs text-muted-foreground">No invoices yet</p>
           </div>
         ) : (
           <div className="space-y-2">
             {invoices.map(inv => (
-              <div key={inv.id} className="flex items-center gap-3 bg-white border border-[#E5E7EB] rounded-xl p-3">
+              <div key={inv.id} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#111827] truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {inv.description || inv.lines?.data?.[0]?.description || 'Invoice'}
                   </p>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="text-xs text-muted-foreground">
                     {inv.created ? format(new Date(inv.created * 1000), 'MMM d, yyyy') : ''}
                   </p>
                 </div>
                 <span className={cn('text-[11px] font-semibold px-2 py-0.5 rounded-full border', STATUS_STYLES[inv.status] || STATUS_STYLES.draft)}>
                   {inv.status}
                 </span>
-                <p className="text-sm font-bold text-[#111827] flex-shrink-0">
+                <p className="text-sm font-bold text-foreground flex-shrink-0">
                   ${((inv.amount_due || 0) / 100).toFixed(2)}
                 </p>
                 {inv.hosted_invoice_url && (
                   <a href={inv.hosted_invoice_url} target="_blank" rel="noreferrer"
-                    className="text-[#9CA3AF] hover:text-primary transition-colors">
+                    className="text-muted-foreground hover:text-primary transition-colors">
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 )}
@@ -233,7 +233,7 @@ export default function PaymentsTab({ client }) {
             href={`https://dashboard.stripe.com/customers/${client.stripe_customer_id}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 mt-2 text-xs text-[#6B7280] hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground hover:text-primary transition-colors"
           >
             <ExternalLink className="w-3 h-3" /> View in Stripe Dashboard
           </a>

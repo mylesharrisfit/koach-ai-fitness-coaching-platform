@@ -25,11 +25,11 @@ const TIMEZONES = [
 
 function ProgressBar({ step }) {
   return (
-    <div style={{ height: 3, background: 'rgba(255,255,255,0.07)', width: '100%' }}>
+    <div style={{ height: 3, background: 'color-mix(in srgb, white 7%, transparent)', width: '100%' }}>
       <div style={{
         height: '100%',
         width: `${(step / 5) * 100}%`,
-        background: 'linear-gradient(90deg, #2563EB, #7C3AED)',
+        background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-ai))',
         transition: 'width 0.3s ease',
       }} />
     </div>
@@ -42,7 +42,7 @@ function TopBar({ step, onSkip }) {
       <ProgressBar step={step} />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 8px' }}>
         <KoachLogo size={28} rounded="rounded-lg" glow={false} bg />
-        <button onClick={onSkip} style={{ color: '#4B5563', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button onClick={onSkip} style={{ color: 'var(--kc-4b5563)', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
           Skip setup
         </button>
       </div>
@@ -52,20 +52,20 @@ function TopBar({ step, onSkip }) {
 
 function BackBtn({ onClick }) {
   return (
-    <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#4B5563', fontSize: 13, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 20px 0' }}>
+    <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--kc-4b5563)', fontSize: 13, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 20px 0' }}>
       ← Back
     </button>
   );
 }
 
 function Label({ children }) {
-  return <div style={{ color: '#4B5563', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{children}</div>;
+  return <div style={{ color: 'var(--kc-4b5563)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{children}</div>;
 }
 
 function Input({ label, value, onChange, type = 'text', placeholder, required, hint }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      {label && <Label>{label}{required && <span style={{ color: '#3B82F6', marginLeft: 4 }}>*</span>}</Label>}
+      {label && <Label>{label}{required && <span style={{ color: 'var(--tc-primary)', marginLeft: 4 }}>*</span>}</Label>}
       <input
         type={type}
         value={value || ''}
@@ -73,13 +73,13 @@ function Input({ label, value, onChange, type = 'text', placeholder, required, h
         placeholder={placeholder}
         style={{
           width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
-          background: '#111', color: '#fff', border: '1.5px solid rgba(255,255,255,0.08)',
+          background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
           outline: 'none', boxSizing: 'border-box',
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
-        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+        onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
+        onBlur={e => e.target.style.borderColor = 'color-mix(in srgb, white 8%, transparent)'}
       />
-      {hint && <div style={{ color: '#374151', fontSize: 10, marginTop: 4 }}>{hint}</div>}
+      {hint && <div style={{ color: 'var(--tc-foreground)', fontSize: 10, marginTop: 4 }}>{hint}</div>}
     </div>
   );
 }
@@ -95,11 +95,11 @@ function Textarea({ label, value, onChange, placeholder, rows = 3 }) {
         rows={rows}
         style={{
           width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
-          background: '#111', color: '#fff', border: '1.5px solid rgba(255,255,255,0.08)',
+          background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
           outline: 'none', resize: 'none', boxSizing: 'border-box',
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
-        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+        onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
+        onBlur={e => e.target.style.borderColor = 'color-mix(in srgb, white 8%, transparent)'}
       />
     </div>
   );
@@ -108,19 +108,19 @@ function Textarea({ label, value, onChange, placeholder, rows = 3 }) {
 function Select({ label, value, onChange, options, required }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      {label && <Label>{label}{required && <span style={{ color: '#3B82F6', marginLeft: 4 }}>*</span>}</Label>}
+      {label && <Label>{label}{required && <span style={{ color: 'var(--tc-primary)', marginLeft: 4 }}>*</span>}</Label>}
       <select
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         style={{
           width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
-          background: '#111', color: value ? '#fff' : '#4B5563', border: '1.5px solid rgba(255,255,255,0.08)',
+          background: 'var(--tc-foreground)', color: value ? 'var(--tc-card)' : 'var(--kc-4b5563)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
           outline: 'none', appearance: 'none', boxSizing: 'border-box',
         }}
       >
-        <option value="" disabled style={{ color: '#4B5563' }}>Select…</option>
+        <option value="" disabled style={{ color: 'var(--kc-4b5563)' }}>Select…</option>
         {options.map(o => (
-          <option key={o.value || o} value={o.value || o} style={{ background: '#111', color: '#fff' }}>
+          <option key={o.value || o} value={o.value || o} style={{ background: 'var(--tc-foreground)', color: 'var(--tc-card)' }}>
             {o.label || o}
           </option>
         ))}
@@ -132,11 +132,11 @@ function Select({ label, value, onChange, options, required }) {
 function PasswordInput({ value, onChange }) {
   const [show, setShow] = useState(false);
   const strength = !value ? 0 : value.length < 6 ? 1 : value.length < 10 ? 2 : /[A-Z]/.test(value) && /[0-9]/.test(value) ? 4 : 3;
-  const colors = ['', '#EF4444', '#F59E0B', '#10B981', '#10B981'];
+  const colors = ['', 'var(--tc-destructive)', 'var(--tc-warning)', 'var(--tc-success)', 'var(--tc-success)'];
   const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
   return (
     <div style={{ marginBottom: 14 }}>
-      <Label>Password<span style={{ color: '#3B82F6', marginLeft: 4 }}>*</span></Label>
+      <Label>Password<span style={{ color: 'var(--tc-primary)', marginLeft: 4 }}>*</span></Label>
       <div style={{ position: 'relative' }}>
         <input
           type={show ? 'text' : 'password'}
@@ -145,14 +145,14 @@ function PasswordInput({ value, onChange }) {
           placeholder="Create a secure password"
           style={{
             width: '100%', padding: '12px 56px 12px 16px', borderRadius: 12, fontSize: 14,
-            background: '#111', color: '#fff', border: '1.5px solid rgba(255,255,255,0.08)',
+            background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
             outline: 'none', boxSizing: 'border-box',
           }}
-          onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
-          onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+          onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
+          onBlur={e => e.target.style.borderColor = 'color-mix(in srgb, white 8%, transparent)'}
         />
         <button type="button" onClick={() => setShow(s => !s)}
-          style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#4B5563', fontSize: 11, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+          style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--kc-4b5563)', fontSize: 11, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
           {show ? 'Hide' : 'Show'}
         </button>
       </div>
@@ -160,7 +160,7 @@ function PasswordInput({ value, onChange }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
           <div style={{ display: 'flex', gap: 4, flex: 1 }}>
             {[1,2,3,4].map(i => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 9999, background: i <= strength ? colors[strength] : 'rgba(255,255,255,0.08)', transition: 'background 0.2s' }} />
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: 9999, background: i <= strength ? colors[strength] : 'color-mix(in srgb, white 8%, transparent)', transition: 'background 0.2s' }} />
             ))}
           </div>
           <span style={{ fontSize: 10, fontWeight: 600, color: colors[strength] }}>{labels[strength]}</span>
@@ -174,9 +174,9 @@ function Chip({ label, selected, onClick }) {
   return (
     <button type="button" onClick={onClick} style={{
       padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 500, cursor: 'pointer',
-      background: selected ? 'rgba(37,99,235,0.12)' : 'rgba(255,255,255,0.04)',
-      border: `1.5px solid ${selected ? 'rgba(37,99,235,0.55)' : 'rgba(255,255,255,0.07)'}`,
-      color: selected ? '#fff' : '#6B7280',
+      background: selected ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+      border: `1.5px solid ${selected ? 'color-mix(in srgb, var(--tc-primary) 55%, transparent)' : 'color-mix(in srgb, white 7%, transparent)'}`,
+      color: selected ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
       transition: 'all 0.15s',
     }}>
       {label}
@@ -186,12 +186,12 @@ function Chip({ label, selected, onClick }) {
 
 function CTAButton({ label, onClick, disabled }) {
   return (
-    <div style={{ padding: '12px 20px 32px', flexShrink: 0, background: 'linear-gradient(to top, #0f0f1a 60%, transparent)' }}>
+    <div style={{ padding: '12px 20px 32px', flexShrink: 0, background: 'linear-gradient(to top, var(--kc-0f0f1a) 60%, transparent)' }}>
       <button onClick={onClick} disabled={disabled} style={{
         width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
-        background: disabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
-        boxShadow: disabled ? 'none' : '0 0 28px rgba(37,99,235,0.3)',
-        color: disabled ? '#444' : '#fff',
+        background: disabled ? 'color-mix(in srgb, white 6%, transparent)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
+        boxShadow: disabled ? 'none' : '0 0 28px color-mix(in srgb, var(--tc-primary) 30%, transparent)',
+        color: disabled ? 'var(--kc-444444)' : 'var(--tc-card)',
         border: 'none', cursor: disabled ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s',
       }}>
@@ -204,9 +204,9 @@ function CTAButton({ label, onClick, disabled }) {
 // ── STEP 0: WELCOME ──
 function Welcome({ onNext, onSkip }) {
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 24px 48px', textAlign: 'center', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 24px 48px', textAlign: 'center', position: 'relative' }}>
       <div style={{ position: 'absolute', top: 20, right: 20 }}>
-        <button onClick={onSkip} style={{ color: '#4B5563', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button onClick={onSkip} style={{ color: 'var(--kc-4b5563)', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
           Skip setup
         </button>
       </div>
@@ -215,11 +215,11 @@ function Welcome({ onNext, onSkip }) {
         <KoachLogo size={80} rounded="rounded-3xl" glow bg />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ color: '#2563EB', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>KOACH AI</div>
-          <h1 style={{ color: '#fff', fontSize: 32, fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', margin: 0 }}>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>KOACH AI</div>
+          <h1 style={{ color: 'var(--tc-card)', fontSize: 32, fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', margin: 0 }}>
             Build your coaching<br />business with AI.
           </h1>
-          <p style={{ color: '#6B7280', fontSize: 15, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 15, lineHeight: 1.6, margin: 0 }}>
             The all-in-one coaching OS to manage clients, deliver programs, and grow your business — powered by AI.
           </p>
         </div>
@@ -227,13 +227,13 @@ function Welcome({ onNext, onSkip }) {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <button onClick={onNext} style={{
             width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
-            background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
-            boxShadow: '0 0 28px rgba(37,99,235,0.35)',
-            color: '#fff', border: 'none', cursor: 'pointer',
+            background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
+            boxShadow: '0 0 28px color-mix(in srgb, var(--tc-primary) 35%, transparent)',
+            color: 'var(--tc-card)', border: 'none', cursor: 'pointer',
           }}>
             Get Started →
           </button>
-          <p style={{ color: '#374151', fontSize: 12, margin: 0 }}>Takes about 3 minutes · 5 steps</p>
+          <p style={{ color: 'var(--tc-foreground)', fontSize: 12, margin: 0 }}>Takes about 3 minutes · 5 steps</p>
         </div>
       </div>
     </div>
@@ -244,14 +244,14 @@ function Welcome({ onNext, onSkip }) {
 function Step1({ data, set, onNext, onBack, onSkip }) {
   const valid = data.first_name?.trim() && data.last_name?.trim() && data.email?.includes('@') && (data.password || '').length >= 6;
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column' }}>
       <TopBar step={1} onSkip={onSkip} />
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: '#2563EB', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 1 of 5</div>
-          <h2 style={{ color: '#fff', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Create your account</h2>
-          <p style={{ color: '#6B7280', fontSize: 12, margin: '0 0 20px' }}>Get started — it only takes a minute</p>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 1 of 5</div>
+          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Create your account</h2>
+          <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Get started — it only takes a minute</p>
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1 }}><Input label="First Name" value={data.first_name} onChange={v => set('first_name', v)} placeholder="Alex" required /></div>
             <div style={{ flex: 1 }}><Input label="Last Name" value={data.last_name} onChange={v => set('last_name', v)} placeholder="Johnson" required /></div>
@@ -273,18 +273,18 @@ function Step2({ data, set, onNext, onBack, onSkip }) {
   const toggle = (key, arr, val) => set(key, arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]);
   const valid = data.business_name?.trim() && specialties.length > 0 && data.experience && data.client_count;
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column' }}>
       <TopBar step={2} onSkip={onSkip} />
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: '#2563EB', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 2 of 5</div>
-          <h2 style={{ color: '#fff', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching business</h2>
-          <p style={{ color: '#6B7280', fontSize: 12, margin: '0 0 20px' }}>Tell us about your practice</p>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 2 of 5</div>
+          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching business</h2>
+          <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Tell us about your practice</p>
           <Input label="Business / Coaching Name" value={data.business_name} onChange={v => set('business_name', v)} placeholder="e.g. Myles Harris Fitness" required />
           <div style={{ marginBottom: 14 }}>
-            <Label>Coaching Specialty<span style={{ color: '#3B82F6', marginLeft: 4 }}>*</span></Label>
-            <div style={{ fontSize: 10, color: '#374151', marginBottom: 8 }}>Select all that apply</div>
+            <Label>Coaching Specialty<span style={{ color: 'var(--tc-primary)', marginLeft: 4 }}>*</span></Label>
+            <div style={{ fontSize: 10, color: 'var(--tc-foreground)', marginBottom: 8 }}>Select all that apply</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {SPECIALTIES.map(s => <Chip key={s} label={s} selected={specialties.includes(s)} onClick={() => toggle('specialties', specialties, s)} />)}
             </div>
@@ -293,7 +293,7 @@ function Step2({ data, set, onNext, onBack, onSkip }) {
           <Select label="Current Client Count" value={data.client_count} onChange={v => set('client_count', v)} options={CLIENT_COUNT_OPTS} required />
           <div style={{ marginBottom: 14 }}>
             <Label>Where do you currently manage clients?</Label>
-            <div style={{ fontSize: 10, color: '#374151', marginBottom: 8 }}>Select all that apply</div>
+            <div style={{ fontSize: 10, color: 'var(--tc-foreground)', marginBottom: 8 }}>Select all that apply</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {CURRENT_TOOLS.map(t => <Chip key={t} label={t} selected={tools.includes(t)} onClick={() => toggle('current_tools', tools, t)} />)}
             </div>
@@ -318,25 +318,25 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
     setUploading(false);
   };
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column' }}>
       <TopBar step={3} onSkip={onSkip} />
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: '#2563EB', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 3 of 5</div>
-          <h2 style={{ color: '#fff', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching profile</h2>
-          <p style={{ color: '#6B7280', fontSize: 12, margin: '0 0 20px' }}>Clients will see this on your profile</p>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 3 of 5</div>
+          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching profile</h2>
+          <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Clients will see this on your profile</p>
           <div style={{ marginBottom: 16 }}>
             <Label>Profile Photo (optional)</Label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: 'rgba(255,255,255,0.05)', border: '1.5px dashed rgba(255,255,255,0.12)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: 'color-mix(in srgb, white 5%, transparent)', border: '1.5px dashed color-mix(in srgb, white 12%, transparent)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 {data.avatar_url ? <img src={data.avatar_url} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 24 }}>📷</span>}
               </div>
               <div>
-                <button type="button" onClick={() => fileRef.current?.click()} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.3)', color: '#93C5FD', cursor: 'pointer' }}>
+                <button type="button" onClick={() => fileRef.current?.click()} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'color-mix(in srgb, var(--tc-primary) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-primary) 30%, transparent)', color: 'var(--tc-primary)', cursor: 'pointer' }}>
                   {uploading ? 'Uploading…' : data.avatar_url ? 'Change Photo' : 'Upload Photo'}
                 </button>
-                <div style={{ color: '#374151', fontSize: 10, marginTop: 4 }}>You can skip and add later</div>
+                <div style={{ color: 'var(--tc-foreground)', fontSize: 10, marginTop: 4 }}>You can skip and add later</div>
                 <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhoto} />
               </div>
             </div>
@@ -357,35 +357,35 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
 function Step4({ data, set, onNext, onBack, onSkip, saving }) {
   const paymentMethod = data.payment_method || '';
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column' }}>
       <TopBar step={4} onSkip={onSkip} />
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: '#2563EB', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 4 of 5</div>
-          <h2 style={{ color: '#fff', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Set up your business</h2>
-          <p style={{ color: '#6B7280', fontSize: 12, margin: '0 0 20px' }}>Payments and packages</p>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 4 of 5</div>
+          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Set up your business</h2>
+          <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Payments and packages</p>
 
           <div style={{ marginBottom: 14 }}>
             <Label>Monthly Rate per Client</Label>
             <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#4B5563', fontSize: 14, fontWeight: 600 }}>$</span>
+              <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--kc-4b5563)', fontSize: 14, fontWeight: 600 }}>$</span>
               <input type="number" value={data.monthly_rate || ''} onChange={e => set('monthly_rate', e.target.value)} placeholder="150"
-                style={{ width: '100%', padding: '12px 48px 12px 32px', borderRadius: 12, fontSize: 14, background: '#111', color: '#fff', border: '1.5px solid rgba(255,255,255,0.08)', outline: 'none', boxSizing: 'border-box' }}
-                onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
-              <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: '#4B5563', fontSize: 12 }}>/mo</span>
+                style={{ width: '100%', padding: '12px 48px 12px 32px', borderRadius: 12, fontSize: 14, background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)', outline: 'none', boxSizing: 'border-box' }}
+                onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
+                onBlur={e => e.target.style.borderColor = 'color-mix(in srgb, white 8%, transparent)'} />
+              <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--kc-4b5563)', fontSize: 12 }}>/mo</span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1.5px solid rgba(255,255,255,0.06)', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 12, background: 'color-mix(in srgb, white 3%, transparent)', border: '1.5px solid color-mix(in srgb, white 6%, transparent)', marginBottom: 16 }}>
             <div>
-              <div style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>Offer different packages?</div>
-              <div style={{ color: '#4B5563', fontSize: 11 }}>E.g. 1-month, 3-month, custom</div>
+              <div style={{ color: 'var(--tc-card)', fontSize: 14, fontWeight: 600 }}>Offer different packages?</div>
+              <div style={{ color: 'var(--kc-4b5563)', fontSize: 11 }}>E.g. 1-month, 3-month, custom</div>
             </div>
             <button type="button" onClick={() => set('has_packages', !data.has_packages)}
-              style={{ width: 44, height: 24, borderRadius: 9999, background: data.has_packages ? '#2563EB' : 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
-              <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#fff', position: 'absolute', top: 4, left: data.has_packages ? 24 : 4, transition: 'left 0.2s' }} />
+              style={{ width: 44, height: 24, borderRadius: 9999, background: data.has_packages ? 'var(--tc-primary)' : 'color-mix(in srgb, white 10%, transparent)', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+              <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--tc-card)', position: 'absolute', top: 4, left: data.has_packages ? 24 : 4, transition: 'left 0.2s' }} />
             </button>
           </div>
 
@@ -397,15 +397,15 @@ function Step4({ data, set, onNext, onBack, onSkip, saving }) {
           ].map(opt => (
             <button key={opt.value} type="button" onClick={() => set('payment_method', opt.value)} style={{
               width: '100%', display: 'flex', alignItems: 'flex-start', gap: 12, padding: '14px', borderRadius: 12, textAlign: 'left', marginBottom: 10, cursor: 'pointer',
-              background: paymentMethod === opt.value ? 'rgba(37,99,235,0.1)' : 'rgba(255,255,255,0.03)',
-              border: `1.5px solid ${paymentMethod === opt.value ? 'rgba(37,99,235,0.55)' : 'rgba(255,255,255,0.07)'}`,
+              background: paymentMethod === opt.value ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 3%, transparent)',
+              border: `1.5px solid ${paymentMethod === opt.value ? 'color-mix(in srgb, var(--tc-primary) 55%, transparent)' : 'color-mix(in srgb, white 7%, transparent)'}`,
             }}>
-              <div style={{ width: 16, height: 16, borderRadius: '50%', flexShrink: 0, marginTop: 2, border: `2px solid ${paymentMethod === opt.value ? '#2563EB' : 'rgba(255,255,255,0.15)'}`, background: paymentMethod === opt.value ? '#2563EB' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {paymentMethod === opt.value && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff' }} />}
+              <div style={{ width: 16, height: 16, borderRadius: '50%', flexShrink: 0, marginTop: 2, border: `2px solid ${paymentMethod === opt.value ? 'var(--tc-primary)' : 'color-mix(in srgb, white 15%, transparent)'}`, background: paymentMethod === opt.value ? 'var(--tc-primary)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {paymentMethod === opt.value && <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--tc-card)' }} />}
               </div>
               <div>
-                <div style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>{opt.label}</div>
-                <div style={{ color: '#4B5563', fontSize: 11, marginTop: 2 }}>{opt.sub}</div>
+                <div style={{ color: 'var(--tc-card)', fontSize: 14, fontWeight: 600 }}>{opt.label}</div>
+                <div style={{ color: 'var(--kc-4b5563)', fontSize: 11, marginTop: 2 }}>{opt.sub}</div>
               </div>
             </button>
           ))}
@@ -434,33 +434,33 @@ function Step5({ firstName }) {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f0f1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', textAlign: 'center' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', textAlign: 'center' }}>
       <div style={{ maxWidth: 360, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
         <KoachLogo size={72} rounded="rounded-2xl" glow bg />
 
         <div>
-          <div style={{ color: '#10B981', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Welcome aboard 🎉</div>
-          <h2 style={{ color: '#fff', fontSize: 32, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 8px' }}>
+          <div style={{ color: 'var(--tc-success)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Welcome aboard 🎉</div>
+          <h2 style={{ color: 'var(--tc-card)', fontSize: 32, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 8px' }}>
             Welcome to KOACH AI,<br />{firstName || 'Coach'}!
           </h2>
-          <p style={{ color: '#6B7280', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
             Your coaching OS is ready — let's build something great.
           </p>
         </div>
 
-        <div style={{ width: '100%', borderRadius: 16, overflow: 'hidden', background: 'rgba(255,255,255,0.03)', border: '1.5px solid rgba(255,255,255,0.08)', textAlign: 'left' }}>
-          <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ color: '#fff', fontSize: 12, fontWeight: 700 }}>Quick start checklist</div>
+        <div style={{ width: '100%', borderRadius: 16, overflow: 'hidden', background: 'color-mix(in srgb, white 3%, transparent)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)', textAlign: 'left' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid color-mix(in srgb, white 5%, transparent)' }}>
+            <div style={{ color: 'var(--tc-card)', fontSize: 12, fontWeight: 700 }}>Quick start checklist</div>
           </div>
           <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {checklist.map(({ label, done }) => (
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: done ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.05)', border: `1.5px solid ${done ? '#10B981' : 'rgba(255,255,255,0.1)'}` }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: done ? 'color-mix(in srgb, var(--tc-success) 15%, transparent)' : 'color-mix(in srgb, white 5%, transparent)', border: `1.5px solid ${done ? 'var(--tc-success)' : 'color-mix(in srgb, white 10%, transparent)'}` }}>
                   {done
-                    ? <svg viewBox="0 0 12 12" fill="none" style={{ width: 12, height: 12 }}><path d="M2 6L5 9L10 3" stroke="#10B981" strokeWidth="2" strokeLinecap="round" /></svg>
-                    : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />}
+                    ? <svg viewBox="0 0 12 12" fill="none" style={{ width: 12, height: 12 }}><path d="M2 6L5 9L10 3" stroke="var(--tc-success)" strokeWidth="2" strokeLinecap="round" /></svg>
+                    : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'color-mix(in srgb, white 20%, transparent)' }} />}
                 </div>
-                <span style={{ fontSize: 14, color: done ? '#fff' : '#6B7280' }}>{label}</span>
+                <span style={{ fontSize: 14, color: done ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}>{label}</span>
               </div>
             ))}
           </div>
@@ -469,13 +469,13 @@ function Step5({ firstName }) {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button onClick={go} style={{
             width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
-            background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
-            boxShadow: '0 0 32px rgba(37,99,235,0.35)',
-            color: '#fff', border: 'none', cursor: 'pointer',
+            background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
+            boxShadow: '0 0 32px color-mix(in srgb, var(--tc-primary) 35%, transparent)',
+            color: 'var(--tc-card)', border: 'none', cursor: 'pointer',
           }}>
             Go to Dashboard →
           </button>
-          <button onClick={go} style={{ color: '#374151', fontSize: 12, background: 'none', border: 'none', cursor: 'pointer' }}>
+          <button onClick={go} style={{ color: 'var(--tc-foreground)', fontSize: 12, background: 'none', border: 'none', cursor: 'pointer' }}>
             Complete setup later
           </button>
         </div>
@@ -537,7 +537,7 @@ export default function ClientInviteJoin() {
   const sharedProps = { data, set, onNext: next, onBack: back, onSkip: skip };
 
   return (
-    <div style={{ background: '#0f0f1a', minHeight: '100vh' }}>
+    <div style={{ background: 'var(--kc-0f0f1a)', minHeight: '100vh' }}>
       {currentStep === 0 && <Welcome onNext={next} onSkip={skip} />}
       {currentStep === 1 && <Step1 {...sharedProps} />}
       {currentStep === 2 && <Step2 {...sharedProps} />}

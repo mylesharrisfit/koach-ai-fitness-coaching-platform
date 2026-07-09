@@ -37,7 +37,7 @@ function CalorieAdjust({ selectedClients, onDone }) {
           <button key={d} onClick={() => adjust(d)} disabled={saving}
             className={cn('py-2.5 rounded-lg text-xs font-bold border active:scale-95 transition-all',
               d < 0 ? 'bg-destructive/10 border-destructive/20 text-destructive hover:bg-destructive/20'
-                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20')}>
+                : 'bg-success/10 border-success/20 text-success hover:bg-success/20')}>
             {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : l}
           </button>
         ))}
@@ -62,8 +62,8 @@ function AssignProgram({ selectedClients, onDone }) {
     onDone();
   };
   return (
-    <div className="p-3 bg-blue-500/8 border border-blue-500/20 rounded-xl space-y-2">
-      <p className="text-xs font-semibold text-blue-400">Assign program to {selectedClients.length} clients</p>
+    <div className="p-3 bg-primary/8 border border-primary/20 rounded-xl space-y-2">
+      <p className="text-xs font-semibold text-primary">Assign program to {selectedClients.length} clients</p>
       <select
         value={programId}
         onChange={e => setProgramId(e.target.value)}
@@ -75,7 +75,7 @@ function AssignProgram({ selectedClients, onDone }) {
       <button
         onClick={assign}
         disabled={saving || !programId}
-        className="w-full py-2 rounded-lg text-xs font-bold bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:bg-blue-500/30 disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2"
+        className="w-full py-2 rounded-lg text-xs font-bold bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2"
       >
         {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Dumbbell className="w-3 h-3" />}
         {saving ? 'Assigning…' : 'Assign Program'}
@@ -103,12 +103,12 @@ function AddTag({ selectedClients, onDone }) {
     onDone();
   };
   return (
-    <div className="p-3 bg-purple-500/8 border border-purple-500/20 rounded-xl space-y-2">
-      <p className="text-xs font-semibold text-purple-400">Add tag to {selectedClients.length} clients</p>
+    <div className="p-3 bg-ai/8 border border-ai/20 rounded-xl space-y-2">
+      <p className="text-xs font-semibold text-ai">Add tag to {selectedClients.length} clients</p>
       <div className="flex flex-wrap gap-1">
         {QUICK_TAGS.map(t => (
           <button key={t} onClick={() => applyTag(t)} disabled={saving}
-            className="text-[10px] font-bold px-2 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-all">
+            className="text-[10px] font-bold px-2 py-1 rounded-lg bg-ai/10 border border-ai/20 text-ai hover:bg-ai/20 transition-all">
             #{t}
           </button>
         ))}
@@ -122,7 +122,7 @@ function AddTag({ selectedClients, onDone }) {
           className="flex-1 text-xs bg-card border border-border rounded-lg px-2 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
         />
         <button onClick={() => applyTag(tagVal)} disabled={saving || !tagVal.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-500/20 border border-purple-500/30 text-purple-400 disabled:opacity-40">
+          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-ai/20 border border-ai/30 text-ai disabled:opacity-40">
           Add
         </button>
       </div>
@@ -186,10 +186,10 @@ export default function BulkActionBar({ selectedIds, clients, allCheckIns, onCle
           <div className="grid grid-cols-5 gap-1.5">
             {[
               { key: 'message', icon: MessageSquare, label: 'Message', color: 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20' },
-              { key: 'program', icon: Dumbbell, label: 'Program', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20' },
-              { key: 'tag', icon: Tag, label: 'Tag', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20 hover:bg-purple-500/20' },
+              { key: 'program', icon: Dumbbell, label: 'Program', color: 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20' },
+              { key: 'tag', icon: Tag, label: 'Tag', color: 'text-ai bg-ai/10 border-ai/20 hover:bg-ai/20' },
               { key: 'calories', icon: Flame, label: 'Calories', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20 hover:bg-orange-500/20' },
-              { key: 'reviewed', icon: ClipboardCheck, label: 'Review', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20' },
+              { key: 'reviewed', icon: ClipboardCheck, label: 'Review', color: 'text-success bg-success/10 border-success/20 hover:bg-success/20' },
             ].map(({ key, icon: Icon, label, color }) => (
               <button
                 key={key}

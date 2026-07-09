@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, RefreshCw, Loader2, ArrowLeftRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, ChevronUp, Loader2, ArrowLeftRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 function gramsToOz(g) {
   return g ? `${(g * 0.03527).toFixed(1)}oz` : null;
@@ -59,7 +56,7 @@ function FoodSwapButton({ food, mealName }) {
         Swap
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 bg-white border border-[#E7EAF3] rounded-xl shadow-lg p-3 w-64 space-y-2">
+        <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg p-3 w-64 space-y-2">
           <div className="flex items-center justify-between mb-1">
             <p className="text-[11px] font-bold text-foreground">Alternative Foods</p>
             <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground text-xs">✕</button>
@@ -90,7 +87,7 @@ function MealRow({ meal }) {
   const totalF = foods.reduce((s, f) => s + (f.fats || 0), 0);
 
   return (
-    <div className="border border-[#E7EAF3] rounded-xl overflow-hidden bg-white">
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
       {/* Header row */}
       <button
         onClick={() => setExpanded(e => !e)}
@@ -105,9 +102,9 @@ function MealRow({ meal }) {
           </div>
           <div className="flex items-center gap-1.5 mt-1 flex-wrap">
             <MacroChip label="kcal" value={totalCals} unit="" cls="bg-orange-50 text-orange-600" />
-            <MacroChip label="P" value={totalP} cls="bg-red-50 text-red-600" />
-            <MacroChip label="C" value={totalC} cls="bg-amber-50 text-amber-600" />
-            <MacroChip label="F" value={totalF} cls="bg-blue-50 text-blue-600" />
+            <MacroChip label="P" value={totalP} cls="bg-destructive/10 text-destructive" />
+            <MacroChip label="C" value={totalC} cls="bg-warning/10 text-warning" />
+            <MacroChip label="F" value={totalF} cls="bg-accent text-primary" />
           </div>
         </div>
         <span className="text-xs text-muted-foreground flex-shrink-0">{foods.length} foods</span>
@@ -116,7 +113,7 @@ function MealRow({ meal }) {
 
       {/* Expanded food list */}
       {expanded && foods.length > 0 && (
-        <div className="border-t border-[#F1F4FA] divide-y divide-[#F8FAFC]">
+        <div className="border-t border-[var(--kc-f1f4fa)] divide-y divide-muted">
           {foods.map((food, i) => (
             <div key={i} className="px-4 py-2.5 flex items-center gap-3">
               <div className="flex-1 min-w-0">
@@ -128,9 +125,9 @@ function MealRow({ meal }) {
               </div>
               <div className="flex items-center gap-1 flex-shrink-0 flex-wrap justify-end">
                 <MacroChip label="kcal" value={food.calories || 0} unit="" cls="bg-orange-50 text-orange-600" />
-                <MacroChip label="P" value={food.protein || 0} cls="bg-red-50 text-red-600" />
-                <MacroChip label="C" value={food.carbs || 0} cls="bg-amber-50 text-amber-600" />
-                <MacroChip label="F" value={food.fats || 0} cls="bg-blue-50 text-blue-600" />
+                <MacroChip label="P" value={food.protein || 0} cls="bg-destructive/10 text-destructive" />
+                <MacroChip label="C" value={food.carbs || 0} cls="bg-warning/10 text-warning" />
+                <MacroChip label="F" value={food.fats || 0} cls="bg-accent text-primary" />
                 <FoodSwapButton food={food} mealName={meal.meal_name} />
               </div>
             </div>
@@ -153,12 +150,12 @@ export default function MealPlanViewer({ plan }) {
   return (
     <div className="space-y-3">
       {/* Daily summary */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/5 to-blue-50 rounded-xl border border-primary/10 flex-wrap">
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/5 to-accent rounded-xl border border-primary/10 flex-wrap">
         <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Daily Total</span>
         <MacroChip label="kcal" value={totalCals} unit="" cls="bg-orange-100 text-orange-700" />
-        <MacroChip label="Protein" value={totalP} cls="bg-red-100 text-red-700" />
-        <MacroChip label="Carbs" value={totalC} cls="bg-amber-100 text-amber-700" />
-        <MacroChip label="Fats" value={totalF} cls="bg-blue-100 text-blue-700" />
+        <MacroChip label="Protein" value={totalP} cls="bg-destructive/10 text-destructive" />
+        <MacroChip label="Carbs" value={totalC} cls="bg-warning/10 text-warning" />
+        <MacroChip label="Fats" value={totalF} cls="bg-accent text-primary" />
       </div>
 
       {/* Meal rows */}

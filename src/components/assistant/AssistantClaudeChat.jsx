@@ -26,15 +26,15 @@ function ActionCard({ action }) {
   const label = (action.tool || '').replace(/_/g, ' ');
   const isError = !!action.result?.error;
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl text-sm">
+    <div className="flex items-center gap-3 px-4 py-3 bg-background border border-border rounded-xl text-sm">
       <span className="text-lg">{icon}</span>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-[#111827] capitalize">{label}</p>
-        <p className="text-[#6B7280] text-xs truncate">{action.result?.message || action.result?.error || 'Done'}</p>
+        <p className="font-semibold text-foreground capitalize">{label}</p>
+        <p className="text-muted-foreground text-xs truncate">{action.result?.message || action.result?.error || 'Done'}</p>
       </div>
       {isError
-        ? <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-        : <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+        ? <AlertCircle className="w-4 h-4 text-destructive shrink-0" />
+        : <CheckCircle className="w-4 h-4 text-success shrink-0" />
       }
     </div>
   );
@@ -53,7 +53,7 @@ function MessageBubble({ message, onFollowUp, onSaveNote, isLast }) {
   return (
     <div className={cn('flex gap-3 group', isUser && 'flex-row-reverse')}>
       <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5',
-        isUser ? 'bg-[#1F2937]' : 'bg-primary/10')}>
+        isUser ? 'bg-[var(--kc-1f2937)]' : 'bg-primary/10')}>
         {isUser ? <User className="w-3.5 h-3.5 text-white" /> : <Sparkles className="w-3.5 h-3.5 text-primary" />}
       </div>
 
@@ -68,7 +68,7 @@ function MessageBubble({ message, onFollowUp, onSaveNote, isLast }) {
         {/* Text bubble */}
         {message.content && (
           <div className={cn('rounded-2xl px-4 py-3 text-sm',
-            isUser ? 'bg-[#111827] text-white' : 'bg-white border border-[#E7EAF3] text-[#1F2A44] shadow-sm')}>
+            isUser ? 'bg-sidebar text-white' : 'bg-card border border-border text-foreground shadow-sm')}>
             {isUser ? (
               <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
             ) : (
@@ -96,7 +96,7 @@ function MessageBubble({ message, onFollowUp, onSaveNote, isLast }) {
           <div className="flex items-center gap-2 px-1 opacity-0 group-hover:opacity-100 transition-opacity">
             {message.timestamp && <span className="text-[10px] text-muted-foreground">{message.timestamp}</span>}
             <button onClick={handleCopy} className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
-              {copied ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3" />}
+              {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
               {copied ? 'Copied' : 'Copy'}
             </button>
             {onSaveNote && (
@@ -117,7 +117,7 @@ function TypingIndicator() {
       <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
         <Sparkles className="w-3.5 h-3.5 text-primary" />
       </div>
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl px-4 py-3 shadow-sm">
+      <div className="bg-card border border-border rounded-2xl px-4 py-3 shadow-sm">
         <div className="flex gap-1 items-center h-4">
           {[0, 150, 300].map(delay => (
             <div key={delay} className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: delay + 'ms' }} />
@@ -271,7 +271,7 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
   ];
 
   return (
-    <div className="bg-white border border-border rounded-xl flex flex-col overflow-hidden" style={{ height: 'calc(100vh - 200px)', minHeight: '500px' }}>
+    <div className="bg-card border border-border rounded-xl flex flex-col overflow-hidden" style={{ height: 'calc(100vh - 200px)', minHeight: '500px' }}>
       {/* Agent indicator */}
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-gradient-to-r from-primary/5 to-transparent">
         <Zap className="w-3.5 h-3.5 text-primary" />
@@ -323,7 +323,7 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-border bg-white flex-shrink-0">
+      <div className="p-4 border-t border-border bg-card flex-shrink-0">
         <div className="flex gap-2 items-end">
           <div className="flex-1 relative">
             <textarea

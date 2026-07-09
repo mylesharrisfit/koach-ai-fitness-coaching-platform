@@ -1,47 +1,47 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { X, ArrowRight, TrendingUp, AlertTriangle, Zap, Trophy, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, ArrowRight, TrendingUp, AlertTriangle, Zap, Trophy } from 'lucide-react';
 
 const TYPE_CONFIG = {
   performance: {
     icon: TrendingUp,
-    gradient: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-    border: '#bfdbfe',
-    iconBg: '#2563eb',
+    gradient: 'linear-gradient(135deg, var(--tc-accent), var(--tc-accent))',
+    border: 'var(--tc-accent)',
+    iconBg: 'var(--tc-primary)',
     tag: 'Performance',
-    dot: '#2563eb',
+    dot: 'var(--tc-primary)',
   },
   risk: {
     icon: AlertTriangle,
-    gradient: 'linear-gradient(135deg, #fff7ed, #ffedd5)',
-    border: '#fed7aa',
-    iconBg: '#ea580c',
+    gradient: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))',
+    border: 'var(--tc-warning)',
+    iconBg: 'var(--kc-ea580c)',
     tag: 'Risk Alert',
-    dot: '#ea580c',
+    dot: 'var(--kc-ea580c)',
   },
   opportunity: {
     icon: Zap,
-    gradient: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
-    border: '#bbf7d0',
-    iconBg: '#16a34a',
+    gradient: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))',
+    border: 'var(--tc-success)',
+    iconBg: 'var(--tc-success)',
     tag: 'Opportunity',
-    dot: '#16a34a',
+    dot: 'var(--tc-success)',
   },
   celebration: {
     icon: Trophy,
-    gradient: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
-    border: '#fde68a',
-    iconBg: '#d97706',
+    gradient: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))',
+    border: 'var(--tc-warning)',
+    iconBg: 'var(--tc-warning)',
     tag: 'Celebrate',
-    dot: '#d97706',
+    dot: 'var(--tc-warning)',
   },
 };
 
 const CONFIDENCE_COLORS = {
-  High: { bg: 'rgba(22,163,74,0.12)', text: '#16a34a' },
-  Medium: { bg: 'rgba(202,138,4,0.12)', text: '#ca8a04' },
-  Low: { bg: 'rgba(107,114,128,0.12)', text: '#6b7280' },
+  High: { bg: 'color-mix(in srgb, var(--tc-success) 12%, transparent)', text: 'var(--tc-success)' },
+  Medium: { bg: 'color-mix(in srgb, var(--kc-ca8a04) 12%, transparent)', text: 'var(--kc-ca8a04)' },
+  Low: { bg: 'color-mix(in srgb, var(--tc-muted-foreground) 12%, transparent)', text: 'var(--tc-muted-foreground)' },
 };
 
 export default function InsightCard({ insight, index = 0, onDismiss, onNotRelevant }) {
@@ -59,21 +59,21 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
       transition={{ duration: 0.3, delay: index * 0.05 }}
       layout
       className="rounded-2xl p-5 flex flex-col gap-3.5 transition-shadow hover:shadow-md"
-      style={{ background: cfg.gradient, border: `1px solid ${cfg.border}`, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+      style={{ background: cfg.gradient, border: `1px solid ${cfg.border}`, boxShadow: '0 2px 8px color-mix(in srgb, black 4%, transparent)' }}>
 
       {/* Top row */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: cfg.iconBg }}>
-            <Icon style={{ width: 18, height: 18, color: '#fff' }} />
+            <Icon style={{ width: 18, height: 18, color: 'var(--tc-card)' }} />
           </div>
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: cfg.iconBg }}>
               {cfg.tag}
             </span>
             {insight.clientName && (
-              <p className="text-[10px] text-gray-500 font-medium leading-none mt-0.5">{insight.clientName}</p>
+              <p className="text-[10px] text-muted-foreground font-medium leading-none mt-0.5">{insight.clientName}</p>
             )}
           </div>
         </div>
@@ -86,15 +86,15 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
           )}
           <button onClick={() => onDismiss(insight.id)}
             className="p-1 rounded-md opacity-30 hover:opacity-70 transition-opacity">
-            <X className="w-3.5 h-3.5 text-gray-600" />
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
       </div>
 
       {/* Content */}
       <div>
-        <p className="text-sm font-bold text-gray-900 leading-snug">{insight.headline}</p>
-        <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{insight.body}</p>
+        <p className="text-sm font-bold text-foreground leading-snug">{insight.headline}</p>
+        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{insight.body}</p>
       </div>
 
       {/* Actions */}
@@ -102,19 +102,19 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
         <button
           onClick={() => navigate(insight.actionPath)}
           className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg transition-all hover:opacity-90 active:scale-95"
-          style={{ background: cfg.iconBg, color: '#fff' }}>
+          style={{ background: cfg.iconBg, color: 'var(--tc-card)' }}>
           {insight.actionLabel}
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
         {insight.actionAlt && (
           <button
             onClick={() => navigate(insight.actionAltPath)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-200 bg-white/60 text-gray-600 hover:bg-white transition-all">
+            className="text-xs font-semibold px-3 py-2 rounded-lg border border-border bg-[var(--kc-w-60)] text-muted-foreground hover:bg-card transition-all">
             {insight.actionAlt}
           </button>
         )}
         <button onClick={() => onNotRelevant(insight.id, insight.type)}
-          className="text-[10px] text-gray-400 hover:text-gray-600 transition-colors ml-auto">
+          className="text-[10px] text-muted-foreground hover:text-muted-foreground transition-colors ml-auto">
           Not relevant
         </button>
       </div>

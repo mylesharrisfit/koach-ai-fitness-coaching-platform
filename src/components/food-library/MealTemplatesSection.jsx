@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Plus, Trash2, Edit2, ChevronDown, ChevronUp, Utensils } from 'lucide-react';
@@ -9,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const CATEGORY_LABELS = {
@@ -120,7 +119,7 @@ function MealTemplateForm({ open, onOpenChange, template, onSubmit }) {
 function TemplateCard({ template, onEdit, onDelete }) {
   const [expanded, setExpanded] = useState(false);
   return (
-    <div className="bg-white border border-border rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -129,9 +128,9 @@ function TemplateCard({ template, onEdit, onDelete }) {
           </div>
           <div className="flex gap-1 mt-1 flex-wrap">
             {template.calories > 0 && <span className="text-[10px] text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full">Cal: {template.calories}</span>}
-            {template.protein_g > 0 && <span className="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">P: {template.protein_g}g</span>}
-            {template.carbs_g > 0 && <span className="text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">C: {template.carbs_g}g</span>}
-            {template.fats_g > 0 && <span className="text-[10px] text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-full">F: {template.fats_g}g</span>}
+            {template.protein_g > 0 && <span className="text-[10px] text-primary bg-accent px-1.5 py-0.5 rounded-full">P: {template.protein_g}g</span>}
+            {template.carbs_g > 0 && <span className="text-[10px] text-warning bg-warning/10 px-1.5 py-0.5 rounded-full">C: {template.carbs_g}g</span>}
+            {template.fats_g > 0 && <span className="text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded-full">F: {template.fats_g}g</span>}
             {template.foods?.length > 0 && <span className="text-[10px] text-muted-foreground">{template.foods.length} foods</span>}
           </div>
         </div>

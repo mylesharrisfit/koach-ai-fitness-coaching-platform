@@ -9,7 +9,7 @@ export default function WLBrandIdentity({ s, set, locked }) {
       <WLRow label="Business name" hint="Shown in portal header, emails, notifications & loading screens">
         <WLInput value={s.business_name} onChange={v => set('business_name', v)} placeholder="e.g. Myles Harris Fitness" />
         {s.business_name && (
-          <p className="text-xs text-slate-400 mt-1">Clients will see: <strong className="text-slate-600">"{s.business_name}"</strong> instead of "KOACH AI"</p>
+          <p className="text-xs text-muted-foreground mt-1">Clients will see: <strong className="text-muted-foreground">"{s.business_name}"</strong> instead of "KOACH AI"</p>
         )}
       </WLRow>
 
@@ -41,21 +41,21 @@ export default function WLBrandIdentity({ s, set, locked }) {
           <WLUploadButton label="App Icon" url={s.app_icon_url} onChange={v => set('app_icon_url', v)} hint="1024×1024 PNG recommended" />
           {/* Phone mockup preview */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-slate-200 flex items-center justify-center flex-shrink-0"
-              style={{ background: s.app_icon_url ? 'transparent' : s.app_icon_bg_color || '#2563EB' }}>
+            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-border flex items-center justify-center flex-shrink-0"
+              style={{ background: s.app_icon_url ? 'transparent' : s.app_icon_bg_color || 'var(--tc-primary)' }}>
               {s.app_icon_url
                 ? <img src={s.app_icon_url} alt="icon" className="w-full h-full object-cover" />
                 : <span className="text-white text-xl font-black">{(s.business_name || s.app_name || 'K')[0]}</span>
               }
             </div>
-            <p className="text-[10px] text-slate-400 truncate max-w-[60px]">{s.app_name || 'My App'}</p>
+            <p className="text-[10px] text-muted-foreground truncate max-w-[60px]">{s.app_name || 'My App'}</p>
           </div>
         </div>
         <div className="flex items-center gap-3 mt-3">
-          <span className="text-sm text-slate-600 font-medium">Icon background</span>
+          <span className="text-sm text-muted-foreground font-medium">Icon background</span>
           <WLColorPicker value={s.app_icon_bg_color} onChange={v => set('app_icon_bg_color', v)} />
         </div>
-        <p className="text-xs text-slate-400 mt-2">💡 Appears when clients add your portal to their home screen (iOS & Android)</p>
+        <p className="text-xs text-muted-foreground mt-2">💡 Appears when clients add your portal to their home screen (iOS & Android)</p>
       </WLRow>
     </WLSection>
   );

@@ -12,7 +12,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
     // Confetti burst
     const fire = (x, angle) => confetti({
       particleCount: 60, spread: 70, origin: { x, y: 0.7 }, angle,
-      colors: ['#3B82F6', '#6366F1', '#22C55E', '#F59E0B', '#EC4899'],
+      colors: ['rgb(var(--primary))', 'rgb(var(--primary))', 'rgb(var(--success))', 'rgb(var(--warning))', '#EC4899'],
     });
     setTimeout(() => { fire(0.3, 120); fire(0.7, 60); }, 100);
     setTimeout(() => { fire(0.2, 130); fire(0.8, 50); }, 400);
@@ -28,7 +28,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.1 }}
         className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
-        style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.25), rgba(16,185,129,0.2))', border: '2px solid rgba(34,197,94,0.4)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--success) / 0.25), rgb(var(--success) / 0.2))', border: '2px solid rgb(var(--success) / 0.4)' }}>
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -48,7 +48,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
         className="w-full space-y-3 mb-8">
         {streak > 1 && (
           <div className="flex items-center gap-3 p-4 rounded-2xl"
-            style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.25)' }}>
+            style={{ background: 'rgb(var(--warning) / 0.12)', border: '1px solid rgb(var(--warning) / 0.25)' }}>
             <Flame className="w-6 h-6 text-orange-400 flex-shrink-0" />
             <div>
               <p className="text-orange-400 font-bold text-sm">🔥 {streak}-week check-in streak!</p>
@@ -59,18 +59,18 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
         {milestone && (
           <div className="flex items-center gap-3 p-4 rounded-2xl"
             style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)' }}>
-            <Trophy className="w-6 h-6 text-indigo-400 flex-shrink-0" />
+            <Trophy className="w-6 h-6 text-primary flex-shrink-0" />
             <div>
-              <p className="text-indigo-400 font-bold text-sm">🏆 Amazing! {milestone} check-ins completed!</p>
+              <p className="text-primary font-bold text-sm">🏆 Amazing! {milestone} check-ins completed!</p>
               <p className="text-white/30 text-xs">You're building incredible habits</p>
             </div>
           </div>
         )}
         <div className="flex items-center gap-3 p-4 rounded-2xl"
-          style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+          style={{ background: 'rgb(var(--primary) / 0.1)', border: '1px solid rgb(var(--primary) / 0.2)' }}>
           <span className="text-xl flex-shrink-0">📋</span>
           <div>
-            <p className="text-blue-400 font-bold text-sm">Total check-ins: {totalCheckIns}</p>
+            <p className="text-primary font-bold text-sm">Total check-ins: {totalCheckIns}</p>
             <p className="text-white/30 text-xs">Great work staying accountable</p>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
         className="w-full space-y-3">
         <button onClick={onDashboard}
           className="w-full py-4 rounded-2xl font-bold text-base text-white flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
           <Home className="w-5 h-5" /> Back to Dashboard
         </button>
         <button onClick={onMessage}

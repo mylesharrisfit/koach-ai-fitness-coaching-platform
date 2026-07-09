@@ -51,10 +51,10 @@ export default function LimitBanner({ limitKey, currentCount, label, featureKey,
   // Near-limit warning (75–99%)
   return (
     <div className={cn(
-      'flex items-center justify-between gap-3 rounded-xl border border-yellow-500/30 bg-yellow-500/5 px-4 py-3 text-sm',
+      'flex items-center justify-between gap-3 rounded-xl border border-warning/30 bg-warning/5 px-4 py-3 text-sm',
       className
     )}>
-      <div className="flex items-center gap-2 text-yellow-600 dark:text-yellow-400">
+      <div className="flex items-center gap-2 text-warning dark:text-warning">
         <AlertTriangle className="w-4 h-4 flex-shrink-0" />
         <span className="font-medium">
           {remaining === 1

@@ -19,11 +19,11 @@ const STATIC_FOOD_SWAPS = {
 };
 
 const CATEGORY_COLORS = {
-  Proteins:   { bg: 'bg-blue-50',    border: 'border-blue-100',    text: 'text-blue-600',    dot: '#3B82F6' },
-  Carbs:      { bg: 'bg-orange-50',  border: 'border-orange-100',  text: 'text-orange-600',  dot: '#F97316' },
-  Fats:       { bg: 'bg-yellow-50',  border: 'border-yellow-100',  text: 'text-yellow-700',  dot: '#CA8A04' },
-  Vegetables: { bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-600', dot: '#10B981' },
-  Other:      { bg: 'bg-gray-50',    border: 'border-gray-100',    text: 'text-gray-600',    dot: '#6B7280' },
+  Proteins:   { bg: 'bg-accent',    border: 'border-accent',    text: 'text-primary',    dot: 'var(--tc-primary)' },
+  Carbs:      { bg: 'bg-orange-50',  border: 'border-orange-100',  text: 'text-orange-600',  dot: 'var(--kc-f97316)' },
+  Fats:       { bg: 'bg-warning/10',  border: 'border-warning',  text: 'text-warning',  dot: 'var(--kc-ca8a04)' },
+  Vegetables: { bg: 'bg-success/10', border: 'border-success', text: 'text-success', dot: 'var(--tc-success)' },
+  Other:      { bg: 'bg-muted',    border: 'border-border',    text: 'text-muted-foreground',    dot: 'var(--tc-muted-foreground)' },
 };
 
 // Per-food swap suggestions for dynamic mode
@@ -66,9 +66,9 @@ function MacroBadge({ cal, p, c, f }) {
   return (
     <div className="flex items-center gap-1.5 text-[10px]">
       <span className="text-muted-foreground">{cal} kcal</span>
-      <span className="text-blue-500 font-semibold">{p}g P</span>
+      <span className="text-primary font-semibold">{p}g P</span>
       <span className="text-orange-500 font-semibold">{c}g C</span>
-      <span className="text-yellow-600 font-semibold">{f}g F</span>
+      <span className="text-warning font-semibold">{f}g F</span>
     </div>
   );
 }
@@ -131,7 +131,7 @@ export default function AlternativesTab({ plan }) {
                       </div>
                       <div className="space-y-1.5">
                         {swaps.map((alt, ai) => (
-                          <div key={ai} className="flex items-center gap-2 bg-white/70 rounded-lg px-3 py-2">
+                          <div key={ai} className="flex items-center gap-2 bg-[var(--kc-w-70)] rounded-lg px-3 py-2">
                             <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: colors.dot }} />
                             <span className="text-sm text-foreground">{alt}</span>
                           </div>
@@ -173,7 +173,7 @@ export default function AlternativesTab({ plan }) {
                   </div>
                   <div className="space-y-2">
                     {swap.to.map((alt, ai) => (
-                      <div key={ai} className="flex items-center justify-between bg-white/70 rounded-lg px-3 py-2">
+                      <div key={ai} className="flex items-center justify-between bg-[var(--kc-w-70)] rounded-lg px-3 py-2">
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: colors.dot }} />
                           <span className="text-sm text-foreground">{alt}</span>

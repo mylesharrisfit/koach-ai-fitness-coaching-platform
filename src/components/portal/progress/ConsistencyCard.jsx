@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { format, subWeeks, startOfWeek } from 'date-fns';
+import { format, subWeeks } from 'date-fns';
 
 function Ring({ pct, size = 72, color, label, value }) {
   const r = (size - 8) / 2;
@@ -79,21 +79,21 @@ export default function ConsistencyCard({ checkIns, workoutSessions, foodLogs })
 
       {/* Rings row */}
       <div className="flex items-center justify-around mb-4">
-        <Ring pct={workoutAdh} value={workoutAdh} color="#3B82F6" label="Workouts" />
+        <Ring pct={workoutAdh} value={workoutAdh} color="rgb(var(--primary))" label="Workouts" />
         <div className="text-center">
           <p className="text-white font-black text-3xl">{overall}%</p>
           <p className="text-white/30 text-[9px] font-semibold">Overall</p>
         </div>
-        <Ring pct={nutritionAdh} value={nutritionAdh} color="#10B981" label="Nutrition" />
-        <Ring pct={checkInAdh} value={checkInAdh} color="#F59E0B" label="Check-ins" />
+        <Ring pct={nutritionAdh} value={nutritionAdh} color="rgb(var(--success))" label="Nutrition" />
+        <Ring pct={checkInAdh} value={checkInAdh} color="rgb(var(--warning))" label="Check-ins" />
       </div>
 
       {/* Best week */}
       {bestWeek && (
         <div className="p-2.5 rounded-xl mb-3 text-center"
           style={{ background: 'rgba(252,211,77,0.08)', border: '1px solid rgba(252,211,77,0.15)' }}>
-          <p className="text-[10px] text-yellow-300/70">
-            🔥 Your best week was <strong className="text-yellow-300">week of {bestWeek}</strong>!
+          <p className="text-[10px] text-warning/70">
+            🔥 Your best week was <strong className="text-warning">week of {bestWeek}</strong>!
           </p>
         </div>
       )}
@@ -104,7 +104,7 @@ export default function ConsistencyCard({ checkIns, workoutSessions, foodLogs })
           <BarChart data={weeklyData} margin={{ top: 0, right: 0, left: -24, bottom: 0 }}>
             <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 9 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="pct" fill="rgba(59,130,246,0.4)" radius={[4, 4, 0, 0]}
+            <Bar dataKey="pct" fill="rgb(var(--primary) / 0.4)" radius={[4, 4, 0, 0]}
               label={{ position: 'top', formatter: v => `${Math.round(v)}%`, fill: 'rgba(255,255,255,0.3)', fontSize: 8 }} />
           </BarChart>
         </ResponsiveContainer>

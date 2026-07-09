@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Upload, Dumbbell, FileText, X, CheckCircle2, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Dumbbell, CheckCircle2, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -107,7 +107,7 @@ export default function MigrationWorkouts({ onComplete, onSkip }) {
   if (done) {
     return (
       <div className="flex flex-col items-center py-6 gap-3">
-        <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+        <CheckCircle2 className="w-10 h-10 text-success" />
         <p className="font-semibold text-foreground">{selected.size} programs imported!</p>
         <button onClick={onComplete} className="px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
           Continue →
@@ -131,7 +131,7 @@ export default function MigrationWorkouts({ onComplete, onSkip }) {
               onClick={() => toggle(i)}
               className={cn(
                 'w-full text-left p-4 rounded-xl border-2 transition-all',
-                sel ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40 bg-white'
+                sel ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40 bg-card'
               )}
             >
               <div className="flex items-start gap-3">

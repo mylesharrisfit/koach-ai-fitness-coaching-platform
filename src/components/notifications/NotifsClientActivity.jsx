@@ -52,7 +52,7 @@ export default function NotifsClientActivity({ s, set }) {
         title="Client logged a workout"
         description="Notify when any client completes a workout">
         <NDelivery value={d.workout_logged.delivery} onChange={v => upd('workout_logged', { delivery: v })} />
-        <label className="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium cursor-pointer">
           <NToggle value={d.workout_logged.prs_only} onChange={v => upd('workout_logged', { prs_only: v })} />
           Only for new PRs
         </label>

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, differenceInDays, parseISO, addDays } from 'date-fns';
-import { Settings } from 'lucide-react';
 import DashboardHeader from '@/components/client-dashboard/DashboardHeader';
 import TodayProgressCard from '@/components/client-dashboard/TodayProgressCard';
 import TodayWorkout from '@/components/client-dashboard/TodayWorkout';
@@ -118,11 +117,11 @@ export default function ClientDashboard() {
 
   if (showSettings) {
     return (
-      <div className="min-h-screen bg-[#F4F5F7]">
-        <div className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB] px-5 py-4">
+      <div className="min-h-screen bg-muted">
+        <div className="sticky top-0 z-10 bg-card border-b border-border px-5 py-4">
           <div className="flex items-center justify-between max-w-lg mx-auto">
-            <h2 className="font-semibold text-base text-[#111827]">Notifications</h2>
-            <button onClick={() => setShowSettings(false)} className="text-sm text-[#2563EB] font-semibold">Done</button>
+            <h2 className="font-semibold text-base text-foreground">Notifications</h2>
+            <button onClick={() => setShowSettings(false)} className="text-sm text-primary font-semibold">Done</button>
           </div>
         </div>
         <div className="max-w-lg mx-auto px-5 py-6">
@@ -133,7 +132,7 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F5F7]">
+    <div className="min-h-screen bg-muted">
       <div className="max-w-lg mx-auto px-4 pt-4 pb-28 space-y-3">
 
         <DashboardHeader

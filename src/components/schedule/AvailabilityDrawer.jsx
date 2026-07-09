@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { X, Copy, Trash2, Edit2 } from 'lucide-react';
+import { X, Copy, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -133,11 +133,11 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
       initial={{ x: 400 }}
       animate={{ x: 0 }}
       exit={{ x: 400 }}
-      className="fixed right-0 top-0 h-screen w-full sm:w-96 bg-white border-l border-[#E7EAF3] shadow-lg z-50 overflow-y-auto"
+      className="fixed right-0 top-0 h-screen w-full sm:w-96 bg-card border-l border-border shadow-lg z-50 overflow-y-auto"
     >
-      <div className="p-6 sticky top-0 bg-white border-b border-[#E7EAF3] flex items-center justify-between">
+      <div className="p-6 sticky top-0 bg-card border-b border-border flex items-center justify-between">
         <h2 className="text-lg font-semibold">Availability & Reminders</h2>
-        <button onClick={onClose} className="p-1 hover:bg-[#F6F7FB] rounded-lg transition">
+        <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -163,7 +163,7 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
                 key={idx}
                 onClick={() => setSelectedDay(idx)}
                 className={`w-full text-left px-3 py-2 rounded-lg transition ${
-                  selectedDay === idx ? 'bg-primary text-white' : 'bg-[#F6F7FB] hover:bg-[#EAECF5]'
+                  selectedDay === idx ? 'bg-primary text-white' : 'bg-muted hover:bg-[var(--kc-eaecf5)]'
                 }`}
               >
                 {day}
@@ -171,13 +171,13 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
             ))}
           </div>
 
-          <div className="space-y-1 mb-4 max-h-48 overflow-y-auto border border-[#E7EAF3] rounded-lg p-2">
+          <div className="space-y-1 mb-4 max-h-48 overflow-y-auto border border-border rounded-lg p-2">
             {HOURS.map((hour, idx) => (
               <button
                 key={idx}
                 onClick={() => handleToggleBlock(idx)}
                 className={`w-full text-left px-2 py-1 rounded text-sm transition ${
-                  isAvailable(idx) ? 'bg-green-100 text-green-900' : 'bg-[#F6F7FB] text-[#6B7280]'
+                  isAvailable(idx) ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
                 }`}
               >
                 {hour} - {HOURS[idx + 1] || '24:00'}
@@ -219,7 +219,7 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm">24h before</Label>
-                <p className="text-xs text-[#6B7280] mt-0.5">Day before reminder</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Day before reminder</p>
               </div>
               <Switch
                 checked={reminders.reminder_24h_enabled}
@@ -236,7 +236,7 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm">1 hour before</Label>
-                <p className="text-xs text-[#6B7280] mt-0.5">Hour before reminder</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Hour before reminder</p>
               </div>
               <Switch
                 checked={reminders.reminder_1h_enabled}
@@ -253,7 +253,7 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
             <div className="flex items-center justify-between">
               <div>
                 <Label className="text-sm">No-show follow-up</Label>
-                <p className="text-xs text-[#6B7280] mt-0.5">After 30 min if marked no-show</p>
+                <p className="text-xs text-muted-foreground mt-0.5">After 30 min if marked no-show</p>
               </div>
               <Switch
                 checked={reminders.noshow_enabled}

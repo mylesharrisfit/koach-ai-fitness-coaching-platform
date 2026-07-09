@@ -41,13 +41,13 @@ export default function CoachTypeScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-left transition-all"
               style={{
-                background: isSelected ? 'rgba(59,130,246,0.1)' : '#111',
-                border: isSelected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
-                boxShadow: isSelected ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'var(--tc-foreground)',
+                border: isSelected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 6%, transparent)',
+                boxShadow: isSelected ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
               }}
             >
               <span className="text-xl flex-shrink-0">{f.emoji}</span>
-              <span className="text-sm font-semibold leading-tight" style={{ color: isSelected ? '#fff' : '#9A9A9A' }}>
+              <span className="text-sm font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-9a9a9a)' }}>
                 {f.label}
               </span>
             </motion.button>

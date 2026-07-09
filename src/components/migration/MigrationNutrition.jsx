@@ -69,7 +69,7 @@ export default function MigrationNutrition({ onComplete, onSkip }) {
   if (done) {
     return (
       <div className="flex flex-col items-center py-6 gap-3">
-        <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+        <CheckCircle2 className="w-10 h-10 text-success" />
         <p className="font-semibold text-foreground">{selected.size} plans imported!</p>
         <button onClick={onComplete} className="px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">Continue →</button>
       </div>
@@ -91,25 +91,25 @@ export default function MigrationNutrition({ onComplete, onSkip }) {
               onClick={() => toggle(i)}
               className={cn(
                 'w-full text-left p-4 rounded-xl border-2 transition-all',
-                sel ? 'border-emerald-500 bg-emerald-50' : 'border-border hover:border-emerald-200 bg-white'
+                sel ? 'border-success bg-success/10' : 'border-border hover:border-success bg-card'
               )}
             >
               <div className="flex items-start gap-3">
-                <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center shrink-0', sel ? 'bg-emerald-500' : 'bg-secondary')}>
+                <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center shrink-0', sel ? 'bg-success' : 'bg-secondary')}>
                   <Salad className={cn('w-4 h-4', sel ? 'text-white' : 'text-muted-foreground')} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-foreground">{plan.title}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{plan.description}</p>
                   <div className="flex gap-3 mt-2">
-                    {plan.protein_g && <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{plan.protein_g}g protein</span>}
-                    {plan.carbs_g && <span className="text-[10px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">{plan.carbs_g}g carbs</span>}
-                    {plan.fats_g && <span className="text-[10px] font-medium text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">{plan.fats_g}g fats</span>}
+                    {plan.protein_g && <span className="text-[10px] font-medium text-primary bg-accent px-2 py-0.5 rounded-full">{plan.protein_g}g protein</span>}
+                    {plan.carbs_g && <span className="text-[10px] font-medium text-warning bg-warning/10 px-2 py-0.5 rounded-full">{plan.carbs_g}g carbs</span>}
+                    {plan.fats_g && <span className="text-[10px] font-medium text-destructive bg-destructive/10 px-2 py-0.5 rounded-full">{plan.fats_g}g fats</span>}
                   </div>
                 </div>
                 <div className={cn(
                   'w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all',
-                  sel ? 'bg-emerald-500 border-emerald-500' : 'border-border'
+                  sel ? 'bg-success border-success' : 'border-border'
                 )}>
                   {sel && <span className="text-[10px] text-white font-bold">✓</span>}
                 </div>
@@ -127,7 +127,7 @@ export default function MigrationNutrition({ onComplete, onSkip }) {
           <button
             onClick={doImport}
             disabled={importing}
-            className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 bg-success text-white rounded-xl text-sm font-semibold hover:bg-success transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {importing
               ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Importing...</>

@@ -82,16 +82,16 @@ export default function DefaultAssignmentSettings() {
       {/* Master toggle */}
       <div className={`flex items-center justify-between rounded-2xl px-5 py-4 border-2 transition-all ${
         form.auto_assign_enabled
-          ? 'bg-emerald-50 border-emerald-200'
-          : 'bg-slate-50 border-slate-200'
+          ? 'bg-success/10 border-success'
+          : 'bg-muted border-border'
       }`}>
         <div className="flex items-center gap-3">
-          <CheckCircle2 className={`w-5 h-5 shrink-0 ${form.auto_assign_enabled ? 'text-emerald-600' : 'text-slate-400'}`} />
+          <CheckCircle2 className={`w-5 h-5 shrink-0 ${form.auto_assign_enabled ? 'text-success' : 'text-muted-foreground'}`} />
           <div>
-            <p className={`text-sm font-bold ${form.auto_assign_enabled ? 'text-emerald-800' : 'text-slate-600'}`}>
+            <p className={`text-sm font-bold ${form.auto_assign_enabled ? 'text-success' : 'text-muted-foreground'}`}>
               Auto-Assignment {form.auto_assign_enabled ? 'Enabled' : 'Disabled'}
             </p>
-            <p className={`text-xs mt-0.5 ${form.auto_assign_enabled ? 'text-emerald-600' : 'text-slate-400'}`}>
+            <p className={`text-xs mt-0.5 ${form.auto_assign_enabled ? 'text-success' : 'text-muted-foreground'}`}>
               {form.auto_assign_enabled
                 ? 'New clients automatically receive the defaults below'
                 : 'New clients will NOT receive any defaults automatically'}
@@ -105,14 +105,14 @@ export default function DefaultAssignmentSettings() {
       <div className={form.auto_assign_enabled ? '' : 'opacity-40 pointer-events-none'}>
 
       {/* Program default */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3">
+      <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-            <Dumbbell className="w-4 h-4 text-blue-600" />
+          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center shrink-0">
+            <Dumbbell className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#1F2A44]">Default Workout Program</p>
-            <p className="text-xs text-[#9CA3AF]">Assigned automatically to every new client</p>
+            <p className="text-sm font-semibold text-foreground">Default Workout Program</p>
+            <p className="text-xs text-muted-foreground">Assigned automatically to every new client</p>
           </div>
         </div>
         <Select value={form.default_program_id} onValueChange={v => set('default_program_id', v)}>
@@ -129,14 +129,14 @@ export default function DefaultAssignmentSettings() {
       </div>
 
       {/* Nutrition default */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3">
+      <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-            <Utensils className="w-4 h-4 text-green-600" />
+          <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+            <Utensils className="w-4 h-4 text-success" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#1F2A44]">Default Nutrition Plan</p>
-            <p className="text-xs text-[#9CA3AF]">Assigned automatically to every new client</p>
+            <p className="text-sm font-semibold text-foreground">Default Nutrition Plan</p>
+            <p className="text-xs text-muted-foreground">Assigned automatically to every new client</p>
           </div>
         </div>
         <Select value={form.default_nutrition_id} onValueChange={v => set('default_nutrition_id', v)}>
@@ -153,14 +153,14 @@ export default function DefaultAssignmentSettings() {
       </div>
 
       {/* Check-in frequency */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3">
+      <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-4 h-4 text-purple-600" />
+          <div className="w-8 h-8 rounded-lg bg-ai/10 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-4 h-4 text-ai" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#1F2A44]">Check-In Frequency</p>
-            <p className="text-xs text-[#9CA3AF]">How often new clients are reminded to check in</p>
+            <p className="text-sm font-semibold text-foreground">Check-In Frequency</p>
+            <p className="text-xs text-muted-foreground">How often new clients are reminded to check in</p>
           </div>
         </div>
         <Select value={form.checkin_frequency} onValueChange={v => set('checkin_frequency', v)}>
@@ -176,15 +176,15 @@ export default function DefaultAssignmentSettings() {
       </div>
 
       {/* Welcome message */}
-      <div className="bg-white border border-[#E7EAF3] rounded-2xl p-4 space-y-3">
+      <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-              <MessageSquare className="w-4 h-4 text-amber-600" />
+            <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
+              <MessageSquare className="w-4 h-4 text-warning" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-[#1F2A44]">Welcome Message</p>
-              <p className="text-xs text-[#9CA3AF]">Sent automatically when a new client is added</p>
+              <p className="text-sm font-semibold text-foreground">Welcome Message</p>
+              <p className="text-xs text-muted-foreground">Sent automatically when a new client is added</p>
             </div>
           </div>
           <Switch checked={form.send_welcome_message} onCheckedChange={v => set('send_welcome_message', v)} />

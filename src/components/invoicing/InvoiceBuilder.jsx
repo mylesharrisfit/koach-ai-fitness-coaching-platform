@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { format, addDays } from 'date-fns';
-import { Plus, Trash2, ChevronDown, Search, X, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, Search } from 'lucide-react';
 
 const today = () => format(new Date(), 'yyyy-MM-dd');
 
@@ -38,7 +38,7 @@ function ClientPicker({ clients, value, onChange }) {
 
   const initials = (name) => (name || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   const avatarColor = (name) => {
-    const colors = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+    const colors = ['var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-success)', 'var(--tc-warning)', 'var(--tc-destructive)'];
     return colors[(name?.charCodeAt(0) || 0) % colors.length];
   };
 
@@ -46,7 +46,7 @@ function ClientPicker({ clients, value, onChange }) {
     <div ref={ref} style={{ position: 'relative' }}>
       <div
         onClick={() => setOpen(o => !o)}
-        style={{ padding: '10px 14px', border: '1.5px solid #E5E7EB', borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, background: '#fff', minHeight: 44 }}
+        style={{ padding: '10px 14px', border: '1.5px solid var(--tc-border)', borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, background: 'var(--tc-card)', minHeight: 44 }}
       >
         {selected ? (
           <>
@@ -54,38 +54,38 @@ function ClientPicker({ clients, value, onChange }) {
               {initials(selected.name)}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#111' }}>{selected.name}</div>
-              <div style={{ fontSize: 11, color: '#9CA3AF' }}>{selected.email || 'No email'}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--tc-foreground)' }}>{selected.name}</div>
+              <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>{selected.email || 'No email'}</div>
             </div>
           </>
         ) : (
-          <span style={{ fontSize: 14, color: '#9CA3AF', flex: 1 }}>Select client…</span>
+          <span style={{ fontSize: 14, color: 'var(--tc-muted-foreground)', flex: 1 }}>Select client…</span>
         )}
-        <ChevronDown size={14} color="#9CA3AF" />
+        <ChevronDown size={14} color="var(--tc-muted-foreground)" />
       </div>
       {open && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1.5px solid #E5E7EB', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 100, marginTop: 4, overflow: 'hidden' }}>
-          <div style={{ padding: '10px 12px', borderBottom: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Search size={13} color="#9CA3AF" />
-            <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search clients…" style={{ border: 'none', outline: 'none', fontSize: 13, flex: 1, color: '#111' }} />
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--tc-card)', border: '1.5px solid var(--tc-border)', borderRadius: 12, boxShadow: '0 8px 24px color-mix(in srgb, black 12%, transparent)', zIndex: 100, marginTop: 4, overflow: 'hidden' }}>
+          <div style={{ padding: '10px 12px', borderBottom: '1px solid var(--tc-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Search size={13} color="var(--tc-muted-foreground)" />
+            <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search clients…" style={{ border: 'none', outline: 'none', fontSize: 13, flex: 1, color: 'var(--tc-foreground)' }} />
           </div>
           <div style={{ maxHeight: 220, overflowY: 'auto' }}>
             {filtered.map(c => (
               <div key={c.id} onClick={() => { onChange(c); setOpen(false); setQ(''); }}
                 style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', cursor: 'pointer', transition: 'background 0.1s' }}
-                onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--tc-background)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
                 <div style={{ width: 28, height: 28, borderRadius: 8, background: avatarColor(c.name) + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: avatarColor(c.name), flexShrink: 0 }}>
                   {initials(c.name)}
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>{c.name}</div>
-                  <div style={{ fontSize: 11, color: '#9CA3AF' }}>{c.email || 'No email'}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>{c.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>{c.email || 'No email'}</div>
                 </div>
               </div>
             ))}
-            {filtered.length === 0 && <div style={{ padding: '12px 14px', fontSize: 13, color: '#9CA3AF' }}>No clients found</div>}
+            {filtered.length === 0 && <div style={{ padding: '12px 14px', fontSize: 13, color: 'var(--tc-muted-foreground)' }}>No clients found</div>}
           </div>
         </div>
       )}
@@ -95,18 +95,18 @@ function ClientPicker({ clients, value, onChange }) {
 
 function LineItemRow({ item, index, onChange, onRemove }) {
   const total = (Number(item.qty) || 0) * (Number(item.price) || 0);
-  const inp = { padding: '8px 10px', border: '1px solid #E5E7EB', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#111', width: '100%', boxSizing: 'border-box' };
+  const inp = { padding: '8px 10px', border: '1px solid var(--tc-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: 'var(--tc-card)', color: 'var(--tc-foreground)', width: '100%', boxSizing: 'border-box' };
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 64px 100px 80px 32px', gap: 8, alignItems: 'center', marginBottom: 8 }}>
       <input value={item.description} onChange={e => onChange(index, 'description', e.target.value)} placeholder="Description" style={inp} />
       <input type="number" value={item.qty} onChange={e => onChange(index, 'qty', e.target.value)} placeholder="1" style={{ ...inp, textAlign: 'center' }} min="0" />
       <div style={{ position: 'relative' }}>
-        <span style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF', fontSize: 13 }}>$</span>
+        <span style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', fontSize: 13 }}>$</span>
         <input type="number" value={item.price} onChange={e => onChange(index, 'price', e.target.value)} placeholder="0" style={{ ...inp, paddingLeft: 20 }} min="0" />
       </div>
-      <div style={{ fontSize: 13, fontWeight: 600, color: '#111', textAlign: 'right' }}>${total.toFixed(2)}</div>
-      <button onClick={() => onRemove(index)} style={{ width: 28, height: 28, borderRadius: 8, border: 'none', background: '#FEF2F2', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Trash2 size={12} color="#EF4444" />
+      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)', textAlign: 'right' }}>${total.toFixed(2)}</div>
+      <button onClick={() => onRemove(index)} style={{ width: 28, height: 28, borderRadius: 8, border: 'none', background: 'var(--tc-destructive)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Trash2 size={12} color="var(--tc-destructive)" />
       </button>
     </div>
   );
@@ -115,14 +115,14 @@ function LineItemRow({ item, index, onChange, onRemove }) {
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 24 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{title}</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{title}</div>
       {children}
     </div>
   );
 }
 
-const inputStyle = { padding: '10px 14px', border: '1.5px solid #E5E7EB', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', color: '#111', width: '100%', boxSizing: 'border-box' };
-const labelStyle = { fontSize: 11, fontWeight: 600, color: '#6B7280', marginBottom: 5, display: 'block' };
+const inputStyle = { padding: '10px 14px', border: '1.5px solid var(--tc-border)', borderRadius: 10, fontSize: 14, outline: 'none', background: 'var(--tc-card)', color: 'var(--tc-foreground)', width: '100%', boxSizing: 'border-box' };
+const labelStyle = { fontSize: 11, fontWeight: 600, color: 'var(--tc-muted-foreground)', marginBottom: 5, display: 'block' };
 
 export default function InvoiceBuilder({ form, setForm, clients, existingInvoices }) {
   const [showPresets, setShowPresets] = useState(false);
@@ -258,7 +258,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 6 }}>
               {DUE_PRESETS.map(p => (
                 <button key={p.label} type="button" onClick={() => handleDuePreset(p)}
-                  style={{ padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: `1px solid ${duePreset === p.label ? '#2563EB' : '#E5E7EB'}`, background: duePreset === p.label ? '#EFF6FF' : '#fff', color: duePreset === p.label ? '#2563EB' : '#6B7280' }}>
+                  style={{ padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: `1px solid ${duePreset === p.label ? 'var(--tc-primary)' : 'var(--tc-border)'}`, background: duePreset === p.label ? 'var(--tc-accent)' : 'var(--tc-card)', color: duePreset === p.label ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>
                   {p.label}
                 </button>
               ))}
@@ -272,7 +272,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
       <Section title="Line Items">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 64px 100px 80px 32px', gap: 8, marginBottom: 8 }}>
           {['Description', 'Qty', 'Unit Price', 'Total', ''].map((h, i) => (
-            <div key={i} style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i === 3 ? 'right' : 'left' }}>{h}</div>
+            <div key={i} style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i === 3 ? 'right' : 'left' }}>{h}</div>
           ))}
         </div>
         {(form.line_items || []).map((item, i) => (
@@ -280,24 +280,24 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
         ))}
         <div ref={presetsRef} style={{ position: 'relative', display: 'inline-block' }}>
           <button type="button" onClick={() => setShowPresets(s => !s)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: '#F0F7FF', color: '#2563EB', border: '1px solid #BFDBFE', cursor: 'pointer' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'var(--tc-accent)', color: 'var(--tc-primary)', border: '1px solid var(--tc-accent)', cursor: 'pointer' }}>
             <Plus size={14} /> Add Line Item <ChevronDown size={12} />
           </button>
           {showPresets && (
-            <div style={{ position: 'absolute', top: '100%', left: 0, background: '#fff', border: '1.5px solid #E5E7EB', borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 50, marginTop: 4, minWidth: 220, overflow: 'hidden' }}>
-              <div style={{ padding: '8px 12px', fontSize: 10, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '1px solid #F3F4F6' }}>Quick Add</div>
+            <div style={{ position: 'absolute', top: '100%', left: 0, background: 'var(--tc-card)', border: '1.5px solid var(--tc-border)', borderRadius: 12, boxShadow: '0 8px 24px color-mix(in srgb, black 10%, transparent)', zIndex: 50, marginTop: 4, minWidth: 220, overflow: 'hidden' }}>
+              <div style={{ padding: '8px 12px', fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '1px solid var(--tc-muted)' }}>Quick Add</div>
               {LINE_PRESETS.map(p => (
                 <div key={p.description} onClick={() => addLineItem({ ...p })}
                   style={{ padding: '10px 14px', fontSize: 13, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--tc-background)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   <span>{p.description}</span>
-                  <span style={{ color: '#9CA3AF', fontSize: 12 }}>${p.price}</span>
+                  <span style={{ color: 'var(--tc-muted-foreground)', fontSize: 12 }}>${p.price}</span>
                 </div>
               ))}
-              <div style={{ borderTop: '1px solid #F3F4F6' }}>
-                <div onClick={() => addLineItem()} style={{ padding: '10px 14px', fontSize: 13, cursor: 'pointer', color: '#6B7280' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'}
+              <div style={{ borderTop: '1px solid var(--tc-muted)' }}>
+                <div onClick={() => addLineItem()} style={{ padding: '10px 14px', fontSize: 13, cursor: 'pointer', color: 'var(--tc-muted-foreground)' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--tc-background)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                   + Custom line item
                 </div>
@@ -309,27 +309,27 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
 
       {/* PRICING */}
       <Section title="Pricing">
-        <div style={{ background: '#F9FAFB', borderRadius: 12, padding: '14px 16px' }}>
+        <div style={{ background: 'var(--tc-background)', borderRadius: 12, padding: '14px 16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-            <span style={{ fontSize: 13, color: '#6B7280' }}>Subtotal</span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>${subtotal.toFixed(2)}</span>
+            <span style={{ fontSize: 13, color: 'var(--tc-muted-foreground)' }}>Subtotal</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>${subtotal.toFixed(2)}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <span style={{ fontSize: 13, color: '#6B7280' }}>Discount</span>
+            <span style={{ fontSize: 13, color: 'var(--tc-muted-foreground)' }}>Discount</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <input type="number" value={form.discount || ''} onChange={e => handleDiscountChange(e.target.value)} placeholder="0" style={{ width: 70, padding: '6px 8px', border: '1px solid #E5E7EB', borderRadius: 8, fontSize: 13, textAlign: 'right', outline: 'none' }} min="0" />
-              <button onClick={toggleDiscountType} style={{ padding: '6px 10px', border: '1px solid #E5E7EB', borderRadius: 8, fontSize: 12, fontWeight: 600, background: '#fff', cursor: 'pointer', color: '#374151' }}>
+              <input type="number" value={form.discount || ''} onChange={e => handleDiscountChange(e.target.value)} placeholder="0" style={{ width: 70, padding: '6px 8px', border: '1px solid var(--tc-border)', borderRadius: 8, fontSize: 13, textAlign: 'right', outline: 'none' }} min="0" />
+              <button onClick={toggleDiscountType} style={{ padding: '6px 10px', border: '1px solid var(--tc-border)', borderRadius: 8, fontSize: 12, fontWeight: 600, background: 'var(--tc-card)', cursor: 'pointer', color: 'var(--tc-foreground)' }}>
                 {form.discount_type === 'pct' ? '%' : '$'}
               </button>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <span style={{ fontSize: 13, color: '#6B7280' }}>Tax (%)</span>
-            <input type="number" value={form.tax || ''} onChange={e => handleTaxChange(e.target.value)} placeholder="0" style={{ width: 70, padding: '6px 8px', border: '1px solid #E5E7EB', borderRadius: 8, fontSize: 13, textAlign: 'right', outline: 'none' }} min="0" />
+            <span style={{ fontSize: 13, color: 'var(--tc-muted-foreground)' }}>Tax (%)</span>
+            <input type="number" value={form.tax || ''} onChange={e => handleTaxChange(e.target.value)} placeholder="0" style={{ width: 70, padding: '6px 8px', border: '1px solid var(--tc-border)', borderRadius: 8, fontSize: 13, textAlign: 'right', outline: 'none' }} min="0" />
           </div>
-          <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>Total</span>
-            <span style={{ fontSize: 22, fontWeight: 900, color: '#111', letterSpacing: '-0.02em' }}>${total.toFixed(2)}</span>
+          <div style={{ borderTop: '1px solid var(--tc-border)', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--tc-foreground)' }}>Total</span>
+            <span style={{ fontSize: 22, fontWeight: 900, color: 'var(--tc-foreground)', letterSpacing: '-0.02em' }}>${total.toFixed(2)}</span>
           </div>
         </div>
       </Section>
@@ -341,38 +341,38 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
           <div style={{ display: 'flex', gap: 8 }}>
             {['stripe', 'manual', 'both'].map(opt => (
               <button key={opt} type="button" onClick={() => set('payment_method', opt)}
-                style={{ flex: 1, padding: '9px', border: `1.5px solid ${form.payment_method === opt ? '#2563EB' : '#E5E7EB'}`, borderRadius: 10, fontSize: 12, fontWeight: 600, background: form.payment_method === opt ? '#EFF6FF' : '#fff', color: form.payment_method === opt ? '#2563EB' : '#6B7280', cursor: 'pointer', textTransform: 'capitalize' }}>
+                style={{ flex: 1, padding: '9px', border: `1.5px solid ${form.payment_method === opt ? 'var(--tc-primary)' : 'var(--tc-border)'}`, borderRadius: 10, fontSize: 12, fontWeight: 600, background: form.payment_method === opt ? 'var(--tc-accent)' : 'var(--tc-card)', color: form.payment_method === opt ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', cursor: 'pointer', textTransform: 'capitalize' }}>
                 {opt === 'stripe' ? '⚡ Stripe' : opt === 'manual' ? '💸 Manual' : '✓ Both'}
               </button>
             ))}
           </div>
         </div>
         {/* Installments */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#F9FAFB', borderRadius: 10, marginBottom: form.installments ? 12 : 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--tc-background)', borderRadius: 10, marginBottom: form.installments ? 12 : 0 }}>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>Installment plan</div>
-            <div style={{ fontSize: 11, color: '#9CA3AF' }}>Split into multiple payments</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>Installment plan</div>
+            <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Split into multiple payments</div>
           </div>
           <Toggle value={form.installments} onChange={v => set('installments', v)} />
         </div>
         {form.installments && (
-          <div style={{ background: '#F0F7FF', border: '1px solid #BFDBFE', borderRadius: 10, padding: '14px' }}>
+          <div style={{ background: 'var(--tc-accent)', border: '1px solid var(--tc-accent)', borderRadius: 10, padding: '14px' }}>
             <div style={{ marginBottom: 10 }}>
               <label style={labelStyle}>Number of installments</label>
               <div style={{ display: 'flex', gap: 8 }}>
                 {[2, 3, 4].map(n => (
                   <button key={n} type="button" onClick={() => set('installment_count', n)}
-                    style={{ flex: 1, padding: '8px', border: `1.5px solid ${form.installment_count === n ? '#2563EB' : '#E5E7EB'}`, borderRadius: 8, fontSize: 13, fontWeight: 600, background: form.installment_count === n ? '#EFF6FF' : '#fff', color: form.installment_count === n ? '#2563EB' : '#6B7280', cursor: 'pointer' }}>
+                    style={{ flex: 1, padding: '8px', border: `1.5px solid ${form.installment_count === n ? 'var(--tc-primary)' : 'var(--tc-border)'}`, borderRadius: 8, fontSize: 13, fontWeight: 600, background: form.installment_count === n ? 'var(--tc-accent)' : 'var(--tc-card)', color: form.installment_count === n ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', cursor: 'pointer' }}>
                     {n}
                   </button>
                 ))}
-                <input type="number" value={![2,3,4].includes(form.installment_count) ? form.installment_count : ''} onChange={e => set('installment_count', Number(e.target.value))} placeholder="Custom" min="2" style={{ flex: 1, padding: '8px', border: '1.5px solid #E5E7EB', borderRadius: 8, fontSize: 13, textAlign: 'center', outline: 'none' }} />
+                <input type="number" value={![2,3,4].includes(form.installment_count) ? form.installment_count : ''} onChange={e => set('installment_count', Number(e.target.value))} placeholder="Custom" min="2" style={{ flex: 1, padding: '8px', border: '1.5px solid var(--tc-border)', borderRadius: 8, fontSize: 13, textAlign: 'center', outline: 'none' }} />
               </div>
             </div>
-            <div style={{ fontSize: 11, color: '#3B82F6', fontWeight: 600 }}>Payment schedule:</div>
+            <div style={{ fontSize: 11, color: 'var(--tc-primary)', fontWeight: 600 }}>Payment schedule:</div>
             <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
               {installmentDates.map((d, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#374151' }}>
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--tc-foreground)' }}>
                   <span>Payment {i + 1} — {d}</span>
                   <span style={{ fontWeight: 700 }}>${installmentAmt.toFixed(2)}</span>
                 </div>
@@ -384,15 +384,15 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
 
       {/* RECURRING */}
       <Section title="Recurring Invoice">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#F9FAFB', borderRadius: 10, marginBottom: form.is_recurring ? 12 : 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--tc-background)', borderRadius: 10, marginBottom: form.is_recurring ? 12 : 0 }}>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>Make this a recurring invoice</div>
-            <div style={{ fontSize: 11, color: '#9CA3AF' }}>Automatically generate on schedule</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>Make this a recurring invoice</div>
+            <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Automatically generate on schedule</div>
           </div>
           <Toggle value={form.is_recurring} onChange={v => set('is_recurring', v)} />
         </div>
         {form.is_recurring && (
-          <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '14px', display: 'grid', gap: 10 }}>
+          <div style={{ background: 'var(--tc-background)', border: '1px solid var(--tc-border)', borderRadius: 10, padding: '14px', display: 'grid', gap: 10 }}>
             <div>
               <label style={labelStyle}>Frequency</label>
               <select value={form.recurring_interval || 'monthly'} onChange={e => set('recurring_interval', e.target.value)} style={{ ...inputStyle, appearance: 'none' }}>
@@ -413,8 +413,8 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>Auto-charge saved card</div>
-                <div style={{ fontSize: 11, color: '#9CA3AF' }}>Charge automatically if card on file</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>Auto-charge saved card</div>
+                <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Charge automatically if card on file</div>
               </div>
               <Toggle value={form.auto_charge} onChange={v => set('auto_charge', v)} />
             </div>
@@ -425,28 +425,28 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
       {/* NOTES & TERMS */}
       <Section title="Notes & Terms">
         <div style={{ marginBottom: 10 }}>
-          <label style={labelStyle}>Notes to client <span style={{ color: '#9CA3AF', fontWeight: 400 }}>(visible on invoice)</span></label>
+          <label style={labelStyle}>Notes to client <span style={{ color: 'var(--tc-muted-foreground)', fontWeight: 400 }}>(visible on invoice)</span></label>
           <textarea value={form.notes || ''} onChange={e => set('notes', e.target.value)} placeholder="Thank you for your business!" rows={3} style={{ ...inputStyle, resize: 'none' }} />
         </div>
         <div style={{ marginBottom: 10 }}>
-          <label style={labelStyle}>Internal notes <span style={{ color: '#9CA3AF', fontWeight: 400 }}>(not visible to client)</span></label>
+          <label style={labelStyle}>Internal notes <span style={{ color: 'var(--tc-muted-foreground)', fontWeight: 400 }}>(not visible to client)</span></label>
           <textarea value={form.internal_notes || ''} onChange={e => set('internal_notes', e.target.value)} rows={2} style={{ ...inputStyle, resize: 'none' }} />
         </div>
         <div style={{ marginBottom: 10 }}>
           <label style={labelStyle}>Payment terms</label>
           <input value={form.payment_terms || ''} onChange={e => set('payment_terms', e.target.value)} placeholder="e.g. Payment due within 30 days" style={inputStyle} />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#F9FAFB', borderRadius: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--tc-background)', borderRadius: 10 }}>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#111' }}>Late fee policy</div>
-            <div style={{ fontSize: 11, color: '#9CA3AF' }}>Charge % per month on overdue invoices</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>Late fee policy</div>
+            <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Charge % per month on overdue invoices</div>
           </div>
           <Toggle value={form.late_fee_enabled} onChange={v => set('late_fee_enabled', v)} />
         </div>
         {form.late_fee_enabled && (
           <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
             <input type="number" value={form.late_fee_pct || ''} onChange={e => set('late_fee_pct', e.target.value)} placeholder="1.5" style={{ ...inputStyle, width: 80 }} min="0" max="100" />
-            <span style={{ fontSize: 13, color: '#6B7280' }}>% per month</span>
+            <span style={{ fontSize: 13, color: 'var(--tc-muted-foreground)' }}>% per month</span>
           </div>
         )}
       </Section>
@@ -457,8 +457,8 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
 function Toggle({ value, onChange }) {
   return (
     <button type="button" onClick={() => onChange(!value)}
-      style={{ width: 40, height: 22, borderRadius: 9999, background: value ? '#2563EB' : '#E5E7EB', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0, transition: 'background 0.2s' }}>
-      <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: value ? 21 : 3, transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)' }} />
+      style={{ width: 40, height: 22, borderRadius: 9999, background: value ? 'var(--tc-primary)' : 'var(--tc-border)', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0, transition: 'background 0.2s' }}>
+      <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--tc-card)', position: 'absolute', top: 3, left: value ? 21 : 3, transition: 'left 0.2s', boxShadow: '0 1px 3px color-mix(in srgb, black 20%, transparent)' }} />
     </button>
   );
 }

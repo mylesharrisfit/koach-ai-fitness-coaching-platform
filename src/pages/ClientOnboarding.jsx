@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { toast } from 'sonner';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 
 /* ─── URL params ─── */
@@ -36,11 +35,11 @@ const PROGRESS_STEPS = STEPS.filter(s => !NO_PROGRESS.has(s));
 /* ─── Shared primitives ─── */
 function Screen({ children }) {
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col" style={{ background: 'var(--tc-sidebar)' }}>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(70px)' }}
+          style={{ background: 'radial-gradient(circle, var(--tc-primary) 0%, transparent 65%)', filter: 'blur(70px)' }}
         />
       </div>
       {children}
@@ -53,7 +52,7 @@ function BackBtn({ onClick }) {
     <button
       onClick={onClick}
       className="flex-shrink-0 flex items-center gap-1.5 text-sm font-medium px-6 pt-5 pb-1 relative z-10"
-      style={{ color: '#4A4A4A' }}
+      style={{ color: 'var(--kc-4a4a4a)' }}
     >
       <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
         <path d="M10 3L6 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -72,7 +71,7 @@ function Header({ eyebrow, headline, sub }) {
       transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
     >
       {eyebrow && (
-        <p className="text-[11px] uppercase tracking-[0.26em] font-bold mb-2.5" style={{ color: '#3B82F6' }}>
+        <p className="text-[11px] uppercase tracking-[0.26em] font-bold mb-2.5" style={{ color: 'var(--tc-primary)' }}>
           {eyebrow}
         </p>
       )}
@@ -80,7 +79,7 @@ function Header({ eyebrow, headline, sub }) {
         style={{ fontSize: 'clamp(1.75rem, 5.5vw, 2.6rem)', letterSpacing: '-0.03em' }}>
         {headline}
       </h2>
-      {sub && <p className="text-sm leading-relaxed" style={{ color: '#6A6A6A' }}>{sub}</p>}
+      {sub && <p className="text-sm leading-relaxed" style={{ color: 'var(--kc-6a6a6a)' }}>{sub}</p>}
     </motion.div>
   );
 }
@@ -89,18 +88,18 @@ function CTABtn({ label = 'Continue', onClick, disabled }) {
   return (
     <div
       className="flex-shrink-0 px-6 pt-3 pb-8 w-full max-w-md mx-auto relative z-10"
-      style={{ background: 'linear-gradient(to top, #0A0A0A 65%, transparent)' }}
+      style={{ background: 'var(--tc-sidebar)' }}
     >
       <motion.button
         onClick={onClick}
         disabled={disabled}
-        whileHover={!disabled ? { scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' } : {}}
+        whileHover={!disabled ? { scale: 1.02, boxShadow: '0 0 40px color-mix(in srgb, var(--tc-primary) 45%, transparent)' } : {}}
         whileTap={!disabled ? { scale: 0.98 } : {}}
         className="w-full py-4 rounded-2xl font-bold text-base transition-all"
         style={{
-          background: disabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
-          boxShadow: disabled ? 'none' : '0 0 24px rgba(59,130,246,0.28)',
-          color: disabled ? '#444' : '#fff',
+          background: disabled ? 'color-mix(in srgb, white 6%, transparent)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))',
+          boxShadow: disabled ? 'none' : '0 0 24px color-mix(in srgb, var(--tc-primary) 28%, transparent)',
+          color: disabled ? 'var(--kc-444444)' : 'var(--tc-card)',
           cursor: disabled ? 'not-allowed' : 'pointer',
         }}
       >
@@ -117,10 +116,10 @@ function Chip({ label, selected, onClick, emoji }) {
       whileTap={{ scale: 0.94 }}
       className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
       style={{
-        background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-        border: selected ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-        color: selected ? '#fff' : '#6A6A6A',
-        boxShadow: selected ? '0 0 18px rgba(59,130,246,0.15)' : 'none',
+        background: selected ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+        border: selected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+        color: selected ? 'var(--tc-card)' : 'var(--kc-6a6a6a)',
+        boxShadow: selected ? '0 0 18px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
       }}
     >
       {emoji && <span className="mr-1.5">{emoji}</span>}{label}
@@ -135,22 +134,22 @@ function BigCard({ emoji, label, sublabel, selected, onClick }) {
       whileTap={{ scale: 0.975 }}
       className="relative w-full text-left rounded-2xl p-4 transition-all"
       style={{
-        background: selected ? 'rgba(59,130,246,0.09)' : 'rgba(255,255,255,0.03)',
-        border: selected ? '1.5px solid rgba(59,130,246,0.6)' : '1.5px solid rgba(255,255,255,0.07)',
-        boxShadow: selected ? '0 0 28px rgba(59,130,246,0.12)' : 'none',
+        background: selected ? 'color-mix(in srgb, var(--tc-primary) 9%, transparent)' : 'color-mix(in srgb, white 3%, transparent)',
+        border: selected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 60%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+        boxShadow: selected ? '0 0 28px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
       }}
     >
       <div className="flex items-center gap-4">
         <span className="text-2xl flex-shrink-0">{emoji}</span>
         <div className="flex-1 text-left">
-          <p className="font-semibold text-sm" style={{ color: selected ? '#fff' : '#B3B3B3' }}>{label}</p>
-          {sublabel && <p className="text-xs mt-0.5" style={{ color: '#4A4A4A' }}>{sublabel}</p>}
+          <p className="font-semibold text-sm" style={{ color: selected ? 'var(--tc-card)' : 'var(--kc-b3b3b3)' }}>{label}</p>
+          {sublabel && <p className="text-xs mt-0.5" style={{ color: 'var(--kc-4a4a4a)' }}>{sublabel}</p>}
         </div>
         <div
           className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
           style={{
-            background: selected ? '#3B82F6' : 'transparent',
-            border: selected ? '2px solid #3B82F6' : '2px solid rgba(255,255,255,0.12)',
+            background: selected ? 'var(--tc-primary)' : 'transparent',
+            border: selected ? '2px solid var(--tc-primary)' : '2px solid color-mix(in srgb, white 12%, transparent)',
           }}
         >
           {selected && (
@@ -167,17 +166,17 @@ function BigCard({ emoji, label, sublabel, selected, onClick }) {
 function PremiumField({ label, value, onChange, type = 'text', placeholder, autoFocus }) {
   return (
     <div className="space-y-1.5">
-      <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#4A4A4A' }}>{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--kc-4a4a4a)' }}>{label}</p>
       <input
         type={type}
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        className="w-full px-5 py-4 rounded-2xl text-white text-base font-medium placeholder-[#2E2E2E] outline-none transition-all"
-        style={{ background: '#111', border: '1.5px solid rgba(255,255,255,0.07)' }}
-        onFocus={e => (e.target.style.borderColor = 'rgba(59,130,246,0.5)')}
-        onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.07)')}
+        className="w-full px-5 py-4 rounded-2xl text-white text-base font-medium placeholder-[var(--kc-2e2e2e)] outline-none transition-all"
+        style={{ background: 'var(--tc-foreground)', border: '1.5px solid color-mix(in srgb, white 7%, transparent)' }}
+        onFocus={e => (e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 50%, transparent)')}
+        onBlur={e => (e.target.style.borderColor = 'color-mix(in srgb, white 7%, transparent)')}
       />
     </div>
   );
@@ -187,18 +186,18 @@ function NumBox({ label, value, onChange, unit, placeholder }) {
   return (
     <div
       className="flex-1 flex flex-col items-center gap-2 py-5 px-3 rounded-2xl"
-      style={{ background: '#111', border: '1.5px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'var(--tc-foreground)', border: '1.5px solid color-mix(in srgb, white 7%, transparent)' }}
     >
-      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#4A4A4A' }}>{label}</p>
+      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--kc-4a4a4a)' }}>{label}</p>
       <input
         type="number"
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full text-center text-3xl font-bold text-white bg-transparent border-0 focus:outline-none placeholder-[#222]"
+        className="w-full text-center text-3xl font-bold text-white bg-transparent border-0 focus:outline-none placeholder-[var(--kc-222222)]"
         style={{ minWidth: 0 }}
       />
-      {unit && <p className="text-xs" style={{ color: '#3A3A3A' }}>{unit}</p>}
+      {unit && <p className="text-xs" style={{ color: 'var(--kc-3a3a3a)' }}>{unit}</p>}
     </div>
   );
 }
@@ -210,7 +209,7 @@ function SliderRow({ label, value, onChange, min = 1, max = 10, leftLabel, right
         <p className="text-sm font-semibold text-white">{label}</p>
         <span
           className="text-sm font-bold px-2.5 py-0.5 rounded-lg"
-          style={{ background: 'rgba(59,130,246,0.12)', color: '#3B82F6' }}
+          style={{ background: 'color-mix(in srgb, var(--tc-primary) 12%, transparent)', color: 'var(--tc-primary)' }}
         >
           {value || min}/{max}
         </span>
@@ -222,12 +221,12 @@ function SliderRow({ label, value, onChange, min = 1, max = 10, leftLabel, right
         value={value || min}
         onChange={e => onChange(Number(e.target.value))}
         className="w-full h-1.5 rounded-full outline-none appearance-none"
-        style={{ background: `linear-gradient(to right, #3B82F6 ${((value || min) - min) / (max - min) * 100}%, rgba(255,255,255,0.08) 0%)` }}
+        style={{ background: `linear-gradient(to right, var(--tc-primary) ${((value || min) - min) / (max - min) * 100}%, color-mix(in srgb, white 8%, transparent) 0%)` }}
       />
       {(leftLabel || rightLabel) && (
         <div className="flex justify-between">
-          <span className="text-xs" style={{ color: '#3A3A3A' }}>{leftLabel}</span>
-          <span className="text-xs" style={{ color: '#3A3A3A' }}>{rightLabel}</span>
+          <span className="text-xs" style={{ color: 'var(--kc-3a3a3a)' }}>{leftLabel}</span>
+          <span className="text-xs" style={{ color: 'var(--kc-3a3a3a)' }}>{rightLabel}</span>
         </div>
       )}
     </div>
@@ -237,9 +236,9 @@ function SliderRow({ label, value, onChange, min = 1, max = 10, leftLabel, right
 function SectionDivider({ label }) {
   return (
     <div className="flex items-center gap-3 my-2">
-      <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
-      <p className="text-[10px] uppercase tracking-widest font-bold" style={{ color: '#333' }}>{label}</p>
-      <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+      <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }} />
+      <p className="text-[10px] uppercase tracking-widest font-bold" style={{ color: 'var(--kc-333333)' }}>{label}</p>
+      <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }} />
     </div>
   );
 }
@@ -252,9 +251,9 @@ function PremiumTextarea({ value, onChange, placeholder, rows = 4 }) {
       placeholder={placeholder}
       rows={rows}
       className="w-full px-5 py-4 rounded-2xl text-white text-base leading-relaxed resize-none focus:outline-none transition-all"
-      style={{ background: '#111', border: '1.5px solid rgba(255,255,255,0.07)' }}
-      onFocus={e => (e.target.style.borderColor = 'rgba(59,130,246,0.45)')}
-      onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.07)')}
+      style={{ background: 'var(--tc-foreground)', border: '1.5px solid color-mix(in srgb, white 7%, transparent)' }}
+      onFocus={e => (e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 45%, transparent)')}
+      onBlur={e => (e.target.style.borderColor = 'color-mix(in srgb, white 7%, transparent)')}
     />
   );
 }
@@ -282,7 +281,7 @@ function WelcomeStep({ onNext }) {
             className="space-y-4"
           >
             {displayName && (
-              <p className="text-sm font-semibold" style={{ color: '#3B82F6' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--tc-primary)' }}>
                 Coach {displayName} invited you ✦
               </p>
             )}
@@ -292,7 +291,7 @@ function WelcomeStep({ onNext }) {
             >
               Your next level<br />starts now.
             </h1>
-            <p className="text-base leading-relaxed" style={{ color: '#6A6A6A' }}>
+            <p className="text-base leading-relaxed" style={{ color: 'var(--kc-6a6a6a)' }}>
               This personalized intake helps your coach build your training, nutrition, recovery, and success plan.
             </p>
           </motion.div>
@@ -305,7 +304,7 @@ function WelcomeStep({ onNext }) {
               <span
                 key={t}
                 className="px-3 py-1 rounded-full text-xs font-semibold"
-                style={{ background: 'rgba(59,130,246,0.08)', color: '#3B82F6', border: '1px solid rgba(59,130,246,0.18)' }}
+                style={{ background: 'color-mix(in srgb, var(--tc-primary) 8%, transparent)', color: 'var(--tc-primary)', border: '1px solid color-mix(in srgb, var(--tc-primary) 18%, transparent)' }}
               >
                 {t}
               </span>
@@ -318,14 +317,14 @@ function WelcomeStep({ onNext }) {
           >
             <motion.button
               onClick={onNext}
-              whileHover={{ scale: 1.03, boxShadow: '0 0 48px rgba(59,130,246,0.5)' }}
+              whileHover={{ scale: 1.03, boxShadow: '0 0 48px color-mix(in srgb, var(--tc-primary) 50%, transparent)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-2xl text-white font-bold text-lg"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))', boxShadow: '0 0 28px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}
             >
               Let's Go →
             </motion.button>
-            <p className="text-xs" style={{ color: '#2E2E2E' }}>Takes about 5 minutes · {totalSteps} steps · Private & secure</p>
+            <p className="text-xs" style={{ color: 'var(--kc-2e2e2e)' }}>Takes about 5 minutes · {totalSteps} steps · Private & secure</p>
           </motion.div>
         </motion.div>
       </div>
@@ -474,7 +473,7 @@ function ExperienceStep({ data, set, onNext, onBack }) {
           </div>
           <SectionDivider label="Training History" />
           <div className="space-y-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#4A4A4A' }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--kc-4a4a4a)' }}>
               Describe your training history (optional)
             </p>
             <PremiumTextarea
@@ -602,10 +601,10 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
                   onClick={() => set('training_days_per_week', d)}
                   className="flex-1 py-3.5 rounded-xl font-bold text-sm transition-all"
                   style={{
-                    background: data.training_days_per_week === d ? 'rgba(59,130,246,0.14)' : 'rgba(255,255,255,0.04)',
-                    border: data.training_days_per_week === d ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                    color: data.training_days_per_week === d ? '#fff' : '#4A4A4A',
-                    boxShadow: data.training_days_per_week === d ? '0 0 14px rgba(59,130,246,0.12)' : 'none',
+                    background: data.training_days_per_week === d ? 'color-mix(in srgb, var(--tc-primary) 14%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                    border: data.training_days_per_week === d ? '1.5px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+                    color: data.training_days_per_week === d ? 'var(--tc-card)' : 'var(--kc-4a4a4a)',
+                    boxShadow: data.training_days_per_week === d ? '0 0 14px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                   }}
                 >
                   {d}
@@ -712,7 +711,7 @@ function NutritionStep({ data, set, onNext, onBack }) {
           </div>
 
           <SectionDivider label="Food Allergies *" />
-          <p className="text-xs" style={{ color: '#5A5A5A' }}>Select all that apply — required for safe programming.</p>
+          <p className="text-xs" style={{ color: 'var(--kc-5a5a5a)' }}>Select all that apply — required for safe programming.</p>
           <div className="flex flex-wrap gap-2">
             {ALLERGY_OPTS.map(a => <Chip key={a} label={a} selected={allergies.includes(a)} onClick={() => toggleAllergy(a)} />)}
           </div>
@@ -781,10 +780,10 @@ function MedicalStep({ data, set, onNext, onBack }) {
           />
 
           <SectionDivider label="PAR-Q Health Screening *" />
-          <div className="p-4 rounded-2xl space-y-4" style={{ background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.15)' }}>
+          <div className="p-4 rounded-2xl space-y-4" style={{ background: 'color-mix(in srgb, var(--tc-warning) 5%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-warning) 15%, transparent)' }}>
             <div className="flex gap-2">
               <span className="text-lg flex-shrink-0">❤️</span>
-              <p className="text-sm leading-relaxed" style={{ color: '#D4A017' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--kc-d4a017)' }}>
                 <strong>Has a doctor ever said you have a heart condition, or that you should only do physical activity recommended by a doctor?</strong>
               </p>
             </div>
@@ -797,12 +796,12 @@ function MedicalStep({ data, set, onNext, onBack }) {
                   className="flex-1 py-3 rounded-xl font-bold text-sm transition-all"
                   style={{
                     background: data.parq_answer === ans
-                      ? (ans === 'Yes' ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.1)')
-                      : 'rgba(255,255,255,0.04)',
+                      ? (ans === 'Yes' ? 'color-mix(in srgb, var(--tc-destructive) 12%, transparent)' : 'color-mix(in srgb, var(--tc-success) 10%, transparent)')
+                      : 'color-mix(in srgb, white 4%, transparent)',
                     border: data.parq_answer === ans
-                      ? (ans === 'Yes' ? '1.5px solid rgba(239,68,68,0.55)' : '1.5px solid rgba(34,197,94,0.55)')
-                      : '1.5px solid rgba(255,255,255,0.07)',
-                    color: data.parq_answer === ans ? '#fff' : '#4A4A4A',
+                      ? (ans === 'Yes' ? '1.5px solid color-mix(in srgb, var(--tc-destructive) 55%, transparent)' : '1.5px solid color-mix(in srgb, var(--tc-success) 55%, transparent)')
+                      : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+                    color: data.parq_answer === ans ? 'var(--tc-card)' : 'var(--kc-4a4a4a)',
                   }}
                 >
                   {ans === 'Yes' ? '⚠️ Yes' : '✅ No'}
@@ -812,7 +811,7 @@ function MedicalStep({ data, set, onNext, onBack }) {
             {data.parq_answer === 'Yes' && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                 className="p-3 rounded-xl text-xs leading-relaxed"
-                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#F87171' }}>
+                style={{ background: 'color-mix(in srgb, var(--tc-destructive) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 20%, transparent)', color: 'var(--tc-destructive)' }}>
                 Please ensure you have medical clearance before starting any exercise program. Your coach will review this and may request documentation.
               </motion.div>
             )}
@@ -845,36 +844,36 @@ function ConsentStep({ data, set, onNext, onBack }) {
           className="space-y-5 max-w-md mx-auto w-full pb-4">
 
           {/* Disclaimer card */}
-          <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="rounded-2xl p-5 space-y-4" style={{ background: 'color-mix(in srgb, white 3%, transparent)', border: '1px solid color-mix(in srgb, white 7%, transparent)' }}>
             <div className="flex gap-3">
               <span className="text-2xl flex-shrink-0">🛡️</span>
               <div>
                 <p className="text-sm font-bold text-white mb-1">Coaching is not medical advice</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#6A6A6A' }}>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--kc-6a6a6a)' }}>
                   The coaching, training programs, and nutrition guidance provided are for general fitness and wellness purposes only. They do not constitute medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional before starting any exercise or nutrition program, especially if you have any pre-existing health conditions.
                 </p>
               </div>
             </div>
 
-            <div className="h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+            <div className="h-px" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }} />
 
             <div className="flex gap-3">
               <span className="text-2xl flex-shrink-0">✅</span>
               <div>
                 <p className="text-sm font-bold text-white mb-1">Exercise clearance</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#6A6A6A' }}>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--kc-6a6a6a)' }}>
                   By proceeding, you confirm that you are physically capable of participating in exercise, have disclosed any known medical conditions or limitations above, and are not relying on this coaching as a substitute for professional medical advice.
                 </p>
               </div>
             </div>
 
-            <div className="h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+            <div className="h-px" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }} />
 
             <div className="flex gap-3">
               <span className="text-2xl flex-shrink-0">🔒</span>
               <div>
                 <p className="text-sm font-bold text-white mb-1">Privacy</p>
-                <p className="text-xs leading-relaxed" style={{ color: '#6A6A6A' }}>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--kc-6a6a6a)' }}>
                   Your personal information and health data are shared only with your coach and will not be sold or shared with third parties.
                 </p>
               </div>
@@ -887,15 +886,15 @@ function ConsentStep({ data, set, onNext, onBack }) {
             whileTap={{ scale: 0.98 }}
             className="w-full flex items-start gap-4 p-5 rounded-2xl text-left transition-all"
             style={{
-              background: consentChecked ? 'rgba(34,197,94,0.07)' : 'rgba(255,255,255,0.03)',
-              border: consentChecked ? '1.5px solid rgba(34,197,94,0.4)' : '1.5px solid rgba(255,255,255,0.1)',
+              background: consentChecked ? 'color-mix(in srgb, var(--tc-success) 7%, transparent)' : 'color-mix(in srgb, white 3%, transparent)',
+              border: consentChecked ? '1.5px solid color-mix(in srgb, var(--tc-success) 40%, transparent)' : '1.5px solid color-mix(in srgb, white 10%, transparent)',
             }}
           >
             <div
               className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center mt-0.5 transition-all"
               style={{
-                background: consentChecked ? '#22C55E' : 'transparent',
-                border: consentChecked ? '2px solid #22C55E' : '2px solid rgba(255,255,255,0.2)',
+                background: consentChecked ? 'var(--tc-success)' : 'transparent',
+                border: consentChecked ? '2px solid var(--tc-success)' : '2px solid color-mix(in srgb, white 20%, transparent)',
               }}
             >
               {consentChecked && (
@@ -904,13 +903,13 @@ function ConsentStep({ data, set, onNext, onBack }) {
                 </svg>
               )}
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? '#fff' : '#7A7A7A' }}>
-              I confirm I am cleared to exercise, I understand that coaching is not medical advice, and I take full responsibility for my own health and safety during this program. <span style={{ color: '#22C55E' }}>*Required</span>
+            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? 'var(--tc-card)' : 'var(--kc-7a7a7a)' }}>
+              I confirm I am cleared to exercise, I understand that coaching is not medical advice, and I take full responsibility for my own health and safety during this program. <span style={{ color: 'var(--tc-success)' }}>*Required</span>
             </p>
           </motion.button>
 
           {!consentChecked && (
-            <p className="text-xs text-center" style={{ color: '#3A3A3A' }}>
+            <p className="text-xs text-center" style={{ color: 'var(--kc-3a3a3a)' }}>
               You must agree to the above to continue
             </p>
           )}
@@ -942,12 +941,12 @@ function MindsetStep({ data, set, onNext, onBack }) {
               placeholder="I want to feel strong, confident, and show up as my best self every single day..."
               rows={6}
             />
-            <span className="absolute bottom-3 right-4 text-xs" style={{ color: '#2E2E2E' }}>
+            <span className="absolute bottom-3 right-4 text-xs" style={{ color: 'var(--kc-2e2e2e)' }}>
               {(data.motivation || '').length}/500
             </span>
           </div>
           <div className="space-y-3">
-            <p className="text-xs uppercase tracking-widest font-bold" style={{ color: '#2E2E2E' }}>Quick picks</p>
+            <p className="text-xs uppercase tracking-widest font-bold" style={{ color: 'var(--kc-2e2e2e)' }}>Quick picks</p>
             <div className="flex flex-wrap gap-2">
               {WHY_PROMPTS.map(p => (
                 <motion.button
@@ -955,7 +954,7 @@ function MindsetStep({ data, set, onNext, onBack }) {
                   whileTap={{ scale: 0.94 }}
                   onClick={() => append(p)}
                   className="px-3.5 py-2 rounded-xl text-xs font-semibold transition-all"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#5A5A5A' }}
+                  style={{ background: 'color-mix(in srgb, white 4%, transparent)', border: '1px solid color-mix(in srgb, white 7%, transparent)', color: 'var(--kc-5a5a5a)' }}
                 >
                   {p}
                 </motion.button>
@@ -1005,13 +1004,13 @@ function ObstaclesStep({ data, set, onNext, onBack }) {
                 transition={{ delay: i * 0.04 }}
                 className="py-4 px-4 rounded-2xl text-left transition-all"
                 style={{
-                  background: selected.includes(o.id) ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                  border: selected.includes(o.id) ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                  boxShadow: selected.includes(o.id) ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                  background: selected.includes(o.id) ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 3%, transparent)',
+                  border: selected.includes(o.id) ? '1.5px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+                  boxShadow: selected.includes(o.id) ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                 }}
               >
                 <div className="text-xl mb-1.5">{o.emoji}</div>
-                <p className="text-sm font-semibold" style={{ color: selected.includes(o.id) ? '#fff' : '#7A7A7A' }}>{o.label}</p>
+                <p className="text-sm font-semibold" style={{ color: selected.includes(o.id) ? 'var(--tc-card)' : 'var(--kc-7a7a7a)' }}>{o.label}</p>
               </motion.button>
             ))}
           </div>
@@ -1055,15 +1054,15 @@ function CommitmentStep({ data, set, onNext, onBack }) {
                     transition={{ delay: i * 0.07 }}
                     className="py-6 px-4 rounded-2xl text-center transition-all"
                     style={{
-                      background: sel ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                      border: sel ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                      boxShadow: sel ? '0 0 30px rgba(59,130,246,0.18)' : 'none',
+                      background: sel ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 3%, transparent)',
+                      border: sel ? '1.5px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
+                      boxShadow: sel ? '0 0 30px color-mix(in srgb, var(--tc-primary) 18%, transparent)' : 'none',
                       transform: sel ? 'scale(1.03)' : 'scale(1)',
                     }}
                   >
                     <div className="text-3xl mb-2">{c.emoji}</div>
-                    <p className="font-bold text-sm" style={{ color: sel ? '#fff' : '#9A9A9A' }}>{c.label}</p>
-                    <p className="text-xs mt-1" style={{ color: '#4A4A4A' }}>{c.sub}</p>
+                    <p className="font-bold text-sm" style={{ color: sel ? 'var(--tc-card)' : 'var(--kc-9a9a9a)' }}>{c.label}</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--kc-4a4a4a)' }}>{c.sub}</p>
                   </motion.button>
                 );
               })}
@@ -1071,8 +1070,8 @@ function CommitmentStep({ data, set, onNext, onBack }) {
           </div>
 
           <div className="py-3 px-5 rounded-2xl text-center space-y-1"
-            style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.1)' }}>
-            <p className="text-xs" style={{ color: '#5A5A5A' }}>
+            style={{ background: 'color-mix(in srgb, var(--tc-primary) 5%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-primary) 10%, transparent)' }}>
+            <p className="text-xs" style={{ color: 'var(--kc-5a5a5a)' }}>
               Your coach uses this to calibrate your plan intensity and accountability level.
             </p>
           </div>
@@ -1116,15 +1115,15 @@ function GenItemCard({ item }) {
       transition={{ delay: item.activateAt * 0.3, duration: 0.4 }}
       className="flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-500"
       style={{
-        background: status === 'done' ? 'rgba(34,197,94,0.06)' : status === 'loading' ? 'rgba(59,130,246,0.07)' : 'rgba(255,255,255,0.02)',
-        border: status === 'done' ? '1px solid rgba(34,197,94,0.22)' : status === 'loading' ? '1px solid rgba(59,130,246,0.28)' : '1px solid rgba(255,255,255,0.04)',
+        background: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 6%, transparent)' : status === 'loading' ? 'color-mix(in srgb, var(--tc-primary) 7%, transparent)' : 'color-mix(in srgb, white 2%, transparent)',
+        border: status === 'done' ? '1px solid color-mix(in srgb, var(--tc-success) 22%, transparent)' : status === 'loading' ? '1px solid color-mix(in srgb, var(--tc-primary) 28%, transparent)' : '1px solid color-mix(in srgb, white 4%, transparent)',
       }}
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#2E2E2E' : '#fff' }}>{item.label}</p>
+        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-2e2e2e)' : 'var(--tc-card)' }}>{item.label}</p>
         <p className="text-[11px] mt-0.5" style={{
-          color: status === 'done' ? 'rgba(34,197,94,0.8)' : status === 'loading' ? 'rgba(59,130,246,0.8)' : '#2E2E2E',
+          color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 80%, transparent)' : status === 'loading' ? 'color-mix(in srgb, var(--tc-primary) 80%, transparent)' : 'var(--kc-2e2e2e)',
         }}>
           {status === 'done' ? 'Personalized' : status === 'loading' ? 'Analyzing…' : 'Queued'}
         </p>
@@ -1132,12 +1131,12 @@ function GenItemCard({ item }) {
       <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
         {status === 'loading' && (
           <motion.div className="w-4 h-4 rounded-full border-2"
-            style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+            style={{ borderColor: 'var(--tc-primary)', borderTopColor: 'transparent' }}
             animate={{ rotate: 360 }} transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }} />
         )}
         {status === 'done' && (
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-            className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#22C55E' }}>
+            className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--tc-success)' }}>
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -1173,18 +1172,18 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <motion.div
           className="w-[800px] h-[800px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 65%)', filter: 'blur(80px)' }}
+          style={{ background: 'radial-gradient(circle, color-mix(in srgb, var(--tc-primary) 8%, transparent) 0%, transparent 65%)', filter: 'blur(80px)' }}
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full px-6 gap-7 relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2">
-          <p className="text-[11px] uppercase tracking-[0.26em] font-bold" style={{ color: '#3B82F6' }}>KOACH AI Engine</p>
+          <p className="text-[11px] uppercase tracking-[0.26em] font-bold" style={{ color: 'var(--tc-primary)' }}>KOACH AI Engine</p>
           <AnimatePresence mode="wait">
             {allDone ? (
               <motion.h2 key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                className="text-3xl font-bold" style={{ color: '#22C55E', letterSpacing: '-0.025em' }}>
+                className="text-3xl font-bold" style={{ color: 'var(--tc-success)', letterSpacing: '-0.025em' }}>
                 Your profile is ready.
               </motion.h2>
             ) : (
@@ -1194,15 +1193,15 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
               </motion.h2>
             )}
           </AnimatePresence>
-          <p className="text-sm" style={{ color: '#5A5A5A' }}>
+          <p className="text-sm" style={{ color: 'var(--kc-5a5a5a)' }}>
             {allDone ? 'Sending to your coach…' : 'Analyzing your profile for your coach'}
           </p>
         </motion.div>
 
-        <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             animate={{ width: allDone ? '100%' : `${(GEN_ITEMS.length / GEN_ITEMS.length) * 85}%` }}
             initial={{ width: '0%' }}
             transition={{ duration: lastAt * 0.9 }}
@@ -1221,22 +1220,22 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
             className="w-full space-y-3"
           >
             <div className="p-5 rounded-2xl space-y-3"
-              style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.3)' }}>
-              <p className="text-sm font-bold text-center" style={{ color: '#F87171' }}>⚠️ Submission Failed</p>
+              style={{ background: 'color-mix(in srgb, var(--tc-destructive) 7%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 30%, transparent)' }}>
+              <p className="text-sm font-bold text-center" style={{ color: 'var(--tc-destructive)' }}>⚠️ Submission Failed</p>
               <div className="rounded-xl p-3 text-left"
-                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: '#6A6A6A' }}>Error details</p>
-                <p className="text-xs leading-relaxed break-words" style={{ color: '#FCA5A5', fontFamily: 'monospace' }}>
+                style={{ background: 'color-mix(in srgb, black 30%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 20%, transparent)' }}>
+                <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--kc-6a6a6a)' }}>Error details</p>
+                <p className="text-xs leading-relaxed break-words" style={{ color: 'var(--tc-destructive)', fontFamily: 'monospace' }}>
                   {submitError || 'Unknown error — no message received.'}
                 </p>
               </div>
-              <p className="text-xs text-center" style={{ color: '#6A6A6A' }}>
+              <p className="text-xs text-center" style={{ color: 'var(--kc-6a6a6a)' }}>
                 Your answers are saved in this browser session. Tap Try Again to resubmit.
               </p>
               <button
                 onClick={onRetry}
                 className="w-full py-3 rounded-xl font-bold text-sm text-white"
-                style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}
+                style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))' }}
               >
                 Try Again
               </button>
@@ -1264,24 +1263,24 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
           <motion.div
             variants={{ hidden: { scale: 0, opacity: 0 }, show: { scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 200, delay: 0.1 } } }}
             className="w-24 h-24 rounded-3xl flex items-center justify-center"
-            style={{ background: 'rgba(34,197,94,0.1)', border: '2px solid rgba(34,197,94,0.3)' }}
+            style={{ background: 'color-mix(in srgb, var(--tc-success) 10%, transparent)', border: '2px solid color-mix(in srgb, var(--tc-success) 30%, transparent)' }}
           >
             <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <path d="M9 21L17 29L33 13" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 21L17 29L33 13" stroke="var(--tc-success)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </motion.div>
 
           <motion.div variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }} className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#22C55E' }}>Application received</p>
+            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'var(--tc-success)' }}>Application received</p>
             <h2 className="font-bold text-white" style={{ fontSize: 'clamp(2rem, 7vw, 2.8rem)', letterSpacing: '-0.03em' }}>
               Thanks, {name} —<br />your application<br />is in. ✅
             </h2>
-            <p className="text-base leading-relaxed" style={{ color: '#6A6A6A' }}>
+            <p className="text-base leading-relaxed" style={{ color: 'var(--kc-6a6a6a)' }}>
               {coach} will review your intake and reach out shortly to get you started.
             </p>
             {clientEmail && (
-              <p className="text-sm" style={{ color: '#4A4A4A' }}>
-                A confirmation has been sent to <span style={{ color: '#6A6A6A' }}>{clientEmail}</span>
+              <p className="text-sm" style={{ color: 'var(--kc-4a4a4a)' }}>
+                A confirmation has been sent to <span style={{ color: 'var(--kc-6a6a6a)' }}>{clientEmail}</span>
               </p>
             )}
           </motion.div>
@@ -1291,7 +1290,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
             className="w-full space-y-3"
           >
             <div className="py-5 px-5 rounded-2xl space-y-3"
-              style={{ background: 'rgba(59,130,246,0.06)', border: '1.5px solid rgba(59,130,246,0.15)' }}>
+              style={{ background: 'color-mix(in srgb, var(--tc-primary) 6%, transparent)', border: '1.5px solid color-mix(in srgb, var(--tc-primary) 15%, transparent)' }}>
               <p className="font-bold text-white text-sm">What happens next?</p>
               {[
                 `${coach} reviews your full intake profile`,
@@ -1300,10 +1299,10 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
               ].map((step, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                    style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)' }}>
-                    <span className="text-[9px] font-bold" style={{ color: '#3B82F6' }}>{i + 1}</span>
+                    style={{ background: 'color-mix(in srgb, var(--tc-primary) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
+                    <span className="text-[9px] font-bold" style={{ color: 'var(--tc-primary)' }}>{i + 1}</span>
                   </div>
-                  <p className="text-sm text-left" style={{ color: '#7A7A7A' }}>{step}</p>
+                  <p className="text-sm text-left" style={{ color: 'var(--kc-7a7a7a)' }}>{step}</p>
                 </div>
               ))}
             </div>
@@ -1311,7 +1310,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
             <div className="flex items-center justify-center gap-2 py-2">
               {['Exclusive', 'Personalised', 'Elite-Grade'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ background: 'rgba(34,197,94,0.08)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}>
+                  style={{ background: 'color-mix(in srgb, var(--tc-success) 8%, transparent)', color: 'var(--tc-success)', border: '1px solid color-mix(in srgb, var(--tc-success) 20%, transparent)' }}>
                   {t}
                 </span>
               ))}
@@ -1437,12 +1436,12 @@ export default function ClientOnboarding() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden" style={{ background: '#0A0A0A' }}>
+    <div className="fixed inset-0 overflow-hidden" style={{ background: 'var(--tc-sidebar)' }}>
       {showProgress && (
-        <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             animate={{ width: `${progress * 100}%` }}
             transition={{ duration: 0.45, ease: 'easeInOut' }}
           />

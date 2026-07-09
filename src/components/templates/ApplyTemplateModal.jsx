@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -61,8 +61,8 @@ export default function ApplyTemplateModal({ template, onClose }) {
     return (
       <Dialog open onOpenChange={v => !v && onClose()}>
         <DialogContent className="max-w-xs p-8 flex flex-col items-center gap-3 text-center">
-          <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
-            <Check className="w-7 h-7 text-emerald-500" />
+          <div className="w-14 h-14 rounded-full bg-success/10 border border-success flex items-center justify-center">
+            <Check className="w-7 h-7 text-success" />
           </div>
           <p className="font-semibold text-foreground">Template applied!</p>
           <p className="text-sm text-muted-foreground">Program, nutrition & automations are ready.</p>

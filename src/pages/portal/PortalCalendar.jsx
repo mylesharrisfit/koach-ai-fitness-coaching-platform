@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  format, startOfMonth, endOfMonth, eachDayOfInterval, getDay,
+  format, startOfMonth, endOfMonth, eachDayOfInterval,
   addMonths, subMonths, isSameDay, isSameMonth, isToday, parseISO,
   startOfWeek, endOfWeek
 } from 'date-fns';
@@ -16,15 +16,15 @@ import { toast } from 'sonner';
 
 // ── Event type config ───────────────────────────────────
 const EVENT_TYPES = {
-  checkin:        { label: 'Check-in',        color: '#2563EB', bg: '#EFF6FF', icon: ClipboardList, emoji: '📋' },
-  photo:          { label: 'Photos',           color: '#7C3AED', bg: '#F5F3FF', icon: Camera,        emoji: '📸' },
-  call:           { label: 'Coach Call',       color: '#059669', bg: '#ECFDF5', icon: Phone,         emoji: '📞' },
-  goal:           { label: 'Goal',             color: '#D97706', bg: '#FFFBEB', icon: Target,        emoji: '🎯' },
+  checkin:        { label: 'Check-in',        color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', icon: ClipboardList, emoji: '📋' },
+  photo:          { label: 'Photos',           color: 'rgb(var(--ai))', bg: 'rgb(var(--ai))', icon: Camera,        emoji: '📸' },
+  call:           { label: 'Coach Call',       color: 'rgb(var(--success))', bg: 'rgb(var(--success))', icon: Phone,         emoji: '📞' },
+  goal:           { label: 'Goal',             color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', icon: Target,        emoji: '🎯' },
   habit:          { label: 'Habit',            color: '#EC4899', bg: '#FDF2F8', icon: Zap,           emoji: '⚡' },
-  workout:        { label: 'Workout',          color: '#0EA5E9', bg: '#F0F9FF', icon: Dumbbell,      emoji: '💪' },
-  nutrition:      { label: 'Nutrition',        color: '#10B981', bg: '#ECFDF5', icon: Salad,         emoji: '🥗' },
-  weighin:        { label: 'Weigh-in',         color: '#0EA5E9', bg: '#F0F9FF', icon: Scale,         emoji: '⚖️' },
-  weighin_pending:{ label: 'Log Weight',       color: '#F59E0B', bg: '#FFFBEB', icon: Scale,         emoji: '⚖️' },
+  workout:        { label: 'Workout',          color: 'rgb(var(--primary))', bg: '#F0F9FF', icon: Dumbbell,      emoji: '💪' },
+  nutrition:      { label: 'Nutrition',        color: 'rgb(var(--success))', bg: 'rgb(var(--success))', icon: Salad,         emoji: '🥗' },
+  weighin:        { label: 'Weigh-in',         color: 'rgb(var(--primary))', bg: '#F0F9FF', icon: Scale,         emoji: '⚖️' },
+  weighin_pending:{ label: 'Log Weight',       color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', icon: Scale,         emoji: '⚖️' },
 };
 
 // ── Build calendar events from real data ────────────────
@@ -117,23 +117,23 @@ function DayCell({ day, currentMonth, events, onSelect, selected }) {
       onClick={() => onSelect(day)}
       className={cn(
         'flex flex-col items-center justify-start pt-1.5 pb-1 rounded-xl transition-all relative',
-        isSelectedDay && 'ring-2 ring-blue-500',
+        isSelectedDay && 'ring-2 ring-primary',
         !isCurrentMonth && 'opacity-30',
       )}
       style={{
         background: isSelectedDay
-          ? 'linear-gradient(135deg, #2563EB, #7C3AED)'
+          ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))'
           : isTodayDate
-          ? '#EFF6FF'
+          ? 'rgb(var(--accent))'
           : 'transparent',
         minHeight: 52,
       }}
     >
       <span className={cn(
         'text-xs font-bold mb-1',
-        isSelectedDay ? 'text-white' : isTodayDate ? '#2563EB' : isCurrentMonth ? '#1E293B' : '#94A3B8'
+        isSelectedDay ? 'text-white' : isTodayDate ? 'rgb(var(--primary))' : isCurrentMonth ? 'rgb(var(--foreground))' : 'rgb(var(--muted-foreground))'
       )}
-        style={{ color: isSelectedDay ? '#fff' : isTodayDate ? '#2563EB' : undefined }}
+        style={{ color: isSelectedDay ? 'rgb(var(--card))' : isTodayDate ? 'rgb(var(--primary))' : undefined }}
       >
         {format(day, 'd')}
       </span>
@@ -171,27 +171,27 @@ function LogWeightModal({ weighInId, date, coachNote, onClose, onSaved }) {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 80, opacity: 0 }}
-        className="relative bg-white rounded-3xl w-full max-w-sm p-6"
+        className="relative bg-card rounded-3xl w-full max-w-sm p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-black text-slate-900 text-lg">Log Your Weight</h3>
-            <p className="text-slate-400 text-xs">{format(parseISO(date), 'EEE, MMMM d')}</p>
+            <h3 className="font-black text-foreground text-lg">Log Your Weight</h3>
+            <p className="text-muted-foreground text-xs">{format(parseISO(date), 'EEE, MMMM d')}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-100">
-            <X className="w-4 h-4 text-slate-500" />
+          <button onClick={onClose} className="w-8 h-8 rounded-xl flex items-center justify-center bg-muted">
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
         {coachNote && (
-          <div className="mb-4 px-3 py-2 rounded-xl bg-blue-50 border border-blue-100">
-            <p className="text-xs text-blue-600 font-semibold">📋 Coach note: {coachNote}</p>
+          <div className="mb-4 px-3 py-2 rounded-xl bg-accent border border-accent">
+            <p className="text-xs text-primary font-semibold">📋 Coach note: {coachNote}</p>
           </div>
         )}
 
         <div className="mb-5">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-wide block mb-2">Weight (lbs)</label>
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide block mb-2">Weight (lbs)</label>
           <input
             type="number"
             step="0.1"
@@ -199,7 +199,7 @@ function LogWeightModal({ weighInId, date, coachNote, onClose, onSaved }) {
             placeholder="e.g. 175.5"
             value={weight}
             onChange={e => setWeight(e.target.value)}
-            className="w-full text-2xl font-black text-center border-2 border-slate-200 rounded-2xl px-4 py-4 outline-none focus:border-blue-400"
+            className="w-full text-2xl font-black text-center border-2 border-border rounded-2xl px-4 py-4 outline-none focus:border-primary"
           />
         </div>
 
@@ -207,7 +207,7 @@ function LogWeightModal({ weighInId, date, coachNote, onClose, onSaved }) {
           onClick={save}
           disabled={saving || !weight || parseFloat(weight) <= 0}
           className="w-full py-3.5 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #0EA5E9, #2563EB)' }}
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           {saving ? 'Saving…' : 'Save Weight ⚖️'}
@@ -233,8 +233,8 @@ function EventPill({ event, onLogWeight }) {
         <span className="text-base">{cfg.emoji}</span>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-slate-800 truncate">{event.title}</p>
-        {event.subtitle ? <p className="text-xs text-slate-500 truncate">{event.subtitle}</p> : null}
+        <p className="text-sm font-bold text-foreground truncate">{event.title}</p>
+        {event.subtitle ? <p className="text-xs text-muted-foreground truncate">{event.subtitle}</p> : null}
       </div>
       {event.isPending ? (
         <span className="text-[10px] font-black px-2 py-1 rounded-full text-white flex-shrink-0"
@@ -253,14 +253,14 @@ function UpcomingRow({ event }) {
   const cfg = EVENT_TYPES[event.type] || EVENT_TYPES.checkin;
   const date = parseISO(event.date);
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
+    <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-base"
         style={{ background: cfg.bg }}>
         {cfg.emoji}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-slate-800 truncate">{event.title}</p>
-        <p className="text-[11px] text-slate-400">{format(date, 'EEE, MMM d')}</p>
+        <p className="text-sm font-semibold text-foreground truncate">{event.title}</p>
+        <p className="text-[11px] text-muted-foreground">{format(date, 'EEE, MMM d')}</p>
       </div>
       <span className="text-[10px] font-bold px-2 py-1 rounded-full"
         style={{ background: cfg.bg, color: cfg.color }}>
@@ -350,43 +350,43 @@ export default function PortalCalendar({ user }) {
   const DAY_HEADERS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   return (
-    <div className="pb-32" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+    <div className="pb-32" style={{ background: 'rgb(var(--muted))', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="bg-white px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+      <div className="bg-card px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <div className="flex items-center justify-between mb-1">
           <div>
-            <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">My Schedule</p>
-            <h1 className="text-slate-900 font-black text-2xl leading-tight">Calendar</h1>
+            <p className="text-muted-foreground text-xs font-semibold uppercase tracking-widest">My Schedule</p>
+            <h1 className="text-foreground font-black text-2xl leading-tight">Calendar</h1>
           </div>
-          <Calendar className="w-7 h-7 text-blue-500" />
+          <Calendar className="w-7 h-7 text-primary" />
         </div>
       </div>
 
       {/* Calendar card */}
-      <div className="mx-4 mt-4 bg-white rounded-3xl overflow-hidden"
-        style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.07)', border: '1px solid #F1F5F9' }}>
+      <div className="mx-4 mt-4 bg-card rounded-3xl overflow-hidden"
+        style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.07)', border: '1px solid rgb(var(--muted))' }}>
 
         {/* Month nav */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <motion.button whileTap={{ scale: 0.88 }}
             onClick={() => setCurrentMonth(m => subMonths(m, 1))}
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-            <ChevronLeft className="w-4 h-4 text-slate-500" />
+            style={{ background: 'rgb(var(--muted))', border: '1px solid rgb(var(--border))' }}>
+            <ChevronLeft className="w-4 h-4 text-muted-foreground" />
           </motion.button>
-          <p className="font-black text-slate-800 text-base">{format(currentMonth, 'MMMM yyyy')}</p>
+          <p className="font-black text-foreground text-base">{format(currentMonth, 'MMMM yyyy')}</p>
           <motion.button whileTap={{ scale: 0.88 }}
             onClick={() => setCurrentMonth(m => addMonths(m, 1))}
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            style={{ background: 'rgb(var(--muted))', border: '1px solid rgb(var(--border))' }}>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </motion.button>
         </div>
 
         {/* Day headers */}
         <div className="grid grid-cols-7 px-3 pt-2 pb-1">
           {DAY_HEADERS.map(d => (
-            <div key={d} className="text-center text-[10px] font-bold text-slate-400 py-1">{d}</div>
+            <div key={d} className="text-center text-[10px] font-bold text-muted-foreground py-1">{d}</div>
           ))}
         </div>
 
@@ -415,20 +415,20 @@ export default function PortalCalendar({ user }) {
       {/* Selected day events */}
       <div className="mx-4 mt-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="font-bold text-slate-800 text-sm">
+          <p className="font-bold text-foreground text-sm">
             {isToday(selectedDay) ? "Today" : format(selectedDay, 'EEE, MMMM d')}
           </p>
-          <span className="text-[11px] text-slate-400 font-semibold">
+          <span className="text-[11px] text-muted-foreground font-semibold">
             {selectedEvents.length} event{selectedEvents.length !== 1 ? 's' : ''}
           </span>
         </div>
 
         {selectedEvents.length === 0 ? (
-          <div className="bg-white rounded-2xl p-6 text-center"
-            style={{ border: '1px solid #F1F5F9', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+          <div className="bg-card rounded-2xl p-6 text-center"
+            style={{ border: '1px solid rgb(var(--muted))', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
             <p className="text-3xl mb-2">📅</p>
-            <p className="text-slate-400 text-sm font-semibold">Nothing scheduled</p>
-            <p className="text-slate-300 text-xs mt-1">Rest up or stay ahead of your goals</p>
+            <p className="text-muted-foreground text-sm font-semibold">Nothing scheduled</p>
+            <p className="text-border text-xs mt-1">Rest up or stay ahead of your goals</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -457,9 +457,9 @@ export default function PortalCalendar({ user }) {
       {/* Upcoming section */}
       {upcomingEvents.length > 0 && (
         <div className="mx-4 mt-5">
-          <p className="font-bold text-slate-800 text-sm mb-3">Coming Up</p>
-          <div className="bg-white rounded-2xl px-4 py-1"
-            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
+          <p className="font-bold text-foreground text-sm mb-3">Coming Up</p>
+          <div className="bg-card rounded-2xl px-4 py-1"
+            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
             {upcomingEvents.map(event => (
               <UpcomingRow key={event.id} event={event} />
             ))}
@@ -469,19 +469,19 @@ export default function PortalCalendar({ user }) {
 
       {/* Monthly summary */}
       <div className="mx-4 mt-4 mb-4">
-        <div className="bg-white rounded-2xl p-4"
-          style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">This Month</p>
+        <div className="bg-card rounded-2xl p-4"
+          style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">This Month</p>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: 'Workouts', count: events.filter(e => e.type === 'workout' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '💪', color: '#0EA5E9' },
-              { label: 'Sessions', count: events.filter(e => e.type === 'call' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📞', color: '#059669' },
-              { label: 'Check-ins', count: events.filter(e => e.type === 'checkin' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📋', color: '#2563EB' },
+              { label: 'Workouts', count: events.filter(e => e.type === 'workout' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '💪', color: 'rgb(var(--primary))' },
+              { label: 'Sessions', count: events.filter(e => e.type === 'call' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📞', color: 'rgb(var(--success))' },
+              { label: 'Check-ins', count: events.filter(e => e.type === 'checkin' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '📋', color: 'rgb(var(--primary))' },
             ].map(stat => (
-              <div key={stat.label} className="text-center p-3 rounded-xl" style={{ background: '#F8FAFC' }}>
+              <div key={stat.label} className="text-center p-3 rounded-xl" style={{ background: 'rgb(var(--muted))' }}>
                 <p className="text-xl mb-0.5">{stat.emoji}</p>
                 <p className="font-black text-lg" style={{ color: stat.color }}>{stat.count}</p>
-                <p className="text-slate-400 text-[10px] font-semibold">{stat.label}</p>
+                <p className="text-muted-foreground text-[10px] font-semibold">{stat.label}</p>
               </div>
             ))}
           </div>

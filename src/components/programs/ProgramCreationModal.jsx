@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Zap, Edit3, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import AIBuilder from './builder/AIBuilder';
 import ManualBuilder from './builder/ManualBuilder';
 

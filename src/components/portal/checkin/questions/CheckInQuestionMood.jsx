@@ -23,8 +23,8 @@ export default function CheckInQuestionMood({ value, onChange }) {
             whileTap={{ scale: 0.85 }}
             className="flex-1 flex flex-col items-center gap-2 py-4 rounded-2xl transition-all"
             style={{
-              background: value === m.value ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.04)',
-              border: `1.5px solid ${value === m.value ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.08)'}`,
+              background: value === m.value ? 'rgb(var(--primary) / 0.2)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${value === m.value ? 'rgb(var(--primary) / 0.5)' : 'rgba(255,255,255,0.08)'}`,
             }}>
             <motion.span
               animate={value === m.value ? { scale: [1, 1.3, 1.1], rotate: [0, -10, 10, 0] } : { scale: 1 }}
@@ -33,7 +33,7 @@ export default function CheckInQuestionMood({ value, onChange }) {
               {m.emoji}
             </motion.span>
             <span className="text-[10px] font-semibold"
-              style={{ color: value === m.value ? '#3B82F6' : 'rgba(255,255,255,0.3)' }}>
+              style={{ color: value === m.value ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)' }}>
               {m.label}
             </span>
           </motion.button>

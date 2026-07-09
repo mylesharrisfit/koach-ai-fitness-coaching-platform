@@ -7,19 +7,19 @@ function getInitials(name = '') {
 export default function CoachNote({ note, coachName }) {
   if (!note) return null;
   return (
-    <div className="mx-4 mb-3 bg-blue-50 border border-blue-100 rounded-[18px] p-4"
-      style={{ boxShadow: '0 2px 12px rgba(37,99,235,0.08)' }}>
+    <div className="mx-4 mb-3 bg-accent border border-accent rounded-[18px] p-4"
+      style={{ boxShadow: '0 2px 12px rgb(var(--primary) / 0.08)' }}>
       <div className="flex items-center gap-2.5 mb-2">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-ai flex items-center justify-center flex-shrink-0">
           <span className="text-white text-xs font-bold">{getInitials(coachName)}</span>
         </div>
         <div>
-          <p className="text-slate-800 font-bold text-xs">{coachName || 'Your Coach'}</p>
-          <p className="text-slate-400 text-[10px]">Note from your coach</p>
+          <p className="text-foreground font-bold text-xs">{coachName || 'Your Coach'}</p>
+          <p className="text-muted-foreground text-[10px]">Note from your coach</p>
         </div>
         <span className="ml-auto text-lg">💬</span>
       </div>
-      <p className="text-slate-700 text-sm leading-relaxed italic">"{note}"</p>
+      <p className="text-foreground text-sm leading-relaxed italic">"{note}"</p>
     </div>
   );
 }

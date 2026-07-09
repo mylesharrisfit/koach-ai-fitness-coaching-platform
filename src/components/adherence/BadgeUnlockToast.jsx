@@ -14,7 +14,7 @@ export default function BadgeUnlockToast({ badgeKey, clientName, onClose }) {
       particleCount: 80,
       spread: 70,
       origin: { y: 0.5 },
-      colors: [tier.accent, '#ffffff', tier.bg],
+      colors: [tier.accent, 'var(--tc-card)', tier.bg],
     });
     // Mobile vibration
     if (navigator.vibrate) navigator.vibrate([80, 40, 120]);
@@ -38,7 +38,7 @@ export default function BadgeUnlockToast({ badgeKey, clientName, onClose }) {
           style={{
             background: `radial-gradient(ellipse at 30% 20%, ${tier.bg}f0 0%, ${tier.bg} 100%)`,
             border: `1.5px solid ${tier.accent}`,
-            boxShadow: `0 0 60px 16px ${tier.glow}, 0 20px 60px rgba(0,0,0,0.7)`,
+            boxShadow: `0 0 60px 16px ${tier.glow}, 0 20px 60px color-mix(in srgb, black 70%, transparent)`,
             minWidth: 260,
           }}
           onClick={onClose}

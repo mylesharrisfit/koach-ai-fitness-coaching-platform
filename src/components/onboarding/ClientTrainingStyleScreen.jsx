@@ -45,7 +45,7 @@ export default function ClientTrainingStyleScreen({ onNext, onBack, data }) {
           ))}
         </div>
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>What equipment do you have access to?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>What equipment do you have access to?</p>
           <div className="flex flex-wrap gap-2.5">
             {EQUIPMENT.map(e => (
               <ChipSelect key={e.id} label={e.label} selected={equipment.includes(e.id)} onClick={() => toggleEquip(e.id)} />

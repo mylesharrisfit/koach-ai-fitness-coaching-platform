@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { format, subDays, parseISO, isSameDay } from 'date-fns';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
@@ -55,14 +54,14 @@ export default function WeeklySnapshot({ recentLogs, checkIns, program }) {
               <div className={cn('w-full aspect-square rounded-xl flex items-center justify-center',
                 status === 'done' ? '' : status === 'missed' ? '' : '')}
                 style={{
-                  background: status === 'done' ? 'rgba(34,197,94,0.2)' : status === 'missed' ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)',
-                  border: isToday ? '1.5px solid rgba(59,130,246,0.6)' : '1px solid transparent',
+                  background: status === 'done' ? 'rgb(var(--success) / 0.2)' : status === 'missed' ? 'rgb(var(--destructive) / 0.15)' : 'rgba(255,255,255,0.05)',
+                  border: isToday ? '1.5px solid rgb(var(--primary) / 0.6)' : '1px solid transparent',
                 }}>
-                {status === 'done' && <span className="text-emerald-400 text-[10px]">✓</span>}
-                {status === 'missed' && <span className="text-red-400 text-[10px]">✕</span>}
+                {status === 'done' && <span className="text-success text-[10px]">✓</span>}
+                {status === 'missed' && <span className="text-destructive text-[10px]">✕</span>}
                 {status === 'upcoming' && <span className="text-white/20 text-[10px]">·</span>}
               </div>
-              <p className={cn('text-[9px] font-semibold', isToday ? 'text-blue-400' : 'text-white/20')}>
+              <p className={cn('text-[9px] font-semibold', isToday ? 'text-primary' : 'text-white/20')}>
                 {DAY_LABELS[i]}
               </p>
             </div>
@@ -78,7 +77,7 @@ export default function WeeklySnapshot({ recentLogs, checkIns, program }) {
         </div>
         {weightChange !== null && (
           <div className="flex-1 bg-white/5 rounded-xl p-2.5 text-center">
-            <p className={cn('font-bold text-base', parseFloat(weightChange) < 0 ? 'text-emerald-400' : 'text-white')}>
+            <p className={cn('font-bold text-base', parseFloat(weightChange) < 0 ? 'text-success' : 'text-white')}>
               {parseFloat(weightChange) > 0 ? '+' : ''}{weightChange} lbs
             </p>
             <p className="text-white/30 text-[10px]">Weight change</p>
@@ -92,8 +91,8 @@ export default function WeeklySnapshot({ recentLogs, checkIns, program }) {
 
       {/* AI insight */}
       {(insight || loadingInsight) && (
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2">
-          <p className="text-blue-300 text-xs leading-relaxed">
+        <div className="bg-primary/10 border border-primary/20 rounded-xl px-3 py-2">
+          <p className="text-primary text-xs leading-relaxed">
             {loadingInsight ? '...' : insight}
           </p>
         </div>

@@ -8,7 +8,7 @@ import { Search, X, Check, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function avatarColor(name) {
-  const colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700'];
+  const colors = ['bg-accent text-primary', 'bg-ai/10 text-ai', 'bg-success/10 text-success', 'bg-warning/10 text-warning', 'bg-destructive/10 text-destructive'];
   return colors[(name?.charCodeAt(0) || 0) % colors.length];
 }
 
@@ -82,26 +82,26 @@ export default function GroupFormModal({ open, onOpenChange, group, currentUser 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-[#0E1525] font-semibold">
+          <DialogTitle className="text-foreground font-semibold">
             {isEdit ? 'Edit Group' : 'Create Community'}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5 mt-1">
           {/* Name */}
           <div>
-            <Label className="text-xs font-semibold text-[#374151]">Group Name *</Label>
+            <Label className="text-xs font-semibold text-foreground">Group Name *</Label>
             <Input className="mt-1" required value={name} onChange={e => setName(e.target.value)} placeholder="e.g. HYROX Crew, Fat Loss Group" />
           </div>
 
           {/* Description */}
           <div>
-            <Label className="text-xs font-semibold text-[#374151]">Description</Label>
+            <Label className="text-xs font-semibold text-foreground">Description</Label>
             <Input className="mt-1" value={description} onChange={e => setDescription(e.target.value)} placeholder="What's this group about?" />
           </div>
 
           {/* Cover image */}
           <div>
-            <Label className="text-xs font-semibold text-[#374151]">Cover Image (optional)</Label>
+            <Label className="text-xs font-semibold text-foreground">Cover Image (optional)</Label>
             <div className="mt-1 flex items-center gap-3">
               {coverUrl ? (
                 <div className="relative w-20 h-12 rounded-lg overflow-hidden flex-shrink-0">
@@ -112,11 +112,11 @@ export default function GroupFormModal({ open, onOpenChange, group, currentUser 
                   </button>
                 </div>
               ) : (
-                <div className="w-20 h-12 rounded-lg bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center flex-shrink-0">
-                  <ImageIcon className="w-5 h-5 text-[#9CA3AF]" />
+                <div className="w-20 h-12 rounded-lg bg-muted border border-border flex items-center justify-center flex-shrink-0">
+                  <ImageIcon className="w-5 h-5 text-muted-foreground" />
                 </div>
               )}
-              <label className="flex-1 cursor-pointer text-xs font-semibold text-[#2563EB] hover:text-blue-700">
+              <label className="flex-1 cursor-pointer text-xs font-semibold text-primary hover:text-primary">
                 {uploading ? 'Uploading…' : 'Upload photo'}
                 <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
               </label>
@@ -126,39 +126,39 @@ export default function GroupFormModal({ open, onOpenChange, group, currentUser 
           {/* Member picker */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-xs font-semibold text-[#374151]">Members</Label>
+              <Label className="text-xs font-semibold text-foreground">Members</Label>
               {selectedIds.length > 0 && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB]">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent/10 text-primary">
                   {selectedIds.length} selected
                 </span>
               )}
             </div>
             <div className="relative mb-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search clients…"
-                className="w-full pl-8 pr-3 py-2 text-sm border border-[#E5E7EB] rounded-lg bg-[#F9FAFB] outline-none focus:border-[#2563EB] transition-colors"
+                className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg bg-background outline-none focus:border-primary transition-colors"
               />
             </div>
-            <div className="max-h-48 overflow-y-auto space-y-1 border border-[#E5E7EB] rounded-lg bg-white p-2">
+            <div className="max-h-48 overflow-y-auto space-y-1 border border-border rounded-lg bg-card p-2">
               {filtered.length === 0 ? (
-                <p className="text-xs text-[#9CA3AF] text-center py-4">No clients found</p>
+                <p className="text-xs text-muted-foreground text-center py-4">No clients found</p>
               ) : filtered.map(c => {
                 const selected = selectedIds.includes(c.id);
                 return (
                   <button key={c.id} type="button" onClick={() => toggle(c.id)}
                     className={cn('w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-left',
-                      selected ? 'bg-[#EFF6FF] border border-[#BFDBFE]' : 'hover:bg-[#F9FAFB] border border-transparent')}>
+                      selected ? 'bg-accent/10 border border-accent' : 'hover:bg-background border border-transparent')}>
                     <div className={cn('w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0', avatarColor(c.name))}>
                       {c.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#111827] truncate">{c.name}</p>
-                      <p className="text-[11px] text-[#9CA3AF] truncate">{c.email}</p>
+                      <p className="text-sm font-medium text-foreground truncate">{c.name}</p>
+                      <p className="text-[11px] text-muted-foreground truncate">{c.email}</p>
                     </div>
-                    {selected && <Check className="w-4 h-4 text-[#2563EB] flex-shrink-0" />}
+                    {selected && <Check className="w-4 h-4 text-primary flex-shrink-0" />}
                   </button>
                 );
               })}
@@ -166,14 +166,14 @@ export default function GroupFormModal({ open, onOpenChange, group, currentUser 
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#E5E7EB]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-border">
             <button type="button" onClick={() => onOpenChange(false)}
-              className="px-4 py-2 border border-[#E5E7EB] text-sm font-semibold text-[#374151] rounded-lg hover:bg-[#F9FAFB] transition-colors">
+              className="px-4 py-2 border border-border text-sm font-semibold text-foreground rounded-lg hover:bg-background transition-colors">
               Cancel
             </button>
             <button type="submit" disabled={saveMutation.isPending || !name.trim()}
               className="px-4 py-2 text-sm font-semibold text-white rounded-lg transition-colors disabled:opacity-40"
-              style={{ background: '#2563EB' }}>
+              style={{ background: 'var(--tc-primary)' }}>
               {saveMutation.isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Group'}
             </button>
           </div>

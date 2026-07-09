@@ -71,18 +71,18 @@ export default function ProgressPhotosTab({ client, checkIns }) {
     <div className="p-6 space-y-6">
       {/* Controls */}
       <div className="flex flex-wrap gap-2 items-center">
-        <div className="flex gap-1 bg-[#F3F4F6] rounded-lg p-1">
+        <div className="flex gap-1 bg-muted rounded-lg p-1">
           {VIEWS.map(v => (
             <button key={v} onClick={() => setActiveView(v)}
               className={cn('px-3 py-1 rounded-md text-xs font-semibold transition-all',
-                activeView === v ? 'bg-white text-[#111827] shadow-sm' : 'text-[#6B7280]')}>
+                activeView === v ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground')}>
               {v}
             </button>
           ))}
         </div>
         <button onClick={() => { setCompareMode(!compareMode); setCompareA(null); setCompareB(null); }}
           className={cn('flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-all',
-            compareMode ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'border-[#E5E7EB] text-[#374151]')}>
+            compareMode ? 'bg-primary text-white border-primary' : 'border-border text-foreground')}>
           <ArrowLeftRight className="w-3.5 h-3.5" /> Compare
         </button>
         <button onClick={() => setShowUpload(true)}
@@ -93,10 +93,10 @@ export default function ProgressPhotosTab({ client, checkIns }) {
 
       {/* Before/After Slider — shown when both selected */}
       {compareMode && compareA && compareB && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 space-y-3">
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#111827]">Before / After Comparison</h3>
-            <button onClick={() => { setCompareA(null); setCompareB(null); }} className="text-[#9CA3AF] hover:text-[#374151]">
+            <h3 className="text-sm font-semibold text-foreground">Before / After Comparison</h3>
+            <button onClick={() => { setCompareA(null); setCompareB(null); }} className="text-muted-foreground hover:text-foreground">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -113,9 +113,9 @@ export default function ProgressPhotosTab({ client, checkIns }) {
               <img src={compareA.url} alt="before" className="absolute inset-0 h-full object-cover" style={{ width: `${100 / (sliderPos / 100)}%` }} />
             </div>
             {/* Divider */}
-            <div className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg z-10" style={{ left: `${sliderPos}%` }}>
-              <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-                <ArrowLeftRight className="w-4 h-4 text-[#374151]" />
+            <div className="absolute top-0 bottom-0 w-0.5 bg-card shadow-lg z-10" style={{ left: `${sliderPos}%` }}>
+              <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-card rounded-full shadow-lg flex items-center justify-center">
+                <ArrowLeftRight className="w-4 h-4 text-foreground" />
               </div>
             </div>
             {/* Labels */}
@@ -131,24 +131,24 @@ export default function ProgressPhotosTab({ client, checkIns }) {
 
       {/* Compare selection prompt */}
       {compareMode && !(compareA && compareB) && (
-        <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 font-medium">
+        <div className="bg-accent border border-accent rounded-xl px-4 py-3 text-xs text-primary font-medium">
           {!compareA ? '👆 Select the first photo (Before)' : '👆 Now select the second photo (After)'}
         </div>
       )}
 
       {/* Photo grid */}
       {allPhotos.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white border border-[#E5E7EB] rounded-xl gap-3">
-          <ImagePlus className="w-10 h-10 text-[#D1D5DB]" />
-          <p className="text-sm text-[#374151] font-medium">No progress photos yet</p>
-          <p className="text-xs text-[#9CA3AF]">Upload photos to start tracking visual transformation</p>
+        <div className="flex flex-col items-center justify-center py-20 bg-card border border-border rounded-xl gap-3">
+          <ImagePlus className="w-10 h-10 text-muted-foreground" />
+          <p className="text-sm text-foreground font-medium">No progress photos yet</p>
+          <p className="text-xs text-muted-foreground">Upload photos to start tracking visual transformation</p>
           <button onClick={() => setShowUpload(true)} className="mt-2 px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-white">
             Add First Photo
           </button>
         </div>
       ) : (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-[#111827] mb-3">Photo Timeline</h3>
+        <div className="bg-card border border-border rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Photo Timeline</h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
             {allPhotos.map((photo, i) => {
               const selA = compareMode && compareA === photo;
@@ -166,7 +166,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
                   }}
                   className={cn(
                     'relative rounded-xl overflow-hidden cursor-pointer group transition-all',
-                    selA ? 'ring-2 ring-blue-500' : selB ? 'ring-2 ring-purple-500' : compareMode ? 'ring-2 ring-transparent hover:ring-[#93C5FD]' : 'hover:scale-[1.02]'
+                    selA ? 'ring-2 ring-primary' : selB ? 'ring-2 ring-ai' : compareMode ? 'ring-2 ring-transparent hover:ring-primary' : 'hover:scale-[1.02]'
                   )}>
                   <img src={photo.url} alt="progress" className="w-full aspect-square object-cover" />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
@@ -180,7 +180,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
                   )}
                   {(selA || selB) && (
                     <div className={cn('absolute top-1 right-1 text-[9px] font-bold px-1.5 py-0.5 rounded',
-                      selA ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white')}>
+                      selA ? 'bg-primary text-white' : 'bg-ai text-white')}>
                       {selA ? 'Before' : 'After'}
                     </div>
                   )}
@@ -210,21 +210,21 @@ export default function ProgressPhotosTab({ client, checkIns }) {
       {/* Upload modal */}
       {showUpload && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-[#111827]">Add Progress Photos</h3>
-              <button onClick={() => setShowUpload(false)}><X className="w-4 h-4 text-[#6B7280]" /></button>
+              <h3 className="font-semibold text-foreground">Add Progress Photos</h3>
+              <button onClick={() => setShowUpload(false)}><X className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <div
-              className="border-2 border-dashed border-[#E5E7EB] rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
+              className="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
               onClick={() => fileRef.current?.click()}>
-              <ImagePlus className="w-8 h-8 text-[#9CA3AF] mx-auto mb-2" />
-              <p className="text-sm text-[#374151] font-medium">Click to upload photos</p>
-              <p className="text-xs text-[#9CA3AF] mt-1">JPG, PNG — front, side, or back</p>
+              <ImagePlus className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+              <p className="text-sm text-foreground font-medium">Click to upload photos</p>
+              <p className="text-xs text-muted-foreground mt-1">JPG, PNG — front, side, or back</p>
             </div>
             <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
               onChange={e => Array.from(e.target.files).forEach(handleUpload)} />
-            {uploading && <p className="text-xs text-center text-[#9CA3AF] animate-pulse">Uploading...</p>}
+            {uploading && <p className="text-xs text-center text-muted-foreground animate-pulse">Uploading...</p>}
           </div>
         </div>
       )}

@@ -29,7 +29,7 @@ export default function ProfileConnectedApps() {
             <div className="flex-1">
               <p className="text-white/80 text-sm font-medium">{app.name}</p>
               {connected[app.id] ? (
-                <p className="text-emerald-400 text-[10px]">● Connected · Last sync: just now</p>
+                <p className="text-success text-[10px]">● Connected · Last sync: just now</p>
               ) : (
                 <p className="text-white/25 text-[10px]">{app.platform}</p>
               )}
@@ -37,9 +37,9 @@ export default function ProfileConnectedApps() {
             <button onClick={() => toggle(app.id)}
               className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
               style={{
-                background: connected[app.id] ? 'rgba(16,185,129,0.15)' : 'rgba(59,130,246,0.15)',
-                color: connected[app.id] ? '#34D399' : '#60A5FA',
-                border: `1px solid ${connected[app.id] ? 'rgba(16,185,129,0.3)' : 'rgba(59,130,246,0.3)'}`,
+                background: connected[app.id] ? 'rgb(var(--success) / 0.15)' : 'rgb(var(--primary) / 0.15)',
+                color: connected[app.id] ? 'rgb(var(--success))' : 'rgb(var(--primary))',
+                border: `1px solid ${connected[app.id] ? 'rgb(var(--success) / 0.3)' : 'rgb(var(--primary) / 0.3)'}`,
               }}>
               {connected[app.id] ? 'Connected ✓' : 'Connect'}
             </button>

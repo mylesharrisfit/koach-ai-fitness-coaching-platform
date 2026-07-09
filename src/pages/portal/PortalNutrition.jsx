@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { format, subDays, parseISO } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf, Download } from 'lucide-react';
 import SupplementsTab from '@/components/nutrition/reference/SupplementsTab';
@@ -12,7 +12,6 @@ import { toast } from 'sonner';
 import DailyMacroHeader from '@/components/portal/nutrition/DailyMacroHeader';
 import MealCard from '@/components/portal/nutrition/MealCard';
 import FoodSearchSheet from '@/components/portal/nutrition/FoodSearchSheet';
-import FoodDetailSheet from '@/components/nutrition/usda/FoodDetailSheet';
 import WaterTracker from '@/components/portal/nutrition/WaterTracker';
 import SupplementStack from '@/components/portal/nutrition/SupplementStack';
 import HydrationProtocol from '@/components/portal/nutrition/HydrationProtocol';
@@ -174,34 +173,34 @@ export default function PortalNutrition({ user }) {
   const isPdfPlan = nutritionPlan?.plan_type === 'pdf';
 
   return (
-    <div className="pb-32 bg-gradient-to-b from-white to-slate-50 min-h-screen">
+    <div className="pb-32 bg-gradient-to-b from-card to-muted min-h-screen">
 
       {/* Header */}
-      <div className="bg-white px-4 flex items-center justify-between"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)', paddingBottom: 12, boxShadow: '0 1px 0 #F1F5F9' }}>
-        <h1 className="text-slate-900 font-black text-[24px]">Nutrition</h1>
+      <div className="bg-card px-4 flex items-center justify-between"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 12px)', paddingBottom: 12, boxShadow: '0 1px 0 rgb(var(--muted))' }}>
+        <h1 className="text-foreground font-black text-[24px]">Nutrition</h1>
         <div className="flex items-center gap-2">
           {/* Copy yesterday */}
           <button
             onClick={handleCopyYesterday}
             disabled={copyingYesterday || !isToday}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 disabled:opacity-40 active:opacity-70 transition-opacity"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-foreground bg-muted disabled:opacity-40 active:opacity-70 transition-opacity"
             title="Copy yesterday's foods">
             {copyingYesterday ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
             Yesterday
           </button>
           {/* Date nav */}
           <button onClick={() => handleDateChange(-1)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100">
-            <ChevronLeft className="w-4 h-4 text-slate-500" />
+            className="w-8 h-8 rounded-lg flex items-center justify-center bg-muted">
+            <ChevronLeft className="w-4 h-4 text-muted-foreground" />
           </button>
-          <p className="text-slate-600 text-xs font-bold min-w-[72px] text-center">
+          <p className="text-muted-foreground text-xs font-bold min-w-[72px] text-center">
             {isToday ? 'Today' : format(selectedDate, 'MMM d')}
           </p>
           <button onClick={() => handleDateChange(1)}
             disabled={isToday}
-            className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 disabled:opacity-40">
-            <ChevronRight className="w-4 h-4 text-slate-500" />
+            className="w-8 h-8 rounded-lg flex items-center justify-center bg-muted disabled:opacity-40">
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
       </div>
@@ -215,8 +214,8 @@ export default function PortalNutrition({ user }) {
               onClick={() => setPdfView(view)}
               className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                 pdfView === view
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-white text-slate-600 border border-slate-200'
+                  ? 'bg-sidebar text-white'
+                  : 'bg-card text-muted-foreground border border-border'
               }`}
             >
               {view === 'plan' ? '📄 My Plan' : '📝 Log'}
@@ -235,8 +234,8 @@ export default function PortalNutrition({ user }) {
               onClick={() => setPortalTab(tab.id)}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex-shrink-0 border transition-all ${
                 portalTab === tab.id
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-600 border-slate-200'
+                  ? 'bg-sidebar text-white border-border'
+                  : 'bg-card text-muted-foreground border-border'
               }`}
             >
               <Icon className="w-3 h-3" />
@@ -256,17 +255,17 @@ export default function PortalNutrition({ user }) {
       {isPdfPlan && pdfView === 'plan' && nutritionPlan?.pdf_file_url && (
         <div className="px-4 mt-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="font-bold text-sm text-slate-900">{nutritionPlan.title}</h2>
+            <h2 className="font-bold text-sm text-foreground">{nutritionPlan.title}</h2>
             <a
               href={nutritionPlan.pdf_file_url}
               download={`${nutritionPlan.title}.pdf`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-border bg-card hover:bg-muted transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               Download
             </a>
           </div>
-          <div className="rounded-xl border border-slate-200 overflow-hidden bg-white" style={{ height: '600px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+          <div className="rounded-xl border border-border overflow-hidden bg-card" style={{ height: '600px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
             <iframe
               src={nutritionPlan.pdf_file_url}
               title="Nutrition Plan PDF"
@@ -288,7 +287,7 @@ export default function PortalNutrition({ user }) {
       {loading ? (
         <div className="space-y-3 mx-4">
           {[1,2,3,4].map(i => (
-            <div key={i} className="h-16 rounded-[18px] bg-white animate-pulse"
+            <div key={i} className="h-16 rounded-[18px] bg-card animate-pulse"
               style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }} />
           ))}
         </div>

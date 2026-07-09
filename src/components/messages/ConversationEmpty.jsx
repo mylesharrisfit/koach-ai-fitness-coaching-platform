@@ -18,8 +18,8 @@ export default function ConversationEmpty({ client, onSelect }) {
         }
       </div>
       <div>
-        <p className="font-bold text-[#1F2A44] text-base">{client.name}</p>
-        <p className="text-sm text-[#6B7280] mt-1">
+        <p className="font-bold text-foreground text-base">{client.name}</p>
+        <p className="text-sm text-muted-foreground mt-1">
           Start the conversation with {client.name?.split(' ')[0]} 👋
         </p>
       </div>
@@ -28,7 +28,7 @@ export default function ConversationEmpty({ client, onSelect }) {
           <button
             key={text}
             onClick={() => onSelect(text)}
-            className="text-xs px-3 py-1.5 rounded-full border border-[#E7EAF3] bg-white hover:bg-[#EEF4FF] hover:border-primary hover:text-primary text-[#374151] transition-all font-medium"
+            className="text-xs px-3 py-1.5 rounded-full border border-border bg-card hover:bg-accent/10 hover:border-primary hover:text-primary text-foreground transition-all font-medium"
           >
             {text}
           </button>

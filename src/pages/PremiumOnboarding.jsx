@@ -106,7 +106,7 @@ export default function PremiumOnboarding() {
   // Loading spinner while auth resolves
   if (isLoadingAuth || isLoadingPublicSettings) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#0A0A0A' }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'var(--tc-sidebar)' }}>
         <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-blue-500 animate-spin" />
       </div>
     );
@@ -171,12 +171,12 @@ export default function PremiumOnboarding() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden" style={{ background: '#0A0A0A' }}>
+    <div className="fixed inset-0 overflow-hidden" style={{ background: 'var(--tc-sidebar)' }}>
       {showProgress && (
-        <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             initial={{ width: 0 }}
             animate={{ width: `${progress * 100}%` }}
             transition={{ duration: 0.45, ease: 'easeInOut' }}

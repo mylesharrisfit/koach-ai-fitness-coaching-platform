@@ -74,7 +74,7 @@ export default function CoachGenerationScreen({ onNext }) {
   return (
     <motion.div
       className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden"
-      style={{ background: '#0A0A0A' }}
+      style={{ background: 'var(--tc-sidebar)' }}
       animate={exiting ? { opacity: 0, filter: 'blur(12px)', scale: 1.04 } : { opacity: 1, filter: 'blur(0px)', scale: 1 }}
       transition={{ duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
     >
@@ -83,7 +83,7 @@ export default function CoachGenerationScreen({ onNext }) {
         <motion.div
           className="w-[700px] h-[700px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--tc-primary) 10%, transparent) 0%, transparent 65%)',
             filter: 'blur(80px)',
           }}
           animate={{ scale: [1, 1.1, 1] }}
@@ -99,7 +99,7 @@ export default function CoachGenerationScreen({ onNext }) {
           transition={{ duration: 0.6 }}
           className="text-center space-y-2"
         >
-          <p className="text-[11px] uppercase tracking-[0.28em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-[11px] uppercase tracking-[0.28em] font-bold" style={{ color: 'var(--tc-primary)' }}>
             KOACH AI Engine
           </p>
           <AnimatePresence mode="wait">
@@ -109,7 +109,7 @@ export default function CoachGenerationScreen({ onNext }) {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-3xl font-bold"
-                style={{ color: '#22C55E', letterSpacing: '-0.025em' }}
+                style={{ color: 'var(--tc-success)', letterSpacing: '-0.025em' }}
               >
                 Your coaching OS is live.
               </motion.h2>
@@ -125,16 +125,16 @@ export default function CoachGenerationScreen({ onNext }) {
               </motion.h2>
             )}
           </AnimatePresence>
-          <p className="text-sm" style={{ color: '#5A5A5A' }}>
+          <p className="text-sm" style={{ color: 'var(--kc-5a5a5a)' }}>
             {allDone ? 'Entering your platform…' : 'Personalizing your AI infrastructure'}
           </p>
         </motion.div>
 
         {/* Progress bar */}
-        <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             animate={{ width: `${allDone ? 100 : progress * 100}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           />
@@ -156,25 +156,25 @@ export default function CoachGenerationScreen({ onNext }) {
                 className="flex items-center gap-4 px-5 py-3.5 rounded-2xl"
                 style={{
                   background: status === 'done'
-                    ? 'rgba(34,197,94,0.06)'
+                    ? 'color-mix(in srgb, var(--tc-success) 6%, transparent)'
                     : status === 'loading'
-                    ? 'rgba(59,130,246,0.08)'
-                    : 'rgba(255,255,255,0.02)',
+                    ? 'color-mix(in srgb, var(--tc-primary) 8%, transparent)'
+                    : 'color-mix(in srgb, white 2%, transparent)',
                   border: status === 'done'
-                    ? '1px solid rgba(34,197,94,0.22)'
+                    ? '1px solid color-mix(in srgb, var(--tc-success) 22%, transparent)'
                     : status === 'loading'
-                    ? '1px solid rgba(59,130,246,0.28)'
-                    : '1px solid rgba(255,255,255,0.04)',
+                    ? '1px solid color-mix(in srgb, var(--tc-primary) 28%, transparent)'
+                    : '1px solid color-mix(in srgb, white 4%, transparent)',
                   transition: 'background 0.4s, border 0.4s',
                 }}
               >
                 <span className="text-xl w-7 flex-shrink-0 text-center">{item.icon}</span>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#333' : '#fff' }}>
+                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-333333)' : 'var(--tc-card)' }}>
                     {item.label}
                   </p>
                   <p className="text-[11px] mt-0.5" style={{
-                    color: status === 'done' ? 'rgba(34,197,94,0.75)' : status === 'loading' ? 'rgba(59,130,246,0.75)' : '#3A3A3A',
+                    color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 75%, transparent)' : status === 'loading' ? 'color-mix(in srgb, var(--tc-primary) 75%, transparent)' : 'var(--kc-3a3a3a)',
                   }}>
                     {status === 'done' ? 'Activated' : status === 'loading' ? 'Initializing…' : 'Queued'}
                   </p>
@@ -183,7 +183,7 @@ export default function CoachGenerationScreen({ onNext }) {
                   {status === 'loading' && (
                     <motion.div
                       className="w-4 h-4 rounded-full border-2"
-                      style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+                      style={{ borderColor: 'var(--tc-primary)', borderTopColor: 'transparent' }}
                       animate={{ rotate: 360 }}
                       transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
                     />
@@ -194,7 +194,7 @@ export default function CoachGenerationScreen({ onNext }) {
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 350, damping: 18 }}
                       className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ background: '#22C55E' }}
+                      style={{ background: 'var(--tc-success)' }}
                     >
                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                         <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

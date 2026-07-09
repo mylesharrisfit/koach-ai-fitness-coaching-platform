@@ -9,8 +9,8 @@ export default function KoachLogo({ size = 32, rounded = 'rounded-xl', glow = fa
       style={{
         width: size,
         height: size,
-        background: bg ? '#0A0A0A' : 'transparent',
-        boxShadow: glow ? '0 0 20px rgba(59,130,246,0.4)' : 'none',
+        background: bg ? 'var(--kc-0a0a0a)' : 'transparent',
+        boxShadow: glow ? '0 0 20px color-mix(in srgb, var(--tc-primary) 40%, transparent)' : 'none',
       }}
     >
       <img

@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { getEventTypes, createSingleUseLink, getScheduledEvents } from '@/lib/calendly';
-import { Calendar, Send, ChevronDown, Loader2, ExternalLink } from 'lucide-react';
+import { Calendar, Send, ChevronDown, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { format, addDays, subDays, startOfToday } from 'date-fns';
-import { cn } from '@/lib/utils';
 
 export default function CalendlyBookingWidget({ client }) {
   const [sending, setSending] = useState(false);
@@ -76,25 +75,25 @@ export default function CalendlyBookingWidget({ client }) {
   if (!isConnected) return null;
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+    <div className="bg-card border border-border rounded-xl p-4">
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-6 h-6 rounded-lg bg-[#006BFF]/10 flex items-center justify-center flex-shrink-0">
-          <Calendar className="w-3.5 h-3.5 text-[#006BFF]" />
+        <div className="w-6 h-6 rounded-lg bg-[var(--kc-006bff)]/10 flex items-center justify-center flex-shrink-0">
+          <Calendar className="w-3.5 h-3.5 text-[var(--kc-006bff)]" />
         </div>
-        <p className="text-sm font-semibold text-[#111827]">Calendly Booking</p>
+        <p className="text-sm font-semibold text-foreground">Calendly Booking</p>
       </div>
 
       {/* Session info */}
       <div className="grid grid-cols-2 gap-2 mb-3">
-        <div className="p-2.5 bg-[#F9FAFB] rounded-lg">
-          <p className="text-[10px] text-[#9CA3AF] font-medium mb-0.5">Last Session</p>
-          <p className="text-xs font-semibold text-[#374151]">
+        <div className="p-2.5 bg-background rounded-lg">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Last Session</p>
+          <p className="text-xs font-semibold text-foreground">
             {lastBooking ? format(new Date(lastBooking.start_time), 'MMM d') : 'None'}
           </p>
         </div>
-        <div className="p-2.5 bg-[#F9FAFB] rounded-lg">
-          <p className="text-[10px] text-[#9CA3AF] font-medium mb-0.5">Next Session</p>
-          <p className="text-xs font-semibold text-[#374151]">
+        <div className="p-2.5 bg-background rounded-lg">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Next Session</p>
+          <p className="text-xs font-semibold text-foreground">
             {nextBooking ? format(new Date(nextBooking.start_time), 'MMM d, h:mm a') : 'Not booked'}
           </p>
         </div>
@@ -107,13 +106,13 @@ export default function CalendlyBookingWidget({ client }) {
             <select
               value={selectedEventUri}
               onChange={e => setSelectedEventUri(e.target.value)}
-              className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-xs appearance-none bg-white text-[#374151] pr-8"
+              className="w-full border border-border rounded-lg px-3 py-2 text-xs appearance-none bg-card text-foreground pr-8"
             >
               {eventTypes.map(et => (
                 <option key={et.uri} value={et.uri}>{et.name} ({et.duration} min)</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2.5 top-2.5 w-3.5 h-3.5 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-2.5 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
           </div>
         </div>
       )}
@@ -122,7 +121,7 @@ export default function CalendlyBookingWidget({ client }) {
         {!showSelector ? (
           <Button
             size="sm"
-            className="flex-1 bg-[#111827] hover:bg-[#1F2937] text-xs h-8"
+            className="flex-1 bg-sidebar hover:bg-[var(--kc-1f2937)] text-xs h-8"
             onClick={() => { setShowSelector(true); setSelectedEventUri(eventTypes[0]?.uri || ''); }}
             disabled={etLoading || eventTypes.length === 0}
           >
@@ -132,7 +131,7 @@ export default function CalendlyBookingWidget({ client }) {
           <>
             <Button size="sm" variant="outline" className="text-xs h-8"
               onClick={() => setShowSelector(false)}>Cancel</Button>
-            <Button size="sm" className="flex-1 bg-[#006BFF] hover:bg-[#0057D0] text-xs h-8"
+            <Button size="sm" className="flex-1 bg-[var(--kc-006bff)] hover:bg-[var(--kc-0057d0)] text-xs h-8"
               onClick={handleSend} disabled={sending}>
               {sending ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> Sending...</> : 'Send Link'}
             </Button>

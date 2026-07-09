@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Search, Star, Loader2, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Search, Star, Loader2, Info } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
@@ -13,16 +13,16 @@ function MacroPill({ label, value, color }) {
 function FoodResult({ food, onSave, saved }) {
   const [expanded, setExpanded] = useState(false);
   return (
-    <div className="bg-white border border-border rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-3">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground leading-snug">{food.name}</p>
           {food.brand && <p className="text-[10px] text-muted-foreground">{food.brand}</p>}
           <div className="flex flex-wrap gap-1 mt-1.5">
             {food.calories > 0 && <MacroPill label="Cal" value={food.calories} color="bg-orange-50 text-orange-600" />}
-            <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-blue-50 text-blue-600" />
-            <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-amber-50 text-amber-600" />
-            <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-rose-50 text-rose-600" />
+            <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-accent text-primary" />
+            <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-warning/10 text-warning" />
+            <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-destructive/10 text-destructive" />
             {food.serving_size && <span className="text-[10px] text-muted-foreground">per {food.serving_size}</span>}
           </div>
         </div>
@@ -37,10 +37,10 @@ function FoodResult({ food, onSave, saved }) {
             onClick={() => onSave(food)}
             className={cn(
               'p-1.5 rounded-lg transition-colors',
-              saved ? 'text-amber-400 hover:text-amber-500' : 'text-muted-foreground hover:text-amber-400 hover:bg-amber-50'
+              saved ? 'text-warning hover:text-warning' : 'text-muted-foreground hover:text-warning hover:bg-warning/10'
             )}
           >
-            <Star className={cn('w-4 h-4', saved && 'fill-amber-400')} />
+            <Star className={cn('w-4 h-4', saved && 'fill-warning')} />
           </button>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function FoodSearchResults({ onSave, isSaved, onSelect, selectMod
       </div>
 
       {error && (
-        <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl text-xs text-amber-700 mb-4">
+        <div className="p-3 bg-warning/10 border border-warning rounded-xl text-xs text-warning mb-4">
           ⚠️ {error} — Using DEMO_KEY has rate limits. Add a free USDA API key in Settings → Environment Variables.
         </div>
       )}
@@ -129,15 +129,15 @@ export default function FoodSearchResults({ onSave, isSaved, onSelect, selectMod
             <button
               key={i}
               onClick={() => onSelect(food)}
-              className="w-full text-left bg-white border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:bg-primary/5 transition-all"
+              className="w-full text-left bg-card border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:bg-primary/5 transition-all"
             >
               <p className="text-sm font-semibold text-foreground">{food.name}</p>
               {food.brand && <p className="text-[10px] text-muted-foreground">{food.brand}</p>}
               <div className="flex flex-wrap gap-1 mt-1">
                 {food.calories > 0 && <MacroPill label="Cal" value={food.calories} color="bg-orange-50 text-orange-600" />}
-                <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-blue-50 text-blue-600" />
-                <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-amber-50 text-amber-600" />
-                <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-rose-50 text-rose-600" />
+                <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-accent text-primary" />
+                <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-warning/10 text-warning" />
+                <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-destructive/10 text-destructive" />
                 {food.serving_size && <span className="text-[10px] text-muted-foreground">per {food.serving_size}</span>}
               </div>
             </button>

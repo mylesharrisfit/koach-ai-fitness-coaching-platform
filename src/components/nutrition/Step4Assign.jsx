@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -49,7 +49,7 @@ function ClientPicker({ value, onChange }) {
               <p className="text-sm font-semibold text-foreground truncate">{selected.full_name || selected.name}</p>
               <p className="text-xs text-muted-foreground truncate">{selected.email || ''}</p>
             </div>
-            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
           </>
         ) : (
           <>
@@ -111,9 +111,9 @@ function ClientPicker({ value, onChange }) {
                       <p className="text-xs text-muted-foreground truncate">{c.email || ''}</p>
                     </div>
                     {c.nutrition_plan_id && (
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 shrink-0">Has plan</span>
+                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-warning/10 text-warning shrink-0">Has plan</span>
                     )}
-                    {value === c.id && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
+                    {value === c.id && <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />}
                   </button>
                 ))
               )}
@@ -169,7 +169,7 @@ function TemplateSaveForm({ onSave, onCancel }) {
       </div>
       <div className="flex gap-2 pt-1">
         <Button variant="outline" size="sm" onClick={onCancel} className="flex-1">Cancel</Button>
-        <Button size="sm" onClick={() => onSave(name, category)} disabled={!name} className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
+        <Button size="sm" onClick={() => onSave(name, category)} disabled={!name} className="flex-1 bg-gradient-to-r from-primary to-ai text-white border-0">
           Save Template
         </Button>
       </div>
@@ -189,9 +189,9 @@ function SuccessScreen({ clientName, planName, calories, startDate, hasNote, onV
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
-        className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center"
+        className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center"
       >
-        <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+        <CheckCircle2 className="w-10 h-10 text-success" />
       </motion.div>
 
       <div>
@@ -203,13 +203,13 @@ function SuccessScreen({ clientName, planName, calories, startDate, hasNote, onV
         </p>
       </div>
 
-      <div className="w-full bg-gradient-to-br from-blue-50 to-purple-50 border border-blue-100 rounded-2xl p-4 space-y-2 text-left">
+      <div className="w-full bg-gradient-to-br from-accent to-ai/10 border border-accent rounded-2xl p-4 space-y-2 text-left">
         <div className="flex items-center gap-2">
           <span className="text-base">🥗</span>
           <span className="text-sm font-bold text-foreground">{planName}</span>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white border border-primary/20 text-primary">
+          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-card border border-primary/20 text-primary">
             {calories} kcal/day
           </span>
           <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -217,14 +217,14 @@ function SuccessScreen({ clientName, planName, calories, startDate, hasNote, onV
           </span>
         </div>
         {hasNote && (
-          <p className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+          <p className="text-xs text-success font-semibold flex items-center gap-1">
             <Send className="w-3.5 h-3.5" /> Message sent to {clientName} ✓
           </p>
         )}
       </div>
 
       <div className="w-full space-y-2 pt-1">
-        <Button onClick={onViewClient} className="w-full gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
+        <Button onClick={onViewClient} className="w-full gap-2 bg-gradient-to-r from-primary to-ai text-white border-0">
           View {clientName}'s Profile <ArrowRight className="w-4 h-4" />
         </Button>
         <Button variant="outline" onClick={onGenerateAnother} className="w-full gap-2">
@@ -462,20 +462,20 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
           <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
             🔥 {result.calories} kcal
           </span>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-red-50 text-red-600 border border-red-200">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive">
             P {result.protein}g
           </span>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-200">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-warning/10 text-warning border border-warning">
             C {result.carbs}g
           </span>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-200">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-accent text-primary border border-primary">
             F {result.fats}g
           </span>
         </div>
       </div>
 
       {/* Assign to client card */}
-      <div className="bg-gradient-to-br from-blue-50/60 to-purple-50/60 border border-blue-100 rounded-2xl p-4 space-y-4">
+      <div className="bg-gradient-to-br from-accent/60 to-ai/60 border border-accent rounded-2xl p-4 space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
             <UserPlus className="w-3.5 h-3.5 text-primary" />
@@ -493,10 +493,10 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
 
         {/* Existing plan warning */}
         {clientExistingPlan && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2">
+          <div className="bg-warning/10 border border-warning rounded-xl p-3 space-y-2">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <p className="text-xs font-semibold text-amber-700">
+              <AlertTriangle className="w-3.5 h-3.5 text-warning shrink-0" />
+              <p className="text-xs font-semibold text-warning">
                 {selectedClient?.full_name || 'This client'} already has a plan: <strong>{clientExistingPlan.title}</strong>
               </p>
             </div>
@@ -509,14 +509,14 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
                 )}
               >
                 <div className={cn(
-                  'absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all',
+                  'absolute top-0.5 w-4 h-4 rounded-full bg-card shadow transition-all',
                   replaceExisting ? 'left-4' : 'left-0.5'
                 )} />
               </div>
-              <span className="text-xs font-semibold text-amber-700">Replace existing plan</span>
+              <span className="text-xs font-semibold text-warning">Replace existing plan</span>
             </label>
             {replaceExisting && (
-              <p className="text-[11px] text-amber-600">⚠️ This will replace <strong>{clientExistingPlan.title}</strong></p>
+              <p className="text-[11px] text-warning">⚠️ This will replace <strong>{clientExistingPlan.title}</strong></p>
             )}
           </div>
         )}
@@ -565,7 +565,7 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
         <Button
           onClick={handleAssign}
           disabled={assigning}
-          className="w-full h-11 gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 text-white font-bold text-sm"
+          className="w-full h-11 gap-2 bg-gradient-to-r from-primary to-ai hover:from-primary hover:to-ai border-0 text-white font-bold text-sm"
         >
           {assigning ? (
             <span className="flex items-center gap-2">

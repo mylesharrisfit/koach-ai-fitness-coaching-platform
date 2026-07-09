@@ -49,10 +49,10 @@ export default function UpsellPrompts({ clients, programs }) {
                   {offer.label} {offer.value}
                 </span>
               ))}
-              <Link to={`/messages?client=${client.id}`} className="text-[10px] bg-[#111827] text-white px-2 py-0.5 rounded-full font-medium hover:bg-black transition-colors whitespace-nowrap">
+              <Link to={`/messages?client=${client.id}`} className="text-[10px] bg-sidebar text-white px-2 py-0.5 rounded-full font-medium hover:bg-black transition-colors whitespace-nowrap">
                 Message
               </Link>
-              <Link to={`/client-profile?id=${client.id}`} className="text-[10px] bg-white border border-[#E5E7EB] text-[#374151] px-2 py-0.5 rounded-full font-medium hover:bg-[#F9FAFB] transition-colors whitespace-nowrap">
+              <Link to={`/client-profile?id=${client.id}`} className="text-[10px] bg-card border border-border text-foreground px-2 py-0.5 rounded-full font-medium hover:bg-background transition-colors whitespace-nowrap">
                 View Profile
               </Link>
             </div>

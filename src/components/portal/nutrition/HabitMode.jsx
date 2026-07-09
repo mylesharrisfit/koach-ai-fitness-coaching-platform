@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Circle, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export default function HabitMode({ meals, loggedHabits, onToggleHabit }) {
           </div>
         </div>
         <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #22C55E, #10B981)' }}
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--success)), rgb(var(--success)))' }}
             animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }} />
         </div>
         <p className="text-white/30 text-xs mt-1.5">{pct}% complete today</p>
@@ -44,8 +44,8 @@ export default function HabitMode({ meals, loggedHabits, onToggleHabit }) {
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 className={cn('w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all')}
                 style={{
-                  background: done ? 'rgba(34,197,94,0.1)' : 'rgba(255,255,255,0.05)',
-                  border: `1px solid ${done ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.08)'}`,
+                  background: done ? 'rgb(var(--success) / 0.1)' : 'rgba(255,255,255,0.05)',
+                  border: `1px solid ${done ? 'rgb(var(--success) / 0.25)' : 'rgba(255,255,255,0.08)'}`,
                 }}>
                 <span className="text-2xl flex-shrink-0">{habit.emoji}</span>
                 <div className="flex-1 min-w-0">
@@ -54,7 +54,7 @@ export default function HabitMode({ meals, loggedHabits, onToggleHabit }) {
                 </div>
                 <motion.div animate={{ scale: done ? [1.3, 1] : 1 }} transition={{ duration: 0.2 }}>
                   {done
-                    ? <CheckCircle2 className="w-6 h-6 text-emerald-400 flex-shrink-0" />
+                    ? <CheckCircle2 className="w-6 h-6 text-success flex-shrink-0" />
                     : <Circle className="w-6 h-6 text-white/15 flex-shrink-0" />}
                 </motion.div>
               </motion.button>

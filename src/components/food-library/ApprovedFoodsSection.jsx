@@ -42,15 +42,15 @@ function FoodRow({ food }) {
   return (
     <>
       <div className={cn(
-        'bg-white border rounded-xl overflow-hidden transition-all',
-        food.coach_hidden ? 'opacity-50 border-border' : food.coach_approved ? 'border-green-200' : 'border-border'
+        'bg-card border rounded-xl overflow-hidden transition-all',
+        food.coach_hidden ? 'opacity-50 border-border' : food.coach_approved ? 'border-success' : 'border-border'
       )}>
         <div className="flex items-center gap-3 px-3 py-2.5">
           {/* Approval toggle */}
           <button
             onClick={toggleApproved}
             className={cn('shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all',
-              food.coach_approved ? 'border-green-500 bg-green-500' : 'border-muted-foreground/30 hover:border-green-400'
+              food.coach_approved ? 'border-success bg-success' : 'border-muted-foreground/30 hover:border-success'
             )}
           >
             {food.coach_approved && <CheckCircle2 className="w-3 h-3 text-white" />}
@@ -85,7 +85,7 @@ function FoodRow({ food }) {
         {showActions && (
           <div className="border-t border-border px-3 py-2.5 bg-secondary/20 flex items-center gap-2 flex-wrap">
             <Select value={food.approved_category || ''} onValueChange={setCategory}>
-              <SelectTrigger className="h-7 text-xs w-36 bg-white">
+              <SelectTrigger className="h-7 text-xs w-36 bg-card">
                 <SelectValue placeholder="Set category…" />
               </SelectTrigger>
               <SelectContent>
@@ -94,14 +94,14 @@ function FoodRow({ food }) {
             </Select>
             <button
               onClick={toggleHidden}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1.5 rounded-lg hover:bg-white border border-border bg-white"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1.5 rounded-lg hover:bg-card border border-border bg-card"
             >
               {food.coach_hidden ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
               {food.coach_hidden ? 'Unhide' : 'Hide from clients'}
             </button>
             <button
               onClick={() => setEditing(true)}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1.5 rounded-lg hover:bg-white border border-border bg-white"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1.5 rounded-lg hover:bg-card border border-border bg-card"
             >
               <Edit2 className="w-3 h-3" /> Edit macros
             </button>

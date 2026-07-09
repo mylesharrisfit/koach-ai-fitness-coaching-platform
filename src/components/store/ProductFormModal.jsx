@@ -63,8 +63,8 @@ const BLANK = {
 function SectionHeader({ label }) {
   return (
     <div className="flex items-center gap-3 pt-4 pb-1">
-      <p className="text-xs font-bold uppercase tracking-widest text-[#6B7280]">{label}</p>
-      <div className="flex-1 h-px bg-[#F3F4F6]" />
+      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <div className="flex-1 h-px bg-muted" />
     </div>
   );
 }
@@ -160,8 +160,8 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-[#F3F4F6]">
-          <DialogTitle className="text-[#111827] font-bold text-lg">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b border-muted">
+          <DialogTitle className="text-foreground font-bold text-lg">
             {editing ? 'Edit Product' : 'Create Product'}
           </DialogTitle>
         </DialogHeader>
@@ -173,13 +173,13 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
 
           <div className="space-y-3">
             <div>
-              <Label className="text-xs font-semibold text-[#374151]">Product Name *</Label>
+              <Label className="text-xs font-semibold text-foreground">Product Name *</Label>
               <Input className="mt-1" value={form.title} onChange={e => set('title', e.target.value)} required placeholder="e.g. 12-Week Fat Loss Program" />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-xs font-semibold text-[#374151]">Product Type</Label>
+                <Label className="text-xs font-semibold text-foreground">Product Type</Label>
                 <Select value={form.product_type} onValueChange={handleTypeChange}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -188,7 +188,7 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
                 </Select>
               </div>
               <div>
-                <Label className="text-xs font-semibold text-[#374151]">Category</Label>
+                <Label className="text-xs font-semibold text-foreground">Category</Label>
                 <Select value={form.category} onValueChange={v => set('category', v)}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -203,20 +203,20 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
             </div>
 
             <div>
-              <Label className="text-xs font-semibold text-[#374151]">
-                Short Description <span className="text-[#9CA3AF] font-normal">({form.description?.length || 0}/150)</span>
+              <Label className="text-xs font-semibold text-foreground">
+                Short Description <span className="text-muted-foreground font-normal">({form.description?.length || 0}/150)</span>
               </Label>
               <Input className="mt-1" value={form.description} onChange={e => set('description', e.target.value.slice(0, 150))} placeholder="One-line summary shown on card" />
             </div>
 
             <div>
-              <Label className="text-xs font-semibold text-[#374151]">Full Description</Label>
+              <Label className="text-xs font-semibold text-foreground">Full Description</Label>
               <Textarea className="mt-1" value={form.long_description} onChange={e => set('long_description', e.target.value)} rows={4} placeholder="Detailed description shown on product page…" />
             </div>
 
             {/* Feature bullets */}
             <div>
-              <Label className="text-xs font-semibold text-[#374151]">Feature Bullets <span className="text-[#9CA3AF] font-normal">(up to 8)</span></Label>
+              <Label className="text-xs font-semibold text-foreground">Feature Bullets <span className="text-muted-foreground font-normal">(up to 8)</span></Label>
               <div className="flex gap-2 mt-1">
                 <Input
                   value={featureInput}
@@ -231,9 +231,9 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
               {form.features?.length > 0 && (
                 <div className="mt-2 space-y-1.5">
                   {form.features.map((f, i) => (
-                    <div key={i} className="flex items-center justify-between px-3 py-1.5 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg">
-                      <span className="text-xs text-[#374151]">{f}</span>
-                      <button type="button" onClick={() => removeFeature(i)} className="text-[#9CA3AF] hover:text-red-500">
+                    <div key={i} className="flex items-center justify-between px-3 py-1.5 bg-background border border-border rounded-lg">
+                      <span className="text-xs text-foreground">{f}</span>
+                      <button type="button" onClick={() => removeFeature(i)} className="text-muted-foreground hover:text-destructive">
                         <X className="w-3 h-3" />
                       </button>
                     </div>
@@ -254,7 +254,7 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
             />
             {/* Additional images row */}
             <div>
-              <Label className="text-xs font-semibold text-[#374151]">Additional Images <span className="text-[#9CA3AF] font-normal">(up to 3)</span></Label>
+              <Label className="text-xs font-semibold text-foreground">Additional Images <span className="text-muted-foreground font-normal">(up to 3)</span></Label>
               <div className="flex gap-2 mt-1.5">
                 {[0, 1, 2].map(idx => (
                   <ProductImageUpload
@@ -277,11 +277,11 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
           {/* ── PRICING ── */}
           <SectionHeader label="Pricing" />
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB]">
+            <div className="flex items-center gap-3 p-3 bg-background rounded-xl border border-border">
               <Switch checked={form.is_free} onCheckedChange={v => set('is_free', v)} />
               <div>
-                <p className="text-sm font-semibold text-[#111827]">Free Product</p>
-                <p className="text-xs text-[#9CA3AF]">No payment required — delivered immediately</p>
+                <p className="text-sm font-semibold text-foreground">Free Product</p>
+                <p className="text-xs text-muted-foreground">No payment required — delivered immediately</p>
               </div>
             </div>
 
@@ -289,24 +289,24 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
               <>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-xs font-semibold text-[#374151]">Price ($) *</Label>
+                    <Label className="text-xs font-semibold text-foreground">Price ($) *</Label>
                     <Input className="mt-1" type="number" min="0" step="0.01" value={form.price} onChange={e => set('price', e.target.value)} placeholder="79.00" />
                   </div>
                   <div>
-                    <Label className="text-xs font-semibold text-[#374151]">Compare At Price ($) <span className="text-[#9CA3AF] font-normal">crossed out</span></Label>
+                    <Label className="text-xs font-semibold text-foreground">Compare At Price ($) <span className="text-muted-foreground font-normal">crossed out</span></Label>
                     <Input className="mt-1" type="number" min="0" step="0.01" value={form.original_price} onChange={e => set('original_price', e.target.value)} placeholder="99.00" />
                   </div>
                 </div>
 
                 <div>
-                  <Label className="text-xs font-semibold text-[#374151]">Payment Type</Label>
+                  <Label className="text-xs font-semibold text-foreground">Payment Type</Label>
                   <div className="flex gap-2 mt-1">
                     {[{ value: 'one_time', label: 'One-time' }, { value: 'subscription', label: 'Subscription' }].map(opt => (
                       <button
                         key={opt.value}
                         type="button"
                         onClick={() => set('payment_type', opt.value)}
-                        className={`flex-1 py-2 rounded-lg border text-sm font-semibold transition-all ${form.payment_type === opt.value ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white text-[#374151] border-[#E5E7EB]'}`}
+                        className={`flex-1 py-2 rounded-lg border text-sm font-semibold transition-all ${form.payment_type === opt.value ? 'bg-sidebar text-white border-foreground' : 'bg-card text-foreground border-border'}`}
                       >
                         {opt.label}
                       </button>
@@ -316,7 +316,7 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
 
                 {form.payment_type === 'subscription' && (
                   <div>
-                    <Label className="text-xs font-semibold text-[#374151]">Billing Frequency</Label>
+                    <Label className="text-xs font-semibold text-foreground">Billing Frequency</Label>
                     <Select value={form.billing_frequency} onValueChange={v => set('billing_frequency', v)}>
                       <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -335,17 +335,17 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
           <SectionHeader label="Delivery" />
           <div className="space-y-3">
             <div>
-              <Label className="text-xs font-semibold text-[#374151] mb-2 block">What does the buyer receive?</Label>
+              <Label className="text-xs font-semibold text-foreground mb-2 block">What does the buyer receive?</Label>
               <div className="space-y-2">
                 {DELIVERY_OPTIONS.map(opt => (
-                  <label key={opt.value} className="flex items-center gap-3 p-3 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] cursor-pointer hover:bg-[#F3F4F6] transition-colors">
+                  <label key={opt.value} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-background cursor-pointer hover:bg-muted transition-colors">
                     <input
                       type="checkbox"
                       checked={form.delivery_types?.includes(opt.value)}
                       onChange={() => toggleDelivery(opt.value)}
                       className="rounded"
                     />
-                    <span className="text-sm text-[#374151]">{opt.label}</span>
+                    <span className="text-sm text-foreground">{opt.label}</span>
                   </label>
                 ))}
               </div>
@@ -353,15 +353,15 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
 
             {hasDownload && (
               <div>
-                <Label className="text-xs font-semibold text-[#374151]">Digital Download File</Label>
+                <Label className="text-xs font-semibold text-foreground">Digital Download File</Label>
                 <div className="mt-1 flex items-center gap-2">
-                  <label className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-dashed border-[#D1D5DB] rounded-xl bg-[#F9FAFB] cursor-pointer hover:bg-[#F3F4F6] transition-colors text-sm text-[#374151]">
+                  <label className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 border border-dashed border-muted-foreground rounded-xl bg-background cursor-pointer hover:bg-muted transition-colors text-sm text-foreground">
                     {fileUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     {form.download_file_url ? 'File uploaded ✓' : 'Upload PDF, MP4, or ZIP (max 500MB)'}
                     <input type="file" className="hidden" onChange={handleFileUpload} accept=".pdf,.mp4,.zip,.mov" />
                   </label>
                   {form.download_file_url && (
-                    <button type="button" onClick={() => set('download_file_url', '')} className="text-[#9CA3AF] hover:text-red-500">
+                    <button type="button" onClick={() => set('download_file_url', '')} className="text-muted-foreground hover:text-destructive">
                       <X className="w-4 h-4" />
                     </button>
                   )}
@@ -371,7 +371,7 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
 
             {hasAppAccess && (
               <div>
-                <Label className="text-xs font-semibold text-[#374151]">Access Duration</Label>
+                <Label className="text-xs font-semibold text-foreground">Access Duration</Label>
                 <Select value={form.access_duration} onValueChange={v => set('access_duration', v)}>
                   <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -383,13 +383,13 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
 
             {hasCalls && (
               <div>
-                <Label className="text-xs font-semibold text-[#374151]">Number of Scheduled Calls</Label>
+                <Label className="text-xs font-semibold text-foreground">Number of Scheduled Calls</Label>
                 <Input className="mt-1" type="number" min="1" value={form.scheduled_calls_count} onChange={e => set('scheduled_calls_count', Number(e.target.value))} />
               </div>
             )}
 
             <div>
-              <Label className="text-xs font-semibold text-[#374151]">Delivery Instructions <span className="text-[#9CA3AF] font-normal">(shown to buyer after purchase)</span></Label>
+              <Label className="text-xs font-semibold text-foreground">Delivery Instructions <span className="text-muted-foreground font-normal">(shown to buyer after purchase)</span></Label>
               <Textarea
                 className="mt-1"
                 value={form.delivery_instructions}
@@ -402,17 +402,17 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
 
           {/* ── PUBLISH ── */}
           <SectionHeader label="Visibility" />
-          <div className="flex items-center gap-3 p-3 bg-[#F9FAFB] rounded-xl border border-[#E5E7EB]">
+          <div className="flex items-center gap-3 p-3 bg-background rounded-xl border border-border">
             <Switch checked={form.is_published} onCheckedChange={v => set('is_published', v)} />
             <div>
-              <p className="text-sm font-semibold text-[#111827]">Published</p>
-              <p className="text-xs text-[#9CA3AF]">Visible to buyers on your public store page</p>
+              <p className="text-sm font-semibold text-foreground">Published</p>
+              <p className="text-xs text-muted-foreground">Visible to buyers on your public store page</p>
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-5 border-t border-[#E5E7EB] mt-4">
+          <div className="flex justify-end gap-2 pt-5 border-t border-border mt-4">
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" className="bg-[#111827] hover:bg-black text-white min-w-[130px]" disabled={saving}>
+            <Button type="submit" className="bg-sidebar hover:bg-black text-white min-w-[130px]" disabled={saving}>
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : editing ? 'Save Changes' : 'Create Product'}
             </Button>
           </div>

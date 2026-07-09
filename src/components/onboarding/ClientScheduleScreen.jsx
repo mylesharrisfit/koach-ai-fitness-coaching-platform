@@ -35,7 +35,7 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
         {/* Days slider */}
         <div className="space-y-5">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium" style={{ color: '#B3B3B3' }}>Days per week</span>
+            <span className="text-sm font-medium" style={{ color: 'var(--kc-b3b3b3)' }}>Days per week</span>
             <motion.span
               key={days}
               initial={{ scale: 1.3, opacity: 0 }}
@@ -49,13 +49,13 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
               onChange={e => setDays(Number(e.target.value))}
               className="w-full h-2 rounded-full appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((days - 1) / 6) * 100}%, rgba(255,255,255,0.08) ${((days - 1) / 6) * 100}%, rgba(255,255,255,0.08) 100%)`,
+                background: `linear-gradient(to right, var(--tc-primary) 0%, var(--tc-primary) ${((days - 1) / 6) * 100}%, color-mix(in srgb, white 8%, transparent) ${((days - 1) / 6) * 100}%, color-mix(in srgb, white 8%, transparent) 100%)`,
                 WebkitAppearance: 'none',
               }}
             />
             <div className="flex justify-between mt-2">
               {[1, 2, 3, 4, 5, 6, 7].map(d => (
-                <span key={d} className="text-xs" style={{ color: d <= days ? '#3B82F6' : '#3A3A3A' }}>{d}</span>
+                <span key={d} className="text-xs" style={{ color: d <= days ? 'var(--tc-primary)' : 'var(--kc-3a3a3a)' }}>{d}</span>
               ))}
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
 
         {/* Duration */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>How long can your workouts be?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>How long can your workouts be?</p>
           <div className="grid grid-cols-2 gap-2.5">
             {DURATIONS.map(d => (
               <motion.button
@@ -73,10 +73,10 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
                 whileTap={{ scale: 0.98 }}
                 className="py-4 rounded-2xl text-sm font-semibold transition-all"
                 style={{
-                  background: duration === d.id ? 'rgba(59,130,246,0.1)' : '#161616',
-                  border: duration === d.id ? '1px solid rgba(59,130,246,0.45)' : '1px solid rgba(255,255,255,0.06)',
-                  color: duration === d.id ? '#fff' : '#7A7A7A',
-                  boxShadow: duration === d.id ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                  background: duration === d.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'var(--kc-161616)',
+                  border: duration === d.id ? '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)' : '1px solid color-mix(in srgb, white 6%, transparent)',
+                  color: duration === d.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  boxShadow: duration === d.id ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                 }}
               >{d.label}</motion.button>
             ))}
@@ -85,7 +85,7 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
 
         {/* Time of day */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>What time do you usually train?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>What time do you usually train?</p>
           <div className="flex flex-wrap gap-2.5">
             {TIMES.map(t => (
               <ChipSelect key={t.id} label={t.label} selected={time === t.id} onClick={() => setTime(t.id)} />

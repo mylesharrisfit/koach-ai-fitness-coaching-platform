@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RefreshCw, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -174,7 +174,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
 
       {/* Sticky Footer — only shown on review step */}
       {isReview && (
-        <div className="px-4 sm:px-6" style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', paddingBottom: '12px', borderTop: '1px solid rgb(var(--border))', background: 'rgb(var(--background))' }}>
+        <div className="px-4 sm:px-6" style={{ flexShrink: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', paddingBottom: '12px', borderTop: '1px solid var(--tc-border)', background: 'var(--tc-background)' }}>
           <Button
             variant="outline"
             onClick={() => {
@@ -190,7 +190,7 @@ export default function AIBuilder({ onBack, onProgramCreated }) {
             onClick={() => handleSaveProgram(reviewData)}
             disabled={loading || !(reviewData?.title ?? generatedProgram?.title)}
             className="gap-2 text-sm font-semibold"
-            style={{ background: '#2563EB' }}
+            style={{ background: 'var(--tc-primary)' }}
           >
             <Check className="w-4 h-4" />
             {loading ? 'Saving...' : 'Save & Open Builder'}

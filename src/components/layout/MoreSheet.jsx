@@ -1,50 +1,57 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Dumbbell, Salad, TrendingUp, Trophy, Shield, Activity, Apple,
+  Dumbbell, Salad, ClipboardList, Trophy, Activity, Apple,
   Sparkles, Bot, BarChart3,
-  DollarSign, UserPlus, ShoppingBag, Globe, BarChart2,
-  LayoutTemplate, Palette, Settings, CreditCard, FileText
+  UserPlus, ShoppingBag, Globe, Flame,
+  LayoutTemplate, Palette, Settings, CreditCard,
+  UsersRound, FileText, Mail, BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { track } from '@/lib/telemetry';
 
+// Mirrors the consolidated desktop IA: the bottom bar holds Home/Clients/
+// Messages/Calendar/Business; everything else lives here (routes preserved).
 const SECTIONS = [
   {
     title: 'COACHING',
     items: [
-      { icon: Dumbbell,       label: 'Programs',   path: '/programs' },
-      { icon: Salad,          label: 'Nutrition',  path: '/nutrition' },
-      { icon: TrendingUp,     label: 'Progress',   path: '/progress' },
-      { icon: Trophy,         label: 'Adherence',  path: '/adherence' },
-      { icon: Shield,         label: 'At-Risk',    path: '/at-risk' },
-      { icon: Activity,       label: 'Exercises',  path: '/exercises' },
+      { icon: Dumbbell,      label: 'Programs',   path: '/programs' },
+      { icon: Salad,         label: 'Nutrition',  path: '/nutrition' },
+      { icon: ClipboardList, label: 'Check-ins',  path: '/checkin-review' },
+      { icon: Trophy,        label: 'Adherence',  path: '/adherence' },
+      { icon: Activity,      label: 'Exercises',  path: '/exercises' },
+      { icon: Apple,         label: 'Food Library', path: '/food-library' },
     ],
   },
   {
-    title: 'AI TOOLS',
+    title: 'GROW',
     items: [
-      { icon: Sparkles,  label: 'AI Assistant', path: '/assistant' },
-      { icon: Bot,       label: 'Automations',  path: '/automations' },
-      { icon: BarChart3, label: 'Analytics',    path: '/analytics' },
+      { icon: UserPlus,    label: 'Leads',      path: '/sales' },
+      { icon: ShoppingBag, label: 'Store',      path: '/store' },
+      { icon: Globe,       label: 'Community',  path: '/community' },
+      { icon: Flame,       label: 'Challenges', path: '/challenges' },
     ],
   },
   {
-    title: 'BUSINESS',
+    title: 'AI',
     items: [
-      { icon: DollarSign,  label: 'Payments',  path: '/revenue' },
-      { icon: UserPlus,    label: 'Leads',     path: '/sales' },
-      { icon: ShoppingBag, label: 'Store',     path: '/store' },
-      { icon: Globe,       label: 'Community', path: '/community' },
+      { icon: Sparkles,  label: 'Assistant',   path: '/assistant' },
+      { icon: Bot,       label: 'Automations', path: '/automations' },
+      { icon: BarChart3, label: 'Analytics',   path: '/analytics' },
     ],
   },
   {
     title: 'TOOLS',
     items: [
-      { icon: LayoutTemplate, label: 'Templates',   path: '/coaching-templates' },
-      { icon: Apple,          label: 'Food Library', path: '/food-library' },
-      { icon: Palette,        label: 'White Label', path: '/white-label' },
-      { icon: Settings,       label: 'Settings',    path: '/settings' },
+      { icon: LayoutTemplate, label: 'Templates',      path: '/coaching-templates' },
+      { icon: Palette,        label: 'White Label',    path: '/white-label' },
+      { icon: UsersRound,     label: 'Team',           path: '/team' },
+      { icon: FileText,       label: 'Weekly Summary', path: '/weekly-summary' },
+      { icon: Mail,           label: 'Email Center',   path: '/email-center' },
+      { icon: BookOpen,       label: 'Onboarding',     path: '/onboarding-manager' },
+      { icon: Settings,       label: 'Settings',       path: '/settings' },
     ],
   },
 ];
@@ -71,19 +78,19 @@ export default function MoreSheet({ open, onClose }) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed left-0 right-0 z-50 md:hidden flex flex-col rounded-t-2xl overflow-hidden bg-white"
-            style={{ bottom: '60px', maxHeight: 'calc(80dvh - 60px)', borderTop: '1px solid #E5E7EB' }}
+            className="fixed left-0 right-0 z-50 md:hidden flex flex-col rounded-t-2xl overflow-hidden bg-card border-t border-border"
+            style={{ bottom: '60px', maxHeight: 'calc(80dvh - 60px)' }}
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-2.5 pb-1 flex-shrink-0">
-              <div className="w-9 h-1 rounded-full bg-[#D1D5DB]" />
+              <div className="w-9 h-1 rounded-full bg-muted-foreground/40" />
             </div>
 
             {/* Scrollable content */}
             <div className="overflow-y-auto flex-1 px-4 pt-2 pb-8">
               {SECTIONS.map((section) => (
                 <div key={section.title} className="mb-5">
-                  <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5 px-1 text-[#9CA3AF]">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5 px-1 text-muted-foreground">
                     {section.title}
                   </p>
                   <div className="grid grid-cols-4 gap-2">
@@ -94,18 +101,18 @@ export default function MoreSheet({ open, onClose }) {
                         <Link
                           key={item.path}
                           to={item.path}
-                          onClick={onClose}
+                          onClick={() => { track('nav.click', { path: item.path, label: item.label, surface: 'moresheet' }); onClose(); }}
                           className="flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all active:scale-95"
                         >
                           <div className={cn(
                             'w-12 h-12 rounded-xl flex items-center justify-center',
-                            isActive ? 'bg-[#111827]' : 'bg-[#F3F4F6]'
+                            isActive ? 'bg-foreground' : 'bg-muted'
                           )}>
-                            <item.icon className={cn('w-5 h-5', isActive ? 'text-white' : 'text-[#374151]')} />
+                            <item.icon className={cn('w-5 h-5', isActive ? 'text-background' : 'text-muted-foreground')} />
                           </div>
                           <span className={cn(
                             'text-[10px] text-center leading-tight',
-                            isActive ? 'text-[#111827] font-semibold' : 'text-[#6B7280]'
+                            isActive ? 'text-foreground font-semibold' : 'text-muted-foreground'
                           )}>
                             {item.label}
                           </span>
@@ -117,16 +124,16 @@ export default function MoreSheet({ open, onClose }) {
               ))}
 
               {/* Account links */}
-              <div className="border-t border-[#F3F4F6] pt-4 mt-1">
+              <div className="border-t border-border pt-4 mt-1">
                 <div className="grid grid-cols-4 gap-2">
                   {[{ icon: CreditCard, label: 'Subscription', path: '/subscription' }].map(item => {
                     const isActive = location.pathname.startsWith(item.path);
                     return (
                       <Link key={item.path} to={item.path} onClick={onClose} className="flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all active:scale-95">
-                        <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', isActive ? 'bg-[#111827]' : 'bg-[#F3F4F6]')}>
-                          <item.icon className={cn('w-5 h-5', isActive ? 'text-white' : 'text-[#374151]')} />
+                        <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', isActive ? 'bg-foreground' : 'bg-muted')}>
+                          <item.icon className={cn('w-5 h-5', isActive ? 'text-background' : 'text-muted-foreground')} />
                         </div>
-                        <span className="text-[10px] text-[#6B7280] text-center leading-tight">{item.label}</span>
+                        <span className="text-[10px] text-muted-foreground text-center leading-tight">{item.label}</span>
                       </Link>
                     );
                   })}

@@ -43,8 +43,8 @@ export function MobileCard({ children, className = '', onClick, style = {} }) {
     <motion.div
       whileTap={onClick ? { scale: 0.98 } : undefined}
       onClick={onClick}
-      className={cn('bg-white rounded-2xl p-4', className)}
-      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9', ...style }}
+      className={cn('bg-card rounded-2xl p-4', className)}
+      style={{ boxShadow: '0 2px 16px color-mix(in srgb, black 6%, transparent)', border: '1px solid var(--tc-muted)', ...style }}
     >
       {children}
     </motion.div>
@@ -59,9 +59,9 @@ export function MobileButton({
   const base = 'flex items-center justify-center gap-2 rounded-2xl font-bold text-base transition-all min-h-[48px] px-6 py-3';
   const variants = {
     primary: 'text-white',
-    secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200',
-    ghost: 'text-slate-500 hover:text-slate-700',
-    danger: 'bg-red-50 text-red-600 hover:bg-red-100',
+    secondary: 'bg-muted text-foreground hover:bg-border',
+    ghost: 'text-muted-foreground hover:text-foreground',
+    danger: 'bg-destructive/10 text-destructive hover:bg-destructive/10',
   };
 
   return (
@@ -72,8 +72,8 @@ export function MobileButton({
       disabled={disabled || loading}
       className={cn(base, variants[variant], fullWidth ? 'w-full' : '', disabled || loading ? 'opacity-50' : '', className)}
       style={variant === 'primary' ? {
-        background: disabled ? '#94A3B8' : 'linear-gradient(135deg, #2563EB, #7C3AED)',
-        boxShadow: disabled ? 'none' : '0 4px 16px rgba(37,99,235,0.3)',
+        background: disabled ? 'var(--tc-muted-foreground)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
+        boxShadow: disabled ? 'none' : '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)',
       } : undefined}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : children}
@@ -98,10 +98,10 @@ export function MobileInput({
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      {label && <label className="text-sm font-bold text-slate-700">{label}{required && <span className="text-red-500 ml-0.5">*</span>}</label>}
+      {label && <label className="text-sm font-bold text-foreground">{label}{required && <span className="text-destructive ml-0.5">*</span>}</label>}
       <div className={cn(
-        'flex items-center bg-white rounded-2xl border-2 transition-all min-h-[48px] px-4',
-        focused ? 'border-blue-500' : error ? 'border-red-300' : 'border-slate-200',
+        'flex items-center bg-card rounded-2xl border-2 transition-all min-h-[48px] px-4',
+        focused ? 'border-primary' : error ? 'border-destructive' : 'border-border',
       )}>
         <input
           ref={inputRef}
@@ -114,17 +114,17 @@ export function MobileInput({
           required={required}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="flex-1 bg-transparent outline-none text-slate-900 placeholder-slate-300"
+          className="flex-1 bg-transparent outline-none text-foreground placeholder-border"
           style={{ fontSize: 16, minHeight: 48 }} // prevents iOS zoom
         />
         {value && (
           <button type="button" onClick={() => { onChange?.(''); inputRef.current?.focus(); }}
-            className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center ml-2 flex-shrink-0">
-            <X className="w-3 h-3 text-slate-500" />
+            className="w-5 h-5 rounded-full bg-border flex items-center justify-center ml-2 flex-shrink-0">
+            <X className="w-3 h-3 text-muted-foreground" />
           </button>
         )}
       </div>
-      {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
+      {error && <p className="text-xs text-destructive font-medium">{error}</p>}
     </div>
   );
 }
@@ -136,22 +136,22 @@ export function MobileHeader({ title, onBack, rightAction, rightLabel, transpare
       className="flex items-center justify-between px-4 h-14 flex-shrink-0"
       style={{
         background: transparent ? 'transparent' : 'white',
-        borderBottom: transparent ? 'none' : '1px solid #F1F5F9',
+        borderBottom: transparent ? 'none' : '1px solid var(--tc-muted)',
         paddingTop: 'env(safe-area-inset-top, 0px)',
       }}
     >
       {onBack ? (
         <motion.button whileTap={{ scale: 0.9 }} onClick={() => { haptic('light'); onBack(); }}
-          className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-          <ChevronLeft className="w-5 h-5 text-slate-700" />
+          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+          <ChevronLeft className="w-5 h-5 text-foreground" />
         </motion.button>
       ) : <div className="w-9" />}
 
-      <h1 className="font-black text-slate-900 text-base text-center flex-1 px-4 truncate">{title}</h1>
+      <h1 className="font-black text-foreground text-base text-center flex-1 px-4 truncate">{title}</h1>
 
       {rightAction ? (
         <motion.button whileTap={{ scale: 0.9 }} onClick={() => { haptic('light'); rightAction(); }}
-          className="flex-shrink-0 text-blue-600 font-bold text-sm">
+          className="flex-shrink-0 text-primary font-bold text-sm">
           {rightLabel || 'Done'}
         </motion.button>
       ) : <div className="w-9" />}
@@ -189,7 +189,7 @@ export function MobileSheet({ open, onClose, children, title, snapPoints = ['50%
             dragConstraints={{ top: 0 }}
             dragElastic={{ top: 0, bottom: 0.3 }}
             onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl overflow-hidden"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl overflow-hidden"
             style={{ maxHeight: '90vh', paddingBottom: 'env(safe-area-inset-bottom, 16px)' }}
           >
             {/* Drag handle */}
@@ -197,15 +197,15 @@ export function MobileSheet({ open, onClose, children, title, snapPoints = ['50%
               className="flex justify-center pt-3 pb-2 cursor-grab"
               onPointerDown={e => dragControls.start(e)}
             >
-              <div className="w-10 h-1 rounded-full bg-slate-200" />
+              <div className="w-10 h-1 rounded-full bg-border" />
             </div>
 
             {title && (
-              <div className="flex items-center justify-between px-5 pb-3 border-b border-slate-100">
-                <h2 className="font-black text-slate-900 text-base">{title}</h2>
+              <div className="flex items-center justify-between px-5 pb-3 border-b border-border">
+                <h2 className="font-black text-foreground text-base">{title}</h2>
                 <motion.button whileTap={{ scale: 0.9 }} onClick={onClose}
-                  className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                  <X className="w-4 h-4 text-slate-500" />
+                  className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                  <X className="w-4 h-4 text-muted-foreground" />
                 </motion.button>
               </div>
             )}
@@ -224,7 +224,7 @@ export function MobileSheet({ open, onClose, children, title, snapPoints = ['50%
 export function Skeleton({ className = '', style = {} }) {
   return (
     <div
-      className={cn('rounded-xl bg-slate-200 animate-pulse', className)}
+      className={cn('rounded-xl bg-border animate-pulse', className)}
       style={style}
     />
   );
@@ -232,7 +232,7 @@ export function Skeleton({ className = '', style = {} }) {
 
 export function CardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl p-4 space-y-3" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
+    <div className="bg-card rounded-2xl p-4 space-y-3" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
       <Skeleton className="h-4 w-3/4" />
       <Skeleton className="h-3 w-full" />
       <Skeleton className="h-3 w-2/3" />

@@ -44,18 +44,18 @@ function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibra
 
   return (
     <div ref={drag.innerRef} {...drag.draggableProps}
-      className={cn('bg-white border border-[#E7EAF3] rounded-xl overflow-hidden border-l-2', isDragging && 'shadow-md', setTypeColor)}>
+      className={cn('bg-card border border-border rounded-xl overflow-hidden border-l-2', isDragging && 'shadow-md', setTypeColor)}>
       <div className="flex items-center gap-2 px-3 py-2">
         <div {...drag.dragHandleProps}><GripVertical className="w-3.5 h-3.5 text-muted-foreground cursor-grab" /></div>
         {ex.set_type && ex.set_type !== 'straight' && (
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 flex-shrink-0">{ex.set_type.toUpperCase()}</span>
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-ai/10 text-ai flex-shrink-0">{ex.set_type.toUpperCase()}</span>
         )}
         <Input className="h-8 text-xs flex-1" placeholder="Exercise name" value={ex.name} onChange={e => onUpdate('name', e.target.value)} />
         <button type="button" onClick={onPickLibrary} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary flex-shrink-0">
           <BookOpen className="w-3.5 h-3.5" />
         </button>
         {(ex.video_url || ex._library_exercise?.video_url) && (
-          <button type="button" onClick={onWatchDemo} className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-50 text-primary flex-shrink-0">
+          <button type="button" onClick={onWatchDemo} className="w-7 h-7 flex items-center justify-center rounded-lg bg-accent text-primary flex-shrink-0">
             <Play className="w-3 h-3" fill="currentColor" />
           </button>
         )}
@@ -74,37 +74,37 @@ function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibra
           </div>
         </div>
         <button type="button" onClick={() => setExpanded(v => !v)}
-          className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0', (ex.tempo || ex.notes || ex.video_url || ex.rpe) ? 'bg-amber-50 text-amber-500' : 'hover:bg-secondary text-muted-foreground')}>
+          className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0', (ex.tempo || ex.notes || ex.video_url || ex.rpe) ? 'bg-warning/10 text-warning' : 'hover:bg-secondary text-muted-foreground')}>
           {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
-        <button type="button" onClick={onRemove} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-muted-foreground/50 hover:text-destructive flex-shrink-0">
+        <button type="button" onClick={onRemove} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive flex-shrink-0">
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {expanded && (
-        <div className="border-t border-[#F6F7FB] bg-[#FAFBFE] px-4 py-3 space-y-3">
+        <div className="border-t border-muted bg-muted px-4 py-3 space-y-3">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Layers className="w-3 h-3" />Set Type</Label>
               <select value={ex.set_type || 'straight'} onChange={e => onUpdate('set_type', e.target.value)}
-                className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40">
+                className="mt-1 h-8 w-full text-xs rounded-lg border border-border bg-card px-2 focus:outline-none focus:border-primary/40">
                 {SET_TYPES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Tag className="w-3 h-3" />Group</Label>
-              <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono text-center" placeholder="A/B/C"
+              <Input className="h-8 text-sm mt-1 border-border font-mono text-center" placeholder="A/B/C"
                 value={ex.superset_group || ''} onChange={e => onUpdate('superset_group', e.target.value)} />
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Timer className="w-3 h-3" />Tempo</Label>
-              <Input className="h-8 text-sm mt-1 border-[#E7EAF3] font-mono" placeholder="3-1-2-0"
+              <Input className="h-8 text-sm mt-1 border-border font-mono" placeholder="3-1-2-0"
                 value={ex.tempo || ''} onChange={e => onUpdate('tempo', e.target.value)} />
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Zap className="w-3 h-3" />RPE (1–10)</Label>
-              <Input type="number" min="1" max="10" className="h-8 text-sm mt-1 border-[#E7EAF3] text-center" placeholder="8"
+              <Input type="number" min="1" max="10" className="h-8 text-sm mt-1 border-border text-center" placeholder="8"
                 value={ex.rpe || ''} onChange={e => onUpdate('rpe', e.target.value)} />
             </div>
           </div>
@@ -112,20 +112,20 @@ function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibra
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Section</Label>
               <select value={ex.section || 'main'} onChange={e => onUpdate('section', e.target.value)}
-                className="mt-1 h-8 w-full text-xs rounded-lg border border-[#E7EAF3] bg-white px-2 focus:outline-none focus:border-primary/40">
+                className="mt-1 h-8 w-full text-xs rounded-lg border border-border bg-card px-2 focus:outline-none focus:border-primary/40">
                 {SECTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </div>
             <div>
               <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Link className="w-3 h-3" />Video / YouTube URL</Label>
-              <Input className="h-8 text-xs mt-1 border-[#E7EAF3]" placeholder="https://youtube.com/..."
+              <Input className="h-8 text-xs mt-1 border-border" placeholder="https://youtube.com/..."
                 value={ex.video_url || ''} onChange={e => onUpdate('video_url', e.target.value)} />
             </div>
           </div>
           <div>
             <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Coaching Notes / Instructions</Label>
             <textarea rows={2}
-              className="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-[#E7EAF3] bg-white resize-none focus:outline-none focus:border-primary/40"
+              className="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-border bg-card resize-none focus:outline-none focus:border-primary/40"
               placeholder="Form cues, modifications, client instructions..."
               value={ex.notes || ''} onChange={e => onUpdate('notes', e.target.value)} />
           </div>

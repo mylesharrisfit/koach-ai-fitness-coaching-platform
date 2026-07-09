@@ -3,17 +3,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import CalendlyBookingWidget from './CalendlyBookingWidget';
 import { format } from 'date-fns';
-import { Video, Copy, ExternalLink, FileText, Check, Clock, X, AlertTriangle } from 'lucide-react';
+import { Video, Copy, FileText, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 const STATUS_CONFIG = {
-  scheduled:  { label: 'Upcoming',   className: 'bg-blue-50 text-blue-700 border-blue-100' },
-  completed:  { label: 'Completed',  className: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
-  cancelled:  { label: 'Cancelled',  className: 'bg-gray-50 text-gray-500 border-gray-200' },
-  no_show:    { label: 'No Show',    className: 'bg-red-50 text-red-600 border-red-100' },
+  scheduled:  { label: 'Upcoming',   className: 'bg-accent text-primary border-accent' },
+  completed:  { label: 'Completed',  className: 'bg-success/10 text-success border-success' },
+  cancelled:  { label: 'Cancelled',  className: 'bg-muted text-muted-foreground border-border' },
+  no_show:    { label: 'No Show',    className: 'bg-destructive/10 text-destructive border-destructive' },
 };
 
 const TYPE_LABELS = {
@@ -37,9 +37,9 @@ function CopyButton({ text, label }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border border-[#E5E7EB] text-[#374151] hover:bg-gray-50 transition-colors"
+      className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border border-border text-foreground hover:bg-muted transition-colors"
     >
-      {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+      {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
       {copied ? 'Copied!' : label}
     </button>
   );
@@ -68,21 +68,21 @@ function SessionRow({ session }) {
   } catch {}
 
   return (
-    <div className="border border-[#E5E7EB] rounded-xl bg-white overflow-hidden">
+    <div className="border border-border rounded-xl bg-card overflow-hidden">
       <div className="flex items-start gap-3 p-4">
         {/* Zoom icon or type icon */}
         <div className={cn(
           'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5',
-          hasZoom ? 'bg-[#2D8CFF]/10' : 'bg-gray-100'
+          hasZoom ? 'bg-[var(--kc-2d8cff)]/10' : 'bg-muted'
         )}>
-          <Video className={cn('w-4 h-4', hasZoom ? 'text-[#2D8CFF]' : 'text-gray-400')} />
+          <Video className={cn('w-4 h-4', hasZoom ? 'text-[var(--kc-2d8cff)]' : 'text-muted-foreground')} />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 flex-wrap">
             <div>
-              <p className="text-sm font-semibold text-[#111827] leading-tight">{session.title}</p>
-              <p className="text-xs text-[#6B7280] mt-0.5">
+              <p className="text-sm font-semibold text-foreground leading-tight">{session.title}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {displayDate}{session.time && ` · ${session.time}`} · {session.duration_minutes || 60} min · {TYPE_LABELS[session.type] || session.type}
               </p>
             </div>
@@ -98,7 +98,7 @@ function SessionRow({ session }) {
                 href={session.zoom_start_url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-[#2D8CFF] text-white rounded-lg hover:bg-[#2681F2] transition-colors"
+                className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-[var(--kc-2d8cff)] text-white rounded-lg hover:bg-[var(--kc-2681f2)] transition-colors"
               >
                 <Video className="w-3 h-3" /> Start Meeting
               </a>
@@ -111,14 +111,14 @@ function SessionRow({ session }) {
 
           {/* Notes */}
           {session.notes && !showNotes && (
-            <p className="text-xs text-[#6B7280] mt-2 italic line-clamp-2">📝 {session.notes}</p>
+            <p className="text-xs text-muted-foreground mt-2 italic line-clamp-2">📝 {session.notes}</p>
           )}
         </div>
 
         {/* Log notes button */}
         <button
           onClick={() => setShowNotes(v => !v)}
-          className="flex items-center gap-1 text-[11px] font-medium text-[#6B7280] hover:text-[#374151] transition-colors flex-shrink-0 mt-0.5"
+          className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 mt-0.5"
         >
           <FileText className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Notes</span>
@@ -127,7 +127,7 @@ function SessionRow({ session }) {
 
       {/* Notes editor */}
       {showNotes && (
-        <div className="border-t border-[#E5E7EB] bg-[#F9FAFB] p-3 flex flex-col gap-2">
+        <div className="border-t border-border bg-background p-3 flex flex-col gap-2">
           <Textarea
             value={notesValue}
             onChange={e => setNotesValue(e.target.value)}
@@ -164,21 +164,21 @@ export default function SessionsTab({ client }) {
       <CalendlyBookingWidget client={client} />
       {isLoading ? (
         <div className="space-y-3">
-          {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-xl bg-gray-100 animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-20 rounded-xl bg-muted animate-pulse" />)}
         </div>
       ) : sessions.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-3">
-            <Video className="w-5 h-5 text-gray-400" />
+          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-3">
+            <Video className="w-5 h-5 text-muted-foreground" />
           </div>
-          <p className="text-sm font-semibold text-[#374151]">No sessions yet</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">Sessions will appear here once booked</p>
+          <p className="text-sm font-semibold text-foreground">No sessions yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Sessions will appear here once booked</p>
         </div>
       ) : (
         <>
           {upcoming.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
                 Upcoming ({upcoming.length})
               </p>
               <div className="space-y-2">
@@ -188,7 +188,7 @@ export default function SessionsTab({ client }) {
           )}
           {past.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
                 Past ({past.length})
               </p>
               <div className="space-y-2">

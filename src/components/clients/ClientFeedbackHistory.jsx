@@ -8,7 +8,7 @@ function WeightArrow({ current, prev }) {
   if (!current || !prev) return null;
   const diff = (current - prev).toFixed(1);
   const n = Number(diff);
-  if (n < 0) return <span className="text-emerald-400 flex items-center gap-0.5 text-[10px] font-bold"><TrendingDown className="w-3 h-3" />{diff}</span>;
+  if (n < 0) return <span className="text-success flex items-center gap-0.5 text-[10px] font-bold"><TrendingDown className="w-3 h-3" />{diff}</span>;
   if (n > 0) return <span className="text-destructive flex items-center gap-0.5 text-[10px] font-bold"><TrendingUp className="w-3 h-3" />+{diff}</span>;
   return <span className="text-muted-foreground flex items-center gap-0.5 text-[10px]"><Minus className="w-3 h-3" />0</span>;
 }
@@ -21,7 +21,7 @@ function MiniTrendBar({ checkIns }) {
     <div className="flex items-end gap-0.5 h-5">
       {scores.map((s, i) => {
         const h = s !== null ? Math.max(4, Math.round((s / 100) * 20)) : 2;
-        const color = s === null ? 'bg-secondary' : s >= 80 ? 'bg-emerald-400' : s >= 60 ? 'bg-amber-400' : 'bg-destructive';
+        const color = s === null ? 'bg-secondary' : s >= 80 ? 'bg-success' : s >= 60 ? 'bg-warning' : 'bg-destructive';
         return <div key={i} className={cn('w-2 rounded-sm opacity-80', color)} style={{ height: `${h}px` }} />;
       })}
     </div>

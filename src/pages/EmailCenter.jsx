@@ -7,10 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import {
-  Mail, Send, Loader2, Eye, Users, ChevronRight,
-  Smartphone, Monitor, Search, CheckCircle2, X
+  Mail, Send, Loader2, Users, ChevronRight,
+  Smartphone, Monitor, Search, CheckCircle2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -25,7 +24,7 @@ function AudienceBadge({ audience }) {
   return (
     <span className={cn(
       'px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide',
-      audience === 'client' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+      audience === 'client' ? 'bg-accent text-primary' : 'bg-ai/10 text-ai'
     )}>{audience}</span>
   );
 }
@@ -44,23 +43,23 @@ function TemplateList({ templates: tpls, selected, onSelect, search }) {
           className={cn(
             'w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all group',
             selected === t.key
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-[#E5E7EB] hover:border-blue-300 bg-white hover:bg-slate-50'
+              ? 'border-primary bg-accent'
+              : 'border-border hover:border-primary bg-card hover:bg-muted'
           )}
         >
           <span className="text-xl leading-none flex-shrink-0">{t.emoji}</span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <p className={cn('text-xs font-bold', selected === t.key ? 'text-blue-700' : 'text-[#111827]')}>{t.label}</p>
+              <p className={cn('text-xs font-bold', selected === t.key ? 'text-primary' : 'text-foreground')}>{t.label}</p>
               <AudienceBadge audience={t.audience} />
             </div>
-            <p className="text-[11px] text-[#9CA3AF] mt-0.5 line-clamp-1">{t.desc}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{t.desc}</p>
           </div>
-          <ChevronRight className={cn('w-4 h-4 flex-shrink-0 transition-colors', selected === t.key ? 'text-blue-500' : 'text-slate-300')} />
+          <ChevronRight className={cn('w-4 h-4 flex-shrink-0 transition-colors', selected === t.key ? 'text-primary' : 'text-border')} />
         </button>
       ))}
       {filtered.length === 0 && (
-        <p className="text-center py-8 text-sm text-slate-400">No templates match "{search}"</p>
+        <p className="text-center py-8 text-sm text-muted-foreground">No templates match "{search}"</p>
       )}
     </div>
   );
@@ -188,33 +187,33 @@ export default function EmailCenter() {
     <div className="p-4 sm:p-6 max-w-screen-xl mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-slate-900">Email Center</h1>
-        <p className="text-sm text-slate-500 mt-0.5">Send beautifully branded emails to your clients</p>
+        <h1 className="text-2xl font-black text-foreground">Email Center</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Send beautifully branded emails to your clients</p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
 
         {/* ── Left: Template Picker ── */}
-        <div className="xl:col-span-4 bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden flex flex-col">
-          <div className="px-4 pt-4 pb-3 border-b border-[#F3F4F6]">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Templates</p>
+        <div className="xl:col-span-4 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
+          <div className="px-4 pt-4 pb-3 border-b border-muted">
+            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-3">Templates</p>
             {/* Audience tabs */}
             <div className="flex gap-1 mb-3">
               {AUDIENCE_TABS.map(t => (
                 <button key={t.id} onClick={() => setAudienceTab(t.id)}
                   className={cn('px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
-                    audienceTab === t.id ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    audienceTab === t.id ? 'bg-sidebar text-white' : 'bg-muted text-muted-foreground hover:bg-border'
                   )}>{t.label}</button>
               ))}
             </div>
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               <input
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search templates..."
-                className="w-full pl-8 pr-3 py-2 text-xs border border-[#E5E7EB] rounded-lg bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                className="w-full pl-8 pr-3 py-2 text-xs border border-border rounded-lg bg-muted focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
           </div>
@@ -232,27 +231,27 @@ export default function EmailCenter() {
         <div className="xl:col-span-4 space-y-4">
           {/* Template info */}
           {currentTemplate && (
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 flex items-center gap-3">
+            <div className="bg-card border border-border rounded-2xl p-4 flex items-center gap-3">
               <span className="text-3xl">{currentTemplate.emoji}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-bold text-slate-900 text-sm">{currentTemplate.label}</p>
+                  <p className="font-bold text-foreground text-sm">{currentTemplate.label}</p>
                   <AudienceBadge audience={currentTemplate.audience} />
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5">{currentTemplate.desc}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{currentTemplate.desc}</p>
               </div>
             </div>
           )}
 
           {/* Compose */}
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-4">
-            <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
+          <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
+            <h2 className="text-sm font-black text-foreground flex items-center gap-2">
               <Mail className="w-4 h-4" /> Compose & Send
             </h2>
 
             {/* Recipients */}
             <div>
-              <Label className="text-xs font-bold mb-1.5 block text-slate-600">Recipients</Label>
+              <Label className="text-xs font-bold mb-1.5 block text-muted-foreground">Recipients</Label>
               <div className="flex gap-1.5 mb-2">
                 {[
                   { key: 'single', label: 'Single Client', icon: null },
@@ -260,7 +259,7 @@ export default function EmailCenter() {
                 ].map(m => (
                   <button key={m.key} onClick={() => setToMode(m.key)}
                     className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold border transition-all',
-                      toMode === m.key ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 border-[#E5E7EB] hover:border-slate-400'
+                      toMode === m.key ? 'bg-sidebar text-white border-border' : 'bg-card text-muted-foreground border-border hover:border-border'
                     )}>
                     {m.icon && <m.icon className="w-3.5 h-3.5" />}
                     {m.label}
@@ -281,7 +280,7 @@ export default function EmailCenter() {
 
             {/* Subject */}
             <div>
-              <Label className="text-xs font-bold mb-1.5 block text-slate-600">Subject</Label>
+              <Label className="text-xs font-bold mb-1.5 block text-muted-foreground">Subject</Label>
               <Input
                 value={customSubject || rendered.subject || ''}
                 onChange={e => setCustomSubject(e.target.value)}
@@ -293,7 +292,7 @@ export default function EmailCenter() {
             {/* Send button */}
             <Button
               className="w-full font-bold gap-2"
-              style={{ background: 'linear-gradient(135deg,#2563EB,#7C3AED)', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}
+              style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', boxShadow: '0 4px 12px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}
               onClick={handleSendToClient}
               disabled={sending || (toMode === 'single' && !selectedClient)}
             >
@@ -308,8 +307,8 @@ export default function EmailCenter() {
           </div>
 
           {/* Test email */}
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5 space-y-3">
-            <h3 className="text-sm font-bold text-slate-700">Send Test Email</h3>
+          <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+            <h3 className="text-sm font-bold text-foreground">Send Test Email</h3>
             <div className="flex gap-2">
               <Input
                 type="email"
@@ -322,34 +321,34 @@ export default function EmailCenter() {
                 {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Send Test'}
               </Button>
             </div>
-            <p className="text-[11px] text-slate-400">Subject will be prefixed with [TEST]</p>
+            <p className="text-[11px] text-muted-foreground">Subject will be prefixed with [TEST]</p>
           </div>
         </div>
 
         {/* ── Right: Live Preview ── */}
-        <div className="xl:col-span-4 bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[#F3F4F6] bg-[#F9FAFB] flex-shrink-0">
+        <div className="xl:col-span-4 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-muted bg-background flex-shrink-0">
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-slate-600">Preview</p>
-              <p className="text-[11px] text-slate-400 truncate mt-0.5">{displaySubject}</p>
+              <p className="text-xs font-bold text-muted-foreground">Preview</p>
+              <p className="text-[11px] text-muted-foreground truncate mt-0.5">{displaySubject}</p>
             </div>
             <div className="flex gap-1 ml-3 flex-shrink-0">
               <button onClick={() => setPreviewDevice('desktop')}
-                className={cn('p-1.5 rounded-lg transition-colors', previewDevice === 'desktop' ? 'bg-slate-200 text-slate-800' : 'text-slate-400 hover:text-slate-600')}>
+                className={cn('p-1.5 rounded-lg transition-colors', previewDevice === 'desktop' ? 'bg-border text-foreground' : 'text-muted-foreground hover:text-muted-foreground')}>
                 <Monitor className="w-3.5 h-3.5" />
               </button>
               <button onClick={() => setPreviewDevice('mobile')}
-                className={cn('p-1.5 rounded-lg transition-colors', previewDevice === 'mobile' ? 'bg-slate-200 text-slate-800' : 'text-slate-400 hover:text-slate-600')}>
+                className={cn('p-1.5 rounded-lg transition-colors', previewDevice === 'mobile' ? 'bg-border text-foreground' : 'text-muted-foreground hover:text-muted-foreground')}>
                 <Smartphone className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
-          <div className="flex-1 overflow-auto bg-[#F3F4F6] p-3" style={{ minHeight: 400 }}>
+          <div className="flex-1 overflow-auto bg-muted p-3" style={{ minHeight: 400 }}>
             <div className={cn('mx-auto transition-all', previewDevice === 'mobile' ? 'max-w-[375px]' : 'max-w-full')}>
               <iframe
-                srcDoc={rendered.html || '<p style="padding:20px;color:#999;">Select a template to preview</p>'}
+                srcDoc={rendered.html || '<p style="padding:20px;color:var(--kc-999999);">Select a template to preview</p>'}
                 className="w-full border-0 rounded-xl shadow-sm"
-                style={{ minHeight: 520, background: 'white' }}
+                style={{ minHeight: 520, background: 'var(--tc-card)' }}
                 title="Email Preview"
               />
             </div>

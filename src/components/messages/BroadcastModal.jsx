@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users, Sparkles, Loader2, RefreshCw } from 'lucide-react';
+import { X, Megaphone, Search, Check, ChevronRight, ChevronLeft, Send, Calendar, Users, Sparkles, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -22,11 +22,11 @@ const TOKENS = [
 ];
 
 const AVATAR_COLORS = [
-  ['bg-blue-100', 'text-blue-700'],
-  ['bg-violet-100', 'text-violet-700'],
-  ['bg-emerald-100', 'text-emerald-700'],
-  ['bg-amber-100', 'text-amber-700'],
-  ['bg-rose-100', 'text-rose-700'],
+  ['bg-accent', 'text-primary'],
+  ['bg-ai/10', 'text-ai'],
+  ['bg-success/10', 'text-success'],
+  ['bg-warning/10', 'text-warning'],
+  ['bg-destructive/10', 'text-destructive'],
 ];
 
 function getAvatarColor(name = '') {
@@ -140,35 +140,35 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh] overflow-hidden">
+      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E7EAF3] flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-ai to-primary flex items-center justify-center">
               <Megaphone className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="text-sm font-bold text-[#1F2A44]">Broadcast Message</p>
-              <p className="text-[11px] text-[#9CA3AF]">Step {step} of 3</p>
+              <p className="text-sm font-bold text-foreground">Broadcast Message</p>
+              <p className="text-[11px] text-muted-foreground">Step {step} of 3</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-            <X className="w-4 h-4 text-[#6B7280]" />
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
         {/* Step indicators */}
-        <div className="flex items-center gap-1 px-5 py-3 border-b border-[#F0F2F8] flex-shrink-0">
+        <div className="flex items-center gap-1 px-5 py-3 border-b border-border flex-shrink-0">
           {[1, 2, 3].map(s => (
             <React.Fragment key={s}>
               <div className={cn(
                 'flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all',
-                step === s ? 'bg-primary text-white' : step > s ? 'bg-green-100 text-green-700' : 'bg-[#F6F7FB] text-[#9CA3AF]'
+                step === s ? 'bg-primary text-white' : step > s ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
               )}>
                 {step > s ? <Check className="w-3 h-3" /> : s}
                 {s === 1 ? 'Recipients' : s === 2 ? 'Compose' : 'Review'}
               </div>
-              {s < 3 && <div className="flex-1 h-px bg-[#E7EAF3]" />}
+              {s < 3 && <div className="flex-1 h-px bg-border" />}
             </React.Fragment>
           ))}
         </div>
@@ -188,7 +188,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                       'text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all',
                       filter === f.key
                         ? 'bg-primary text-white border-primary'
-                        : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:border-primary/40 hover:text-primary'
+                        : 'bg-muted text-muted-foreground border-border hover:border-primary/40 hover:text-primary'
                     )}
                   >
                     {f.label}
@@ -199,20 +199,20 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
               {/* Search + select all/none */}
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                   <input
                     placeholder="Search clients…"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[#E7EAF3] bg-[#F6F7FB] outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20"
+                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border bg-muted outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20"
                   />
                 </div>
                 <button onClick={selectAll} className="text-[11px] text-primary font-semibold hover:underline whitespace-nowrap">All</button>
-                <button onClick={deselectAll} className="text-[11px] text-[#9CA3AF] font-semibold hover:underline whitespace-nowrap">None</button>
+                <button onClick={deselectAll} className="text-[11px] text-muted-foreground font-semibold hover:underline whitespace-nowrap">None</button>
               </div>
 
               {/* Counter */}
-              <div className="flex items-center gap-1.5 text-xs text-[#6B7280]">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Users className="w-3.5 h-3.5" />
                 <span><span className="font-bold text-primary">{selected.size}</span> client{selected.size !== 1 ? 's' : ''} selected</span>
               </div>
@@ -229,7 +229,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                       onClick={() => toggleClient(client.id)}
                       className={cn(
                         'w-full flex items-center gap-3 px-3 py-2 rounded-xl border transition-all text-left',
-                        isChecked ? 'border-primary/30 bg-[#EEF4FF]' : 'border-[#E7EAF3] bg-white hover:bg-[#F6F7FB]'
+                        isChecked ? 'border-primary/30 bg-accent/10' : 'border-border bg-card hover:bg-muted'
                       )}
                     >
                       <div className={cn('w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden flex-shrink-0', bg, text)}>
@@ -237,10 +237,10 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                           ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
                           : initials}
                       </div>
-                      <span className="flex-1 text-sm font-medium text-[#1F2A44] truncate">{client.name}</span>
+                      <span className="flex-1 text-sm font-medium text-foreground truncate">{client.name}</span>
                       <div className={cn(
                         'w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all',
-                        isChecked ? 'bg-primary border-primary' : 'border-[#D1D5DB]'
+                        isChecked ? 'bg-primary border-primary' : 'border-muted-foreground'
                       )}>
                         {isChecked && <Check className="w-2.5 h-2.5 text-white" />}
                       </div>
@@ -248,7 +248,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                   );
                 })}
                 {filteredClients.length === 0 && (
-                  <p className="text-xs text-center text-[#9CA3AF] py-6">No clients found</p>
+                  <p className="text-xs text-center text-muted-foreground py-6">No clients found</p>
                 )}
               </div>
             </div>
@@ -258,7 +258,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
           {step === 2 && (
             <div className="p-5 space-y-4">
               {/* AI Generate button */}
-              <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-[#EEF4FF] to-[#F5F3FF] p-3">
+              <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-ai/10 p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <p className="text-[11px] font-bold text-primary">AI Write Message</p>
@@ -269,7 +269,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                   )}
                 </div>
                 {aiVersions.length > 0 && (
-                  <p className="text-[11px] text-[#6B7280] mb-2">{aiVersions[aiVersionIdx]?.description}</p>
+                  <p className="text-[11px] text-muted-foreground mb-2">{aiVersions[aiVersionIdx]?.description}</p>
                 )}
                 <div className="flex items-center gap-2">
                   <button
@@ -282,9 +282,9 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                   </button>
                   {aiVersions.length > 1 && (
                     <>
-                      <button onClick={() => cyclAIVersion(-1)} className="text-[11px] font-semibold px-2 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50">← Prev</button>
-                      <span className="text-[10px] text-[#9CA3AF]">{aiVersionIdx + 1}/{aiVersions.length}</span>
-                      <button onClick={() => cyclAIVersion(1)} className="text-[11px] font-semibold px-2 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50">Next →</button>
+                      <button onClick={() => cyclAIVersion(-1)} className="text-[11px] font-semibold px-2 py-1.5 bg-card border border-border text-muted-foreground rounded-full hover:bg-muted">← Prev</button>
+                      <span className="text-[10px] text-muted-foreground">{aiVersionIdx + 1}/{aiVersions.length}</span>
+                      <button onClick={() => cyclAIVersion(1)} className="text-[11px] font-semibold px-2 py-1.5 bg-card border border-border text-muted-foreground rounded-full hover:bg-muted">Next →</button>
                     </>
                   )}
                 </div>
@@ -292,13 +292,13 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
 
               {/* Token bar */}
               <div>
-                <p className="text-[11px] font-semibold text-[#6B7280] mb-2">Personalization tokens — click to insert:</p>
+                <p className="text-[11px] font-semibold text-muted-foreground mb-2">Personalization tokens — click to insert:</p>
                 <div className="flex flex-wrap gap-1.5">
                   {TOKENS.map(t => (
                     <button
                       key={t.value}
                       onClick={() => insertToken(t.value)}
-                      className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 hover:bg-violet-100 transition-colors"
+                      className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-ai/10 text-ai border border-ai hover:bg-ai/10 transition-colors"
                     >
                       {t.label}
                     </button>
@@ -308,23 +308,23 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
 
               {/* Message textarea */}
               <div>
-                <p className="text-[11px] font-semibold text-[#6B7280] mb-1.5">Message</p>
+                <p className="text-[11px] font-semibold text-muted-foreground mb-1.5">Message</p>
                 <textarea
                   ref={textareaRef}
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   placeholder="Hey [First Name], just wanted to check in on your [Goal] journey…"
                   rows={5}
-                  className="w-full resize-none rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] px-4 py-3 text-sm text-[#1F2A44] placeholder-[#9CA3AF] outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 focus:bg-white transition-all"
+                  className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder-muted-foreground outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 focus:bg-card transition-all"
                 />
-                <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{message.length} chars</p>
+                <p className="text-[10px] text-muted-foreground mt-1 text-right">{message.length} chars</p>
               </div>
 
               {/* Live preview */}
               {message.trim() && sampleClient && (
                 <div>
-                  <p className="text-[11px] font-semibold text-[#6B7280] mb-1.5">Preview (for {sampleClient.name?.split(' ')[0]}):</p>
-                  <div className="rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 px-4 py-3">
+                  <p className="text-[11px] font-semibold text-muted-foreground mb-1.5">Preview (for {sampleClient.name?.split(' ')[0]}):</p>
+                  <div className="rounded-xl bg-gradient-to-br from-primary to-ai px-4 py-3">
                     <p className="text-sm text-white leading-relaxed">{previewMessage(message, sampleClient)}</p>
                   </div>
                 </div>
@@ -336,27 +336,27 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
           {step === 3 && (
             <div className="p-5 space-y-4">
               {/* Summary card */}
-              <div className="rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] p-4 space-y-3">
+              <div className="rounded-xl border border-border bg-background p-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold text-[#1F2A44]">{selected.size} recipient{selected.size !== 1 ? 's' : ''}</span>
+                  <span className="text-sm font-semibold text-foreground">{selected.size} recipient{selected.size !== 1 ? 's' : ''}</span>
                 </div>
                 <div>
-                  <p className="text-[11px] text-[#9CA3AF] mb-1">Message preview:</p>
-                  <div className="rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 px-3 py-2">
+                  <p className="text-[11px] text-muted-foreground mb-1">Message preview:</p>
+                  <div className="rounded-lg bg-gradient-to-br from-primary to-ai px-3 py-2">
                     <p className="text-xs text-white leading-relaxed line-clamp-4">
                       {sampleClient ? previewMessage(message, sampleClient) : message}
                     </p>
                   </div>
                 </div>
                 {!scheduleMode && (
-                  <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
+                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                     <Send className="w-3.5 h-3.5" />
                     Sends immediately to all selected clients
                   </div>
                 )}
                 {scheduleMode && scheduleDate && (
-                  <div className="flex items-center gap-1.5 text-[11px] text-[#6B7280]">
+                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                     <Calendar className="w-3.5 h-3.5" />
                     Scheduled for {format(new Date(scheduleDate), 'MMM d, yyyy h:mm a')}
                   </div>
@@ -371,7 +371,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                     'w-full text-xs font-semibold py-2 rounded-xl border transition-all flex items-center justify-center gap-2',
                     scheduleMode
                       ? 'bg-primary/10 text-primary border-primary/30'
-                      : 'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3] hover:border-primary/30 hover:text-primary'
+                      : 'bg-muted text-muted-foreground border-border hover:border-primary/30 hover:text-primary'
                   )}
                 >
                   <Calendar className="w-3.5 h-3.5" />
@@ -382,7 +382,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                     type="datetime-local"
                     value={scheduleDate}
                     onChange={e => setScheduleDate(e.target.value)}
-                    className="mt-2 w-full text-xs rounded-xl border border-[#E7EAF3] bg-[#F9FAFB] px-3 py-2 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                    className="mt-2 w-full text-xs rounded-xl border border-border bg-background px-3 py-2 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
                   />
                 )}
               </div>
@@ -391,10 +391,10 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-4 border-t border-[#E7EAF3] flex items-center justify-between gap-3 flex-shrink-0">
+        <div className="px-5 py-4 border-t border-border flex items-center justify-between gap-3 flex-shrink-0">
           <button
             onClick={step === 1 ? onClose : () => setStep(s => s - 1)}
-            className="flex items-center gap-1 text-sm text-[#6B7280] hover:text-[#1F2A44] font-medium transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground font-medium transition-colors"
           >
             {step === 1 ? (
               'Cancel'
@@ -415,7 +415,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
             <button
               onClick={handleSend}
               disabled={sending || selected.size === 0}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-violet-600 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-ai text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md"
             >
               <Send className="w-3.5 h-3.5" />
               {sending ? 'Sending…' : scheduleMode && scheduleDate ? 'Schedule Broadcast' : `Send to ${selected.size} Client${selected.size !== 1 ? 's' : ''}`}

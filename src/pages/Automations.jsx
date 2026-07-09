@@ -1,9 +1,8 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import {
-  Zap, Plus, Check, Pencil, Trash2, ToggleLeft, ToggleRight,
-  AlertTriangle, Play, Clock, History, LayoutTemplate, List,
+  Zap, Plus, Check, Pencil, Trash2, ToggleLeft, ToggleRight, Play, Clock, History, LayoutTemplate, List,
   Bell, MessageSquare, Trophy, Flag, TrendingDown, Scale,
   UserCheck, Activity, Target, Heart, Star, RefreshCw
 } from 'lucide-react';
@@ -18,7 +17,7 @@ const TEMPLATE_CATEGORIES = [
   {
     label: 'Check-In',
     icon: <Clock className="w-4 h-4" />,
-    color: 'text-blue-600',
+    color: 'text-primary',
     templates: [
       { name: 'Missed Check-in Alert', description: 'Auto-message clients who miss their weekly check-in', icon: <Clock className="w-5 h-5" />, trigger_type: 'no_checkin', trigger_value: 7, actions: [{ type: 'send_message', message: "Hey {client_name}! Just checking in — I noticed you missed your weekly check-in. How has training been going? Drop me a message when you get a chance 💪" }] },
       { name: 'Low Compliance Alert', description: 'Flag at-risk + send motivation when compliance drops below 60%', icon: <TrendingDown className="w-5 h-5" />, trigger_type: 'low_compliance', trigger_value: 60, actions: [{ type: 'send_message', message: "Hey {client_name}, I noticed your compliance has been a bit low. Life gets busy — let's chat about adjusting things to work better for you! 🔥" }, { type: 'flag_at_risk' }] },
@@ -29,7 +28,7 @@ const TEMPLATE_CATEGORIES = [
   {
     label: 'Nutrition',
     icon: <Activity className="w-4 h-4" />,
-    color: 'text-emerald-600',
+    color: 'text-success',
     templates: [
       { name: 'Weight Plateau Calorie Adjust', description: 'Reduce calories by 100 when weight stalls for 3 check-ins', icon: <Scale className="w-5 h-5" />, trigger_type: 'weight_plateau', trigger_value: 3, actions: [{ type: 'adjust_calories', value: '-100' }, { type: 'notify_coach', message: "{client_name}'s weight has plateaued for 3 check-ins — calories reduced by 100 automatically." }] },
       { name: 'Rapid Weight Loss Adjustment', description: 'Increase calories when losing more than 2 lbs/week', icon: <TrendingDown className="w-5 h-5" />, trigger_type: 'weight_loss_fast', trigger_value: 2, actions: [{ type: 'adjust_calories', value: '+150' }, { type: 'notify_coach', message: "{client_name} is losing weight too quickly — calories increased by 150." }] },
@@ -40,7 +39,7 @@ const TEMPLATE_CATEGORIES = [
   {
     label: 'Progress',
     icon: <Target className="w-4 h-4" />,
-    color: 'text-purple-600',
+    color: 'text-ai',
     templates: [
       { name: 'Monthly Progress Message', description: 'Send a monthly summary message after 30+ days in program', icon: <Activity className="w-5 h-5" />, trigger_type: 'streak', trigger_value: 30, actions: [{ type: 'send_message', message: "🎯 {client_name} — one month in! You're building incredible habits. Compliance: {compliance}%. Let's review your progress together!" }] },
       { name: 'PR Achievement', description: 'Award PR badge and celebrate personal record', icon: <Star className="w-5 h-5" />, trigger_type: 'high_compliance', trigger_value: 95, actions: [{ type: 'award_badge', value: 'pr_hit' }, { type: 'send_message', message: "🏆 {client_name}, new personal record! This is what consistent effort looks like — amazing work!" }] },
@@ -186,7 +185,7 @@ function useAutomationEngine(rules, clients, checkIns, plans, badges, queryClien
 function TemplateCard({ template, isAdded, onUse, onCustomize }) {
   const actionLabels = template.actions?.map(a => a.type.replace(/_/g, ' ')).join(' + ') || '';
   return (
-    <div className="bg-white border border-border rounded-xl p-4 flex flex-col gap-3 hover:shadow-sm transition-shadow">
+    <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3 hover:shadow-sm transition-shadow">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary flex-shrink-0">{template.icon}</div>
         <div className="flex-1 min-w-0">
@@ -195,18 +194,18 @@ function TemplateCard({ template, isAdded, onUse, onCustomize }) {
         </div>
       </div>
       <div className="flex items-center gap-1.5 flex-wrap">
-        <span className="text-[10px] font-semibold bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
+        <span className="text-[10px] font-semibold bg-warning/10 text-warning border border-warning px-2 py-0.5 rounded-full">
           IF {template.trigger_type?.replace(/_/g, ' ')} {template.trigger_value ? `(${template.trigger_value})` : ''}
         </span>
         <span className="text-muted-foreground text-xs">→</span>
-        <span className="text-[10px] font-semibold bg-blue-100 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">
+        <span className="text-[10px] font-semibold bg-accent text-primary border border-primary px-2 py-0.5 rounded-full">
           {actionLabels}
         </span>
       </div>
       <div className="flex gap-2">
         <button onClick={() => onUse(template)} disabled={isAdded}
           className={cn('flex-1 flex items-center justify-center gap-1.5 h-8 rounded-lg text-xs font-semibold transition-all',
-            isAdded ? 'bg-emerald-50 border border-emerald-100 text-emerald-600 cursor-default' : 'bg-primary text-primary-foreground hover:bg-primary/90')}>
+            isAdded ? 'bg-success/10 border border-success text-success cursor-default' : 'bg-primary text-primary-foreground hover:bg-primary/90')}>
           {isAdded ? <><Check className="w-3 h-3" /> Added</> : <><Plus className="w-3 h-3" /> Use Template</>}
         </button>
         <button onClick={() => onCustomize(template)} className="h-8 px-3 rounded-lg border border-border text-xs font-medium text-muted-foreground hover:bg-secondary transition-colors">
@@ -221,21 +220,21 @@ function TemplateCard({ template, isAdded, onUse, onCustomize }) {
 function RuleRow({ rule, onToggle, onEdit, onDelete }) {
   const actions = rule.actions?.length ? rule.actions : [{ type: rule.action_type }];
   return (
-    <div className={cn('bg-white border rounded-xl p-4 transition-all', rule.is_active ? 'border-border' : 'border-border opacity-60')}>
+    <div className={cn('bg-card border rounded-xl p-4 transition-all', rule.is_active ? 'border-border' : 'border-border opacity-60')}>
       <div className="flex items-start gap-3">
         <div className="mt-0.5">
-          <span className={cn('w-2 h-2 rounded-full block', rule.is_active ? 'bg-emerald-500' : 'bg-gray-300')} />
+          <span className={cn('w-2 h-2 rounded-full block', rule.is_active ? 'bg-success' : 'bg-border')} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-semibold text-sm text-foreground">{rule.name}</p>
           </div>
           <div className="flex items-center gap-1.5 flex-wrap mt-1.5">
-            <span className="text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-100 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold bg-warning/10 text-warning border border-warning px-2 py-0.5 rounded-full">
               IF {(rule.trigger_type || rule.condition_type || '').replace(/_/g, ' ')} {rule.trigger_value ?? rule.condition_threshold ? `(${rule.trigger_value ?? rule.condition_threshold})` : ''}
             </span>
             <span className="text-muted-foreground text-[10px]">→</span>
-            <span className="text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold bg-accent text-primary border border-accent px-2 py-0.5 rounded-full">
               {actions.map(a => (a.type || '').replace(/_/g, ' ')).join(' + ')}
             </span>
           </div>
@@ -246,10 +245,10 @@ function RuleRow({ rule, onToggle, onEdit, onDelete }) {
             </div>
             <div className="flex items-center gap-1">
               <button onClick={() => onEdit(rule)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
-              <button onClick={() => onDelete(rule.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+              <button onClick={() => onDelete(rule.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
               <button onClick={() => onToggle(rule, !rule.is_active)}
                 className={cn('flex items-center gap-1 h-7 px-2.5 rounded-lg text-[10px] font-bold border transition-all',
-                  rule.is_active ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-secondary border-border text-muted-foreground')}>
+                  rule.is_active ? 'bg-success/10 border-success text-success' : 'bg-secondary border-border text-muted-foreground')}>
                 {rule.is_active ? <><ToggleRight className="w-3.5 h-3.5" /> On</> : <><ToggleLeft className="w-3.5 h-3.5" /> Off</>}
               </button>
             </div>
@@ -330,9 +329,9 @@ export default function Automations() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-5">
       {/* ── Dark header ── */}
-      <div className="bg-[#111827] rounded-xl p-5 text-white flex items-center justify-between">
+      <div className="bg-sidebar rounded-xl p-5 text-white flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div>
+          <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div>
           <div>
             <h1 className="text-lg font-bold leading-tight">Automations</h1>
             <p className="text-xs text-white/60 mt-0.5">IF/THEN rules that run automatically across your clients</p>
@@ -340,7 +339,7 @@ export default function Automations() {
         </div>
         <div className="flex items-center gap-2">
           <button onClick={handleRunNow} disabled={running}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60">
+            className="flex items-center gap-1.5 text-xs font-semibold bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60">
             <RefreshCw className={cn('w-3.5 h-3.5', running && 'animate-spin')} />
             {running ? 'Running...' : 'Run Now'}
           </button>
@@ -359,9 +358,9 @@ export default function Automations() {
           { label: 'Triggered Today', value: triggeredToday },
           { label: 'Time Saved', value: timeSaved },
         ].map(s => (
-          <div key={s.label} className="bg-white border border-[#E5E7EB] rounded-xl p-4 text-center">
-            <p className="text-2xl font-bold text-[#111827] tabular-nums">{s.value}</p>
-            <p className="text-sm text-[#6B7280] mt-0.5">{s.label}</p>
+          <div key={s.label} className="bg-card border border-border rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-foreground tabular-nums">{s.value}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
@@ -371,7 +370,7 @@ export default function Automations() {
         {TABS.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className={cn('flex-shrink-0 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg font-medium transition-colors whitespace-nowrap',
-              tab === t.key ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
+              tab === t.key ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
             {t.icon}{t.label}
           </button>
         ))}
@@ -437,15 +436,15 @@ export default function Automations() {
           </div>
           {logs.filter(l => differenceInDays(new Date(), parseISO(l.triggered_at || new Date().toISOString())) < 1).length === 0 ? (
             <div className="flex flex-col items-center py-12 text-center gap-2">
-              <Check className="w-8 h-8 text-emerald-400" />
+              <Check className="w-8 h-8 text-success" />
               <p className="text-sm font-semibold">All clear!</p>
               <p className="text-xs text-muted-foreground">No rules triggered today</p>
             </div>
           ) : (
             logs.filter(l => differenceInDays(new Date(), parseISO(l.triggered_at || new Date().toISOString())) < 1).map((log, i) => (
-              <div key={i} className="flex items-start gap-3 bg-white border border-amber-100 rounded-xl p-3">
-                <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
-                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+              <div key={i} className="flex items-start gap-3 bg-card border border-warning rounded-xl p-3">
+                <div className="w-8 h-8 rounded-full bg-warning/10 flex items-center justify-center flex-shrink-0">
+                  <Zap className="w-3.5 h-3.5 text-warning" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold">{log.client_name}</p>
@@ -466,7 +465,7 @@ export default function Automations() {
             <div className="text-center py-12 text-muted-foreground text-sm">No automations have run yet</div>
           ) : (
             logs.map((log, i) => (
-              <div key={i} className="flex items-center gap-3 bg-white border border-border rounded-xl px-4 py-3">
+              <div key={i} className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3">
                 <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Zap className="w-3.5 h-3.5 text-primary" />
                 </div>

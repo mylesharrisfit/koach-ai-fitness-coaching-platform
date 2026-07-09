@@ -4,10 +4,10 @@ import { base44 } from '@/api/base44Client';
 import { Download } from 'lucide-react';
 
 const STATUS_COLORS = {
-  trial: '#F59E0B',
-  active: '#10B981',
-  churned: '#EF4444',
-  paused: '#64748B',
+  trial: 'var(--tc-warning)',
+  active: 'var(--tc-success)',
+  churned: 'var(--tc-destructive)',
+  paused: 'var(--tc-muted-foreground)',
 };
 
 export default function AffiliateReferralTable({ profile }) {
@@ -58,40 +58,40 @@ export default function AffiliateReferralTable({ profile }) {
             <button key={s} onClick={() => setFilterStatus(s)}
               className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                 filterStatus === s
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-slate-200 text-slate-900 hover:bg-slate-300'
+                  ? 'bg-primary text-white'
+                  : 'bg-border text-foreground hover:bg-border'
               }`}>
               {s.charAt(0).toUpperCase() + s.slice(1)}
             </button>
           ))}
         </div>
         <button onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-slate-900 font-bold hover:bg-slate-50">
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-foreground font-bold hover:bg-muted">
           <Download className="w-4 h-4" /> Export CSV
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50">
+            <thead className="border-b border-border bg-muted">
               <tr>
-                <th className="text-left py-3 px-4 font-bold text-slate-900">Coach</th>
-                <th className="text-left py-3 px-4 font-bold text-slate-900">Sign Up</th>
-                <th className="text-center py-3 px-4 font-bold text-slate-900">Plan</th>
-                <th className="text-right py-3 px-4 font-bold text-slate-900">Monthly Value</th>
-                <th className="text-right py-3 px-4 font-bold text-slate-900">Commission</th>
-                <th className="text-center py-3 px-4 font-bold text-slate-900">Status</th>
+                <th className="text-left py-3 px-4 font-bold text-foreground">Coach</th>
+                <th className="text-left py-3 px-4 font-bold text-foreground">Sign Up</th>
+                <th className="text-center py-3 px-4 font-bold text-foreground">Plan</th>
+                <th className="text-right py-3 px-4 font-bold text-foreground">Monthly Value</th>
+                <th className="text-right py-3 px-4 font-bold text-foreground">Commission</th>
+                <th className="text-center py-3 px-4 font-bold text-foreground">Status</th>
               </tr>
             </thead>
             <tbody>
               {sorted.map((ref) => (
-                <tr key={ref.id} className="border-b border-slate-200 hover:bg-slate-50">
-                  <td className="py-3 px-4 font-semibold text-slate-900">{ref.coach_name.split('@')[0]}</td>
-                  <td className="py-3 px-4 text-slate-600">{new Date(ref.signup_date).toLocaleDateString()}</td>
-                  <td className="py-3 px-4 text-center font-semibold text-slate-900">{ref.current_plan}</td>
-                  <td className="py-3 px-4 text-right text-slate-900">${ref.monthly_value.toFixed(2)}</td>
-                  <td className="py-3 px-4 text-right font-bold text-emerald-600">${ref.monthly_commission.toFixed(2)}</td>
+                <tr key={ref.id} className="border-b border-border hover:bg-muted">
+                  <td className="py-3 px-4 font-semibold text-foreground">{ref.coach_name.split('@')[0]}</td>
+                  <td className="py-3 px-4 text-muted-foreground">{new Date(ref.signup_date).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 text-center font-semibold text-foreground">{ref.current_plan}</td>
+                  <td className="py-3 px-4 text-right text-foreground">${ref.monthly_value.toFixed(2)}</td>
+                  <td className="py-3 px-4 text-right font-bold text-success">${ref.monthly_commission.toFixed(2)}</td>
                   <td className="py-3 px-4 text-center">
                     <span className="px-3 py-1 rounded-full text-xs font-bold text-white"
                       style={{ background: STATUS_COLORS[ref.status] }}>
@@ -104,7 +104,7 @@ export default function AffiliateReferralTable({ profile }) {
           </table>
         </div>
         {sorted.length === 0 && (
-          <div className="text-center py-12 text-slate-500">
+          <div className="text-center py-12 text-muted-foreground">
             No referrals yet. Share your affiliate link to start earning!
           </div>
         )}

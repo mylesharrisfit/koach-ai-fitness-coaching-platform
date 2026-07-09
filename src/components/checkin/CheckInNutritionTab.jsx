@@ -12,7 +12,7 @@ function MacroBar({ label, consumed, target, colorClass }) {
   const pct = target > 0 ? Math.min((consumed / target) * 100, 100) : 0;
   const over = target > 0 && consumed > target * 1.1;
   const near = target > 0 && consumed >= target * 0.9;
-  const barColor = over ? 'bg-red-500' : near ? 'bg-emerald-500' : 'bg-amber-400';
+  const barColor = over ? 'bg-destructive' : near ? 'bg-success' : 'bg-warning';
 
   return (
     <div className="space-y-1">
@@ -86,9 +86,9 @@ export default function CheckInNutritionTab({ clientId, checkInDate, nutritionPl
       {calCompliance !== null && (
         <div className={cn(
           'flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-semibold',
-          calOver  ? 'bg-red-500/10 border-red-500/20 text-red-600' :
-          calNear  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700' :
-                     'bg-amber-500/10 border-amber-500/20 text-amber-700'
+          calOver  ? 'bg-destructive/10 border-destructive/20 text-destructive' :
+          calNear  ? 'bg-success/10 border-success/20 text-success' :
+                     'bg-warning/10 border-warning/20 text-warning'
         )}>
           <span>Calorie compliance</span>
           <span className="text-base font-bold">{calCompliance}% of target</span>
@@ -114,7 +114,7 @@ export default function CheckInNutritionTab({ clientId, checkInDate, nutritionPl
             <div
               className={cn(
                 'h-full rounded-full transition-all duration-500',
-                calOver ? 'bg-red-500' : calNear ? 'bg-emerald-500' : 'bg-amber-400'
+                calOver ? 'bg-destructive' : calNear ? 'bg-success' : 'bg-warning'
               )}
               style={{ width: `${Math.min((totCal / tCal) * 100, 100)}%` }}
             />
@@ -123,9 +123,9 @@ export default function CheckInNutritionTab({ clientId, checkInDate, nutritionPl
 
         {/* Macro bars */}
         <div className="space-y-3 pt-1">
-          <MacroBar label="Protein"  consumed={totPro}  target={tPro}  colorClass="text-blue-600" />
-          <MacroBar label="Carbs"    consumed={totCarb} target={tCarb} colorClass="text-amber-600" />
-          <MacroBar label="Fats"     consumed={totFat}  target={tFat}  colorClass="text-red-500" />
+          <MacroBar label="Protein"  consumed={totPro}  target={tPro}  colorClass="text-primary" />
+          <MacroBar label="Carbs"    consumed={totCarb} target={tCarb} colorClass="text-warning" />
+          <MacroBar label="Fats"     consumed={totFat}  target={tFat}  colorClass="text-destructive" />
         </div>
       </div>
 
@@ -151,9 +151,9 @@ export default function CheckInNutritionTab({ clientId, checkInDate, nutritionPl
                     </div>
                     <div className="flex gap-2 text-[10px] font-semibold shrink-0">
                       <span className="text-orange-600">{log.calories} kcal</span>
-                      <span className="text-blue-600">P {log.protein}g</span>
-                      <span className="text-amber-600">C {log.carbs}g</span>
-                      <span className="text-red-500">F {log.fats}g</span>
+                      <span className="text-primary">P {log.protein}g</span>
+                      <span className="text-warning">C {log.carbs}g</span>
+                      <span className="text-destructive">F {log.fats}g</span>
                     </div>
                   </div>
                 ))}

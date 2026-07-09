@@ -68,7 +68,7 @@ export default function ShoppingListTab({ plan }) {
         <p className="text-xs text-muted-foreground">Auto-generated from all foods in the meal plan.</p>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" className="gap-1.5 text-xs h-7" onClick={handleCopy}>
-            {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+            {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
             {copied ? 'Copied!' : 'Copy List'}
           </Button>
           <Button size="sm" className="gap-1.5 text-xs h-7" onClick={() => toast.info('Send to client feature coming soon')}>
@@ -91,11 +91,11 @@ export default function ShoppingListTab({ plan }) {
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
                 <span>{CATEGORY_ICONS[cat]}</span> {cat}
               </h4>
-              <div className="bg-white border border-[#E7EAF3] rounded-xl overflow-hidden">
+              <div className="bg-card border border-border rounded-xl overflow-hidden">
                 {groupedItems[cat].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between px-4 py-2.5 border-b border-[#F3F4F6] last:border-0">
+                  <div key={i} className="flex items-center justify-between px-4 py-2.5 border-b border-muted last:border-0">
                     <div className="flex items-center gap-2">
-                      <input type="checkbox" className="rounded border-gray-300 accent-primary" />
+                      <input type="checkbox" className="rounded border-border accent-primary" />
                       <span className="text-sm text-foreground">{item.name}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">

@@ -49,7 +49,7 @@ function MacroSlider({ label, color, pct, grams, onChange, min = 5, max = 70 }) 
           onChange={e => onChange(Number(e.target.value))}
           className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
           style={{
-            background: `linear-gradient(to right, var(--slider-color) 0%, var(--slider-color) ${((pct - min) / (max - min)) * 100}%, #E5E7EB ${((pct - min) / (max - min)) * 100}%, #E5E7EB 100%)`,
+            background: `linear-gradient(to right, var(--slider-color) 0%, var(--slider-color) ${((pct - min) / (max - min)) * 100}%, var(--tc-border) ${((pct - min) / (max - min)) * 100}%, var(--tc-border) 100%)`,
           }}
         />
       </div>
@@ -87,8 +87,8 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
                 className={cn(
                   'px-2.5 py-1.5 rounded-full text-[11px] font-semibold border transition-all',
                   active
-                    ? 'bg-[#2563EB] text-white border-[#2563EB]'
-                    : 'bg-white text-[#374151] border-[#E5E7EB] hover:border-[#2563EB]/50'
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-card text-foreground border-border hover:border-primary/50'
                 )}
               >
                 {pr.label}
@@ -104,18 +104,18 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
       {/* Sliders */}
       <div
         className="rounded-xl p-4 space-y-4"
-        style={{ background: '#0E1525' }}
+        style={{ background: 'var(--tc-sidebar)' }}
       >
         <style>{`
-          input[type=range]::-webkit-slider-thumb { background: #fff; }
-          input[type=range]::-moz-range-thumb { background: #fff; }
+          input[type=range]::-webkit-slider-thumb { background: var(--tc-card); }
+          input[type=range]::-moz-range-thumb { background: var(--tc-card); }
         `}</style>
 
         {/* Protein */}
-        <div style={{ '--slider-color': '#EF4444' }}>
+        <div style={{ '--slider-color': 'var(--tc-destructive)' }}>
           <MacroSlider
             label="Protein"
-            color="text-red-400"
+            color="text-destructive"
             pct={split.p}
             grams={proteinG}
             onChange={v => handleSlider('p', v)}
@@ -123,10 +123,10 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
         </div>
 
         {/* Carbs */}
-        <div style={{ '--slider-color': '#F59E0B' }}>
+        <div style={{ '--slider-color': 'var(--tc-warning)' }}>
           <MacroSlider
             label="Carbohydrates"
-            color="text-amber-400"
+            color="text-warning"
             pct={split.c}
             grams={carbsG}
             onChange={v => handleSlider('c', v)}
@@ -134,10 +134,10 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
         </div>
 
         {/* Fats */}
-        <div style={{ '--slider-color': '#3B82F6' }}>
+        <div style={{ '--slider-color': 'var(--tc-primary)' }}>
           <MacroSlider
             label="Fats"
-            color="text-blue-400"
+            color="text-primary"
             pct={split.f}
             grams={fatsG}
             onChange={v => handleSlider('f', v)}
@@ -146,13 +146,13 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
 
         {/* Visual ratio bar */}
         <div className="flex h-2 rounded-full overflow-hidden gap-px">
-          <div className="rounded-l-full bg-red-400 transition-all duration-200" style={{ width: `${split.p}%` }} />
-          <div className="bg-amber-400 transition-all duration-200" style={{ width: `${split.c}%` }} />
-          <div className="rounded-r-full bg-blue-400 transition-all duration-200" style={{ width: `${split.f}%` }} />
+          <div className="rounded-l-full bg-destructive transition-all duration-200" style={{ width: `${split.p}%` }} />
+          <div className="bg-warning transition-all duration-200" style={{ width: `${split.c}%` }} />
+          <div className="rounded-r-full bg-primary transition-all duration-200" style={{ width: `${split.f}%` }} />
         </div>
 
         {/* Total reminder */}
-        <p className="text-[10px] text-center font-semibold" style={{ color: 'rgba(255,255,255,0.35)' }}>
+        <p className="text-[10px] text-center font-semibold" style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}>
           {split.p + split.c + split.f === 100
             ? 'Total: 100% ✓'
             : `Total: ${split.p + split.c + split.f}% — adjusting automatically`}
@@ -161,9 +161,9 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
 
       {/* Low-protein caution */}
       {lowProtein && (
-        <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-amber-50 border border-amber-200">
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-          <p className="text-[11px] text-amber-700 leading-relaxed">
+        <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-warning/10 border border-warning">
+          <AlertTriangle className="w-3.5 h-3.5 text-warning shrink-0 mt-0.5" />
+          <p className="text-[11px] text-warning leading-relaxed">
             <span className="font-bold">Low protein caution:</span> at this split,
             protein works out to ~{perLb?.toFixed(2)}g/lb of bodyweight. Most coaches recommend
             ≥0.7g/lb minimum. Consider raising the protein slider.

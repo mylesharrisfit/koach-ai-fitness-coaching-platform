@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, X, RotateCcw } from 'lucide-react';
+import { Camera, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const ANGLES = [

@@ -6,10 +6,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 const POST_TYPES = [
-  { key: 'post',      label: 'Post',      icon: MessageCircle, badge: 'bg-[#F3F4F6] text-[#374151]' },
-  { key: 'win',       label: 'Win',       icon: Trophy,        badge: 'bg-[#FFFBEB] text-[#D97706]' },
-  { key: 'milestone', label: 'Milestone', icon: Star,          badge: 'bg-[#EFF6FF] text-[#2563EB]' },
-  { key: 'tip',       label: 'Tip',       icon: Lightbulb,     badge: 'bg-[#F0FDF4] text-[#16A34A]' },
+  { key: 'post',      label: 'Post',      icon: MessageCircle, badge: 'bg-muted text-foreground' },
+  { key: 'win',       label: 'Win',       icon: Trophy,        badge: 'bg-warning/10 text-warning' },
+  { key: 'milestone', label: 'Milestone', icon: Star,          badge: 'bg-accent/10 text-primary' },
+  { key: 'tip',       label: 'Tip',       icon: Lightbulb,     badge: 'bg-success/10 text-success' },
 ];
 
 const PLACEHOLDERS = {
@@ -20,7 +20,7 @@ const PLACEHOLDERS = {
 };
 
 function AvatarInitial({ name, size = 9 }) {
-  const colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700'];
+  const colors = ['bg-accent text-primary', 'bg-ai/10 text-ai', 'bg-success/10 text-success', 'bg-warning/10 text-warning', 'bg-destructive/10 text-destructive'];
   const idx = (name?.charCodeAt(0) || 0) % colors.length;
   return (
     <div className={cn(`w-${size} h-${size} rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0`, colors[idx])}>
@@ -61,19 +61,19 @@ function PostCard({ post, currentUserId, groupId }) {
   const liked = (post.likes || []).includes(currentUserId);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 space-y-3">
+    <div className="bg-card border border-border rounded-xl p-4 space-y-3">
       {/* Win banner */}
       {post.type === 'win' && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-[#FFFBEB] border border-[#FEF08A] rounded-lg">
-          <Trophy className="w-4 h-4 text-[#D97706] flex-shrink-0" />
-          <span className="text-xs font-semibold text-[#D97706]">Celebrating a Win!</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-warning/10 border border-[var(--kc-fef08a)] rounded-lg">
+          <Trophy className="w-4 h-4 text-warning flex-shrink-0" />
+          <span className="text-xs font-semibold text-warning">Celebrating a Win!</span>
         </div>
       )}
       {/* Milestone banner */}
       {post.type === 'milestone' && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg">
-          <Star className="w-4 h-4 text-[#2563EB] flex-shrink-0" />
-          <span className="text-xs font-semibold text-[#2563EB]">Milestone Reached!</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-accent/10 border border-accent rounded-lg">
+          <Star className="w-4 h-4 text-primary flex-shrink-0" />
+          <span className="text-xs font-semibold text-primary">Milestone Reached!</span>
         </div>
       )}
 
@@ -82,25 +82,25 @@ function PostCard({ post, currentUserId, groupId }) {
         <AvatarInitial name={post.author_name} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-semibold text-sm text-[#111827]">{post.author_name}</p>
+            <p className="font-semibold text-sm text-foreground">{post.author_name}</p>
             <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1', typeConfig.badge)}>
               <TypeIcon className="w-2.5 h-2.5" /> {typeConfig.label}
             </span>
           </div>
-          <p className="text-[11px] text-[#9CA3AF]">{formatDistanceToNow(new Date(post.created_date || Date.now()), { addSuffix: true })}</p>
+          <p className="text-[11px] text-muted-foreground">{formatDistanceToNow(new Date(post.created_date || Date.now()), { addSuffix: true })}</p>
         </div>
       </div>
 
       {/* Content */}
-      <p className="text-sm leading-relaxed text-[#374151]">{post.content}</p>
+      <p className="text-sm leading-relaxed text-foreground">{post.content}</p>
 
       {/* Actions */}
-      <div className="flex items-center gap-4 pt-1 border-t border-[#F3F4F6]">
-        <button onClick={() => likeMutation.mutate()} className={cn('flex items-center gap-1.5 text-xs font-medium transition-colors', liked ? 'text-red-500' : 'text-[#9CA3AF] hover:text-red-500')}>
-          <Heart className={cn('w-4 h-4', liked && 'fill-red-500')} />
+      <div className="flex items-center gap-4 pt-1 border-t border-muted">
+        <button onClick={() => likeMutation.mutate()} className={cn('flex items-center gap-1.5 text-xs font-medium transition-colors', liked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive')}>
+          <Heart className={cn('w-4 h-4', liked && 'fill-destructive')} />
           {(post.likes || []).length > 0 && <span>{(post.likes || []).length}</span>}
         </button>
-        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs font-medium text-[#9CA3AF] hover:text-[#374151] transition-colors">
+        <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
           <MessageCircle className="w-4 h-4" />
           {comments.length > 0 ? comments.length : 'Comment'}
         </button>
@@ -108,19 +108,19 @@ function PostCard({ post, currentUserId, groupId }) {
 
       {/* Comments */}
       {showComments && (
-        <div className="space-y-2 pt-2 border-t border-[#F3F4F6]">
+        <div className="space-y-2 pt-2 border-t border-muted">
           {comments.map(c => (
             <div key={c.id} className="flex items-start gap-2">
               <AvatarInitial name={c.author_name} size={7} />
-              <div className="flex-1 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1.5">
-                <p className="text-xs font-semibold text-[#111827]">{c.author_name}</p>
-                <p className="text-xs text-[#374151]">{c.content}</p>
+              <div className="flex-1 bg-background border border-border rounded-lg px-3 py-1.5">
+                <p className="text-xs font-semibold text-foreground">{c.author_name}</p>
+                <p className="text-xs text-foreground">{c.content}</p>
               </div>
             </div>
           ))}
           <div className="flex gap-2">
-            <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment…" onKeyDown={e => e.key === 'Enter' && commentMutation.mutate()} className="flex-1 text-xs bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1.5 outline-none focus:border-[#111827] transition-colors" />
-            <button onClick={() => commentMutation.mutate()} disabled={!comment.trim()} className="p-1.5 text-[#374151] hover:text-[#111827] rounded-lg transition-colors disabled:opacity-40">
+            <input value={comment} onChange={e => setComment(e.target.value)} placeholder="Add a comment…" onKeyDown={e => e.key === 'Enter' && commentMutation.mutate()} className="flex-1 text-xs bg-background border border-border rounded-lg px-3 py-1.5 outline-none focus:border-foreground transition-colors" />
+            <button onClick={() => commentMutation.mutate()} disabled={!comment.trim()} className="p-1.5 text-foreground hover:text-foreground rounded-lg transition-colors disabled:opacity-40">
               <Send className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -157,24 +157,24 @@ export default function CommunityFeed({ currentUser, groupId }) {
   return (
     <div className="space-y-4">
       {/* Compose */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 space-y-3">
+      <div className="bg-card border border-border rounded-xl p-4 space-y-3">
         <div className="flex gap-2 flex-wrap">
           {POST_TYPES.map(t => {
             const Icon = t.icon;
             return (
               <button key={t.key} onClick={() => setPostType(t.key)}
                 className={cn('flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border font-semibold transition-all',
-                  postType === t.key ? 'bg-[#111827] text-white border-[#111827]' : 'border-[#E5E7EB] text-[#374151] hover:border-[#111827]')}>
+                  postType === t.key ? 'bg-sidebar text-white border-foreground' : 'border-border text-foreground hover:border-foreground')}>
                 <Icon className="w-3.5 h-3.5" /> {t.label}
               </button>
             );
           })}
         </div>
         <textarea value={newPost} onChange={e => setNewPost(e.target.value)} placeholder={PLACEHOLDERS[postType]} rows={2}
-          className="w-full text-sm bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-2 outline-none focus:border-[#111827] resize-none transition-colors placeholder:text-[#9CA3AF] text-[#111827]" />
+          className="w-full text-sm bg-background border border-border rounded-lg px-3 py-2 outline-none focus:border-foreground resize-none transition-colors placeholder:text-muted-foreground text-foreground" />
         <div className="flex justify-end">
           <button disabled={!newPost.trim()} onClick={() => createPost.mutate()}
-            className="px-4 py-1.5 bg-[#111827] text-white text-sm font-semibold rounded-lg hover:bg-black transition-colors disabled:opacity-40">
+            className="px-4 py-1.5 bg-sidebar text-white text-sm font-semibold rounded-lg hover:bg-black transition-colors disabled:opacity-40">
             Post
           </button>
         </div>
@@ -182,13 +182,13 @@ export default function CommunityFeed({ currentUser, groupId }) {
 
       {isLoading ? (
         <div className="space-y-3">
-          {[1,2,3].map(i => <div key={i} className="h-28 bg-white border border-[#E5E7EB] rounded-xl animate-pulse" />)}
+          {[1,2,3].map(i => <div key={i} className="h-28 bg-card border border-border rounded-xl animate-pulse" />)}
         </div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-16 bg-white border border-[#E5E7EB] rounded-xl">
-          <Zap className="w-9 h-9 mx-auto mb-3 text-[#D1D5DB]" />
-          <p className="text-sm font-semibold text-[#374151]">No posts yet</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">Be the first to share something!</p>
+        <div className="text-center py-16 bg-card border border-border rounded-xl">
+          <Zap className="w-9 h-9 mx-auto mb-3 text-muted-foreground" />
+          <p className="text-sm font-semibold text-foreground">No posts yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Be the first to share something!</p>
         </div>
       ) : (
         posts.map(post => <PostCard key={post.id} post={post} currentUserId={currentUser?.id} groupId={groupId} />)

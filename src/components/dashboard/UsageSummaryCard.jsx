@@ -26,13 +26,13 @@ function UsageBar({ label, icon: Icon, current, limit }) {
 
   const pct = Math.min((current / limit) * 100, 100);
   const color =
-    pct >= 90 ? 'bg-red-500' :
-    pct >= 70 ? 'bg-yellow-500' :
-    'bg-green-500';
+    pct >= 90 ? 'bg-destructive' :
+    pct >= 70 ? 'bg-warning' :
+    'bg-success';
   const textColor =
-    pct >= 90 ? 'text-red-500' :
-    pct >= 70 ? 'text-yellow-500' :
-    'text-green-500';
+    pct >= 90 ? 'text-destructive' :
+    pct >= 70 ? 'text-warning' :
+    'text-success';
 
   return (
     <div className="space-y-1.5">

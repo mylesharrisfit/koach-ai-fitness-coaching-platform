@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useTeamRole } from '@/lib/useTeamRole';
 import { ShieldAlert } from 'lucide-react';
-import { TIERS, TIER_ORDER, getUserTier, getLimit } from '@/lib/subscription';
+import { getUserTier, getLimit } from '@/lib/subscription';
 import { Button } from '@/components/ui/button';
-import {
-  Check, Zap, Users, Dumbbell, Salad, AlertTriangle,
+import { Zap, Users, Dumbbell, Salad, AlertTriangle,
   ExternalLink, RefreshCw, Calendar, CreditCard, CheckCircle2, XCircle,
   Clock, Lock, RotateCcw, MessageCircle, ChevronDown
 } from 'lucide-react';
@@ -16,12 +15,12 @@ import PricingCards from '@/components/subscription/PricingCards';
 import CancellationModal from '@/components/subscription/CancellationModal';
 
 const BILLING_STATUS_CONFIG = {
-  active:     { label: 'Active',      cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: CheckCircle2 },
-  trialing:   { label: 'Trial',       cls: 'bg-blue-500/10 text-blue-400 border-blue-500/30',          icon: Clock },
-  past_due:   { label: 'Past Due',    cls: 'bg-amber-500/10 text-amber-400 border-amber-500/30',       icon: AlertTriangle },
-  unpaid:     { label: 'Unpaid',      cls: 'bg-red-500/10 text-red-400 border-red-500/30',             icon: XCircle },
-  incomplete: { label: 'Incomplete',  cls: 'bg-amber-500/10 text-amber-400 border-amber-500/30',       icon: Clock },
-  canceled:   { label: 'Canceled',    cls: 'bg-white/5 text-slate-400 border-white/10',               icon: XCircle },
+  active:     { label: 'Active',      cls: 'bg-success/10 text-success border-success/30', icon: CheckCircle2 },
+  trialing:   { label: 'Trial',       cls: 'bg-primary/10 text-primary border-primary/30',          icon: Clock },
+  past_due:   { label: 'Past Due',    cls: 'bg-warning/10 text-warning border-warning/30',       icon: AlertTriangle },
+  unpaid:     { label: 'Unpaid',      cls: 'bg-destructive/10 text-destructive border-destructive/30',             icon: XCircle },
+  incomplete: { label: 'Incomplete',  cls: 'bg-warning/10 text-warning border-warning/30',       icon: Clock },
+  canceled:   { label: 'Canceled',    cls: 'bg-[var(--kc-w-5)] text-muted-foreground border-white/10',               icon: XCircle },
 };
 
 const PLAN_PRICES = {
@@ -59,11 +58,11 @@ function FAQItem({ q, a }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between py-4 text-left group"
       >
-        <span className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">{q}</span>
-        <ChevronDown className={cn('w-4 h-4 text-slate-500 transition-transform duration-200 flex-shrink-0 ml-4', open && 'rotate-180')} />
+        <span className="text-sm font-semibold text-border group-hover:text-white transition-colors">{q}</span>
+        <ChevronDown className={cn('w-4 h-4 text-muted-foreground transition-transform duration-200 flex-shrink-0 ml-4', open && 'rotate-180')} />
       </button>
       {open && (
-        <p className="text-sm text-slate-400 pb-4 leading-relaxed">{a}</p>
+        <p className="text-sm text-muted-foreground pb-4 leading-relaxed">{a}</p>
       )}
     </div>
   );
@@ -72,14 +71,14 @@ function FAQItem({ q, a }) {
 function CoachBillingBlock() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6"
-      style={{ background: 'linear-gradient(180deg, #070b14 0%, #0a0f1e 100%)' }}>
+      style={{ background: 'var(--tc-sidebar)' }}>
       <div className="max-w-sm w-full text-center">
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-          style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
-          <ShieldAlert className="w-7 h-7 text-red-400" />
+          style={{ background: 'color-mix(in srgb, var(--tc-destructive) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 25%, transparent)' }}>
+          <ShieldAlert className="w-7 h-7 text-destructive" />
         </div>
         <h2 className="text-xl font-bold text-white mb-2">Billing is owner-only</h2>
-        <p className="text-sm text-slate-400 leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           Only the team owner can view or change the subscription plan. Contact your team owner if you need to make billing changes.
         </p>
       </div>
@@ -144,66 +143,66 @@ export default function Subscription() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #070b14 0%, #0a0f1e 60%, #07090f 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'var(--tc-sidebar)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12">
 
         {/* Alert Banners */}
         {isPastDue && (
-          <div className="mb-6 flex items-start gap-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4">
-            <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="mb-6 flex items-start gap-4 bg-warning/10 border border-warning/30 rounded-2xl p-4">
+            <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-amber-300">Payment Issue — Action Required</p>
-              <p className="text-xs text-amber-400/70 mt-0.5">Your last payment failed. Update your billing details to restore full access.</p>
+              <p className="text-sm font-semibold text-warning">Payment Issue — Action Required</p>
+              <p className="text-xs text-warning/70 mt-0.5">Your last payment failed. Update your billing details to restore full access.</p>
             </div>
-            <Button size="sm" className="bg-amber-500 hover:bg-amber-400 text-black font-semibold flex-shrink-0" onClick={handleOpenPortal}>
+            <Button size="sm" className="bg-warning hover:bg-warning text-black font-semibold flex-shrink-0" onClick={handleOpenPortal}>
               Fix Payment
             </Button>
           </div>
         )}
         {cancelAtEnd && !isCanceled && (
-          <div className="mb-6 flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
-            <Clock className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
+          <div className="mb-6 flex items-start gap-4 bg-[var(--kc-w-5)] border border-white/10 rounded-2xl p-4">
+            <Clock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-white">Subscription Ending</p>
-              <p className="text-xs text-slate-400 mt-0.5">Your {userTier.name} plan will end on {renewalDate || 'the renewal date'}.</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Your {userTier.name} plan will end on {renewalDate || 'the renewal date'}.</p>
             </div>
-            <Button size="sm" variant="outline" onClick={handleOpenPortal} className="flex-shrink-0 border-white/20 text-white hover:bg-white/10">Reactivate</Button>
+            <Button size="sm" variant="outline" onClick={handleOpenPortal} className="flex-shrink-0 border-white/20 text-white hover:bg-[var(--kc-w-10)]">Reactivate</Button>
           </div>
         )}
 
         {/* Page Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Button variant="ghost" size="sm" onClick={refreshUser} className="text-slate-500 hover:text-slate-300 text-xs">
+            <Button variant="ghost" size="sm" onClick={refreshUser} className="text-muted-foreground hover:text-border text-xs">
               <RefreshCw className="w-3 h-3 mr-1" /> Refresh
             </Button>
             {user?.stripe_subscription_id && (
-              <Button variant="ghost" size="sm" onClick={handleOpenPortal} disabled={openingPortal} className="text-slate-500 hover:text-slate-300 text-xs">
+              <Button variant="ghost" size="sm" onClick={handleOpenPortal} disabled={openingPortal} className="text-muted-foreground hover:text-border text-xs">
                 <ExternalLink className="w-3 h-3 mr-1" />
                 {openingPortal ? 'Opening...' : 'Billing Portal'}
               </Button>
             )}
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 tracking-tight">Choose Your Plan</h1>
-          <p className="text-slate-400 text-lg">Scale your coaching business with the right tools</p>
+          <p className="text-muted-foreground text-lg">Scale your coaching business with the right tools</p>
         </div>
 
         {/* Current Plan Status Bar */}
-        <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 mb-10">
+        <div className="bg-card/[0.04] border border-white/10 rounded-2xl p-5 mb-10">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-blue-400" />
+              <div className="w-10 h-10 rounded-xl bg-[var(--kc-w-5)] border border-white/10 flex items-center justify-center">
+                <Zap className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Current Plan</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Current Plan</p>
                 <h2 className="text-xl font-bold text-white">{userTier.name}</h2>
               </div>
               <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border', billingCfg.cls)}>
                 <BillingIcon className="w-3 h-3" />{billingCfg.label}
               </span>
               {renewalDate && (
-                <span className="inline-flex items-center gap-1.5 text-xs text-slate-400">
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Calendar className="w-3 h-3" />
                   {cancelAtEnd ? 'Ends' : 'Renews'} {renewalDate}
                 </span>
@@ -211,7 +210,7 @@ export default function Subscription() {
             </div>
             <div className="flex items-end gap-1">
               <span className="text-3xl font-bold text-white">${PLAN_PRICES[userTier.key] ?? 0}</span>
-              <span className="text-slate-400 text-sm mb-0.5">/mo</span>
+              <span className="text-muted-foreground text-sm mb-0.5">/mo</span>
             </div>
           </div>
 
@@ -223,20 +222,20 @@ export default function Subscription() {
               const atLimit = limit !== -1 && current >= limit;
               const nearLimit = limit !== -1 && pct >= 80;
               return (
-                <div key={key} className="bg-white/[0.03] border border-white/10 rounded-xl p-4">
+                <div key={key} className="bg-card/[0.03] border border-white/10 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <Icon className="w-4 h-4 text-slate-400" />
-                    <span className="text-xs font-semibold text-slate-400">{label}</span>
+                    <Icon className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-xs font-semibold text-muted-foreground">{label}</span>
                   </div>
                   <div className="flex items-end justify-between mb-2">
-                    <span className={cn('text-2xl font-bold', atLimit ? 'text-red-400' : nearLimit ? 'text-amber-400' : 'text-white')}>
+                    <span className={cn('text-2xl font-bold', atLimit ? 'text-destructive' : nearLimit ? 'text-warning' : 'text-white')}>
                       {current}
                     </span>
-                    <span className="text-xs text-slate-500">{limit === -1 ? '∞ unlimited' : `/ ${limit}`}</span>
+                    <span className="text-xs text-muted-foreground">{limit === -1 ? '∞ unlimited' : `/ ${limit}`}</span>
                   </div>
                   {limit !== -1 && (
-                    <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                      <div className={cn('h-full rounded-full transition-all duration-700', atLimit ? 'bg-red-500' : nearLimit ? 'bg-amber-500' : 'bg-blue-500')} style={{ width: `${pct}%` }} />
+                    <div className="h-1.5 rounded-full bg-[var(--kc-w-5)] overflow-hidden">
+                      <div className={cn('h-full rounded-full transition-all duration-700', atLimit ? 'bg-destructive' : nearLimit ? 'bg-warning' : 'bg-primary')} style={{ width: `${pct}%` }} />
                     </div>
                   )}
                 </div>
@@ -251,8 +250,8 @@ export default function Subscription() {
         {/* Trust Bar */}
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4">
           {TRUST_ITEMS.map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-2.5 text-slate-500 text-xs">
-              <Icon className="w-4 h-4 flex-shrink-0 text-slate-600" />
+            <div key={text} className="flex items-center gap-2.5 text-muted-foreground text-xs">
+              <Icon className="w-4 h-4 flex-shrink-0 text-muted-foreground" />
               <span>{text}</span>
             </div>
           ))}
@@ -261,32 +260,32 @@ export default function Subscription() {
         {/* FAQ */}
         <div className="mt-14">
           <h2 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
-          <div className="bg-white/[0.03] border border-white/10 rounded-2xl px-6">
+          <div className="bg-card/[0.03] border border-white/10 rounded-2xl px-6">
             {FAQS.map(faq => <FAQItem key={faq.q} {...faq} />)}
           </div>
         </div>
 
         {/* Billing management */}
         {user?.stripe_customer_id && (
-          <div className="mt-8 bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
+          <div className="mt-8 bg-card/[0.03] border border-white/10 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center">
-                <CreditCard className="w-4 h-4 text-blue-400" />
+              <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-5)] flex items-center justify-center">
+                <CreditCard className="w-4 h-4 text-primary" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-white">Billing managed by Stripe</p>
-                <p className="text-xs text-slate-400">Update payment method, download invoices, or cancel</p>
+                <p className="text-xs text-muted-foreground">Update payment method, download invoices, or cancel</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={handleOpenPortal} disabled={openingPortal}
-                className="border-white/20 text-white hover:bg-white/10">
+                className="border-white/20 text-white hover:bg-[var(--kc-w-10)]">
                 <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
                 {openingPortal ? 'Opening...' : 'Manage Billing'}
               </Button>
               {user?.stripe_subscription_id && !cancelAtEnd && (
                 <Button variant="ghost" size="sm" onClick={() => setCancelModalOpen(true)}
-                  className="text-red-400/70 hover:text-red-400 hover:bg-red-500/10 text-xs">
+                  className="text-destructive/70 hover:text-destructive hover:bg-destructive/10 text-xs">
                   Cancel subscription
                 </Button>
               )}

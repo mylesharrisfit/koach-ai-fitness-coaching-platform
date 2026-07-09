@@ -5,7 +5,7 @@ import { Users, ChevronRight, Pencil, Trash2, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function avatarColor(name) {
-  const colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700'];
+  const colors = ['bg-accent text-primary', 'bg-ai/10 text-ai', 'bg-success/10 text-success', 'bg-warning/10 text-warning', 'bg-destructive/10 text-destructive'];
   return colors[(name?.charCodeAt(0) || 0) % colors.length];
 }
 
@@ -27,24 +27,24 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
       {/* Create button for coaches */}
       {isCoach && (
         <button onClick={onCreate}
-          className="w-full flex items-center gap-3 p-4 bg-white border-2 border-dashed border-[#2563EB]/30 rounded-xl hover:border-[#2563EB] hover:bg-[#EFF6FF] transition-all group">
-          <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] flex items-center justify-center flex-shrink-0 group-hover:bg-[#2563EB] transition-colors">
-            <Plus className="w-5 h-5 text-[#2563EB] group-hover:text-white transition-colors" />
+          className="w-full flex items-center gap-3 p-4 bg-card border-2 border-dashed border-primary/30 rounded-xl hover:border-primary hover:bg-accent/10 transition-all group">
+          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary transition-colors">
+            <Plus className="w-5 h-5 text-primary group-hover:text-white transition-colors" />
           </div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-[#2563EB]">Create Community</p>
-            <p className="text-xs text-[#9CA3AF]">Set up a new group for your clients</p>
+            <p className="text-sm font-semibold text-primary">Create Community</p>
+            <p className="text-xs text-muted-foreground">Set up a new group for your clients</p>
           </div>
         </button>
       )}
 
       {groups.length === 0 ? (
-        <div className="text-center py-16 bg-white border border-[#E5E7EB] rounded-xl">
-          <Users className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB]" />
-          <p className="font-semibold text-sm text-[#374151]">
+        <div className="text-center py-16 bg-card border border-border rounded-xl">
+          <Users className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+          <p className="font-semibold text-sm text-foreground">
             {isCoach ? 'No communities yet' : 'You are not in any groups yet'}
           </p>
-          <p className="text-xs text-[#9CA3AF] mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {isCoach ? 'Create a community to get started.' : 'Ask your coach to add you to a group.'}
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
             const members = getMembers(group);
             return (
               <div key={group.id}
-                className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden hover:border-[#2563EB]/30 hover:shadow-sm transition-all">
+                className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-sm transition-all">
                 {/* Cover */}
                 {group.cover_image_url ? (
                   <div className="h-24 overflow-hidden">
@@ -62,7 +62,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
                   </div>
                 ) : (
                   <div className="h-24 flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #0E1525 0%, #2563EB 100%)' }}>
+                    style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--tc-primary) 100%)' }}>
                     <Users className="w-8 h-8 text-white/40" />
                   </div>
                 )}
@@ -71,24 +71,24 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-[#0E1525] leading-tight">{group.name}</p>
+                      <p className="font-semibold text-sm text-foreground leading-tight">{group.name}</p>
                       {group.description && (
-                        <p className="text-xs text-[#9CA3AF] mt-0.5 line-clamp-1">{group.description}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{group.description}</p>
                       )}
                     </div>
                     {isCoach && (
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button onClick={() => onEdit(group)}
-                          className="w-7 h-7 rounded-lg hover:bg-[#F3F4F6] flex items-center justify-center transition-colors">
-                          <Pencil className="w-3.5 h-3.5 text-[#6B7280]" />
+                          className="w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors">
+                          <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
                         </button>
                         <button onClick={() => {
                           if (window.confirm('Delete "' + group.name + '"? This cannot be undone.')) {
                             deleteMutation.mutate(group.id);
                           }
                         }}
-                          className="w-7 h-7 rounded-lg hover:bg-[#FEF2F2] flex items-center justify-center transition-colors">
-                          <Trash2 className="w-3.5 h-3.5 text-[#DC2626]" />
+                          className="w-7 h-7 rounded-lg hover:bg-destructive/10 flex items-center justify-center transition-colors">
+                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
                         </button>
                       </div>
                     )}
@@ -103,7 +103,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
                         </div>
                       ))}
                     </div>
-                    <p className="text-xs text-[#9CA3AF]">
+                    <p className="text-xs text-muted-foreground">
                       {members.length === 0 ? 'No members yet' : members.length + ' member' + (members.length !== 1 ? 's' : '')}
                     </p>
                   </div>
@@ -111,19 +111,19 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
                   {/* Feature badges */}
                   <div className="flex gap-1 flex-wrap mb-3">
                     {group.feed_enabled !== false && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB]">Feed</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-accent/10 text-primary">Feed</span>
                     )}
                     {group.leaderboard_enabled !== false && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A]">Leaderboard</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-success/10 text-success">Leaderboard</span>
                     )}
                     {group.challenges_enabled !== false && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#FFFBEB] text-[#D97706]">Challenges</span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-warning/10 text-warning">Challenges</span>
                     )}
                   </div>
 
                   <button onClick={() => onSelect(group)}
                     className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
-                    style={{ background: '#2563EB' }}>
+                    style={{ background: 'var(--tc-primary)' }}>
                     Open Group <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>

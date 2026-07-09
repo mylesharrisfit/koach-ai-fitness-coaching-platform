@@ -2,14 +2,14 @@ import React, { useMemo } from 'react';
 import { DollarSign, Users, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react';
 import { differenceInMonths, subMonths, startOfMonth, parseISO } from 'date-fns';
 
-function KPICard({ icon: Icon, label, value, sub, trend, trendLabel, color = '#3B82F6', badge }) {
+function KPICard({ icon: Icon, label, value, sub, trend, trendLabel, color = 'var(--tc-primary)', badge }) {
   const isUp = (trend || 0) > 0;
   const isFlat = trend === 0 || trend === undefined;
   const TrendIcon = isFlat ? Minus : isUp ? ArrowUpRight : ArrowDownRight;
-  const trendColor = isFlat ? '#9CA3AF' : isUp ? '#22C55E' : '#EF4444';
+  const trendColor = isFlat ? 'var(--tc-muted-foreground)' : isUp ? 'var(--tc-success)' : 'var(--tc-destructive)';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}15` }}>
           <Icon className="w-5 h-5" style={{ color }} />
@@ -20,18 +20,18 @@ function KPICard({ icon: Icon, label, value, sub, trend, trendLabel, color = '#3
           </span>
         )}
       </div>
-      <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">{label}</p>
-      <p className="text-2xl font-bold text-gray-900 mb-1">{value}</p>
+      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
       {trend !== undefined && (
         <div className="flex items-center gap-1">
           <TrendIcon className="w-3.5 h-3.5" style={{ color: trendColor }} />
           <span className="text-xs font-semibold" style={{ color: trendColor }}>
             {isFlat ? '0%' : `${Math.abs(trend).toFixed(1)}%`}
           </span>
-          <span className="text-xs text-gray-400">{trendLabel || 'vs last month'}</span>
+          <span className="text-xs text-muted-foreground">{trendLabel || 'vs last month'}</span>
         </div>
       )}
-      {sub && !trend && <p className="text-xs text-gray-500 mt-1">{sub}</p>}
+      {sub && !trend && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
     </div>
   );
 }
@@ -87,8 +87,8 @@ export default function BIKPIRow({ clients, payments, checkIns }) {
         label="Monthly Recurring Revenue"
         value={`$${mrr.toLocaleString()}`}
         trend={mrrTrend}
-        color="#3B82F6"
-        badge={projectedMrr > mrr ? { label: `→ $${Math.round(projectedMrr).toLocaleString()} projected`, color: '#22C55E' } : null}
+        color="var(--tc-primary)"
+        badge={projectedMrr > mrr ? { label: `→ $${Math.round(projectedMrr).toLocaleString()} projected`, color: 'var(--tc-success)' } : null}
       />
       <KPICard
         icon={Users}
@@ -96,22 +96,22 @@ export default function BIKPIRow({ clients, payments, checkIns }) {
         value={activeClients.length}
         trend={clientTrend}
         trendLabel="vs last month"
-        color="#8B5CF6"
-        badge={{ label: `+${newThisMonth} new`, color: '#8B5CF6' }}
+        color="var(--tc-ai)"
+        badge={{ label: `+${newThisMonth} new`, color: 'var(--tc-ai)' }}
       />
       <KPICard
         icon={TrendingUp}
         label="Avg. Client LTV"
         value={avgLTV > 0 ? `$${avgLTV.toLocaleString()}` : '—'}
         sub="Lifetime value estimate"
-        color="#F59E0B"
+        color="var(--tc-warning)"
       />
       <KPICard
         icon={TrendingDown}
         label="Churn / Completed"
         value={`${churnRate.toFixed(1)}%`}
         sub={`${completedClients} clients completed`}
-        color="#EF4444"
+        color="var(--tc-destructive)"
       />
     </div>
   );

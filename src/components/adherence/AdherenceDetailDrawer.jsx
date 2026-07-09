@@ -2,8 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, parseISO, differenceInDays, subWeeks, getDay } from 'date-fns';
-import { X, Send, Settings, Calendar, Sparkles } from 'lucide-react';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { X, Settings, Calendar, Sparkles } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { cn } from '@/lib/utils';
 import { averageAdherenceScore, calculateStreak, checkInScore } from '@/lib/adherence';
 import { toast } from 'sonner';
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const TABS = ['Overview', 'Workout', 'Nutrition', 'Check-ins'];
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const PIE_COLORS = ['#2563EB', '#F59E0B', '#7C3AED', '#10B981'];
+const PIE_COLORS = ['var(--tc-primary)', 'var(--tc-warning)', 'var(--tc-ai)', 'var(--tc-success)'];
 
 function calcCheckInAdherence(checkIns, weeksBack = 4) {
   const cutoff = subWeeks(new Date(), weeksBack);
@@ -37,8 +37,8 @@ function ScoreDonut({ workout, nutrition, checkin }) {
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={cn('text-2xl font-bold', total >= 80 ? 'text-emerald-600' : total >= 50 ? 'text-amber-600' : 'text-red-500')}>{total}</span>
-        <span className="text-[9px] text-[#9CA3AF] uppercase">Score</span>
+        <span className={cn('text-2xl font-bold', total >= 80 ? 'text-success' : total >= 50 ? 'text-warning' : 'text-destructive')}>{total}</span>
+        <span className="text-[9px] text-muted-foreground uppercase">Score</span>
       </div>
     </div>
   );
@@ -95,29 +95,29 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
-      <div className="w-full max-w-lg h-full bg-white shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+      <div className="w-full max-w-lg h-full bg-card shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#E5E7EB] flex items-center gap-3 flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+        <div className="px-5 py-4 border-b border-border flex items-center gap-3 flex-shrink-0"
+          style={{ background: 'var(--tc-sidebar)' }}>
           <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {client.name?.[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-white">{client.name}</p>
             <p className="text-xs text-white/50">{sorted.length} check-ins · Streak: {streak}w {streak >= 7 ? '🔥' : ''}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--kc-w-10)] flex items-center justify-center hover:bg-[var(--kc-w-20)]">
             <X className="w-4 h-4 text-white" />
           </button>
         </div>
 
         {/* Tab bar */}
-        <div className="flex border-b border-[#E5E7EB] px-4 bg-white flex-shrink-0 overflow-x-auto scrollbar-hide">
+        <div className="flex border-b border-border px-4 bg-card flex-shrink-0 overflow-x-auto scrollbar-hide">
           {TABS.map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={cn('px-3 py-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap',
-                tab === t ? 'border-primary text-primary' : 'border-transparent text-[#6B7280]')}>
+                tab === t ? 'border-primary text-primary' : 'border-transparent text-muted-foreground')}>
               {t}
             </button>
           ))}
@@ -132,17 +132,17 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
                 <ScoreDonut workout={workout} nutrition={nutrition} checkin={checkin} />
                 <div className="flex-1 space-y-2">
                   {[
-                    { label: 'Workout (40%)', val: workout, color: '#2563EB' },
-                    { label: 'Nutrition (30%)', val: nutrition, color: '#F59E0B' },
-                    { label: 'Check-ins (20%)', val: checkin, color: '#7C3AED' },
-                    { label: 'Engagement (10%)', val: 70, color: '#10B981' },
+                    { label: 'Workout (40%)', val: workout, color: 'var(--tc-primary)' },
+                    { label: 'Nutrition (30%)', val: nutrition, color: 'var(--tc-warning)' },
+                    { label: 'Check-ins (20%)', val: checkin, color: 'var(--tc-ai)' },
+                    { label: 'Engagement (10%)', val: 70, color: 'var(--tc-success)' },
                   ].map(({ label, val, color }) => (
                     <div key={label}>
-                      <div className="flex justify-between text-[10px] mb-0.5 text-[#374151]">
+                      <div className="flex justify-between text-[10px] mb-0.5 text-foreground">
                         <span>{label}</span>
                         <span className="font-semibold">{val ?? '—'}{val != null ? '%' : ''}</span>
                       </div>
-                      <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${val ?? 0}%`, background: color }} />
                       </div>
                     </div>
@@ -152,7 +152,7 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
 
               {/* Legend */}
               <div className="flex flex-wrap gap-2 text-[10px]">
-                {[['#2563EB', 'Workout'], ['#F59E0B', 'Nutrition'], ['#7C3AED', 'Check-ins'], ['#10B981', 'Engagement']].map(([color, label]) => (
+                {[['var(--tc-primary)', 'Workout'], ['var(--tc-warning)', 'Nutrition'], ['var(--tc-ai)', 'Check-ins'], ['var(--tc-success)', 'Engagement']].map(([color, label]) => (
                   <span key={label} className="flex items-center gap-1"><div className="w-2 h-2 rounded-full" style={{ background: color }} />{label}</span>
                 ))}
               </div>
@@ -164,31 +164,31 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
                   { label: 'Check-in Streak', value: `${streak}w` },
                   { label: 'Check-ins', value: sorted.length },
                 ].map(({ label, value }) => (
-                  <div key={label} className="bg-[#F9FAFB] rounded-xl p-3 border border-[#E5E7EB]">
-                    <p className="text-base font-bold text-[#111827]">{value}</p>
-                    <p className="text-[10px] text-[#9CA3AF] mt-0.5">{label}</p>
+                  <div key={label} className="bg-background rounded-xl p-3 border border-border">
+                    <p className="text-base font-bold text-foreground">{value}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{label}</p>
                   </div>
                 ))}
               </div>
 
               {/* Coach tools */}
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-[#374151]">Coach Tools</p>
+                <p className="text-xs font-semibold text-foreground">Coach Tools</p>
                 <div className="flex flex-wrap gap-2">
                   <button onClick={handleNudge} disabled={sendingNudge}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 disabled:opacity-50">
                     <Sparkles className="w-3.5 h-3.5" /> {sendingNudge ? 'Sending...' : 'Send Nudge'}
                   </button>
                   <button onClick={() => navigate(`/program-builder?clientId=${client.id}`)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB]">
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background">
                     <Settings className="w-3.5 h-3.5" /> Adjust Program
                   </button>
                   <button onClick={() => navigate(`/schedule?clientId=${client.id}`)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB]">
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background">
                     <Calendar className="w-3.5 h-3.5" /> Schedule Call
                   </button>
                   <button onClick={() => updateMutation.mutate({ id: client.id, data: { lifecycle_status: 'at_risk' } })}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-red-200 bg-red-50 text-red-600 hover:bg-red-100">
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-destructive bg-destructive/10 text-destructive hover:bg-destructive/10">
                     Flag At-Risk
                   </button>
                 </div>
@@ -229,15 +229,15 @@ function WorkoutTab({ checkIns }) {
         <Stat label="Most Skipped" value={skippedDay} />
       </div>
       <div>
-        <p className="text-xs font-semibold text-[#374151] mb-2">Weekly Completion</p>
+        <p className="text-xs font-semibold text-foreground mb-2">Weekly Completion</p>
         <div className="space-y-1.5">
           {recent.slice(0, 8).map((ci, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="text-[10px] text-[#9CA3AF] w-16 flex-shrink-0">{format(parseISO(ci.date), 'MMM d')}</span>
-              <div className="flex-1 h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 rounded-full" style={{ width: `${ci.compliance_training ?? 0}%` }} />
+              <span className="text-[10px] text-muted-foreground w-16 flex-shrink-0">{format(parseISO(ci.date), 'MMM d')}</span>
+              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full" style={{ width: `${ci.compliance_training ?? 0}%` }} />
               </div>
-              <span className="text-[10px] font-semibold text-[#374151] w-8 text-right">{ci.compliance_training ?? '—'}{ci.compliance_training != null ? '%' : ''}</span>
+              <span className="text-[10px] font-semibold text-foreground w-8 text-right">{ci.compliance_training ?? '—'}{ci.compliance_training != null ? '%' : ''}</span>
             </div>
           ))}
         </div>
@@ -264,18 +264,18 @@ function NutritionTab({ checkIns }) {
         <Stat label="Not Tracked" value={`${notTracked}d`} />
       </div>
       <div>
-        <p className="text-xs font-semibold text-[#374151] mb-2">Nutrition Log Rate</p>
+        <p className="text-xs font-semibold text-foreground mb-2">Nutrition Log Rate</p>
         <div className="space-y-1.5">
           {recent.map((ci, i) => {
             const val = ci.compliance_nutrition;
-            const color = val == null ? '#E5E7EB' : val >= 80 ? '#10B981' : val >= 50 ? '#F59E0B' : '#EF4444';
+            const color = val == null ? 'var(--tc-border)' : val >= 80 ? 'var(--tc-success)' : val >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
             return (
               <div key={i} className="flex items-center gap-2">
-                <span className="text-[10px] text-[#9CA3AF] w-16 flex-shrink-0">{format(parseISO(ci.date), 'MMM d')}</span>
-                <div className="flex-1 h-2 bg-[#F3F4F6] rounded-full overflow-hidden">
+                <span className="text-[10px] text-muted-foreground w-16 flex-shrink-0">{format(parseISO(ci.date), 'MMM d')}</span>
+                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                   <div className="h-full rounded-full" style={{ width: `${val ?? 0}%`, background: color }} />
                 </div>
-                <span className="text-[10px] font-semibold text-[#374151] w-8 text-right">{val ?? '—'}{val != null ? '%' : ''}</span>
+                <span className="text-[10px] font-semibold text-foreground w-8 text-right">{val ?? '—'}{val != null ? '%' : ''}</span>
               </div>
             );
           })}
@@ -296,7 +296,7 @@ function CheckInTab({ checkIns }) {
         <Stat label="Current Streak" value={`${streak}w`} />
       </div>
       <div>
-        <p className="text-xs font-semibold text-[#374151] mb-2">Submission History</p>
+        <p className="text-xs font-semibold text-foreground mb-2">Submission History</p>
         <div className="space-y-2">
           {last5.map((ci, i) => {
             const score = checkInScore(ci);
@@ -305,15 +305,15 @@ function CheckInTab({ checkIns }) {
             return (
               <div key={i} className="flex items-center gap-3">
                 <div className={cn('w-2.5 h-2.5 rounded-full flex-shrink-0',
-                  isLate ? 'bg-amber-400' : score !== null ? 'bg-emerald-500' : 'bg-[#E5E7EB]')} />
-                <span className="text-xs text-[#374151] flex-1">{format(parseISO(ci.date), 'MMM d, yyyy')}</span>
+                  isLate ? 'bg-warning' : score !== null ? 'bg-success' : 'bg-border')} />
+                <span className="text-xs text-foreground flex-1">{format(parseISO(ci.date), 'MMM d, yyyy')}</span>
                 {score !== null && (
                   <span className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded-full',
-                    score >= 80 ? 'bg-emerald-50 text-emerald-700' : score >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-600')}>
+                    score >= 80 ? 'bg-success/10 text-success' : score >= 50 ? 'bg-warning/10 text-warning' : 'bg-destructive/10 text-destructive')}>
                     {score}%
                   </span>
                 )}
-                {isLate && <span className="text-[10px] text-amber-600 font-semibold">Late</span>}
+                {isLate && <span className="text-[10px] text-warning font-semibold">Late</span>}
               </div>
             );
           })}
@@ -325,9 +325,9 @@ function CheckInTab({ checkIns }) {
 
 function Stat({ label, value }) {
   return (
-    <div className="bg-[#F9FAFB] rounded-xl p-2.5 border border-[#E5E7EB]">
-      <p className="text-sm font-bold text-[#111827]">{value}</p>
-      <p className="text-[10px] text-[#9CA3AF] mt-0.5">{label}</p>
+    <div className="bg-background rounded-xl p-2.5 border border-border">
+      <p className="text-sm font-bold text-foreground">{value}</p>
+      <p className="text-[10px] text-muted-foreground mt-0.5">{label}</p>
     </div>
   );
 }

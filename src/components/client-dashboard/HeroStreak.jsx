@@ -28,20 +28,20 @@ export default function HeroStreak({ streak = 0, recentLogs = [] }) {
   });
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+    <div className="bg-card border border-border rounded-xl p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-xl">🔥</span>
           <div>
-            <p className="text-base font-semibold text-[#111827]">
+            <p className="text-base font-semibold text-foreground">
               <span className="text-2xl font-bold">{streak}</span> day streak
             </p>
-            <p className="text-xs text-[#6B7280]">{getMessage(streak)}</p>
+            <p className="text-xs text-muted-foreground">{getMessage(streak)}</p>
           </div>
         </div>
         {streak >= 7 && (
-          <div className="px-2.5 py-1 bg-[#FEF3C7] rounded-full">
-            <span className="text-xs font-semibold text-[#D97706]">Keep it up!</span>
+          <div className="px-2.5 py-1 bg-warning/10 rounded-full">
+            <span className="text-xs font-semibold text-warning">Keep it up!</span>
           </div>
         )}
       </div>
@@ -54,11 +54,11 @@ export default function HeroStreak({ streak = 0, recentLogs = [] }) {
             <div key={i} className="flex-1 flex flex-col items-center gap-1">
               <div className={cn(
                 'w-7 h-7 rounded-full flex items-center justify-center',
-                on ? 'bg-[#111827]' : isToday ? 'border-2 border-[#2563EB]' : 'bg-[#F3F4F6]'
+                on ? 'bg-sidebar' : isToday ? 'border-2 border-primary' : 'bg-muted'
               )}>
                 {on && <span className="text-[9px] text-white font-bold">✓</span>}
               </div>
-              <span className="text-[9px] text-[#9CA3AF]">{DAYS[i]}</span>
+              <span className="text-[9px] text-muted-foreground">{DAYS[i]}</span>
             </div>
           );
         })}

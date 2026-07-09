@@ -6,15 +6,15 @@ import {
 
 function StatCard({ icon: Icon, label, value, sub, color, bg }) {
   return (
-    <div style={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 14, padding: '16px 18px' }}>
+    <div style={{ background: 'var(--tc-card)', border: '1px solid var(--tc-muted)', borderRadius: 14, padding: '16px 18px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
         <div style={{ width: 32, height: 32, borderRadius: 9, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon size={15} color={color} />
         </div>
       </div>
-      <div style={{ fontSize: 22, fontWeight: 900, color: '#111', letterSpacing: '-0.02em' }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 4 }}>{sub}</div>}
+      <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--tc-foreground)', letterSpacing: '-0.02em' }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 4 }}>{sub}</div>}
     </div>
   );
 }
@@ -58,11 +58,11 @@ export default function PaymentStatCards({ payments = [] }) {
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-      <StatCard icon={CheckCircle2} label="Collected This Month" value={fmt(collected)} sub="Payments received" color="#16A34A" bg="#F0FDF4" />
-      <StatCard icon={Clock} label="Pending" value={fmt(pending)} sub="Expected" color="#2563EB" bg="#EFF6FF" />
-      <StatCard icon={AlertTriangle} label="Overdue / Failed" value={fmt(overdue)} sub={`${payments.filter(p => p.status === 'failed').length} payments`} color="#DC2626" bg="#FEF2F2" />
-      <StatCard icon={RefreshCcw} label="Refunded" value={fmt(refunded)} sub="Total refunds" color="#D97706" bg="#FFFBEB" />
-      <StatCard icon={TrendingUp} label="Net Revenue" value={fmt(net)} sub="Collected minus refunds" color="#7C3AED" bg="#F5F3FF" />
+      <StatCard icon={CheckCircle2} label="Collected This Month" value={fmt(collected)} sub="Payments received" color="var(--tc-success)" bg="var(--tc-success)" />
+      <StatCard icon={Clock} label="Pending" value={fmt(pending)} sub="Expected" color="var(--tc-primary)" bg="var(--tc-accent)" />
+      <StatCard icon={AlertTriangle} label="Overdue / Failed" value={fmt(overdue)} sub={`${payments.filter(p => p.status === 'failed').length} payments`} color="var(--tc-destructive)" bg="var(--tc-destructive)" />
+      <StatCard icon={RefreshCcw} label="Refunded" value={fmt(refunded)} sub="Total refunds" color="var(--tc-warning)" bg="var(--tc-warning)" />
+      <StatCard icon={TrendingUp} label="Net Revenue" value={fmt(net)} sub="Collected minus refunds" color="var(--tc-ai)" bg="var(--tc-ai)" />
     </div>
   );
 }

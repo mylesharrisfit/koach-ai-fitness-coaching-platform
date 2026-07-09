@@ -31,17 +31,17 @@ export default function CheckInQuestionChoice({ value, onChange, options, multi 
           whileTap={{ scale: 0.97 }}
           className="w-full p-4 rounded-2xl text-left flex items-center justify-between transition-all"
           style={{
-            background: isSelected(opt) ? 'linear-gradient(135deg, rgba(59,130,246,0.25), rgba(99,102,241,0.2))' : 'rgba(255,255,255,0.05)',
-            border: `1.5px solid ${isSelected(opt) ? 'rgba(59,130,246,0.5)' : 'rgba(255,255,255,0.08)'}`,
+            background: isSelected(opt) ? 'linear-gradient(135deg, rgb(var(--primary) / 0.25), rgba(99,102,241,0.2))' : 'rgba(255,255,255,0.05)',
+            border: `1.5px solid ${isSelected(opt) ? 'rgb(var(--primary) / 0.5)' : 'rgba(255,255,255,0.08)'}`,
           }}>
           <span className="text-sm font-semibold"
-            style={{ color: isSelected(opt) ? '#93C5FD' : 'rgba(255,255,255,0.7)' }}>
+            style={{ color: isSelected(opt) ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.7)' }}>
             {opt}
           </span>
           {isSelected(opt) && (
             <div className="w-6 h-6 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(59,130,246,0.4)' }}>
-              <Check className="w-3.5 h-3.5 text-blue-300" />
+              style={{ background: 'rgb(var(--primary) / 0.4)' }}>
+              <Check className="w-3.5 h-3.5 text-primary" />
             </div>
           )}
         </motion.button>

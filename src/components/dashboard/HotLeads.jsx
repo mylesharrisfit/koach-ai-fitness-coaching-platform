@@ -2,7 +2,7 @@ import React from 'react';
 import { Flame, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { format, isAfter, subDays } from 'date-fns';
+import { isAfter, subDays } from 'date-fns';
 
 export default function HotLeads({ clients }) {
   const recent = clients
@@ -19,15 +19,15 @@ export default function HotLeads({ clients }) {
   };
 
   return (
-    <div className="bg-card border border-amber-500/30 rounded-2xl p-4 sm:p-6">
+    <div className="bg-card border border-warning/30 rounded-2xl p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center">
-            <Flame className="w-4 h-4 text-amber-400" />
+          <div className="w-7 h-7 rounded-lg bg-warning/20 flex items-center justify-center">
+            <Flame className="w-4 h-4 text-warning" />
           </div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-400">Hot Leads</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-warning">Hot Leads</h2>
         </div>
-        <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-medium">{recent.length}</span>
+        <span className="text-xs bg-warning/20 text-warning px-2 py-0.5 rounded-full font-medium">{recent.length}</span>
       </div>
 
       {recent.length === 0 ? (
@@ -35,8 +35,8 @@ export default function HotLeads({ clients }) {
       ) : (
         <div className="space-y-3">
           {recent.map(client => (
-            <div key={client.id} className="flex items-center gap-3 p-3 rounded-xl bg-amber-500/5 border border-amber-500/10">
-              <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs font-bold flex-shrink-0">
+            <div key={client.id} className="flex items-center gap-3 p-3 rounded-xl bg-warning/5 border border-warning/10">
+              <div className="w-8 h-8 rounded-full bg-warning/20 flex items-center justify-center text-warning text-xs font-bold flex-shrink-0">
                 {client.name?.[0] || '?'}
               </div>
               <div className="flex-1 min-w-0">
@@ -45,8 +45,8 @@ export default function HotLeads({ clients }) {
               </div>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                 client.status === 'prospect'
-                  ? 'bg-amber-500/20 text-amber-400'
-                  : 'bg-emerald-500/20 text-emerald-400'
+                  ? 'bg-warning/20 text-warning'
+                  : 'bg-success/20 text-success'
               }`}>
                 {client.status === 'prospect' ? 'Prospect' : 'New'}
               </span>
