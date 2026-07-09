@@ -163,7 +163,7 @@ export default function AvailabilityDrawer({ onClose, coachId }) {
                 key={idx}
                 onClick={() => setSelectedDay(idx)}
                 className={`w-full text-left px-3 py-2 rounded-lg transition ${
-                  selectedDay === idx ? 'bg-primary text-white' : 'bg-muted hover:bg-[#EAECF5]'
+                  selectedDay === idx ? 'bg-primary text-white' : 'bg-muted hover:bg-[var(--kc-eaecf5)]'
                 }`}
               >
                 {day}

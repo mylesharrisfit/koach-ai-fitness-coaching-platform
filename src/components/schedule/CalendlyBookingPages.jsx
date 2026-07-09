@@ -41,11 +41,11 @@ export default function CalendlyBookingPages() {
         onClick={() => setCollapsed(v => !v)}
       >
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-[#006BFF]/10 flex items-center justify-center">
-            <Calendar className="w-3.5 h-3.5 text-[#006BFF]" />
+          <div className="w-6 h-6 rounded-lg bg-[var(--kc-006bff)]/10 flex items-center justify-center">
+            <Calendar className="w-3.5 h-3.5 text-[var(--kc-006bff)]" />
           </div>
           <span className="text-sm font-semibold text-foreground">My Booking Pages</span>
-          <span className="text-[10px] font-semibold text-[#006BFF] bg-accent/10 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-semibold text-[var(--kc-006bff)] bg-accent/10 px-2 py-0.5 rounded-full">
             Calendly · {eventTypes.length}
           </span>
         </div>
@@ -64,7 +64,7 @@ export default function CalendlyBookingPages() {
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ background: event.color || '#006BFF' }} />
+                      style={{ background: event.color || 'var(--kc-006bff)' }} />
                     <p className="font-semibold text-sm text-foreground truncate">{event.name}</p>
                   </div>
                   <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">{event.duration} min</span>
@@ -84,7 +84,7 @@ export default function CalendlyBookingPages() {
                     href={event.scheduling_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-1.5 bg-sidebar text-white rounded-lg text-xs font-semibold text-center hover:bg-[#1F2937] transition-colors flex items-center justify-center gap-1"
+                    className="flex-1 py-1.5 bg-sidebar text-white rounded-lg text-xs font-semibold text-center hover:bg-[var(--kc-1f2937)] transition-colors flex items-center justify-center gap-1"
                   >
                     <ExternalLink className="w-3 h-3" /> Preview
                   </a>

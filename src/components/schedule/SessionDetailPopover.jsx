@@ -94,7 +94,7 @@ export default function SessionDetailPopover({
               <p className="text-xs opacity-75">{(session.type || 'Session').replace(/_/g, ' ')}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+          <button onClick={onClose} className="p-1.5 hover:bg-[var(--kc-w-20)] rounded-lg transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>

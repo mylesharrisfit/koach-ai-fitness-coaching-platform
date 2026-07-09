@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const SESSION_TYPES = [
-  { id: 'checkin', label: 'Check-in Call', icon: Phone, color: 'rgb(var(--primary))', bgColor: 'bg-accent' },
-  { id: 'program', label: 'Program Review', icon: Zap, color: 'rgb(var(--ai))', bgColor: 'bg-ai/10' },
-  { id: 'onboarding', label: 'Onboarding Call', icon: Target, color: 'rgb(var(--success))', bgColor: 'bg-success/10' },
-  { id: 'progress', label: 'Progress Review', icon: TrendingUp, color: 'rgb(var(--warning))', bgColor: 'bg-warning/10' },
-  { id: 'consultation', label: 'Free Consultation', icon: HelpCircle, color: 'rgb(var(--muted-foreground))', bgColor: 'bg-muted' },
+  { id: 'checkin', label: 'Check-in Call', icon: Phone, color: 'var(--tc-primary)', bgColor: 'bg-accent' },
+  { id: 'program', label: 'Program Review', icon: Zap, color: 'var(--tc-ai)', bgColor: 'bg-ai/10' },
+  { id: 'onboarding', label: 'Onboarding Call', icon: Target, color: 'var(--tc-success)', bgColor: 'bg-success/10' },
+  { id: 'progress', label: 'Progress Review', icon: TrendingUp, color: 'var(--tc-warning)', bgColor: 'bg-warning/10' },
+  { id: 'consultation', label: 'Free Consultation', icon: HelpCircle, color: 'var(--tc-muted-foreground)', bgColor: 'bg-muted' },
 ];
 
 const TIME_SLOTS = Array.from({ length: (22 - 6) * 4 }, (_, i) => {
@@ -168,7 +168,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
           {/* Header */}
           <div className="bg-gradient-to-r from-primary to-ai px-6 py-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-white font-heading">Schedule a Session</h2>
-            <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/20 transition-colors">
+            <button onClick={onClose} className="p-1 rounded-lg hover:bg-[var(--kc-w-20)] transition-colors">
               <X className="w-5 h-5 text-white" />
             </button>
           </div>
@@ -263,7 +263,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                           : 'border-border hover:border-primary/30'
                       )}
                     >
-                      <Icon className="w-4 h-4 mb-1" style={{ color: type === t.id ? t.color : 'rgb(var(--muted-foreground))' }} />
+                      <Icon className="w-4 h-4 mb-1" style={{ color: type === t.id ? t.color : 'var(--tc-muted-foreground)' }} />
                       <p className="text-xs font-medium">{t.label}</p>
                     </button>
                   );
