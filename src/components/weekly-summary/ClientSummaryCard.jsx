@@ -97,7 +97,7 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
 
       {/* Weight + Workout row */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-white/80 border border-border rounded-xl p-2.5 text-center">
+        <div className="bg-[var(--kc-w-80)] border border-border rounded-xl p-2.5 text-center">
           <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Weight</p>
           <p className="text-sm font-bold text-foreground">{weightNow ? `${weightNow} lbs` : '—'}</p>
           {weightDiff !== null && (
@@ -106,12 +106,12 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
             </p>
           )}
         </div>
-        <div className="bg-white/80 border border-border rounded-xl p-2.5 text-center">
+        <div className="bg-[var(--kc-w-80)] border border-border rounded-xl p-2.5 text-center">
           <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Workouts</p>
           <p className="text-sm font-bold text-foreground">{weekWorkouts}</p>
           <p className="text-[10px] text-muted-foreground">this week</p>
         </div>
-        <div className="bg-white/80 border border-border rounded-xl p-2.5 text-center">
+        <div className="bg-[var(--kc-w-80)] border border-border rounded-xl p-2.5 text-center">
           <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Check-in</p>
           {missedCI ? (
             <>
