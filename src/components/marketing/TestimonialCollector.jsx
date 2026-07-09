@@ -143,7 +143,7 @@ export default function TestimonialCollector({ coachId }) {
                     <p className="font-bold text-foreground">{testimonial.client_name}</p>
                     <div className="flex items-center gap-1 mt-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4" fill={i < testimonial.rating ? 'rgb(var(--warning))' : 'rgb(var(--border))'} color={i < testimonial.rating ? 'rgb(var(--warning))' : 'rgb(var(--border))'} />
+                        <Star key={i} className="w-4 h-4" fill={i < testimonial.rating ? 'var(--tc-warning)' : 'var(--tc-border)'} color={i < testimonial.rating ? 'var(--tc-warning)' : 'var(--tc-border)'} />
                       ))}
                     </div>
                   </div>

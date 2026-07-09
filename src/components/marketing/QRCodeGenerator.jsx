@@ -5,8 +5,8 @@ import { Download } from 'lucide-react';
 
 export default function QRCodeGenerator({ coachId }) {
   const [selectedLink, setSelectedLink] = useState(null);
-  const [fgColor, setFgColor] = useState('rgb(var(--primary))');
-  const [bgColor, setBgColor] = useState('rgb(var(--card))');
+  const [fgColor, setFgColor] = useState('var(--tc-primary)');
+  const [bgColor, setBgColor] = useState('var(--tc-card)');
   const [size, setSize] = useState('medium');
 
   const { data: links = [] } = useQuery({

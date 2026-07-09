@@ -28,11 +28,11 @@ export default function MarketingAnalytics({ coachId }) {
   ];
 
   const sourceColors = {
-    Instagram: '#E1306C',
-    Email: '#0078FF',
-    YouTube: '#FF0000',
-    Direct: '#999999',
-    Other: '#CCCCCC',
+    Instagram: 'var(--kc-e1306c)',
+    Email: 'var(--kc-0078ff)',
+    YouTube: 'var(--kc-ff0000)',
+    Direct: 'var(--kc-999999)',
+    Other: 'var(--kc-cccccc)',
   };
 
   const funnelData = [
@@ -53,10 +53,10 @@ export default function MarketingAnalytics({ coachId }) {
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Clicks', value: totalClicks, color: 'rgb(var(--primary))' },
-          { label: 'Conversions', value: totalConversions, color: 'rgb(var(--success))' },
-          { label: 'Conversion Rate', value: `${conversionRate}%`, color: 'rgb(var(--warning))' },
-          { label: 'Campaign Revenue', value: `$${campaignRevenue.toFixed(2)}`, color: 'rgb(var(--ai))' },
+          { label: 'Total Clicks', value: totalClicks, color: 'var(--tc-primary)' },
+          { label: 'Conversions', value: totalConversions, color: 'var(--tc-success)' },
+          { label: 'Conversion Rate', value: `${conversionRate}%`, color: 'var(--tc-warning)' },
+          { label: 'Campaign Revenue', value: `$${campaignRevenue.toFixed(2)}`, color: 'var(--tc-ai)' },
         ].map((kpi, i) => (
           <div key={i} className="p-4 rounded-lg bg-card border border-border">
             <p className="text-xs text-muted-foreground font-bold">{kpi.label}</p>
