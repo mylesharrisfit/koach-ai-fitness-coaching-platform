@@ -18,7 +18,7 @@ function Sparkline({ data, lowerIsBetter }) {
   if (data.length < 2) return <div className="h-8 text-[10px] text-muted-foreground flex items-center">—</div>;
   const trend = data[data.length - 1].v - data[0].v;
   const improving = lowerIsBetter ? trend < 0 : trend > 0;
-  const color = improving ? 'rgb(var(--success))' : trend === 0 ? 'rgb(var(--muted-foreground))' : 'rgb(var(--destructive))';
+  const color = improving ? 'var(--tc-success)' : trend === 0 ? 'var(--tc-muted-foreground)' : 'var(--tc-destructive)';
   return (
     <ResponsiveContainer width={80} height={32}>
       <LineChart data={data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
@@ -79,7 +79,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
           {MEASUREMENTS.map((m) => {
             const { start, current, change, data } = getStats(m.key);
             const improving = m.lowerIsBetter ? change < 0 : change > 0;
-            const changeColor = change === null ? 'rgb(var(--muted-foreground))' : change === 0 ? 'rgb(var(--muted-foreground))' : improving ? 'rgb(var(--success))' : 'rgb(var(--destructive))';
+            const changeColor = change === null ? 'var(--tc-muted-foreground)' : change === 0 ? 'var(--tc-muted-foreground)' : improving ? 'var(--tc-success)' : 'var(--tc-destructive)';
             return (
               <div key={m.key} className="px-5 py-4 border-b border-r border-muted">
                 <div className="flex items-center justify-between">

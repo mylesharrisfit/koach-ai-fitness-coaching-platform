@@ -54,9 +54,9 @@ export default function ClientProgressDetail({ client, checkIns, sessions, allCl
       <div className="bg-card rounded-2xl shadow-2xl w-full max-w-5xl max-h-[95vh] flex flex-col overflow-hidden">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-border flex items-center gap-4 flex-shrink-0"
-          style={{ background: 'rgb(var(--sidebar))' }}>
+          style={{ background: 'var(--tc-sidebar)' }}>
           <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {client.avatar_url
               ? <img src={client.avatar_url} alt={client.name} className="w-12 h-12 rounded-full object-cover" />
               : client.name?.[0]?.toUpperCase()}
@@ -77,7 +77,7 @@ export default function ClientProgressDetail({ client, checkIns, sessions, allCl
             </div>
             <div className="text-[9px] text-white/40 uppercase tracking-wide">Progress Score</div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors">
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] transition-colors">
             <X className="w-4 h-4 text-white" />
           </button>
         </div>

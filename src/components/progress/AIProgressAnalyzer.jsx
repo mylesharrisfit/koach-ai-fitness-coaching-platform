@@ -272,18 +272,18 @@ function ClientAnalysisPanel({ analysis }) {
       )}
       <p className="text-white/70 text-sm leading-relaxed">{analysis.summary}</p>
       {analysis.insights?.map((ins, i) => (
-        <div key={i} className="flex items-start gap-2.5 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)' }}>
+        <div key={i} className="flex items-start gap-2.5 px-3 py-2 rounded-xl" style={{ background: 'color-mix(in srgb, white 6%, transparent)' }}>
           <span className="text-base flex-shrink-0">{'💡🎯🏆✨'[i] || '⭐'}</span>
           <p className="text-white/70 text-sm leading-relaxed">{ins}</p>
         </div>
       ))}
       {analysis.prediction && (
-        <div className="px-3 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, rgb(var(--success) / 0.15), rgb(var(--success) / 0.1))', border: '1px solid rgb(var(--success) / 0.25)' }}>
+        <div className="px-3 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-success) 15%, transparent), color-mix(in srgb, var(--tc-success) 10%, transparent))', border: '1px solid color-mix(in srgb, var(--tc-success) 25%, transparent)' }}>
           <p className="text-success text-sm font-semibold">🎯 {analysis.prediction}</p>
         </div>
       )}
       {analysis.tip && (
-        <div className="px-3 py-2.5 rounded-xl" style={{ background: 'rgb(var(--primary) / 0.12)', border: '1px solid rgb(var(--primary) / 0.25)' }}>
+        <div className="px-3 py-2.5 rounded-xl" style={{ background: 'color-mix(in srgb, var(--tc-primary) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
           <p className="text-primary text-xs font-semibold">💡 This week: {analysis.tip}</p>
         </div>
       )}
@@ -339,7 +339,7 @@ export default function AIProgressAnalyzer({
   // Client-facing wrapper
   if (isClientFacing) {
     return (
-      <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgb(var(--ai) / 0.12), rgb(var(--primary) / 0.1))', border: '1px solid rgb(var(--ai) / 0.2)' }}>
+      <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-ai) 12%, transparent), color-mix(in srgb, var(--tc-primary) 10%, transparent))', border: '1px solid color-mix(in srgb, var(--tc-ai) 20%, transparent)' }}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-ai" />
@@ -359,7 +359,7 @@ export default function AIProgressAnalyzer({
         {hasEnoughData && !generated && !loading && (
           <div className="text-center py-4">
             <p className="text-white/30 text-xs mb-3">Get personalized AI insights based on your data</p>
-            <button onClick={generate} className="px-5 py-2 rounded-xl text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, rgb(var(--ai)), rgb(var(--primary)))' }}>
+            <button onClick={generate} className="px-5 py-2 rounded-xl text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, var(--tc-ai), var(--tc-primary))' }}>
               ✨ Get My Insights
             </button>
           </div>
@@ -398,7 +398,7 @@ export default function AIProgressAnalyzer({
         <div className="flex items-center gap-2">
           {generated && (
             <button onClick={e => { e.stopPropagation(); generate(); }} disabled={loading}
-              className="p-1 rounded-lg hover:bg-white/50 transition-colors text-muted-foreground">
+              className="p-1 rounded-lg hover:bg-[var(--kc-w-50)] transition-colors text-muted-foreground">
               <RefreshCw className={cn('w-3.5 h-3.5', loading && 'animate-spin')} />
             </button>
           )}

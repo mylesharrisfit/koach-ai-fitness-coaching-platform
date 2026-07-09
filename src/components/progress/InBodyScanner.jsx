@@ -13,11 +13,11 @@ function ScoreRing({ score }) {
   const r = 28;
   const circ = 2 * Math.PI * r;
   const pct = Math.min(score / 100, 1);
-  const color = score >= 80 ? 'rgb(var(--success))' : score >= 60 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const color = score >= 80 ? 'var(--tc-success)' : score >= 60 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   return (
     <div className="relative w-16 h-16 flex items-center justify-center">
       <svg width="64" height="64" className="-rotate-90">
-        <circle cx="32" cy="32" r={r} strokeWidth="5" stroke="rgb(var(--border))" fill="none" />
+        <circle cx="32" cy="32" r={r} strokeWidth="5" stroke="var(--tc-border)" fill="none" />
         <circle cx="32" cy="32" r={r} strokeWidth="5" stroke={color} fill="none"
           strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)}
           strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.8s ease' }} />
@@ -32,7 +32,7 @@ function BMIBar({ bmi }) {
   const clamp = Math.min(Math.max(bmi, 15), 40);
   const pct = ((clamp - 15) / 25) * 100;
   const label = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
-  const color = bmi < 18.5 ? 'rgb(var(--primary))' : bmi < 25 ? 'rgb(var(--success))' : bmi < 30 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const color = bmi < 18.5 ? 'var(--tc-primary)' : bmi < 25 ? 'var(--tc-success)' : bmi < 30 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   return (
     <div>
       <div className="flex justify-between text-xs text-muted-foreground mb-1">
@@ -87,7 +87,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
     return (
       <div className="flex items-center justify-between py-2 border-b border-muted last:border-0">
         <span className="text-sm text-foreground">{label}</span>
-        <span className="text-sm font-semibold" style={{ color: color || 'rgb(var(--foreground))' }}>
+        <span className="text-sm font-semibold" style={{ color: color || 'var(--tc-foreground)' }}>
           {value}{unit}
         </span>
       </div>
@@ -107,10 +107,10 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Body Composition</p>
         {metricRow('Weight', results.weight_lbs, ' lbs')}
         {metricRow('Body Fat %', results.body_fat_percent, '%',
-          results.body_fat_percent > 25 ? 'rgb(var(--destructive))' : results.body_fat_percent > 20 ? 'rgb(var(--warning))' : 'rgb(var(--success))')}
+          results.body_fat_percent > 25 ? 'var(--tc-destructive)' : results.body_fat_percent > 20 ? 'var(--tc-warning)' : 'var(--tc-success)')}
         {metricRow('Fat Mass', results.fat_mass_lbs, ' lbs')}
-        {metricRow('Lean Mass', results.lean_mass_lbs, ' lbs', 'rgb(var(--success))')}
-        {metricRow('Muscle Mass', results.muscle_mass_lbs, ' lbs', 'rgb(var(--primary))')}
+        {metricRow('Lean Mass', results.lean_mass_lbs, ' lbs', 'var(--tc-success)')}
+        {metricRow('Muscle Mass', results.muscle_mass_lbs, ' lbs', 'var(--tc-primary)')}
         {metricRow('Total Body Water', results.total_body_water, ' L')}
       </div>
 
@@ -140,7 +140,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
           {results.visceral_fat_level != null && (
             <div className="flex flex-col items-center justify-center gap-1">
               <p className="text-2xl font-bold"
-                style={{ color: results.visceral_fat_level < 10 ? 'rgb(var(--success))' : results.visceral_fat_level < 15 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' }}>
+                style={{ color: results.visceral_fat_level < 10 ? 'var(--tc-success)' : results.visceral_fat_level < 15 ? 'var(--tc-warning)' : 'var(--tc-destructive)' }}>
                 {results.visceral_fat_level}
               </p>
               <p className="text-xs text-muted-foreground">Visceral Fat</p>
@@ -484,7 +484,7 @@ Return null for any field not visible in the scan. Do not include markdown or co
     const va = a[field]; const vb = b[field];
     if (va == null && vb == null) return null;
     const diff = va != null && vb != null ? (vb - va).toFixed(1) : null;
-    const diffColor = diff === null ? '' : Number(diff) < 0 ? 'rgb(var(--success))' : Number(diff) > 0 ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))';
+    const diffColor = diff === null ? '' : Number(diff) < 0 ? 'var(--tc-success)' : Number(diff) > 0 ? 'var(--tc-destructive)' : 'var(--tc-muted-foreground)';
     return (
       <div key={label} className="flex items-center justify-between py-1.5 border-b border-muted last:border-0 text-sm">
         <span className="text-muted-foreground w-28">{label}</span>

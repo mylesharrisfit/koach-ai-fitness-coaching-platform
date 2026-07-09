@@ -54,8 +54,8 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
   }, [sorted, heightInches]);
 
   const TOOLTIP = {
-    contentStyle: { background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '8px', fontSize: 12 },
-    labelStyle: { color: 'rgb(var(--foreground))', fontWeight: 600 },
+    contentStyle: { background: 'var(--tc-card)', border: '1px solid var(--tc-border)', borderRadius: '8px', fontSize: 12 },
+    labelStyle: { color: 'var(--tc-foreground)', fontWeight: 600 },
   };
 
   return (
@@ -75,16 +75,16 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
               <AreaChart data={weightData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="wGrad2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.12} />
-                    <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--tc-primary)" stopOpacity={0.12} />
+                    <stop offset="95%" stopColor="var(--tc-primary)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
                 <Tooltip {...TOOLTIP} formatter={v => [`${v} lbs`, 'Weight']} />
-                <Area type="monotone" dataKey="value" stroke="rgb(var(--primary))" strokeWidth={2} fill="url(#wGrad2)"
-                  dot={{ r: 3, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
+                <Area type="monotone" dataKey="value" stroke="var(--tc-primary)" strokeWidth={2} fill="url(#wGrad2)"
+                  dot={{ r: 3, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -134,16 +134,16 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
                 <AreaChart data={bfData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="bfGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="rgb(var(--warning))" stopOpacity={0.12} />
-                      <stop offset="95%" stopColor="rgb(var(--warning))" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--tc-warning)" stopOpacity={0.12} />
+                      <stop offset="95%" stopColor="var(--tc-warning)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
                   <Tooltip {...TOOLTIP} formatter={v => [`${v}%`, 'Body Fat']} />
-                  <Area type="monotone" dataKey="value" stroke="rgb(var(--warning))" strokeWidth={2} fill="url(#bfGrad)"
-                    dot={{ r: 3, fill: 'rgb(var(--warning))', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
+                  <Area type="monotone" dataKey="value" stroke="var(--tc-warning)" strokeWidth={2} fill="url(#bfGrad)"
+                    dot={{ r: 3, fill: 'var(--tc-warning)', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

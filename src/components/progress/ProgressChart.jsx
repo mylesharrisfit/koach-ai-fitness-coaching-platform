@@ -6,8 +6,8 @@ import {
 import { BarChart2 } from 'lucide-react';
 
 const TOOLTIP_STYLE = {
-  contentStyle: { background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '8px', fontSize: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' },
-  labelStyle: { color: 'rgb(var(--foreground))', fontWeight: 600 },
+  contentStyle: { background: 'var(--tc-card)', border: '1px solid var(--tc-border)', borderRadius: '8px', fontSize: 12, boxShadow: '0 2px 8px color-mix(in srgb, black 8%, transparent)' },
+  labelStyle: { color: 'var(--tc-foreground)', fontWeight: 600 },
 };
 
 const TIME_RANGES = ['1M', '3M', '6M', '1Y', 'All'];
@@ -18,7 +18,7 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
       <div className="bg-card border border-border rounded-xl flex flex-col items-center justify-center py-16 gap-3">
         <BarChart2 className="w-10 h-10 text-muted-foreground" />
         <p className="text-muted-foreground text-sm">Not enough data for this metric.</p>
-        <p className="text-[#C4C9D4] text-xs">Log at least 2 check-ins to see a chart.</p>
+        <p className="text-[var(--kc-c4c9d4)] text-xs">Log at least 2 check-ins to see a chart.</p>
       </div>
     );
   }
@@ -32,11 +32,11 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
     if (metric.chart === 'bar') {
       return (
         <BarChart {...commonProps}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-          <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+          <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
           <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [`${v}${metric.unit}`, metric.label]} />
-          <Bar dataKey="value" fill="rgb(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={40} />
+          <Bar dataKey="value" fill="var(--tc-primary)" radius={[4, 4, 0, 0]} maxBarSize={40} />
         </BarChart>
       );
     }
@@ -44,12 +44,12 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
     if (metric.chart === 'line') {
       return (
         <LineChart {...commonProps}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-          <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+          <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
           <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [`${v}${metric.unit}`, metric.label]} />
-          <Line type="monotone" dataKey="value" stroke="rgb(var(--primary))" strokeWidth={2.5}
-            dot={{ r: 4, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
+          <Line type="monotone" dataKey="value" stroke="var(--tc-primary)" strokeWidth={2.5}
+            dot={{ r: 4, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
         </LineChart>
       );
     }
@@ -59,16 +59,16 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
       <AreaChart {...commonProps}>
         <defs>
           <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
+            <stop offset="5%" stopColor="var(--tc-primary)" stopOpacity={0.15} />
+            <stop offset="95%" stopColor="var(--tc-primary)" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-        <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+        <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
         <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [`${v}${metric.unit}`, metric.label]} />
-        <Area type="monotone" dataKey="value" stroke="rgb(var(--primary))" strokeWidth={2.5}
-          fill="url(#areaGrad)" dot={{ r: 4, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
+        <Area type="monotone" dataKey="value" stroke="var(--tc-primary)" strokeWidth={2.5}
+          fill="url(#areaGrad)" dot={{ r: 4, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
       </AreaChart>
     );
   };

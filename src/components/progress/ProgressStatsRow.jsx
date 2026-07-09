@@ -15,10 +15,10 @@ export default function ProgressStatsRow({ data, metric }) {
     : Math.max(...values);
   const avg = (values.reduce((s, v) => s + v, 0) / values.length).toFixed(1);
 
-  const changeColor = change === 0 ? 'rgb(var(--muted-foreground))'
+  const changeColor = change === 0 ? 'var(--tc-muted-foreground)'
     : (metric.key === 'weight' || metric.key === 'body_fat_pct' || metric.key === 'waist') && change < 0
-    ? 'rgb(var(--success))'
-    : change > 0 ? 'rgb(var(--success))' : 'rgb(var(--destructive))';
+    ? 'var(--tc-success)'
+    : change > 0 ? 'var(--tc-success)' : 'var(--tc-destructive)';
 
   const ChangeIcon = change === 0 ? Minus : change > 0 ? TrendingUp : TrendingDown;
 

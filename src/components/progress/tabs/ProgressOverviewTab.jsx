@@ -145,22 +145,22 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
             <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="wGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--tc-primary)" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="var(--tc-primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false}
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+              <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false}
                 domain={['auto', 'auto']} />
               <Tooltip content={<CustomTooltip />} />
               {goalWeight && (
-                <ReferenceLine y={goalWeight} stroke="rgb(var(--success))" strokeDasharray="5 5" strokeWidth={1.5}
-                  label={{ value: `Goal ${goalWeight}`, position: 'right', fontSize: 10, fill: 'rgb(var(--success))' }} />
+                <ReferenceLine y={goalWeight} stroke="var(--tc-success)" strokeDasharray="5 5" strokeWidth={1.5}
+                  label={{ value: `Goal ${goalWeight}`, position: 'right', fontSize: 10, fill: 'var(--tc-success)' }} />
               )}
-              <Area type="monotone" dataKey="value" name="Weight" stroke="rgb(var(--primary))" strokeWidth={2.5}
-                fill="url(#wGrad)" dot={{ r: 3, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
-              <Line type="monotone" dataKey="ma" name="Trend" stroke="rgb(var(--ai))" strokeWidth={1.5}
+              <Area type="monotone" dataKey="value" name="Weight" stroke="var(--tc-primary)" strokeWidth={2.5}
+                fill="url(#wGrad)" dot={{ r: 3, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
+              <Line type="monotone" dataKey="ma" name="Trend" stroke="var(--tc-ai)" strokeWidth={1.5}
                 strokeDasharray="4 2" dot={false} connectNulls />
             </AreaChart>
           </ResponsiveContainer>
@@ -177,10 +177,10 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
         </div>
         <div className="space-y-3">
           {[
-            { label: 'Weight Progress', value: scoreBreakdown.weight, color: 'rgb(var(--success))' },
-            { label: 'Training Compliance', value: scoreBreakdown.training, color: 'rgb(var(--primary))' },
-            { label: 'Nutrition Compliance', value: scoreBreakdown.nutrition, color: 'rgb(var(--warning))' },
-            { label: 'Check-in Consistency', value: scoreBreakdown.consistency, color: 'rgb(var(--ai))' },
+            { label: 'Weight Progress', value: scoreBreakdown.weight, color: 'var(--tc-success)' },
+            { label: 'Training Compliance', value: scoreBreakdown.training, color: 'var(--tc-primary)' },
+            { label: 'Nutrition Compliance', value: scoreBreakdown.nutrition, color: 'var(--tc-warning)' },
+            { label: 'Check-in Consistency', value: scoreBreakdown.consistency, color: 'var(--tc-ai)' },
           ].map(({ label, value, color }) => (
             <div key={label}>
               <div className="flex justify-between text-xs mb-1">

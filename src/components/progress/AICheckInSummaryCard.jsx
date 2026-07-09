@@ -101,7 +101,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
         </div>
         <div className="flex items-center gap-2">
           {summary && (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/70 border border-current/20">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[var(--kc-w-70)] border border-current/20">
               {cfg.label}
             </span>
           )}
@@ -127,7 +127,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
           )}
 
           {summary.coaching_focus && (
-            <div className="flex items-start gap-2 bg-white/80 rounded-xl p-2.5">
+            <div className="flex items-start gap-2 bg-[var(--kc-w-80)] rounded-xl p-2.5">
               <span className="text-primary text-xs font-bold flex-shrink-0">🎯 Focus:</span>
               <p className="text-xs text-foreground font-semibold">{summary.coaching_focus}</p>
             </div>

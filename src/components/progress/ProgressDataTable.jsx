@@ -46,7 +46,7 @@ export default function ProgressDataTable({ data, metric, selectedClient, onLog 
             {rows.map((row, i) => {
               const prev = rows[i + 1];
               const change = prev ? (row.value - prev.value).toFixed(1) : null;
-              const changeColor = change === null ? '' : Number(change) > 0 ? 'rgb(var(--success))' : Number(change) < 0 ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))';
+              const changeColor = change === null ? '' : Number(change) > 0 ? 'var(--tc-success)' : Number(change) < 0 ? 'var(--tc-destructive)' : 'var(--tc-muted-foreground)';
               return (
                 <tr key={i} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
                   <td className="px-5 py-3 text-foreground">{format(new Date(row.date), 'MMM d, yyyy')}</td>

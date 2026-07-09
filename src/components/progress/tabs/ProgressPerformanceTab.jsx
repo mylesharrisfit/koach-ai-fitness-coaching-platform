@@ -112,7 +112,7 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
   }, [sorted, selectedExercise]);
 
   const TOOLTIP = {
-    contentStyle: { background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '8px', fontSize: 12 },
+    contentStyle: { background: 'var(--tc-card)', border: '1px solid var(--tc-border)', borderRadius: '8px', fontSize: 12 },
   };
 
   return (
@@ -169,12 +169,12 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
           {exerciseChart.length >= 2 ? (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={exerciseChart} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
                 <Tooltip {...TOOLTIP} formatter={(v, n) => [`${v} lbs`, 'Max Weight']} />
-                <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2.5}
-                  dot={{ r: 4, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
+                <Line type="monotone" dataKey="weight" stroke="var(--tc-primary)" strokeWidth={2.5}
+                  dot={{ r: 4, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
               </LineChart>
             </ResponsiveContainer>
           ) : (
