@@ -39,7 +39,7 @@ function MacroRing({ label, consumed, target, color }) {
           {/* fill */}
           <motion.circle
             cx="36" cy="36" r={R}
-            stroke={over ? '#ef4444' : color}
+            stroke={over ? 'rgb(var(--destructive))' : color}
             strokeWidth="6"
             fill="none"
             strokeLinecap="round"
@@ -90,9 +90,9 @@ function MealRow({ meal, logs, onLog }) {
               <p className="text-xs font-medium text-foreground truncate flex-1 mr-2">{log.food_name}</p>
               <div className="flex gap-2 text-[10px] font-semibold shrink-0">
                 <span className="text-orange-500">{log.calories} kcal</span>
-                <span className="text-blue-500">P{log.protein}g</span>
-                <span className="text-amber-500">C{log.carbs}g</span>
-                <span className="text-red-400">F{log.fats}g</span>
+                <span className="text-primary">P{log.protein}g</span>
+                <span className="text-warning">C{log.carbs}g</span>
+                <span className="text-destructive">F{log.fats}g</span>
               </div>
             </div>
           ))}
@@ -226,7 +226,7 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
             {tCal > 0 && (
               <div className="mt-3 h-2.5 bg-secondary rounded-full overflow-hidden">
                 <motion.div
-                  className={cn('h-full rounded-full', totCal > tCal * 1.05 ? 'bg-red-500' : totCal >= tCal * 0.9 ? 'bg-emerald-500' : 'bg-primary')}
+                  className={cn('h-full rounded-full', totCal > tCal * 1.05 ? 'bg-destructive' : totCal >= tCal * 0.9 ? 'bg-success' : 'bg-primary')}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min((totCal / tCal) * 100, 100)}%` }}
                   transition={{ duration: 0.7, ease: 'easeOut' }}
@@ -237,9 +237,9 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
 
           {/* Macro rings row */}
           <div className="flex justify-around pt-2">
-            <MacroRing label="Protein"  consumed={totPro}  target={tPro}  color="#3b82f6" />
-            <MacroRing label="Carbs"    consumed={totCarb} target={tCarb} color="#f59e0b" />
-            <MacroRing label="Fats"     consumed={totFat}  target={tFat}  color="#ef4444" />
+            <MacroRing label="Protein"  consumed={totPro}  target={tPro}  color="rgb(var(--primary))" />
+            <MacroRing label="Carbs"    consumed={totCarb} target={tCarb} color="rgb(var(--warning))" />
+            <MacroRing label="Fats"     consumed={totFat}  target={tFat}  color="rgb(var(--destructive))" />
           </div>
 
           {/* Macros hit banner */}
@@ -247,7 +247,7 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="mt-4 flex items-center justify-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl py-2.5 text-sm font-bold text-emerald-700"
+              className="mt-4 flex items-center justify-center gap-2 bg-success/10 border border-success/20 rounded-xl py-2.5 text-sm font-bold text-success"
             >
               <CheckCircle2 className="w-4 h-4" />
               💪 Macros hit today!

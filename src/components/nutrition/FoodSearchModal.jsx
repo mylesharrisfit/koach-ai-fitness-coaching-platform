@@ -105,7 +105,7 @@ export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFoo
                 <button key={t.id}
                   onClick={() => { setTab(t.id); if (t.id !== 'search') clear(); }}
                   className={cn('flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors',
-                    tab === t.id ? 'bg-white text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                    tab === t.id ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   )}>
                   {t.label}
                 </button>

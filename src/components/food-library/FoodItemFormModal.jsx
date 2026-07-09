@@ -39,14 +39,14 @@ function MacroBar({ protein, carbs, fats }) {
   return (
     <div className="space-y-1.5 mt-1">
       <div className="flex h-2.5 rounded-full overflow-hidden gap-0.5">
-        <div className="bg-blue-500 rounded-full transition-all duration-300" style={{ width: `${pPct}%` }} />
-        <div className="bg-amber-400 rounded-full transition-all duration-300" style={{ width: `${cPct}%` }} />
-        <div className="bg-red-400 rounded-full transition-all duration-300" style={{ width: `${fPct}%` }} />
+        <div className="bg-primary rounded-full transition-all duration-300" style={{ width: `${pPct}%` }} />
+        <div className="bg-warning rounded-full transition-all duration-300" style={{ width: `${cPct}%` }} />
+        <div className="bg-destructive rounded-full transition-all duration-300" style={{ width: `${fPct}%` }} />
       </div>
       <div className="flex justify-between text-[10px] font-semibold">
-        <span className="text-blue-600">P {pPct}%</span>
-        <span className="text-amber-600">C {cPct}%</span>
-        <span className="text-red-500">F {fPct}%</span>
+        <span className="text-primary">P {pPct}%</span>
+        <span className="text-warning">C {cPct}%</span>
+        <span className="text-destructive">F {fPct}%</span>
       </div>
     </div>
   );
@@ -131,7 +131,7 @@ export default function FoodItemFormModal({ open, onOpenChange, food, onSubmit }
                     'px-3 py-1.5 rounded-full text-xs font-semibold border transition-all',
                     form.category === cat
                       ? 'bg-primary text-white border-primary'
-                      : 'bg-white border-border text-muted-foreground hover:border-primary/40'
+                      : 'bg-card border-border text-muted-foreground hover:border-primary/40'
                   )}
                 >
                   {cat}
@@ -146,9 +146,9 @@ export default function FoodItemFormModal({ open, onOpenChange, food, onSubmit }
             <div className="grid grid-cols-4 gap-2">
               {[
                 { field: 'calories', label: 'Calories', unit: 'kcal', color: 'text-orange-600' },
-                { field: 'protein',  label: 'Protein',  unit: 'g',    color: 'text-blue-600' },
-                { field: 'carbs',    label: 'Carbs',    unit: 'g',    color: 'text-amber-600' },
-                { field: 'fats',     label: 'Fats',     unit: 'g',    color: 'text-red-500' },
+                { field: 'protein',  label: 'Protein',  unit: 'g',    color: 'text-primary' },
+                { field: 'carbs',    label: 'Carbs',    unit: 'g',    color: 'text-warning' },
+                { field: 'fats',     label: 'Fats',     unit: 'g',    color: 'text-destructive' },
               ].map(({ field, label, unit, color }) => (
                 <div key={field} className="text-center">
                   <p className={cn('text-[10px] font-semibold mb-1', color)}>{label}<br /><span className="text-muted-foreground font-normal">{unit}</span></p>

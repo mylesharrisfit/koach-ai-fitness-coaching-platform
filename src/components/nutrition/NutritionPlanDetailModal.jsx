@@ -32,11 +32,11 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97 }}
         transition={{ duration: 0.18 }}
-        className="relative w-full h-[95dvh] sm:h-[90vh] sm:max-w-[90vw] bg-white sm:rounded-xl rounded-t-2xl flex flex-col overflow-hidden border border-[#E5E7EB]"
+        className="relative w-full h-[95dvh] sm:h-[90vh] sm:max-w-[90vw] bg-card sm:rounded-xl rounded-t-2xl flex flex-col overflow-hidden border border-border"
         style={{ maxWidth: 1100 }}
       >
         {/* ── Clean header ── */}
-        <div className="flex-shrink-0 border-b border-[#E5E7EB] bg-white">
+        <div className="flex-shrink-0 border-b border-border bg-card">
           {/* Top row */}
           <div className="flex items-center justify-between gap-4 px-6 pt-4 pb-3">
             <div className="flex-1 min-w-0">
@@ -44,24 +44,24 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
                 <span className={cn(
                   'text-xs font-medium px-2.5 py-0.5 rounded-full border',
                   isHabits
-                    ? 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]'
-                    : 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]'
+                    ? 'bg-muted text-foreground border-border'
+                    : 'bg-muted text-foreground border-border'
                 )}>
                   {isHabits ? 'Habit Mode' : 'Macro Tracking'}
                 </span>
                 {plan.is_template && (
-                  <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">Template</span>
+                  <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-muted text-foreground border border-border">Template</span>
                 )}
               </div>
-              <h2 className="text-lg font-semibold text-[#111827] leading-tight truncate">{plan.title}</h2>
+              <h2 className="text-lg font-semibold text-foreground leading-tight truncate">{plan.title}</h2>
               {plan.description && (
-                <p className="text-sm text-[#6B7280] mt-0.5 line-clamp-1">{plan.description}</p>
+                <p className="text-sm text-muted-foreground mt-0.5 line-clamp-1">{plan.description}</p>
               )}
             </div>
 
             {/* Macro stats inline */}
             {!isHabits && (
-              <div className="hidden md:flex items-center gap-5 px-4 py-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg">
+              <div className="hidden md:flex items-center gap-5 px-4 py-2 bg-background border border-border rounded-lg">
                 {[
                   { label: 'Calories', value: plan.calories, unit: 'kcal' },
                   { label: 'Protein',  value: plan.protein_g, unit: 'g' },
@@ -69,21 +69,21 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
                   { label: 'Fats',     value: plan.fats_g,    unit: 'g' },
                 ].filter(m => m.value).map(m => (
                   <div key={m.label} className="text-center">
-                    <p className="text-sm font-semibold text-[#111827]">{m.value}<span className="text-xs text-[#9CA3AF] ml-0.5">{m.unit}</span></p>
-                    <p className="text-[10px] text-[#9CA3AF] uppercase tracking-wide">{m.label}</p>
+                    <p className="text-sm font-semibold text-foreground">{m.value}<span className="text-xs text-muted-foreground ml-0.5">{m.unit}</span></p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{m.label}</p>
                   </div>
                 ))}
               </div>
             )}
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <Button size="sm" className="gap-1.5 text-xs h-8 bg-[#111827] text-white hover:bg-[#1F2937]" onClick={onAssign}>
+              <Button size="sm" className="gap-1.5 text-xs h-8 bg-sidebar text-white hover:bg-[#1F2937]" onClick={onAssign}>
                 <UserPlus className="w-3.5 h-3.5" /> Assign
               </Button>
-              <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8 border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB]" onClick={onEdit}>
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8 border-border text-foreground hover:bg-background" onClick={onEdit}>
                 <Edit2 className="w-3.5 h-3.5" /> Edit
               </Button>
-              <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#374151] hover:bg-[#F3F4F6] transition-colors">
+              <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -97,14 +97,14 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
                 onClick={() => setTab(t.key)}
                 className={cn(
                   'relative px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors',
-                  tab === t.key ? 'text-[#111827]' : 'text-[#6B7280] hover:text-[#374151]'
+                  tab === t.key ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {t.label}
                 {tab === t.key && (
                   <motion.div
                     layoutId="modal-tab-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#2563EB] rounded-t-full"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t-full"
                   />
                 )}
               </button>
@@ -113,7 +113,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
         </div>
 
         {/* ── Two-column body ── */}
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 bg-[#FAFAFA]">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 bg-background">
         <div className="flex-1 min-w-0 overflow-y-auto px-4 sm:px-6 py-5">
             <AnimatePresence mode="wait">
               <motion.div
@@ -131,7 +131,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
             </AnimatePresence>
           </div>
 
-          <div className="flex-shrink-0 overflow-y-auto px-5 py-5 border-t lg:border-t-0 lg:border-l border-[#E5E7EB] bg-white hidden lg:block" style={{ width: 280 }}>
+          <div className="flex-shrink-0 overflow-y-auto px-5 py-5 border-t lg:border-t-0 lg:border-l border-border bg-card hidden lg:block" style={{ width: 280 }}>
             <PlanDetailSidebar plan={plan} onAssign={onAssign} />
           </div>
         </div>

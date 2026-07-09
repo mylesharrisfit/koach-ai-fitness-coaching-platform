@@ -20,7 +20,7 @@ function MacroBar({ label, consumed, target, color }) {
   const pct = target > 0 ? Math.min((consumed / target) * 100, 100) : 0;
   const over = target > 0 && consumed > target * 1.1;
   const near = target > 0 && consumed >= target * 0.9 && consumed <= target * 1.1;
-  const barColor = over ? 'bg-red-500' : near ? 'bg-green-500' : 'bg-amber-400';
+  const barColor = over ? 'bg-destructive' : near ? 'bg-success' : 'bg-warning';
 
   return (
     <div className="flex-1 min-w-0">
@@ -53,10 +53,10 @@ function DailySummary({ logs, plan }) {
   const calPct  = tCal > 0 ? Math.min((totCal / tCal) * 100, 100) : 0;
   const calOver = tCal > 0 && totCal > tCal * 1.1;
   const calNear = tCal > 0 && totCal >= tCal * 0.9 && totCal <= tCal * 1.1;
-  const calBarColor = calOver ? 'bg-red-500' : calNear ? 'bg-green-500' : 'bg-amber-400';
+  const calBarColor = calOver ? 'bg-destructive' : calNear ? 'bg-success' : 'bg-warning';
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-5 space-y-4">
+    <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
       {/* Calories */}
       <div className="flex items-end justify-between">
         <div>
@@ -69,7 +69,7 @@ function DailySummary({ logs, plan }) {
         {tCal > 0 && (
           <span className={cn(
             'text-xs font-bold px-2.5 py-1 rounded-full',
-            calOver ? 'bg-red-100 text-red-600' : calNear ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+            calOver ? 'bg-destructive/10 text-destructive' : calNear ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'
           )}>
             {calOver ? 'Over target' : calNear ? 'On target' : 'Under target'}
           </span>
@@ -82,9 +82,9 @@ function DailySummary({ logs, plan }) {
 
       {/* Macros */}
       <div className="flex gap-4">
-        <MacroBar label="Protein"  consumed={totPro}  target={tPro}  color="text-blue-600" />
-        <MacroBar label="Carbs"    consumed={totCarb} target={tCarb} color="text-amber-600" />
-        <MacroBar label="Fats"     consumed={totFat}  target={tFat}  color="text-red-500" />
+        <MacroBar label="Protein"  consumed={totPro}  target={tPro}  color="text-primary" />
+        <MacroBar label="Carbs"    consumed={totCarb} target={tCarb} color="text-warning" />
+        <MacroBar label="Fats"     consumed={totFat}  target={tFat}  color="text-destructive" />
       </div>
     </div>
   );
@@ -120,7 +120,7 @@ function MealGroup({ mealName, logs, clientId, date, onDelete }) {
   }
 
   return (
-    <div className="bg-white border border-border rounded-2xl overflow-hidden">
+    <div className="bg-card border border-border rounded-2xl overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-secondary/30">
         <div className="flex items-center gap-2">
@@ -157,9 +157,9 @@ function MealGroup({ mealName, logs, clientId, date, onDelete }) {
                 </div>
                 <div className="flex gap-3 text-[10px] font-semibold shrink-0">
                   <span className="text-orange-600">{log.calories} kcal</span>
-                  <span className="text-blue-600">P {log.protein}g</span>
-                  <span className="text-amber-600">C {log.carbs}g</span>
-                  <span className="text-red-500">F {log.fats}g</span>
+                  <span className="text-primary">P {log.protein}g</span>
+                  <span className="text-warning">C {log.carbs}g</span>
+                  <span className="text-destructive">F {log.fats}g</span>
                 </div>
                 <button
                   onClick={() => onDelete(log.id)}
@@ -219,7 +219,7 @@ function CoachNotes({ clientId, date, existingNote }) {
   React.useEffect(() => { setNotes(existingNote ?? ''); }, [existingNote]);
 
   return (
-    <div className="bg-white border border-border rounded-2xl p-5 space-y-3">
+    <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
       <h3 className="text-sm font-bold text-foreground">Coach Notes</h3>
       <textarea
         value={notes}

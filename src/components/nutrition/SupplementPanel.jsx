@@ -8,9 +8,9 @@ const TIMING_OPTIONS = ['Morning', 'Pre-Workout', 'Post-Workout', 'With Meals', 
 const PURPOSE_OPTIONS = ['General Health', 'Fat Loss', 'Muscle / Recovery', 'Energy', 'Sleep', 'Immunity', 'Hormonal'];
 
 const CATEGORY_CONFIG = {
-  supplement: { label: 'Supplements', color: 'bg-blue-50 text-blue-700 border-blue-100' },
-  vitamin:    { label: 'Vitamins',     color: 'bg-amber-50 text-amber-700 border-amber-100' },
-  mineral:    { label: 'Minerals',     color: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+  supplement: { label: 'Supplements', color: 'bg-accent text-primary border-accent' },
+  vitamin:    { label: 'Vitamins',     color: 'bg-warning/10 text-warning border-warning' },
+  mineral:    { label: 'Minerals',     color: 'bg-success/10 text-success border-success' },
 };
 
 const QUICK_ADDS = [
@@ -49,7 +49,7 @@ function SupplementRow({ item, onChange, onRemove }) {
         <select
           value={item.timing || ''}
           onChange={e => onChange('timing', e.target.value)}
-          className="h-8 w-full rounded-md border border-input bg-white px-2 text-xs"
+          className="h-8 w-full rounded-md border border-input bg-card px-2 text-xs"
         >
           <option value="">Timing…</option>
           {TIMING_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
@@ -59,7 +59,7 @@ function SupplementRow({ item, onChange, onRemove }) {
         <select
           value={item.purpose || ''}
           onChange={e => onChange('purpose', e.target.value)}
-          className="h-8 w-full rounded-md border border-input bg-white px-2 text-xs"
+          className="h-8 w-full rounded-md border border-input bg-card px-2 text-xs"
         >
           <option value="">Purpose…</option>
           {PURPOSE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
@@ -100,7 +100,7 @@ export default function SupplementPanel({ value = [], onChange }) {
   const totalCount = value.length;
 
   return (
-    <div className="border border-border rounded-xl overflow-hidden bg-white">
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
       {/* Header */}
       <button
         type="button"

@@ -121,11 +121,11 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
 
           {/* Macro grid */}
           <div className="grid grid-cols-3 gap-2">
-            <MacroBox label="Protein" value={m.protein} color="#2563EB"
+            <MacroBox label="Protein" value={m.protein} color="rgb(var(--primary))"
               pct={dailyTargets?.protein ? pct(m.protein, dailyTargets.protein) : undefined} />
-            <MacroBox label="Carbs" value={m.carbs} color="#D97706"
+            <MacroBox label="Carbs" value={m.carbs} color="rgb(var(--warning))"
               pct={dailyTargets?.carbs ? pct(m.carbs, dailyTargets.carbs) : undefined} />
-            <MacroBox label="Fats" value={m.fats} color="#16A34A"
+            <MacroBox label="Fats" value={m.fats} color="rgb(var(--success))"
               pct={dailyTargets?.fats ? pct(m.fats, dailyTargets.fats) : undefined} />
           </div>
 
@@ -142,7 +142,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
           <div className="space-y-2 pt-2">
             <button onClick={handleAdd}
               className="w-full h-14 rounded-2xl font-black text-base text-white"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
               Add to {mealName || 'Meal'}
             </button>
             <button onClick={handleSave} disabled={saving}

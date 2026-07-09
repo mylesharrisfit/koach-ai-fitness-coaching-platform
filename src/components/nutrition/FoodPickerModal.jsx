@@ -54,14 +54,14 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
   const FoodButton = ({ food }) => (
     <button
       onClick={() => handleSelect(food)}
-      className="w-full text-left bg-white border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:bg-primary/5 transition-all"
+      className="w-full text-left bg-card border border-border rounded-xl px-4 py-3 hover:border-primary/40 hover:bg-primary/5 transition-all"
     >
       <p className="text-sm font-semibold text-foreground">{food.name}</p>
       <div className="flex gap-1 mt-1 flex-wrap">
         <MacroPill label="Cal" value={food.calories} color="bg-orange-50 text-orange-600" />
-        <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-blue-50 text-blue-600" />
-        <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-amber-50 text-amber-600" />
-        <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-rose-50 text-rose-600" />
+        <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-accent text-primary" />
+        <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-warning/10 text-warning" />
+        <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-destructive/10 text-destructive" />
         {food.serving_size && <span className="text-[10px] text-muted-foreground">per {food.serving_size}</span>}
       </div>
     </button>
@@ -79,15 +79,15 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
           <button
             onClick={() => setTab('approved')}
             className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-semibold transition-all',
-              tab === 'approved' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+              tab === 'approved' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <CheckCircle2 className="w-3.5 h-3.5 text-green-500" /> Coach Approved ({approvedFoods.length})
+            <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Coach Approved ({approvedFoods.length})
           </button>
           <button
             onClick={() => setTab('search')}
             className={cn('flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-semibold transition-all',
-              tab === 'search' ? 'bg-white shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+              tab === 'search' ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <Search className="w-3.5 h-3.5" /> All Foods

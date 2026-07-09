@@ -29,7 +29,7 @@ function OptionPill({ opt, selected, onToggle }) {
         'flex items-start gap-2 px-3 py-2.5 rounded-xl border text-left transition-all w-full',
         selected
           ? 'bg-primary/5 border-primary/40 text-foreground'
-          : 'bg-white border-border hover:border-primary/20 hover:bg-secondary/30 text-foreground'
+          : 'bg-card border-border hover:border-primary/20 hover:bg-secondary/30 text-foreground'
       )}
     >
       <div className={cn(
@@ -58,7 +58,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
   const hasSelections = preSelected || postSelected;
 
   return (
-    <div className="border border-border rounded-xl overflow-hidden bg-white">
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
       {/* Header */}
       <button
         type="button"
@@ -85,7 +85,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
             {/* Pre-workout */}
             <div className="p-4 space-y-2">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-semibold text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">Pre-Workout</span>
+                <span className="text-xs font-semibold text-warning bg-warning/10 border border-warning px-2 py-0.5 rounded-full">Pre-Workout</span>
                 <span className="text-[11px] text-muted-foreground">Light carbs · 30–60 min before</span>
               </div>
               <div className="space-y-1.5">
@@ -98,7 +98,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
             {/* Post-workout */}
             <div className="p-4 space-y-2">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Post-Workout</span>
+                <span className="text-xs font-semibold text-success bg-success/10 border border-success px-2 py-0.5 rounded-full">Post-Workout</span>
                 <span className="text-[11px] text-muted-foreground">Protein + carbs · within 30 min</span>
               </div>
               <div className="space-y-1.5">
@@ -116,7 +116,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
                 const o = PRE_WORKOUT_OPTIONS.find(x => x.id === preSelected);
                 return o ? (
                   <span className="flex items-center gap-1.5">
-                    <span className="text-amber-600 font-medium">Pre:</span>
+                    <span className="text-warning font-medium">Pre:</span>
                     <span className="text-foreground font-medium">{o.label}</span>
                     <span className="text-muted-foreground">{o.cal} cal · {o.c}g C</span>
                   </span>
@@ -126,7 +126,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
                 const o = POST_WORKOUT_OPTIONS.find(x => x.id === postSelected);
                 return o ? (
                   <span className="flex items-center gap-1.5">
-                    <span className="text-emerald-600 font-medium">Post:</span>
+                    <span className="text-success font-medium">Post:</span>
                     <span className="text-foreground font-medium">{o.label}</span>
                     <span className="text-muted-foreground">{o.cal} cal · {o.p}g P · {o.c}g C</span>
                   </span>

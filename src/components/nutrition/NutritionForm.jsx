@@ -69,14 +69,14 @@ function MacroRatioBar({ protein, carbs, fats }) {
   return (
     <div className="mt-3 space-y-1.5">
       <div className="flex h-3 rounded-full overflow-hidden gap-0.5">
-        <div className="bg-blue-500 rounded-full transition-all duration-300" style={{ width: `${pPct}%` }} />
-        <div className="bg-amber-400 rounded-full transition-all duration-300" style={{ width: `${cPct}%` }} />
-        <div className="bg-red-400 rounded-full transition-all duration-300"  style={{ width: `${fPct}%` }} />
+        <div className="bg-primary rounded-full transition-all duration-300" style={{ width: `${pPct}%` }} />
+        <div className="bg-warning rounded-full transition-all duration-300" style={{ width: `${cPct}%` }} />
+        <div className="bg-destructive rounded-full transition-all duration-300"  style={{ width: `${fPct}%` }} />
       </div>
       <div className="flex justify-between text-[10px] font-semibold">
-        <span className="text-blue-500">Protein {pPct}%</span>
-        <span className="text-amber-500">Carbs {cPct}%</span>
-        <span className="text-red-500">Fats {fPct}%</span>
+        <span className="text-primary">Protein {pPct}%</span>
+        <span className="text-warning">Carbs {cPct}%</span>
+        <span className="text-destructive">Fats {fPct}%</span>
       </div>
     </div>
   );
@@ -213,9 +213,9 @@ function MealCard({ meal, index, total, onUpdate, onRemove, onMoveUp, onMoveDown
                   </div>
                   <div className="flex gap-1.5 text-[10px] font-semibold shrink-0">
                     <span className="text-orange-600">{food.calories} kcal</span>
-                    <span className="text-blue-600">P {food.protein}g</span>
-                    <span className="text-amber-500">C {food.carbs}g</span>
-                    <span className="text-red-500">F {food.fats}g</span>
+                    <span className="text-primary">P {food.protein}g</span>
+                    <span className="text-warning">C {food.carbs}g</span>
+                    <span className="text-destructive">F {food.fats}g</span>
                   </div>
                   <button onClick={() => removeFood(fi)} className="p-0.5 text-muted-foreground hover:text-destructive transition-colors shrink-0">
                     <X className="w-3.5 h-3.5" />
@@ -437,7 +437,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
                     onClick={() => set('emoji', e)}
                     className={cn(
                       'w-10 h-10 rounded-xl text-xl flex items-center justify-center border-2 transition-all',
-                      form.emoji === e ? 'border-primary bg-accent/60 shadow-sm' : 'border-border bg-white hover:border-primary/40'
+                      form.emoji === e ? 'border-primary bg-accent/60 shadow-sm' : 'border-border bg-card hover:border-primary/40'
                     )}
                   >
                     {e}
@@ -455,7 +455,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
                     onClick={() => set('tracking_mode', opt.id)}
                     className={cn(
                       'px-4 py-2 transition-colors',
-                      form.tracking_mode === opt.id ? 'bg-primary text-white' : 'bg-white text-muted-foreground hover:bg-secondary'
+                      form.tracking_mode === opt.id ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-secondary'
                     )}
                   >
                     {opt.label}
@@ -484,9 +484,9 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
               <div className="grid grid-cols-4 gap-2">
                 {[
                   { field: 'calories', label: 'Calories', unit: 'kcal', val: eff.calories, color: 'text-orange-600' },
-                  { field: 'protein',  label: 'Protein',  unit: 'g',    val: eff.protein,  color: 'text-blue-600' },
-                  { field: 'carbs',    label: 'Carbs',    unit: 'g',    val: eff.carbs,    color: 'text-amber-600' },
-                  { field: 'fats',     label: 'Fats',     unit: 'g',    val: eff.fats,     color: 'text-red-500' },
+                  { field: 'protein',  label: 'Protein',  unit: 'g',    val: eff.protein,  color: 'text-primary' },
+                  { field: 'carbs',    label: 'Carbs',    unit: 'g',    val: eff.carbs,    color: 'text-warning' },
+                  { field: 'fats',     label: 'Fats',     unit: 'g',    val: eff.fats,     color: 'text-destructive' },
                 ].map(({ field, label, unit, val, color }) => (
                   <div key={field}>
                     <label className={cn(labelClass, color)}>{label} <span className="font-normal text-muted-foreground">({unit})</span></label>

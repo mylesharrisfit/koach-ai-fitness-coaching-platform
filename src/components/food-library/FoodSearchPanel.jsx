@@ -7,13 +7,13 @@ import { cn } from '@/lib/utils';
 const CATEGORY_FILTERS = ['All', 'Proteins', 'Carbs', 'Vegetables', 'Dairy', 'Fruits', 'Snacks', 'Grains'];
 
 const CATEGORY_STYLES = {
-  Proteins:   'bg-blue-100 text-blue-700',
-  Carbs:      'bg-amber-100 text-amber-700',
-  Vegetables: 'bg-green-100 text-green-700',
-  Dairy:      'bg-sky-100 text-sky-700',
+  Proteins:   'bg-accent text-primary',
+  Carbs:      'bg-warning/10 text-warning',
+  Vegetables: 'bg-success/10 text-success',
+  Dairy:      'bg-accent text-primary',
   Fruits:     'bg-pink-100 text-pink-700',
   Snacks:     'bg-orange-100 text-orange-700',
-  Grains:     'bg-yellow-100 text-yellow-700',
+  Grains:     'bg-warning/10 text-warning',
 };
 
 // Map USDA category strings to our filter buckets
@@ -31,9 +31,9 @@ function mapCategory(food) {
 }
 
 function getSourceTag(food) {
-  if (food.brand) return { label: food.brand, style: 'bg-gray-100 text-gray-600' };
-  if (food.category) return { label: food.category, style: 'bg-gray-100 text-gray-500' };
-  return { label: 'Generic', style: 'bg-gray-100 text-gray-500' };
+  if (food.brand) return { label: food.brand, style: 'bg-muted text-muted-foreground' };
+  if (food.category) return { label: food.category, style: 'bg-muted text-muted-foreground' };
+  return { label: 'Generic', style: 'bg-muted text-muted-foreground' };
 }
 
 function FoodRow({ food, onSave, saved }) {
@@ -55,7 +55,7 @@ function FoodRow({ food, onSave, saved }) {
             {food.category && food.brand && (
               <span className="text-[10px] text-muted-foreground">{food.category}</span>
             )}
-            <span className="flex items-center gap-0.5 text-[10px] text-emerald-600 font-semibold">
+            <span className="flex items-center gap-0.5 text-[10px] text-success font-semibold">
               <ShieldCheck className="w-3 h-3" />USDA Verified
             </span>
           </div>
@@ -64,9 +64,9 @@ function FoodRow({ food, onSave, saved }) {
           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
             <span className="text-[10px] text-muted-foreground font-medium">per 100g:</span>
             {food.calories  > 0 && <span className="text-[10px] font-semibold text-orange-600">🔥 {food.calories}cal</span>}
-            {food.protein_g > 0 && <span className="text-[10px] font-semibold text-blue-600">💪 {food.protein_g}g</span>}
-            {food.carbs_g   > 0 && <span className="text-[10px] font-semibold text-amber-600">🌾 {food.carbs_g}g</span>}
-            {food.fats_g    > 0 && <span className="text-[10px] font-semibold text-green-700">🥑 {food.fats_g}g</span>}
+            {food.protein_g > 0 && <span className="text-[10px] font-semibold text-primary">💪 {food.protein_g}g</span>}
+            {food.carbs_g   > 0 && <span className="text-[10px] font-semibold text-warning">🌾 {food.carbs_g}g</span>}
+            {food.fats_g    > 0 && <span className="text-[10px] font-semibold text-success">🥑 {food.fats_g}g</span>}
           </div>
 
           {/* Serving hint */}
@@ -82,7 +82,7 @@ function FoodRow({ food, onSave, saved }) {
           className={cn(
             'shrink-0 flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg font-semibold transition-all mt-0.5',
             saved
-              ? 'text-green-600 bg-green-50 border border-green-200 cursor-default'
+              ? 'text-success bg-success/10 border border-success cursor-default'
               : 'text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20'
           )}
         >
@@ -155,7 +155,7 @@ export default function FoodSearchPanel({ onSave, isSaved }) {
                   'px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border',
                   activeCategory === cat
                     ? 'bg-primary text-white border-primary'
-                    : 'bg-white border-border text-muted-foreground hover:border-primary/40'
+                    : 'bg-card border-border text-muted-foreground hover:border-primary/40'
                 )}
               >
                 {cat} {count > 0 && <span className="opacity-60">({count})</span>}
@@ -190,7 +190,7 @@ export default function FoodSearchPanel({ onSave, isSaved }) {
 
       {/* Results list */}
       {filtered.length > 0 && (
-        <div className="rounded-xl border border-border overflow-hidden max-h-96 overflow-y-auto bg-white">
+        <div className="rounded-xl border border-border overflow-hidden max-h-96 overflow-y-auto bg-card">
           {filtered.map((food, i) => (
             <FoodRow key={i} food={food} onSave={onSave} saved={isSaved(food)} />
           ))}

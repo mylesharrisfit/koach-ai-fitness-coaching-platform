@@ -12,8 +12,8 @@ export default function WaterTracker({ target = 2500, onTargetChange, readOnly =
   const glasses = Math.round(target / GLASS_ML);
   const loggedGlasses = Math.round(logged / GLASS_ML);
   const pct = target ? Math.min(100, Math.round((logged / target) * 100)) : 0;
-  const color = pct >= 100 ? 'text-emerald-600' : pct >= 60 ? 'text-blue-600' : 'text-amber-500';
-  const barColor = pct >= 100 ? 'bg-emerald-500' : pct >= 60 ? 'bg-blue-500' : 'bg-amber-400';
+  const color = pct >= 100 ? 'text-success' : pct >= 60 ? 'text-primary' : 'text-warning';
+  const barColor = pct >= 100 ? 'bg-success' : pct >= 60 ? 'bg-primary' : 'bg-warning';
 
   const add = (ml) => setLogged(l => Math.max(0, l + ml));
 
@@ -40,7 +40,7 @@ export default function WaterTracker({ target = 2500, onTargetChange, readOnly =
       )}
 
       {/* Visual tracker */}
-      <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl space-y-3">
+      <div className="p-4 bg-accent border border-accent rounded-xl space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Droplets className={`w-5 h-5 ${color}`} />
@@ -56,7 +56,7 @@ export default function WaterTracker({ target = 2500, onTargetChange, readOnly =
         </div>
 
         {/* Progress bar */}
-        <div className="h-3 rounded-full bg-blue-100 overflow-hidden">
+        <div className="h-3 rounded-full bg-accent overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${barColor}`}
             style={{ width: `${pct}%` }}
@@ -72,8 +72,8 @@ export default function WaterTracker({ target = 2500, onTargetChange, readOnly =
               className={cn(
                 'w-7 h-7 rounded-lg flex items-center justify-center border transition-all',
                 i < loggedGlasses
-                  ? 'bg-blue-500 border-blue-500 text-white'
-                  : 'bg-white border-blue-200 text-blue-300 hover:border-blue-400'
+                  ? 'bg-primary border-primary text-white'
+                  : 'bg-card border-primary text-primary hover:border-primary'
               )}
               title={`${(i + 1) * GLASS_ML}ml`}
             >
@@ -89,21 +89,21 @@ export default function WaterTracker({ target = 2500, onTargetChange, readOnly =
             <button
               key={ml}
               onClick={() => add(ml)}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-accent text-primary hover:bg-primary transition-colors"
             >
               +{ml}ml
             </button>
           ))}
           <button
             onClick={() => add(-250)}
-            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-white text-muted-foreground border border-[#E7EAF3] hover:bg-secondary transition-colors"
+            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-card text-muted-foreground border border-border hover:bg-secondary transition-colors"
           >
             −250ml
           </button>
         </div>
 
         {pct >= 100 && (
-          <p className="text-xs font-bold text-emerald-600 text-center">💧 Goal reached! Great hydration today.</p>
+          <p className="text-xs font-bold text-success text-center">💧 Goal reached! Great hydration today.</p>
         )}
       </div>
     </div>

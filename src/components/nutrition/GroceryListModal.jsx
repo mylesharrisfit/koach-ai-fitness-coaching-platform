@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart, Check, RotateCcw } from 'lucide-react';
 
 const CATEGORIES = [
-  { key: 'proteins', label: '🥩 Proteins', color: 'text-red-600 bg-red-50 border-red-100' },
-  { key: 'produce', label: '🥦 Produce', color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
-  { key: 'grains', label: '🌾 Grains & Carbs', color: 'text-amber-600 bg-amber-50 border-amber-100' },
-  { key: 'dairy', label: '🧀 Dairy', color: 'text-yellow-600 bg-yellow-50 border-yellow-100' },
-  { key: 'fats', label: '🥑 Fats & Oils', color: 'text-blue-600 bg-blue-50 border-blue-100' },
-  { key: 'condiments', label: '🫙 Condiments', color: 'text-purple-600 bg-purple-50 border-purple-100' },
-  { key: 'other', label: '📦 Other', color: 'text-slate-600 bg-slate-50 border-slate-200' },
+  { key: 'proteins', label: '🥩 Proteins', color: 'text-destructive bg-destructive/10 border-destructive' },
+  { key: 'produce', label: '🥦 Produce', color: 'text-success bg-success/10 border-success' },
+  { key: 'grains', label: '🌾 Grains & Carbs', color: 'text-warning bg-warning/10 border-warning' },
+  { key: 'dairy', label: '🧀 Dairy', color: 'text-warning bg-warning/10 border-warning' },
+  { key: 'fats', label: '🥑 Fats & Oils', color: 'text-primary bg-accent border-accent' },
+  { key: 'condiments', label: '🫙 Condiments', color: 'text-ai bg-ai/10 border-ai' },
+  { key: 'other', label: '📦 Other', color: 'text-muted-foreground bg-muted border-border' },
 ];
 
 const PROTEIN_KEYWORDS = ['chicken', 'beef', 'steak', 'salmon', 'tuna', 'shrimp', 'turkey', 'pork', 'fish', 'egg', 'protein', 'whey', 'casein', 'tofu', 'tempeh', 'tilapia', 'cod', 'ground'];
@@ -66,10 +66,10 @@ export default function GroceryListModal({ open, onOpenChange, plan }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[88vh] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl">
         {/* Header */}
-        <div className="px-5 pt-5 pb-4 border-b border-[#E7EAF3] bg-white flex-shrink-0">
+        <div className="px-5 pt-5 pb-4 border-b border-border bg-card flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
-              <ShoppingCart className="w-4.5 h-4.5 text-emerald-600" />
+            <div className="w-9 h-9 rounded-xl bg-success/10 flex items-center justify-center">
+              <ShoppingCart className="w-4.5 h-4.5 text-success" />
             </div>
             <div>
               <DialogTitle className="font-heading font-bold text-base">Grocery List</DialogTitle>
@@ -87,7 +87,7 @@ export default function GroceryListModal({ open, onOpenChange, plan }) {
           {/* Progress */}
           <div className="mt-3 h-1.5 rounded-full bg-secondary overflow-hidden">
             <div
-              className="h-full rounded-full bg-emerald-500 transition-all"
+              className="h-full rounded-full bg-success transition-all"
               style={{ width: totalItems ? `${(checkedCount / totalItems) * 100}%` : '0%' }}
             />
           </div>
@@ -112,7 +112,7 @@ export default function GroceryListModal({ open, onOpenChange, plan }) {
                         onClick={() => toggle(cat.key, i)}
                         className="w-full flex items-center gap-3 px-4 py-2.5 hover:brightness-[0.97] transition-all text-left border-b last:border-b-0 border-white/60"
                       >
-                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'bg-white border-gray-300'}`}>
+                        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${done ? 'bg-success border-success' : 'bg-card border-border'}`}>
                           {done && <Check className="w-3 h-3 text-white" />}
                         </div>
                         <span className={`text-sm flex-1 ${done ? 'line-through text-muted-foreground' : 'text-foreground font-medium'}`}>{item.name}</span>

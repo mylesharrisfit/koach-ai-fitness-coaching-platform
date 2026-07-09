@@ -10,10 +10,10 @@ import WorkoutMealPanel from './WorkoutMealPanel';
 
 // ── Tag config ─────────────────────────────────────────
 const MEAL_TAGS = [
-  { key: 'simple',       label: 'Simple',       color: 'bg-slate-100 text-slate-600 border-slate-200' },
-  { key: 'high_protein', label: 'High Protein',  color: 'bg-red-50 text-red-600 border-red-100' },
-  { key: 'high_volume',  label: 'High Volume',   color: 'bg-amber-50 text-amber-600 border-amber-100' },
-  { key: 'quick_prep',   label: 'Quick Prep',    color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+  { key: 'simple',       label: 'Simple',       color: 'bg-muted text-muted-foreground border-border' },
+  { key: 'high_protein', label: 'High Protein',  color: 'bg-destructive/10 text-destructive border-destructive' },
+  { key: 'high_volume',  label: 'High Volume',   color: 'bg-warning/10 text-warning border-warning' },
+  { key: 'quick_prep',   label: 'Quick Prep',    color: 'bg-success/10 text-success border-success' },
 ];
 
 const TAG_MAP = Object.fromEntries(MEAL_TAGS.map(t => [t.key, t]));
@@ -27,9 +27,9 @@ function MacroBar({ p, c, f }) {
   const total = p * 4 + c * 4 + f * 9 || 1;
   return (
     <div className="flex h-1 rounded-full overflow-hidden bg-secondary mt-1.5">
-      <div className="bg-red-400" style={{ width: `${(p * 4 / total) * 100}%` }} />
-      <div className="bg-amber-400" style={{ width: `${(c * 4 / total) * 100}%` }} />
-      <div className="bg-blue-400" style={{ width: `${(f * 9 / total) * 100}%` }} />
+      <div className="bg-destructive" style={{ width: `${(p * 4 / total) * 100}%` }} />
+      <div className="bg-warning" style={{ width: `${(c * 4 / total) * 100}%` }} />
+      <div className="bg-primary" style={{ width: `${(f * 9 / total) * 100}%` }} />
     </div>
   );
 }
@@ -45,9 +45,9 @@ function OptionFoods({ foods }) {
           </div>
           <div className="flex items-center gap-1 text-[11px] shrink-0">
             <span className="bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded font-medium">{food.calories}cal</span>
-            <span className="bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-medium">{food.protein}P</span>
-            <span className="bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded font-medium">{food.carbs}C</span>
-            <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">{food.fats}F</span>
+            <span className="bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-medium">{food.protein}P</span>
+            <span className="bg-warning/10 text-warning px-1.5 py-0.5 rounded font-medium">{food.carbs}C</span>
+            <span className="bg-accent text-primary px-1.5 py-0.5 rounded font-medium">{food.fats}F</span>
           </div>
         </div>
       ))}
@@ -77,7 +77,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
   };
 
   return (
-    <div className="border border-border rounded-xl overflow-hidden bg-white">
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
       {/* Header */}
       <div
         className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-secondary/30 transition-colors"
@@ -99,9 +99,9 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
           </div>
           <div className="flex items-center gap-3 text-[11px] mt-0.5">
             <span className="font-medium text-foreground">{totalCals} cal</span>
-            <span className="text-red-500">{totalP}g P</span>
-            <span className="text-amber-500">{totalC}g C</span>
-            <span className="text-blue-500">{totalF}g F</span>
+            <span className="text-destructive">{totalP}g P</span>
+            <span className="text-warning">{totalC}g C</span>
+            <span className="text-primary">{totalF}g F</span>
           </div>
           <MacroBar p={totalP} c={totalC} f={totalF} />
         </div>
@@ -122,7 +122,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
           >
             {regenLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
           </button>
-          <button onClick={() => onRemove(mIdx)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-muted-foreground hover:text-destructive transition-colors">
+          <button onClick={() => onRemove(mIdx)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
           {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
@@ -141,7 +141,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
                 onClick={() => onTagToggle(mIdx, t.key)}
                 className={cn(
                   'text-[11px] px-2 py-0.5 rounded-full border font-medium transition-all',
-                  active ? t.color : 'bg-white text-muted-foreground border-border hover:border-primary/30'
+                  active ? t.color : 'bg-card text-muted-foreground border-border hover:border-primary/30'
                 )}
               >
                 {t.label}
@@ -366,14 +366,14 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
           <div>
             <Label className="text-[11px]">Meals</Label>
             <select value={params.meal_count} onChange={e => setParams(p => ({ ...p, meal_count: Number(e.target.value) }))}
-              className="h-8 w-full rounded-md border border-input bg-white px-2 text-sm">
+              className="h-8 w-full rounded-md border border-input bg-card px-2 text-sm">
               {[3, 4, 5, 6].map(n => <option key={n} value={n}>{n}</option>)}
             </select>
           </div>
           <div>
             <Label className="text-[11px]">Options / meal</Label>
             <select value={params.options_count} onChange={e => setParams(p => ({ ...p, options_count: Number(e.target.value) }))}
-              className="h-8 w-full rounded-md border border-input bg-white px-2 text-sm">
+              className="h-8 w-full rounded-md border border-input bg-card px-2 text-sm">
               {[2, 3].map(n => <option key={n} value={n}>{n}</option>)}
             </select>
           </div>
@@ -393,13 +393,13 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
               <span className="text-muted-foreground">Totals:</span>
               <span className="font-semibold text-foreground">{totalCals} kcal</span>
               {params.calories && (
-                <span className={cn('font-medium', Math.abs(totalCals - Number(params.calories)) < 80 ? 'text-emerald-600' : 'text-amber-500')}>
+                <span className={cn('font-medium', Math.abs(totalCals - Number(params.calories)) < 80 ? 'text-success' : 'text-warning')}>
                   {totalCals > Number(params.calories) ? '+' : ''}{totalCals - Number(params.calories)} vs target
                 </span>
               )}
-              <span className="text-red-500">{totalP}g P</span>
-              <span className="text-amber-500">{totalC}g C</span>
-              <span className="text-blue-500">{totalF}g F</span>
+              <span className="text-destructive">{totalP}g P</span>
+              <span className="text-warning">{totalC}g C</span>
+              <span className="text-primary">{totalF}g F</span>
             </div>
 
             {/* Filter toggles */}
@@ -408,7 +408,7 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
               <button
                 onClick={() => setActiveFilter(null)}
                 className={cn('text-[11px] px-2 py-0.5 rounded-full border font-medium transition-all',
-                  activeFilter === null ? 'bg-foreground text-background border-foreground' : 'bg-white text-muted-foreground border-border hover:border-foreground/30'
+                  activeFilter === null ? 'bg-foreground text-background border-foreground' : 'bg-card text-muted-foreground border-border hover:border-foreground/30'
                 )}
               >
                 All
@@ -418,7 +418,7 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
                   key={t.key}
                   onClick={() => setActiveFilter(activeFilter === t.key ? null : t.key)}
                   className={cn('text-[11px] px-2 py-0.5 rounded-full border font-medium transition-all',
-                    activeFilter === t.key ? t.color : 'bg-white text-muted-foreground border-border hover:border-primary/30'
+                    activeFilter === t.key ? t.color : 'bg-card text-muted-foreground border-border hover:border-primary/30'
                   )}
                 >
                   {t.label}

@@ -12,11 +12,11 @@ import FoodItemFormModal from './FoodItemFormModal';
 const CATEGORY_TABS = ['All', 'Protein', 'Carbs', 'Fats', 'Vegetables', 'Dairy', 'Fruits'];
 
 const CATEGORY_COLORS = {
-  Protein:    'bg-blue-100 text-blue-700',
-  Carbs:      'bg-amber-100 text-amber-700',
+  Protein:    'bg-accent text-primary',
+  Carbs:      'bg-warning/10 text-warning',
   Fats:       'bg-orange-100 text-orange-700',
-  Vegetables: 'bg-green-100 text-green-700',
-  Dairy:      'bg-sky-100 text-sky-700',
+  Vegetables: 'bg-success/10 text-success',
+  Dairy:      'bg-accent text-primary',
   Fruits:     'bg-pink-100 text-pink-700',
   Other:      'bg-secondary text-muted-foreground',
 };
@@ -149,7 +149,7 @@ export default function FoodDatabaseTab() {
               'px-3 py-1.5 rounded-full text-xs font-semibold transition-all border',
               activeCategory === cat
                 ? 'bg-primary text-white border-primary'
-                : 'bg-white border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
+                : 'bg-card border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
             )}
           >
             {cat}
@@ -182,7 +182,7 @@ export default function FoodDatabaseTab() {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
           {/* Table header */}
           <div className="grid grid-cols-[2fr_1fr_repeat(4,_1fr)_auto] gap-2 px-4 py-2.5 border-b border-border bg-secondary/40 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
             <span>Name</span>
@@ -222,9 +222,9 @@ export default function FoodDatabaseTab() {
 
                 {/* Macros */}
                 <span className="text-xs font-bold text-orange-600 text-center">{food.calories ?? '—'}</span>
-                <span className="text-xs text-blue-600 font-semibold text-center">{food.protein ?? '—'}g</span>
-                <span className="text-xs text-amber-600 font-semibold text-center">{food.carbs ?? '—'}g</span>
-                <span className="text-xs text-red-500 font-semibold text-center">{food.fats ?? '—'}g</span>
+                <span className="text-xs text-primary font-semibold text-center">{food.protein ?? '—'}g</span>
+                <span className="text-xs text-warning font-semibold text-center">{food.carbs ?? '—'}g</span>
+                <span className="text-xs text-destructive font-semibold text-center">{food.fats ?? '—'}g</span>
 
                 {/* Actions */}
                 <div className="flex items-center gap-1">

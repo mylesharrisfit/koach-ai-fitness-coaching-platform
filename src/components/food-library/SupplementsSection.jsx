@@ -13,11 +13,11 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const CATEGORY_CONFIG = {
-  supplement: { label: '💊 Supplement', color: 'bg-purple-50 text-purple-700 border-purple-200' },
-  vitamin:    { label: '🌞 Vitamin',    color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
-  mineral:    { label: '🪨 Mineral',    color: 'bg-stone-50 text-stone-700 border-stone-200' },
-  electrolyte:{ label: '⚡ Electrolyte',color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  herb:       { label: '🌿 Herb',       color: 'bg-green-50 text-green-700 border-green-200' },
+  supplement: { label: '💊 Supplement', color: 'bg-ai/10 text-ai border-ai' },
+  vitamin:    { label: '🌞 Vitamin',    color: 'bg-warning/10 text-warning border-warning' },
+  mineral:    { label: '🪨 Mineral',    color: 'bg-muted text-foreground border-border' },
+  electrolyte:{ label: '⚡ Electrolyte',color: 'bg-accent text-primary border-primary' },
+  herb:       { label: '🌿 Herb',       color: 'bg-success/10 text-success border-success' },
   other:      { label: '📦 Other',      color: 'bg-secondary text-muted-foreground border-border' },
 };
 
@@ -84,7 +84,7 @@ function SupplementForm({ open, onOpenChange, supplement, onSubmit }) {
 function SupplementCard({ supp, onEdit, onDelete }) {
   const cfg = CATEGORY_CONFIG[supp.category] || CATEGORY_CONFIG.other;
   return (
-    <div className="bg-white border border-border rounded-xl px-4 py-3">
+    <div className="bg-card border border-border rounded-xl px-4 py-3">
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">

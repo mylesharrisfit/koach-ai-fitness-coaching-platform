@@ -6,10 +6,10 @@ const UNITS = ['g', 'oz', 'cup', 'tbsp', 'tsp', 'piece', 'serving'];
 
 // Derive a clean source tag from food data
 function getSourceTag(food) {
-  if (food.source === 'custom') return { label: 'My Food', style: 'bg-blue-100 text-blue-700' };
-  if (food.brand)               return { label: food.brand, style: 'bg-gray-100 text-gray-600' };
-  if (food.category)            return { label: food.category, style: 'bg-gray-100 text-gray-600' };
-  return { label: 'Generic', style: 'bg-gray-100 text-gray-500' };
+  if (food.source === 'custom') return { label: 'My Food', style: 'bg-accent text-primary' };
+  if (food.brand)               return { label: food.brand, style: 'bg-muted text-muted-foreground' };
+  if (food.category)            return { label: food.category, style: 'bg-muted text-muted-foreground' };
+  return { label: 'Generic', style: 'bg-muted text-muted-foreground' };
 }
 
 export default function FoodResultCard({ food, onAdd, onSave, onTap }) {
@@ -57,7 +57,7 @@ export default function FoodResultCard({ food, onAdd, onSave, onTap }) {
               <span className="text-[10px] text-muted-foreground">{food.category}</span>
             )}
             {food.source !== 'custom' && (
-              <span className="flex items-center gap-0.5 text-[10px] text-emerald-600 font-semibold">
+              <span className="flex items-center gap-0.5 text-[10px] text-success font-semibold">
                 <ShieldCheck className="w-3 h-3" />USDA Verified
               </span>
             )}
@@ -67,9 +67,9 @@ export default function FoodResultCard({ food, onAdd, onSave, onTap }) {
           <div className="flex flex-wrap items-center gap-1.5 mt-2">
             <span className="text-[10px] text-muted-foreground font-medium mr-0.5">per 100g:</span>
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 text-orange-600">🔥 {food.calories}cal</span>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50   text-blue-600">💪 {food.protein}g</span>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50  text-amber-600">🌾 {food.carbs}g</span>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-green-50  text-green-700">🥑 {food.fats}g</span>
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-accent   text-primary">💪 {food.protein}g</span>
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-warning/10  text-warning">🌾 {food.carbs}g</span>
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-success/10  text-success">🥑 {food.fats}g</span>
           </div>
 
           {/* Typical serving hint */}
