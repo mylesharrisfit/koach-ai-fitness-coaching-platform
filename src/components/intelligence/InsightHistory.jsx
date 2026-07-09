@@ -3,10 +3,10 @@ import { format } from 'date-fns';
 import { TrendingUp, AlertTriangle, Zap, Trophy } from 'lucide-react';
 
 const TYPE_ICONS = {
-  performance: { icon: TrendingUp, color: 'rgb(var(--primary))' },
-  risk: { icon: AlertTriangle, color: '#ea580c' },
-  opportunity: { icon: Zap, color: 'rgb(var(--success))' },
-  celebration: { icon: Trophy, color: 'rgb(var(--warning))' },
+  performance: { icon: TrendingUp, color: 'var(--tc-primary)' },
+  risk: { icon: AlertTriangle, color: 'var(--kc-ea580c)' },
+  opportunity: { icon: Zap, color: 'var(--tc-success)' },
+  celebration: { icon: Trophy, color: 'var(--tc-warning)' },
 };
 
 export default function InsightHistory({ clients }) {

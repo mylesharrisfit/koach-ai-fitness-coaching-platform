@@ -14,7 +14,7 @@ function Toggle({ value, onChange }) {
     <button onClick={() => onChange(!value)}
       className="relative w-10 h-5.5 rounded-full transition-colors flex-shrink-0"
       style={{
-        background: value ? 'rgb(var(--primary))' : 'rgb(var(--border))',
+        background: value ? 'var(--tc-primary)' : 'var(--tc-border)',
         height: 22,
         width: 40,
       }}>
