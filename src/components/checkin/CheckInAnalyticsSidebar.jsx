@@ -20,10 +20,10 @@ function avg(arr) {
 }
 
 function barColor(val) {
-  if (val == null) return 'rgb(var(--muted-foreground))';
-  if (val >= 75) return 'rgb(var(--success))';
-  if (val >= 50) return 'rgb(var(--warning))';
-  return 'rgb(var(--destructive))';
+  if (val == null) return 'var(--tc-muted-foreground)';
+  if (val >= 75) return 'var(--tc-success)';
+  if (val >= 50) return 'var(--tc-warning)';
+  return 'var(--tc-destructive)';
 }
 
 export default function CheckInAnalyticsSidebar({ checkIns, clients, latestPerClient, clientMap }) {
@@ -178,13 +178,13 @@ export default function CheckInAnalyticsSidebar({ checkIns, clients, latestPerCl
         <h3 className="text-sm font-semibold text-foreground mb-3">Compliance Trend</h3>
         <ResponsiveContainer width="100%" height={110}>
           <BarChart data={weeklyTrend} barCategoryGap="25%">
-            <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-            <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} width={28} />
+            <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+            <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} width={28} />
             <Tooltip
-              contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: 'none' }}
+              contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--tc-border)', boxShadow: 'none' }}
               formatter={(v) => [`${v}%`, 'Compliance']}
             />
-            <Bar dataKey="value" radius={[3, 3, 0, 0]} fill="rgb(var(--primary))" />
+            <Bar dataKey="value" radius={[3, 3, 0, 0]} fill="var(--tc-primary)" />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -98,7 +98,7 @@ export default function CheckInReviewRow({ checkIn, client, onReview }) {
         <button
           onClick={() => onReview(checkIn)}
           className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-colors"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
         >
           Review
         </button>

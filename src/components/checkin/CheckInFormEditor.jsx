@@ -199,7 +199,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
         <span className="text-muted-foreground">/</span>
         <span className="text-sm font-semibold text-foreground">{form?.id ? 'Edit Form' : 'New Form'}</span>
         <div className="ml-auto">
-          <Button onClick={handleSave} disabled={saveMutation.isPending} style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+          <Button onClick={handleSave} disabled={saveMutation.isPending} style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {saveMutation.isPending ? 'Saving...' : (form?.id ? 'Save Changes' : 'Create Form')}
           </Button>
         </div>
@@ -264,7 +264,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                 </button>
                 <button onClick={() => addQuestion()}
                   className="flex items-center gap-1.5 text-xs font-semibold text-white px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+                  style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                   <Plus className="w-3.5 h-3.5" /> Add
                 </button>
               </div>
@@ -431,7 +431,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
 
           {/* Save */}
           <Button onClick={handleSave} disabled={saveMutation.isPending} className="w-full"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {saveMutation.isPending ? 'Saving...' : (form?.id ? 'Save Changes' : 'Create Form')}
           </Button>
         </div>

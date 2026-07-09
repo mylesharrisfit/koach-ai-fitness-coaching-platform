@@ -34,9 +34,9 @@ function getStatus(checkIn, allClientCIs) {
   const isAtRisk = (score !== null && score < 60) || flags.length >= 2;
   const needsAttention = flags.length > 0 || (score !== null && score < 80);
 
-  if (isAtRisk) return { label: 'At Risk', color: 'bg-destructive/10 text-destructive border-destructive', leftColor: 'rgb(var(--destructive))', flags };
-  if (needsAttention) return { label: 'Needs Attention', color: 'bg-muted text-foreground border-border', leftColor: 'rgb(var(--warning))', flags };
-  return { label: 'Good', color: 'bg-muted text-foreground border-border', leftColor: 'rgb(var(--success))', flags };
+  if (isAtRisk) return { label: 'At Risk', color: 'bg-destructive/10 text-destructive border-destructive', leftColor: 'var(--tc-destructive)', flags };
+  if (needsAttention) return { label: 'Needs Attention', color: 'bg-muted text-foreground border-border', leftColor: 'var(--tc-warning)', flags };
+  return { label: 'Good', color: 'bg-muted text-foreground border-border', leftColor: 'var(--tc-success)', flags };
 }
 
 function WeightDelta({ current, previous }) {

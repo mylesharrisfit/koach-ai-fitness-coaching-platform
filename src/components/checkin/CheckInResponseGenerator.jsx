@@ -30,7 +30,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
 
   return (
     <div className="rounded-xl border border-primary/20 overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+      style={{ background: 'linear-gradient(135deg, var(--tc-accent), var(--tc-ai))' }}>
       {/* Trigger / header */}
       <button
         onClick={result ? () => setExpanded(v => !v) : generate}
@@ -56,7 +56,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
 
       {/* Result panel */}
       {expanded && (loading || result) && (
-        <div className="border-t border-primary/10 px-4 py-3 space-y-3 bg-white/50">
+        <div className="border-t border-primary/10 px-4 py-3 space-y-3 bg-[var(--kc-w-50)]">
           {loading ? (
             <div className="flex items-center gap-2 py-1">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />

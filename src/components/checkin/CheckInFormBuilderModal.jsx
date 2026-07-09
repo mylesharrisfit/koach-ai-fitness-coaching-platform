@@ -441,7 +441,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
             onClick={handleSave}
             disabled={saveMutation.isPending || !name.trim()}
             className="flex-1"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
           >
             {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingForm ? 'Save Changes' : 'Create Form'}
           </Button>

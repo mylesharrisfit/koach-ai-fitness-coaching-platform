@@ -135,7 +135,7 @@ export default function FormBuilderTab({ clients }) {
     <div>
       <div className="flex items-center justify-between mb-5">
         <p className="text-sm text-muted-foreground">{forms.length} form{forms.length !== 1 ? 's' : ''}</p>
-        <Button onClick={handleNew} className="gap-2" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+        <Button onClick={handleNew} className="gap-2" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
           <Plus className="w-4 h-4" /> New Form
         </Button>
       </div>
@@ -153,7 +153,7 @@ export default function FormBuilderTab({ clients }) {
             <p className="font-semibold text-foreground mb-1">No check-in forms yet</p>
             <p className="text-sm text-muted-foreground">Create your first form to start collecting client check-ins</p>
           </div>
-          <Button onClick={handleNew} className="gap-2 mt-2" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+          <Button onClick={handleNew} className="gap-2 mt-2" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             <Plus className="w-4 h-4" /> Create Your First Form
           </Button>
         </div>

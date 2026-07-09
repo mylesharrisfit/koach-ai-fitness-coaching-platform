@@ -120,7 +120,7 @@ function AIAnalysis({ checkIn, clientName }) {
           </div>
         )}
         {analysis.suggested_response && (
-          <div className="bg-white/80 border border-ai rounded-lg p-3">
+          <div className="bg-[var(--kc-w-80)] border border-ai rounded-lg p-3">
             <p className="text-[10px] font-bold text-ai uppercase tracking-wide mb-1">Suggested Response</p>
             <p className="text-xs text-foreground leading-relaxed italic">"{analysis.suggested_response}"</p>
           </div>
@@ -198,8 +198,8 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
 
         {/* Header */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-border flex-shrink-0"
-          style={{ background: 'rgb(var(--sidebar))' }}>
-          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-sm shrink-0">
+          style={{ background: 'var(--tc-sidebar)' }}>
+          <div className="w-10 h-10 rounded-full bg-[var(--kc-w-10)] flex items-center justify-center text-white font-bold text-sm shrink-0">
             {clientName[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
@@ -215,7 +215,7 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
               <div className="text-[10px] text-white/50">score</div>
             </div>
           )}
-          <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors ml-1">
+          <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg hover:bg-[var(--kc-w-10)] transition-colors ml-1">
             <X className="w-4 h-4 text-white/60" />
           </button>
         </div>

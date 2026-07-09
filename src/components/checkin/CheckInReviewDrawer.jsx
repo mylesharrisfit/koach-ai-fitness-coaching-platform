@@ -124,7 +124,7 @@ Client notes: ${checkIn.notes || 'none'}`;
       )}
 
       {summary.suggested_response && (
-        <div className="bg-white/70 rounded-lg p-3 border border-ai">
+        <div className="bg-[var(--kc-w-70)] rounded-lg p-3 border border-ai">
           <p className="text-[10px] font-bold text-ai uppercase tracking-wide mb-1">Suggested Response</p>
           <p className="text-xs text-foreground leading-relaxed italic">"{summary.suggested_response}"</p>
         </div>
