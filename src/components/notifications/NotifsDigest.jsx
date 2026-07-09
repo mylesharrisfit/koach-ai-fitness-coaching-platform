@@ -34,8 +34,8 @@ function MultiCheckGrid({ values = [], onChange, options }) {
           <div onClick={() => toggle(o.value)}
             className="w-4 h-4 rounded flex-shrink-0 border-2 flex items-center justify-center transition-all cursor-pointer"
             style={{
-              background: values.includes(o.value) ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'white',
-              borderColor: values.includes(o.value) ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+              background: values.includes(o.value) ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'white',
+              borderColor: values.includes(o.value) ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)',
             }}>
             {values.includes(o.value) && (
               <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -55,7 +55,7 @@ export default function NotifsDigest({ s, setField }) {
   const weeklyIncludes = s.weekly_digest_includes?.length ? s.weekly_digest_includes : DEFAULT_WEEKLY_INCLUDES;
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+    <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)' }}>
       <div className="flex items-center gap-2 px-6 py-4 border-b border-border bg-muted/60">
         <span className="text-base">📧</span>
         <h2 className="font-bold text-foreground text-sm">Email Digest Settings</h2>

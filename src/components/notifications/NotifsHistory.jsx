@@ -40,17 +40,17 @@ export default function NotifsHistory({ onClose }) {
   const unreadCount = items.filter(i => !i.read).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" style={{ background: 'rgba(0,0,0,0.5)' }}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" style={{ background: 'color-mix(in srgb, black 50%, transparent)' }}>
       <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
         className="bg-card w-full sm:max-w-lg sm:rounded-2xl rounded-t-2xl max-h-[85vh] flex flex-col"
-        style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+        style={{ boxShadow: '0 20px 60px color-mix(in srgb, black 15%, transparent)' }}>
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-2">
             <Bell className="w-4 h-4 text-muted-foreground" />
             <h3 className="font-bold text-foreground">Notification History</h3>
             {unreadCount > 0 && (
-              <span className="text-xs font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+              <span className="text-xs font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                 {unreadCount}
               </span>
             )}
@@ -74,8 +74,8 @@ export default function NotifsHistory({ onClose }) {
               <button key={val} onClick={() => setFilter(val)}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 transition-all"
                 style={{
-                  background: filter === val ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
-                  color: filter === val ? 'white' : 'rgb(var(--muted-foreground))',
+                  background: filter === val ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+                  color: filter === val ? 'white' : 'var(--tc-muted-foreground)',
                 }}>
                 {label}
               </button>
@@ -86,10 +86,10 @@ export default function NotifsHistory({ onClose }) {
               <button key={v} onClick={() => setReadFilter(v)}
                 className="px-3 py-1 rounded-lg text-xs font-semibold capitalize transition-all"
                 style={{
-                  background: readFilter === v ? 'rgb(var(--foreground))' : 'rgb(var(--muted))',
-                  color: readFilter === v ? 'white' : 'rgb(var(--muted-foreground))',
+                  background: readFilter === v ? 'var(--tc-foreground)' : 'var(--tc-muted)',
+                  color: readFilter === v ? 'white' : 'var(--tc-muted-foreground)',
                   border: '1px solid',
-                  borderColor: readFilter === v ? 'rgb(var(--foreground))' : 'rgb(var(--border))',
+                  borderColor: readFilter === v ? 'var(--tc-foreground)' : 'var(--tc-border)',
                 }}>
                 {v}
               </button>

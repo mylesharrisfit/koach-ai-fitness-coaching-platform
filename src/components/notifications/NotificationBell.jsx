@@ -84,7 +84,7 @@ export default function NotificationBell() {
       <button
         ref={bellRef}
         onClick={() => setOpen(o => !o)}
-        className="relative flex items-center justify-center w-9 h-9 rounded-xl hover:bg-white/10 transition-colors"
+        className="relative flex items-center justify-center w-9 h-9 rounded-xl hover:bg-[var(--kc-w-10)] transition-colors"
         title="Notifications (N)"
       >
         {/* Pulse ring */}
@@ -109,7 +109,7 @@ export default function NotificationBell() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             className="absolute -top-1 -right-1 min-w-[17px] h-[17px] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 leading-none"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--destructive)), rgb(var(--destructive)))', boxShadow: '0 0 0 2px #0D0D0D' }}
+            style={{ background: 'linear-gradient(135deg, var(--tc-destructive), var(--tc-destructive))', boxShadow: '0 0 0 2px var(--kc-0d0d0d)' }}
           >
             {displayCount}
           </motion.span>

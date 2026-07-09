@@ -2,7 +2,7 @@ import React from 'react';
 
 export function NSection({ title, emoji, onReset, onTest, children }) {
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+    <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)' }}>
       <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/60">
         <div className="flex items-center gap-2">
           <span className="text-base">{emoji}</span>
@@ -36,7 +36,7 @@ export function NToggle({ value, onChange, disabled }) {
       type="button"
     >
       <div className="absolute inset-0 rounded-full transition-all"
-        style={{ background: value ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--border))' }} />
+        style={{ background: value ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-border)' }} />
       <div className="absolute top-0.5 rounded-full bg-card shadow transition-all"
         style={{ width: 18, height: 18, left: value ? 20 : 2, transition: 'left 0.15s' }} />
     </button>
@@ -51,8 +51,8 @@ export function NDelivery({ value = 'push_email', onChange, options = ['off', 'p
         <button key={o} onClick={() => onChange(o)}
           className="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all"
           style={{
-            background: value === o ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
-            color: value === o ? 'white' : 'rgb(var(--muted-foreground))',
+            background: value === o ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+            color: value === o ? 'white' : 'var(--tc-muted-foreground)',
           }}>
           {LABELS[o]}
         </button>
@@ -92,8 +92,8 @@ export function NMultiCheck({ values = [], onChange, options }) {
           <button key={val} onClick={() => toggle(val)}
             className="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all"
             style={{
-              background: active ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
-              color: active ? 'white' : 'rgb(var(--muted-foreground))',
+              background: active ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+              color: active ? 'white' : 'var(--tc-muted-foreground)',
             }}>
             {label}
           </button>

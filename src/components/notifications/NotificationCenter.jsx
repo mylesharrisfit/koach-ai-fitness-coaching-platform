@@ -98,7 +98,7 @@ export default function NotificationCenter({ notifications, unreadCount, loading
       exit={isMobile ? { x: '100%' } : { opacity: 0, scale: 0.97, y: -8 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       className={panelClass}
-      style={isMobile ? {} : { boxShadow: '0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06)', background: 'rgb(var(--card))' }}
+      style={isMobile ? {} : { boxShadow: '0 20px 60px color-mix(in srgb, black 18%, transparent), 0 0 0 1px color-mix(in srgb, black 6%, transparent)', background: 'var(--tc-card)' }}
     >
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border flex-shrink-0">
@@ -107,7 +107,7 @@ export default function NotificationCenter({ notifications, unreadCount, loading
           <span className="font-black text-foreground text-[15px]">Notifications</span>
           {unreadCount > 0 && (
             <span className="px-2 py-0.5 rounded-full text-[10px] font-black text-white"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               {unreadCount > 99 ? '99+' : unreadCount} unread
             </span>
           )}
@@ -141,14 +141,14 @@ export default function NotificationCenter({ notifications, unreadCount, loading
             <button key={t.id} onClick={() => setTab(t.id)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold flex-shrink-0 transition-all whitespace-nowrap"
               style={{
-                background: isActive ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
-                color: isActive ? 'white' : 'rgb(var(--muted-foreground))',
-                border: isActive ? 'none' : '1px solid rgb(var(--border))',
+                background: isActive ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted)',
+                color: isActive ? 'white' : 'var(--tc-muted-foreground)',
+                border: isActive ? 'none' : '1px solid var(--tc-border)',
               }}>
               {t.label}
               {count > 0 && (
                 <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full"
-                  style={{ background: isActive ? 'rgba(255,255,255,0.25)' : 'rgb(var(--border))', color: isActive ? 'white' : 'rgb(var(--muted-foreground))' }}>
+                  style={{ background: isActive ? 'color-mix(in srgb, white 25%, transparent)' : 'var(--tc-border)', color: isActive ? 'white' : 'var(--tc-muted-foreground)' }}>
                   {count}
                 </span>
               )}
