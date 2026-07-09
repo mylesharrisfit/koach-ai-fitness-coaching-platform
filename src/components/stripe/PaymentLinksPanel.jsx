@@ -48,8 +48,8 @@ export default function PaymentLinksPanel() {
   return (
     <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-7 h-7 rounded-lg bg-[#635BFF]/10 flex items-center justify-center">
-          <Link className="w-3.5 h-3.5 text-[#635BFF]" />
+        <div className="w-7 h-7 rounded-lg bg-[var(--kc-635bff)]/10 flex items-center justify-center">
+          <Link className="w-3.5 h-3.5 text-[var(--kc-635bff)]" />
         </div>
         <h3 className="text-sm font-bold text-foreground">Create Payment Link</h3>
       </div>
@@ -86,7 +86,7 @@ export default function PaymentLinksPanel() {
         </div>
 
         <Button
-          className="w-full bg-[#635BFF] hover:bg-[#5850EA]"
+          className="w-full bg-[var(--kc-635bff)] hover:bg-[var(--kc-5850ea)]"
           onClick={() => mutation.mutate()}
           disabled={!isValid || mutation.isPending}
         >
@@ -105,7 +105,7 @@ export default function PaymentLinksPanel() {
                 href={generatedLink}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-[#635BFF] truncate flex-1 font-mono hover:underline"
+                className="text-xs text-[var(--kc-635bff)] truncate flex-1 font-mono hover:underline"
               >
                 {generatedLink}
               </a>
