@@ -128,7 +128,7 @@ Generate a personalized intervention plan as JSON:
           {/* Avatar with pulsing dot */}
           <div className="relative flex-shrink-0">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)), #1F2937)' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-foreground), var(--kc-1f2937))' }}>
               {client.name?.[0]?.toUpperCase()}
             </div>
             <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white animate-pulse', styles.dot)} />
@@ -268,7 +268,7 @@ Generate a personalized intervention plan as JSON:
                     <div key={i} className="flex items-center gap-2 text-[10px] bg-card border border-border rounded-lg px-3 py-1.5">
                       <span className="text-muted-foreground w-16 flex-shrink-0">{format(parseISO(ci.date), 'MMM d')}</span>
                       <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${s ?? 0}%`, background: s >= 80 ? 'rgb(var(--success))' : s >= 50 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' }} />
+                        <div className="h-full rounded-full" style={{ width: `${s ?? 0}%`, background: s >= 80 ? 'var(--tc-success)' : s >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)' }} />
                       </div>
                       <span className="font-semibold w-8 text-right">{s ?? '—'}{s !== null ? '%' : ''}</span>
                     </div>
@@ -327,7 +327,7 @@ function MiniAdherenceChart({ checkIns }) {
     <div className="flex items-end gap-1 h-10">
       {recent.map((ci, i) => {
         const score = checkInScore(ci) ?? 0;
-        const color = score >= 80 ? 'rgb(var(--success))' : score >= 50 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+        const color = score >= 80 ? 'var(--tc-success)' : score >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
         return (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
             <div className="w-full rounded-t" style={{ height: `${Math.max(4, score * 0.34)}px`, background: color }} />

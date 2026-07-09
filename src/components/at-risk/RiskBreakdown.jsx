@@ -41,7 +41,7 @@ export default function RiskBreakdown({ atRisk, activeColumn, onColumnClick }) {
                 {entries.slice(0, 5).map((e, i) => (
                   <div key={e.client.id}
                     className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold text-white flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg, rgb(var(--destructive)), rgb(var(--ai)))', zIndex: 5 - i }}>
+                    style={{ background: 'linear-gradient(135deg, var(--tc-destructive), var(--tc-ai))', zIndex: 5 - i }}>
                     {e.client.name?.[0]?.toUpperCase()}
                   </div>
                 ))}
