@@ -58,7 +58,7 @@ export function ThemeToggleButton({ className, onDark = false }) {
       className={cn(
         'flex h-9 w-9 items-center justify-center rounded-xl transition-colors',
         onDark
-          ? 'text-white/60 hover:bg-white/10 hover:text-white'
+          ? 'text-white/60 hover:bg-[var(--kc-w-10)] hover:text-white'
           : 'text-muted-foreground hover:bg-muted hover:text-foreground',
         className
       )}
