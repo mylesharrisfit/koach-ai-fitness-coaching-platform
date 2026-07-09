@@ -39,10 +39,10 @@ const TIER_FEATURES = {
 };
 
 const CARD_CONFIG = {
-  starter:    { accentColor: 'rgb(var(--muted-foreground))', checkColor: 'text-muted-foreground', btnClass: 'border-border text-border hover:bg-foreground/50 bg-transparent', badge: null },
-  pro:        { accentColor: 'rgb(var(--primary))', checkColor: 'text-primary',  btnClass: 'bg-primary hover:bg-primary text-white border-0', badge: { label: 'MOST POPULAR', cls: 'bg-primary/20 text-primary border border-primary/30' } },
-  elite:      { accentColor: 'rgb(var(--ai))', checkColor: 'text-ai', btnClass: '', badge: { label: '⭐ RECOMMENDED', cls: 'bg-gradient-to-r from-primary/20 to-ai/20 text-ai border border-ai/30' } },
-  enterprise: { accentColor: 'rgb(var(--warning))', checkColor: 'text-warning', btnClass: 'border-warning/50 text-warning hover:bg-warning/10 bg-transparent', badge: { label: 'ENTERPRISE', cls: 'bg-warning/10 text-warning border border-warning/30' } },
+  starter:    { accentColor: 'var(--tc-muted-foreground)', checkColor: 'text-muted-foreground', btnClass: 'border-border text-border hover:bg-foreground/50 bg-transparent', badge: null },
+  pro:        { accentColor: 'var(--tc-primary)', checkColor: 'text-primary',  btnClass: 'bg-primary hover:bg-primary text-white border-0', badge: { label: 'MOST POPULAR', cls: 'bg-primary/20 text-primary border border-primary/30' } },
+  elite:      { accentColor: 'var(--tc-ai)', checkColor: 'text-ai', btnClass: '', badge: { label: '⭐ RECOMMENDED', cls: 'bg-gradient-to-r from-primary/20 to-ai/20 text-ai border border-ai/30' } },
+  enterprise: { accentColor: 'var(--tc-warning)', checkColor: 'text-warning', btnClass: 'border-warning/50 text-warning hover:bg-warning/10 bg-transparent', badge: { label: 'ENTERPRISE', cls: 'bg-warning/10 text-warning border border-warning/30' } },
 };
 
 function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
@@ -57,12 +57,12 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
     <div className={cn(
       'relative flex flex-col rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-1',
       isElite
-        ? 'bg-gradient-to-b from-[#1a1040] to-[#120c35] hover:shadow-[0_0_40px_rgb(var(--ai) / 0.25)] md:scale-[1.03] z-10'
-        : 'bg-[#0f1117] hover:shadow-[0_8px_32px_rgba(0,0,0,0.5)]',
+        ? 'bg-gradient-to-b from-[var(--kc-1a1040)] to-[var(--kc-120c35)] hover:shadow-[0_0_40px_color-mix(in srgb, var(--tc-ai) 25%, transparent)] md:scale-[1.03] z-10'
+        : 'bg-[var(--kc-0f1117)] hover:shadow-[0_8px_32px_color-mix(in srgb, black 50%, transparent)]',
     )}>
       {/* Top accent border */}
       {isElite ? (
-        <div className="h-[3px] w-full" style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 12px rgb(var(--ai) / 0.6)' }} />
+        <div className="h-[3px] w-full" style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 12px color-mix(in srgb, var(--tc-ai) 60%, transparent)' }} />
       ) : (
         <div className="h-[3px] w-full" style={{ background: config.accentColor }} />
       )}
@@ -83,7 +83,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
       {/* Price section */}
       <div className="p-6 pb-4">
         <p className="font-bold text-sm mb-3" style={{ color: config.accentColor }}>{tier.name}</p>
-        <p className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white/5 text-muted-foreground border border-white/10 mb-4">
+        <p className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--kc-w-5)] text-muted-foreground border border-white/10 mb-4">
           {CLIENT_LIMIT[tierKey]}
         </p>
         <div className="flex items-end gap-2 mb-2">
@@ -115,9 +115,9 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
               </div>
             ))}
             <div className="flex items-center gap-2 pt-1 pb-0.5">
-              <div className="flex-1 h-px bg-white/5" />
+              <div className="flex-1 h-px bg-[var(--kc-w-5)]" />
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Also includes</span>
-              <div className="flex-1 h-px bg-white/5" />
+              <div className="flex-1 h-px bg-[var(--kc-w-5)]" />
             </div>
           </>
         )}
@@ -139,7 +139,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
           <button
             onClick={() => onSelect(tierKey)}
             className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.4)' }}
+            style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 40%, transparent)' }}
           >
             {isUpgrade ? `Upgrade to ${tier.name} →` : `Switch to ${tier.name}`}
           </button>
@@ -185,7 +185,7 @@ export default function PricingCards({ user, onUserUpdate, clientCount = 0 }) {
     <div>
       {/* Billing toggle */}
       <div className="flex flex-col items-center mb-10">
-        <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10">
+        <div className="flex items-center bg-[var(--kc-w-5)] rounded-full p-1 border border-white/10">
           {['monthly', 'annual'].map(b => (
             <button
               key={b}
@@ -197,7 +197,7 @@ export default function PricingCards({ user, onUserUpdate, clientCount = 0 }) {
             >
               {b}
               {b === 'annual' && (
-                <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full', billing === 'annual' ? 'bg-white/20 text-white' : 'bg-success/20 text-success')}>
+                <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full', billing === 'annual' ? 'bg-[var(--kc-w-20)] text-white' : 'bg-success/20 text-success')}>
                   -20%
                 </span>
               )}

@@ -87,7 +87,7 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-border" style={{ background: 'rgb(var(--card))' }}>
+      <DialogContent className="max-w-5xl p-0 overflow-hidden border-border" style={{ background: 'var(--tc-card)' }}>
         {/* Header */}
         <div className="relative p-6 pb-4 overflow-hidden border-b border-border">
           <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-foreground hover:text-foreground transition-colors z-10">

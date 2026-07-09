@@ -163,7 +163,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
                 Annual
                 <span className={cn(
                   'text-[9px] font-bold px-1.5 py-0.5 rounded-full transition-colors',
-                  billing === 'annual' ? 'bg-white/20 text-white' : 'bg-accent/10 text-accent'
+                  billing === 'annual' ? 'bg-[var(--kc-w-20)] text-white' : 'bg-accent/10 text-accent'
                 )}>-20%</span>
               </button>
             </div>

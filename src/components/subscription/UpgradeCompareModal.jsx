@@ -21,10 +21,10 @@ const TIER_FEATURES = {
 };
 
 const CARD_ACCENT = {
-  starter: 'rgb(var(--muted-foreground))',
-  pro: 'rgb(var(--primary))',
-  elite: 'rgb(var(--ai))',
-  enterprise: 'rgb(var(--warning))',
+  starter: 'var(--tc-muted-foreground)',
+  pro: 'var(--tc-primary)',
+  elite: 'var(--tc-ai)',
+  enterprise: 'var(--tc-warning)',
 };
 
 export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: initialBilling, clientCount = 0, user, onClose, onUserUpdate }) {
@@ -145,7 +145,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
           {/* Billing toggle */}
           <div>
             <p className="text-sm font-semibold text-border mb-3">Billing cycle</p>
-            <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10 w-fit">
+            <div className="flex items-center bg-[var(--kc-w-5)] rounded-full p-1 border border-white/10 w-fit">
               {['monthly', 'annual'].map(b => (
                 <button
                   key={b}
@@ -186,11 +186,11 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
                 value={coupon}
                 onChange={e => setCoupon(e.target.value)}
                 placeholder="Enter code"
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                className="flex-1 bg-[var(--kc-w-5)] border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
               />
               <button
                 onClick={handleApplyCoupon}
-                className="px-4 py-2 rounded-xl border border-white/10 text-sm text-border hover:bg-white/5 transition-colors"
+                className="px-4 py-2 rounded-xl border border-white/10 text-sm text-border hover:bg-[var(--kc-w-5)] transition-colors"
               >
                 Apply
               </button>
@@ -226,7 +226,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
               onClick={handleConfirm}
               disabled={loading}
               className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
-              style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.3)' }}
+              style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 30%, transparent)' }}
             >
               {loading ? 'Processing...' : `Start ${toTier.name} Plan →`}
             </button>

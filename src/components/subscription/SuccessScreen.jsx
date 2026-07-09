@@ -14,7 +14,7 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
   useEffect(() => {
     // Fire confetti
     const end = Date.now() + 2000;
-    const colors = ['rgb(var(--primary))', 'rgb(var(--ai))', '#06b6d4', 'rgb(var(--card))'];
+    const colors = ['var(--tc-primary)', 'var(--tc-ai)', 'var(--kc-06b6d4)', 'var(--tc-card)'];
     const frame = () => {
       confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors });
       confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors });
@@ -28,7 +28,7 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-sidebar p-8 text-center shadow-2xl">
         {/* Logo / Icon */}
         <div className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 40px rgb(var(--ai) / 0.4)' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 40px color-mix(in srgb, var(--tc-ai) 40%, transparent)' }}>
           ⚡
         </div>
 
@@ -62,13 +62,13 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
           <button
             onClick={() => navigate('/')}
             className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
-            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.3)' }}
+            style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 30%, transparent)' }}
           >
             Explore New Features →
           </button>
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-border hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-border hover:bg-[var(--kc-w-5)] transition-colors flex items-center justify-center gap-2"
           >
             <ExternalLink className="w-3.5 h-3.5" /> View Receipt
           </button>

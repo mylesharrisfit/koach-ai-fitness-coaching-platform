@@ -120,7 +120,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                 <button
                   onClick={onClose}
                   className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))' }}
+                  style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))' }}
                 >
                   Keep my plan
                 </button>
@@ -141,7 +141,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                 <button
                   onClick={handleAcceptOffer}
                   className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.25)' }}
+                  style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 25%, transparent)' }}
                 >
                   {offer.cta}
                 </button>
