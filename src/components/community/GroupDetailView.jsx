@@ -37,7 +37,7 @@ export default function GroupDetailView({ group, clients, currentUser, isCoach, 
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="rounded-xl overflow-hidden" style={{ background: 'rgb(var(--sidebar))' }}>
+      <div className="rounded-xl overflow-hidden" style={{ background: 'var(--tc-sidebar)' }}>
         {group.cover_image_url && (
           <div className="h-28 overflow-hidden relative">
             <img src={group.cover_image_url} alt={group.name} className="w-full h-full object-cover opacity-60" />
@@ -46,7 +46,7 @@ export default function GroupDetailView({ group, clients, currentUser, isCoach, 
         <div className="p-5">
           <div className="flex items-center gap-3 mb-3">
             <button onClick={onBack}
-              className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+              className="w-8 h-8 rounded-lg bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] flex items-center justify-center transition-colors">
               <ArrowLeft className="w-4 h-4 text-white" />
             </button>
             <div className="flex-1 min-w-0">
@@ -57,7 +57,7 @@ export default function GroupDetailView({ group, clients, currentUser, isCoach, 
             </div>
             {isCoach && (
               <button onClick={() => setShowSettings(v => !v)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold transition-colors">
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] text-white rounded-lg text-xs font-semibold transition-colors">
                 <Settings2 className="w-3.5 h-3.5" /> Settings
               </button>
             )}
@@ -68,13 +68,13 @@ export default function GroupDetailView({ group, clients, currentUser, isCoach, 
             <div className="flex -space-x-1.5">
               {members.slice(0, 6).map(m => (
                 <div key={m.id} className={cn('w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold flex-shrink-0', avatarColor(m.name))}
-                  style={{ borderColor: 'rgb(var(--foreground))' }}>
+                  style={{ borderColor: 'var(--tc-foreground)' }}>
                   {m.name?.[0]?.toUpperCase()}
                 </div>
               ))}
               {members.length > 6 && (
-                <div className="w-7 h-7 rounded-full border-2 bg-white/10 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
-                  style={{ borderColor: 'rgb(var(--foreground))' }}>
+                <div className="w-7 h-7 rounded-full border-2 bg-[var(--kc-w-10)] flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+                  style={{ borderColor: 'var(--tc-foreground)' }}>
                   +{members.length - 6}
                 </div>
               )}

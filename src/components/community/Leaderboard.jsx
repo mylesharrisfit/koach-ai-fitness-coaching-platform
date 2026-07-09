@@ -81,11 +81,11 @@ export default function Leaderboard({ clients }) {
               idx === 0 ? 'bg-sidebar text-white border-foreground' : 'bg-card border-border'
             )}>
               <span className={cn('w-7 h-7 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0',
-                idx === 0 ? 'bg-white/20 text-white' : idx === 1 ? 'bg-muted text-foreground' : 'bg-warning/10 text-warning')}>
+                idx === 0 ? 'bg-[var(--kc-w-20)] text-white' : idx === 1 ? 'bg-muted text-foreground' : 'bg-warning/10 text-warning')}>
                 {idx + 1}
               </span>
               <div className={cn('w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0',
-                idx === 0 ? 'bg-white/10 text-white' : avatarColor(client.name))}>
+                idx === 0 ? 'bg-[var(--kc-w-10)] text-white' : avatarColor(client.name))}>
                 {client.name?.[0]?.toUpperCase()}
               </div>
               <p className={cn('flex-1 text-sm font-semibold truncate', idx === 0 ? 'text-white' : 'text-foreground')}>{client.name}</p>

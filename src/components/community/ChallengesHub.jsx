@@ -20,8 +20,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'workouts',
     goal: 7,
     duration_days: 7,
-    color: 'rgb(var(--primary))',
-    bg: 'rgb(var(--accent))',
+    color: 'var(--tc-primary)',
+    bg: 'var(--tc-accent)',
     difficulty: 'Beginner',
   },
   {
@@ -32,8 +32,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'workouts',
     goal: 20,
     duration_days: 30,
-    color: 'rgb(var(--ai))',
-    bg: 'rgb(var(--ai))',
+    color: 'var(--tc-ai)',
+    bg: 'var(--tc-ai)',
     difficulty: 'Intermediate',
   },
   {
@@ -44,8 +44,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'steps',
     goal: 70000,
     duration_days: 14,
-    color: 'rgb(var(--success))',
-    bg: 'rgb(var(--success))',
+    color: 'var(--tc-success)',
+    bg: 'var(--tc-success)',
     difficulty: 'Beginner',
   },
   {
@@ -56,8 +56,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'custom',
     goal: 21,
     duration_days: 21,
-    color: 'rgb(var(--primary))',
-    bg: '#F0F9FF',
+    color: 'var(--tc-primary)',
+    bg: 'var(--kc-f0f9ff)',
     difficulty: 'Beginner',
   },
   {
@@ -68,8 +68,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'weight_loss',
     goal: 5,
     duration_days: 30,
-    color: 'rgb(var(--destructive))',
-    bg: 'rgb(var(--destructive))',
+    color: 'var(--tc-destructive)',
+    bg: 'var(--tc-destructive)',
     difficulty: 'Intermediate',
   },
   {
@@ -80,8 +80,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'streak',
     goal: 21,
     duration_days: 21,
-    color: 'rgb(var(--warning))',
-    bg: 'rgb(var(--warning))',
+    color: 'var(--tc-warning)',
+    bg: 'var(--tc-warning)',
     difficulty: 'Intermediate',
   },
   {
@@ -92,8 +92,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'custom',
     goal: 14,
     duration_days: 14,
-    color: 'rgb(var(--primary))',
-    bg: 'rgb(var(--accent))',
+    color: 'var(--tc-primary)',
+    bg: 'var(--tc-accent)',
     difficulty: 'Beginner',
   },
   {
@@ -104,8 +104,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'custom',
     goal: 20,
     duration_days: 30,
-    color: 'rgb(var(--success))',
-    bg: 'rgb(var(--success))',
+    color: 'var(--tc-success)',
+    bg: 'var(--tc-success)',
     difficulty: 'Advanced',
   },
   {
@@ -116,8 +116,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'workouts',
     goal: 5,
     duration_days: 7,
-    color: 'rgb(var(--warning))',
-    bg: 'rgb(var(--warning))',
+    color: 'var(--tc-warning)',
+    bg: 'var(--tc-warning)',
     difficulty: 'Advanced',
   },
 ];
@@ -131,9 +131,9 @@ const TYPE_CONFIG = {
 };
 
 const DIFFICULTY_CONFIG = {
-  Beginner:     { color: 'rgb(var(--success))', bg: 'rgb(var(--success))' },
-  Intermediate: { color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))' },
-  Advanced:     { color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive))' },
+  Beginner:     { color: 'var(--tc-success)', bg: 'var(--tc-success)' },
+  Intermediate: { color: 'var(--tc-warning)', bg: 'var(--tc-warning)' },
+  Advanced:     { color: 'var(--tc-destructive)', bg: 'var(--tc-destructive)' },
 };
 
 // ── Template card ─────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ function LiveChallengeCard({ challenge, isCoach, clients, groups, onToggle, onDe
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ background: 'rgb(var(--muted))' }}>
+            style={{ background: 'var(--tc-muted)' }}>
             {challenge.emoji || '🏆'}
           </div>
           <div>
@@ -395,7 +395,7 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
                     form.participants.includes(c.id) ? 'bg-accent/10' : 'hover:bg-background')}>
                     <input type="checkbox" checked={form.participants.includes(c.id)}
                       onChange={() => toggleClient(c.id)}
-                      className="accent-[rgb(var(--primary))] w-3.5 h-3.5" />
+                      className="accent-[var(--tc-primary)] w-3.5 h-3.5" />
                     <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
                       {c.name?.[0]?.toUpperCase()}
                     </div>
@@ -500,12 +500,12 @@ export default function ChallengesHub({ isCoach, user }) {
     <div className="space-y-5">
       {/* Header card */}
       <div className="rounded-xl p-5 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, rgb(var(--primary)) 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--tc-primary) 100%)' }}>
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Trophy className="w-5 h-5 text-warning" />
             <h2 className="text-lg font-bold text-white">Challenges</h2>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/10">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--kc-w-10)] text-white/80 border border-white/10">
               {tierName}
             </span>
           </div>
@@ -521,7 +521,7 @@ export default function ChallengesHub({ isCoach, user }) {
         {isCoach && (
           <div className="flex gap-2">
             <button onClick={handleCreateBlank}
-              className="flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold rounded-lg transition-colors border border-white/10">
+              className="flex items-center gap-1.5 px-4 py-2 bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] text-white text-sm font-semibold rounded-lg transition-colors border border-white/10">
               <Plus className="w-4 h-4" /> Custom
             </button>
             <button onClick={() => setView('templates')}

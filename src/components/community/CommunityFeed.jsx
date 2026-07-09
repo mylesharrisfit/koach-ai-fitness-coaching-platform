@@ -64,7 +64,7 @@ function PostCard({ post, currentUserId, groupId }) {
     <div className="bg-card border border-border rounded-xl p-4 space-y-3">
       {/* Win banner */}
       {post.type === 'win' && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-warning/10 border border-[#FEF08A] rounded-lg">
+        <div className="flex items-center gap-2 px-3 py-2 bg-warning/10 border border-[var(--kc-fef08a)] rounded-lg">
           <Trophy className="w-4 h-4 text-warning flex-shrink-0" />
           <span className="text-xs font-semibold text-warning">Celebrating a Win!</span>
         </div>

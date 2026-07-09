@@ -62,7 +62,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
                   </div>
                 ) : (
                   <div className="h-24 flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, rgb(var(--primary)) 100%)' }}>
+                    style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--tc-primary) 100%)' }}>
                     <Users className="w-8 h-8 text-white/40" />
                   </div>
                 )}
@@ -123,7 +123,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
 
                   <button onClick={() => onSelect(group)}
                     className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
-                    style={{ background: 'rgb(var(--primary))' }}>
+                    style={{ background: 'var(--tc-primary)' }}>
                     Open Group <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>

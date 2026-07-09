@@ -81,7 +81,7 @@ function ChallengeCard({ challenge, isCoach, onToggle, onDelete }) {
 
       {/* Reward badge */}
       {rewardBadge && (
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-warning/10 border border-[#FEF08A] rounded-lg">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-warning/10 border border-[var(--kc-fef08a)] rounded-lg">
           <Trophy className="w-3.5 h-3.5 text-warning" />
           <span className="text-xs font-semibold text-warning">Reward: {rewardBadge.label} badge</span>
         </div>
