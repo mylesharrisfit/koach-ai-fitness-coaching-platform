@@ -108,7 +108,7 @@ export default function TodayWorkout({ workout, program, done, onToggle }) {
                   ? 'bg-success/10 text-success border border-success'
                   : 'text-white shadow-sm hover:shadow-md active:scale-[0.98]'
               )}
-              style={!done ? { background: 'rgb(var(--sidebar))' } : {}}
+              style={!done ? { background: 'var(--tc-sidebar)' } : {}}
             >
               {done
                 ? <><CheckCircle2 className="w-4 h-4" /> Workout Logged</>

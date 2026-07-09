@@ -46,9 +46,9 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
         <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={10}
-              stroke={allDone ? 'rgb(var(--success) / 0.12)' : 'rgb(var(--primary) / 0.08)'} />
+              stroke={allDone ? 'color-mix(in srgb, var(--tc-success) 12%, transparent)' : 'color-mix(in srgb, var(--tc-primary) 8%, transparent)'} />
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={10}
-              stroke={allDone ? 'rgb(var(--success))' : 'rgb(var(--primary))'}
+              stroke={allDone ? 'var(--tc-success)' : 'var(--tc-primary)'}
               strokeDasharray={circ}
               strokeDashoffset={offset}
               strokeLinecap="round"
@@ -59,7 +59,7 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
             {allDone
               ? <span className="text-3xl">🎉</span>
               : <>
-                  <span className="text-3xl font-bold leading-none" style={{ color: 'rgb(var(--foreground))', letterSpacing: '-0.04em' }}>{pct}%</span>
+                  <span className="text-3xl font-bold leading-none" style={{ color: 'var(--tc-foreground)', letterSpacing: '-0.04em' }}>{pct}%</span>
                   <span className="text-[11px] text-muted-foreground mt-0.5 font-medium">today</span>
                 </>
             }
@@ -88,7 +88,7 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
           <div className="flex gap-1.5 mt-3">
             {Array.from({ length: total }, (_, i) => (
               <div key={i} className="h-2 flex-1 rounded-full transition-all"
-                style={{ background: i < completed ? (allDone ? 'rgb(var(--success))' : 'rgb(var(--primary))') : 'rgb(var(--muted))' }} />
+                style={{ background: i < completed ? (allDone ? 'var(--tc-success)' : 'var(--tc-primary)') : 'var(--tc-muted)' }} />
             ))}
           </div>
         </div>

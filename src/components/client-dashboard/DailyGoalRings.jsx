@@ -27,9 +27,9 @@ export default function DailyGoalRings({ log, completed, total, pct }) {
         {/* Big ring */}
         <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-            <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={8} stroke="rgba(0,0,0,0.06)" />
+            <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={8} stroke="color-mix(in srgb, black 6%, transparent)" />
             <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={8}
-              stroke="rgb(var(--primary))"
+              stroke="var(--tc-primary)"
               strokeDasharray={circ}
               strokeDashoffset={offset}
               strokeLinecap="round"

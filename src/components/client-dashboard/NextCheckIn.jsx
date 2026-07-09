@@ -24,13 +24,13 @@ export default function NextCheckIn({ daysUntil, nextDate, lastCheckIn, clientId
             <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
               urgent ? 'bg-warning' : 'bg-muted')}>
               {urgent
-                ? <AlertCircle className="w-5 h-5 text-[#EA580C]" />
+                ? <AlertCircle className="w-5 h-5 text-[var(--kc-ea580c)]" />
                 : <ClipboardList className="w-5 h-5 text-muted-foreground" />
               }
             </div>
             <div>
               <p className="text-xs font-medium text-muted-foreground">Weekly Check-In</p>
-              <p className={cn('text-base font-bold leading-tight', urgent ? 'text-[#9A3412]' : 'text-foreground')}>
+              <p className={cn('text-base font-bold leading-tight', urgent ? 'text-[var(--kc-9a3412)]' : 'text-foreground')}>
                 {noCheckIn
                   ? 'No check-in scheduled'
                   : overdue
@@ -40,7 +40,7 @@ export default function NextCheckIn({ daysUntil, nextDate, lastCheckIn, clientId
                   : `${daysUntil} day${daysUntil !== 1 ? 's' : ''} away`}
               </p>
               {nextDate && !noCheckIn && (
-                <p className={cn('text-xs flex items-center gap-1 mt-0.5', urgent ? 'text-[#C2410C]' : 'text-muted-foreground')}>
+                <p className={cn('text-xs flex items-center gap-1 mt-0.5', urgent ? 'text-[var(--kc-c2410c)]' : 'text-muted-foreground')}>
                   <Calendar className="w-3 h-3" /> {format(nextDate, 'EEE, MMM d')}
                 </p>
               )}
@@ -56,7 +56,7 @@ export default function NextCheckIn({ daysUntil, nextDate, lastCheckIn, clientId
         </div>
 
         {lastCheckIn && (
-          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl bg-white/60 border border-white">
+          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl bg-[var(--kc-w-60)] border border-white">
             <p className="text-xs text-muted-foreground">
               Last check-in: <span className="font-semibold text-foreground">{format(new Date(lastCheckIn.date), 'MMM d')}</span>
               {lastCheckIn.weight ? <span className="text-muted-foreground"> · {lastCheckIn.weight} lbs</span> : ''}
@@ -72,7 +72,7 @@ export default function NextCheckIn({ daysUntil, nextDate, lastCheckIn, clientId
               ? 'text-white shadow-sm'
               : 'border border-border text-foreground hover:border-foreground bg-card'
           )}
-          style={urgent ? { background: 'linear-gradient(135deg, #EA580C, #C2410C)' } : {}}
+          style={urgent ? { background: 'linear-gradient(135deg, var(--kc-ea580c), var(--kc-c2410c))' } : {}}
         >
           Submit Check-in <ChevronRight className="w-4 h-4 opacity-60" />
         </button>

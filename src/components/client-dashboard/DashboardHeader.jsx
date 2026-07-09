@@ -19,20 +19,20 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
   return (
     <div
       className="rounded-2xl p-5 relative overflow-hidden"
-      style={{ background: 'rgb(var(--sidebar))' }}
+      style={{ background: 'var(--tc-sidebar)' }}
     >
       {/* Subtle background orb */}
       <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-10"
-        style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent)' }} />
+        style={{ background: 'radial-gradient(circle, var(--tc-primary), transparent)' }} />
       <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full opacity-5"
-        style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent)' }} />
+        style={{ background: 'radial-gradient(circle, var(--tc-primary), transparent)' }} />
 
       {/* Top row: avatar + greeting + streak + settings */}
       <div className="flex items-start justify-between relative z-10 mb-4">
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-base flex-shrink-0"
-            style={{ background: 'rgb(var(--primary) / 0.25)', color: 'rgb(var(--primary))', border: '1.5px solid rgb(var(--primary) / 0.35)' }}>
+            style={{ background: 'color-mix(in srgb, var(--tc-primary) 25%, transparent)', color: 'var(--tc-primary)', border: '1.5px solid color-mix(in srgb, var(--tc-primary) 35%, transparent)' }}>
             {initial}
           </div>
           <div>
@@ -47,7 +47,7 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
         <div className="flex items-center gap-2">
           {/* Streak badge */}
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-            style={{ background: streak > 0 ? 'rgba(251,146,60,0.15)' : 'rgba(255,255,255,0.06)', border: '1px solid rgba(251,146,60,0.3)' }}>
+            style={{ background: streak > 0 ? 'color-mix(in srgb, var(--kc-fb923c) 15%, transparent)' : 'color-mix(in srgb, white 6%, transparent)', border: '1px solid color-mix(in srgb, var(--kc-fb923c) 30%, transparent)' }}>
             <span className="text-sm">🔥</span>
             <span className="text-white font-bold text-sm">{streak}</span>
             <span className="text-white/50 text-[11px]">streak</span>
@@ -57,7 +57,7 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
           <button
             onClick={onSettings}
             className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-            style={{ background: 'rgba(255,255,255,0.08)' }}
+            style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}
           >
             <Settings className="w-3.5 h-3.5 text-white/50" />
           </button>
@@ -73,8 +73,8 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
               key={key}
               className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl transition-all"
               style={{
-                background: isDone ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.07)',
-                border: isDone ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                background: isDone ? 'color-mix(in srgb, white 92%, transparent)' : 'color-mix(in srgb, white 7%, transparent)',
+                border: isDone ? 'none' : '1px solid color-mix(in srgb, white 10%, transparent)',
               }}
             >
               <span className="text-base leading-none">{emoji}</span>

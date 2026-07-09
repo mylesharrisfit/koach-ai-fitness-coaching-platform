@@ -2,7 +2,7 @@ import React from 'react';
 import { Droplets, Plus, Minus, Salad } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-function MacroBar({ label, target, color = 'rgb(var(--primary))', unit = 'g' }) {
+function MacroBar({ label, target, color = 'var(--tc-primary)', unit = 'g' }) {
   if (!target) return null;
   return (
     <div className="flex items-center justify-between py-2 border-b border-muted last:border-0">
@@ -53,9 +53,9 @@ export default function NutritionPanel({ plan, mealsLogged, waterGlasses, onMeal
         {/* Macro targets */}
         {plan && (
           <div>
-            <MacroBar label="Protein" target={plan.protein_g} color="rgb(var(--primary))" unit="g" />
-            <MacroBar label="Carbs" target={plan.carbs_g} color="rgb(var(--ai))" unit="g" />
-            <MacroBar label="Fats" target={plan.fats_g} color="rgb(var(--warning))" unit="g" />
+            <MacroBar label="Protein" target={plan.protein_g} color="var(--tc-primary)" unit="g" />
+            <MacroBar label="Carbs" target={plan.carbs_g} color="var(--tc-ai)" unit="g" />
+            <MacroBar label="Fats" target={plan.fats_g} color="var(--tc-warning)" unit="g" />
           </div>
         )}
 
@@ -75,7 +75,7 @@ export default function NutritionPanel({ plan, mealsLogged, waterGlasses, onMeal
               </span>
               <button
                 onClick={() => onMealsChange(Math.min(mealGoal, (mealsLogged || 0) + 1))}
-                className="w-7 h-7 rounded-full bg-sidebar flex items-center justify-center text-white hover:bg-[#1F2937] active:scale-90 transition-all"
+                className="w-7 h-7 rounded-full bg-sidebar flex items-center justify-center text-white hover:bg-[var(--kc-1f2937)] active:scale-90 transition-all"
               >
                 <Plus className="w-3 h-3" />
               </button>
