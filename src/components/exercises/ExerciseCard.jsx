@@ -41,7 +41,7 @@ function MediaThumbnail({ url, imageUrl, thumbnailUrl, name }) {
           onError={e => { e.target.style.display = 'none'; }} />
         {url && (
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 rounded-full bg-[var(--kc-w-90)] flex items-center justify-center shadow-lg">
               <Play className="w-4 h-4 text-foreground ml-0.5" fill="currentColor" />
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
             {exercise.video_url && (
               <Button
                 size="icon"
-                className="h-7 w-7 bg-white/90 hover:bg-card text-foreground shadow"
+                className="h-7 w-7 bg-[var(--kc-w-90)] hover:bg-card text-foreground shadow"
                 onClick={handleOpenVideo}
               >
                 <ExternalLink className="w-3.5 h-3.5" />

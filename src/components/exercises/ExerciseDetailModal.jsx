@@ -63,7 +63,7 @@ function VideoPlayer({ url, imageUrl, thumbnailUrl, name }) {
           ? <img src={displayThumb} alt={name} className="w-full h-full object-cover" />
           : <div className="w-full h-full bg-muted" />}
         <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-          <div className="w-14 h-14 rounded-full bg-white/95 shadow-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="w-14 h-14 rounded-full bg-[var(--kc-w-95)] shadow-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
             <Play className="w-6 h-6 text-foreground ml-1" fill="currentColor" />
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               </span>
             )}
             {exercise.category && (
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent/10 text-[#3730a3]">
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent/10 text-[var(--kc-3730a3)]">
                 {exercise.category}
               </span>
             )}
@@ -176,7 +176,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {(exercise.tempo || exercise.default_rest_seconds) && (
             <div className="grid grid-cols-2 gap-3">
               {exercise.tempo && (
-                <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid rgb(var(--border))' }}>
+                <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid var(--tc-border)' }}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Timer className="w-3.5 h-3.5 text-primary" />
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tempo</span>
@@ -186,7 +186,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
                 </div>
               )}
               {exercise.default_rest_seconds && (
-                <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid rgb(var(--border))' }}>
+                <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid var(--tc-border)' }}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Clock className="w-3.5 h-3.5 text-primary" />
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Rest Time</span>
@@ -204,9 +204,9 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">How to Perform</p>
               <div className="space-y-2.5">
                 {steps.map((step, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted" style={{ border: '0.5px solid rgb(var(--border))' }}>
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted" style={{ border: '0.5px solid var(--tc-border)' }}>
                     <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-bold"
-                      style={{ background: 'rgb(var(--primary))', minWidth: 24 }}>
+                      style={{ background: 'var(--tc-primary)', minWidth: 24 }}>
                       {i + 1}
                     </div>
                     <p className="text-sm text-foreground leading-relaxed">{step}</p>
@@ -222,7 +222,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">Common Mistakes</p>
               <div className="space-y-2">
                 {exercise.common_mistakes.map((m, i) => (
-                  <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-destructive/10" style={{ border: '0.5px solid rgb(var(--destructive))' }}>
+                  <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-destructive/10" style={{ border: '0.5px solid var(--tc-destructive)' }}>
                     <AlertTriangle className="w-3.5 h-3.5 text-destructive flex-shrink-0 mt-0.5" />
                     <p className="text-sm text-foreground leading-relaxed">{m}</p>
                   </div>
@@ -233,7 +233,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
 
           {/* Coach notes */}
           {exercise.notes && (
-            <div className="p-3 rounded-xl bg-accent" style={{ border: '0.5px solid rgb(var(--accent))' }}>
+            <div className="p-3 rounded-xl bg-accent" style={{ border: '0.5px solid var(--tc-accent)' }}>
               <p className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">Coach Notes</p>
               <p className="text-sm text-foreground">{exercise.notes}</p>
             </div>
