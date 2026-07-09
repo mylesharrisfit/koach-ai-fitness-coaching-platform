@@ -32,7 +32,7 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
       <div className="space-y-6">
         {/* Business name */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#7A7A7A' }}>
+          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--kc-7a7a7a)' }}>
             Coaching Business Name
           </label>
           <input
@@ -42,20 +42,20 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
             placeholder="e.g. Elite Coaching Co."
             className="w-full rounded-xl px-4 py-3.5 text-sm text-white font-medium outline-none transition-all"
             style={{
-              background: '#141414',
-              border: name ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.08)',
-              boxShadow: name ? '0 0 16px rgb(var(--primary) / 0.1)' : 'none',
+              background: 'var(--kc-141414)',
+              border: name ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 8%, transparent)',
+              boxShadow: name ? '0 0 16px color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'none',
             }}
           />
         </div>
 
         {/* Social handle */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#7A7A7A' }}>
-            Instagram / Social Handle <span style={{ color: '#3A3A3A' }}>(optional)</span>
+          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--kc-7a7a7a)' }}>
+            Instagram / Social Handle <span style={{ color: 'var(--kc-3a3a3a)' }}>(optional)</span>
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: '#555' }}>@</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color: 'var(--kc-555555)' }}>@</span>
             <input
               type="text"
               value={handle}
@@ -63,8 +63,8 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
               placeholder="yourhandle"
               className="w-full rounded-xl pl-8 pr-4 py-3.5 text-sm text-white font-medium outline-none transition-all"
               style={{
-                background: '#141414',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--kc-141414)',
+                border: '1px solid color-mix(in srgb, white 8%, transparent)',
               }}
             />
           </div>
@@ -72,7 +72,7 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
 
         {/* Niche */}
         <div className="space-y-3">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#7A7A7A' }}>
+          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--kc-7a7a7a)' }}>
             Your Coaching Niche
           </label>
           <div className="flex flex-wrap gap-2">
@@ -83,10 +83,10 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
                 onClick={() => setNiche(n.id)}
                 className="px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
                 style={{
-                  background: niche === n.id ? 'rgb(var(--primary) / 0.15)' : 'rgba(255,255,255,0.04)',
-                  border: niche === n.id ? '1px solid rgb(var(--primary) / 0.55)' : '1px solid rgba(255,255,255,0.07)',
-                  color: niche === n.id ? 'rgb(var(--card))' : '#7A7A7A',
-                  boxShadow: niche === n.id ? '0 0 16px rgb(var(--primary) / 0.15)' : 'none',
+                  background: niche === n.id ? 'color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                  border: niche === n.id ? '1px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
+                  color: niche === n.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  boxShadow: niche === n.id ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
                 }}
               >
                 {n.label}

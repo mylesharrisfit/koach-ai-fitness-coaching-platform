@@ -9,12 +9,12 @@ export default function SplashScreen({ onDone }) {
   }, [onDone]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: 'rgb(var(--sidebar))' }}>
+    <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: 'var(--tc-sidebar)' }}>
       {/* Glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
           className="w-[500px] h-[500px] rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 70%)', filter: 'blur(60px)' }}
+          style={{ background: 'radial-gradient(circle, var(--tc-primary) 0%, transparent 70%)', filter: 'blur(60px)' }}
         />
       </div>
 
@@ -52,7 +52,7 @@ export default function SplashScreen({ onDone }) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
             className="text-sm tracking-[0.15em] uppercase"
-            style={{ color: '#7A7A7A', letterSpacing: '0.2em' }}
+            style={{ color: 'var(--kc-7a7a7a)', letterSpacing: '0.2em' }}
           >
             AI Coaching Operating System
           </motion.p>
@@ -70,7 +70,7 @@ export default function SplashScreen({ onDone }) {
           <motion.div
             key={i}
             className="w-1 h-1 rounded-full"
-            style={{ background: 'rgb(var(--primary))' }}
+            style={{ background: 'var(--tc-primary)' }}
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
           />

@@ -45,13 +45,13 @@ export default function CoachSoftwareScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-left transition-all"
               style={{
-                background: isSelected ? 'rgb(var(--primary) / 0.1)' : 'rgb(var(--foreground))',
-                border: isSelected ? '1.5px solid rgb(var(--primary) / 0.5)' : '1.5px solid rgba(255,255,255,0.06)',
-                boxShadow: isSelected ? '0 0 18px rgb(var(--primary) / 0.12)' : 'none',
+                background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'var(--tc-foreground)',
+                border: isSelected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 6%, transparent)',
+                boxShadow: isSelected ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
               }}
             >
               <span className="text-lg flex-shrink-0">{s.emoji}</span>
-              <span className="text-sm font-semibold" style={{ color: isSelected ? 'rgb(var(--card))' : '#9A9A9A' }}>
+              <span className="text-sm font-semibold" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-9a9a9a)' }}>
                 {s.label}
               </span>
             </motion.button>

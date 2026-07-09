@@ -11,9 +11,9 @@ const stagger = {
 function Card({ children, glow = false, className = '' }) {
   return (
     <div className={`rounded-2xl p-4 ${className}`} style={{
-      background: 'rgb(var(--foreground))',
-      border: glow ? '1px solid rgb(var(--primary) / 0.2)' : '1px solid rgba(255,255,255,0.06)',
-      boxShadow: glow ? '0 0 28px rgb(var(--primary) / 0.07)' : 'none',
+      background: 'var(--tc-foreground)',
+      border: glow ? '1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)' : '1px solid color-mix(in srgb, white 6%, transparent)',
+      boxShadow: glow ? '0 0 28px color-mix(in srgb, var(--tc-primary) 7%, transparent)' : 'none',
     }}>
       {children}
     </div>
@@ -39,20 +39,20 @@ export default function CoachRevealDashboard({ data }) {
   const firstName = data?.business_name?.split(' ')[0] || 'Coach';
 
   return (
-    <div className="w-full h-full overflow-y-auto" style={{ background: 'rgb(var(--sidebar))' }}>
+    <div className="w-full h-full overflow-y-auto" style={{ background: 'var(--tc-sidebar)' }}>
       {/* Cinematic header glow */}
       <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% -20%, rgb(var(--primary) / 0.12) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse at 50% -20%, color-mix(in srgb, var(--tc-primary) 12%, transparent) 0%, transparent 70%)' }} />
 
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="relative px-5 pt-14 pb-6">
-        <p className="text-[11px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'rgb(var(--primary))' }}>
+        <p className="text-[11px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'var(--tc-primary)' }}>
           System Live · KOACH AI
         </p>
         <h1 className="text-2xl font-bold text-white mb-1" style={{ letterSpacing: '-0.025em' }}>
           Welcome, {firstName}. 👋
         </h1>
-        <p className="text-sm" style={{ color: '#6B6B6B' }}>
+        <p className="text-sm" style={{ color: 'var(--kc-6b6b6b)' }}>
           Your coaching OS is ready. Let's get you set up.
         </p>
       </motion.div>
@@ -66,17 +66,17 @@ export default function CoachRevealDashboard({ data }) {
         {/* KPI strip */}
         <motion.div variants={stagger.item}>
           <Card glow>
-            <p className="text-[10px] uppercase tracking-widest font-bold mb-3" style={{ color: '#555' }}>Dashboard Overview</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold mb-3" style={{ color: 'var(--kc-555555)' }}>Dashboard Overview</p>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: 'Clients', value: '0', color: 'rgb(var(--primary))' },
-                { label: 'Adherence', value: '—', color: 'rgb(var(--success))' },
-                { label: 'Revenue', value: '$0', color: 'rgb(var(--warning))' },
+                { label: 'Clients', value: '0', color: 'var(--tc-primary)' },
+                { label: 'Adherence', value: '—', color: 'var(--tc-success)' },
+                { label: 'Revenue', value: '$0', color: 'var(--tc-warning)' },
               ].map(s => (
                 <div key={s.label} className="text-center py-3 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  style={{ background: 'color-mix(in srgb, white 2%, transparent)', border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
                   <p className="text-xl font-bold" style={{ color: s.color }}>{s.value}</p>
-                  <p className="text-[10px] mt-0.5 uppercase tracking-widest font-semibold" style={{ color: '#555' }}>{s.label}</p>
+                  <p className="text-[10px] mt-0.5 uppercase tracking-widest font-semibold" style={{ color: 'var(--kc-555555)' }}>{s.label}</p>
                 </div>
               ))}
             </div>
@@ -89,10 +89,10 @@ export default function CoachRevealDashboard({ data }) {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-bold text-white">Setup Checklist</p>
-                <p className="text-xs mt-0.5" style={{ color: '#555' }}>Complete these to unlock your full system</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--kc-555555)' }}>Complete these to unlock your full system</p>
               </div>
               <span className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-                style={{ background: 'rgb(var(--primary) / 0.1)', color: 'rgb(var(--primary))' }}>
+                style={{ background: 'color-mix(in srgb, var(--tc-primary) 10%, transparent)', color: 'var(--tc-primary)' }}>
                 0 / {CHECKLIST.length}
               </span>
             </div>
@@ -108,13 +108,13 @@ export default function CoachRevealDashboard({ data }) {
                   >
                     <Link to={item.path}>
                       <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all hover:bg-card/[0.03]"
-                        style={{ border: '1px solid rgba(255,255,255,0.04)' }}>
+                        style={{ border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'rgb(var(--primary) / 0.1)' }}>
-                          <Icon className="w-3.5 h-3.5" style={{ color: 'rgb(var(--primary))' }} />
+                          style={{ background: 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' }}>
+                          <Icon className="w-3.5 h-3.5" style={{ color: 'var(--tc-primary)' }} />
                         </div>
-                        <p className="text-sm flex-1" style={{ color: '#C3C3C3' }}>{item.label}</p>
-                        <ArrowRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#333' }} />
+                        <p className="text-sm flex-1" style={{ color: 'var(--kc-c3c3c3)' }}>{item.label}</p>
+                        <ArrowRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--kc-333333)' }} />
                       </div>
                     </Link>
                   </motion.div>
@@ -132,9 +132,9 @@ export default function CoachRevealDashboard({ data }) {
               {INSIGHTS.map((ins, i) => (
                 <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 + i * 0.1 }}
                   className="flex items-start gap-3 px-3 py-3 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  style={{ background: 'color-mix(in srgb, white 2%, transparent)', border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
                   <span className="text-base mt-0.5">{ins.icon}</span>
-                  <p className="text-xs leading-relaxed" style={{ color: '#9A9A9A' }}>{ins.text}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--kc-9a9a9a)' }}>{ins.text}</p>
                 </motion.div>
               ))}
             </div>
@@ -154,8 +154,8 @@ export default function CoachRevealDashboard({ data }) {
               return (
                 <Link key={i} to={a.path}>
                   <button className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl transition-all hover:bg-card/[0.04]"
-                    style={{ background: 'rgb(var(--foreground))', border: '1px solid rgba(255,255,255,0.06)', color: '#B3B3B3' }}>
-                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'rgb(var(--primary))' }} />
+                    style={{ background: 'var(--tc-foreground)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--kc-b3b3b3)' }}>
+                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--tc-primary)' }} />
                     <span className="text-sm font-medium">{a.label}</span>
                   </button>
                 </Link>
@@ -168,10 +168,10 @@ export default function CoachRevealDashboard({ data }) {
         <motion.div variants={stagger.item}>
           <Link to="/">
             <motion.button
-              whileHover={{ scale: 1.02, boxShadow: '0 0 36px rgb(var(--primary) / 0.4)' }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 36px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 24px rgb(var(--primary) / 0.25)' }}
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))', boxShadow: '0 0 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}
             >
               Enter Full Dashboard
               <ArrowRight className="w-5 h-5" />

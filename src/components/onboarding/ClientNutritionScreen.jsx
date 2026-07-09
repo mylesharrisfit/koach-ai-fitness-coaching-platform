@@ -49,7 +49,7 @@ export default function ClientNutritionScreen({ onNext, onBack, data }) {
         </div>
 
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Foods you enjoy</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Foods you enjoy</p>
           <div className="flex flex-wrap gap-2.5">
             {FOODS.map(f => (
               <ChipSelect key={f.id} label={f.label} selected={foods.includes(f.id)} onClick={() => toggleFood(f.id)} />

@@ -59,7 +59,7 @@ export default function ClientAllergiesScreen({ onNext, onBack, data }) {
           ))}
         </div>
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Foods you enjoy</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Foods you enjoy</p>
           <div className="flex flex-wrap gap-2.5">
             {LIKED_FOODS.map(f => (
               <ChipSelect key={f.id} label={f.label} selected={liked.includes(f.id)} onClick={() => toggleL(f.id)} />
@@ -67,16 +67,16 @@ export default function ClientAllergiesScreen({ onNext, onBack, data }) {
           </div>
         </div>
         <div className="space-y-2">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Foods you dislike</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Foods you dislike</p>
           <input
             type="text"
             value={disliked}
             onChange={e => setDisliked(e.target.value)}
             placeholder="e.g. broccoli, tuna, cottage cheese..."
             className="w-full px-4 py-3.5 rounded-xl text-white text-base focus:outline-none transition-all"
-            style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)', color: 'rgb(var(--card))' }}
-            onFocus={e => { e.target.style.border = '1px solid rgb(var(--primary) / 0.45)'; }}
-            onBlur={e => { e.target.style.border = '1px solid rgba(255,255,255,0.06)'; }}
+            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-card)' }}
+            onFocus={e => { e.target.style.border = '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
+            onBlur={e => { e.target.style.border = '1px solid color-mix(in srgb, white 6%, transparent)'; }}
           />
         </div>
       </div>

@@ -41,16 +41,16 @@ export default function ClientHealthScreen({ onNext, onBack, data }) {
           ))}
         </div>
         <div className="space-y-2">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Anything else your coach should know?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Anything else your coach should know?</p>
           <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
             placeholder="Add any relevant medical history, medications, or concerns..."
             rows={4}
             className="w-full px-4 py-4 rounded-2xl text-white text-sm leading-relaxed resize-none focus:outline-none transition-all"
-            style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)', color: 'rgb(var(--card))' }}
-            onFocus={e => { e.target.style.border = '1px solid rgb(var(--primary) / 0.45)'; }}
-            onBlur={e => { e.target.style.border = '1px solid rgba(255,255,255,0.06)'; }}
+            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-card)' }}
+            onFocus={e => { e.target.style.border = '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
+            onBlur={e => { e.target.style.border = '1px solid color-mix(in srgb, white 6%, transparent)'; }}
           />
         </div>
       </div>

@@ -25,11 +25,11 @@ export default function OnboardingLayout({
   hideNext = false,
 }) {
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: 'rgb(var(--sidebar))' }}>
+    <div className="w-full h-full flex flex-col" style={{ background: 'var(--tc-sidebar)' }}>
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(60px)' }} />
+          style={{ background: 'radial-gradient(circle, var(--tc-primary) 0%, transparent 65%)', filter: 'blur(60px)' }} />
       </div>
 
       {/* Back button */}
@@ -38,7 +38,7 @@ export default function OnboardingLayout({
           <button
             onClick={onBack}
             className="flex items-center gap-1.5 text-sm font-medium transition-colors"
-            style={{ color: '#555' }}
+            style={{ color: 'var(--kc-555555)' }}
           >
             <ChevronLeft className="w-4 h-4" />
             Back
@@ -57,7 +57,7 @@ export default function OnboardingLayout({
           {/* Header */}
           <motion.div variants={stagger.item} className="space-y-2">
             {eyebrow && (
-              <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
+              <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'var(--tc-primary)' }}>
                 {eyebrow}
               </p>
             )}
@@ -68,7 +68,7 @@ export default function OnboardingLayout({
               {headline}
             </h2>
             {subtext && (
-              <p className="text-sm leading-relaxed mt-1" style={{ color: '#7A7A7A' }}>
+              <p className="text-sm leading-relaxed mt-1" style={{ color: 'var(--kc-7a7a7a)' }}>
                 {subtext}
               </p>
             )}
@@ -87,20 +87,20 @@ export default function OnboardingLayout({
           className="fixed bottom-0 left-0 right-0 px-6 pt-4 flex flex-col gap-3 z-20"
           style={{
             paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
-            background: 'rgb(var(--sidebar))',
+            background: 'var(--tc-sidebar)',
           }}
         >
           <div className="max-w-lg mx-auto w-full">
             <motion.button
               onClick={onNext}
               disabled={nextDisabled}
-              whileHover={!nextDisabled ? { scale: 1.02, boxShadow: '0 0 35px rgb(var(--primary) / 0.4)' } : {}}
+              whileHover={!nextDisabled ? { scale: 1.02, boxShadow: '0 0 35px color-mix(in srgb, var(--tc-primary) 40%, transparent)' } : {}}
               whileTap={!nextDisabled ? { scale: 0.98 } : {}}
               className="w-full py-4 rounded-2xl text-white font-semibold text-base transition-all"
               style={{
-                background: nextDisabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
-                boxShadow: nextDisabled ? 'none' : '0 0 24px rgb(var(--primary) / 0.25)',
-                color: nextDisabled ? '#555' : 'rgb(var(--card))',
+                background: nextDisabled ? 'color-mix(in srgb, white 6%, transparent)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))',
+                boxShadow: nextDisabled ? 'none' : '0 0 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)',
+                color: nextDisabled ? 'var(--kc-555555)' : 'var(--tc-card)',
               }}
             >
               {nextLabel}

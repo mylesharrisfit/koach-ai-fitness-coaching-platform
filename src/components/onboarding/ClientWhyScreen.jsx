@@ -27,21 +27,21 @@ export default function ClientWhyScreen({ onNext, onBack, data }) {
             rows={6}
             className="w-full px-5 py-5 rounded-2xl text-white text-base leading-relaxed resize-none focus:outline-none transition-all"
             style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1.5px solid rgba(255,255,255,0.07)',
-              color: 'rgb(var(--card))',
+              background: 'color-mix(in srgb, white 4%, transparent)',
+              border: '1.5px solid color-mix(in srgb, white 7%, transparent)',
+              color: 'var(--tc-card)',
             }}
-            onFocus={e => { e.target.style.border = '1.5px solid rgb(var(--primary) / 0.45)'; e.target.style.boxShadow = '0 0 30px rgb(var(--primary) / 0.08)'; }}
-            onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; e.target.style.boxShadow = 'none'; }}
+            onFocus={e => { e.target.style.border = '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; e.target.style.boxShadow = '0 0 30px color-mix(in srgb, var(--tc-primary) 8%, transparent)'; }}
+            onBlur={e => { e.target.style.border = '1.5px solid color-mix(in srgb, white 7%, transparent)'; e.target.style.boxShadow = 'none'; }}
           />
-          <div className="absolute bottom-3 right-4 text-xs" style={{ color: '#3A3A3A' }}>
+          <div className="absolute bottom-3 right-4 text-xs" style={{ color: 'var(--kc-3a3a3a)' }}>
             {why.length}/500
           </div>
         </div>
 
         {/* Quick picks */}
         <div className="space-y-3">
-          <p className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: '#3A3A3A' }}>
+          <p className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: 'var(--kc-3a3a3a)' }}>
             Quick picks
           </p>
           <div className="flex flex-wrap gap-2">
@@ -53,9 +53,9 @@ export default function ClientWhyScreen({ onNext, onBack, data }) {
                 whileTap={{ scale: 0.96 }}
                 className="px-3.5 py-2 rounded-xl text-xs font-medium transition-all"
                 style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  color: '#7A7A7A',
+                  background: 'color-mix(in srgb, white 4%, transparent)',
+                  border: '1px solid color-mix(in srgb, white 7%, transparent)',
+                  color: 'var(--kc-7a7a7a)',
                 }}
               >
                 {p}

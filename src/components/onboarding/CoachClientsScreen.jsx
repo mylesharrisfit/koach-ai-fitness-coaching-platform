@@ -35,30 +35,30 @@ export default function CoachClientsScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.985 }}
               className="w-full flex items-center gap-5 px-5 py-4 rounded-2xl text-left transition-all"
               style={{
-                background: isSelected ? 'rgb(var(--primary) / 0.09)' : 'rgb(var(--foreground))',
-                border: isSelected ? '1.5px solid rgb(var(--primary) / 0.5)' : '1.5px solid rgba(255,255,255,0.06)',
-                boxShadow: isSelected ? '0 0 24px rgb(var(--primary) / 0.12)' : 'none',
+                background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 9%, transparent)' : 'var(--tc-foreground)',
+                border: isSelected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 6%, transparent)',
+                boxShadow: isSelected ? '0 0 24px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
               }}
             >
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg"
                 style={{
-                  background: isSelected ? 'rgb(var(--primary) / 0.18)' : 'rgba(255,255,255,0.04)',
-                  color: isSelected ? 'rgb(var(--primary))' : '#555',
+                  background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 18%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                  color: isSelected ? 'var(--tc-primary)' : 'var(--kc-555555)',
                 }}
               >
                 {o.label}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold" style={{ color: isSelected ? 'rgb(var(--card))' : '#B3B3B3' }}>
+                <p className="text-sm font-semibold" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-b3b3b3)' }}>
                   {o.sub}
                 </p>
               </div>
               <span
                 className="text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
                 style={{
-                  background: isSelected ? 'rgb(var(--primary) / 0.15)' : 'rgba(255,255,255,0.04)',
-                  color: isSelected ? 'rgb(var(--primary))' : '#444',
+                  background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                  color: isSelected ? 'var(--tc-primary)' : 'var(--kc-444444)',
                 }}
               >
                 {o.tag}

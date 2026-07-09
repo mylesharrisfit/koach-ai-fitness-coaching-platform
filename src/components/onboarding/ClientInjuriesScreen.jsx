@@ -50,10 +50,10 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.93 }}
               className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
               style={{
-                background: selected.includes(inj.id) ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
-                border: selected.includes(inj.id) ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.07)',
-                color: selected.includes(inj.id) ? 'rgb(var(--card))' : '#7A7A7A',
-                boxShadow: selected.includes(inj.id) ? '0 0 16px rgb(var(--primary) / 0.15)' : 'none',
+                background: selected.includes(inj.id) ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
+                border: selected.includes(inj.id) ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
+                color: selected.includes(inj.id) ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                boxShadow: selected.includes(inj.id) ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
               }}
             >
               {inj.label}
@@ -62,7 +62,7 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
         </div>
 
         <div className="space-y-2.5">
-          <p className="text-sm font-semibold" style={{ color: '#B3B3B3' }}>Anything else we should know?</p>
+          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Anything else we should know?</p>
           <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
@@ -70,12 +70,12 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
             rows={4}
             className="w-full px-5 py-4 rounded-2xl text-white text-sm leading-relaxed resize-none focus:outline-none transition-all"
             style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1.5px solid rgba(255,255,255,0.07)',
-              color: 'rgb(var(--card))',
+              background: 'color-mix(in srgb, white 4%, transparent)',
+              border: '1.5px solid color-mix(in srgb, white 7%, transparent)',
+              color: 'var(--tc-card)',
             }}
-            onFocus={e => { e.target.style.border = '1.5px solid rgb(var(--primary) / 0.45)'; }}
-            onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; }}
+            onFocus={e => { e.target.style.border = '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
+            onBlur={e => { e.target.style.border = '1.5px solid color-mix(in srgb, white 7%, transparent)'; }}
           />
         </div>
       </div>
