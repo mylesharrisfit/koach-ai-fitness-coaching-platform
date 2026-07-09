@@ -118,7 +118,7 @@ function TemplateCard({ template, onApply }) {
         <div className="mt-auto pt-2">
           <button
             onClick={() => onApply(template)}
-            className="w-full h-10 rounded-lg bg-sidebar text-white text-sm font-semibold hover:bg-[#1F2937] transition-colors"
+            className="w-full h-10 rounded-lg bg-sidebar text-white text-sm font-semibold hover:bg-[var(--kc-1f2937)] transition-colors"
           >
             Apply to Client
           </button>
@@ -146,7 +146,7 @@ export default function CoachingTemplates() {
           <h1 className="text-xl font-semibold text-white">Coaching Templates</h1>
           <p className="text-sm text-white/50 mt-0.5">Pre-built blueprints — apply everything to a client in one click</p>
         </div>
-        <button className="px-4 py-2 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
+        <button className="px-4 py-2 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-[var(--kc-w-90)] transition-colors">
           + Create Template
         </button>
       </div>
@@ -164,7 +164,7 @@ export default function CoachingTemplates() {
                   : 'bg-card border border-border text-muted-foreground hover:border-foreground')}>
               {f.label}
               <span className={cn('text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                activeFilter === f.key ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground')}>
+                activeFilter === f.key ? 'bg-[var(--kc-w-20)] text-white' : 'bg-muted text-muted-foreground')}>
                 {count}
               </span>
             </button>

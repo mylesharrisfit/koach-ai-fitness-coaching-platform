@@ -53,7 +53,7 @@ function PhotoGallery({ urls }) {
               {urls.map((_, i) => (
                 <button key={i} onClick={() => setIdx(i)} className={cn(
                   'w-2 h-2 rounded-full transition-all',
-                  i === idx ? 'bg-card scale-125' : 'bg-white/40'
+                  i === idx ? 'bg-card scale-125' : 'bg-[var(--kc-w-40)]'
                 )} />
               ))}
             </div>

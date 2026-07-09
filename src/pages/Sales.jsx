@@ -118,27 +118,27 @@ export default function Sales() {
   return (
     <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto overflow-x-hidden">
       {/* Header */}
-      <div className="rounded-2xl p-4 sm:p-5 text-white mb-4 sm:mb-5" style={{ background: 'rgb(var(--sidebar))' }}>
+      <div className="rounded-2xl p-4 sm:p-5 text-white mb-4 sm:mb-5" style={{ background: 'var(--tc-sidebar)' }}>
         <div className="flex items-center justify-between gap-3 mb-3">
           <div>
             <h1 className="text-lg sm:text-xl font-bold text-white">Sales & Pipeline</h1>
-            <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Track leads, manage your pipeline and close more clients</p>
+            <p className="text-xs sm:text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>Track leads, manage your pipeline and close more clients</p>
           </div>
           <button
             onClick={() => openAddLead()}
             className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-bold min-h-[44px] flex-shrink-0"
-            style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
+            style={{ background: 'var(--tc-card)', color: 'var(--tc-foreground)' }}
           >
             <Plus className="w-4 h-4" /> <span className="hidden xs:inline">Add Lead</span><span className="xs:hidden">Add</span>
           </button>
         </div>
-        <div className="flex rounded-lg p-1 w-fit" style={{ background: 'rgba(255,255,255,0.1)' }}>
+        <div className="flex rounded-lg p-1 w-fit" style={{ background: 'color-mix(in srgb, white 10%, transparent)' }}>
           {['pipeline', 'payments'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className="px-4 py-1.5 rounded-md text-sm font-semibold capitalize transition-all min-h-[36px]"
-              style={activeTab === tab ? { background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' } : { color: 'rgba(255,255,255,0.6)' }}
+              style={activeTab === tab ? { background: 'var(--tc-card)', color: 'var(--tc-foreground)' } : { color: 'color-mix(in srgb, white 60%, transparent)' }}
             >
               {tab}
             </button>
@@ -155,7 +155,7 @@ export default function Sales() {
           { label: 'Close Rate', value: `${conversionRate}%`, icon: Target },
         ].map(s => (
           <div key={s.label} className="bg-sidebar rounded-xl p-4 flex items-center gap-4">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}>
               <s.icon className="w-4 h-4 text-white/40" />
             </div>
             <div>
@@ -226,7 +226,7 @@ export default function Sales() {
                     <div className="flex items-center gap-3 mb-2">
                       <div
                         className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                        style={{ background: ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', '#EC4899'][lead.name.charCodeAt(0) % 6] }}
+                        style={{ background: ['var(--tc-primary)', 'var(--tc-warning)', 'var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-success)', 'var(--kc-ec4899)'][lead.name.charCodeAt(0) % 6] }}
                       >
                         {lead.name.slice(0, 2).toUpperCase()}
                       </div>

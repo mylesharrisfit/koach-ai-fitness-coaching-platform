@@ -37,11 +37,11 @@ const TIER_FILTERS = ['All', 'bronze', 'silver', 'gold', 'platinum', 'elite'];
 const CATEGORY_FILTERS = ['All', 'Milestones', 'Check-ins', 'Streaks', 'Compliance', 'Nutrition', 'Recovery', 'Mindset', 'Transformation', 'Performance', 'Special'];
 
 const TIER_TAB_STYLES = {
-  bronze:   { active: 'background:#CD7F32; color:#1A0F00; border-color:#CD7F32', dot: '#CD7F32' },
-  silver:   { active: 'background:#C0C0C0; color:rgb(var(--foreground)); border-color:#C0C0C0', dot: '#C0C0C0' },
-  gold:     { active: 'background:#FFD700; color:#1A1000; border-color:#FFD700', dot: '#FFD700' },
-  platinum: { active: 'background:#62D7FF; color:#03111A; border-color:#62D7FF', dot: '#62D7FF' },
-  elite:    { active: 'background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai))); color:rgb(var(--card)); border-color:rgb(var(--primary))', dot: 'rgb(var(--primary))' },
+  bronze:   { active: 'background:var(--kc-cd7f32); color:var(--kc-1a0f00); border-color:var(--kc-cd7f32)', dot: 'var(--kc-cd7f32)' },
+  silver:   { active: 'background:var(--kc-c0c0c0); color:var(--tc-foreground); border-color:var(--kc-c0c0c0)', dot: 'var(--kc-c0c0c0)' },
+  gold:     { active: 'background:var(--kc-ffd700); color:var(--kc-1a1000); border-color:var(--kc-ffd700)', dot: 'var(--kc-ffd700)' },
+  platinum: { active: 'background:var(--kc-62d7ff); color:var(--kc-03111a); border-color:var(--kc-62d7ff)', dot: 'var(--kc-62d7ff)' },
+  elite:    { active: 'background:linear-gradient(135deg,var(--tc-primary),var(--tc-ai)); color:var(--tc-card); border-color:var(--tc-primary)', dot: 'var(--tc-primary)' },
 };
 
 const BADGE_PROGRESS_HINT = {
@@ -75,25 +75,25 @@ function LeaderCard({ client, score, streak, rank, badgeCount }) {
       initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: rank * 0.05 }}
       className="flex flex-col items-center gap-2 p-4 rounded-2xl text-center relative overflow-hidden"
       style={{
-        background: isFirst ? 'radial-gradient(ellipse at 30% 0%, #2C2414 0%, #1A1608 100%)' : '#161820',
-        border: isFirst ? '1px solid rgba(255,215,0,0.35)' : '1px solid rgba(255,255,255,0.07)',
-        boxShadow: isFirst ? '0 0 24px 4px rgba(255,215,0,0.18)' : '0 2px 8px rgba(0,0,0,0.4)',
+        background: isFirst ? 'radial-gradient(ellipse at 30% 0%, var(--kc-2c2414) 0%, var(--kc-1a1608) 100%)' : 'var(--kc-161820)',
+        border: isFirst ? '1px solid color-mix(in srgb, var(--kc-ffd700) 35%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
+        boxShadow: isFirst ? '0 0 24px 4px color-mix(in srgb, var(--kc-ffd700) 18%, transparent)' : '0 2px 8px color-mix(in srgb, black 40%, transparent)',
       }}
     >
-      {isFirst && <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.08) 0%, transparent 70%)' }} />}
+      {isFirst && <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--kc-ffd700) 8%, transparent) 0%, transparent 70%)' }} />}
       {medal && <span className="text-lg leading-none">{medal}</span>}
       <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
-        style={{ background: isFirst ? 'linear-gradient(135deg,#FFD700,#B8860B)' : '#1F2937', color: isFirst ? '#1A1000' : 'rgb(var(--muted-foreground))' }}>
+        style={{ background: isFirst ? 'linear-gradient(135deg,var(--kc-ffd700),var(--kc-b8860b))' : 'var(--kc-1f2937)', color: isFirst ? 'var(--kc-1a1000)' : 'var(--tc-muted-foreground)' }}>
         {client.name?.[0]}
       </div>
       <p className="text-xs font-semibold text-white leading-tight">{client.name}</p>
       <div className="flex flex-col items-center">
-        <span className="text-2xl font-black" style={{ color: isFirst ? '#FFD700' : 'rgb(var(--primary))' }}>{score}</span>
+        <span className="text-2xl font-black" style={{ color: isFirst ? 'var(--kc-ffd700)' : 'var(--tc-primary)' }}>{score}</span>
         <span className="text-[9px] text-muted-foreground uppercase tracking-wide">score</span>
       </div>
       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
         <span>🔥</span><span className="font-semibold text-white">{streak}</span>
-        {badgeCount > 0 && <><span className="opacity-30">·</span><Trophy size={10} className="text-[#FFD700]" /><span>{badgeCount}</span></>}
+        {badgeCount > 0 && <><span className="opacity-30">·</span><Trophy size={10} className="text-[var(--kc-ffd700)]" /><span>{badgeCount}</span></>}
       </div>
     </motion.div>
   );
@@ -226,12 +226,12 @@ export default function Adherence() {
     <div className="p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
       {/* ── Header ── */}
       <div className="rounded-2xl p-4 sm:p-6 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-        style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 4px 32px rgba(0,0,0,0.5)' }}>
+        style={{ background: 'var(--tc-sidebar)', border: '1px solid color-mix(in srgb, white 7%, transparent)', boxShadow: '0 4px 32px color-mix(in srgb, black 50%, transparent)' }}>
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Adherence</h1>
           <p className="text-sm mt-0.5 text-muted-foreground">Monitor compliance · Spot trends · Coach smarter</p>
           {/* At-Risk folded in as a tab (route /at-risk still works) */}
-          <div className="flex gap-1 bg-white/10 rounded-xl p-1 mt-3 w-fit">
+          <div className="flex gap-1 bg-[var(--kc-w-10)] rounded-xl p-1 mt-3 w-fit">
             {[{ k: 'overview', l: 'Overview' }, { k: 'atrisk', l: 'At-Risk' }].map(t => (
               <button key={t.k}
                 onClick={() => { setView(t.k); track('nav.subtab', { parent: 'adherence', tab: t.k }); }}
@@ -244,7 +244,7 @@ export default function Adherence() {
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {/* Date range */}
-          <div className="flex gap-1 bg-white/10 rounded-xl p-1">
+          <div className="flex gap-1 bg-[var(--kc-w-10)] rounded-xl p-1">
             {DATE_RANGES.map(r => (
               <button key={r.label} onClick={() => setDateRange(r)}
                 className={cn('px-2.5 py-1 rounded-lg text-xs font-semibold transition-all',
@@ -254,18 +254,18 @@ export default function Adherence() {
             ))}
           </div>
           <button onClick={() => setShowSettings(true)}
-            className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+            className="w-8 h-8 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center hover:bg-[var(--kc-w-20)] transition-colors">
             <Settings className="w-4 h-4 text-white/70" />
           </button>
           <button onClick={handleAutoAward} disabled={autoAwarding}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-60"
-            style={{ background: 'rgba(255,255,255,0.07)', color: 'rgb(var(--primary))', border: '1px solid rgba(147,197,253,0.2)' }}>
+            style={{ background: 'color-mix(in srgb, white 7%, transparent)', color: 'var(--tc-primary)', border: '1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)' }}>
             <Zap className="w-4 h-4" />
             {autoAwarding ? 'Scanning...' : 'Auto-Award'}
           </button>
           <button onClick={() => openAwardFor('pr_hit')}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-foreground transition-all"
-            style={{ background: 'linear-gradient(135deg,#FFD700,rgb(var(--warning)))', boxShadow: '0 2px 16px rgba(255,215,0,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg,var(--kc-ffd700),var(--tc-warning))', boxShadow: '0 2px 16px color-mix(in srgb, var(--kc-ffd700) 30%, transparent)' }}>
             <Trophy className="w-4 h-4" /> Award Badge
           </button>
         </div>
@@ -320,7 +320,7 @@ export default function Adherence() {
       {/* ── At-Risk Alert ── */}
       {atRiskClients.length > 0 && (
         <div className="flex items-center gap-3 rounded-xl px-4 py-3 mb-5 text-sm"
-          style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)', color: 'rgb(var(--destructive))' }}>
+          style={{ background: 'color-mix(in srgb, var(--tc-destructive) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 25%, transparent)', color: 'var(--tc-destructive)' }}>
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           <span><strong>{atRiskClients.length} client{atRiskClients.length > 1 ? 's' : ''}</strong> below threshold: {atRiskClients.map(c => c.name).join(', ')}</span>
         </div>
@@ -376,10 +376,10 @@ export default function Adherence() {
               <button key={t} onClick={() => setTierFilter(t)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all"
                 style={isActive
-                  ? (t === 'All' ? { background: 'rgb(var(--sidebar))', color: 'rgb(var(--card))', borderColor: 'rgb(var(--foreground))' }
-                    : t === 'elite' ? { background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: 'rgb(var(--card))', borderColor: 'rgb(var(--primary))', boxShadow: '0 0 12px rgb(var(--primary) / 0.4)' }
-                    : { background: TIER_STYLES[t]?.accent, color: 'rgb(var(--foreground))', borderColor: TIER_STYLES[t]?.accent, boxShadow: `0 0 10px ${TIER_STYLES[t]?.glow}` })
-                  : { background: 'rgb(var(--card))', color: 'rgb(var(--muted-foreground))', borderColor: 'rgb(var(--border))' }
+                  ? (t === 'All' ? { background: 'var(--tc-sidebar)', color: 'var(--tc-card)', borderColor: 'var(--tc-foreground)' }
+                    : t === 'elite' ? { background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-card)', borderColor: 'var(--tc-primary)', boxShadow: '0 0 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }
+                    : { background: TIER_STYLES[t]?.accent, color: 'var(--tc-foreground)', borderColor: TIER_STYLES[t]?.accent, boxShadow: `0 0 10px ${TIER_STYLES[t]?.glow}` })
+                  : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }
                 }
               >
                 {t !== 'All' && ts && <span className="w-1.5 h-1.5 rounded-full" style={{ background: isActive ? 'currentColor' : TIER_STYLES[t]?.accent }} />}
@@ -393,7 +393,7 @@ export default function Adherence() {
           {CATEGORY_FILTERS.map(cat => (
             <button key={cat} onClick={() => setCategoryFilter(cat)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all"
-              style={categoryFilter === cat ? { background: 'rgb(var(--sidebar))', color: 'rgb(var(--card))', borderColor: 'rgb(var(--foreground))' } : { background: 'rgb(var(--card))', color: 'rgb(var(--muted-foreground))', borderColor: 'rgb(var(--border))' }}>
+              style={categoryFilter === cat ? { background: 'var(--tc-sidebar)', color: 'var(--tc-card)', borderColor: 'var(--tc-foreground)' } : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }}>
               {cat}<span className={categoryFilter === cat ? 'opacity-60' : 'opacity-40'}>({categoryBadgeCounts[cat]})</span>
             </button>
           ))}
@@ -423,7 +423,7 @@ export default function Adherence() {
             <div key={client.id} className="bg-card border border-border rounded-xl p-5">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
-                  style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--accent))' }}>
+                  style={{ background: 'var(--tc-accent)', color: 'var(--tc-primary)', border: '1px solid var(--tc-accent)' }}>
                   {client.name?.[0]}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -434,7 +434,7 @@ export default function Adherence() {
                   <span className="text-xs text-muted-foreground"><span className="font-bold text-foreground">{clientBadges.length}</span><span className="text-muted-foreground"> / {Object.keys(BADGE_CONFIG).length}</span></span>
                   <button onClick={() => openAwardFor('pr_hit', client.id)}
                     className="text-xs font-bold px-3 py-1 rounded-lg transition-all"
-                    style={{ background: 'rgba(255,215,0,0.12)', color: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning) / 0.25)' }}>
+                    style={{ background: 'color-mix(in srgb, var(--kc-ffd700) 12%, transparent)', color: 'var(--tc-warning)', border: '1px solid color-mix(in srgb, var(--tc-warning) 25%, transparent)' }}>
                     + Award
                   </button>
                 </div>
@@ -452,7 +452,7 @@ export default function Adherence() {
                       </span>
                     );
                   })}
-                  {clientBadges.length > 5 && <span className="text-xs text-muted-foreground px-2 py-1 rounded-full" style={{ background: 'rgb(var(--muted))', border: '1px solid rgb(var(--border))' }}>+{clientBadges.length - 5} more</span>}
+                  {clientBadges.length > 5 && <span className="text-xs text-muted-foreground px-2 py-1 rounded-full" style={{ background: 'var(--tc-muted)', border: '1px solid var(--tc-border)' }}>+{clientBadges.length - 5} more</span>}
                 </div>
               )}
               {clientBadges.length === 0 && <p className="text-xs text-muted-foreground italic mb-4">No achievements yet — award their first badge!</p>}
@@ -464,20 +464,20 @@ export default function Adherence() {
 
       {/* ── Award Dialog ── */}
       <Dialog open={awardOpen} onOpenChange={setAwardOpen}>
-        <DialogContent className="max-w-sm" style={{ background: '#161820', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <DialogContent className="max-w-sm" style={{ background: 'var(--kc-161820)', border: '1px solid color-mix(in srgb, white 10%, transparent)' }}>
           <DialogHeader><DialogTitle className="text-white font-black">Award Badge</DialogTitle></DialogHeader>
           <form onSubmit={handleAward} className="space-y-4 mt-2">
             <div>
               <Label className="text-muted-foreground text-xs">Client</Label>
               <Select value={awardForm.client_id} onValueChange={v => setAwardForm({ ...awardForm, client_id: v })}>
-                <SelectTrigger className="bg-[#1F2937] border-white/10 text-white"><SelectValue placeholder="Select client" /></SelectTrigger>
+                <SelectTrigger className="bg-[var(--kc-1f2937)] border-white/10 text-white"><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>{clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-muted-foreground text-xs">Badge</Label>
               <Select value={awardForm.badge_key} onValueChange={v => setAwardForm({ ...awardForm, badge_key: v })}>
-                <SelectTrigger className="bg-[#1F2937] border-white/10 text-white"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-[var(--kc-1f2937)] border-white/10 text-white"><SelectValue /></SelectTrigger>
                 <SelectContent>{Object.entries(BADGE_CONFIG).map(([k, v]) => <SelectItem key={k} value={k}>{v.emoji} {v.label} · {TIER_STYLES[v.tier]?.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
@@ -493,11 +493,11 @@ export default function Adherence() {
             })()}
             <div>
               <Label className="text-muted-foreground text-xs">Date</Label>
-              <Input type="date" value={awardForm.earned_date} onChange={e => setAwardForm({ ...awardForm, earned_date: e.target.value })} className="bg-[#1F2937] border-white/10 text-white" />
+              <Input type="date" value={awardForm.earned_date} onChange={e => setAwardForm({ ...awardForm, earned_date: e.target.value })} className="bg-[var(--kc-1f2937)] border-white/10 text-white" />
             </div>
             <div className="flex justify-end gap-3 pt-1">
-              <Button type="button" variant="outline" onClick={() => setAwardOpen(false)} className="border-white/10 text-muted-foreground hover:bg-white/5">Cancel</Button>
-              <Button type="submit" disabled={!awardForm.client_id} style={{ background: 'linear-gradient(135deg,#FFD700,rgb(var(--warning)))', color: '#1A1000', fontWeight: 800 }}>🏆 Award</Button>
+              <Button type="button" variant="outline" onClick={() => setAwardOpen(false)} className="border-white/10 text-muted-foreground hover:bg-[var(--kc-w-5)]">Cancel</Button>
+              <Button type="submit" disabled={!awardForm.client_id} style={{ background: 'linear-gradient(135deg,var(--kc-ffd700),var(--tc-warning))', color: 'var(--kc-1a1000)', fontWeight: 800 }}>🏆 Award</Button>
             </div>
           </form>
         </DialogContent>

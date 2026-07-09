@@ -62,17 +62,17 @@ const CATEGORY_SHORTCUTS = [
 ];
 
 const MUSCLE_COLORS = {
-  chest: 'rgb(var(--primary))', back: 'rgb(var(--success))', shoulders: 'rgb(var(--warning))', biceps: 'rgb(var(--ai))',
-  triceps: 'rgb(var(--ai))', core: 'rgb(var(--destructive))', glutes: '#EC4899', legs: '#06B6D4',
-  hamstrings: '#06B6D4', calves: '#84CC16', full_body: '#F97316', cardio: 'rgb(var(--ai))',
+  chest: 'var(--tc-primary)', back: 'var(--tc-success)', shoulders: 'var(--tc-warning)', biceps: 'var(--tc-ai)',
+  triceps: 'var(--tc-ai)', core: 'var(--tc-destructive)', glutes: 'var(--kc-ec4899)', legs: 'var(--kc-06b6d4)',
+  hamstrings: 'var(--kc-06b6d4)', calves: 'var(--kc-84cc16)', full_body: 'var(--kc-f97316)', cardio: 'var(--tc-ai)',
 };
 
 function ExerciseListRow({ exercise, onView, onEdit }) {
   return (
     <div onClick={onView} className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-xl hover:border-primary/30 hover:shadow-sm cursor-pointer transition-all group">
       <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-        style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))'}18` }}>
-        <Dumbbell className="w-4 h-4" style={{ color: MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))' }} />
+        style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || 'var(--tc-foreground)'}18` }}>
+        <Dumbbell className="w-4 h-4" style={{ color: MUSCLE_COLORS[exercise.muscle_group] || 'var(--tc-foreground)' }} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-sm text-foreground truncate">{exercise.name}</p>
@@ -80,7 +80,7 @@ function ExerciseListRow({ exercise, onView, onEdit }) {
       <div className="flex items-center gap-2 flex-shrink-0">
         {exercise.muscle_group && (
           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))'}18`, color: MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))' }}>
+            style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || 'var(--tc-foreground)'}18`, color: MUSCLE_COLORS[exercise.muscle_group] || 'var(--tc-foreground)' }}>
             {exercise.muscle_group.replace('_', ' ')}
           </span>
         )}
@@ -178,7 +178,7 @@ export default function ExerciseLibrary() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       {/* ── Header ── */}
       <div className="rounded-2xl p-4 sm:p-5 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-        style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(255,255,255,0.07)' }}>
+        style={{ background: 'var(--tc-sidebar)', border: '1px solid color-mix(in srgb, white 7%, transparent)' }}>
         <div>
           <h1 className="text-xl font-bold text-white">Exercise Library</h1>
           <p className="text-xs mt-0.5 text-white/50">{exercises.length} exercises · {stats.custom} custom</p>
@@ -186,7 +186,7 @@ export default function ExerciseLibrary() {
         <div className="flex items-center gap-2 flex-wrap">
 <button onClick={() => { setEditingExercise(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', boxShadow: '0 2px 12px rgb(var(--primary) / 0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', boxShadow: '0 2px 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }}>
             <Plus className="w-4 h-4" /> Add Exercise
           </button>
         </div>

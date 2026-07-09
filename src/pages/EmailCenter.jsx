@@ -292,7 +292,7 @@ export default function EmailCenter() {
             {/* Send button */}
             <Button
               className="w-full font-bold gap-2"
-              style={{ background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', boxShadow: '0 4px 12px rgb(var(--primary) / 0.3)' }}
+              style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', boxShadow: '0 4px 12px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}
               onClick={handleSendToClient}
               disabled={sending || (toMode === 'single' && !selectedClient)}
             >
@@ -346,9 +346,9 @@ export default function EmailCenter() {
           <div className="flex-1 overflow-auto bg-muted p-3" style={{ minHeight: 400 }}>
             <div className={cn('mx-auto transition-all', previewDevice === 'mobile' ? 'max-w-[375px]' : 'max-w-full')}>
               <iframe
-                srcDoc={rendered.html || '<p style="padding:20px;color:#999;">Select a template to preview</p>'}
+                srcDoc={rendered.html || '<p style="padding:20px;color:var(--kc-999999);">Select a template to preview</p>'}
                 className="w-full border-0 rounded-xl shadow-sm"
-                style={{ minHeight: 520, background: 'rgb(var(--card))' }}
+                style={{ minHeight: 520, background: 'var(--tc-card)' }}
                 title="Email Preview"
               />
             </div>

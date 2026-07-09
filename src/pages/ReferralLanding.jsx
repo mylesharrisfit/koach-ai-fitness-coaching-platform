@@ -70,12 +70,12 @@ export default function ReferralLanding() {
       {/* Hero */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         className="pt-20 pb-12 px-5 text-center"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--muted)) 0%, rgb(var(--muted)) 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, var(--tc-muted) 0%, var(--tc-muted) 100%)' }}>
         
         {coach.avatar_url && (
           <img src={coach.avatar_url} alt={coach.first_name}
             className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-white"
-            style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }} />
+            style={{ boxShadow: '0 4px 16px color-mix(in srgb, black 10%, transparent)' }} />
         )}
 
         <h1 className="text-foreground font-black text-3xl mb-2">
@@ -95,7 +95,7 @@ export default function ReferralLanding() {
           <div className="flex flex-wrap gap-2 justify-center mb-8">
             {coach.specialties.slice(0, 3).map((spec, i) => (
               <span key={i} className="px-4 py-2 rounded-full text-sm font-bold"
-                style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--primary))' }}>
+                style={{ background: 'var(--tc-accent)', color: 'var(--tc-primary)' }}>
                 {spec}
               </span>
             ))}
@@ -138,7 +138,7 @@ export default function ReferralLanding() {
         {config?.reward_referred_friend_too && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
             className="p-6 rounded-2xl mb-8"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--warning)) 0%, rgb(var(--warning)) 100%)', border: '2px solid rgb(var(--warning))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-warning) 0%, var(--tc-warning) 100%)', border: '2px solid var(--tc-warning)' }}>
             <p className="text-warning font-black text-lg text-center">
               🎁 {config.new_client_reward_description || 'Special offer for new clients'}
             </p>
@@ -157,7 +157,7 @@ export default function ReferralLanding() {
       {/* CTA */}
       <div className="px-5 py-12 bg-gradient-to-t from-muted">
         <button className="w-full max-w-2xl mx-auto block py-4 rounded-xl font-black text-white text-lg flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 32px rgb(var(--primary) / 0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 8px 32px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
           Claim Your Spot <ArrowRight className="w-5 h-5" />
         </button>
         <p className="text-center text-muted-foreground text-sm mt-4">

@@ -316,7 +316,7 @@ export default function Schedule() {
       {/* ── Header ── */}
       <div className="bg-sidebar rounded-xl p-4 sm:p-5 mb-4">
         <h1 className="text-lg sm:text-xl font-semibold text-white">Calendar</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Schedule and manage coaching sessions</p>
+        <p className="text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>Schedule and manage coaching sessions</p>
       </div>
 
       {/* ── Google Calendar Banner ── */}

@@ -256,7 +256,7 @@ export default function Assistant() {
       <div className="bg-sidebar rounded-xl p-5 text-white mb-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -266,7 +266,7 @@ export default function Assistant() {
           </div>
           <button
             onClick={handleNewChat}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] text-white px-3 py-1.5 rounded-lg transition-colors"
           >
             <PlusCircle className="w-3.5 h-3.5" /> New Chat
           </button>

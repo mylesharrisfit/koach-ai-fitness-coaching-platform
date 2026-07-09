@@ -79,8 +79,8 @@ function BottomNav({ user, hideForActiveWorkout }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card"
       style={{
-        borderTop: '1px solid rgb(var(--muted))',
-        boxShadow: '0 -4px 24px rgba(0,0,0,0.07)',
+        borderTop: '1px solid var(--tc-muted)',
+        boxShadow: '0 -4px 24px color-mix(in srgb, black 7%, transparent)',
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}>
       <div className="flex">
@@ -94,24 +94,24 @@ function BottomNav({ user, hideForActiveWorkout }) {
               {isActive && (
                 <motion.div layoutId="nav-indicator"
                   className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
-                  style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
+                  style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-ai))' }} />
               )}
               <div className="relative">
                 <item.icon
                   className="w-5 h-5 transition-all"
                   strokeWidth={isActive ? 2.5 : 1.8}
-                  style={{ color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}
+                  style={{ color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}
                 />
                 {badge && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
                     className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-black text-white px-1"
-                    style={{ background: badge === '!' ? 'rgb(var(--destructive))' : 'rgb(var(--primary))' }}>
+                    style={{ background: badge === '!' ? 'var(--tc-destructive)' : 'var(--tc-primary)' }}>
                     {badge}
                   </motion.div>
                 )}
               </div>
               <span className="text-[10px] font-semibold transition-all"
-                style={{ color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
+                style={{ color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>
                 {item.label}
               </span>
             </Link>
@@ -167,7 +167,7 @@ export default function ClientPortal() {
   };
 
   return (
-    <div className="fixed inset-0" style={{ background: 'rgb(var(--muted))' }}>
+    <div className="fixed inset-0" style={{ background: 'var(--tc-muted)' }}>
       <div className="absolute inset-0 overflow-y-auto">
         <Routes>
           <Route path="/"          element={<PortalHome user={user} />} />

@@ -120,7 +120,7 @@ function MiniAdherenceChart({ checkIns }) {
     <div className="flex items-end gap-1 h-8">
       {weeks.map((ci, i) => {
         const score = checkInScore(ci) ?? 0;
-        const color = score >= 70 ? 'rgb(var(--success))' : score >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+        const color = score >= 70 ? 'var(--tc-success)' : score >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
         return (
           <div key={i} className="flex-1 rounded-sm" style={{ height: `${Math.max(15, score)}%`, background: color, minHeight: 4 }} title={`Week ${i + 1}: ${score}%`} />
         );
@@ -179,7 +179,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
           {/* Avatar with pulse dot */}
           <div className="relative flex-shrink-0">
             <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)), #1F2937)' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-foreground), var(--kc-1f2937))' }}>
               {client.name?.[0]?.toUpperCase()}
             </div>
             <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white', riskInfo.dot,
@@ -354,7 +354,7 @@ function RiskBreakdown({ atRisk, onFilter, activeFilter }) {
           <div className="flex -space-x-1.5">
             {col.clients.slice(0, 5).map((e, i) => (
               <div key={e.client.id} className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-[9px] font-bold text-white"
-                style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)), rgb(var(--foreground)))', zIndex: 5 - i }}>
+                style={{ background: 'linear-gradient(135deg, var(--tc-foreground), var(--tc-foreground))', zIndex: 5 - i }}>
                 {e.client.name?.[0]?.toUpperCase()}
               </div>
             ))}
@@ -401,7 +401,7 @@ function BulkActionBar({ selectedIds, clients, atRisk, onClear }) {
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-sidebar rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl border border-white/10">
       <span className="text-xs font-bold text-white">{selectedIds.length} selected</span>
-      <div className="w-px h-4 bg-white/20" />
+      <div className="w-px h-4 bg-[var(--kc-w-20)]" />
       <button onClick={() => {
         const msg = "Hey, I wanted to check in with you personally. Let's connect this week 💪";
         sendBulkMutation.mutate({ ids: selectedIds, message: msg });
@@ -469,16 +469,16 @@ export default function AtRiskClients() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
       {/* ── Header ── */}
       <div className="rounded-2xl p-4 sm:p-5 mb-5 flex items-center justify-between gap-3"
-        style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(255,255,255,0.07)' }}>
+        style={{ background: 'var(--tc-sidebar)', border: '1px solid color-mix(in srgb, white 7%, transparent)' }}>
         <div>
           <h1 className="text-xl font-bold text-white">At-Risk Clients</h1>
           <p className="text-xs mt-0.5 text-white/50">{atRisk.length} client{atRisk.length !== 1 ? 's' : ''} need{atRisk.length === 1 ? 's' : ''} attention</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => refetch()} className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+          <button onClick={() => refetch()} className="w-8 h-8 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center hover:bg-[var(--kc-w-20)] transition-colors">
             <RefreshCw className="w-4 h-4 text-white/70" />
           </button>
-          <button onClick={() => setShowSettings(s => !s)} className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+          <button onClick={() => setShowSettings(s => !s)} className="w-8 h-8 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center hover:bg-[var(--kc-w-20)] transition-colors">
             <Settings className="w-4 h-4 text-white/70" />
           </button>
         </div>

@@ -94,7 +94,7 @@ export default function Store() {
       {/* Dark header */}
       <div className="bg-sidebar rounded-xl p-5 text-white flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center">
             <ShoppingBag className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -102,7 +102,7 @@ export default function Store() {
             <p className="text-sm text-white/50 mt-0.5">Sell your training plans, nutrition programs, and coaching packages</p>
           </div>
         </div>
-        <button onClick={openCreate} className="px-4 py-2 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
+        <button onClick={openCreate} className="px-4 py-2 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-[var(--kc-w-90)] transition-colors">
           + Create Product
         </button>
       </div>

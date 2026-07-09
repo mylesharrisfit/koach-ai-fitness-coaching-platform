@@ -14,7 +14,7 @@ function PasswordInput({ label, value, onChange, placeholder }) {
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-4 py-3.5 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/60 transition-colors"
+          className="w-full px-4 py-3.5 pr-16 rounded-xl bg-[var(--kc-w-5)] border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/60 transition-colors"
         />
         <button
           type="button"
@@ -31,14 +31,14 @@ function PasswordInput({ label, value, onChange, placeholder }) {
 function StrengthBar({ password }) {
   if (!password) return null;
   const strength = password.length < 6 ? 1 : password.length < 10 ? 2 : /[A-Z]/.test(password) && /[0-9]/.test(password) ? 4 : 3;
-  const colors = ['', 'rgb(var(--destructive))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--success))'];
+  const colors = ['', 'var(--tc-destructive)', 'var(--tc-warning)', 'var(--tc-primary)', 'var(--tc-success)'];
   const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
   return (
     <div className="flex items-center gap-2 mt-1.5">
       <div className="flex gap-1 flex-1">
         {[1, 2, 3, 4].map(i => (
           <div key={i} className="flex-1 h-1 rounded-full transition-all duration-300"
-            style={{ background: i <= strength ? colors[strength] : 'rgba(255,255,255,0.08)' }} />
+            style={{ background: i <= strength ? colors[strength] : 'color-mix(in srgb, white 8%, transparent)' }} />
         ))}
       </div>
       <span className="text-[10px] font-bold" style={{ color: colors[strength] }}>{labels[strength]}</span>
@@ -80,12 +80,12 @@ export default function ClientSetup() {
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center px-5"
-      style={{ background: 'rgb(var(--sidebar))' }}>
+      style={{ background: 'var(--tc-sidebar)' }}>
 
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
-          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, var(--tc-primary) 0%, transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       <div className="relative z-10 w-full max-w-sm flex flex-col items-center gap-6">
@@ -104,7 +104,7 @@ export default function ClientSetup() {
         {status === 'invalid' && (
           <div className="w-full text-center space-y-4">
             <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
-              style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
+              style={{ background: 'color-mix(in srgb, var(--tc-destructive) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 25%, transparent)' }}>
               <span className="text-2xl">⛔</span>
             </div>
             <div>
@@ -114,7 +114,7 @@ export default function ClientSetup() {
               </p>
             </div>
             <div className="pt-2 px-4 py-3 rounded-xl text-xs text-white/30 leading-relaxed"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              style={{ background: 'color-mix(in srgb, white 3%, transparent)', border: '1px solid color-mix(in srgb, white 6%, transparent)' }}>
               Invite links are valid for 7 days after they are sent.
             </div>
           </div>
@@ -134,9 +134,9 @@ export default function ClientSetup() {
 
             {/* Client identity card */}
             <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
-              style={{ background: 'rgb(var(--primary) / 0.07)', border: '1px solid rgb(var(--primary) / 0.18)' }}>
+              style={{ background: 'color-mix(in srgb, var(--tc-primary) 7%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-primary) 18%, transparent)' }}>
               <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0"
-                style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))' }}>
+                style={{ background: 'color-mix(in srgb, var(--tc-primary) 20%, transparent)', color: 'var(--tc-primary)' }}>
                 {client.name?.[0]?.toUpperCase() || '?'}
               </div>
               <div>
@@ -165,7 +165,7 @@ export default function ClientSetup() {
 
               {error && (
                 <div className="px-4 py-3 rounded-xl text-xs font-medium text-destructive"
-                  style={{ background: 'rgb(var(--destructive) / 0.08)', border: '1px solid rgb(var(--destructive) / 0.2)' }}>
+                  style={{ background: 'color-mix(in srgb, var(--tc-destructive) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 20%, transparent)' }}>
                   {error}
                 </div>
               )}
@@ -175,8 +175,8 @@ export default function ClientSetup() {
                 disabled={submitting || !password || !confirmPassword}
                 className="w-full py-4 rounded-xl font-bold text-base text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
-                  background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
-                  boxShadow: '0 0 24px rgb(var(--primary) / 0.25)',
+                  background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))',
+                  boxShadow: '0 0 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)',
                 }}
               >
                 {submitting ? 'Setting up…' : 'Set Password & Continue →'}
@@ -189,9 +189,9 @@ export default function ClientSetup() {
         {status === 'success' && (
           <div className="w-full text-center space-y-4">
             <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
-              style={{ background: 'rgb(var(--success) / 0.1)', border: '1px solid rgb(var(--success) / 0.25)' }}>
+              style={{ background: 'color-mix(in srgb, var(--tc-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-success) 25%, transparent)' }}>
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <path d="M6 14L11 19L22 8" stroke="rgb(var(--success))" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6 14L11 19L22 8" stroke="var(--tc-success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <div>

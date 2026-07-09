@@ -14,9 +14,9 @@ import AIOnboardingOverviewModal from '@/components/clients/ai-onboarding/AIOnbo
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {
-  pending:   { label: 'Intake Started',    color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', icon: Hourglass },
-  completed: { label: 'Intake Complete',   color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', icon: CheckCircle2 },
-  converted: { label: 'Active Client',     color: 'rgb(var(--success))', bg: 'rgb(var(--success))', icon: Star },
+  pending:   { label: 'Intake Started',    color: 'var(--tc-warning)', bg: 'var(--tc-warning)', icon: Hourglass },
+  completed: { label: 'Intake Complete',   color: 'var(--tc-primary)', bg: 'var(--tc-accent)', icon: CheckCircle2 },
+  converted: { label: 'Active Client',     color: 'var(--tc-success)', bg: 'var(--tc-success)', icon: Star },
 };
 
 const GOAL_LABEL = {
@@ -46,7 +46,7 @@ function ResponseCard({ response, onApprove, isApproving }) {
       {/* Header */}
       <div className="flex items-center gap-3 p-4">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm"
-          style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--primary))' }}>
+          style={{ background: 'var(--tc-accent)', color: 'var(--tc-primary)' }}>
           {response.name?.[0]?.toUpperCase() || '?'}
         </div>
         <div className="flex-1 min-w-0">
@@ -191,28 +191,28 @@ export default function OnboardingManager() {
       const setupUrl = `${window.location.origin}/client-setup/${inviteToken}`;
       const coachName = user?.full_name || 'Your Coach';
       const html = `
-        <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;background:rgb(var(--card));border-radius:16px;overflow:hidden;border:1px solid rgb(var(--border));">
-          <div style="background:linear-gradient(135deg,#0A0A0A,#1a2744);padding:36px 32px 28px;text-align:center;">
+        <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;background:var(--tc-card);border-radius:16px;overflow:hidden;border:1px solid var(--tc-border);">
+          <div style="background:linear-gradient(135deg,var(--kc-0a0a0a),var(--kc-1a2744));padding:36px 32px 28px;text-align:center;">
             <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <span style="font-size:22px;font-weight:900;color:rgb(var(--card));letter-spacing:-0.04em;">KOACH</span>
-              <span style="font-size:22px;font-weight:300;color:rgb(var(--primary));letter-spacing:-0.04em;">AI</span>
+              <span style="font-size:22px;font-weight:900;color:var(--tc-card);letter-spacing:-0.04em;">KOACH</span>
+              <span style="font-size:22px;font-weight:300;color:var(--tc-primary);letter-spacing:-0.04em;">AI</span>
             </div>
-            <p style="color:rgba(255,255,255,0.4);font-size:12px;margin:0;">Your coaching portal is ready</p>
+            <p style="color:color-mix(in srgb, white 40%, transparent);font-size:12px;margin:0;">Your coaching portal is ready</p>
           </div>
           <div style="padding:36px 32px;">
-            <h1 style="font-size:24px;font-weight:800;color:rgb(var(--foreground));margin:0 0 8px;letter-spacing:-0.02em;">Welcome, ${resp.name?.split(' ')[0]} 👋</h1>
-            <p style="color:rgb(var(--muted-foreground));font-size:15px;line-height:1.6;margin:0 0 24px;">${coachName} has approved your application and set up your personal coaching portal. Click below to create your password and get started.</p>
+            <h1 style="font-size:24px;font-weight:800;color:var(--tc-foreground);margin:0 0 8px;letter-spacing:-0.02em;">Welcome, ${resp.name?.split(' ')[0]} 👋</h1>
+            <p style="color:var(--tc-muted-foreground);font-size:15px;line-height:1.6;margin:0 0 24px;">${coachName} has approved your application and set up your personal coaching portal. Click below to create your password and get started.</p>
             <div style="text-align:center;margin:28px 0;">
-              <a href="${setupUrl}" style="display:inline-block;background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--primary)));color:rgb(var(--card));font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:12px;box-shadow:0 4px 20px rgb(var(--primary) / 0.3);">Set Up My Account →</a>
+              <a href="${setupUrl}" style="display:inline-block;background:linear-gradient(135deg,var(--tc-primary),var(--tc-primary));color:var(--tc-card);font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:12px;box-shadow:0 4px 20px color-mix(in srgb, var(--tc-primary) 30%, transparent);">Set Up My Account →</a>
             </div>
-            <div style="background:rgb(var(--background));border-radius:10px;padding:16px 20px;margin:24px 0 0;">
-              <p style="font-size:12px;color:rgb(var(--muted-foreground));margin:0 0 4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Setup link</p>
-              <p style="font-size:12px;color:rgb(var(--muted-foreground));margin:0;word-break:break-all;">${setupUrl}</p>
+            <div style="background:var(--tc-background);border-radius:10px;padding:16px 20px;margin:24px 0 0;">
+              <p style="font-size:12px;color:var(--tc-muted-foreground);margin:0 0 4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Setup link</p>
+              <p style="font-size:12px;color:var(--tc-muted-foreground);margin:0;word-break:break-all;">${setupUrl}</p>
             </div>
-            <p style="color:rgb(var(--muted-foreground));font-size:12px;margin:20px 0 0;text-align:center;">This link expires in 7 days. If you didn't request this, you can safely ignore this email.</p>
+            <p style="color:var(--tc-muted-foreground);font-size:12px;margin:20px 0 0;text-align:center;">This link expires in 7 days. If you didn't request this, you can safely ignore this email.</p>
           </div>
-          <div style="background:rgb(var(--background));padding:16px 32px;text-align:center;border-top:1px solid rgb(var(--muted));">
-            <p style="color:rgb(var(--muted-foreground));font-size:11px;margin:0;">Sent by KOACH AI · Powered by elite coaching technology</p>
+          <div style="background:var(--tc-background);padding:16px 32px;text-align:center;border-top:1px solid var(--tc-muted);">
+            <p style="color:var(--tc-muted-foreground);font-size:11px;margin:0;">Sent by KOACH AI · Powered by elite coaching technology</p>
           </div>
         </div>`;
 
@@ -275,12 +275,12 @@ export default function OnboardingManager() {
       <div className="bg-sidebar rounded-xl p-5 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-white">Client Onboarding</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Send your intake link and review submissions</p>
+          <p className="text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>Send your intake link and review submissions</p>
         </div>
         <button
           onClick={copyLink}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
+          style={{ background: 'var(--tc-card)', color: 'var(--tc-foreground)' }}
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           {copied ? 'Copied!' : 'Copy Intake Link'}
@@ -291,31 +291,31 @@ export default function OnboardingManager() {
       <button
         onClick={() => setShowOverview(true)}
         className="w-full text-left rounded-2xl overflow-hidden shadow-lg transition-all hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] relative"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, #1a2744 60%, #1e1a3a 100%)' }}
+        style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--kc-1a2744) 60%, var(--kc-1e1a3a) 100%)' }}
       >
         {/* Decorative glows */}
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-25 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgb(var(--ai)), transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, var(--tc-ai), transparent 70%)' }} />
         <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, var(--tc-primary), transparent 70%)' }} />
 
         <div className="relative p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3.5">
               {/* Icon */}
               <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
-                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+                style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
 
               <div>
                 {/* Badge */}
                 <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full mb-1.5"
-                  style={{ background: 'rgb(var(--ai) / 0.18)', border: '1px solid rgb(var(--ai) / 0.35)' }}>
-                  <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--ai))' }}>Pro &amp; Elite</span>
+                  style={{ background: 'color-mix(in srgb, var(--tc-ai) 18%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-ai) 35%, transparent)' }}>
+                  <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-ai)' }}>Pro &amp; Elite</span>
                 </div>
                 <p className="text-base font-bold text-white leading-tight">AI Onboarding</p>
-                <p className="text-xs mt-1 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                <p className="text-xs mt-1 leading-relaxed" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>
                   Generate a tailored program + meal plan for any client using AI — you review and approve before anything saves.
                 </p>
               </div>
@@ -323,8 +323,8 @@ export default function OnboardingManager() {
 
             {/* Arrow */}
             <div className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5"
-              style={{ background: 'rgba(255,255,255,0.08)' }}>
-              <ChevronRight className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.5)' }} />
+              style={{ background: 'color-mix(in srgb, white 8%, transparent)' }}>
+              <ChevronRight className="w-4 h-4" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }} />
             </div>
           </div>
 
@@ -332,7 +332,7 @@ export default function OnboardingManager() {
           <div className="flex flex-wrap gap-1.5 mt-4">
             {['Training Program', 'Meal Plan', 'Goal-Matched', 'Review & Approve'].map(tag => (
               <span key={tag} className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                style={{ background: 'color-mix(in srgb, white 7%, transparent)', color: 'color-mix(in srgb, white 50%, transparent)', border: '1px solid color-mix(in srgb, white 10%, transparent)' }}>
                 {tag}
               </span>
             ))}
@@ -341,19 +341,19 @@ export default function OnboardingManager() {
 
         {/* Bottom CTA strip */}
         <div className="px-5 py-3 flex items-center justify-between"
-          style={{ background: 'rgba(0,0,0,0.3)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          style={{ background: 'color-mix(in srgb, black 30%, transparent)', borderTop: '1px solid color-mix(in srgb, white 6%, transparent)' }}>
           {canAIOnboard ? (
-            <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            <span className="text-xs font-semibold" style={{ color: 'color-mix(in srgb, white 60%, transparent)' }}>
               Click to get started →
             </span>
           ) : (
-            <span className="text-xs font-semibold" style={{ color: 'rgb(var(--ai) / 0.8)' }}>
+            <span className="text-xs font-semibold" style={{ color: 'color-mix(in srgb, var(--tc-ai) 80%, transparent)' }}>
               Upgrade to Pro or Elite to unlock →
             </span>
           )}
           <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? 'rgb(var(--success))' : 'rgb(var(--ai))' }} />
-            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? 'rgb(var(--success))' : 'rgb(var(--ai) / 0.7)' }}>
+            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? 'var(--tc-success)' : 'var(--tc-ai)' }} />
+            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? 'var(--tc-success)' : 'color-mix(in srgb, var(--tc-ai) 70%, transparent)' }}>
               {canAIOnboard ? 'Available' : 'Pro+'}
             </span>
           </div>
@@ -374,14 +374,14 @@ export default function OnboardingManager() {
       {canAIOnboard && showAIPicker && (
         <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
           <div className="px-5 py-3.5 flex items-center justify-between"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)), #1a2744)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-foreground), var(--kc-1a2744))' }}>
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4" style={{ color: 'rgb(var(--ai))' }} />
+              <Sparkles className="w-4 h-4" style={{ color: 'var(--tc-ai)' }} />
               <p className="text-sm font-bold text-white">AI Onboarding — Select a Client</p>
             </div>
             <button onClick={() => { setShowAIPicker(false); setAiClient(null); setClientSearch(''); }}
               className="w-6 h-6 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)' }}>
+              style={{ background: 'color-mix(in srgb, white 8%, transparent)', color: 'color-mix(in srgb, white 40%, transparent)' }}>
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -406,7 +406,7 @@ export default function OnboardingManager() {
                       className="w-full text-left px-3 py-2.5 hover:bg-accent flex items-center justify-between gap-2 transition-colors border-b border-border last:border-0">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-                          style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--primary))' }}>
+                          style={{ background: 'var(--tc-accent)', color: 'var(--tc-primary)' }}>
                           {c.name?.[0]?.toUpperCase() || '?'}
                         </div>
                         <div>
@@ -424,7 +424,7 @@ export default function OnboardingManager() {
               <div className="rounded-xl border border-accent bg-accent p-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
-                    style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))' }}>
+                    style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)' }}>
                     {aiClient.name?.[0]?.toUpperCase() || '?'}
                   </div>
                   <div>
@@ -442,7 +442,7 @@ export default function OnboardingManager() {
               onClick={() => aiClient && setShowAIModal(true)}
               disabled={!aiClient}
               className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: aiClient ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted-foreground))' }}>
+              style={{ background: aiClient ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted-foreground)' }}>
               <Sparkles className="w-4 h-4" />
               {aiClient ? `Generate AI Plan for ${aiClient.name}` : 'Select a client to continue'}
             </button>
@@ -497,9 +497,9 @@ export default function OnboardingManager() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <StatCard icon={Send}        value={responses.length} label="Total Sent"  color="rgb(var(--primary))" />
-        <StatCard icon={Hourglass}   value={pending.length}   label="Pending"     color="rgb(var(--warning))" />
-        <StatCard icon={CheckCircle2}value={converted.length} label="Approved"    color="rgb(var(--success))" />
+        <StatCard icon={Send}        value={responses.length} label="Total Sent"  color="var(--tc-primary)" />
+        <StatCard icon={Hourglass}   value={pending.length}   label="Pending"     color="var(--tc-warning)" />
+        <StatCard icon={CheckCircle2}value={converted.length} label="Approved"    color="var(--tc-success)" />
       </div>
 
       {/* Filter tabs */}

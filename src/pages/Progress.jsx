@@ -148,7 +148,7 @@ export default function Progress() {
     <div className="p-3 sm:p-5 lg:p-8 max-w-7xl mx-auto overflow-x-hidden">
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
-        style={{ background: 'rgb(var(--sidebar))' }}>
+        style={{ background: 'var(--tc-sidebar)' }}>
         <div>
           <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">Progress</h1>
           <p className="text-xs sm:text-sm mt-0.5 text-white/50">
@@ -156,7 +156,7 @@ export default function Progress() {
           </p>
         </div>
         <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-          <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white h-9 text-sm">
+          <SelectTrigger className="w-48 bg-[var(--kc-w-10)] border-white/20 text-white h-9 text-sm">
             <SelectValue placeholder="All clients" />
           </SelectTrigger>
           <SelectContent>
@@ -256,7 +256,7 @@ function ClientProgressRow({ row, onViewProgress }) {
       {/* Row 1: Avatar + Score + CTA */}
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-sm"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
           {client.avatar_url
             ? <img src={client.avatar_url} alt={client.name} className="w-10 h-10 rounded-full object-cover" />
             : client.name?.[0]?.toUpperCase()}

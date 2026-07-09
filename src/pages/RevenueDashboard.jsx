@@ -32,20 +32,20 @@ export default function RevenueDashboard() {
       <div className="bg-sidebar rounded-xl p-5 text-white mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-white">Revenue Dashboard</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Stripe subscriptions, MRR, and payment health</p>
+          <p className="text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>Stripe subscriptions, MRR, and payment health</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => refetch()}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: 'rgb(var(--card))', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
           >
             <RefreshCw className="w-3.5 h-3.5" /> Refresh
           </button>
           <button
             onClick={() => setShowCreate(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold"
-            style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
+            style={{ background: 'var(--tc-card)', color: 'var(--tc-foreground)' }}
           >
             <Plus className="w-3.5 h-3.5" /> New Subscription
           </button>

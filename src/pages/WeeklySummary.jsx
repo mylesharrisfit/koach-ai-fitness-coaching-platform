@@ -113,7 +113,7 @@ export default function WeeklySummary() {
 
       {/* Header */}
       <div className="mb-6 rounded-2xl px-5 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-        style={{ background: 'rgb(var(--sidebar))' }}>
+        style={{ background: 'var(--tc-sidebar)' }}>
         <div>
           <div className="flex items-center gap-2 mb-1">
             <FileText className="w-5 h-5 text-primary" />
@@ -125,7 +125,7 @@ export default function WeeklySummary() {
         </div>
         <button
           onClick={() => refetch()}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-white/20 text-white/70 hover:text-white hover:bg-white/10 transition-colors self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-white/20 text-white/70 hover:text-white hover:bg-[var(--kc-w-10)] transition-colors self-start sm:self-auto"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
@@ -153,13 +153,13 @@ export default function WeeklySummary() {
               {f.label}
               {f.key === 'attention' && stats.attention > 0 && (
                 <span className={cn('ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                  filter === f.key ? 'bg-white/20 text-white' : 'bg-warning/10 text-warning')}>
+                  filter === f.key ? 'bg-[var(--kc-w-20)] text-white' : 'bg-warning/10 text-warning')}>
                   {stats.attention}
                 </span>
               )}
               {f.key === 'missed' && stats.missed > 0 && (
                 <span className={cn('ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                  filter === f.key ? 'bg-white/20 text-white' : 'bg-destructive/10 text-destructive')}>
+                  filter === f.key ? 'bg-[var(--kc-w-20)] text-white' : 'bg-destructive/10 text-destructive')}>
                   {stats.missed}
                 </span>
               )}

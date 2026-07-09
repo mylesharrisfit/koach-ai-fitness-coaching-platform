@@ -147,7 +147,7 @@ export default function CheckInReview() {
 
       {/* ── Header ── */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
-        style={{ background: 'rgb(var(--sidebar))' }}>
+        style={{ background: 'var(--tc-sidebar)' }}>
         <div>
           <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">Check-ins</h1>
           <p className="text-xs sm:text-sm mt-0.5 text-white/50">
@@ -157,14 +157,14 @@ export default function CheckInReview() {
         <div className="flex gap-2 flex-wrap">
           <button
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: 'rgb(var(--card))', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
           >
             <Bell className="w-3.5 h-3.5" /> Send Bulk Reminder
           </button>
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white transition-colors"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
             onClick={() => setMainTab('form_builder')}
           >
             <Plus className="w-3.5 h-3.5" /> New Check-in Form
@@ -216,7 +216,7 @@ export default function CheckInReview() {
                   {f.label}
                   {f.key !== 'all' && counts[f.key] > 0 && (
                     <span className={cn('ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                      filter === f.key ? 'bg-white/20 text-white' : 'bg-muted')}>
+                      filter === f.key ? 'bg-[var(--kc-w-20)] text-white' : 'bg-muted')}>
                       {counts[f.key]}
                     </span>
                   )}

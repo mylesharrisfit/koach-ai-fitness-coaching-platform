@@ -49,7 +49,7 @@ function ProfileTab() {
       <Link to="/business-settings"
         className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))' }}>
             <Briefcase className="w-5 h-5 text-warning" />
           </div>
           <div>
@@ -62,7 +62,7 @@ function ProfileTab() {
       <Link to="/coach-profile"
         className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--tc-accent), var(--tc-ai))' }}>
             <User className="w-5 h-5 text-primary" />
           </div>
           <div>
@@ -82,7 +82,7 @@ function NotificationsTab() {
       <Link to="/notification-settings"
         className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--tc-accent), var(--tc-ai))' }}>
             <Bell className="w-5 h-5 text-primary" />
           </div>
           <div>
@@ -98,13 +98,13 @@ function NotificationsTab() {
 
 function passwordStrength(pw) {
   if (!pw) return { label: '', color: '', pct: 0 };
-  if (pw.length < 8) return { label: 'Weak', color: 'rgb(var(--destructive))', pct: 25 };
+  if (pw.length < 8) return { label: 'Weak', color: 'var(--tc-destructive)', pct: 25 };
   const hasUpper = /[A-Z]/.test(pw);
   const hasNum = /[0-9]/.test(pw);
   const hasSymbol = /[^A-Za-z0-9]/.test(pw);
-  if (pw.length >= 12 && hasUpper && hasNum && hasSymbol) return { label: 'Strong', color: 'rgb(var(--success))', pct: 100 };
-  if (hasNum && hasUpper) return { label: 'Good', color: '#EAB308', pct: 75 };
-  return { label: 'Fair', color: '#F97316', pct: 50 };
+  if (pw.length >= 12 && hasUpper && hasNum && hasSymbol) return { label: 'Strong', color: 'var(--tc-success)', pct: 100 };
+  if (hasNum && hasUpper) return { label: 'Good', color: 'var(--kc-eab308)', pct: 75 };
+  return { label: 'Fair', color: 'var(--kc-f97316)', pct: 50 };
 }
 
 function DeleteAccountModal({ user, onClose }) {
@@ -133,7 +133,7 @@ function DeleteAccountModal({ user, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.5)' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'color-mix(in srgb, black 50%, transparent)' }}>
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         className="bg-card rounded-3xl p-6 w-full max-w-md shadow-2xl">
         {step === 1 && (
@@ -274,7 +274,7 @@ function SecurityTab() {
                   className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:border-primary bg-muted" />
                 <button onClick={handlePasswordSubmit}
                   className="w-full py-2.5 rounded-xl text-sm font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+                  style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                   Update Password
                 </button>
               </div>
@@ -366,7 +366,7 @@ export default function Settings() {
           <Link to="/referral-program"
             className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))' }}>
                 <Gift className="w-5 h-5 text-success" />
               </div>
               <div>
@@ -387,7 +387,7 @@ export default function Settings() {
           <Link to="/affiliate-application"
             className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))' }}>
                 <Gift className="w-5 h-5 text-warning" />
               </div>
               <div>
@@ -408,7 +408,7 @@ export default function Settings() {
           <Link to="/marketing-tools"
             className="flex items-center justify-between bg-card border border-border rounded-2xl p-5 hover:border-primary transition-colors group">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #ECE5FF, #D8D0FF)' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--kc-ece5ff), var(--kc-d8d0ff))' }}>
                 <Share2 className="w-5 h-5 text-ai" />
               </div>
               <div>

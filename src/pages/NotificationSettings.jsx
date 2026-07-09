@@ -119,13 +119,13 @@ export default function NotificationSettings() {
         {/* ── MASTER TOGGLE ── */}
         <div className="bg-card rounded-2xl border-2 p-5 flex items-center justify-between"
           style={{
-            borderColor: allOff ? 'rgb(var(--destructive))' : 'rgb(var(--border))',
-            background: allOff ? '#FFF5F5' : 'white',
-            boxShadow: '0 1px 8px rgba(0,0,0,0.05)',
+            borderColor: allOff ? 'var(--tc-destructive)' : 'var(--tc-border)',
+            background: allOff ? 'var(--kc-fff5f5)' : 'white',
+            boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)',
           }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: allOff ? 'rgb(var(--destructive))' : 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+              style={{ background: allOff ? 'var(--tc-destructive)' : 'linear-gradient(135deg, var(--tc-accent), var(--tc-ai))' }}>
               {allOff ? <BellOff className="w-5 h-5 text-destructive" /> : <Bell className="w-5 h-5 text-primary" />}
             </div>
             <div>
@@ -139,7 +139,7 @@ export default function NotificationSettings() {
         </div>
 
         {/* ── GLOBAL DELIVERY ── */}
-        <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+        <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)' }}>
           <div className="flex items-center gap-2 px-6 py-4 border-b border-border bg-muted/60">
             <span className="text-base">📬</span>
             <h2 className="font-bold text-foreground text-sm">Global Delivery Preferences</h2>
@@ -148,9 +148,9 @@ export default function NotificationSettings() {
             <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Default delivery for all notifications</p>
             <div className="space-y-3">
               {[
-                { key: 'push_enabled', icon: Smartphone, label: 'Push Notifications', desc: 'Sent to your mobile device', color: 'rgb(var(--ai))' },
-                { key: 'email_enabled', icon: Mail, label: 'Email Notifications', desc: `Sent to ${user?.email || 'your business email'}`, color: 'rgb(var(--primary))' },
-                { key: 'inapp_enabled', icon: Monitor, label: 'In-App Notifications', desc: 'Always on — cannot be disabled', color: 'rgb(var(--success))', locked: true },
+                { key: 'push_enabled', icon: Smartphone, label: 'Push Notifications', desc: 'Sent to your mobile device', color: 'var(--tc-ai)' },
+                { key: 'email_enabled', icon: Mail, label: 'Email Notifications', desc: `Sent to ${user?.email || 'your business email'}`, color: 'var(--tc-primary)' },
+                { key: 'inapp_enabled', icon: Monitor, label: 'In-App Notifications', desc: 'Always on — cannot be disabled', color: 'var(--tc-success)', locked: true },
               ].map(({ key, icon: Icon, label, desc, color, locked }) => (
                 <div key={key} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
@@ -216,7 +216,7 @@ export default function NotificationSettings() {
               </div>
             </div>
             <button onClick={() => Notification.requestPermission().then(p => { if (p === 'granted') toast.success('Push notifications enabled!'); })}
-              className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
+              className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))' }}>
               Enable
             </button>
           </div>

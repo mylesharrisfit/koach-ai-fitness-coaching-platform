@@ -99,12 +99,12 @@ export default function FoodLibrary() {
       <div className="bg-sidebar rounded-xl p-5 mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-white">Food Library</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Manage foods for meal planning</p>
+          <p className="text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>Manage foods for meal planning</p>
         </div>
         <button
           onClick={() => { setEditingFood(null); setShowCustomForm(true); }}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
+          style={{ background: 'var(--tc-card)', color: 'var(--tc-foreground)' }}
         >
           <Plus className="w-4 h-4" /> Add Food
         </button>

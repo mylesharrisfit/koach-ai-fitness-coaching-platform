@@ -120,7 +120,7 @@ export default function AffiliateApplication() {
           {app.status === 'approved' && (
             <a href="/affiliate-dashboard"
               className="block mt-6 py-3 rounded-xl font-bold text-white text-center"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               Go to Dashboard →
             </a>
           )}
@@ -134,7 +134,7 @@ export default function AffiliateApplication() {
       {/* Hero */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         className="py-16 px-4 text-center"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-ai) 100%)' }}>
         <h1 className="text-white font-black text-4xl mb-4">Partner with KOACH AI and earn recurring commissions 💰</h1>
         <p className="text-white/80 text-lg max-w-2xl mx-auto">Join our affiliate program and get paid every month for every coach you refer</p>
       </motion.div>
@@ -273,7 +273,7 @@ export default function AffiliateApplication() {
             type="submit"
             disabled={appMutation.isPending}
             className="w-full py-3 rounded-xl font-black text-white flex items-center justify-center gap-2 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {appMutation.isPending ? 'Submitting...' : 'Submit Application'}
           </button>
 

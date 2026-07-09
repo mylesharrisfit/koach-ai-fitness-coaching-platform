@@ -21,22 +21,22 @@ function maskEmail(email) {
 
 function passwordStrength(pw) {
   if (!pw) return { label: '', color: '', pct: 0 };
-  if (pw.length < 8) return { label: 'Weak', color: 'rgb(var(--destructive))', pct: 25 };
+  if (pw.length < 8) return { label: 'Weak', color: 'var(--tc-destructive)', pct: 25 };
   const hasUpper = /[A-Z]/.test(pw);
   const hasNum = /[0-9]/.test(pw);
   const hasSymbol = /[^A-Za-z0-9]/.test(pw);
-  if (pw.length >= 12 && hasUpper && hasNum && hasSymbol) return { label: 'Strong', color: 'rgb(var(--success))', pct: 100 };
-  if (hasNum && hasUpper) return { label: 'Good', color: '#EAB308', pct: 75 };
-  return { label: 'Fair', color: '#F97316', pct: 50 };
+  if (pw.length >= 12 && hasUpper && hasNum && hasSymbol) return { label: 'Strong', color: 'var(--tc-success)', pct: 100 };
+  if (hasNum && hasUpper) return { label: 'Good', color: 'var(--kc-eab308)', pct: 75 };
+  return { label: 'Fair', color: 'var(--kc-f97316)', pct: 50 };
 }
 
-function SectionCard({ title, icon: Icon, iconBg = 'rgb(var(--accent))', iconColor = 'rgb(var(--primary))', children, danger }) {
+function SectionCard({ title, icon: Icon, iconBg = 'var(--tc-accent)', iconColor = 'var(--tc-primary)', children, danger }) {
   return (
     <div className={`bg-card rounded-2xl overflow-hidden ${danger ? 'border-2 border-destructive' : 'border border-border'}`}
-      style={{ boxShadow: '0 1px 12px rgba(0,0,0,0.05)' }}>
+      style={{ boxShadow: '0 1px 12px color-mix(in srgb, black 5%, transparent)' }}>
       <div className={`flex items-center gap-3 px-6 py-4 border-b ${danger ? 'border-destructive bg-destructive/10' : 'border-border'}`}>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: danger ? 'rgb(var(--destructive))' : iconBg }}>
-          <Icon className="w-4 h-4" style={{ color: danger ? 'rgb(var(--destructive))' : iconColor }} />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: danger ? 'var(--tc-destructive)' : iconBg }}>
+          <Icon className="w-4 h-4" style={{ color: danger ? 'var(--tc-destructive)' : iconColor }} />
         </div>
         <h2 className={`font-bold text-base ${danger ? 'text-destructive' : 'text-foreground'}`}>{title}</h2>
       </div>
@@ -133,7 +133,7 @@ function PasswordForm({ onClose }) {
         <div className="flex gap-2 pt-1">
           <button onClick={handleSubmit}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Update Password
           </button>
           <button onClick={onClose} className="px-4 py-2.5 rounded-xl text-sm font-semibold text-muted-foreground bg-card border border-border">
@@ -178,7 +178,7 @@ function EmailForm({ onClose }) {
         <div className="flex gap-2">
           <button onClick={handleSubmit}
             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Update Email
           </button>
           <button onClick={onClose} className="px-4 py-2.5 rounded-xl text-sm font-semibold text-muted-foreground bg-card border border-border">
@@ -206,7 +206,7 @@ function DeleteAccountModal({ onClose }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.5)' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'color-mix(in srgb, black 50%, transparent)' }}>
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
         className="bg-card rounded-3xl p-6 w-full max-w-md shadow-2xl">
         {step === 1 && (
@@ -332,7 +332,7 @@ export default function AccountSettings() {
       <div className="space-y-6">
 
         {/* SECTION 1 — LOGIN & SECURITY */}
-        <SectionCard icon={Lock} title="Login & Security" iconBg="rgb(var(--warning))" iconColor="rgb(var(--warning))">
+        <SectionCard icon={Lock} title="Login & Security" iconBg="var(--tc-warning)" iconColor="var(--tc-warning)">
           {/* Email */}
           <div>
             <div className="flex items-center justify-between">
@@ -421,7 +421,7 @@ export default function AccountSettings() {
         </SectionCard>
 
         {/* SECTION 2 — ACCOUNT DETAILS */}
-        <SectionCard icon={Shield} title="Account Details" iconBg="rgb(var(--accent))" iconColor="rgb(var(--primary))">
+        <SectionCard icon={Shield} title="Account Details" iconBg="var(--tc-accent)" iconColor="var(--tc-primary)">
           <div className="space-y-3">
             <div className="flex items-center justify-between py-2">
               <div>
@@ -460,7 +460,7 @@ export default function AccountSettings() {
         </SectionCard>
 
         {/* SECTION 3 — CONNECTED ACCOUNTS */}
-        <SectionCard icon={Globe} title="Connected Accounts" iconBg="rgb(var(--success))" iconColor="rgb(var(--success))">
+        <SectionCard icon={Globe} title="Connected Accounts" iconBg="var(--tc-success)" iconColor="var(--tc-success)">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Social Login</p>
             {[
@@ -525,7 +525,7 @@ export default function AccountSettings() {
         </SectionCard>
 
         {/* SECTION 4 — DATA & PRIVACY */}
-        <SectionCard icon={Download} title="Data & Privacy" iconBg="rgb(var(--ai))" iconColor="rgb(var(--ai))">
+        <SectionCard icon={Download} title="Data & Privacy" iconBg="var(--tc-ai)" iconColor="var(--tc-ai)">
           <div>
             <p className="text-sm font-semibold text-foreground mb-1">Data Export</p>
             <p className="text-xs text-muted-foreground mb-3">Download all your data including clients, programs, messages, and payment history as a ZIP file.</p>

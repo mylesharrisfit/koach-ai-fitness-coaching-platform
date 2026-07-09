@@ -9,7 +9,7 @@ import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
 import { differenceInDays, parseISO, format, startOfWeek, addDays } from 'date-fns';
 import { cn } from '@/lib/utils';
 
-const BLUE = 'rgb(var(--primary))';
+const BLUE = 'var(--tc-primary)';
 
 // ── Client Activity Table ──────────────────────────────────────────────────
 function ClientActivityTable({ clients, checkIns }) {
@@ -282,7 +282,7 @@ export default function Analytics() {
       {/* ── Dark header ── */}
       <div className="bg-sidebar rounded-xl p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center flex-shrink-0">
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -294,14 +294,14 @@ export default function Analytics() {
           <select
             value={timeRange}
             onChange={e => setTimeRange(e.target.value)}
-            className="bg-white/10 text-white border border-white/20 rounded-lg px-3 py-1.5 text-sm focus:outline-none"
+            className="bg-[var(--kc-w-10)] text-white border border-white/20 rounded-lg px-3 py-1.5 text-sm focus:outline-none"
           >
             <option value="30">Last 30 days</option>
             <option value="90">Last 90 days</option>
             <option value="180">Last 6 months</option>
             <option value="all">All time</option>
           </select>
-          <button onClick={handleExport} className="px-4 py-1.5 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
+          <button onClick={handleExport} className="px-4 py-1.5 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-[var(--kc-w-90)] transition-colors">
             Export
           </button>
         </div>

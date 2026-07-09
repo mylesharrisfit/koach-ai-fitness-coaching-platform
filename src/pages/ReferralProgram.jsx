@@ -85,14 +85,14 @@ export default function ReferralProgram({ user }) {
       {/* Hero Banner */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         className="px-4 pt-6 pb-8 rounded-b-3xl text-white text-center"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 4px 24px rgb(var(--primary) / 0.25)' }}>
+        style={{ background: 'linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-ai) 100%)', boxShadow: '0 4px 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
         <p className="text-white/70 text-xs font-bold uppercase tracking-wider mb-2">Earn Passive Income</p>
         <h1 className="text-3xl font-black mb-2">Earn with every coach you refer 💰</h1>
         <p className="text-white/80 text-sm mb-4">Get $50 for every coach who signs up and stays for 30 days</p>
         <div className="flex flex-wrap gap-2 justify-center mb-6">
           {TIERS.map(t => (
             <span key={t.min} className="px-3 py-1 rounded-full text-xs font-bold"
-              style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+              style={{ background: 'color-mix(in srgb, white 15%, transparent)', border: '1px solid color-mix(in srgb, white 30%, transparent)' }}>
               {t.emoji} {t.min}-{t.max}: ${t.rate}/ref
             </span>
           ))}
@@ -102,13 +102,13 @@ export default function ReferralProgram({ user }) {
       {/* Stats Row */}
       <div className="px-4 mt-6 grid grid-cols-2 gap-3">
         {[
-          { label: 'Total Earned', value: `$${program?.total_earned || 0}`, color: 'rgb(var(--success))', icon: '$' },
-          { label: 'Pending', value: `$${program?.pending_balance || 0}`, color: 'rgb(var(--warning))', icon: '⏳' },
-          { label: 'This Month', value: `$${program?.month_earnings || 0}`, color: 'rgb(var(--primary))', icon: '📊' },
-          { label: 'Referrals', value: program?.total_referrals || 0, color: 'rgb(var(--ai))', icon: '👥' },
+          { label: 'Total Earned', value: `$${program?.total_earned || 0}`, color: 'var(--tc-success)', icon: '$' },
+          { label: 'Pending', value: `$${program?.pending_balance || 0}`, color: 'var(--tc-warning)', icon: '⏳' },
+          { label: 'This Month', value: `$${program?.month_earnings || 0}`, color: 'var(--tc-primary)', icon: '📊' },
+          { label: 'Referrals', value: program?.total_referrals || 0, color: 'var(--tc-ai)', icon: '👥' },
         ].map((stat, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-            className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+            className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
             <p className="text-muted-foreground text-xs font-semibold mb-1">{stat.label}</p>
             <p className="text-foreground font-black text-xl">{stat.value}</p>
           </motion.div>
@@ -118,7 +118,7 @@ export default function ReferralProgram({ user }) {
       {/* Referral Links */}
       <div className="px-4 mt-6">
         <h2 className="text-foreground font-black text-lg mb-3">Your Referral Links</h2>
-        <div className="bg-card rounded-2xl p-4 space-y-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+        <div className="bg-card rounded-2xl p-4 space-y-4" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
           {/* Referral Link */}
           <div>
             <p className="text-muted-foreground text-xs font-bold mb-2">Full Link</p>
@@ -128,7 +128,7 @@ export default function ReferralProgram({ user }) {
               </div>
               <button onClick={() => handleCopy(program?.referral_link || '')}
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgb(var(--accent))', border: '1px solid rgb(var(--accent))' }}>
+                style={{ background: 'var(--tc-accent)', border: '1px solid var(--tc-accent)' }}>
                 <Copy className="w-4 h-4 text-primary" />
               </button>
             </div>
@@ -143,7 +143,7 @@ export default function ReferralProgram({ user }) {
               </div>
               <button onClick={() => handleCopy(program?.referral_code || '')}
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgb(var(--accent))', border: '1px solid rgb(var(--accent))' }}>
+                style={{ background: 'var(--tc-accent)', border: '1px solid var(--tc-accent)' }}>
                 <Copy className="w-4 h-4 text-primary" />
               </button>
             </div>
@@ -154,7 +154,7 @@ export default function ReferralProgram({ user }) {
       {/* Share Options */}
       <div className="px-4 mt-6">
         <h2 className="text-foreground font-black text-lg mb-3">Share & Earn</h2>
-        <div className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+        <div className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
           <div className="grid grid-cols-3 gap-2">
             {[
               { icon: '🐦', label: 'Twitter', key: 'twitter' },
@@ -167,7 +167,7 @@ export default function ReferralProgram({ user }) {
               <button key={s.key}
                 onClick={() => s.key === 'copy' ? handleCopy(`Hey! I use KOACH AI to run my entire online coaching business. Programs, nutrition plans, check-ins, payments — all in one place. Use my link to get started: ${program?.referral_link}`) : handleShare(s.key)}
                 className="py-3 rounded-xl flex flex-col items-center gap-1 text-xs font-bold transition-all hover:bg-muted"
-                style={{ border: '1px solid rgb(var(--muted))' }}>
+                style={{ border: '1px solid var(--tc-muted)' }}>
                 <span className="text-lg">{s.icon}</span>
                 {s.label}
               </button>
@@ -179,14 +179,14 @@ export default function ReferralProgram({ user }) {
       {/* Tier Progress */}
       {nextTier && (
         <div className="px-4 mt-6">
-          <div className="bg-card rounded-2xl p-5" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+          <div className="bg-card rounded-2xl p-5" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
             <div className="flex items-center justify-between mb-3">
               <p className="text-foreground font-bold">Next Tier Unlocking</p>
               <span className="text-sm font-bold text-muted-foreground">{nextTier.min - (program?.total_referrals || 0)} more referrals</span>
             </div>
             <div className="h-2 rounded-full bg-border overflow-hidden">
               <motion.div animate={{ width: `${progressToNext * 100}%` }} transition={{ duration: 0.5 }}
-                className="h-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
+                className="h-full" style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-ai))' }} />
             </div>
             <p className="text-xs text-muted-foreground mt-2">Unlock {nextTier.emoji} ${nextTier.rate}/referral tier</p>
           </div>
@@ -202,8 +202,8 @@ export default function ReferralProgram({ user }) {
               onClick={() => setFilterStatus(status)}
               className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all"
               style={{
-                background: filterStatus === status ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-                color: filterStatus === status ? 'white' : 'rgb(var(--muted-foreground))',
+                background: filterStatus === status ? 'var(--tc-primary)' : 'var(--tc-muted)',
+                color: filterStatus === status ? 'white' : 'var(--tc-muted-foreground)',
               }}>
               {status === 'all' ? 'All' : status.replace(/_/g, ' ')}
             </button>
@@ -212,7 +212,7 @@ export default function ReferralProgram({ user }) {
         <div className="space-y-2">
           {filteredReferrals.map(ref => (
             <motion.div key={ref.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-              className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+              className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 1px 4px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-foreground font-bold text-sm">{ref.referred_coach_name}</p>
@@ -223,8 +223,8 @@ export default function ReferralProgram({ user }) {
                   <p className="text-foreground font-black text-sm">${ref.commission_amount}</p>
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full inline-block mt-1"
                     style={{
-                      background: { signed_up: 'rgb(var(--accent))', active_30_days: 'rgb(var(--success))', paid: 'rgb(var(--muted))', expired: 'rgb(var(--destructive))' }[ref.status],
-                      color: { signed_up: 'rgb(var(--primary))', active_30_days: 'rgb(var(--success))', paid: 'rgb(var(--foreground))', expired: 'rgb(var(--destructive))' }[ref.status],
+                      background: { signed_up: 'var(--tc-accent)', active_30_days: 'var(--tc-success)', paid: 'var(--tc-muted)', expired: 'var(--tc-destructive)' }[ref.status],
+                      color: { signed_up: 'var(--tc-primary)', active_30_days: 'var(--tc-success)', paid: 'var(--tc-foreground)', expired: 'var(--tc-destructive)' }[ref.status],
                     }}>
                     {ref.status.replace(/_/g, ' ')}
                   </span>
@@ -238,7 +238,7 @@ export default function ReferralProgram({ user }) {
       {/* Payout Section */}
       <div className="px-4 mt-6 mb-6">
         <h2 className="text-foreground font-black text-lg mb-3">Payout</h2>
-        <div className="bg-card rounded-2xl p-5 space-y-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+        <div className="bg-card rounded-2xl p-5 space-y-4" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
           <div>
             <p className="text-muted-foreground text-xs font-bold mb-1">Available Balance</p>
             <p className="text-foreground font-black text-2xl">${program?.pending_balance || 0}</p>
@@ -248,7 +248,7 @@ export default function ReferralProgram({ user }) {
             onClick={() => setShowPayoutModal(true)}
             disabled={!program || program.pending_balance < 50}
             className="w-full py-3 rounded-xl font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            style={{ background: program?.pending_balance >= 50 ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted-foreground))' }}>
+            style={{ background: program?.pending_balance >= 50 ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted-foreground)' }}>
             Request Payout
           </button>
         </div>
@@ -259,13 +259,13 @@ export default function ReferralProgram({ user }) {
           <div className="space-y-2">
             {payouts.map(p => (
               <div key={p.id} className="bg-card rounded-xl p-3 flex items-center justify-between text-sm"
-                style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+                style={{ boxShadow: '0 1px 4px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
                 <div>
                   <p className="text-foreground font-bold">${p.amount}</p>
                   <p className="text-muted-foreground text-xs">{new Date(p.requested_date).toLocaleDateString()}</p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-1 rounded-full"
-                  style={{ background: p.status === 'paid' ? 'rgb(var(--success))' : 'rgb(var(--warning))', color: p.status === 'paid' ? 'rgb(var(--success))' : 'rgb(var(--warning))' }}>
+                  style={{ background: p.status === 'paid' ? 'var(--tc-success)' : 'var(--tc-warning)', color: p.status === 'paid' ? 'var(--tc-success)' : 'var(--tc-warning)' }}>
                   {p.status}
                 </span>
               </div>
@@ -278,7 +278,7 @@ export default function ReferralProgram({ user }) {
       <div className="px-4 pb-6">
         <button onClick={() => setExpandedTerms(!expandedTerms)}
           className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-card border border-border"
-          style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+          style={{ boxShadow: '0 1px 4px color-mix(in srgb, black 5%, transparent)' }}>
           <p className="font-bold text-foreground text-sm">Referral Program Terms</p>
           {expandedTerms ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </button>

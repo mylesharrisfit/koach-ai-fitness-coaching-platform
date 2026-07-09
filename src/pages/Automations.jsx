@@ -331,7 +331,7 @@ export default function Automations() {
       {/* ── Dark header ── */}
       <div className="bg-sidebar rounded-xl p-5 text-white flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div>
+          <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-10)] flex items-center justify-center"><Zap className="w-5 h-5 text-white" /></div>
           <div>
             <h1 className="text-lg font-bold leading-tight">Automations</h1>
             <p className="text-xs text-white/60 mt-0.5">IF/THEN rules that run automatically across your clients</p>
@@ -339,7 +339,7 @@ export default function Automations() {
         </div>
         <div className="flex items-center gap-2">
           <button onClick={handleRunNow} disabled={running}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60">
+            className="flex items-center gap-1.5 text-xs font-semibold bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60">
             <RefreshCw className={cn('w-3.5 h-3.5', running && 'animate-spin')} />
             {running ? 'Running...' : 'Run Now'}
           </button>

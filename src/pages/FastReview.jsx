@@ -107,7 +107,7 @@ function WeightSparkline({ clientCIs }) {
   const diff = (vals[vals.length - 1] - vals[0]).toFixed(1);
   const isDown = Number(diff) < 0;
   const isUp = Number(diff) > 0;
-  const color = isDown ? 'rgb(var(--success))' : isUp ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))';
+  const color = isDown ? 'var(--tc-success)' : isUp ? 'var(--tc-destructive)' : 'var(--tc-muted-foreground)';
 
   return (
     <div className="flex items-center gap-2">
@@ -371,7 +371,7 @@ function ApplyChangesPanel({ checkIn, client, onCalDone, onCardioDone }) {
               <ChevronUp className="w-3.5 h-3.5" /> Increase
             </button>
             <button onClick={() => adjustCardio('down')} disabled={saving}
-              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border bg-muted border-border text-foreground hover:bg-[#ECEEF5] active:scale-95 transition-all">
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border bg-muted border-border text-foreground hover:bg-[var(--kc-eceef5)] active:scale-95 transition-all">
               <ChevronDown className="w-3.5 h-3.5" /> Decrease
             </button>
           </div>
@@ -594,7 +594,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
                 'flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
                 activePanel === 'recs'
                   ? 'bg-accent/10 border-primary text-primary shadow-sm'
-                  : 'bg-muted border-border text-foreground hover:bg-[#ECEEF5]')}>
+                  : 'bg-muted border-border text-foreground hover:bg-[var(--kc-eceef5)]')}>
               <Zap className="w-4 h-4 text-warning" />
               Suggestions ({recommendations.length})
             </button>
@@ -773,7 +773,7 @@ export default function FastReview() {
 
       {/* ── Sticky bottom nav ── */}
       {!allDone && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-border safe-area-inset-bottom">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--kc-w-95)] backdrop-blur-sm border-t border-border safe-area-inset-bottom">
           <div className="max-w-xl mx-auto px-4 py-3 flex gap-3">
             <button onClick={goPrev} disabled={safeIdx === 0}
               className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-border bg-card text-sm font-semibold text-foreground disabled:opacity-30 active:scale-95 transition-all flex-shrink-0 hover:bg-muted">

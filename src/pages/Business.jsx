@@ -186,7 +186,7 @@ function InvoicingTab() {
       {/* Sub-header actions */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
         <button onClick={() => { setEditingInvoice(null); setShowForm(true); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgb(var(--primary) / 0.25)' }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
           <Plus size={16} /> New Invoice
         </button>
       </div>
@@ -196,36 +196,36 @@ function InvoicingTab() {
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 260px', gap: 20, alignItems: 'start' }}>
         <div>
           {/* Invoice tabs */}
-          <div style={{ background: 'rgb(var(--card))', borderRadius: '14px 14px 0 0', border: '1px solid rgb(var(--muted))', borderBottom: 'none', padding: '0 16px', display: 'flex', gap: 4, overflowX: 'auto' }}>
+          <div style={{ background: 'var(--tc-card)', borderRadius: '14px 14px 0 0', border: '1px solid var(--tc-muted)', borderBottom: 'none', padding: '0 16px', display: 'flex', gap: 4, overflowX: 'auto' }}>
             {INV_TABS.map(tab => (
               <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                style={{ padding: '12px 14px', fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, color: activeTab === tab.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))', border: 'none', borderBottom: `2px solid ${activeTab === tab.key ? 'rgb(var(--primary))' : 'transparent'}`, background: 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
+                style={{ padding: '12px 14px', fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, color: activeTab === tab.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', border: 'none', borderBottom: `2px solid ${activeTab === tab.key ? 'var(--tc-primary)' : 'transparent'}`, background: 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
                 {tab.label}
-                {counts[tab.key] > 0 && <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: activeTab === tab.key ? 'rgb(var(--accent))' : 'rgb(var(--muted))', color: activeTab === tab.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>{counts[tab.key]}</span>}
+                {counts[tab.key] > 0 && <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: activeTab === tab.key ? 'var(--tc-accent)' : 'var(--tc-muted)', color: activeTab === tab.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>{counts[tab.key]}</span>}
               </button>
             ))}
           </div>
           {/* Filter bar */}
-          <div style={{ background: 'rgb(var(--card))', borderLeft: '1px solid rgb(var(--muted))', borderRight: '1px solid rgb(var(--muted))', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ background: 'var(--tc-card)', borderLeft: '1px solid var(--tc-muted)', borderRight: '1px solid var(--tc-muted)', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-              <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))' }} />
+              <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)' }} />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by client or invoice #…"
-                style={{ width: '100%', padding: '8px 12px 8px 34px', borderRadius: 9, fontSize: 13, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', outline: 'none', boxSizing: 'border-box', color: 'rgb(var(--foreground))' }} />
+                style={{ width: '100%', padding: '8px 12px 8px 34px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' }} />
             </div>
             <div style={{ position: 'relative' }}>
-              <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding: '8px 32px 8px 12px', borderRadius: 9, fontSize: 13, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', outline: 'none', color: 'rgb(var(--foreground))', appearance: 'none', cursor: 'pointer' }}>
+              <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding: '8px 32px 8px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', color: 'var(--tc-foreground)', appearance: 'none', cursor: 'pointer' }}>
                 {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
-              <ChevronDown size={12} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))', pointerEvents: 'none' }} />
+              <ChevronDown size={12} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', pointerEvents: 'none' }} />
             </div>
-            <button onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', color: 'rgb(var(--foreground))', cursor: 'pointer' }}>
+            <button onClick={exportCSV} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', color: 'var(--tc-foreground)', cursor: 'pointer' }}>
               <Download size={13} /> Export CSV
             </button>
           </div>
           {/* List */}
-          <div style={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--muted))', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
-            {isLoading ? <div style={{ padding: 40, textAlign: 'center', color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>Loading invoices…</div>
-              : filtered.length === 0 ? <div style={{ padding: '64px 24px', textAlign: 'center' }}><div style={{ fontSize: 40, marginBottom: 12 }}>💰</div><p style={{ color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>No invoices found</p></div>
+          <div style={{ background: 'var(--tc-card)', border: '1px solid var(--tc-muted)', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
+            {isLoading ? <div style={{ padding: 40, textAlign: 'center', color: 'var(--tc-muted-foreground)', fontSize: 14 }}>Loading invoices…</div>
+              : filtered.length === 0 ? <div style={{ padding: '64px 24px', textAlign: 'center' }}><div style={{ fontSize: 40, marginBottom: 12 }}>💰</div><p style={{ color: 'var(--tc-muted-foreground)', fontSize: 14 }}>No invoices found</p></div>
               : <><InvoiceListHeader />{filtered.map(inv => <InvoiceRow key={inv.id} invoice={inv} onView={() => { setEditingInvoice(inv); setShowForm(true); }} onMarkPaid={() => handleMarkPaid(inv)} onSendReminder={() => handleSendReminder(inv)} onDuplicate={() => handleDuplicate(inv)} onDelete={() => handleDelete(inv)} />)}</>
             }
           </div>
@@ -272,22 +272,22 @@ function PackagesTab() {
         <div style={{ display: 'flex', gap: 4 }}>
           {[{ key: 'active', label: 'Active Packages', count: active.length }, { key: 'archived', label: 'Archived', count: archived.length }].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === t.key ? 700 : 500, color: tab === t.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))', border: 'none', borderBottom: `2px solid ${tab === t.key ? 'rgb(var(--primary))' : 'transparent'}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+              style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === t.key ? 700 : 500, color: tab === t.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', border: 'none', borderBottom: `2px solid ${tab === t.key ? 'var(--tc-primary)' : 'transparent'}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
               {t.label}
-              {t.count > 0 && <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: tab === t.key ? 'rgb(var(--accent))' : 'rgb(var(--muted))', color: tab === t.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>{t.count}</span>}
+              {t.count > 0 && <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: tab === t.key ? 'var(--tc-accent)' : 'var(--tc-muted)', color: tab === t.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>{t.count}</span>}
             </button>
           ))}
         </div>
         <button onClick={() => { setEditingPkg(null); setShowForm(true); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgb(var(--primary) / 0.25)' }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
           <Plus size={16} /> Create Package
         </button>
       </div>
 
-      {isLoading ? <div style={{ textAlign: 'center', padding: 60, color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>Loading packages…</div> : (
+      {isLoading ? <div style={{ textAlign: 'center', padding: 60, color: 'var(--tc-muted-foreground)', fontSize: 14 }}>Loading packages…</div> : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
           {displayed.length === 0
-            ? <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '64px 24px' }}><div style={{ fontSize: 40, marginBottom: 12 }}>📦</div><p style={{ color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>{tab === 'archived' ? 'No archived packages' : 'No packages yet. Create your first!'}</p></div>
+            ? <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '64px 24px' }}><div style={{ fontSize: 40, marginBottom: 12 }}>📦</div><p style={{ color: 'var(--tc-muted-foreground)', fontSize: 14 }}>{tab === 'archived' ? 'No archived packages' : 'No packages yet. Create your first!'}</p></div>
             : displayed.map(pkg => (
               <PackageCard key={pkg.id} pkg={pkg}
                 onEdit={() => { setEditingPkg(pkg); setShowForm(true); }}
@@ -326,12 +326,12 @@ function PaymentsTab() {
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
         <button onClick={() => refetch()}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-          style={{ background: 'rgb(var(--background))', color: 'rgb(var(--foreground))', borderColor: 'rgb(var(--border))' }}>
+          style={{ background: 'var(--tc-background)', color: 'var(--tc-foreground)', borderColor: 'var(--tc-border)' }}>
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
         <button onClick={() => setShowCreate(true)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)' }}>
           <Plus className="w-3.5 h-3.5" /> New Subscription
         </button>
       </div>
@@ -427,13 +427,13 @@ export default function Business() {
   const { data: leads = [] } = useQuery({ queryKey: ['leads-bi'], queryFn: () => base44.entities.Lead.list('-created_date', 200) });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'rgb(var(--background))' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--tc-background)' }}>
       {/* Page Header + Tabs */}
-      <div style={{ background: 'rgb(var(--card))', borderBottom: '1px solid rgb(var(--muted))', padding: '16px 24px 0', flexShrink: 0 }}>
+      <div style={{ background: 'var(--tc-card)', borderBottom: '1px solid var(--tc-muted)', padding: '16px 24px 0', flexShrink: 0 }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ marginBottom: 14 }}>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0, letterSpacing: '-0.02em' }}>Business</h1>
-            <p style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))', margin: '2px 0 0' }}>Invoicing, packages, payments &amp; analytics — all in one place</p>
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: 'var(--tc-foreground)', margin: 0, letterSpacing: '-0.02em' }}>Business</h1>
+            <p style={{ fontSize: 12, color: 'var(--tc-muted-foreground)', margin: '2px 0 0' }}>Invoicing, packages, payments &amp; analytics — all in one place</p>
           </div>
 
           {/* Pill tabs */}
@@ -447,9 +447,9 @@ export default function Business() {
                     display: 'flex', alignItems: 'center', gap: 6,
                     padding: '9px 16px', borderRadius: 0,
                     fontSize: 13, fontWeight: isActive ? 700 : 500,
-                    color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+                    color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)',
                     border: 'none',
-                    borderBottom: `2px solid ${isActive ? 'rgb(var(--primary))' : 'transparent'}`,
+                    borderBottom: `2px solid ${isActive ? 'var(--tc-primary)' : 'transparent'}`,
                     background: 'transparent',
                     cursor: 'pointer', whiteSpace: 'nowrap',
                     transition: 'all 0.15s',

@@ -32,8 +32,8 @@ function EmptyState() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 24px', textAlign: 'center' }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>💰</div>
-      <h3 style={{ fontSize: 18, fontWeight: 700, color: 'rgb(var(--foreground))', margin: '0 0 8px' }}>No invoices yet</h3>
-      <p style={{ fontSize: 14, color: 'rgb(var(--muted-foreground))', margin: 0 }}>Create your first invoice to start getting paid 💰</p>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--tc-foreground)', margin: '0 0 8px' }}>No invoices yet</h3>
+      <p style={{ fontSize: 14, color: 'var(--tc-muted-foreground)', margin: 0 }}>Create your first invoice to start getting paid 💰</p>
     </div>
   );
 }
@@ -167,20 +167,20 @@ export default function Invoicing() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'rgb(var(--background))' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--tc-background)' }}>
       {/* Header */}
-      <div style={{ background: 'rgb(var(--card))', borderBottom: '1px solid rgb(var(--muted))', padding: '16px 24px', flexShrink: 0 }}>
+      <div style={{ background: 'var(--tc-card)', borderBottom: '1px solid var(--tc-muted)', padding: '16px 24px', flexShrink: 0 }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0, letterSpacing: '-0.02em' }}>Invoicing & Payments</h1>
-            <p style={{ fontSize: 12, color: 'rgb(var(--muted-foreground))', margin: '2px 0 0' }}>Manage billing, track payments, and get paid</p>
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: 'var(--tc-foreground)', margin: 0, letterSpacing: '-0.02em' }}>Invoicing & Payments</h1>
+            <p style={{ fontSize: 12, color: 'var(--tc-muted-foreground)', margin: '2px 0 0' }}>Manage billing, track payments, and get paid</p>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => { setEditingInvoice(null); setShowForm(true); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgb(var(--primary) / 0.25)' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
               <Plus size={16} /> New Invoice
             </button>
-            <button onClick={() => navigate('/packages')} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'rgb(var(--card))', color: 'rgb(var(--foreground))', border: '1.5px solid rgb(var(--border))', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/packages')} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'var(--tc-card)', color: 'var(--tc-foreground)', border: '1.5px solid var(--tc-border)', cursor: 'pointer' }}>
               <Package size={15} /> Manage Packages
             </button>
           </div>
@@ -201,13 +201,13 @@ export default function Invoicing() {
             {/* Left: Tabs + List */}
             <div>
               {/* Tabs */}
-              <div style={{ background: 'rgb(var(--card))', borderRadius: '14px 14px 0 0', border: '1px solid rgb(var(--muted))', borderBottom: 'none', padding: '0 16px', display: 'flex', gap: 4, overflowX: 'auto' }}>
+              <div style={{ background: 'var(--tc-card)', borderRadius: '14px 14px 0 0', border: '1px solid var(--tc-muted)', borderBottom: 'none', padding: '0 16px', display: 'flex', gap: 4, overflowX: 'auto' }}>
                 {TABS.map(tab => (
                   <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                    style={{ padding: '12px 14px', fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, color: activeTab === tab.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))', border: 'none', borderBottom: `2px solid ${activeTab === tab.key ? 'rgb(var(--primary))' : 'transparent'}`, background: 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    style={{ padding: '12px 14px', fontSize: 13, fontWeight: activeTab === tab.key ? 700 : 500, color: activeTab === tab.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', border: 'none', borderBottom: `2px solid ${activeTab === tab.key ? 'var(--tc-primary)' : 'transparent'}`, background: 'transparent', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
                     {tab.label}
                     {counts[tab.key] > 0 && (
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: activeTab === tab.key ? 'rgb(var(--accent))' : 'rgb(var(--muted))', color: activeTab === tab.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 9999, background: activeTab === tab.key ? 'var(--tc-accent)' : 'var(--tc-muted)', color: activeTab === tab.key ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}>
                         {counts[tab.key]}
                       </span>
                     )}
@@ -216,33 +216,33 @@ export default function Invoicing() {
               </div>
 
               {/* Filter bar */}
-              <div style={{ background: 'rgb(var(--card))', borderLeft: '1px solid rgb(var(--muted))', borderRight: '1px solid rgb(var(--muted))', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ background: 'var(--tc-card)', borderLeft: '1px solid var(--tc-muted)', borderRight: '1px solid var(--tc-muted)', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 {/* Search */}
                 <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-                  <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))' }} />
+                  <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)' }} />
                   <input value={search} onChange={e => setSearch(e.target.value)}
                     placeholder="Search by client or invoice #…"
-                    style={{ width: '100%', padding: '8px 12px 8px 34px', borderRadius: 9, fontSize: 13, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', outline: 'none', boxSizing: 'border-box', color: 'rgb(var(--foreground))' }} />
+                    style={{ width: '100%', padding: '8px 12px 8px 34px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' }} />
                 </div>
                 {/* Sort */}
                 <div style={{ position: 'relative' }}>
                   <select value={sort} onChange={e => setSort(e.target.value)}
-                    style={{ padding: '8px 32px 8px 12px', borderRadius: 9, fontSize: 13, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', outline: 'none', color: 'rgb(var(--foreground))', appearance: 'none', cursor: 'pointer' }}>
+                    style={{ padding: '8px 32px 8px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', color: 'var(--tc-foreground)', appearance: 'none', cursor: 'pointer' }}>
                     {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
-                  <ChevronDown size={12} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))', pointerEvents: 'none' }} />
+                  <ChevronDown size={12} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', pointerEvents: 'none' }} />
                 </div>
                 {/* Export */}
                 <button onClick={exportCSV}
-                  style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'rgb(var(--background))', border: '1.5px solid rgb(var(--border))', color: 'rgb(var(--foreground))', cursor: 'pointer' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', color: 'var(--tc-foreground)', cursor: 'pointer' }}>
                   <Download size={13} /> Export CSV
                 </button>
               </div>
 
               {/* Invoice List */}
-              <div style={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--muted))', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
+              <div style={{ background: 'var(--tc-card)', border: '1px solid var(--tc-muted)', borderRadius: '0 0 14px 14px', overflow: 'hidden' }}>
                 {isLoading ? (
-                  <div style={{ padding: 40, textAlign: 'center', color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>Loading invoices…</div>
+                  <div style={{ padding: 40, textAlign: 'center', color: 'var(--tc-muted-foreground)', fontSize: 14 }}>Loading invoices…</div>
                 ) : filtered.length === 0 ? (
                   <EmptyState />
                 ) : (

@@ -114,7 +114,7 @@ export default function AIInsightsPage() {
                 }`}>
                 {tab}
                 {counts[tab] > 0 && (
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-white/20 text-white' : 'bg-muted text-muted-foreground'}`}>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-[var(--kc-w-20)] text-white' : 'bg-muted text-muted-foreground'}`}>
                     {counts[tab]}
                   </span>
                 )}
@@ -132,7 +132,7 @@ export default function AIInsightsPage() {
           ) : visible.length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="rounded-2xl px-6 py-16 text-center"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: '1px solid rgb(var(--success))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-success), var(--tc-success))', border: '1px solid var(--tc-success)' }}>
               <div className="text-4xl mb-3">🎉</div>
               <p className="text-base font-bold text-foreground">No new insights right now</p>
               <p className="text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">

@@ -20,7 +20,7 @@ const BILLING_STATUS_CONFIG = {
   past_due:   { label: 'Past Due',    cls: 'bg-warning/10 text-warning border-warning/30',       icon: AlertTriangle },
   unpaid:     { label: 'Unpaid',      cls: 'bg-destructive/10 text-destructive border-destructive/30',             icon: XCircle },
   incomplete: { label: 'Incomplete',  cls: 'bg-warning/10 text-warning border-warning/30',       icon: Clock },
-  canceled:   { label: 'Canceled',    cls: 'bg-white/5 text-muted-foreground border-white/10',               icon: XCircle },
+  canceled:   { label: 'Canceled',    cls: 'bg-[var(--kc-w-5)] text-muted-foreground border-white/10',               icon: XCircle },
 };
 
 const PLAN_PRICES = {
@@ -71,10 +71,10 @@ function FAQItem({ q, a }) {
 function CoachBillingBlock() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6"
-      style={{ background: 'rgb(var(--sidebar))' }}>
+      style={{ background: 'var(--tc-sidebar)' }}>
       <div className="max-w-sm w-full text-center">
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-          style={{ background: 'rgb(var(--destructive) / 0.12)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
+          style={{ background: 'color-mix(in srgb, var(--tc-destructive) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 25%, transparent)' }}>
           <ShieldAlert className="w-7 h-7 text-destructive" />
         </div>
         <h2 className="text-xl font-bold text-white mb-2">Billing is owner-only</h2>
@@ -143,7 +143,7 @@ export default function Subscription() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'rgb(var(--sidebar))' }}>
+    <div className="min-h-screen" style={{ background: 'var(--tc-sidebar)' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12">
 
         {/* Alert Banners */}
@@ -160,13 +160,13 @@ export default function Subscription() {
           </div>
         )}
         {cancelAtEnd && !isCanceled && (
-          <div className="mb-6 flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
+          <div className="mb-6 flex items-start gap-4 bg-[var(--kc-w-5)] border border-white/10 rounded-2xl p-4">
             <Clock className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-white">Subscription Ending</p>
               <p className="text-xs text-muted-foreground mt-0.5">Your {userTier.name} plan will end on {renewalDate || 'the renewal date'}.</p>
             </div>
-            <Button size="sm" variant="outline" onClick={handleOpenPortal} className="flex-shrink-0 border-white/20 text-white hover:bg-white/10">Reactivate</Button>
+            <Button size="sm" variant="outline" onClick={handleOpenPortal} className="flex-shrink-0 border-white/20 text-white hover:bg-[var(--kc-w-10)]">Reactivate</Button>
           </div>
         )}
 
@@ -191,7 +191,7 @@ export default function Subscription() {
         <div className="bg-card/[0.04] border border-white/10 rounded-2xl p-5 mb-10">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[var(--kc-w-5)] border border-white/10 flex items-center justify-center">
                 <Zap className="w-5 h-5 text-primary" />
               </div>
               <div>
@@ -234,7 +234,7 @@ export default function Subscription() {
                     <span className="text-xs text-muted-foreground">{limit === -1 ? '∞ unlimited' : `/ ${limit}`}</span>
                   </div>
                   {limit !== -1 && (
-                    <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div className="h-1.5 rounded-full bg-[var(--kc-w-5)] overflow-hidden">
                       <div className={cn('h-full rounded-full transition-all duration-700', atLimit ? 'bg-destructive' : nearLimit ? 'bg-warning' : 'bg-primary')} style={{ width: `${pct}%` }} />
                     </div>
                   )}
@@ -269,7 +269,7 @@ export default function Subscription() {
         {user?.stripe_customer_id && (
           <div className="mt-8 bg-card/[0.03] border border-white/10 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-[var(--kc-w-5)] flex items-center justify-center">
                 <CreditCard className="w-4 h-4 text-primary" />
               </div>
               <div>
@@ -279,7 +279,7 @@ export default function Subscription() {
             </div>
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={handleOpenPortal} disabled={openingPortal}
-                className="border-white/20 text-white hover:bg-white/10">
+                className="border-white/20 text-white hover:bg-[var(--kc-w-10)]">
                 <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
                 {openingPortal ? 'Opening...' : 'Manage Billing'}
               </Button>

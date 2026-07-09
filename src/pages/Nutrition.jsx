@@ -144,12 +144,12 @@ export default function Nutrition() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-sidebar rounded-xl p-4 sm:p-5">
         <div>
           <h1 className="text-xl font-heading font-bold text-white tracking-tight">Nutrition System</h1>
-          <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
+          <p className="text-sm mt-1" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>AI-powered nutrition coaching for performance, recovery, and adherence.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
            <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: 'rgb(var(--card))', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => setShowAIModal(true)}
           >
             <Sparkles className="w-4 h-4" />
@@ -157,7 +157,7 @@ export default function Nutrition() {
           </button>
           <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'rgba(255,255,255,0.1)', color: 'rgb(var(--card))', borderColor: 'rgba(255,255,255,0.2)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => setShowPDFModal(true)}
           >
             📄 Upload PDF
@@ -165,7 +165,7 @@ export default function Nutrition() {
           <button
             onClick={() => setShowLaunchModal(true)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
-            style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
+            style={{ background: 'var(--tc-card)', color: 'var(--tc-foreground)' }}
           >
             + New Plan
           </button>
@@ -217,7 +217,7 @@ export default function Nutrition() {
           { label: 'Templates', value: plans.filter(p => p.is_template).length, icon: Sparkles, color: 'text-ai', bg: 'bg-ai/10 border-ai' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className={`p-4 rounded-2xl border ${bg} flex items-center gap-3`}>
-            <div className="p-2 bg-white/70 rounded-xl">
+            <div className="p-2 bg-[var(--kc-w-70)] rounded-xl">
               <Icon className={`w-4 h-4 ${color}`} />
             </div>
             <div>

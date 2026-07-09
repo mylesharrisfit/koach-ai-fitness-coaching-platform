@@ -11,10 +11,10 @@ import AffiliatePayoutCenter from '@/components/affiliate/AffiliatePayoutCenter'
 import AffiliateAssetLibrary from '@/components/affiliate/AffiliateAssetLibrary';
 
 const TIERS = {
-  bronze: { min: 0, max: 10, rate: 20, label: 'Bronze', color: 'rgb(var(--warning))' },
-  silver: { min: 11, max: 25, rate: 25, label: 'Silver', color: '#4B5563' },
-  gold: { min: 26, max: 50, rate: 30, label: 'Gold', color: 'rgb(var(--warning))' },
-  platinum: { min: 51, max: Infinity, rate: 35, label: 'Platinum', color: 'rgb(var(--primary))' },
+  bronze: { min: 0, max: 10, rate: 20, label: 'Bronze', color: 'var(--tc-warning)' },
+  silver: { min: 11, max: 25, rate: 25, label: 'Silver', color: 'var(--kc-4b5563)' },
+  gold: { min: 26, max: 50, rate: 30, label: 'Gold', color: 'var(--tc-warning)' },
+  platinum: { min: 51, max: Infinity, rate: 35, label: 'Platinum', color: 'var(--tc-primary)' },
 };
 
 export default function AffiliateDashboard() {

@@ -34,7 +34,7 @@ export default function Community() {
   return (
     <div className="p-4 lg:p-6 max-w-6xl mx-auto space-y-5">
       {/* Header */}
-      <div className="rounded-xl p-5 text-white flex items-center justify-between" style={{ background: 'rgb(var(--sidebar))' }}>
+      <div className="rounded-xl p-5 text-white flex items-center justify-between" style={{ background: 'var(--tc-sidebar)' }}>
         <div>
           <h1 className="text-xl font-semibold text-white">Community</h1>
           <p className="text-sm text-white/50 mt-0.5">

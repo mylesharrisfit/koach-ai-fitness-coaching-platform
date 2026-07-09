@@ -17,16 +17,16 @@ import WLPublish from '@/components/white-label/WLPublish';
 const EMPTY = {
   business_name: '', app_name: '',
   logo_primary_url: '', logo_dark_url: '', logo_light_url: '', favicon_url: '', app_icon_url: '',
-  app_icon_bg_color: 'rgb(var(--primary))',
-  primary_color: 'rgb(var(--primary))', secondary_color: 'rgb(var(--ai))', gradient_direction: '135deg', gradient_angle: 135,
-  bg_color: 'rgb(var(--muted))', card_color: 'rgb(var(--card))', nav_color: 'rgb(var(--card))',
-  text_primary: 'rgb(var(--foreground))', text_secondary: 'rgb(var(--muted-foreground))', link_color: 'rgb(var(--primary))',
+  app_icon_bg_color: 'var(--tc-primary)',
+  primary_color: 'var(--tc-primary)', secondary_color: 'var(--tc-ai)', gradient_direction: '135deg', gradient_angle: 135,
+  bg_color: 'var(--tc-muted)', card_color: 'var(--tc-card)', nav_color: 'var(--tc-card)',
+  text_primary: 'var(--tc-foreground)', text_secondary: 'var(--tc-muted-foreground)', link_color: 'var(--tc-primary)',
   font_primary: 'Inter', font_heading_weight: '700',
   portal_show_logo: true, portal_hide_koach_badge: false, portal_nav_style: 'bottom', portal_nav_bg: 'white',
-  splash_enabled: true, splash_bg_color: 'rgb(var(--primary))', splash_animation: 'spinner',
-  login_bg_type: 'gradient', login_bg_color: 'rgb(var(--primary))', login_show_logo: true, login_headline: '', login_subtitle: '',
+  splash_enabled: true, splash_bg_color: 'var(--tc-primary)', splash_animation: 'spinner',
+  login_bg_type: 'gradient', login_bg_color: 'var(--tc-primary)', login_show_logo: true, login_headline: '', login_subtitle: '',
   custom_domain: '', custom_domain_status: 'pending',
-  email_show_logo: true, email_header_bg: 'rgb(var(--primary))', email_header_height: 'standard',
+  email_show_logo: true, email_header_bg: 'var(--tc-primary)', email_header_height: 'standard',
   email_footer_social: false, email_footer_social_links: {},
   email_hide_koach_badge: false,
   terms_url: '', terms_text: '', privacy_url: '', privacy_text: '',
@@ -167,7 +167,7 @@ export default function WhiteLabel() {
           </button>
           <button onClick={handlePublish} disabled={publishing || isLocked}
             className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60"
-            style={{ background: isLocked ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: isLocked ? 'none' : '0 4px 16px rgb(var(--primary) / 0.3)' }}>
+            style={{ background: isLocked ? 'var(--tc-muted-foreground)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: isLocked ? 'none' : '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
             {publishing ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : null}
             {isLocked ? <><Lock className="w-3.5 h-3.5" /> Publish</> : 'Publish Changes'}
           </button>
@@ -186,7 +186,7 @@ export default function WhiteLabel() {
           </div>
           <Link to="/subscription"
             className="flex-shrink-0 px-5 py-2.5 rounded-xl font-bold text-white text-sm"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', boxShadow: '0 4px 12px rgb(var(--warning) / 0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-warning), var(--tc-warning))', boxShadow: '0 4px 12px color-mix(in srgb, var(--tc-warning) 30%, transparent)' }}>
             Upgrade to Unlock
           </Link>
         </div>
@@ -203,7 +203,7 @@ export default function WhiteLabel() {
           <WLCustomContent {...sharedProps} locked={isLocked} enterpriseLocked={isEnterpriseLocked} />
 
           {/* Brand Assets & QR */}
-          <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+          <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px color-mix(in srgb, black 5%, transparent)' }}>
             <div className="flex items-center gap-2 px-6 py-4 border-b border-border bg-muted/60">
               <span className="text-base">📦</span>
               <h2 className="font-bold text-foreground text-sm">Brand Assets & QR Code</h2>

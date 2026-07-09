@@ -39,8 +39,8 @@ function RestTimer({ seconds, onDone }) {
       {/* Circular progress */}
       <div className="relative w-14 h-14 flex-shrink-0">
         <svg className="w-14 h-14 -rotate-90" viewBox="0 0 56 56">
-          <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
-          <circle cx="28" cy="28" r="24" fill="none" stroke="rgb(var(--primary))" strokeWidth="4"
+          <circle cx="28" cy="28" r="24" fill="none" stroke="color-mix(in srgb, white 8%, transparent)" strokeWidth="4" />
+          <circle cx="28" cy="28" r="24" fill="none" stroke="var(--tc-primary)" strokeWidth="4"
             strokeDasharray={`${2 * Math.PI * 24}`}
             strokeDashoffset={`${2 * Math.PI * 24 * (1 - pct / 100)}`}
             strokeLinecap="round" className="transition-all duration-1000" />
@@ -58,7 +58,7 @@ function RestTimer({ seconds, onDone }) {
           className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" fill="currentColor" />}
         </button>
-        <button onClick={reset} className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white/60">
+        <button onClick={reset} className="w-9 h-9 rounded-xl bg-[var(--kc-w-10)] flex items-center justify-center text-white/60">
           <RotateCcw className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -99,7 +99,7 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
       </button>
 
       {expanded && (
-        <div className="border-t border-[#F5F7FB] px-4 pb-4 space-y-3">
+        <div className="border-t border-[var(--kc-f5f7fb)] px-4 pb-4 space-y-3">
           {/* Video embed */}
           {(ex.video_url || ex._library_exercise?.video_url) && (
             <div className="mt-3">

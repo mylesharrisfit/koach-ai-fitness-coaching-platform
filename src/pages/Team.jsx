@@ -9,14 +9,14 @@ function RoleBadge({ role }) {
   if (role === 'owner') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-        style={{ background: 'rgb(var(--warning) / 0.15)', color: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning) / 0.3)' }}>
+        style={{ background: 'color-mix(in srgb, var(--tc-warning) 15%, transparent)', color: 'var(--tc-warning)', border: '1px solid color-mix(in srgb, var(--tc-warning) 30%, transparent)' }}>
         <Crown className="w-2.5 h-2.5" /> Owner
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-      style={{ background: 'rgb(var(--primary) / 0.15)', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.3)' }}>
+      style={{ background: 'color-mix(in srgb, var(--tc-primary) 15%, transparent)', color: 'var(--tc-primary)', border: '1px solid color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
       Coach
     </span>
   );
@@ -73,7 +73,7 @@ function MemberRow({ member, isYou, onRemove, onChangeRole, isOwnerViewing }) {
   return (
     <div className="flex items-center gap-4 px-5 py-4 border-b border-border last:border-0">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-        style={{ background: member.role_label === 'owner' ? 'rgb(var(--warning) / 0.15)' : 'rgb(var(--primary) / 0.12)', color: member.role_label === 'owner' ? 'rgb(var(--warning))' : 'rgb(var(--primary))' }}>
+        style={{ background: member.role_label === 'owner' ? 'color-mix(in srgb, var(--tc-warning) 15%, transparent)' : 'color-mix(in srgb, var(--tc-primary) 12%, transparent)', color: member.role_label === 'owner' ? 'var(--tc-warning)' : 'var(--tc-primary)' }}>
         {initials}
       </div>
       <div className="flex-1 min-w-0">
@@ -131,16 +131,16 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
       try {
         const htmlBody = `
           <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
-            <h2 style="color:rgb(var(--foreground));margin-bottom:8px">You've been invited to KOACH AI</h2>
-            <p style="color:#4B5563">Hi ${name.trim()},</p>
-            <p style="color:#4B5563">You've been invited to join a coaching team on KOACH AI.</p>
+            <h2 style="color:var(--tc-foreground);margin-bottom:8px">You've been invited to KOACH AI</h2>
+            <p style="color:var(--kc-4b5563)">Hi ${name.trim()},</p>
+            <p style="color:var(--kc-4b5563)">You've been invited to join a coaching team on KOACH AI.</p>
             <p style="margin:24px 0">
-              <a href="https://app.base44.com" style="background:rgb(var(--primary));color:rgb(var(--card));padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
+              <a href="https://app.base44.com" style="background:var(--tc-primary);color:var(--tc-card);padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
                 Accept Invite &rarr;
               </a>
             </p>
-            <p style="color:rgb(var(--muted-foreground));font-size:13px">Sign up or log in with this email address and you'll be connected to the team automatically.</p>
-            <p style="color:rgb(var(--muted-foreground));font-size:12px;margin-top:24px">The KOACH AI Team</p>
+            <p style="color:var(--tc-muted-foreground);font-size:13px">Sign up or log in with this email address and you'll be connected to the team automatically.</p>
+            <p style="color:var(--tc-muted-foreground);font-size:12px;margin-top:24px">The KOACH AI Team</p>
           </div>`;
 
         await Promise.race([
@@ -215,7 +215,7 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
             </button>
             <button type="submit" disabled={loading}
               className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</> : <><Mail className="w-4 h-4" /> Send Invite</>}
             </button>
           </div>
@@ -310,7 +310,7 @@ export default function Team() {
       <div className="bg-sidebar rounded-2xl p-5 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white">Team</h1>
-          <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          <p className="text-sm mt-0.5" style={{ color: 'color-mix(in srgb, white 45%, transparent)' }}>
             {team ? team.name : 'Manage your coaching team'}
           </p>
         </div>
@@ -318,7 +318,7 @@ export default function Team() {
           <button
             onClick={() => setShowInvite(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             <UserPlus className="w-4 h-4" /> Invite Coach
           </button>
         )}
@@ -334,7 +334,7 @@ export default function Team() {
           <p className="text-xs text-muted-foreground mb-5">Set up your team to start adding coaches.</p>
           <button onClick={handleSeedTeam}
             className="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'rgb(var(--primary))' }}>
+            style={{ background: 'var(--tc-primary)' }}>
             Set Up My Team
           </button>
         </div>
@@ -345,7 +345,7 @@ export default function Team() {
         <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
           {/* Stats row */}
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-border"
-            style={{ background: 'rgb(var(--background))' }}>
+            style={{ background: 'var(--tc-background)' }}>
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs font-semibold text-muted-foreground">

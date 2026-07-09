@@ -29,7 +29,7 @@ const EMPTY = {
   allow_session_requests: true, session_types: [], booking_notice_hours: 24, max_sessions_per_month: 0, session_buffer_minutes: 0,
   pipeline_stages: [], auto_move_pipeline_enabled: false, auto_move_pipeline_days: 7,
   followup_reminder_enabled: true, followup_reminder_days: 3,
-  brand_color: 'rgb(var(--primary))', logo_url: '', email_signature: '', reply_to_email: '',
+  brand_color: 'var(--tc-primary)', logo_url: '', email_signature: '', reply_to_email: '',
 };
 
 export default function BusinessSettings() {
@@ -150,7 +150,7 @@ export default function BusinessSettings() {
           </AnimatePresence>
           <button onClick={save} disabled={saving}
             className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60 transition-opacity"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
           </button>
@@ -188,7 +188,7 @@ export default function BusinessSettings() {
         <div className="flex justify-end pb-8">
           <button onClick={save} disabled={saving}
             className="px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save All Changes
           </button>
