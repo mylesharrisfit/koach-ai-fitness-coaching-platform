@@ -101,8 +101,8 @@ export default function CalendlyConnectModal({ open, onClose }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#006BFF]/10 flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-[#006BFF]" />
+            <div className="w-8 h-8 rounded-lg bg-[var(--kc-006bff)]/10 flex items-center justify-center">
+              <Calendar className="w-4 h-4 text-[var(--kc-006bff)]" />
             </div>
             Connect Calendly
           </DialogTitle>
@@ -135,7 +135,7 @@ export default function CalendlyConnectModal({ open, onClose }) {
 
               {settings?.calendly_scheduling_url && (
                 <div className="flex items-center gap-2 p-3 bg-card border border-border rounded-xl">
-                  <p className="text-xs text-[#006BFF] font-mono truncate flex-1">{settings.calendly_scheduling_url}</p>
+                  <p className="text-xs text-[var(--kc-006bff)] font-mono truncate flex-1">{settings.calendly_scheduling_url}</p>
                   <button onClick={() => copyUrl(settings.calendly_scheduling_url)}
                     className="flex-shrink-0 text-muted-foreground hover:text-primary transition-colors">
                     {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
@@ -158,17 +158,17 @@ export default function CalendlyConnectModal({ open, onClose }) {
           ) : (
             /* ── Setup State ── */
             <div className="space-y-4">
-              <div className="bg-accent/10 border border-[#006BFF]/20 rounded-xl p-4">
-                <p className="text-xs font-semibold text-[#006BFF] mb-2">Step 1 — Get your API token</p>
+              <div className="bg-accent/10 border border-[var(--kc-006bff)]/20 rounded-xl p-4">
+                <p className="text-xs font-semibold text-[var(--kc-006bff)] mb-2">Step 1 — Get your API token</p>
                 <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
                   <li>Go to <a href="https://calendly.com/integrations/api_webhooks" target="_blank"
-                    className="text-[#006BFF] underline font-medium">calendly.com/integrations/api_webhooks</a></li>
+                    className="text-[var(--kc-006bff)] underline font-medium">calendly.com/integrations/api_webhooks</a></li>
                   <li>Click <strong>Personal Access Tokens</strong> → <strong>Create New Token</strong></li>
                   <li>Copy the token</li>
                   <li>In Base44 Secrets, add <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_CALENDLY_TOKEN</code></li>
                 </ol>
                 <a href="https://calendly.com/integrations/api_webhooks" target="_blank"
-                  className="flex items-center gap-1 text-xs text-[#006BFF] font-semibold mt-2.5 hover:underline">
+                  className="flex items-center gap-1 text-xs text-[var(--kc-006bff)] font-semibold mt-2.5 hover:underline">
                   Open Calendly Integrations <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
@@ -189,7 +189,7 @@ export default function CalendlyConnectModal({ open, onClose }) {
               )}
 
               <div className="flex gap-2">
-                <Button className="flex-1 bg-[#006BFF] hover:bg-[#0057D0]" onClick={handleTest} disabled={testing}>
+                <Button className="flex-1 bg-[var(--kc-006bff)] hover:bg-[var(--kc-0057d0)]" onClick={handleTest} disabled={testing}>
                   {testing ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> Testing...</> : 'Test Connection'}
                 </Button>
                 {testResult && (

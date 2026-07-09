@@ -33,8 +33,8 @@ export default function StripeConnectModal({ open, onClose }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#635BFF]/10 flex items-center justify-center">
-              <CreditCard className="w-4 h-4 text-[#635BFF]" />
+            <div className="w-8 h-8 rounded-lg bg-[var(--kc-635bff)]/10 flex items-center justify-center">
+              <CreditCard className="w-4 h-4 text-[var(--kc-635bff)]" />
             </div>
             Stripe Integration
           </DialogTitle>
@@ -53,10 +53,10 @@ export default function StripeConnectModal({ open, onClose }) {
           ) : null}
 
           {/* Setup instructions */}
-          <div className="bg-ai/10 border border-[#635BFF]/20 rounded-xl p-4">
-            <p className="text-xs font-semibold text-[#635BFF] mb-2">Setup Instructions</p>
+          <div className="bg-ai/10 border border-[var(--kc-635bff)]/20 rounded-xl p-4">
+            <p className="text-xs font-semibold text-[var(--kc-635bff)] mb-2">Setup Instructions</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
-              <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="text-[#635BFF] underline font-medium">dashboard.stripe.com/apikeys</a></li>
+              <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="text-[var(--kc-635bff)] underline font-medium">dashboard.stripe.com/apikeys</a></li>
               <li>Copy your <strong>Secret key</strong> (sk_live_... or sk_test_...)</li>
               <li>In Base44 → Settings → Secrets, add <strong>STRIPE_SECRET_KEY</strong></li>
               <li>Click "Test Connection" below to verify</li>
@@ -64,7 +64,7 @@ export default function StripeConnectModal({ open, onClose }) {
             <a
               href="https://dashboard.stripe.com/apikeys"
               target="_blank"
-              className="flex items-center gap-1 text-xs text-[#635BFF] font-semibold mt-2.5 hover:underline"
+              className="flex items-center gap-1 text-xs text-[var(--kc-635bff)] font-semibold mt-2.5 hover:underline"
             >
               Open Stripe Dashboard <ExternalLink className="w-3 h-3" />
             </a>
@@ -79,7 +79,7 @@ export default function StripeConnectModal({ open, onClose }) {
 
           <div className="flex gap-2">
             <Button
-              className="flex-1 bg-[#635BFF] hover:bg-[#5850EA]"
+              className="flex-1 bg-[var(--kc-635bff)] hover:bg-[var(--kc-5850ea)]"
               onClick={handleTest}
               disabled={testing}
             >

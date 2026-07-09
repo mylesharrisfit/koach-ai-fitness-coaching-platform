@@ -39,7 +39,7 @@ export default function SendGridConnectModal({ open, onClose }) {
         to: user?.email,
         toName: user?.full_name || 'Coach',
         subject: 'Resend Test — KOACH AI ✅',
-        html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:rgb(var(--foreground));border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">✅ Resend Connected!</h1><p style="color:rgba(255,255,255,0.6);margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
+        html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:var(--tc-foreground);border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">✅ Resend Connected!</h1><p style="color:color-mix(in srgb, white 60%, transparent);margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
       });
       if (!result?.error) {
         setTestOk(true);
@@ -125,7 +125,7 @@ export default function SendGridConnectModal({ open, onClose }) {
               )}
 
               <div className="flex gap-2">
-                <Button className="flex-1 bg-black hover:bg-[#222]" onClick={handleTest} disabled={testing}>
+                <Button className="flex-1 bg-black hover:bg-[var(--kc-222222)]" onClick={handleTest} disabled={testing}>
                   {testing ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> Sending test...</> : 'Test Connection'}
                 </Button>
                 {testOk && (

@@ -81,8 +81,8 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#2D8CFF]/10 flex items-center justify-center">
-              <Video className="w-4 h-4 text-[#2D8CFF]" />
+            <div className="w-8 h-8 rounded-lg bg-[var(--kc-2d8cff)]/10 flex items-center justify-center">
+              <Video className="w-4 h-4 text-[var(--kc-2d8cff)]" />
             </div>
             {zoomConnected ? 'Zoom Settings' : 'Connect Zoom'}
           </DialogTitle>
@@ -140,7 +140,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
                 <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Disconnect
               </Button>
               <Button
-                className="flex-1 bg-[#2D8CFF] hover:bg-[#2681F2]"
+                className="flex-1 bg-[var(--kc-2d8cff)] hover:bg-[var(--kc-2681f2)]"
                 onClick={handleSaveSettings}
                 disabled={saveMutation.isPending}
               >
@@ -154,7 +154,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
             <div className="bg-accent/10 border border-accent rounded-xl p-4">
               <p className="text-xs font-semibold text-primary mb-2">Setup Instructions</p>
               <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
-                <li>Go to <a href="https://marketplace.zoom.us" target="_blank" className="text-[#2D8CFF] underline font-medium">marketplace.zoom.us</a></li>
+                <li>Go to <a href="https://marketplace.zoom.us" target="_blank" className="text-[var(--kc-2d8cff)] underline font-medium">marketplace.zoom.us</a></li>
                 <li>Sign in → click <strong>Develop</strong> → <strong>Build App</strong></li>
                 <li>Choose <strong>OAuth</strong> app type</li>
                 <li>Set redirect URL and authorize your app</li>
@@ -163,7 +163,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
               <a
                 href="https://marketplace.zoom.us/develop/create"
                 target="_blank"
-                className="flex items-center gap-1 text-xs text-[#2D8CFF] font-semibold mt-2.5 hover:underline"
+                className="flex items-center gap-1 text-xs text-[var(--kc-2d8cff)] font-semibold mt-2.5 hover:underline"
               >
                 Open Zoom Marketplace <ExternalLink className="w-3 h-3" />
               </a>
@@ -184,7 +184,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
             </div>
 
             <Button
-              className="w-full bg-[#2D8CFF] hover:bg-[#2681F2]"
+              className="w-full bg-[var(--kc-2d8cff)] hover:bg-[var(--kc-2681f2)]"
               onClick={handleConnect}
               disabled={saveMutation.isPending || !accessToken.trim()}
             >

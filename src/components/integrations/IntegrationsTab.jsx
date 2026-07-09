@@ -59,7 +59,7 @@ function IntegrationCard({ logo, name, tag, description, connected, onConnect, o
         ) : (
           <button
             onClick={onConnect}
-            className="bg-sidebar text-white text-xs px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-colors"
+            className="bg-sidebar text-white text-xs px-4 py-2 rounded-lg hover:bg-[var(--kc-1f2937)] transition-colors"
           >
             Connect
           </button>
@@ -91,7 +91,7 @@ function ZapierModal({ open, onClose, settings }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#FF4A00] flex items-center justify-center text-white font-bold text-sm">Z</div>
+            <div className="w-8 h-8 rounded-lg bg-[var(--kc-ff4a00)] flex items-center justify-center text-white font-bold text-sm">Z</div>
             Connect Zapier
           </DialogTitle>
         </DialogHeader>
@@ -116,7 +116,7 @@ function ZapierModal({ open, onClose, settings }) {
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 bg-[#FF4A00] hover:bg-[#E04000] text-white"
+              className="flex-1 bg-[var(--kc-ff4a00)] hover:bg-[var(--kc-e04000)] text-white"
               onClick={() => saveMutation.mutate({ zapier_webhook_url: webhookUrl, zapier_connected: !!webhookUrl })}
               disabled={!webhookUrl || saveMutation.isPending}
             >
@@ -212,7 +212,7 @@ function ResendModal({ open, onClose, settings }) {
               {testing ? <><Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> Testing...</> : 'Test Connection'}
             </Button>
             <Button
-              className="flex-1 bg-sidebar hover:bg-[#1F2937]"
+              className="flex-1 bg-sidebar hover:bg-[var(--kc-1f2937)]"
               onClick={() => saveMutation.mutate({
                 resend_connected: true,
                 resend_from_email: fromEmail,
@@ -252,20 +252,20 @@ function ZoomModal({ open, onClose, settings }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#2D8CFF] flex items-center justify-center text-white font-bold text-sm">Z</div>
+            <div className="w-8 h-8 rounded-lg bg-[var(--kc-2d8cff)] flex items-center justify-center text-white font-bold text-sm">Z</div>
             Connect Zoom
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-accent/10 border border-[#2D8CFF]/20 rounded-xl p-4">
-            <p className="text-xs font-semibold text-[#2D8CFF] mb-2">Setup Instructions</p>
+          <div className="bg-accent/10 border border-[var(--kc-2d8cff)]/20 rounded-xl p-4">
+            <p className="text-xs font-semibold text-[var(--kc-2d8cff)] mb-2">Setup Instructions</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
-              <li>Go to <a href="https://marketplace.zoom.us/develop/create" target="_blank" rel="noreferrer" className="text-[#2D8CFF] underline font-medium">Zoom Marketplace</a></li>
+              <li>Go to <a href="https://marketplace.zoom.us/develop/create" target="_blank" rel="noreferrer" className="text-[var(--kc-2d8cff)] underline font-medium">Zoom Marketplace</a></li>
               <li>Create an <strong>OAuth app</strong></li>
               <li>Copy your Client ID and Client Secret</li>
             </ol>
             <a href="https://marketplace.zoom.us/develop/create" target="_blank" rel="noreferrer"
-              className="flex items-center gap-1 text-xs text-[#2D8CFF] font-semibold mt-2 hover:underline">
+              className="flex items-center gap-1 text-xs text-[var(--kc-2d8cff)] font-semibold mt-2 hover:underline">
               Open Zoom Marketplace <ExternalLink className="w-3 h-3" />
             </a>
           </div>
@@ -280,7 +280,7 @@ function ZoomModal({ open, onClose, settings }) {
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 bg-[#2D8CFF] hover:bg-[#1A7AEE] text-white"
+              className="flex-1 bg-[var(--kc-2d8cff)] hover:bg-[var(--kc-1a7aee)] text-white"
               onClick={() => saveMutation.mutate({ zoom_connected: true })}
               disabled={!clientId || !clientSecret || saveMutation.isPending}
             >
@@ -315,15 +315,15 @@ function CalendlyModal({ open, onClose, settings }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#006BFF] flex items-center justify-center text-white font-bold text-sm">C</div>
+            <div className="w-8 h-8 rounded-lg bg-[var(--kc-006bff)] flex items-center justify-center text-white font-bold text-sm">C</div>
             Connect Calendly
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-accent/10 border border-[#006BFF]/20 rounded-xl p-4">
-            <p className="text-xs font-semibold text-[#006BFF] mb-2">Setup Instructions</p>
+          <div className="bg-accent/10 border border-[var(--kc-006bff)]/20 rounded-xl p-4">
+            <p className="text-xs font-semibold text-[var(--kc-006bff)] mb-2">Setup Instructions</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
-              <li>Go to <a href="https://app.calendly.com/integrations/api_webhooks" target="_blank" rel="noreferrer" className="text-[#006BFF] underline font-medium">Calendly Integrations</a></li>
+              <li>Go to <a href="https://app.calendly.com/integrations/api_webhooks" target="_blank" rel="noreferrer" className="text-[var(--kc-006bff)] underline font-medium">Calendly Integrations</a></li>
               <li>Generate a Personal Access Token</li>
               <li>Paste it below</li>
             </ol>
@@ -335,7 +335,7 @@ function CalendlyModal({ open, onClose, settings }) {
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
             <Button
-              className="flex-1 bg-[#006BFF] hover:bg-[#005EE0] text-white"
+              className="flex-1 bg-[var(--kc-006bff)] hover:bg-[var(--kc-005ee0)] text-white"
               onClick={() => saveMutation.mutate({ calendly_connected: true })}
               disabled={!token || saveMutation.isPending}
             >
@@ -368,7 +368,7 @@ export default function IntegrationsTab() {
 
   const integrations = [
     {
-      logo: <Logo text="S" bg="bg-[#6772E5]" />,
+      logo: <Logo text="S" bg="bg-[var(--kc-6772e5)]" />,
       name: 'Stripe',
       tag: 'Payments',
       description: 'Accept payments, manage subscriptions, and track revenue from clients.',
@@ -377,7 +377,7 @@ export default function IntegrationsTab() {
       onManage: () => navigate('/revenue'),
     },
     {
-      logo: <Logo text="G" bg="bg-[#4285F4]" />,
+      logo: <Logo text="G" bg="bg-[var(--kc-4285f4)]" />,
       name: 'Google Calendar',
       tag: 'Scheduling',
       description: 'Sync sessions, schedule calls, and manage availability directly from Google Calendar.',
@@ -386,7 +386,7 @@ export default function IntegrationsTab() {
       onManage: () => navigate('/schedule'),
     },
     {
-      logo: <Logo text="C" bg="bg-[#006BFF]" />,
+      logo: <Logo text="C" bg="bg-[var(--kc-006bff)]" />,
       name: 'Calendly',
       tag: 'Scheduling',
       description: 'Share booking links with clients and auto-sync new bookings to your calendar.',
@@ -404,7 +404,7 @@ export default function IntegrationsTab() {
       onManage: () => setModal('resend'),
     },
     {
-      logo: <Logo text="Z" bg="bg-[#FF4A00]" />,
+      logo: <Logo text="Z" bg="bg-[var(--kc-ff4a00)]" />,
       name: 'Zapier',
       tag: 'Automation',
       description: 'Connect KOACH AI to 5,000+ apps. Trigger automations when clients check in, earn badges, or hit milestones.',
@@ -413,7 +413,7 @@ export default function IntegrationsTab() {
       onManage: () => setModal('zapier'),
     },
     {
-      logo: <Logo text="Z" bg="bg-[#2D8CFF]" />,
+      logo: <Logo text="Z" bg="bg-[var(--kc-2d8cff)]" />,
       name: 'Zoom',
       tag: 'Video',
       description: 'Create and launch coaching calls directly from client profiles. Auto-send join links to clients.',
