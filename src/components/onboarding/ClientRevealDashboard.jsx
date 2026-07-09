@@ -52,7 +52,7 @@ export default function ClientRevealDashboard({ data }) {
   const primaryGoal = goals[0];
 
   return (
-    <div className="w-full h-full overflow-y-auto" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full overflow-y-auto" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -61,7 +61,7 @@ export default function ClientRevealDashboard({ data }) {
         className="px-5 pt-12 pb-4 flex items-center justify-between"
       >
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-1" style={{ color: '#3B82F6' }}>
+          <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-1" style={{ color: 'rgb(var(--primary))' }}>
             KOACH AI — Live
           </p>
           <h1 className="text-2xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
@@ -73,7 +73,7 @@ export default function ClientRevealDashboard({ data }) {
         </div>
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}
         >
           A
         </div>
@@ -108,10 +108,10 @@ export default function ClientRevealDashboard({ data }) {
               <span className="text-xs" style={{ color: '#7A7A7A' }}>0% complete</span>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              <MetricRing label="Calories" value={0} max={2400} unit="" color="#3B82F6" icon={Flame} />
-              <MetricRing label="Protein" value={0} max={180} unit="g" color="#22C55E" icon={TrendingUp} />
+              <MetricRing label="Calories" value={0} max={2400} unit="" color="rgb(var(--primary))" icon={Flame} />
+              <MetricRing label="Protein" value={0} max={180} unit="g" color="rgb(var(--success))" icon={TrendingUp} />
               <MetricRing label="Hydration" value={0} max={8} unit="L" color="#06B6D4" icon={Droplets} />
-              <MetricRing label="Steps" value={0} max={10000} unit="k" color="#F59E0B" icon={Footprints} />
+              <MetricRing label="Steps" value={0} max={10000} unit="k" color="rgb(var(--warning))" icon={Footprints} />
             </div>
           </DarkCard>
         </motion.div>
@@ -125,7 +125,7 @@ export default function ClientRevealDashboard({ data }) {
                 <p className="text-base font-bold text-white">Upper Body — Push A</p>
               </div>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.12)' }}>
-                <Zap className="w-4 h-4" style={{ color: '#3B82F6' }} />
+                <Zap className="w-4 h-4" style={{ color: 'rgb(var(--primary))' }} />
               </div>
             </div>
             <div className="space-y-2 mb-3">
@@ -138,7 +138,7 @@ export default function ClientRevealDashboard({ data }) {
             </div>
             <button
               className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}
             >
               Start Workout →
             </button>
@@ -151,9 +151,9 @@ export default function ClientRevealDashboard({ data }) {
             <p className="text-xs uppercase tracking-widest font-semibold mb-3" style={{ color: '#7A7A7A' }}>Nutrition Today</p>
             <div className="grid grid-cols-4 gap-2 text-center">
               {[
-                { label: 'Calories', value: '2,400', target: '2,400', color: '#3B82F6' },
-                { label: 'Protein', value: '180g', target: '180g', color: '#22C55E' },
-                { label: 'Carbs', value: '240g', target: '240g', color: '#F59E0B' },
+                { label: 'Calories', value: '2,400', target: '2,400', color: 'rgb(var(--primary))' },
+                { label: 'Protein', value: '180g', target: '180g', color: 'rgb(var(--success))' },
+                { label: 'Carbs', value: '240g', target: '240g', color: 'rgb(var(--warning))' },
                 { label: 'Fat', value: '75g', target: '75g', color: '#EC4899' },
               ].map(m => (
                 <div key={m.label}>
@@ -164,7 +164,7 @@ export default function ClientRevealDashboard({ data }) {
               ))}
             </div>
             <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-              <div className="h-full w-0 rounded-full" style={{ background: 'linear-gradient(90deg, #3B82F6, #22C55E)' }} />
+              <div className="h-full w-0 rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--success)))' }} />
             </div>
           </DarkCard>
         </motion.div>

@@ -51,7 +51,7 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
               style={{
                 background: favFoods.includes(f) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
                 border: favFoods.includes(f) ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                color: favFoods.includes(f) ? '#fff' : '#7A7A7A',
+                color: favFoods.includes(f) ? 'rgb(var(--card))' : '#7A7A7A',
                 boxShadow: favFoods.includes(f) ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
               }}
             >
@@ -71,7 +71,7 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
                 style={{
                   background: diet === d.id ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
                   border: diet === d.id ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                  color: diet === d.id ? '#fff' : '#7A7A7A',
+                  color: diet === d.id ? 'rgb(var(--card))' : '#7A7A7A',
                 }}>{d.label}</motion.button>
             ))}
           </div>
@@ -88,7 +88,7 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
                 style={{
                   background: meals === m.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
                   border: meals === m.id ? '1.5px solid rgba(59,130,246,0.45)' : '1.5px solid rgba(255,255,255,0.07)',
-                  color: meals === m.id ? '#fff' : '#7A7A7A',
+                  color: meals === m.id ? 'rgb(var(--card))' : '#7A7A7A',
                   boxShadow: meals === m.id ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
                 }}>{m.label}</motion.button>
             ))}

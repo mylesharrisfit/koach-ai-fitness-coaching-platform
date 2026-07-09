@@ -35,11 +35,11 @@ const PROGRESS_STEPS = STEPS.filter(s => !NO_PROGRESS.has(s));
 /* ─── Shared primitives ─── */
 function Screen({ children }) {
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col" style={{ background: 'rgb(var(--sidebar))' }}>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(70px)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(70px)' }}
         />
       </div>
       {children}
@@ -71,7 +71,7 @@ function Header({ eyebrow, headline, sub }) {
       transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
     >
       {eyebrow && (
-        <p className="text-[11px] uppercase tracking-[0.26em] font-bold mb-2.5" style={{ color: '#3B82F6' }}>
+        <p className="text-[11px] uppercase tracking-[0.26em] font-bold mb-2.5" style={{ color: 'rgb(var(--primary))' }}>
           {eyebrow}
         </p>
       )}
@@ -88,7 +88,7 @@ function CTABtn({ label = 'Continue', onClick, disabled }) {
   return (
     <div
       className="flex-shrink-0 px-6 pt-3 pb-8 w-full max-w-md mx-auto relative z-10"
-      style={{ background: 'linear-gradient(to top, #0A0A0A 65%, transparent)' }}
+      style={{ background: 'rgb(var(--sidebar))' }}
     >
       <motion.button
         onClick={onClick}
@@ -97,9 +97,9 @@ function CTABtn({ label = 'Continue', onClick, disabled }) {
         whileTap={!disabled ? { scale: 0.98 } : {}}
         className="w-full py-4 rounded-2xl font-bold text-base transition-all"
         style={{
-          background: disabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+          background: disabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
           boxShadow: disabled ? 'none' : '0 0 24px rgba(59,130,246,0.28)',
-          color: disabled ? '#444' : '#fff',
+          color: disabled ? '#444' : 'rgb(var(--card))',
           cursor: disabled ? 'not-allowed' : 'pointer',
         }}
       >
@@ -118,7 +118,7 @@ function Chip({ label, selected, onClick, emoji }) {
       style={{
         background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
         border: selected ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-        color: selected ? '#fff' : '#6A6A6A',
+        color: selected ? 'rgb(var(--card))' : '#6A6A6A',
         boxShadow: selected ? '0 0 18px rgba(59,130,246,0.15)' : 'none',
       }}
     >
@@ -142,14 +142,14 @@ function BigCard({ emoji, label, sublabel, selected, onClick }) {
       <div className="flex items-center gap-4">
         <span className="text-2xl flex-shrink-0">{emoji}</span>
         <div className="flex-1 text-left">
-          <p className="font-semibold text-sm" style={{ color: selected ? '#fff' : '#B3B3B3' }}>{label}</p>
+          <p className="font-semibold text-sm" style={{ color: selected ? 'rgb(var(--card))' : '#B3B3B3' }}>{label}</p>
           {sublabel && <p className="text-xs mt-0.5" style={{ color: '#4A4A4A' }}>{sublabel}</p>}
         </div>
         <div
           className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center"
           style={{
-            background: selected ? '#3B82F6' : 'transparent',
-            border: selected ? '2px solid #3B82F6' : '2px solid rgba(255,255,255,0.12)',
+            background: selected ? 'rgb(var(--primary))' : 'transparent',
+            border: selected ? '2px solid rgb(var(--primary))' : '2px solid rgba(255,255,255,0.12)',
           }}
         >
           {selected && (
@@ -174,7 +174,7 @@ function PremiumField({ label, value, onChange, type = 'text', placeholder, auto
         placeholder={placeholder}
         autoFocus={autoFocus}
         className="w-full px-5 py-4 rounded-2xl text-white text-base font-medium placeholder-[#2E2E2E] outline-none transition-all"
-        style={{ background: '#111', border: '1.5px solid rgba(255,255,255,0.07)' }}
+        style={{ background: 'rgb(var(--foreground))', border: '1.5px solid rgba(255,255,255,0.07)' }}
         onFocus={e => (e.target.style.borderColor = 'rgba(59,130,246,0.5)')}
         onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.07)')}
       />
@@ -186,7 +186,7 @@ function NumBox({ label, value, onChange, unit, placeholder }) {
   return (
     <div
       className="flex-1 flex flex-col items-center gap-2 py-5 px-3 rounded-2xl"
-      style={{ background: '#111', border: '1.5px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'rgb(var(--foreground))', border: '1.5px solid rgba(255,255,255,0.07)' }}
     >
       <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#4A4A4A' }}>{label}</p>
       <input
@@ -209,7 +209,7 @@ function SliderRow({ label, value, onChange, min = 1, max = 10, leftLabel, right
         <p className="text-sm font-semibold text-white">{label}</p>
         <span
           className="text-sm font-bold px-2.5 py-0.5 rounded-lg"
-          style={{ background: 'rgba(59,130,246,0.12)', color: '#3B82F6' }}
+          style={{ background: 'rgba(59,130,246,0.12)', color: 'rgb(var(--primary))' }}
         >
           {value || min}/{max}
         </span>
@@ -221,7 +221,7 @@ function SliderRow({ label, value, onChange, min = 1, max = 10, leftLabel, right
         value={value || min}
         onChange={e => onChange(Number(e.target.value))}
         className="w-full h-1.5 rounded-full outline-none appearance-none"
-        style={{ background: `linear-gradient(to right, #3B82F6 ${((value || min) - min) / (max - min) * 100}%, rgba(255,255,255,0.08) 0%)` }}
+        style={{ background: `linear-gradient(to right, rgb(var(--primary)) ${((value || min) - min) / (max - min) * 100}%, rgba(255,255,255,0.08) 0%)` }}
       />
       {(leftLabel || rightLabel) && (
         <div className="flex justify-between">
@@ -251,7 +251,7 @@ function PremiumTextarea({ value, onChange, placeholder, rows = 4 }) {
       placeholder={placeholder}
       rows={rows}
       className="w-full px-5 py-4 rounded-2xl text-white text-base leading-relaxed resize-none focus:outline-none transition-all"
-      style={{ background: '#111', border: '1.5px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'rgb(var(--foreground))', border: '1.5px solid rgba(255,255,255,0.07)' }}
       onFocus={e => (e.target.style.borderColor = 'rgba(59,130,246,0.45)')}
       onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.07)')}
     />
@@ -281,7 +281,7 @@ function WelcomeStep({ onNext }) {
             className="space-y-4"
           >
             {displayName && (
-              <p className="text-sm font-semibold" style={{ color: '#3B82F6' }}>
+              <p className="text-sm font-semibold" style={{ color: 'rgb(var(--primary))' }}>
                 Coach {displayName} invited you ✦
               </p>
             )}
@@ -304,7 +304,7 @@ function WelcomeStep({ onNext }) {
               <span
                 key={t}
                 className="px-3 py-1 rounded-full text-xs font-semibold"
-                style={{ background: 'rgba(59,130,246,0.08)', color: '#3B82F6', border: '1px solid rgba(59,130,246,0.18)' }}
+                style={{ background: 'rgba(59,130,246,0.08)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.18)' }}
               >
                 {t}
               </span>
@@ -320,7 +320,7 @@ function WelcomeStep({ onNext }) {
               whileHover={{ scale: 1.03, boxShadow: '0 0 48px rgba(59,130,246,0.5)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-2xl text-white font-bold text-lg"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
             >
               Let's Go →
             </motion.button>
@@ -603,7 +603,7 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
                   style={{
                     background: data.training_days_per_week === d ? 'rgba(59,130,246,0.14)' : 'rgba(255,255,255,0.04)',
                     border: data.training_days_per_week === d ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                    color: data.training_days_per_week === d ? '#fff' : '#4A4A4A',
+                    color: data.training_days_per_week === d ? 'rgb(var(--card))' : '#4A4A4A',
                     boxShadow: data.training_days_per_week === d ? '0 0 14px rgba(59,130,246,0.12)' : 'none',
                   }}
                 >
@@ -801,7 +801,7 @@ function MedicalStep({ data, set, onNext, onBack }) {
                     border: data.parq_answer === ans
                       ? (ans === 'Yes' ? '1.5px solid rgba(239,68,68,0.55)' : '1.5px solid rgba(34,197,94,0.55)')
                       : '1.5px solid rgba(255,255,255,0.07)',
-                    color: data.parq_answer === ans ? '#fff' : '#4A4A4A',
+                    color: data.parq_answer === ans ? 'rgb(var(--card))' : '#4A4A4A',
                   }}
                 >
                   {ans === 'Yes' ? '⚠️ Yes' : '✅ No'}
@@ -811,7 +811,7 @@ function MedicalStep({ data, set, onNext, onBack }) {
             {data.parq_answer === 'Yes' && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                 className="p-3 rounded-xl text-xs leading-relaxed"
-                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#F87171' }}>
+                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: 'rgb(var(--destructive))' }}>
                 Please ensure you have medical clearance before starting any exercise program. Your coach will review this and may request documentation.
               </motion.div>
             )}
@@ -893,8 +893,8 @@ function ConsentStep({ data, set, onNext, onBack }) {
             <div
               className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center mt-0.5 transition-all"
               style={{
-                background: consentChecked ? '#22C55E' : 'transparent',
-                border: consentChecked ? '2px solid #22C55E' : '2px solid rgba(255,255,255,0.2)',
+                background: consentChecked ? 'rgb(var(--success))' : 'transparent',
+                border: consentChecked ? '2px solid rgb(var(--success))' : '2px solid rgba(255,255,255,0.2)',
               }}
             >
               {consentChecked && (
@@ -903,8 +903,8 @@ function ConsentStep({ data, set, onNext, onBack }) {
                 </svg>
               )}
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? '#fff' : '#7A7A7A' }}>
-              I confirm I am cleared to exercise, I understand that coaching is not medical advice, and I take full responsibility for my own health and safety during this program. <span style={{ color: '#22C55E' }}>*Required</span>
+            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? 'rgb(var(--card))' : '#7A7A7A' }}>
+              I confirm I am cleared to exercise, I understand that coaching is not medical advice, and I take full responsibility for my own health and safety during this program. <span style={{ color: 'rgb(var(--success))' }}>*Required</span>
             </p>
           </motion.button>
 
@@ -1010,7 +1010,7 @@ function ObstaclesStep({ data, set, onNext, onBack }) {
                 }}
               >
                 <div className="text-xl mb-1.5">{o.emoji}</div>
-                <p className="text-sm font-semibold" style={{ color: selected.includes(o.id) ? '#fff' : '#7A7A7A' }}>{o.label}</p>
+                <p className="text-sm font-semibold" style={{ color: selected.includes(o.id) ? 'rgb(var(--card))' : '#7A7A7A' }}>{o.label}</p>
               </motion.button>
             ))}
           </div>
@@ -1061,7 +1061,7 @@ function CommitmentStep({ data, set, onNext, onBack }) {
                     }}
                   >
                     <div className="text-3xl mb-2">{c.emoji}</div>
-                    <p className="font-bold text-sm" style={{ color: sel ? '#fff' : '#9A9A9A' }}>{c.label}</p>
+                    <p className="font-bold text-sm" style={{ color: sel ? 'rgb(var(--card))' : '#9A9A9A' }}>{c.label}</p>
                     <p className="text-xs mt-1" style={{ color: '#4A4A4A' }}>{c.sub}</p>
                   </motion.button>
                 );
@@ -1121,7 +1121,7 @@ function GenItemCard({ item }) {
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#2E2E2E' : '#fff' }}>{item.label}</p>
+        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#2E2E2E' : 'rgb(var(--card))' }}>{item.label}</p>
         <p className="text-[11px] mt-0.5" style={{
           color: status === 'done' ? 'rgba(34,197,94,0.8)' : status === 'loading' ? 'rgba(59,130,246,0.8)' : '#2E2E2E',
         }}>
@@ -1131,12 +1131,12 @@ function GenItemCard({ item }) {
       <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
         {status === 'loading' && (
           <motion.div className="w-4 h-4 rounded-full border-2"
-            style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+            style={{ borderColor: 'rgb(var(--primary))', borderTopColor: 'transparent' }}
             animate={{ rotate: 360 }} transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }} />
         )}
         {status === 'done' && (
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-            className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#22C55E' }}>
+            className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgb(var(--success))' }}>
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -1179,11 +1179,11 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
       </div>
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full px-6 gap-7 relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2">
-          <p className="text-[11px] uppercase tracking-[0.26em] font-bold" style={{ color: '#3B82F6' }}>KOACH AI Engine</p>
+          <p className="text-[11px] uppercase tracking-[0.26em] font-bold" style={{ color: 'rgb(var(--primary))' }}>KOACH AI Engine</p>
           <AnimatePresence mode="wait">
             {allDone ? (
               <motion.h2 key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                className="text-3xl font-bold" style={{ color: '#22C55E', letterSpacing: '-0.025em' }}>
+                className="text-3xl font-bold" style={{ color: 'rgb(var(--success))', letterSpacing: '-0.025em' }}>
                 Your profile is ready.
               </motion.h2>
             ) : (
@@ -1201,7 +1201,7 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
         <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))' }}
             animate={{ width: allDone ? '100%' : `${(GEN_ITEMS.length / GEN_ITEMS.length) * 85}%` }}
             initial={{ width: '0%' }}
             transition={{ duration: lastAt * 0.9 }}
@@ -1221,11 +1221,11 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
           >
             <div className="p-5 rounded-2xl space-y-3"
               style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.3)' }}>
-              <p className="text-sm font-bold text-center" style={{ color: '#F87171' }}>⚠️ Submission Failed</p>
+              <p className="text-sm font-bold text-center" style={{ color: 'rgb(var(--destructive))' }}>⚠️ Submission Failed</p>
               <div className="rounded-xl p-3 text-left"
                 style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(239,68,68,0.2)' }}>
                 <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: '#6A6A6A' }}>Error details</p>
-                <p className="text-xs leading-relaxed break-words" style={{ color: '#FCA5A5', fontFamily: 'monospace' }}>
+                <p className="text-xs leading-relaxed break-words" style={{ color: 'rgb(var(--destructive))', fontFamily: 'monospace' }}>
                   {submitError || 'Unknown error — no message received.'}
                 </p>
               </div>
@@ -1235,7 +1235,7 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
               <button
                 onClick={onRetry}
                 className="w-full py-3 rounded-xl font-bold text-sm text-white"
-                style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}
               >
                 Try Again
               </button>
@@ -1266,12 +1266,12 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
             style={{ background: 'rgba(34,197,94,0.1)', border: '2px solid rgba(34,197,94,0.3)' }}
           >
             <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <path d="M9 21L17 29L33 13" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M9 21L17 29L33 13" stroke="rgb(var(--success))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </motion.div>
 
           <motion.div variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }} className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#22C55E' }}>Application received</p>
+            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'rgb(var(--success))' }}>Application received</p>
             <h2 className="font-bold text-white" style={{ fontSize: 'clamp(2rem, 7vw, 2.8rem)', letterSpacing: '-0.03em' }}>
               Thanks, {name} —<br />your application<br />is in. ✅
             </h2>
@@ -1300,7 +1300,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
                 <div key={i} className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                     style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)' }}>
-                    <span className="text-[9px] font-bold" style={{ color: '#3B82F6' }}>{i + 1}</span>
+                    <span className="text-[9px] font-bold" style={{ color: 'rgb(var(--primary))' }}>{i + 1}</span>
                   </div>
                   <p className="text-sm text-left" style={{ color: '#7A7A7A' }}>{step}</p>
                 </div>
@@ -1310,7 +1310,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
             <div className="flex items-center justify-center gap-2 py-2">
               {['Exclusive', 'Personalised', 'Elite-Grade'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ background: 'rgba(34,197,94,0.08)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}>
+                  style={{ background: 'rgba(34,197,94,0.08)', color: 'rgb(var(--success))', border: '1px solid rgba(34,197,94,0.2)' }}>
                   {t}
                 </span>
               ))}
@@ -1436,12 +1436,12 @@ export default function ClientOnboarding() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden" style={{ background: '#0A0A0A' }}>
+    <div className="fixed inset-0 overflow-hidden" style={{ background: 'rgb(var(--sidebar))' }}>
       {showProgress && (
         <div className="absolute top-0 left-0 right-0 z-50 h-[2px]" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))' }}
             animate={{ width: `${progress * 100}%` }}
             transition={{ duration: 0.45, ease: 'easeInOut' }}
           />

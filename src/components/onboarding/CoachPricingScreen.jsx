@@ -11,7 +11,7 @@ const PLANS = [
     monthly: 29,
     annual: 23,
     tag: null,
-    color: '#6B7280',
+    color: 'rgb(var(--muted-foreground))',
     clientCap: 'Up to 10 clients',
     features: [
       'Up to 10 clients',
@@ -29,7 +29,7 @@ const PLANS = [
     monthly: 79,
     annual: 63,
     tag: 'Most Popular',
-    color: '#3B82F6',
+    color: 'rgb(var(--primary))',
     clientCap: 'Up to 75 clients',
     features: [
       'Up to 75 clients',
@@ -48,7 +48,7 @@ const PLANS = [
     monthly: 149,
     annual: 119,
     tag: 'Recommended',
-    color: '#8B5CF6',
+    color: 'rgb(var(--ai))',
     clientCap: 'Unlimited clients',
     features: [
       'Unlimited clients',
@@ -66,7 +66,7 @@ const PLANS = [
     monthly: 299,
     annual: 239,
     tag: 'Scale',
-    color: '#F59E0B',
+    color: 'rgb(var(--warning))',
     clientCap: 'Unlimited clients',
     features: [
       'Unlimited clients',
@@ -108,11 +108,11 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
   };
 
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Ambient */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] opacity-[0.06]"
-          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       {/* Back — hidden when resuming after account creation */}
@@ -130,7 +130,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
       <div className="flex-1 overflow-y-auto px-5 pb-36 pt-6 max-w-lg mx-auto w-full relative z-10">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-2 mb-6 text-center">
-          <p className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
             Step 3 of 3 · Choose Your Plan
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.025em' }}>
@@ -153,14 +153,14 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                 onClick={() => setBilling(b.key)}
                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold transition-all"
                 style={{
-                  background: billing === b.key ? 'linear-gradient(135deg, #3B82F6, #1D4ED8)' : 'transparent',
-                  color: billing === b.key ? '#fff' : '#666',
+                  background: billing === b.key ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' : 'transparent',
+                  color: billing === b.key ? 'rgb(var(--card))' : '#666',
                 }}
               >
                 {b.label}
                 {b.badge && (
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                    style={{ background: billing === b.key ? 'rgba(255,255,255,0.2)' : 'rgba(34,197,94,0.15)', color: billing === b.key ? '#fff' : '#22C55E' }}>
+                    style={{ background: billing === b.key ? 'rgba(255,255,255,0.2)' : 'rgba(34,197,94,0.15)', color: billing === b.key ? 'rgb(var(--card))' : 'rgb(var(--success))' }}>
                     {b.badge}
                   </span>
                 )}
@@ -184,7 +184,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                 whileTap={{ scale: 0.985 }}
                 className="w-full text-left rounded-2xl p-5 transition-all"
                 style={{
-                  background: isSelected ? `rgba(${plan.id === 'pro' ? '59,130,246' : plan.id === 'elite' ? '139,92,246' : plan.id === 'enterprise' ? '245,158,11' : '107,114,128'},0.08)` : '#111',
+                  background: isSelected ? `rgba(${plan.id === 'pro' ? '59,130,246' : plan.id === 'elite' ? '139,92,246' : plan.id === 'enterprise' ? '245,158,11' : '107,114,128'},0.08)` : 'rgb(var(--foreground))',
                   border: isSelected ? `1.5px solid ${plan.color}55` : '1.5px solid rgba(255,255,255,0.06)',
                   boxShadow: isSelected ? `0 0 28px ${plan.color}18` : 'none',
                   transform: isSelected && plan.id === 'pro' ? 'scale(1.015)' : 'scale(1)',
@@ -202,7 +202,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                       )}
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold" style={{ color: isSelected ? plan.color : '#fff' }}>${price}</span>
+                      <span className="text-2xl font-bold" style={{ color: isSelected ? plan.color : 'rgb(var(--card))' }}>${price}</span>
                       <span className="text-xs" style={{ color: '#555' }}>/mo{billing === 'annual' ? ' billed annually' : ''} after trial</span>
                     </div>
                     <p className="text-[11px] mt-0.5" style={{ color: '#555' }}>{plan.clientCap}</p>
@@ -212,7 +212,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                       borderColor: isSelected ? plan.color : 'rgba(255,255,255,0.15)',
                       background: isSelected ? plan.color : 'transparent',
                     }}>
-                    {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                    {isSelected && <div className="w-2 h-2 rounded-full bg-card" />}
                   </div>
                 </div>
                 <div className="space-y-1.5">
@@ -238,7 +238,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
           {['30-day free trial', 'Cancel anytime', 'Card on file required'].map(t => (
             <div key={t} className="flex items-center gap-1.5">
               <div className="w-3.5 h-3.5 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
-                <Check className="w-2 h-2" style={{ color: '#22C55E' }} />
+                <Check className="w-2 h-2" style={{ color: 'rgb(var(--success))' }} />
               </div>
               <span className="text-[11px] font-medium" style={{ color: '#555' }}>{t}</span>
             </div>
@@ -248,7 +248,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
 
       {/* CTA */}
       <div className="fixed bottom-0 left-0 right-0 px-5 z-20"
-        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))', background: 'linear-gradient(to top, #0A0A0A 70%, transparent)' }}>
+        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))', background: 'rgb(var(--sidebar))' }}>
         <div className="max-w-lg mx-auto w-full pt-4">
           <motion.button
             onClick={handleStartTrial}
@@ -256,7 +256,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
             whileHover={!loading ? { scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' } : {}}
             whileTap={!loading ? { scale: 0.97 } : {}}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-            style={{ background: loading ? '#1a2a4a' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)', opacity: loading ? 0.7 : 1 }}
+            style={{ background: loading ? '#1a2a4a' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgba(59,130,246,0.3)', opacity: loading ? 0.7 : 1 }}
           >
             {loading ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Redirecting to checkout…</>
@@ -272,7 +272,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
             <button
               onClick={() => base44.auth.redirectToLogin(window.location.origin + '/')}
               className="underline transition-colors"
-              style={{ color: '#3B82F6' }}
+              style={{ color: 'rgb(var(--primary))' }}
             >
               Log in
             </button>

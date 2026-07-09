@@ -25,11 +25,11 @@ export default function OnboardingLayout({
   hideNext = false,
 }) {
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.05]"
-          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(60px)' }} />
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(60px)' }} />
       </div>
 
       {/* Back button */}
@@ -57,7 +57,7 @@ export default function OnboardingLayout({
           {/* Header */}
           <motion.div variants={stagger.item} className="space-y-2">
             {eyebrow && (
-              <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#3B82F6' }}>
+              <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
                 {eyebrow}
               </p>
             )}
@@ -87,7 +87,7 @@ export default function OnboardingLayout({
           className="fixed bottom-0 left-0 right-0 px-6 pt-4 flex flex-col gap-3 z-20"
           style={{
             paddingBottom: 'max(2rem, env(safe-area-inset-bottom))',
-            background: 'linear-gradient(to top, #0A0A0A 65%, transparent)',
+            background: 'rgb(var(--sidebar))',
           }}
         >
           <div className="max-w-lg mx-auto w-full">
@@ -98,9 +98,9 @@ export default function OnboardingLayout({
               whileTap={!nextDisabled ? { scale: 0.98 } : {}}
               className="w-full py-4 rounded-2xl text-white font-semibold text-base transition-all"
               style={{
-                background: nextDisabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+                background: nextDisabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
                 boxShadow: nextDisabled ? 'none' : '0 0 24px rgba(59,130,246,0.25)',
-                color: nextDisabled ? '#555' : '#fff',
+                color: nextDisabled ? '#555' : 'rgb(var(--card))',
               }}
             >
               {nextLabel}

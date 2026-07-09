@@ -60,13 +60,13 @@ export default function ClientExperienceScreen({ onNext, onBack, data }) {
               <div className="flex items-center gap-4">
                 <span className="text-2xl">{l.emoji}</span>
                 <div className="flex-1">
-                  <p className="font-semibold text-base" style={{ color: level === l.id ? '#fff' : '#B3B3B3' }}>{l.label}</p>
+                  <p className="font-semibold text-base" style={{ color: level === l.id ? 'rgb(var(--card))' : '#B3B3B3' }}>{l.label}</p>
                   <p className="text-xs mt-0.5" style={{ color: '#5A5A5A' }}>{l.description}</p>
                 </div>
                 <div className="w-5 h-5 rounded-full flex-shrink-0 transition-all"
                   style={{
-                    background: level === l.id ? '#3B82F6' : 'transparent',
-                    border: level === l.id ? '2px solid #3B82F6' : '2px solid rgba(255,255,255,0.12)',
+                    background: level === l.id ? 'rgb(var(--primary))' : 'transparent',
+                    border: level === l.id ? '2px solid rgb(var(--primary))' : '2px solid rgba(255,255,255,0.12)',
                   }}>
                   {level === l.id && (
                     <svg viewBox="0 0 10 10" fill="none" className="w-full h-full p-1">
@@ -89,7 +89,7 @@ export default function ClientExperienceScreen({ onNext, onBack, data }) {
                 style={{
                   background: days === d ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
                   border: days === d ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.07)',
-                  color: days === d ? '#fff' : '#5A5A5A',
+                  color: days === d ? 'rgb(var(--card))' : '#5A5A5A',
                   boxShadow: days === d ? '0 0 16px rgba(59,130,246,0.12)' : 'none',
                 }}>{d}</motion.button>
             ))}

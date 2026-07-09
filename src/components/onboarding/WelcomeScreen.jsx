@@ -12,13 +12,13 @@ const features = [
 
 export default function WelcomeScreen({ onNext }) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Cinematic ambient */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-[0.12]"
-          style={{ background: 'radial-gradient(ellipse, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(ellipse, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(80px)' }} />
         <div className="absolute bottom-0 right-0 w-[400px] h-[300px] opacity-[0.05]"
-          style={{ background: 'radial-gradient(ellipse, #6366F1 0%, transparent 65%)', filter: 'blur(60px)' }} />
+          style={{ background: 'radial-gradient(ellipse, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(60px)' }} />
       </div>
 
       <motion.div
@@ -39,7 +39,7 @@ export default function WelcomeScreen({ onNext }) {
           variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.65 } } }}
           className="space-y-4"
         >
-          <p className="text-[11px] uppercase tracking-[0.3em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-[11px] uppercase tracking-[0.3em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
             KOACH AI · Coaching OS
           </p>
           <h1 className="font-bold text-white leading-[1.05]"
@@ -62,7 +62,7 @@ export default function WelcomeScreen({ onNext }) {
             <div key={feat.label} className="flex flex-col items-center gap-1.5">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
-                <FeatIcon className="w-4 h-4" style={{ color: '#3B82F6' }} />
+                <FeatIcon className="w-4 h-4" style={{ color: 'rgb(var(--primary))' }} />
               </div>
               <span className="text-[10px] font-semibold" style={{ color: '#555' }}>{feat.label}</span>
             </div>
@@ -80,7 +80,7 @@ export default function WelcomeScreen({ onNext }) {
             whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.5)' }}
             whileTap={{ scale: 0.97 }}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
           >
             Start Free Trial
             <ArrowRight className="w-5 h-5" />

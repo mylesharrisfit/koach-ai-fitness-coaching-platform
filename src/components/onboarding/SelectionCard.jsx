@@ -18,7 +18,7 @@ export function SelectionCard({ label, description, icon: Icon, selected, onClic
       {selected && (
         <div
           className="absolute inset-0 opacity-[0.04]"
-          style={{ background: 'radial-gradient(circle at 30% 50%, #3B82F6, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle at 30% 50%, rgb(var(--primary)), transparent 70%)' }}
         />
       )}
       <div className="relative z-10 flex items-start gap-4">
@@ -29,11 +29,11 @@ export function SelectionCard({ label, description, icon: Icon, selected, onClic
               background: selected ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.04)',
             }}
           >
-            <Icon className="w-5 h-5" style={{ color: selected ? '#3B82F6' : '#7A7A7A' }} />
+            <Icon className="w-5 h-5" style={{ color: selected ? 'rgb(var(--primary))' : '#7A7A7A' }} />
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-base" style={{ color: selected ? '#fff' : '#B3B3B3' }}>
+          <p className="font-semibold text-base" style={{ color: selected ? 'rgb(var(--card))' : '#B3B3B3' }}>
             {label}
           </p>
           {description && (
@@ -45,8 +45,8 @@ export function SelectionCard({ label, description, icon: Icon, selected, onClic
         <div
           className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition-all"
           style={{
-            background: selected ? '#3B82F6' : 'transparent',
-            border: selected ? '2px solid #3B82F6' : '2px solid rgba(255,255,255,0.12)',
+            background: selected ? 'rgb(var(--primary))' : 'transparent',
+            border: selected ? '2px solid rgb(var(--primary))' : '2px solid rgba(255,255,255,0.12)',
           }}
         >
           {selected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
@@ -66,7 +66,7 @@ export function ChipSelect({ label, selected, onClick }) {
       style={{
         background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
         border: selected ? '1px solid rgba(59,130,246,0.45)' : '1px solid rgba(255,255,255,0.06)',
-        color: selected ? '#fff' : '#7A7A7A',
+        color: selected ? 'rgb(var(--card))' : '#7A7A7A',
         boxShadow: selected ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
       }}
     >

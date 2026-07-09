@@ -45,11 +45,11 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
   const canSubmit = form.full_name && form.email && form.password && form.confirm && !loading;
 
   return (
-    <div className="w-full h-full flex flex-col" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Ambient */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[400px] opacity-[0.07]"
-          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       {/* Back */}
@@ -65,7 +65,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
       <div className="flex-1 overflow-y-auto px-5 pb-36 pt-6 max-w-lg mx-auto w-full relative z-10">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2 mb-8">
-          <p className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
             Step 2 of 3 · Create Account
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.025em' }}>
@@ -193,7 +193,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
                   className="flex-1 h-1 rounded-full transition-all duration-300"
                   style={{
                     background: form.password.length >= threshold
-                      ? i < 2 ? '#EF4444' : i < 3 ? '#F59E0B' : '#22C55E'
+                      ? i < 2 ? 'rgb(var(--destructive))' : i < 3 ? 'rgb(var(--warning))' : 'rgb(var(--success))'
                       : 'rgba(255,255,255,0.06)',
                   }}
                 />
@@ -210,7 +210,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-sm text-center py-2 px-4 rounded-xl"
-              style={{ color: '#F87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+              style={{ color: 'rgb(var(--destructive))', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
             >
               {error}
             </motion.p>
@@ -226,7 +226,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
       {/* CTA */}
       <div
         className="fixed bottom-0 left-0 right-0 px-5 z-20"
-        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))', background: 'linear-gradient(to top, #0A0A0A 70%, transparent)' }}
+        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))', background: 'rgb(var(--sidebar))' }}
       >
         <div className="max-w-lg mx-auto w-full pt-4">
           <motion.button
@@ -236,7 +236,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
             whileTap={canSubmit ? { scale: 0.97 } : {}}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5 transition-opacity"
             style={{
-              background: canSubmit ? 'linear-gradient(135deg, #3B82F6, #1D4ED8)' : '#1A1A1A',
+              background: canSubmit ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' : 'rgb(var(--foreground))',
               boxShadow: canSubmit ? '0 0 28px rgba(59,130,246,0.3)' : 'none',
               opacity: canSubmit ? 1 : 0.4,
               cursor: canSubmit ? 'pointer' : 'not-allowed',
@@ -260,7 +260,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
             <button
               onClick={() => base44.auth.redirectToLogin(`${window.location.origin}/`)}
               className="underline"
-              style={{ color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer' }}
+              style={{ color: 'rgb(var(--primary))', background: 'none', border: 'none', cursor: 'pointer' }}
             >
               Sign in
             </button>

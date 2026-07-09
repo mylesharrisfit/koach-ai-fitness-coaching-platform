@@ -74,7 +74,7 @@ export default function CoachGenerationScreen({ onNext }) {
   return (
     <motion.div
       className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden"
-      style={{ background: '#0A0A0A' }}
+      style={{ background: 'rgb(var(--sidebar))' }}
       animate={exiting ? { opacity: 0, filter: 'blur(12px)', scale: 1.04 } : { opacity: 1, filter: 'blur(0px)', scale: 1 }}
       transition={{ duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
     >
@@ -99,7 +99,7 @@ export default function CoachGenerationScreen({ onNext }) {
           transition={{ duration: 0.6 }}
           className="text-center space-y-2"
         >
-          <p className="text-[11px] uppercase tracking-[0.28em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-[11px] uppercase tracking-[0.28em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
             KOACH AI Engine
           </p>
           <AnimatePresence mode="wait">
@@ -109,7 +109,7 @@ export default function CoachGenerationScreen({ onNext }) {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-3xl font-bold"
-                style={{ color: '#22C55E', letterSpacing: '-0.025em' }}
+                style={{ color: 'rgb(var(--success))', letterSpacing: '-0.025em' }}
               >
                 Your coaching OS is live.
               </motion.h2>
@@ -134,7 +134,7 @@ export default function CoachGenerationScreen({ onNext }) {
         <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))' }}
             animate={{ width: `${allDone ? 100 : progress * 100}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           />
@@ -170,7 +170,7 @@ export default function CoachGenerationScreen({ onNext }) {
               >
                 <span className="text-xl w-7 flex-shrink-0 text-center">{item.icon}</span>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#333' : '#fff' }}>
+                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#333' : 'rgb(var(--card))' }}>
                     {item.label}
                   </p>
                   <p className="text-[11px] mt-0.5" style={{
@@ -183,7 +183,7 @@ export default function CoachGenerationScreen({ onNext }) {
                   {status === 'loading' && (
                     <motion.div
                       className="w-4 h-4 rounded-full border-2"
-                      style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+                      style={{ borderColor: 'rgb(var(--primary))', borderTopColor: 'transparent' }}
                       animate={{ rotate: 360 }}
                       transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
                     />
@@ -194,7 +194,7 @@ export default function CoachGenerationScreen({ onNext }) {
                       animate={{ scale: 1 }}
                       transition={{ type: 'spring', stiffness: 350, damping: 18 }}
                       className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ background: '#22C55E' }}
+                      style={{ background: 'rgb(var(--success))' }}
                     >
                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                         <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

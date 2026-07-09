@@ -85,7 +85,7 @@ export default function ClientMetricsScreen({ onNext, onBack, data }) {
                 style={{
                   background: form.activity_level === a.id ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
                   border: form.activity_level === a.id ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                  color: form.activity_level === a.id ? '#fff' : '#7A7A7A',
+                  color: form.activity_level === a.id ? 'rgb(var(--card))' : '#7A7A7A',
                   boxShadow: form.activity_level === a.id ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
                 }}>{a.label}</motion.button>
             ))}

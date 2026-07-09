@@ -16,7 +16,7 @@ function PickRow({ label, options, value, onChange }) {
             style={{
               background: value === o.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
               border: value === o.id ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.07)',
-              color: value === o.id ? '#fff' : '#7A7A7A',
+              color: value === o.id ? 'rgb(var(--card))' : '#7A7A7A',
               boxShadow: value === o.id ? '0 0 20px rgba(59,130,246,0.12)' : 'none',
             }}
           >{o.label}</motion.button>

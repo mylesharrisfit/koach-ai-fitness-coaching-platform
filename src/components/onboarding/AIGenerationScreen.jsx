@@ -47,7 +47,7 @@ function GenerationCard({ item }) {
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#3A3A3A' : '#fff' }}>
+        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#3A3A3A' : 'rgb(var(--card))' }}>
           {item.label}
         </p>
         <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'rgba(34,197,94,0.8)' : '#5A5A5A' }}>
@@ -58,7 +58,7 @@ function GenerationCard({ item }) {
         {status === 'loading' && (
           <motion.div
             className="w-4 h-4 rounded-full border-2"
-            style={{ borderColor: '#3B82F6', borderTopColor: 'transparent' }}
+            style={{ borderColor: 'rgb(var(--primary))', borderTopColor: 'transparent' }}
             animate={{ rotate: 360 }}
             transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
           />
@@ -69,7 +69,7 @@ function GenerationCard({ item }) {
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 300 }}
             className="w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ background: '#22C55E' }}
+            style={{ background: 'rgb(var(--success))' }}
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -103,7 +103,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
   }, [allDone]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Pulsing glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <motion.div
@@ -120,7 +120,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-3"
         >
-          <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: '#3B82F6' }}>
+          <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'rgb(var(--primary))' }}>
             KOACH AI Engine
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
@@ -135,7 +135,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
         <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+            style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))' }}
             initial={{ width: '0%' }}
             animate={{ width: allDone ? '100%' : `${(doneCount / items.length) * 92}%` }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -156,7 +156,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               className="text-center py-2"
             >
-              <p className="text-sm font-semibold" style={{ color: '#22C55E' }}>
+              <p className="text-sm font-semibold" style={{ color: 'rgb(var(--success))' }}>
                 ✓ Your system is ready
               </p>
             </motion.div>

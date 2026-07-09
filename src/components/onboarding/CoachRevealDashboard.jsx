@@ -11,7 +11,7 @@ const stagger = {
 function Card({ children, glow = false, className = '' }) {
   return (
     <div className={`rounded-2xl p-4 ${className}`} style={{
-      background: '#111',
+      background: 'rgb(var(--foreground))',
       border: glow ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.06)',
       boxShadow: glow ? '0 0 28px rgba(59,130,246,0.07)' : 'none',
     }}>
@@ -39,14 +39,14 @@ export default function CoachRevealDashboard({ data }) {
   const firstName = data?.business_name?.split(' ')[0] || 'Coach';
 
   return (
-    <div className="w-full h-full overflow-y-auto" style={{ background: '#0A0A0A' }}>
+    <div className="w-full h-full overflow-y-auto" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Cinematic header glow */}
       <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at 50% -20%, rgba(59,130,246,0.12) 0%, transparent 70%)' }} />
 
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="relative px-5 pt-14 pb-6">
-        <p className="text-[11px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: '#3B82F6' }}>
+        <p className="text-[11px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'rgb(var(--primary))' }}>
           System Live · KOACH AI
         </p>
         <h1 className="text-2xl font-bold text-white mb-1" style={{ letterSpacing: '-0.025em' }}>
@@ -69,9 +69,9 @@ export default function CoachRevealDashboard({ data }) {
             <p className="text-[10px] uppercase tracking-widest font-bold mb-3" style={{ color: '#555' }}>Dashboard Overview</p>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: 'Clients', value: '0', color: '#3B82F6' },
-                { label: 'Adherence', value: '—', color: '#22C55E' },
-                { label: 'Revenue', value: '$0', color: '#F59E0B' },
+                { label: 'Clients', value: '0', color: 'rgb(var(--primary))' },
+                { label: 'Adherence', value: '—', color: 'rgb(var(--success))' },
+                { label: 'Revenue', value: '$0', color: 'rgb(var(--warning))' },
               ].map(s => (
                 <div key={s.label} className="text-center py-3 rounded-xl"
                   style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
@@ -92,7 +92,7 @@ export default function CoachRevealDashboard({ data }) {
                 <p className="text-xs mt-0.5" style={{ color: '#555' }}>Complete these to unlock your full system</p>
               </div>
               <span className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-                style={{ background: 'rgba(59,130,246,0.1)', color: '#3B82F6' }}>
+                style={{ background: 'rgba(59,130,246,0.1)', color: 'rgb(var(--primary))' }}>
                 0 / {CHECKLIST.length}
               </span>
             </div>
@@ -107,11 +107,11 @@ export default function CoachRevealDashboard({ data }) {
                     transition={{ delay: 0.3 + i * 0.08 }}
                   >
                     <Link to={item.path}>
-                      <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all hover:bg-white/[0.03]"
+                      <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all hover:bg-card/[0.03]"
                         style={{ border: '1px solid rgba(255,255,255,0.04)' }}>
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
                           style={{ background: 'rgba(59,130,246,0.1)' }}>
-                          <Icon className="w-3.5 h-3.5" style={{ color: '#3B82F6' }} />
+                          <Icon className="w-3.5 h-3.5" style={{ color: 'rgb(var(--primary))' }} />
                         </div>
                         <p className="text-sm flex-1" style={{ color: '#C3C3C3' }}>{item.label}</p>
                         <ArrowRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#333' }} />
@@ -153,9 +153,9 @@ export default function CoachRevealDashboard({ data }) {
               const Icon = a.icon;
               return (
                 <Link key={i} to={a.path}>
-                  <button className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl transition-all hover:bg-white/[0.04]"
-                    style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', color: '#B3B3B3' }}>
-                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: '#3B82F6' }} />
+                  <button className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl transition-all hover:bg-card/[0.04]"
+                    style={{ background: 'rgb(var(--foreground))', border: '1px solid rgba(255,255,255,0.06)', color: '#B3B3B3' }}>
+                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'rgb(var(--primary))' }} />
                     <span className="text-sm font-medium">{a.label}</span>
                   </button>
                 </Link>
@@ -171,7 +171,7 @@ export default function CoachRevealDashboard({ data }) {
               whileHover={{ scale: 1.02, boxShadow: '0 0 36px rgba(59,130,246,0.4)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)', boxShadow: '0 0 24px rgba(59,130,246,0.25)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 24px rgba(59,130,246,0.25)' }}
             >
               Enter Full Dashboard
               <ArrowRight className="w-5 h-5" />

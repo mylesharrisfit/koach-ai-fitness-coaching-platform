@@ -52,7 +52,7 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
               style={{
                 background: selected.includes(inj.id) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
                 border: selected.includes(inj.id) ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                color: selected.includes(inj.id) ? '#fff' : '#7A7A7A',
+                color: selected.includes(inj.id) ? 'rgb(var(--card))' : '#7A7A7A',
                 boxShadow: selected.includes(inj.id) ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
               }}
             >
@@ -72,7 +72,7 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
             style={{
               background: 'rgba(255,255,255,0.04)',
               border: '1.5px solid rgba(255,255,255,0.07)',
-              color: '#fff',
+              color: 'rgb(var(--card))',
             }}
             onFocus={e => { e.target.style.border = '1.5px solid rgba(59,130,246,0.45)'; }}
             onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; }}

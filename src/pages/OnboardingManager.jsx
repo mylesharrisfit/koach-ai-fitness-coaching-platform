@@ -14,9 +14,9 @@ import AIOnboardingOverviewModal from '@/components/clients/ai-onboarding/AIOnbo
 
 /* ─── Status config ─── */
 const STATUS_CONFIG = {
-  pending:   { label: 'Intake Started',    color: '#F59E0B', bg: '#FFFBEB', icon: Hourglass },
-  completed: { label: 'Intake Complete',   color: '#3B82F6', bg: '#EFF6FF', icon: CheckCircle2 },
-  converted: { label: 'Active Client',     color: '#10B981', bg: '#ECFDF5', icon: Star },
+  pending:   { label: 'Intake Started',    color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', icon: Hourglass },
+  completed: { label: 'Intake Complete',   color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', icon: CheckCircle2 },
+  converted: { label: 'Active Client',     color: 'rgb(var(--success))', bg: 'rgb(var(--success))', icon: Star },
 };
 
 const GOAL_LABEL = {
@@ -42,20 +42,20 @@ function ResponseCard({ response, onApprove, isApproving }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-3 p-4">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm"
-          style={{ background: '#EFF6FF', color: '#3B82F6' }}>
+          style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--primary))' }}>
           {response.name?.[0]?.toUpperCase() || '?'}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-gray-900 truncate">{response.name || 'Unknown'}</p>
-          <p className="text-xs text-gray-400 truncate">{response.email}</p>
+          <p className="text-sm font-bold text-foreground truncate">{response.name || 'Unknown'}</p>
+          <p className="text-xs text-muted-foreground truncate">{response.email}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <StatusBadge status={response.status} />
-          <button onClick={() => setExpanded(e => !e)} className="text-gray-300 hover:text-gray-600 transition-colors">
+          <button onClick={() => setExpanded(e => !e)} className="text-border hover:text-muted-foreground transition-colors">
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
@@ -64,33 +64,33 @@ function ResponseCard({ response, onApprove, isApproving }) {
       {/* Chips */}
       <div className="px-4 pb-3 flex flex-wrap gap-1.5">
         {response.goal && (
-          <span className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full text-gray-600">
+          <span className="text-[10px] bg-muted border border-border px-2 py-0.5 rounded-full text-muted-foreground">
             {GOAL_LABEL[response.goal] || response.goal}
           </span>
         )}
         {response.age && (
-          <span className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full text-gray-600">
+          <span className="text-[10px] bg-muted border border-border px-2 py-0.5 rounded-full text-muted-foreground">
             {response.age} yrs
           </span>
         )}
         {response.current_weight && (
-          <span className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full text-gray-600">
+          <span className="text-[10px] bg-muted border border-border px-2 py-0.5 rounded-full text-muted-foreground">
             {response.current_weight} lbs
           </span>
         )}
         {response.training_days_per_week && (
-          <span className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full text-gray-600">
+          <span className="text-[10px] bg-muted border border-border px-2 py-0.5 rounded-full text-muted-foreground">
             {response.training_days_per_week}x/week
           </span>
         )}
-        <span className="text-[10px] bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full text-gray-400">
+        <span className="text-[10px] bg-muted border border-border px-2 py-0.5 rounded-full text-muted-foreground">
           {response.created_date ? new Date(response.created_date).toLocaleDateString() : ''}
         </span>
       </div>
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="border-t border-gray-50 px-4 py-4 space-y-2.5 bg-gray-50/50">
+        <div className="border-t border-border px-4 py-4 space-y-2.5 bg-muted/50">
           {[
             ['Height', response.height],
             ['Phone', response.phone],
@@ -101,8 +101,8 @@ function ResponseCard({ response, onApprove, isApproving }) {
             ['Schedule', response.schedule_preferences],
           ].filter(([, v]) => v).map(([label, value]) => (
             <div key={label} className="flex gap-2">
-              <span className="text-[10px] font-bold text-gray-400 w-28 flex-shrink-0 pt-0.5 uppercase tracking-wide">{label}</span>
-              <span className="text-xs text-gray-700 leading-relaxed">{value}</span>
+              <span className="text-[10px] font-bold text-muted-foreground w-28 flex-shrink-0 pt-0.5 uppercase tracking-wide">{label}</span>
+              <span className="text-xs text-foreground leading-relaxed">{value}</span>
             </div>
           ))}
         </div>
@@ -110,7 +110,7 @@ function ResponseCard({ response, onApprove, isApproving }) {
 
       {/* Action */}
       {response.status !== 'converted' && (
-        <div className="border-t border-gray-50 px-4 py-3 bg-white flex gap-2">
+        <div className="border-t border-border px-4 py-3 bg-card flex gap-2">
           <Button
             size="sm"
             className="flex-1 gap-2 text-xs"
@@ -129,12 +129,12 @@ function ResponseCard({ response, onApprove, isApproving }) {
 /* ─── Stats card ─── */
 function StatCard({ icon: Icon, value, label, color }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
+    <div className="bg-card border border-border rounded-2xl p-4 text-center shadow-sm">
       <div className="w-8 h-8 rounded-xl mx-auto mb-2 flex items-center justify-center" style={{ background: `${color}15` }}>
         <Icon className="w-4 h-4" style={{ color }} />
       </div>
       <p className="text-2xl font-bold tabular-nums" style={{ color }}>{value}</p>
-      <p className="text-[10px] text-gray-400 mt-0.5 font-medium uppercase tracking-wide">{label}</p>
+      <p className="text-[10px] text-muted-foreground mt-0.5 font-medium uppercase tracking-wide">{label}</p>
     </div>
   );
 }
@@ -191,28 +191,28 @@ export default function OnboardingManager() {
       const setupUrl = `${window.location.origin}/client-setup/${inviteToken}`;
       const coachName = user?.full_name || 'Your Coach';
       const html = `
-        <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #E5E7EB;">
+        <div style="font-family:Inter,sans-serif;max-width:520px;margin:0 auto;background:rgb(var(--card));border-radius:16px;overflow:hidden;border:1px solid rgb(var(--border));">
           <div style="background:linear-gradient(135deg,#0A0A0A,#1a2744);padding:36px 32px 28px;text-align:center;">
             <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;">
-              <span style="font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.04em;">KOACH</span>
-              <span style="font-size:22px;font-weight:300;color:#3B82F6;letter-spacing:-0.04em;">AI</span>
+              <span style="font-size:22px;font-weight:900;color:rgb(var(--card));letter-spacing:-0.04em;">KOACH</span>
+              <span style="font-size:22px;font-weight:300;color:rgb(var(--primary));letter-spacing:-0.04em;">AI</span>
             </div>
             <p style="color:rgba(255,255,255,0.4);font-size:12px;margin:0;">Your coaching portal is ready</p>
           </div>
           <div style="padding:36px 32px;">
-            <h1 style="font-size:24px;font-weight:800;color:#111827;margin:0 0 8px;letter-spacing:-0.02em;">Welcome, ${resp.name?.split(' ')[0]} 👋</h1>
-            <p style="color:#6B7280;font-size:15px;line-height:1.6;margin:0 0 24px;">${coachName} has approved your application and set up your personal coaching portal. Click below to create your password and get started.</p>
+            <h1 style="font-size:24px;font-weight:800;color:rgb(var(--foreground));margin:0 0 8px;letter-spacing:-0.02em;">Welcome, ${resp.name?.split(' ')[0]} 👋</h1>
+            <p style="color:rgb(var(--muted-foreground));font-size:15px;line-height:1.6;margin:0 0 24px;">${coachName} has approved your application and set up your personal coaching portal. Click below to create your password and get started.</p>
             <div style="text-align:center;margin:28px 0;">
-              <a href="${setupUrl}" style="display:inline-block;background:linear-gradient(135deg,#2563EB,#1D4ED8);color:#ffffff;font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:12px;box-shadow:0 4px 20px rgba(37,99,235,0.3);">Set Up My Account →</a>
+              <a href="${setupUrl}" style="display:inline-block;background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--primary)));color:rgb(var(--card));font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:12px;box-shadow:0 4px 20px rgba(37,99,235,0.3);">Set Up My Account →</a>
             </div>
-            <div style="background:#F9FAFB;border-radius:10px;padding:16px 20px;margin:24px 0 0;">
-              <p style="font-size:12px;color:#9CA3AF;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Setup link</p>
-              <p style="font-size:12px;color:#6B7280;margin:0;word-break:break-all;">${setupUrl}</p>
+            <div style="background:rgb(var(--background));border-radius:10px;padding:16px 20px;margin:24px 0 0;">
+              <p style="font-size:12px;color:rgb(var(--muted-foreground));margin:0 0 4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Setup link</p>
+              <p style="font-size:12px;color:rgb(var(--muted-foreground));margin:0;word-break:break-all;">${setupUrl}</p>
             </div>
-            <p style="color:#9CA3AF;font-size:12px;margin:20px 0 0;text-align:center;">This link expires in 7 days. If you didn't request this, you can safely ignore this email.</p>
+            <p style="color:rgb(var(--muted-foreground));font-size:12px;margin:20px 0 0;text-align:center;">This link expires in 7 days. If you didn't request this, you can safely ignore this email.</p>
           </div>
-          <div style="background:#F9FAFB;padding:16px 32px;text-align:center;border-top:1px solid #F3F4F6;">
-            <p style="color:#D1D5DB;font-size:11px;margin:0;">Sent by KOACH AI · Powered by elite coaching technology</p>
+          <div style="background:rgb(var(--background));padding:16px 32px;text-align:center;border-top:1px solid rgb(var(--muted));">
+            <p style="color:rgb(var(--muted-foreground));font-size:11px;margin:0;">Sent by KOACH AI · Powered by elite coaching technology</p>
           </div>
         </div>`;
 
@@ -272,7 +272,7 @@ export default function OnboardingManager() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* ── Header ── */}
-      <div className="bg-[#111827] rounded-xl p-5 flex items-center justify-between">
+      <div className="bg-sidebar rounded-xl p-5 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-white">Client Onboarding</h1>
           <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Send your intake link and review submissions</p>
@@ -280,7 +280,7 @@ export default function OnboardingManager() {
         <button
           onClick={copyLink}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: '#fff', color: '#111827' }}
+          style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           {copied ? 'Copied!' : 'Copy Intake Link'}
@@ -291,20 +291,20 @@ export default function OnboardingManager() {
       <button
         onClick={() => setShowOverview(true)}
         className="w-full text-left rounded-2xl overflow-hidden shadow-lg transition-all hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] relative"
-        style={{ background: 'linear-gradient(135deg, #0E1525 0%, #1a2744 60%, #1e1a3a 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, #1a2744 60%, #1e1a3a 100%)' }}
       >
         {/* Decorative glows */}
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-25 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgb(var(--ai)), transparent 70%)' }} />
         <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full opacity-20 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #2563EB, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent 70%)' }} />
 
         <div className="relative p-5">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3.5">
               {/* Icon */}
               <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
 
@@ -312,7 +312,7 @@ export default function OnboardingManager() {
                 {/* Badge */}
                 <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full mb-1.5"
                   style={{ background: 'rgba(167,139,250,0.18)', border: '1px solid rgba(167,139,250,0.35)' }}>
-                  <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#A78BFA' }}>Pro &amp; Elite</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--ai))' }}>Pro &amp; Elite</span>
                 </div>
                 <p className="text-base font-bold text-white leading-tight">AI Onboarding</p>
                 <p className="text-xs mt-1 leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -352,8 +352,8 @@ export default function OnboardingManager() {
             </span>
           )}
           <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? '#10B981' : '#7C3AED' }} />
-            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? '#10B981' : 'rgba(167,139,250,0.7)' }}>
+            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? 'rgb(var(--success))' : 'rgb(var(--ai))' }} />
+            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? 'rgb(var(--success))' : 'rgba(167,139,250,0.7)' }}>
               {canAIOnboard ? 'Available' : 'Pro+'}
             </span>
           </div>
@@ -372,11 +372,11 @@ export default function OnboardingManager() {
 
       {/* Client picker panel — slides in after "Get Started" */}
       {canAIOnboard && showAIPicker && (
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
           <div className="px-5 py-3.5 flex items-center justify-between"
-            style={{ background: 'linear-gradient(135deg, #0E1525, #1a2744)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)), #1a2744)' }}>
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4" style={{ color: '#A78BFA' }} />
+              <Sparkles className="w-4 h-4" style={{ color: 'rgb(var(--ai))' }} />
               <p className="text-sm font-bold text-white">AI Onboarding — Select a Client</p>
             </div>
             <button onClick={() => { setShowAIPicker(false); setAiClient(null); setClientSearch(''); }}
@@ -387,73 +387,73 @@ export default function OnboardingManager() {
           </div>
           <div className="p-5 space-y-4">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">Search Client</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Search Client</p>
               <input
                 autoFocus
                 type="text"
                 value={clientSearch}
                 onChange={e => { setClientSearch(e.target.value); setAiClient(null); }}
                 placeholder="Search clients by name or email…"
-                className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50"
+                className="w-full text-sm border border-border rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary bg-muted"
               />
               {clientSearch && !aiClient && (
-                <div className="mt-1 border border-gray-100 rounded-xl overflow-hidden shadow-sm max-h-48 overflow-y-auto">
+                <div className="mt-1 border border-border rounded-xl overflow-hidden shadow-sm max-h-48 overflow-y-auto">
                   {filteredClients.length === 0 ? (
-                    <p className="text-xs text-gray-400 px-3 py-3">No clients found</p>
+                    <p className="text-xs text-muted-foreground px-3 py-3">No clients found</p>
                   ) : filteredClients.slice(0, 8).map(c => (
                     <button key={c.id}
                       onClick={() => { setAiClient(c); setClientSearch(c.name); }}
-                      className="w-full text-left px-3 py-2.5 hover:bg-blue-50 flex items-center justify-between gap-2 transition-colors border-b border-gray-50 last:border-0">
+                      className="w-full text-left px-3 py-2.5 hover:bg-accent flex items-center justify-between gap-2 transition-colors border-b border-border last:border-0">
                       <div className="flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
-                          style={{ background: '#EFF6FF', color: '#2563EB' }}>
+                          style={{ background: 'rgb(var(--accent))', color: 'rgb(var(--primary))' }}>
                           {c.name?.[0]?.toUpperCase() || '?'}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-800">{c.name}</p>
-                          <p className="text-[10px] text-gray-400">{c.email}</p>
+                          <p className="text-sm font-semibold text-foreground">{c.name}</p>
+                          <p className="text-[10px] text-muted-foreground">{c.email}</p>
                         </div>
                       </div>
-                      <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
+                      <ChevronRight className="w-3.5 h-3.5 text-border" />
                     </button>
                   ))}
                 </div>
               )}
             </div>
             {aiClient && (
-              <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 flex items-center justify-between gap-3">
+              <div className="rounded-xl border border-accent bg-accent p-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
-                    style={{ background: '#2563EB', color: '#fff' }}>
+                    style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--card))' }}>
                     {aiClient.name?.[0]?.toUpperCase() || '?'}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-blue-900">{aiClient.name}</p>
-                    <p className="text-[10px] text-blue-500">
+                    <p className="text-sm font-bold text-primary">{aiClient.name}</p>
+                    <p className="text-[10px] text-primary">
                       {[aiClient.goal?.replace(/_/g, ' '), aiClient.current_weight && `${aiClient.current_weight} lbs`, aiClient.height].filter(Boolean).join(' · ')}
                     </p>
                   </div>
                 </div>
                 <button onClick={() => { setAiClient(null); setClientSearch(''); }}
-                  className="text-blue-300 hover:text-blue-600 text-xs">✕</button>
+                  className="text-primary hover:text-primary text-xs">✕</button>
               </div>
             )}
             <button
               onClick={() => aiClient && setShowAIModal(true)}
               disabled={!aiClient}
               className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: aiClient ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#94A3B8' }}>
+              style={{ background: aiClient ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted-foreground))' }}>
               <Sparkles className="w-4 h-4" />
               {aiClient ? `Generate AI Plan for ${aiClient.name}` : 'Select a client to continue'}
             </button>
-            <p className="text-center text-[10px] text-gray-400">Nothing is saved until you review and approve</p>
+            <p className="text-center text-[10px] text-muted-foreground">Nothing is saved until you review and approve</p>
           </div>
         </div>
       )}
 
       {/* How it works */}
-      <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 space-y-2.5">
-        <p className="text-xs font-bold text-blue-700 uppercase tracking-widest">How it works</p>
+      <div className="bg-accent border border-accent rounded-2xl p-4 space-y-2.5">
+        <p className="text-xs font-bold text-primary uppercase tracking-widest">How it works</p>
         <div className="space-y-2">
           {[
             { n: '1', text: 'Copy your unique intake link below.' },
@@ -462,29 +462,29 @@ export default function OnboardingManager() {
             { n: '4', text: 'You review their intake here and click "Approve" to create their client profile.' },
           ].map(s => (
             <div key={s.n} className="flex items-start gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                 {s.n}
               </span>
-              <p className="text-xs text-blue-800 leading-relaxed">{s.text}</p>
+              <p className="text-xs text-primary leading-relaxed">{s.text}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Intake link card */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-5 space-y-4 shadow-sm">
+      <div className="bg-card border border-border rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-            <Link2 className="w-4 h-4 text-blue-500" />
+          <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center flex-shrink-0">
+            <Link2 className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">Your Private Intake Link</p>
-            <p className="text-xs text-gray-400">Only share with prospective clients — do not post publicly</p>
+            <p className="text-sm font-bold text-foreground">Your Private Intake Link</p>
+            <p className="text-xs text-muted-foreground">Only share with prospective clients — do not post publicly</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
-          <p className="text-xs text-gray-600 flex-1 truncate font-mono">{onboardingUrl}</p>
-          <button onClick={copyLink} className="text-blue-500 hover:text-blue-700 flex-shrink-0 p-1">
+        <div className="flex items-center gap-2 bg-muted border border-border rounded-xl px-3 py-2.5">
+          <p className="text-xs text-muted-foreground flex-1 truncate font-mono">{onboardingUrl}</p>
+          <button onClick={copyLink} className="text-primary hover:text-primary flex-shrink-0 p-1">
             <Copy className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -497,9 +497,9 @@ export default function OnboardingManager() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <StatCard icon={Send}        value={responses.length} label="Total Sent"  color="#6366F1" />
-        <StatCard icon={Hourglass}   value={pending.length}   label="Pending"     color="#F59E0B" />
-        <StatCard icon={CheckCircle2}value={converted.length} label="Approved"    color="#10B981" />
+        <StatCard icon={Send}        value={responses.length} label="Total Sent"  color="rgb(var(--primary))" />
+        <StatCard icon={Hourglass}   value={pending.length}   label="Pending"     color="rgb(var(--warning))" />
+        <StatCard icon={CheckCircle2}value={converted.length} label="Approved"    color="rgb(var(--success))" />
       </div>
 
       {/* Filter tabs */}
@@ -514,8 +514,8 @@ export default function OnboardingManager() {
               className={cn(
                 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
                 filterStatus === tab.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-300'
+                  ? 'bg-primary text-white'
+                  : 'bg-card border border-border text-muted-foreground hover:border-border'
               )}>
               {tab.label}
             </button>
@@ -541,16 +541,16 @@ export default function OnboardingManager() {
       {isLoading ? (
         <div className="space-y-3">
           {[1, 2].map(i => (
-            <div key={i} className="h-20 bg-white rounded-2xl border border-gray-100 animate-pulse" />
+            <div key={i} className="h-20 bg-card rounded-2xl border border-border animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white border border-gray-100 rounded-2xl py-14 text-center shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-            <Users className="w-5 h-5 text-gray-300" />
+        <div className="bg-card border border-border rounded-2xl py-14 text-center shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3">
+            <Users className="w-5 h-5 text-border" />
           </div>
-          <p className="text-sm font-semibold text-gray-700">No intakes yet</p>
-          <p className="text-xs text-gray-400 mt-1">Copy your link and share it with a prospective client.</p>
+          <p className="text-sm font-semibold text-foreground">No intakes yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Copy your link and share it with a prospective client.</p>
         </div>
       ) : (
         <div className="space-y-3">

@@ -49,13 +49,13 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
               onChange={e => setDays(Number(e.target.value))}
               className="w-full h-2 rounded-full appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((days - 1) / 6) * 100}%, rgba(255,255,255,0.08) ${((days - 1) / 6) * 100}%, rgba(255,255,255,0.08) 100%)`,
+                background: `linear-gradient(to right, rgb(var(--primary)) 0%, rgb(var(--primary)) ${((days - 1) / 6) * 100}%, rgba(255,255,255,0.08) ${((days - 1) / 6) * 100}%, rgba(255,255,255,0.08) 100%)`,
                 WebkitAppearance: 'none',
               }}
             />
             <div className="flex justify-between mt-2">
               {[1, 2, 3, 4, 5, 6, 7].map(d => (
-                <span key={d} className="text-xs" style={{ color: d <= days ? '#3B82F6' : '#3A3A3A' }}>{d}</span>
+                <span key={d} className="text-xs" style={{ color: d <= days ? 'rgb(var(--primary))' : '#3A3A3A' }}>{d}</span>
               ))}
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
                 style={{
                   background: duration === d.id ? 'rgba(59,130,246,0.1)' : '#161616',
                   border: duration === d.id ? '1px solid rgba(59,130,246,0.45)' : '1px solid rgba(255,255,255,0.06)',
-                  color: duration === d.id ? '#fff' : '#7A7A7A',
+                  color: duration === d.id ? 'rgb(var(--card))' : '#7A7A7A',
                   boxShadow: duration === d.id ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
                 }}
               >{d.label}</motion.button>
