@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { track } from '@/lib/telemetry';
+import { darkModeEnabled } from '@/lib/flags';
 
 /**
  * Coach-facing theme system. Drives Tailwind's `darkMode: ["class"]` by toggling
@@ -27,6 +28,9 @@ function prefersDark() {
 
 /** Resolve a preference to the concrete mode actually applied. */
 export function resolveTheme(pref = getStoredTheme()) {
+  // While dark mode is gated off, always render light so a stale localStorage
+  // 'dark' value can't leak through before the UI switch is re-enabled.
+  if (!darkModeEnabled) return 'light';
   return pref === 'system' ? (prefersDark() ? 'dark' : 'light') : pref;
 }
 

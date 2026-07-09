@@ -18,6 +18,7 @@ import { hasFeature } from '@/lib/subscription';
 import { useTeamRole } from '@/lib/useTeamRole';
 import { useCommandPalette } from '@/components/command/CommandPalette';
 import { track } from '@/lib/telemetry';
+import { darkModeEnabled } from '@/lib/flags';
 
 function SidebarSearchButton({ collapsed }) {
   const { open } = useCommandPalette();
@@ -226,7 +227,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
             </div>
             <div className="flex items-center gap-1">
-              <ThemeToggleButton onDark />
+              {darkModeEnabled && <ThemeToggleButton onDark />}
               <NotificationBell />
             </div>
           </>

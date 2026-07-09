@@ -9,10 +9,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import IntegrationsTab from '../components/integrations/IntegrationsTab';
 import DefaultAssignmentSettings from '../components/settings/DefaultAssignmentSettings';
 import { ThemeToggle } from '../components/settings/ThemeToggle';
+import { darkModeEnabled } from '@/lib/flags';
 
 const TABS = [
   { id: 'profile', label: 'Profile', icon: User },
-  { id: 'appearance', label: 'Appearance', icon: Palette },
+  ...(darkModeEnabled ? [{ id: 'appearance', label: 'Appearance', icon: Palette }] : []),
   { id: 'referral', label: 'Refer & Earn', icon: Gift },
   { id: 'affiliate', label: 'Affiliate Program', icon: Gift },
   { id: 'marketing', label: 'Marketing Tools', icon: Share2 },
@@ -355,7 +356,7 @@ export default function Settings() {
 
       {/* Tab Content */}
       {activeTab === 'profile' && <ProfileTab />}
-      {activeTab === 'appearance' && <AppearanceTab />}
+      {darkModeEnabled && activeTab === 'appearance' && <AppearanceTab />}
       {activeTab === 'referral' && (
         <div>
           <div className="mb-5">

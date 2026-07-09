@@ -10,6 +10,7 @@ import KoachLogo from '@/components/brand/KoachLogo';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import { ThemeToggleButton } from '@/components/settings/ThemeToggle';
 import { useBrandColor } from '@/lib/useBrandColor';
+import { darkModeEnabled } from '@/lib/flags';
 import { CommandPaletteProvider, useCommandPalette } from '@/components/command/CommandPalette';
 import { Search } from 'lucide-react';
 
@@ -72,7 +73,7 @@ export default function AppLayout() {
           <KoachLogo size={28} rounded="rounded-xl" glow={false} bg={true} />
           <div className="flex items-center gap-1">
             <TopbarSearchButton />
-            <ThemeToggleButton onDark />
+            {darkModeEnabled && <ThemeToggleButton onDark />}
             <NotificationBell />
           </div>
         </div>
