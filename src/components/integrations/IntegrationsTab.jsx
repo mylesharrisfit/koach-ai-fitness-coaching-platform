@@ -21,7 +21,7 @@ function Logo({ text, bg, textColor = 'text-white' }) {
 // ── Badge helpers ─────────────────────────────────────────────
 function ConnectedBadge() {
   return (
-    <span className="bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0] text-xs rounded-full px-2.5 py-0.5 flex items-center gap-1 flex-shrink-0">
+    <span className="bg-success/10 text-success border border-success text-xs rounded-full px-2.5 py-0.5 flex items-center gap-1 flex-shrink-0">
       <CheckCircle2 className="w-3 h-3" /> Connected
     </span>
   );
@@ -29,7 +29,7 @@ function ConnectedBadge() {
 
 function TagBadge({ label }) {
   return (
-    <span className="bg-[#F3F4F6] text-[#374151] text-xs rounded-full px-2 py-0.5 flex-shrink-0">
+    <span className="bg-muted text-foreground text-xs rounded-full px-2 py-0.5 flex-shrink-0">
       {label}
     </span>
   );
@@ -38,28 +38,28 @@ function TagBadge({ label }) {
 // ── Integration card ──────────────────────────────────────────
 function IntegrationCard({ logo, name, tag, description, connected, onConnect, onManage }) {
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-start gap-4">
+    <div className="bg-card border border-border rounded-xl p-4 flex items-start gap-4">
       {logo}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-semibold text-[#111827]">{name}</p>
+          <p className="text-sm font-semibold text-foreground">{name}</p>
           <TagBadge label={tag} />
           {connected && <ConnectedBadge />}
         </div>
-        <p className="text-xs text-[#6B7280] mt-1 leading-relaxed">{description}</p>
+        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{description}</p>
       </div>
       <div className="flex-shrink-0 ml-2">
         {connected ? (
           <button
             onClick={onManage}
-            className="border border-[#E5E7EB] text-[#374151] text-xs px-4 py-2 rounded-lg hover:bg-[#F9FAFB] transition-colors"
+            className="border border-border text-foreground text-xs px-4 py-2 rounded-lg hover:bg-background transition-colors"
           >
             Manage
           </button>
         ) : (
           <button
             onClick={onConnect}
-            className="bg-[#111827] text-white text-xs px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-colors"
+            className="bg-sidebar text-white text-xs px-4 py-2 rounded-lg hover:bg-[#1F2937] transition-colors"
           >
             Connect
           </button>
@@ -97,9 +97,9 @@ function ZapierModal({ open, onClose, settings }) {
         </DialogHeader>
         <div className="space-y-4 mt-1">
           <div className="bg-[#FFF7ED] border border-[#FED7AA] rounded-xl p-4">
-            <p className="text-xs font-semibold text-[#D97706] mb-2">Setup Instructions</p>
-            <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
-              <li>Go to <a href="https://zapier.com" target="_blank" rel="noreferrer" className="text-[#D97706] underline font-medium">zapier.com</a> and create a new Zap</li>
+            <p className="text-xs font-semibold text-warning mb-2">Setup Instructions</p>
+            <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
+              <li>Go to <a href="https://zapier.com" target="_blank" rel="noreferrer" className="text-warning underline font-medium">zapier.com</a> and create a new Zap</li>
               <li>Choose <strong>Webhooks by Zapier</strong> as the trigger</li>
               <li>Select <strong>Catch Hook</strong> and copy the webhook URL</li>
               <li>Paste it below and save</li>
@@ -181,12 +181,12 @@ function ResendModal({ open, onClose, settings }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-[#F5F5F5] border border-[#E5E7EB] rounded-xl p-4">
-            <p className="text-xs font-semibold text-[#111827] mb-2">Setup Instructions</p>
-            <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
+          <div className="bg-[#F5F5F5] border border-border rounded-xl p-4">
+            <p className="text-xs font-semibold text-foreground mb-2">Setup Instructions</p>
+            <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Get your free API key at <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-black underline font-medium">resend.com</a></li>
-              <li>Add <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_RESEND_API_KEY</code> to your app secrets</li>
-              <li>Optionally add <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_EMAIL</code> and <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_NAME</code></li>
+              <li>Add <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_RESEND_API_KEY</code> to your app secrets</li>
+              <li>Optionally add <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_FROM_EMAIL</code> and <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_FROM_NAME</code></li>
             </ol>
             <a href="https://resend.com/api-keys" target="_blank" rel="noreferrer"
               className="flex items-center gap-1 text-xs text-black font-semibold mt-2 hover:underline">
@@ -202,9 +202,9 @@ function ResendModal({ open, onClose, settings }) {
             <Input value={fromName} onChange={e => setFromName(e.target.value)} placeholder="Coach Myles | KOACH AI" />
           </div>
           {tested && (
-            <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <p className="text-sm font-semibold text-emerald-700">Connection verified!</p>
+            <div className="flex items-center gap-2 p-3 bg-success/10 border border-success rounded-xl">
+              <CheckCircle2 className="w-4 h-4 text-success" />
+              <p className="text-sm font-semibold text-success">Connection verified!</p>
             </div>
           )}
           <div className="flex gap-2">
@@ -212,7 +212,7 @@ function ResendModal({ open, onClose, settings }) {
               {testing ? <><Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> Testing...</> : 'Test Connection'}
             </Button>
             <Button
-              className="flex-1 bg-[#111827] hover:bg-[#1F2937]"
+              className="flex-1 bg-sidebar hover:bg-[#1F2937]"
               onClick={() => saveMutation.mutate({
                 resend_connected: true,
                 resend_from_email: fromEmail,
@@ -257,9 +257,9 @@ function ZoomModal({ open, onClose, settings }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-[#EEF4FF] border border-[#2D8CFF]/20 rounded-xl p-4">
+          <div className="bg-accent/10 border border-[#2D8CFF]/20 rounded-xl p-4">
             <p className="text-xs font-semibold text-[#2D8CFF] mb-2">Setup Instructions</p>
-            <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
+            <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Go to <a href="https://marketplace.zoom.us/develop/create" target="_blank" rel="noreferrer" className="text-[#2D8CFF] underline font-medium">Zoom Marketplace</a></li>
               <li>Create an <strong>OAuth app</strong></li>
               <li>Copy your Client ID and Client Secret</li>
@@ -320,9 +320,9 @@ function CalendlyModal({ open, onClose, settings }) {
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 mt-1">
-          <div className="bg-[#EEF4FF] border border-[#006BFF]/20 rounded-xl p-4">
+          <div className="bg-accent/10 border border-[#006BFF]/20 rounded-xl p-4">
             <p className="text-xs font-semibold text-[#006BFF] mb-2">Setup Instructions</p>
-            <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
+            <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Go to <a href="https://app.calendly.com/integrations/api_webhooks" target="_blank" rel="noreferrer" className="text-[#006BFF] underline font-medium">Calendly Integrations</a></li>
               <li>Generate a Personal Access Token</li>
               <li>Paste it below</li>
@@ -395,7 +395,7 @@ export default function IntegrationsTab() {
       onManage: () => setModal('calendly'),
     },
     {
-      logo: <Logo text="R" bg="bg-[#000000]" />,
+      logo: <Logo text="R" bg="bg-sidebar" />,
       name: 'Resend',
       tag: 'Email',
       description: 'Send automated emails — welcome messages, check-in reminders, progress reports, and badge alerts.',
@@ -431,7 +431,7 @@ export default function IntegrationsTab() {
         ))}
       </div>
 
-      <p className="text-xs text-[#9CA3AF] text-center mt-6">
+      <p className="text-xs text-muted-foreground text-center mt-6">
         More integrations coming soon — Twilio SMS, Strava, Fitbit, and QuickBooks
       </p>
 

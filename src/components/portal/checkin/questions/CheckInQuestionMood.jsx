@@ -33,7 +33,7 @@ export default function CheckInQuestionMood({ value, onChange }) {
               {m.emoji}
             </motion.span>
             <span className="text-[10px] font-semibold"
-              style={{ color: value === m.value ? '#3B82F6' : 'rgba(255,255,255,0.3)' }}>
+              style={{ color: value === m.value ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)' }}>
               {m.label}
             </span>
           </motion.button>

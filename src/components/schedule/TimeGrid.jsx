@@ -10,10 +10,10 @@ const SLOT_HEIGHT = 64;
 
 const typeIcons = { video_call: Video, in_person: MapPin, check_in: ClipboardCheck, consultation: Phone };
 const typeColors = {
-  video_call: 'from-blue-500 to-blue-600',
-  in_person: 'from-emerald-500 to-emerald-600',
-  check_in: 'from-amber-400 to-amber-500',
-  consultation: 'from-violet-500 to-violet-600',
+  video_call: 'from-primary to-primary',
+  in_person: 'from-success to-success',
+  check_in: 'from-warning to-warning',
+  consultation: 'from-ai to-ai',
 };
 
 function parseTimeToMinutes(timeStr) {
@@ -35,15 +35,15 @@ function CurrentTimeLine() {
       className="absolute left-0 right-0 z-20 pointer-events-none flex items-center"
       style={{ top }}
     >
-      <div className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0 -ml-1.5" />
-      <div className="flex-1 h-px bg-red-500" />
+      <div className="w-2.5 h-2.5 rounded-full bg-destructive flex-shrink-0 -ml-1.5" />
+      <div className="flex-1 h-px bg-destructive" />
     </div>
   );
 }
 
 function SessionChip({ session, onEdit, compact }) {
   const Icon = typeIcons[session.type] || Video;
-  const gradient = typeColors[session.type] || 'from-blue-500 to-blue-600';
+  const gradient = typeColors[session.type] || 'from-primary to-primary';
   const minutes = parseTimeToMinutes(session.time);
   const startMinutes = HOUR_START * 60;
   const totalMinutes = (HOUR_END - HOUR_START) * 60;
@@ -92,9 +92,9 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
   }, []);
 
   return (
-    <div className="flex flex-col bg-white rounded-2xl border border-[#E7EAF3] shadow-sm overflow-hidden">
+    <div className="flex flex-col bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
       {/* Day headers */}
-      <div className="flex border-b border-[#E7EAF3] bg-white sticky top-0 z-30">
+      <div className="flex border-b border-border bg-card sticky top-0 z-30">
         <div className="w-14 flex-shrink-0" />
         {days.map(day => {
           const isToday = isSameDay(day, today);
@@ -102,17 +102,17 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
             <div
               key={day.toISOString()}
               className={cn(
-                'flex-1 py-2.5 px-1 text-center border-l border-[#E7EAF3]',
-                isToday && 'bg-blue-50/50'
+                'flex-1 py-2.5 px-1 text-center border-l border-border',
+                isToday && 'bg-accent/50'
               )}
             >
-              <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wide">
+              <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
                 {format(day, 'EEE')}
               </p>
               <div
                 className={cn(
                   'w-8 h-8 mx-auto mt-0.5 flex items-center justify-center rounded-full text-sm font-bold',
-                  isToday ? 'bg-primary text-white' : 'text-[#1F2A44]'
+                  isToday ? 'bg-primary text-white' : 'text-foreground'
                 )}
               >
                 {format(day, 'd')}
@@ -137,7 +137,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
                 className="flex items-start justify-end pr-2"
                 style={{ height: SLOT_HEIGHT, paddingTop: 6 }}
               >
-                <span className="text-[10px] font-medium text-[#9CA3AF] whitespace-nowrap">
+                <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
                   {h === 12 ? '12 PM' : h < 12 ? `${h} AM` : `${h - 12} PM`}
                 </span>
               </div>
@@ -152,8 +152,8 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
               <div
                 key={day.toISOString()}
                 className={cn(
-                  'flex-1 relative border-l border-[#E7EAF3]',
-                  isToday && 'bg-blue-50/30'
+                  'flex-1 relative border-l border-border',
+                  isToday && 'bg-accent/30'
                 )}
                 onClick={(e) => {
                   if (e.target === e.currentTarget) {
@@ -165,7 +165,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
                 {HOURS.map(h => (
                   <div
                     key={h}
-                    className="absolute left-0 right-0 border-t border-[#E7EAF3]/70"
+                    className="absolute left-0 right-0 border-t border-border/70"
                     style={{ top: (h - HOUR_START) * SLOT_HEIGHT }}
                   />
                 ))}
@@ -173,7 +173,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
                 {/* No sessions label */}
                 {daySessions.length === 0 && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span className="text-[11px] text-[#D1D5DB] font-medium">No sessions</span>
+                    <span className="text-[11px] text-muted-foreground font-medium">No sessions</span>
                   </div>
                 )}
 

@@ -8,10 +8,10 @@ export default function RevenueSnapshot({ clients }) {
   const prospects = clients.filter(c => c.status === 'prospect').length;
 
   const stats = [
-    { label: 'MRR', value: `$${mrr.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-400/10', trend: '+8%' },
+    { label: 'MRR', value: `$${mrr.toLocaleString()}`, icon: DollarSign, color: 'text-success', bg: 'bg-success/10', trend: '+8%' },
     { label: 'Active Clients', value: activeClients.length, icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'Churn Risk', value: churnRisk, icon: AlertTriangle, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-    { label: 'Pipeline', value: prospects, icon: TrendingUp, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+    { label: 'Churn Risk', value: churnRisk, icon: AlertTriangle, color: 'text-warning', bg: 'bg-warning/10' },
+    { label: 'Pipeline', value: prospects, icon: TrendingUp, color: 'text-ai', bg: 'bg-ai/10' },
   ];
 
   return (
@@ -31,8 +31,8 @@ export default function RevenueSnapshot({ clients }) {
       </div>
 
       <div className="mt-4 pt-3 border-t border-border/50 flex items-center gap-2">
-        <TrendingUp className="w-3 h-3 text-emerald-400 flex-shrink-0" />
-        <p className="text-[11px] text-muted-foreground">MRR up <span className="text-emerald-400 font-semibold">+8%</span> vs last month</p>
+        <TrendingUp className="w-3 h-3 text-success flex-shrink-0" />
+        <p className="text-[11px] text-muted-foreground">MRR up <span className="text-success font-semibold">+8%</span> vs last month</p>
       </div>
     </div>
   );

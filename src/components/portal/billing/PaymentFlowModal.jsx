@@ -43,14 +43,14 @@ function PaymentSummary({ invoice, onNext, onClose }) {
           <div className="p-4 rounded-2xl" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CreditCard className="w-5 h-5 text-blue-400" />
+                <CreditCard className="w-5 h-5 text-primary" />
                 <div>
                   <p className="text-white text-sm font-semibold">●●●● 4242</p>
                   <p className="text-white/40 text-xs">Visa · Default</p>
                 </div>
               </div>
-              <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-white" />
+              <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-card" />
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@ function PaymentSummary({ invoice, onNext, onClose }) {
       <div className="px-5 pb-8 pt-3">
         <button onClick={onNext}
           className="w-full py-4 rounded-2xl text-base font-black text-white"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 8px 24px rgba(37,99,235,0.35)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 24px rgba(37,99,235,0.35)' }}>
           Continue — {fmt(invoice.amount)}
         </button>
         <div className="flex items-center justify-center gap-2 mt-3">
@@ -140,8 +140,8 @@ function PaymentMethod({ invoice, onPay, onClose }) {
           </div>
           <button onClick={() => setSaveCard(s => !s)}
             className="w-11 h-6 rounded-full transition-all flex-shrink-0"
-            style={{ background: saveCard ? '#2563EB' : 'rgba(255,255,255,0.1)' }}>
-            <div className="w-4.5 h-4.5 bg-white rounded-full transition-all mx-1 mt-[3px]" style={{ transform: saveCard ? 'translateX(18px)' : 'translateX(0)' }} />
+            style={{ background: saveCard ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.1)' }}>
+            <div className="w-4.5 h-4.5 bg-card rounded-full transition-all mx-1 mt-[3px]" style={{ transform: saveCard ? 'translateX(18px)' : 'translateX(0)' }} />
           </button>
         </div>
       </div>
@@ -149,7 +149,7 @@ function PaymentMethod({ invoice, onPay, onClose }) {
       <div className="px-5 pb-8 pt-3">
         <button onClick={() => onPay(card)} disabled={!isValid}
           className="w-full py-4 rounded-2xl text-base font-black text-white transition-all"
-          style={{ background: isValid ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : 'rgba(255,255,255,0.06)', color: isValid ? '#fff' : 'rgba(255,255,255,0.3)' }}>
+          style={{ background: isValid ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgba(255,255,255,0.06)', color: isValid ? 'rgb(var(--card))' : 'rgba(255,255,255,0.3)' }}>
           Pay {fmt(invoice.amount)}
         </button>
         <div className="flex items-center justify-center gap-2 mt-3">
@@ -166,7 +166,7 @@ function PaymentConfirmation({ invoice, status, error, user, onBack }) {
   if (status === 'processing') {
     return (
       <div className="flex flex-col items-center justify-center h-full px-5 pb-16">
-        <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-6" />
+        <div className="w-16 h-16 border-4 border-primary/30 border-t-blue-500 rounded-full animate-spin mb-6" />
         <p className="text-white font-bold text-xl">Processing payment...</p>
         <p className="text-white/40 text-sm mt-2">Please don't close this screen</p>
       </div>
@@ -179,15 +179,15 @@ function PaymentConfirmation({ invoice, status, error, user, onBack }) {
         className="flex flex-col items-center justify-center h-full px-5 pb-16 text-center">
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.1 }}
           className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(16,185,129,0.2)' }}>
-          <CheckCircle2 className="w-10 h-10 text-green-400" />
+          <CheckCircle2 className="w-10 h-10 text-success" />
         </motion.div>
         <h2 className="text-white font-black text-2xl mb-2">Payment Successful! 🎉</h2>
-        <p className="text-green-400 font-bold text-xl mb-1">{fmt(invoice.amount)}</p>
+        <p className="text-success font-bold text-xl mb-1">{fmt(invoice.amount)}</p>
         <p className="text-white/40 text-sm mb-1">{invoice.invoice_number}</p>
         <p className="text-white/30 text-xs mb-8">Receipt sent to {user?.email}</p>
         <button onClick={onBack}
           className="w-full py-4 rounded-2xl text-base font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
           Back to Billing
         </button>
       </motion.div>
@@ -198,10 +198,10 @@ function PaymentConfirmation({ invoice, status, error, user, onBack }) {
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
       className="flex flex-col items-center justify-center h-full px-5 pb-16 text-center">
       <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(239,68,68,0.15)' }}>
-        <AlertCircle className="w-10 h-10 text-red-400" />
+        <AlertCircle className="w-10 h-10 text-destructive" />
       </div>
       <h2 className="text-white font-black text-2xl mb-2">Payment Failed</h2>
-      <p className="text-red-400 text-sm mb-1">{error || 'Your card was declined'}</p>
+      <p className="text-destructive text-sm mb-1">{error || 'Your card was declined'}</p>
       <p className="text-white/30 text-xs mb-8">Please check your card details or contact your bank</p>
       <button onClick={onBack}
         className="w-full py-4 rounded-2xl text-base font-bold text-white mb-3"
@@ -243,7 +243,7 @@ export default function PaymentFlowModal({ invoice, client, user, onClose, onCom
       style={{ background: 'rgba(0,0,0,0.85)' }}>
       <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 28 }}
         className="w-full"
-        style={{ background: '#111827', borderRadius: '24px 24px 0 0', height: '90vh', paddingBottom: 'env(safe-area-inset-bottom)', display: 'flex', flexDirection: 'column' }}>
+        style={{ background: 'rgb(var(--sidebar))', borderRadius: '24px 24px 0 0', height: '90vh', paddingBottom: 'env(safe-area-inset-bottom)', display: 'flex', flexDirection: 'column' }}>
 
         <div className="flex justify-center pt-3 pb-1">
           <div className="w-10 h-1 rounded-full bg-white/20" />

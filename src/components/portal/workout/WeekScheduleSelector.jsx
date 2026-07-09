@@ -27,7 +27,7 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
 
   return (
     <div className="px-4">
-      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 px-1">This Week</p>
+      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 px-1">This Week</p>
       <div ref={scrollRef} className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1"
         style={{ scrollSnapType: 'x mandatory' }}>
         {days.map((day, i) => {
@@ -52,15 +52,15 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
                 borderRadius: 18,
                 flexShrink: 0,
                 background: isSelected
-                  ? 'linear-gradient(160deg, #2563EB 0%, #7C3AED 100%)'
+                  ? 'linear-gradient(160deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)'
                   : isTodayCard
-                  ? '#EFF6FF'
-                  : '#FFFFFF',
+                  ? 'rgb(var(--accent))'
+                  : 'rgb(var(--card))',
                 border: isSelected
                   ? 'none'
                   : isTodayCard
-                  ? '2px solid #BFDBFE'
-                  : '1.5px solid #F1F5F9',
+                  ? '2px solid rgb(var(--accent))'
+                  : '1.5px solid rgb(var(--muted))',
                 boxShadow: isSelected
                   ? '0 6px 20px rgba(37,99,235,0.35)'
                   : isTodayCard
@@ -79,7 +79,7 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
                 fontWeight: 900,
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
-                color: isSelected ? 'rgba(255,255,255,0.7)' : isTodayCard ? '#3B82F6' : '#94A3B8',
+                color: isSelected ? 'rgba(255,255,255,0.7)' : isTodayCard ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
               }}>
                 {format(day, 'EEE')}
               </p>
@@ -88,7 +88,7 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
               <p style={{
                 fontSize: isTodayCard ? 20 : 17,
                 fontWeight: 900,
-                color: isSelected ? '#FFFFFF' : isTodayCard ? '#1D4ED8' : '#0F172A',
+                color: isSelected ? 'rgb(var(--card))' : isTodayCard ? 'rgb(var(--primary))' : 'rgb(var(--foreground))',
                 lineHeight: 1,
               }}>
                 {format(day, 'd')}
@@ -98,7 +98,7 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
               <p style={{
                 fontSize: 9,
                 fontWeight: 700,
-                color: isSelected ? 'rgba(255,255,255,0.65)' : isRest ? '#94A3B8' : '#475569',
+                color: isSelected ? 'rgba(255,255,255,0.65)' : isRest ? 'rgb(var(--muted-foreground))' : 'rgb(var(--muted-foreground))',
                 textAlign: 'center',
                 maxWidth: 72,
                 lineHeight: 1.3,
@@ -119,18 +119,18 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: done
-                  ? (isSelected ? 'rgba(255,255,255,0.3)' : '#059669')
+                  ? (isSelected ? 'rgba(255,255,255,0.3)' : 'rgb(var(--success))')
                   : missed
-                  ? (isSelected ? 'rgba(255,255,255,0.15)' : '#FEE2E2')
+                  ? (isSelected ? 'rgba(255,255,255,0.15)' : 'rgb(var(--destructive))')
                   : isTodayCard
-                  ? (isSelected ? 'rgba(255,255,255,0.25)' : '#DBEAFE')
+                  ? (isSelected ? 'rgba(255,255,255,0.25)' : 'rgb(var(--accent))')
                   : 'transparent',
-                border: status === 'upcoming' && !isTodayCard ? '1.5px dashed #CBD5E1' : 'none',
+                border: status === 'upcoming' && !isTodayCard ? '1.5px dashed rgb(var(--muted-foreground))' : 'none',
               }}>
                 {done && <Check style={{ width: 10, height: 10, color: isSelected ? 'white' : 'white', strokeWidth: 3.5 }} />}
-                {missed && <span style={{ fontSize: 8, fontWeight: 900, color: isSelected ? 'rgba(255,255,255,0.7)' : '#EF4444' }}>✕</span>}
+                {missed && <span style={{ fontSize: 8, fontWeight: 900, color: isSelected ? 'rgba(255,255,255,0.7)' : 'rgb(var(--destructive))' }}>✕</span>}
                 {isTodayCard && !done && !missed && (
-                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: isSelected ? 'white' : '#3B82F6' }} />
+                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: isSelected ? 'white' : 'rgb(var(--primary))' }} />
                 )}
               </div>
             </motion.button>

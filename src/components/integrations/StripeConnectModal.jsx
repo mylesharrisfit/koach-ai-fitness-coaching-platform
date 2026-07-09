@@ -42,12 +42,12 @@ export default function StripeConnectModal({ open, onClose }) {
 
         <div className="space-y-4 mt-1">
           {connected && accountInfo ? (
-            <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+            <div className="flex items-center gap-2 p-3 bg-success/10 border border-success rounded-xl">
+              <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
               <div>
-                <p className="text-sm font-semibold text-emerald-700">Connected</p>
-                {accountInfo.email && <p className="text-xs text-emerald-600">{accountInfo.email}</p>}
-                {accountInfo.display_name && <p className="text-xs text-emerald-600">{accountInfo.display_name}</p>}
+                <p className="text-sm font-semibold text-success">Connected</p>
+                {accountInfo.email && <p className="text-xs text-success">{accountInfo.email}</p>}
+                {accountInfo.display_name && <p className="text-xs text-success">{accountInfo.display_name}</p>}
               </div>
             </div>
           ) : null}
@@ -55,7 +55,7 @@ export default function StripeConnectModal({ open, onClose }) {
           {/* Setup instructions */}
           <div className="bg-[#F5F4FF] border border-[#635BFF]/20 rounded-xl p-4">
             <p className="text-xs font-semibold text-[#635BFF] mb-2">Setup Instructions</p>
-            <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
+            <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
               <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="text-[#635BFF] underline font-medium">dashboard.stripe.com/apikeys</a></li>
               <li>Copy your <strong>Secret key</strong> (sk_live_... or sk_test_...)</li>
               <li>In Base44 → Settings → Secrets, add <strong>STRIPE_SECRET_KEY</strong></li>
@@ -70,10 +70,10 @@ export default function StripeConnectModal({ open, onClose }) {
             </a>
           </div>
 
-          <div className="p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl">
-            <p className="text-xs font-semibold text-[#374151] mb-1">Secret already set?</p>
-            <p className="text-xs text-[#6B7280]">
-              If you've already added <code className="font-mono bg-white border border-[#E5E7EB] px-1 rounded text-[10px]">STRIPE_SECRET_KEY</code> to your secrets, click Test Connection below.
+          <div className="p-3 bg-background border border-border rounded-xl">
+            <p className="text-xs font-semibold text-foreground mb-1">Secret already set?</p>
+            <p className="text-xs text-muted-foreground">
+              If you've already added <code className="font-mono bg-card border border-border px-1 rounded text-[10px]">STRIPE_SECRET_KEY</code> to your secrets, click Test Connection below.
             </p>
           </div>
 

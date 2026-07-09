@@ -145,12 +145,12 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
       <item.icon className={cn('w-[16px] h-[16px] flex-shrink-0 transition-colors')} />
       {!collapsed && <span className="flex-1">{item.label}</span>}
       {!collapsed && showUnread && (
-        <span className="min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1 flex-shrink-0">
+        <span className="min-w-[18px] h-[18px] rounded-full bg-destructive text-white text-[10px] font-bold flex items-center justify-center px-1 flex-shrink-0">
           {unreadCount > 99 ? '99+' : unreadCount}
         </span>
       )}
       {collapsed && showUnread && (
-        <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500" />
+        <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-destructive" />
       )}
     </Link>
   );

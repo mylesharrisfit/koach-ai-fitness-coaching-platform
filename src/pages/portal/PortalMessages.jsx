@@ -48,7 +48,7 @@ function MessageBubble({ msg, coachInitial }) {
     <div className={`flex gap-2 ${isClient ? 'justify-end' : 'justify-start'}`}>
       {!isClient && (
         <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold mt-auto text-white"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
           {coachInitial}
         </div>
       )}
@@ -56,27 +56,27 @@ function MessageBubble({ msg, coachInitial }) {
         <div className={`px-4 py-3 rounded-2xl ${isClient ? 'rounded-br-sm' : 'rounded-bl-sm'}`}
           style={{
             background: isClient
-              ? 'linear-gradient(135deg, #2563EB, #7C3AED)'
-              : isSystem ? '#EEF2FF' : '#F1F5F9',
-            border: isSystem ? '1px solid #C7D2FE' : 'none',
+              ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))'
+              : isSystem ? 'rgb(var(--accent))' : 'rgb(var(--muted))',
+            border: isSystem ? '1px solid rgb(var(--accent))' : 'none',
           }}>
-          {isSystem && <p className="text-indigo-600 text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>}
+          {isSystem && <p className="text-primary text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>}
           {msg.media_type === 'voice' && msg.media_url ? (
             <div className="flex items-center gap-3">
               <button className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: isClient ? 'rgba(255,255,255,0.25)' : '#E2E8F0' }}>
+                style={{ background: isClient ? 'rgba(255,255,255,0.25)' : 'rgb(var(--border))' }}>
                 <span className="text-xs">▶</span>
               </button>
-              <div className="flex-1 h-1 rounded-full" style={{ background: isClient ? 'rgba(255,255,255,0.3)' : '#CBD5E1' }}>
-                <div className="w-1/3 h-full rounded-full" style={{ background: isClient ? 'white' : '#94A3B8' }} />
+              <div className="flex-1 h-1 rounded-full" style={{ background: isClient ? 'rgba(255,255,255,0.3)' : 'rgb(var(--muted-foreground))' }}>
+                <div className="w-1/3 h-full rounded-full" style={{ background: isClient ? 'white' : 'rgb(var(--muted-foreground))' }} />
               </div>
-              <span className="text-xs" style={{ color: isClient ? 'rgba(255,255,255,0.7)' : '#94A3B8' }}>0:15</span>
+              <span className="text-xs" style={{ color: isClient ? 'rgba(255,255,255,0.7)' : 'rgb(var(--muted-foreground))' }}>0:15</span>
             </div>
           ) : (
-            <p className="text-sm leading-relaxed" style={{ color: isClient ? 'white' : '#1E293B' }}>{msg.content}</p>
+            <p className="text-sm leading-relaxed" style={{ color: isClient ? 'white' : 'rgb(var(--foreground))' }}>{msg.content}</p>
           )}
         </div>
-        <p className={`text-slate-300 text-[9px] mt-1 ${isClient ? 'text-right' : 'text-left'}`}>{time}</p>
+        <p className={`text-border text-[9px] mt-1 ${isClient ? 'text-right' : 'text-left'}`}>{time}</p>
       </div>
     </div>
   );
@@ -85,31 +85,31 @@ function MessageBubble({ msg, coachInitial }) {
 /* ── Attachment Menu ── */
 function AttachMenu({ onClose, onAttach }) {
   const options = [
-    { icon: <Camera className="w-5 h-5 text-blue-500" />, label: 'Camera', bg: '#EFF6FF', action: 'camera' },
-    { icon: <ImageIcon className="w-5 h-5 text-purple-500" />, label: 'Photo Library', bg: '#F5F3FF', action: 'photo' },
-    { icon: <BarChart2 className="w-5 h-5 text-emerald-500" />, label: 'Share Progress', bg: '#ECFDF5', action: 'progress' },
-    { icon: <ClipboardList className="w-5 h-5 text-amber-500" />, label: 'Share Check-in', bg: '#FFFBEB', action: 'checkin' },
-    { icon: <Paperclip className="w-5 h-5 text-slate-500" />, label: 'Attach File', bg: '#F8FAFC', action: 'file' },
+    { icon: <Camera className="w-5 h-5 text-primary" />, label: 'Camera', bg: 'rgb(var(--accent))', action: 'camera' },
+    { icon: <ImageIcon className="w-5 h-5 text-ai" />, label: 'Photo Library', bg: 'rgb(var(--ai))', action: 'photo' },
+    { icon: <BarChart2 className="w-5 h-5 text-success" />, label: 'Share Progress', bg: 'rgb(var(--success))', action: 'progress' },
+    { icon: <ClipboardList className="w-5 h-5 text-warning" />, label: 'Share Check-in', bg: 'rgb(var(--warning))', action: 'checkin' },
+    { icon: <Paperclip className="w-5 h-5 text-muted-foreground" />, label: 'Attach File', bg: 'rgb(var(--muted))', action: 'file' },
   ];
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-end" style={{ background: 'rgba(0,0,0,0.3)' }}
       onClick={onClose}>
       <motion.div initial={{ y: 300 }} animate={{ y: 0 }} exit={{ y: 300 }}
-        className="w-full bg-white rounded-t-3xl px-5 pt-4 pb-10"
+        className="w-full bg-card rounded-t-3xl px-5 pt-4 pb-10"
         onClick={e => e.stopPropagation()}>
-        <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5" />
-        <p className="text-slate-800 font-black text-base mb-4">Add Attachment</p>
+        <div className="w-10 h-1 rounded-full bg-border mx-auto mb-5" />
+        <p className="text-foreground font-black text-base mb-4">Add Attachment</p>
         <div className="space-y-2">
           {options.map(opt => (
             <button key={opt.action} onClick={() => { onAttach(opt.action); onClose(); }}
               className="w-full flex items-center gap-4 p-4 rounded-2xl text-left active:opacity-70 transition-opacity"
               style={{ background: opt.bg }}>
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0"
+              <div className="w-10 h-10 rounded-xl bg-card flex items-center justify-center flex-shrink-0"
                 style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
                 {opt.icon}
               </div>
-              <span className="text-slate-700 font-semibold text-sm">{opt.label}</span>
+              <span className="text-foreground font-semibold text-sm">{opt.label}</span>
             </button>
           ))}
         </div>
@@ -190,41 +190,41 @@ function ConversationView({ myClient, onBack }) {
   const hasText = input.trim().length > 0;
 
   return (
-    <div className="flex flex-col bg-white" style={{ height: '100dvh' }}>
+    <div className="flex flex-col bg-card" style={{ height: '100dvh' }}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-14 pb-4 flex-shrink-0 bg-white border-b border-slate-100"
-        style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
-        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
+      <div className="flex items-center gap-3 px-4 pt-14 pb-4 flex-shrink-0 bg-card border-b border-border"
+        style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
+        <button onClick={onBack} className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" />
         </button>
         <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
           {coachInitial}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-slate-900 font-bold text-sm">Your Coach</p>
+          <p className="text-foreground font-bold text-sm">Your Coach</p>
           <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-            <p className="text-emerald-500 text-[10px] font-semibold">Active</p>
+            <div className="w-2 h-2 rounded-full bg-success" />
+            <p className="text-success text-[10px] font-semibold">Active</p>
           </div>
         </div>
       </div>
 
       {/* Messages — fills remaining space, scrollable */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-slate-50"
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-muted"
         onClick={() => textareaRef.current?.blur()}>
         {sorted.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white mb-4"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
               {coachInitial}
             </div>
-            <p className="text-slate-600 text-sm font-bold mb-1">Say hi to your coach! 👋</p>
-            <p className="text-slate-400 text-xs mb-6">They're here to help</p>
+            <p className="text-muted-foreground text-sm font-bold mb-1">Say hi to your coach! 👋</p>
+            <p className="text-muted-foreground text-xs mb-6">They're here to help</p>
             <div className="space-y-2 w-full max-w-xs">
               {SUGGESTED_OPENERS.map(s => (
                 <button key={s} onClick={(e) => { e.stopPropagation(); sendMessage(s); }}
-                  className="w-full p-3 rounded-2xl text-sm text-slate-600 text-left bg-white border border-slate-200 font-medium"
+                  className="w-full p-3 rounded-2xl text-sm text-muted-foreground text-left bg-card border border-border font-medium"
                   style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                   {s}
                 </button>
@@ -234,14 +234,14 @@ function ConversationView({ myClient, onBack }) {
         )}
         {grouped.map((item, i) => (
           item.type === 'separator'
-            ? <p key={i} className="text-center text-slate-300 text-[9px] font-bold uppercase tracking-wider py-2">{item.label}</p>
+            ? <p key={i} className="text-center text-border text-[9px] font-bold uppercase tracking-wider py-2">{item.label}</p>
             : <MessageBubble key={item.data.id} msg={item.data} coachInitial={coachInitial} />
         ))}
         <div ref={bottomRef} />
       </div>
 
       {/* Compose area — sticks to bottom, lifts with keyboard via 100dvh */}
-      <div className="flex-shrink-0 bg-white" style={{ borderTop: '1px solid #F1F5F9', boxShadow: '0 -2px 16px rgba(0,0,0,0.05)' }}>
+      <div className="flex-shrink-0 bg-card" style={{ borderTop: '1px solid rgb(var(--muted))', boxShadow: '0 -2px 16px rgba(0,0,0,0.05)' }}>
         {/* Quick reply chips */}
         <AnimatePresence>
           {showChips && (
@@ -249,7 +249,7 @@ function ConversationView({ myClient, onBack }) {
               className="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto scrollbar-hide">
               {SUGGESTED_OPENERS.map(r => (
                 <button key={r} onClick={() => sendMessage(r)}
-                  className="px-3 py-2 rounded-full text-xs text-blue-600 whitespace-nowrap flex-shrink-0 font-semibold bg-blue-50 border border-blue-100">
+                  className="px-3 py-2 rounded-full text-xs text-primary whitespace-nowrap flex-shrink-0 font-semibold bg-accent border border-accent">
                   {r}
                 </button>
               ))}
@@ -262,9 +262,9 @@ function ConversationView({ myClient, onBack }) {
           style={{ paddingBottom: 'max(12px, calc(env(safe-area-inset-bottom) + 80px))' }}>
           {/* Attachment button */}
           <button onClick={() => setShowAttach(true)}
-            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors bg-slate-100 active:bg-slate-200"
-            style={{ border: '1.5px solid #E2E8F0', marginBottom: 1 }}>
-            <Plus className="w-5 h-5 text-slate-400" />
+            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors bg-muted active:bg-border"
+            style={{ border: '1.5px solid rgb(var(--border))', marginBottom: 1 }}>
+            <Plus className="w-5 h-5 text-muted-foreground" />
           </button>
 
           {/* Textarea */}
@@ -276,18 +276,18 @@ function ConversationView({ myClient, onBack }) {
               onKeyDown={handleKeyDown}
               placeholder="Message your coach..."
               rows={1}
-              className="w-full px-4 py-2.5 rounded-3xl text-slate-800 text-base placeholder-slate-400 focus:outline-none resize-none overflow-hidden"
+              className="w-full px-4 py-2.5 rounded-3xl text-foreground text-base placeholder-muted-foreground focus:outline-none resize-none overflow-hidden"
               style={{
-                border: '1.5px solid #E2E8F0',
-                background: '#FFFFFF',
+                border: '1.5px solid rgb(var(--border))',
+                background: 'rgb(var(--card))',
                 lineHeight: '1.5',
                 minHeight: '42px',
                 maxHeight: '96px',
                 overflowY: input.length > 80 ? 'auto' : 'hidden',
                 transition: 'border-color 0.15s',
               }}
-              onFocus={e => e.target.style.borderColor = '#93C5FD'}
-              onBlur={e => e.target.style.borderColor = '#E2E8F0'}
+              onFocus={e => e.target.style.borderColor = 'rgb(var(--primary))'}
+              onBlur={e => e.target.style.borderColor = 'rgb(var(--border))'}
             />
           </div>
 
@@ -297,8 +297,8 @@ function ConversationView({ myClient, onBack }) {
             onClick={hasText ? () => sendMessage() : undefined}
             className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
             style={{
-              background: hasText ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9',
-              border: hasText ? 'none' : '1.5px solid #E2E8F0',
+              background: hasText ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
+              border: hasText ? 'none' : '1.5px solid rgb(var(--border))',
               marginBottom: 1,
             }}>
             <AnimatePresence mode="wait">
@@ -308,7 +308,7 @@ function ConversationView({ myClient, onBack }) {
                 </motion.div>
               ) : (
                 <motion.div key="mic" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
-                  <Mic className="w-4 h-4 text-slate-400" />
+                  <Mic className="w-4 h-4 text-muted-foreground" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -369,10 +369,10 @@ export default function PortalMessages({ user }) {
         <div className="flex items-start gap-4">
           <div className="relative flex-shrink-0">
             <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
               C
             </div>
-            <div className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full border-2 border-[#0A0F1A] bg-emerald-400" />
+            <div className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full border-2 border-[#0A0F1A] bg-success" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-0.5">
@@ -380,7 +380,7 @@ export default function PortalMessages({ user }) {
               {unread > 0 && (
                 <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }}
                   className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white"
-                  style={{ background: '#3B82F6' }}>
+                  style={{ background: 'rgb(var(--primary))' }}>
                   {unread}
                 </motion.span>
               )}
@@ -398,7 +398,7 @@ export default function PortalMessages({ user }) {
         </div>
         <button onClick={() => setView('conversation')}
           className="w-full mt-4 py-2.5 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
           <MessageSquare className="w-4 h-4" />
           Message Coach
         </button>
@@ -411,7 +411,7 @@ export default function PortalMessages({ user }) {
           <div className="space-y-2">
             {messages.filter(m => m.is_broadcast).slice(0, 3).map(m => (
               <div key={m.id} className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-indigo-400 text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>
+                <p className="text-primary text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>
                 <p className="text-white/60 text-sm">{m.content}</p>
                 <p className="text-white/20 text-[9px] mt-1">{m.created_date ? format(new Date(m.created_date), 'MMM d') : ''}</p>
               </div>

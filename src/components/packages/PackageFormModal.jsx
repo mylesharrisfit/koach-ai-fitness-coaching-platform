@@ -12,7 +12,7 @@ const PRESET_IMAGES = [
   'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80',
 ];
 
-const COLOR_PRESETS = ['#2563EB', '#7C3AED', '#DC2626', '#16A34A', '#D97706', '#0891B2', '#DB2777', '#111827'];
+const COLOR_PRESETS = ['rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--destructive))', 'rgb(var(--success))', 'rgb(var(--warning))', '#0891B2', '#DB2777', 'rgb(var(--foreground))'];
 
 const INCLUSION_KEYS = [
   { key: 'custom_program', label: 'Custom workout program' },
@@ -37,7 +37,7 @@ const defaultForm = () => ({
   description: '',
   long_description: '',
   image_url: '',
-  color_theme: '#2563EB',
+  color_theme: 'rgb(var(--primary))',
   price: '',
   original_price: '',
   billing_type: 'monthly',
@@ -70,10 +70,10 @@ const defaultForm = () => ({
 });
 
 const S = {
-  label: { fontSize: 11, fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, display: 'block' },
-  input: { width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 14, background: '#F9FAFB', color: '#111', border: '1.5px solid #E5E7EB', outline: 'none', boxSizing: 'border-box' },
+  label: { fontSize: 11, fontWeight: 700, color: 'rgb(var(--muted-foreground))', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, display: 'block' },
+  input: { width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 14, background: 'rgb(var(--background))', color: 'rgb(var(--foreground))', border: '1.5px solid rgb(var(--border))', outline: 'none', boxSizing: 'border-box' },
   section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 13, fontWeight: 800, color: '#111', marginBottom: 14, paddingBottom: 8, borderBottom: '1px solid #F3F4F6' },
+  sectionTitle: { fontSize: 13, fontWeight: 800, color: 'rgb(var(--foreground))', marginBottom: 14, paddingBottom: 8, borderBottom: '1px solid rgb(var(--muted))' },
 };
 
 export default function PackageFormModal({ pkg, onClose, onSave }) {
@@ -119,20 +119,20 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ background: '#fff', borderRadius: 20, width: '100%', maxWidth: 680, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
+      <div style={{ background: 'rgb(var(--card))', borderRadius: 20, width: '100%', maxWidth: 680, maxHeight: '92vh', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
         {/* Header */}
         <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#111', margin: 0 }}>{isEdit ? 'Edit Package' : 'Create Package'}</h2>
-            <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 9, background: '#F3F4F6', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <X size={16} color="#6B7280" />
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: 'rgb(var(--foreground))', margin: 0 }}>{isEdit ? 'Edit Package' : 'Create Package'}</h2>
+            <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 9, background: 'rgb(var(--muted))', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <X size={16} color="rgb(var(--muted-foreground))" />
             </button>
           </div>
           {/* Tab nav */}
           <div style={{ display: 'flex', gap: 2 }}>
             {TABS.map(t => (
               <button key={t.key} onClick={() => setTab(t.key)}
-                style={{ padding: '9px 16px', fontSize: 13, fontWeight: tab === t.key ? 700 : 500, color: tab === t.key ? '#2563EB' : '#6B7280', border: 'none', borderBottom: `2px solid ${tab === t.key ? '#2563EB' : 'transparent'}`, background: 'transparent', cursor: 'pointer' }}>
+                style={{ padding: '9px 16px', fontSize: 13, fontWeight: tab === t.key ? 700 : 500, color: tab === t.key ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))', border: 'none', borderBottom: `2px solid ${tab === t.key ? 'rgb(var(--primary))' : 'transparent'}`, background: 'transparent', cursor: 'pointer' }}>
                 {t.label}
               </button>
             ))}
@@ -162,7 +162,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 10 }}>
                   {PRESET_IMAGES.map(url => (
                     <div key={url} onClick={() => set('image_url', url)}
-                      style={{ height: 80, borderRadius: 10, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${form.image_url === url ? '#2563EB' : 'transparent'}`, transition: 'border-color 0.15s' }}>
+                      style={{ height: 80, borderRadius: 10, overflow: 'hidden', cursor: 'pointer', border: `2.5px solid ${form.image_url === url ? 'rgb(var(--primary))' : 'transparent'}`, transition: 'border-color 0.15s' }}>
                       <img src={url} alt="preset" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   ))}
@@ -174,10 +174,10 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {COLOR_PRESETS.map(c => (
                     <button key={c} onClick={() => set('color_theme', c)}
-                      style={{ width: 32, height: 32, borderRadius: 9999, background: c, border: `3px solid ${form.color_theme === c ? '#111' : 'transparent'}`, cursor: 'pointer', flexShrink: 0 }} />
+                      style={{ width: 32, height: 32, borderRadius: 9999, background: c, border: `3px solid ${form.color_theme === c ? 'rgb(var(--foreground))' : 'transparent'}`, cursor: 'pointer', flexShrink: 0 }} />
                   ))}
                   <input type="color" value={form.color_theme} onChange={e => set('color_theme', e.target.value)}
-                    style={{ width: 32, height: 32, borderRadius: 9999, border: '2px solid #E5E7EB', cursor: 'pointer', padding: 0, overflow: 'hidden' }} />
+                    style={{ width: 32, height: 32, borderRadius: 9999, border: '2px solid rgb(var(--border))', cursor: 'pointer', padding: 0, overflow: 'hidden' }} />
                 </div>
               </div>
             </div>
@@ -190,14 +190,14 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                 <div>
                   <label style={S.label}>Price (USD) *</label>
                   <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#6B7280', fontSize: 14, fontWeight: 600 }}>$</span>
+                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))', fontSize: 14, fontWeight: 600 }}>$</span>
                     <input type="number" value={form.price} onChange={e => set('price', e.target.value)} placeholder="0" style={{ ...S.input, paddingLeft: 28 }} />
                   </div>
                 </div>
                 <div>
                   <label style={S.label}>Original Price (optional)</label>
                   <div style={{ position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#6B7280', fontSize: 14 }}>$</span>
+                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'rgb(var(--muted-foreground))', fontSize: 14 }}>$</span>
                     <input type="number" value={form.original_price} onChange={e => set('original_price', e.target.value)} placeholder="Strike-through price" style={{ ...S.input, paddingLeft: 28 }} />
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                     { value: 'custom', label: 'Custom Plan', icon: '⚙️' },
                   ].map(opt => (
                     <button key={opt.value} type="button" onClick={() => set('billing_type', opt.value)}
-                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderRadius: 10, textAlign: 'left', cursor: 'pointer', border: `1.5px solid ${form.billing_type === opt.value ? '#2563EB' : '#E5E7EB'}`, background: form.billing_type === opt.value ? '#EFF6FF' : '#fff', fontSize: 13, fontWeight: form.billing_type === opt.value ? 600 : 400, color: form.billing_type === opt.value ? '#1D4ED8' : '#374151' }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderRadius: 10, textAlign: 'left', cursor: 'pointer', border: `1.5px solid ${form.billing_type === opt.value ? 'rgb(var(--primary))' : 'rgb(var(--border))'}`, background: form.billing_type === opt.value ? 'rgb(var(--accent))' : 'rgb(var(--card))', fontSize: 13, fontWeight: form.billing_type === opt.value ? 600 : 400, color: form.billing_type === opt.value ? 'rgb(var(--primary))' : 'rgb(var(--foreground))' }}>
                       <span>{opt.icon}</span>{opt.label}
                     </button>
                   ))}
@@ -229,7 +229,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                     { value: 'minimum_months', label: `Minimum ${form.contract_months || 3} months commitment` },
                     { value: 'fixed_term', label: 'Fixed term (auto-cancels at end)' },
                   ].map(opt => (
-                    <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, cursor: 'pointer', fontSize: 13, color: '#374151' }}>
+                    <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, cursor: 'pointer', fontSize: 13, color: 'rgb(var(--foreground))' }}>
                       <input type="radio" checked={form.contract_type === opt.value} onChange={() => set('contract_type', opt.value)} />
                       {opt.label}
                     </label>
@@ -237,7 +237,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                   {form.contract_type !== 'month_to_month' && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8 }}>
                       <input type="number" value={form.contract_months} onChange={e => set('contract_months', Number(e.target.value))} style={{ ...S.input, width: 80 }} min={1} />
-                      <span style={{ fontSize: 13, color: '#6B7280' }}>months</span>
+                      <span style={{ fontSize: 13, color: 'rgb(var(--muted-foreground))' }}>months</span>
                     </div>
                   )}
                 </div>
@@ -262,24 +262,24 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
               <div style={S.section}>
                 <div style={S.sectionTitle}>Service Inclusions</div>
                 {INCLUSION_KEYS.map(({ key, label }) => (
-                  <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #F9FAFB' }}>
-                    <span style={{ fontSize: 13, color: '#374151' }}>{label}</span>
+                  <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgb(var(--background))' }}>
+                    <span style={{ fontSize: 13, color: 'rgb(var(--foreground))' }}>{label}</span>
                     <button type="button" onClick={() => setInclusion(key, !form.inclusions?.[key])}
-                      style={{ width: 40, height: 22, borderRadius: 9999, border: 'none', cursor: 'pointer', background: form.inclusions?.[key] ? '#2563EB' : '#E5E7EB', position: 'relative', flexShrink: 0, transition: 'background 0.2s' }}>
-                      <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: form.inclusions?.[key] ? 20 : 3, transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
+                      style={{ width: 40, height: 22, borderRadius: 9999, border: 'none', cursor: 'pointer', background: form.inclusions?.[key] ? 'rgb(var(--primary))' : 'rgb(var(--border))', position: 'relative', flexShrink: 0, transition: 'background 0.2s' }}>
+                      <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'rgb(var(--card))', position: 'absolute', top: 3, left: form.inclusions?.[key] ? 20 : 3, transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
                     </button>
                   </div>
                 ))}
 
                 {/* Video calls special */}
-                <div style={{ padding: '12px 0', borderBottom: '1px solid #F9FAFB' }}>
+                <div style={{ padding: '12px 0', borderBottom: '1px solid rgb(var(--background))' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <span style={{ fontSize: 13, color: '#374151' }}>Video check-in calls</span>
+                    <span style={{ fontSize: 13, color: 'rgb(var(--foreground))' }}>Video check-in calls</span>
                   </div>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     {VIDEO_CALL_OPTIONS.map(opt => (
                       <button key={opt.value} type="button" onClick={() => setInclusion('video_calls', opt.value)}
-                        style={{ padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500, cursor: 'pointer', border: `1.5px solid ${form.inclusions?.video_calls === opt.value ? '#2563EB' : '#E5E7EB'}`, background: form.inclusions?.video_calls === opt.value ? '#EFF6FF' : '#fff', color: form.inclusions?.video_calls === opt.value ? '#1D4ED8' : '#6B7280' }}>
+                        style={{ padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 500, cursor: 'pointer', border: `1.5px solid ${form.inclusions?.video_calls === opt.value ? 'rgb(var(--primary))' : 'rgb(var(--border))'}`, background: form.inclusions?.video_calls === opt.value ? 'rgb(var(--accent))' : 'rgb(var(--card))', color: form.inclusions?.video_calls === opt.value ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
                         {opt.label}
                       </button>
                     ))}
@@ -291,8 +291,8 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                 <div style={S.sectionTitle}>Custom Inclusions</div>
                 {(form.custom_inclusions || []).map((item, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <span style={{ flex: 1, fontSize: 13, color: '#374151', padding: '8px 12px', background: '#F9FAFB', borderRadius: 8 }}>{item}</span>
-                    <button type="button" onClick={() => removeCustomInclusion(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#DC2626', padding: 6 }}>
+                    <span style={{ flex: 1, fontSize: 13, color: 'rgb(var(--foreground))', padding: '8px 12px', background: 'rgb(var(--background))', borderRadius: 8 }}>{item}</span>
+                    <button type="button" onClick={() => removeCustomInclusion(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgb(var(--destructive))', padding: 6 }}>
                       <Trash2 size={14} />
                     </button>
                   </div>
@@ -302,7 +302,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                     onKeyDown={e => e.key === 'Enter' && addCustomInclusion()}
                     placeholder="Add custom inclusion…" style={{ ...S.input, flex: 1 }} />
                   <button type="button" onClick={addCustomInclusion}
-                    style={{ padding: '10px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: '#EFF6FF', color: '#2563EB', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+                    style={{ padding: '10px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgb(var(--accent))', color: 'rgb(var(--primary))', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
                     <Plus size={14} /> Add
                   </button>
                 </div>
@@ -331,7 +331,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
                   { value: 'private', label: '🔗 Private — only via direct link' },
                   { value: 'hidden', label: '👁 Hidden — coach assigns manually only' },
                 ].map(opt => (
-                  <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, cursor: 'pointer', fontSize: 13, color: '#374151' }}>
+                  <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, cursor: 'pointer', fontSize: 13, color: 'rgb(var(--foreground))' }}>
                     <input type="radio" checked={form.visibility === opt.value} onChange={() => set('visibility', opt.value)} />
                     {opt.label}
                   </label>
@@ -367,12 +367,12 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
         </div>
 
         {/* Footer */}
-        <div style={{ padding: '16px 24px', borderTop: '1px solid #F3F4F6', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0 }}>
-          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: '#F3F4F6', color: '#374151', border: 'none', cursor: 'pointer' }}>
+        <div style={{ padding: '16px 24px', borderTop: '1px solid rgb(var(--muted))', display: 'flex', gap: 10, justifyContent: 'flex-end', flexShrink: 0 }}>
+          <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'rgb(var(--muted))', color: 'rgb(var(--foreground))', border: 'none', cursor: 'pointer' }}>
             Cancel
           </button>
           <button onClick={handleSave} disabled={!form.name || !form.price}
-            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.name || !form.price) ? '#E5E7EB' : 'linear-gradient(135deg, #2563EB, #7C3AED)', color: (!form.name || !form.price) ? '#9CA3AF' : '#fff', border: 'none', cursor: (!form.name || !form.price) ? 'not-allowed' : 'pointer' }}>
+            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.name || !form.price) ? 'rgb(var(--border))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: (!form.name || !form.price) ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: (!form.name || !form.price) ? 'not-allowed' : 'pointer' }}>
             {isEdit ? 'Save Changes' : 'Create Package'}
           </button>
         </div>
@@ -384,10 +384,10 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
 function ToggleRow({ label, value, onChange }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>
-      <span style={{ fontSize: 13, color: '#374151' }}>{label}</span>
+      <span style={{ fontSize: 13, color: 'rgb(var(--foreground))' }}>{label}</span>
       <button type="button" onClick={() => onChange(!value)}
-        style={{ width: 40, height: 22, borderRadius: 9999, border: 'none', cursor: 'pointer', background: value ? '#2563EB' : '#E5E7EB', position: 'relative', flexShrink: 0, transition: 'background 0.2s' }}>
-        <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: value ? 20 : 3, transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
+        style={{ width: 40, height: 22, borderRadius: 9999, border: 'none', cursor: 'pointer', background: value ? 'rgb(var(--primary))' : 'rgb(var(--border))', position: 'relative', flexShrink: 0, transition: 'background 0.2s' }}>
+        <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'rgb(var(--card))', position: 'absolute', top: 3, left: value ? 20 : 3, transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
       </button>
     </div>
   );

@@ -36,7 +36,7 @@ export default function AIAssistant({ plan, todayLogged }) {
       {/* FAB */}
       <motion.button onClick={() => setOpen(true)} whileTap={{ scale: 0.95 }}
         className="fixed bottom-24 right-5 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-sm text-white shadow-xl"
-        style={{ background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)', boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--ai)), rgb(var(--primary)))', boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}>
         <Sparkles className="w-4 h-4" />
         Ask AI
       </motion.button>
@@ -53,7 +53,7 @@ export default function AIAssistant({ plan, todayLogged }) {
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <Sparkles className="w-4 h-4 text-ai" />
                   <p className="text-white font-bold text-sm">AI Nutrition Assistant</p>
                 </div>
                 <button onClick={() => setOpen(false)}><X className="w-4 h-4 text-white/40" /></button>
@@ -87,7 +87,7 @@ export default function AIAssistant({ plan, todayLogged }) {
                 {loading && (
                   <div className="flex justify-start">
                     <div className="px-4 py-3 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)' }}>
-                      <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+                      <Loader2 className="w-4 h-4 text-ai animate-spin" />
                     </div>
                   </div>
                 )}
@@ -102,7 +102,7 @@ export default function AIAssistant({ plan, todayLogged }) {
                   style={{ background: 'rgba(255,255,255,0.07)' }} />
                 <button onClick={() => askAI()} disabled={!query.trim() || loading}
                   className="w-9 h-9 rounded-xl flex items-center justify-center disabled:opacity-30"
-                  style={{ background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)' }}>
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--ai)), rgb(var(--primary)))' }}>
                   <Send className="w-4 h-4 text-white" />
                 </button>
               </div>

@@ -56,15 +56,15 @@ function VoicePlayer({ url, durationSeconds, isCoach }) {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   // Colour tokens depending on whose bubble it's in
-  const trackBg    = isCoach ? 'rgba(255,255,255,0.25)' : '#E7EAF3';
-  const fillBg     = isCoach ? 'rgba(255,255,255,0.85)' : '#2563EB';
+  const trackBg    = isCoach ? 'rgba(255,255,255,0.25)' : 'rgb(var(--border))';
+  const fillBg     = isCoach ? 'rgba(255,255,255,0.85)' : 'rgb(var(--primary))';
   const iconColor  = isCoach ? 'text-white'             : 'text-primary';
-  const timeColor  = isCoach ? 'text-white/70'          : 'text-[#9CA3AF]';
+  const timeColor  = isCoach ? 'text-white/70'          : 'text-muted-foreground';
   const btnBg      = isCoach ? 'bg-white/20 hover:bg-white/30' : 'bg-primary/10 hover:bg-primary/20';
 
   if (error) {
     return (
-      <div className={cn('flex items-center gap-2 min-w-[200px] py-0.5', isCoach ? 'text-white/70' : 'text-[#9CA3AF]')}>
+      <div className={cn('flex items-center gap-2 min-w-[200px] py-0.5', isCoach ? 'text-white/70' : 'text-muted-foreground')}>
         <AlertCircle className="w-4 h-4 flex-shrink-0" />
         <span className="text-xs">Audio unavailable</span>
       </div>
@@ -116,12 +116,12 @@ function VoicePlayer({ url, durationSeconds, isCoach }) {
 function ReadReceipt({ msg }) {
   if (msg.sender !== 'coach') return null;
   if (msg.is_read) return (
-    <span className="flex items-center gap-0.5 text-[10px] text-blue-400 font-medium">
+    <span className="flex items-center gap-0.5 text-[10px] text-primary font-medium">
       <CheckCheck className="w-3 h-3" /> Read
     </span>
   );
   return (
-    <span className="flex items-center gap-0.5 text-[10px] text-[#9CA3AF]">
+    <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
       <Check className="w-3 h-3" /> Sent
     </span>
   );
@@ -160,11 +160,11 @@ function FileAttachment({ url, isCoach }) {
         'flex items-center gap-2 mt-1 px-3 py-2 rounded-xl border transition-colors',
         isCoach
           ? 'border-white/20 bg-white/10 hover:bg-white/20'
-          : 'border-[#E7EAF3] bg-[#F6F7FB] hover:bg-[#EEF4FF]'
+          : 'border-border bg-muted hover:bg-accent/10'
       )}
     >
       <FileText className={cn('w-4 h-4 flex-shrink-0', isCoach ? 'text-white/70' : 'text-primary')} />
-      <span className={cn('text-xs font-medium truncate max-w-[160px]', isCoach ? 'text-white/90' : 'text-[#374151]')}>
+      <span className={cn('text-xs font-medium truncate max-w-[160px]', isCoach ? 'text-white/90' : 'text-foreground')}>
         {fileName}
       </span>
       <Download className={cn('w-3.5 h-3.5 flex-shrink-0 ml-auto', isCoach ? 'text-white/70' : 'text-primary')} />
@@ -175,9 +175,9 @@ function FileAttachment({ url, isCoach }) {
 export function DateSeparator({ date }) {
   return (
     <div className="flex items-center gap-3 my-4">
-      <div className="flex-1 h-px bg-[#E7EAF3]" />
-      <span className="text-[11px] font-semibold text-[#9CA3AF] px-2">{date}</span>
-      <div className="flex-1 h-px bg-[#E7EAF3]" />
+      <div className="flex-1 h-px bg-border" />
+      <span className="text-[11px] font-semibold text-muted-foreground px-2">{date}</span>
+      <div className="flex-1 h-px bg-border" />
     </div>
   );
 }
@@ -209,7 +209,7 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
       <div className={cn('max-w-[72%] flex flex-col', isCoach ? 'items-end' : 'items-start')}>
         {/* Broadcast label — only visible to coach */}
         {msg.is_broadcast && isFirst && isCoach && (
-          <div className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border font-medium w-fit mb-1 bg-violet-50 text-violet-600 border-violet-200">
+          <div className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border font-medium w-fit mb-1 bg-ai/10 text-ai border-ai">
             <Megaphone className="w-2.5 h-2.5" />
             Broadcast
           </div>
@@ -227,11 +227,11 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
           <button
             onClick={() => onTogglePin(msg)}
             className={cn(
-              'opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-[#F6F7FB]',
+              'opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-muted',
               isCoach ? 'order-last' : 'order-first'
             )}
           >
-            <Pin className={cn('w-3 h-3', msg.is_pinned ? 'text-amber-400 fill-amber-400' : 'text-[#9CA3AF]')} />
+            <Pin className={cn('w-3 h-3', msg.is_pinned ? 'text-warning fill-warning' : 'text-muted-foreground')} />
           </button>
 
           {/* Bubble */}
@@ -239,7 +239,7 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
             'px-4 py-2.5 text-sm leading-relaxed',
             isCoach
               ? 'text-white'
-              : 'bg-white border border-[#E7EAF3] text-[#1F2A44] shadow-sm',
+              : 'bg-card border border-border text-foreground shadow-sm',
             // Rounding based on position in group
             isCoach && isFirst && isLast && 'rounded-2xl rounded-br-md',
             isCoach && isFirst && !isLast && 'rounded-2xl rounded-br-sm',
@@ -249,8 +249,8 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
             !isCoach && isFirst && !isLast && 'rounded-2xl rounded-bl-sm',
             !isCoach && !isFirst && isLast && 'rounded-xl rounded-bl-md',
             !isCoach && !isFirst && !isLast && 'rounded-xl',
-            msg.is_pinned && 'ring-2 ring-amber-400/50',
-            isCoach && 'bg-gradient-to-br from-blue-500 to-violet-600',
+            msg.is_pinned && 'ring-2 ring-warning/50',
+            isCoach && 'bg-gradient-to-br from-primary to-ai',
           )}>
             {/* Voice */}
             {msg.media_type === 'voice' && (
@@ -280,7 +280,7 @@ export default function MessageBubble({ msg, onTogglePin, isFirst = true, isLast
         {/* Timestamp + read receipt — only on last in group */}
         {isLast && (
           <div className={cn('flex items-center gap-1.5 mt-1 px-1', isCoach ? 'flex-row-reverse' : 'flex-row')}>
-            <span className="text-[10px] text-[#9CA3AF]">
+            <span className="text-[10px] text-muted-foreground">
               {format(new Date(msg.created_date), 'h:mm a')}
             </span>
             <ReadReceipt msg={msg} />

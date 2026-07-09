@@ -15,7 +15,7 @@ function Confetti() {
       y: -20 - Math.random() * 100,
       vx: (Math.random() - 0.5) * 3,
       vy: 2 + Math.random() * 3,
-      color: ['#2563EB', '#7C3AED', '#F59E0B', '#10B981'][Math.floor(Math.random() * 4)],
+      color: ['rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--warning))', 'rgb(var(--success))'][Math.floor(Math.random() * 4)],
       size: 5 + Math.random() * 5,
       angle: Math.random() * Math.PI * 2,
       spin: (Math.random() - 0.5) * 0.2,
@@ -59,7 +59,7 @@ export default function CheckInSuccessScreen({ streak, onHome, onMessage }) {
           transition={{ type: 'spring', stiffness: 200, damping: 14 }}
           className="mb-6">
           <div className="w-24 h-24 rounded-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #059669, #10B981)', boxShadow: '0 0 60px rgba(16,185,129,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', boxShadow: '0 0 60px rgba(16,185,129,0.4)' }}>
             <svg viewBox="0 0 52 52" className="w-14 h-14">
               <motion.path fill="none" stroke="white" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round"
                 d="M14 27l10 10 14-18"
@@ -91,7 +91,7 @@ export default function CheckInSuccessScreen({ streak, onHome, onMessage }) {
           className="w-full px-5 mt-12 space-y-3" style={{ maxWidth: 400, paddingBottom: 'calc(24px + env(safe-area-inset-bottom))' }}>
           <button onClick={onMessage}
             className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 20px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 20px rgba(37,99,235,0.3)' }}>
             <MessageSquare className="w-5 h-5" />
             Message Your Coach
           </button>

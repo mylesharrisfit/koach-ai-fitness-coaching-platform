@@ -86,11 +86,11 @@ export default function MigrationClientImport({ onComplete, onSkip }) {
   if (results) {
     return (
       <div className="space-y-4">
-        <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
-          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+        <div className="flex items-center gap-3 p-4 bg-success/10 border border-success rounded-xl">
+          <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
           <div>
-            <p className="font-semibold text-emerald-800 text-sm">{results.ok.length} clients imported</p>
-            {results.fail.length > 0 && <p className="text-xs text-emerald-600 mt-0.5">{results.fail.length} failed (duplicate emails)</p>}
+            <p className="font-semibold text-success text-sm">{results.ok.length} clients imported</p>
+            {results.fail.length > 0 && <p className="text-xs text-success mt-0.5">{results.fail.length} failed (duplicate emails)</p>}
           </div>
         </div>
         <button onClick={() => onComplete(results.ok)} className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
@@ -120,12 +120,12 @@ export default function MigrationClientImport({ onComplete, onSkip }) {
           <input ref={fileRef} type="file" accept=".csv,.txt" className="hidden" onChange={e => handleFile(e.target.files[0])} />
         </div>
       ) : (
-        <div className="border border-emerald-200 bg-emerald-50 rounded-2xl p-4">
+        <div className="border border-success bg-success/10 rounded-2xl p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-emerald-600" />
-              <span className="text-sm font-semibold text-emerald-800">{fileName}</span>
-              <span className="text-xs text-emerald-600">· {parsed.length} clients found</span>
+              <FileText className="w-4 h-4 text-success" />
+              <span className="text-sm font-semibold text-success">{fileName}</span>
+              <span className="text-xs text-success">· {parsed.length} clients found</span>
             </div>
             <button onClick={() => { setParsed(null); setFileName(''); }} className="text-muted-foreground hover:text-destructive transition-colors">
               <X className="w-4 h-4" />

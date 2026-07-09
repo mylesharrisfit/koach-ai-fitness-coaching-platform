@@ -67,18 +67,18 @@ export default function ClientAlerts({ clients, checkIns }) {
 
   const severityStyle = {
     high: 'bg-destructive/15 text-destructive border-destructive/20',
-    medium: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
+    medium: 'bg-warning/15 text-warning border-warning/20',
     low: 'bg-primary/15 text-primary border-primary/20',
   };
 
   return (
-    <div className="bg-card border border-purple-500/30 rounded-2xl p-4 sm:p-6">
+    <div className="bg-card border border-ai/30 rounded-2xl p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-purple-500/20 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-purple-400" />
+          <div className="w-7 h-7 rounded-lg bg-ai/20 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-ai" />
           </div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-purple-400">AI Client Alerts</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-ai">AI Client Alerts</h2>
         </div>
         <div className="flex items-center gap-2">
           {alerts !== null && (
@@ -89,7 +89,7 @@ export default function ClientAlerts({ clients, checkIns }) {
           <button
             onClick={fetchAlerts}
             disabled={loading}
-            className="text-purple-400 hover:text-purple-300 disabled:opacity-50"
+            className="text-ai hover:text-ai disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -98,9 +98,9 @@ export default function ClientAlerts({ clients, checkIns }) {
 
       {alerts === null && !loading && (
         <div className="text-center py-6">
-          <Sparkles className="w-8 h-8 text-purple-400/40 mx-auto mb-3" />
+          <Sparkles className="w-8 h-8 text-ai/40 mx-auto mb-3" />
           <p className="text-sm text-muted-foreground mb-4">AI will scan your clients for issues</p>
-          <Button onClick={fetchAlerts} size="sm" className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/30">
+          <Button onClick={fetchAlerts} size="sm" className="bg-ai/20 text-ai hover:bg-ai/30 border border-ai/30">
             <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Run Analysis
           </Button>
         </div>
@@ -108,7 +108,7 @@ export default function ClientAlerts({ clients, checkIns }) {
 
       {loading && (
         <div className="flex items-center justify-center py-8 gap-3">
-          <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+          <Loader2 className="w-5 h-5 animate-spin text-ai" />
           <p className="text-sm text-muted-foreground">Analyzing client data...</p>
         </div>
       )}

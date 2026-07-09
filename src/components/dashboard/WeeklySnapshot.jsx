@@ -54,7 +54,7 @@ function groupByDay(items, dateField, range, rangeKey) {
   }));
 }
 
-const GRAD_COLORS = ['#3b82f6', '#6366f1', '#8b5cf6'];
+const GRAD_COLORS = ['rgb(var(--primary))', 'rgb(var(--primary))', 'rgb(var(--ai))'];
 
 function CustomBar(props) {
   const { x, y, width, height, index, total } = props;
@@ -66,9 +66,9 @@ function CustomBar(props) {
 function MiniChart({ title, summary, chart }) {
   return (
     <div className="flex-1 min-w-0 flex flex-col gap-2">
-      <p className="text-xs font-bold text-gray-700">{title}</p>
+      <p className="text-xs font-bold text-foreground">{title}</p>
       <div className="h-28">{chart}</div>
-      <p className="text-[11px] text-gray-400 font-medium">{summary}</p>
+      <p className="text-[11px] text-muted-foreground font-medium">{summary}</p>
     </div>
   );
 }
@@ -130,24 +130,24 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
     return vals.length ? Math.round(vals.reduce((s, d) => s + d.count, 0) / vals.length) : 0;
   }, [complianceData]);
 
-  const axisStyle = { fontSize: 10, fill: '#9ca3af' };
+  const axisStyle = { fontSize: 10, fill: 'rgb(var(--muted-foreground))' };
 
   return (
-    <div className="rounded-xl bg-white border border-gray-100 overflow-hidden"
+    <div className="rounded-xl bg-card border border-border overflow-hidden"
       style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))' }}>
-            <BarChart2 className="w-3.5 h-3.5" style={{ color: '#8b5cf6' }} />
+            <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgb(var(--ai))' }} />
           </div>
-          <h2 className="text-sm font-bold text-gray-900">Weekly Snapshot</h2>
+          <h2 className="text-sm font-bold text-foreground">Weekly Snapshot</h2>
         </div>
         <select
           value={range}
           onChange={e => setRange(e.target.value)}
-          className="text-xs font-semibold border border-gray-200 rounded-lg px-2 py-1 bg-white text-gray-600 focus:outline-none focus:ring-1 focus:ring-indigo-300 cursor-pointer"
+          className="text-xs font-semibold border border-border rounded-lg px-2 py-1 bg-card text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
         >
           {RANGE_OPTIONS.map(o => (
             <option key={o.key} value={o.key}>{o.label}</option>
@@ -156,7 +156,7 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
       </div>
 
       {/* Charts */}
-      <div className="px-5 py-4 flex flex-col sm:flex-row gap-6 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+      <div className="px-5 py-4 flex flex-col sm:flex-row gap-6 divide-y sm:divide-y-0 sm:divide-x divide-muted">
         {/* Chart 1 */}
         <MiniChart
           title="Check-in Adherence"
@@ -167,12 +167,12 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
                 <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
                 <YAxis tick={axisStyle} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
                   formatter={(v) => [v, 'Check-ins']}
                 />
                 <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                   {checkInData.map((_, i) => (
-                    <Cell key={i} fill={i < checkInData.length / 2 ? '#3b82f6' : '#6366f1'} fillOpacity={_ .count === 0 ? 0.2 : 1} />
+                    <Cell key={i} fill={i < checkInData.length / 2 ? 'rgb(var(--primary))' : 'rgb(var(--primary))'} fillOpacity={_ .count === 0 ? 0.2 : 1} />
                   ))}
                 </Bar>
               </BarChart>
@@ -191,12 +191,12 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
                   <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
                   <YAxis tick={axisStyle} axisLine={false} tickLine={false} allowDecimals={false} />
                   <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
                     formatter={(v) => [v, 'New Clients']}
                   />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                     {newClientData.map((entry, i) => (
-                      <Cell key={i} fill="#10b981" fillOpacity={entry.count === 0 ? 0.2 : 1} />
+                      <Cell key={i} fill="rgb(var(--success))" fillOpacity={entry.count === 0 ? 0.2 : 1} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -216,12 +216,12 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
                   <XAxis dataKey="label" tick={axisStyle} axisLine={false} tickLine={false} />
                   <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid rgb(var(--border))', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
                     formatter={(v) => [`${v}%`, 'Compliance']}
                   />
                   <Line
-                    type="monotone" dataKey="count" stroke="#f59e0b"
-                    strokeWidth={2} dot={{ r: 3, fill: '#f59e0b' }} activeDot={{ r: 5 }}
+                    type="monotone" dataKey="count" stroke="rgb(var(--warning))"
+                    strokeWidth={2} dot={{ r: 3, fill: 'rgb(var(--warning))' }} activeDot={{ r: 5 }}
                   />
                 </LineChart>
               </ResponsiveContainer>

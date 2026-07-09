@@ -21,7 +21,7 @@ export default function SignOutModal({ onCancel }) {
         style={{ background: '#131928', border: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
           style={{ background: 'rgba(239,68,68,0.15)' }}>
-          <LogOut className="w-5 h-5 text-red-400" />
+          <LogOut className="w-5 h-5 text-destructive" />
         </div>
         <h3 className="text-white font-bold text-lg text-center mb-1">Sign Out?</h3>
         <p className="text-white/40 text-sm text-center mb-6">You'll need to log back in to access your coaching dashboard.</p>

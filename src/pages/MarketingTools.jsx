@@ -46,33 +46,33 @@ export default function MarketingTools() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-muted to-card">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-40">
+      <div className="bg-card border-b border-border sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-black text-slate-900">Marketing Tools</h1>
-          <p className="text-slate-600 mt-1">Everything you need to grow your coaching business</p>
+          <h1 className="text-3xl font-black text-foreground">Marketing Tools</h1>
+          <p className="text-muted-foreground mt-1">Everything you need to grow your coaching business</p>
           
           {/* Quick stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-            <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-              <p className="text-xs text-blue-600 font-bold">CLICKS THIS MONTH</p>
-              <p className="text-2xl font-black text-blue-700 mt-1">{marketingStats?.monthlyClicks || 0}</p>
+            <div className="p-4 rounded-lg bg-accent border border-primary">
+              <p className="text-xs text-primary font-bold">CLICKS THIS MONTH</p>
+              <p className="text-2xl font-black text-primary mt-1">{marketingStats?.monthlyClicks || 0}</p>
             </div>
-            <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
-              <p className="text-xs text-emerald-600 font-bold">TESTIMONIALS</p>
-              <p className="text-2xl font-black text-emerald-700 mt-1">{marketingStats?.testimonialCount || 0}</p>
+            <div className="p-4 rounded-lg bg-success/10 border border-success">
+              <p className="text-xs text-success font-bold">TESTIMONIALS</p>
+              <p className="text-2xl font-black text-success mt-1">{marketingStats?.testimonialCount || 0}</p>
             </div>
-            <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
-              <p className="text-xs text-purple-600 font-bold">ACTIVE CAMPAIGNS</p>
-              <p className="text-2xl font-black text-purple-700 mt-1">{marketingStats?.campaignCount || 0}</p>
+            <div className="p-4 rounded-lg bg-ai/10 border border-ai">
+              <p className="text-xs text-ai font-bold">ACTIVE CAMPAIGNS</p>
+              <p className="text-2xl font-black text-ai mt-1">{marketingStats?.campaignCount || 0}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Navigation tabs */}
-      <div className="bg-white border-b border-slate-200 sticky top-[130px] z-30">
+      <div className="bg-card border-b border-border sticky top-[130px] z-30">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex gap-2 overflow-x-auto">
             {SECTIONS.map(section => {
@@ -83,8 +83,8 @@ export default function MarketingTools() {
                   onClick={() => setActiveSection(section.id)}
                   className={`flex items-center gap-2 px-4 py-4 font-bold border-b-2 transition-colors whitespace-nowrap ${
                     activeSection === section.id
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-slate-600 hover:text-slate-900'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}>
                   <Icon className="w-4 h-4" />
                   {section.label}

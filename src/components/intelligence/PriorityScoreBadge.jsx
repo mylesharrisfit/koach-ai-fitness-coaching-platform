@@ -4,10 +4,10 @@ export default function PriorityScoreBadge({ score }) {
   if (!score && score !== 0) return null;
 
   const color = score >= 7
-    ? { bg: '#fef2f2', text: '#dc2626', border: '#fecaca' }
+    ? { bg: 'rgb(var(--destructive))', text: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' }
     : score >= 4
     ? { bg: '#fff7ed', text: '#ea580c', border: '#fed7aa' }
-    : { bg: '#f0fdf4', text: '#16a34a', border: '#bbf7d0' };
+    : { bg: 'rgb(var(--success))', text: 'rgb(var(--success))', border: 'rgb(var(--success))' };
 
   return (
     <span

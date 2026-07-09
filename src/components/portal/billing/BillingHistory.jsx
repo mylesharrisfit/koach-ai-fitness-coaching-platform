@@ -3,10 +3,10 @@ import { Download, CheckCircle2, XCircle, Clock, RefreshCw } from 'lucide-react'
 import { format, parseISO, subDays, isAfter } from 'date-fns';
 
 const STATUS_ICONS = {
-  paid: { Icon: CheckCircle2, color: '#10B981' },
-  failed: { Icon: XCircle, color: '#EF4444' },
-  pending: { Icon: Clock, color: '#F59E0B' },
-  refunded: { Icon: RefreshCw, color: '#6B7280' },
+  paid: { Icon: CheckCircle2, color: 'rgb(var(--success))' },
+  failed: { Icon: XCircle, color: 'rgb(var(--destructive))' },
+  pending: { Icon: Clock, color: 'rgb(var(--warning))' },
+  refunded: { Icon: RefreshCw, color: 'rgb(var(--muted-foreground))' },
 };
 
 const fmt = (n) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -61,7 +61,7 @@ export default function BillingHistory({ payments, invoices }) {
             className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
               background: filter === f.key ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)',
-              color: filter === f.key ? '#60A5FA' : 'rgba(255,255,255,0.35)',
+              color: filter === f.key ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.35)',
               border: `1px solid ${filter === f.key ? 'rgba(59,130,246,0.3)' : 'transparent'}`,
             }}>
             {f.label}
@@ -87,11 +87,11 @@ export default function BillingHistory({ payments, invoices }) {
                   <p className="text-white/30 text-xs mt-0.5">{fmtDate(entry.date)} · {entry.method}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-white font-bold text-sm" style={{ color: entry.status === 'failed' ? '#EF4444' : entry.status === 'refunded' ? '#9CA3AF' : '#fff' }}>
+                  <p className="text-white font-bold text-sm" style={{ color: entry.status === 'failed' ? 'rgb(var(--destructive))' : entry.status === 'refunded' ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))' }}>
                     {entry.status === 'refunded' ? '-' : ''}{fmt(entry.amount)}
                   </p>
                   {entry.status === 'paid' && (
-                    <button className="text-[10px] text-blue-400 mt-0.5 flex items-center gap-1">
+                    <button className="text-[10px] text-primary mt-0.5 flex items-center gap-1">
                       <Download className="w-2.5 h-2.5" /> Receipt
                     </button>
                   )}

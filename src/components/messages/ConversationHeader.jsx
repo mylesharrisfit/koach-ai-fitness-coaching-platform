@@ -29,7 +29,7 @@ export default function ConversationHeader({ client, allMessages, onLogCheckIn, 
 
   return (
     <div className="flex-shrink-0">
-      <div className="h-14 md:h-16 flex items-center px-4 md:px-5 bg-white gap-3">
+      <div className="h-14 md:h-16 flex items-center px-4 md:px-5 bg-card gap-3">
         {/* Back on mobile */}
         <button onClick={onBack} className="md:hidden -ml-1 p-1.5 rounded-lg hover:bg-secondary transition-colors">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,19 +46,19 @@ export default function ConversationHeader({ client, allMessages, onLogCheckIn, 
             }
           </div>
           {online && (
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white animate-pulse" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success border-2 border-white animate-pulse" />
           )}
         </div>
 
         {/* Name + status */}
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-[#1F2A44] truncate leading-tight">{client.name}</p>
+          <p className="font-semibold text-sm text-foreground truncate leading-tight">{client.name}</p>
           <p className="text-xs truncate leading-tight">
             {online
-              ? <span className="text-emerald-500 font-medium">Online now</span>
+              ? <span className="text-success font-medium">Online now</span>
               : seen
-                ? <span className="text-[#9CA3AF]">Last seen {seen}</span>
-                : <span className="text-[#9CA3AF]">{client.email}</span>
+                ? <span className="text-muted-foreground">Last seen {seen}</span>
+                : <span className="text-muted-foreground">{client.email}</span>
             }
           </p>
         </div>
@@ -67,21 +67,21 @@ export default function ConversationHeader({ client, allMessages, onLogCheckIn, 
         <div className="flex items-center gap-1 flex-shrink-0">
           <button
             onClick={() => navigate(`/client-profile?clientId=${client.id}`)}
-            className="p-2 rounded-lg hover:bg-[#F6F7FB] transition-colors text-[#6B7280] hover:text-[#1F2A44]"
+            className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
             title="View Profile"
           >
             <User className="w-4 h-4" />
           </button>
           <button
             onClick={onLogCheckIn}
-            className="p-2 rounded-lg hover:bg-[#F6F7FB] transition-colors text-[#6B7280] hover:text-[#1F2A44]"
+            className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
             title="Log Check-in"
           >
             <ClipboardList className="w-4 h-4" />
           </button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="p-2 rounded-lg hover:bg-[#F6F7FB] transition-colors text-[#6B7280] hover:text-[#1F2A44]">
+              <button className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                 <MoreVertical className="w-4 h-4" />
               </button>
             </DropdownMenuTrigger>
@@ -96,7 +96,7 @@ export default function ConversationHeader({ client, allMessages, onLogCheckIn, 
           </DropdownMenu>
         </div>
       </div>
-      <div className="h-px bg-[#E7EAF3]" />
+      <div className="h-px bg-border" />
     </div>
   );
 }

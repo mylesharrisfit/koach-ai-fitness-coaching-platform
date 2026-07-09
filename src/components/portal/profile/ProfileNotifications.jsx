@@ -6,9 +6,9 @@ function Toggle({ value, onChange }) {
   return (
     <button onClick={() => onChange(!value)}
       className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
-      style={{ background: value ? '#3B82F6' : 'rgba(255,255,255,0.12)' }}>
+      style={{ background: value ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.12)' }}>
       <motion.div animate={{ x: value ? 18 : 2 }} transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className="absolute top-1 w-4 h-4 rounded-full bg-white" />
+        className="absolute top-1 w-4 h-4 rounded-full bg-card" />
     </button>
   );
 }

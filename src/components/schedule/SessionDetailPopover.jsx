@@ -7,13 +7,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
 const sessionTypeColors = {
-  check_in: 'bg-blue-50 text-blue-600 border-l-4 border-blue-500',
-  program_review: 'bg-violet-50 text-violet-600 border-l-4 border-violet-500',
-  onboarding: 'bg-emerald-50 text-emerald-600 border-l-4 border-emerald-500',
-  progress_review: 'bg-amber-50 text-amber-600 border-l-4 border-amber-500',
-  consultation: 'bg-gray-50 text-gray-600 border-l-4 border-gray-400',
-  video_call: 'bg-blue-50 text-blue-600 border-l-4 border-blue-500',
-  in_person: 'bg-emerald-50 text-emerald-600 border-l-4 border-emerald-500',
+  check_in: 'bg-accent text-primary border-l-4 border-primary',
+  program_review: 'bg-ai/10 text-ai border-l-4 border-ai',
+  onboarding: 'bg-success/10 text-success border-l-4 border-success',
+  progress_review: 'bg-warning/10 text-warning border-l-4 border-warning',
+  consultation: 'bg-muted text-muted-foreground border-l-4 border-border',
+  video_call: 'bg-accent text-primary border-l-4 border-primary',
+  in_person: 'bg-success/10 text-success border-l-4 border-success',
 };
 
 function getTimeRange(session) {
@@ -76,11 +76,11 @@ export default function SessionDetailPopover({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div
-        className="bg-white rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto"
+        className="bg-card rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className={cn('p-4 border-b border-[#E7EAF3] flex items-start justify-between', colors)}>
+        <div className={cn('p-4 border-b border-border flex items-start justify-between', colors)}>
           <div className="flex items-center gap-3">
             {avatar ? (
               <img src={avatar} alt={client?.name} className="w-10 h-10 rounded-full object-cover" />
@@ -101,18 +101,18 @@ export default function SessionDetailPopover({
 
         <div className="p-4 space-y-4">
           {/* Date & Time */}
-          <div className="flex items-start gap-3 p-3 bg-[#F6F7FB] rounded-xl">
+          <div className="flex items-start gap-3 p-3 bg-muted rounded-xl">
             <Clock className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-semibold text-[#1F2A44]">Date & Time</p>
-              <p className="text-xs text-[#6B7280] mt-0.5">{getTimeRange(session)}</p>
-              <p className="text-[10px] text-[#9CA3AF] mt-1">Duration: {session.duration_minutes || 60} min</p>
+              <p className="text-xs font-semibold text-foreground">Date & Time</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{getTimeRange(session)}</p>
+              <p className="text-[10px] text-muted-foreground mt-1">Duration: {session.duration_minutes || 60} min</p>
             </div>
           </div>
 
           {/* Status */}
           <div>
-            <label className="text-xs font-semibold text-[#1F2A44] block mb-2">Status</label>
+            <label className="text-xs font-semibold text-foreground block mb-2">Status</label>
             <Select value={selectedStatus} onValueChange={handleStatusChange}>
               <SelectTrigger className="h-8">
                 <SelectValue />
@@ -129,7 +129,7 @@ export default function SessionDetailPopover({
 
           {/* Notes */}
           <div>
-            <label className="text-xs font-semibold text-[#1F2A44] block mb-2">Notes</label>
+            <label className="text-xs font-semibold text-foreground block mb-2">Notes</label>
             <Textarea
               value={editingNotes}
               onChange={handleNotesChange}
@@ -141,7 +141,7 @@ export default function SessionDetailPopover({
 
           {/* Meeting Link */}
           {session.meeting_link && (
-            <div className="p-3 bg-[#EEF4FF] rounded-xl">
+            <div className="p-3 bg-accent/10 rounded-xl">
               <p className="text-xs font-semibold text-primary mb-1">Meeting Link</p>
               <a
                 href={session.meeting_link}
@@ -162,9 +162,9 @@ export default function SessionDetailPopover({
           )}
 
           {/* Action Buttons */}
-          <div className="space-y-2 pt-2 border-t border-[#E7EAF3]">
+          <div className="space-y-2 pt-2 border-t border-border">
             {sessionSoon && !isCompleted && !isCancelled && (
-              <Button size="sm" className="w-full bg-gradient-to-r from-blue-500 to-violet-600 text-white">
+              <Button size="sm" className="w-full bg-gradient-to-r from-primary to-ai text-white">
                 <Play className="w-3.5 h-3.5 mr-1.5" /> Start Session
               </Button>
             )}

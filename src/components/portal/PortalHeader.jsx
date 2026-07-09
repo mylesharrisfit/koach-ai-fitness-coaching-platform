@@ -28,7 +28,7 @@ export default function PortalHeader({ user, unreadCount, onMessagesTap }) {
             <Bell className="w-4 h-4 text-white/70" />
           </div>
           {unreadCount > 0 && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
+            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive flex items-center justify-center">
               <span className="text-[9px] font-bold text-white">{unreadCount > 9 ? '9+' : unreadCount}</span>
             </div>
           )}

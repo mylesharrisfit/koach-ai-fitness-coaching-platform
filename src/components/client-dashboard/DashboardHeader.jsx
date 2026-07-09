@@ -19,20 +19,20 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
   return (
     <div
       className="rounded-2xl p-5 relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}
+      style={{ background: 'rgb(var(--sidebar))' }}
     >
       {/* Subtle background orb */}
       <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-10"
-        style={{ background: 'radial-gradient(circle, #3B82F6, transparent)' }} />
+        style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent)' }} />
       <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full opacity-5"
-        style={{ background: 'radial-gradient(circle, #60A5FA, transparent)' }} />
+        style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent)' }} />
 
       {/* Top row: avatar + greeting + streak + settings */}
       <div className="flex items-start justify-between relative z-10 mb-4">
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-base flex-shrink-0"
-            style={{ background: 'rgba(59,130,246,0.25)', color: '#93C5FD', border: '1.5px solid rgba(59,130,246,0.35)' }}>
+            style={{ background: 'rgba(59,130,246,0.25)', color: 'rgb(var(--primary))', border: '1.5px solid rgba(59,130,246,0.35)' }}>
             {initial}
           </div>
           <div>
@@ -78,11 +78,11 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
               }}
             >
               <span className="text-base leading-none">{emoji}</span>
-              <span className={`text-[10px] font-semibold leading-none ${isDone ? 'text-[#111827]' : 'text-white/55'}`}>
+              <span className={`text-[10px] font-semibold leading-none ${isDone ? 'text-foreground' : 'text-white/55'}`}>
                 {label}
               </span>
               {isDone && (
-                <CheckCircle2 className="w-3 h-3 text-[#16A34A]" />
+                <CheckCircle2 className="w-3 h-3 text-success" />
               )}
             </div>
           );

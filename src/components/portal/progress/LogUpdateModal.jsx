@@ -62,7 +62,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}>
         <motion.div className="w-full max-w-md rounded-t-2xl"
-          style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.1)', borderBottom: 'none', maxHeight: '85vh', overflowY: 'auto' }}
+          style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(255,255,255,0.1)', borderBottom: 'none', maxHeight: '85vh', overflowY: 'auto' }}
           initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
           onClick={e => e.stopPropagation()}>
@@ -85,7 +85,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
                   className="flex-1 py-2 rounded-lg text-xs font-bold transition-all"
                   style={{
                     background: tab === t.id ? 'rgba(59,130,246,0.3)' : 'transparent',
-                    color: tab === t.id ? '#60A5FA' : 'rgba(255,255,255,0.35)',
+                    color: tab === t.id ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.35)',
                   }}>
                   {t.label}
                 </button>
@@ -140,11 +140,11 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
                   className="w-full py-6 rounded-2xl border-2 border-dashed flex flex-col items-center gap-2 transition-all"
                   style={{ borderColor: 'rgba(59,130,246,0.3)', background: uploading ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
                   {uploading ? (
-                    <div className="w-6 h-6 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-primary/30 border-t-blue-400 rounded-full animate-spin" />
                   ) : (
                     <>
-                      <Upload className="w-6 h-6 text-blue-400" />
-                      <p className="text-blue-400 text-sm font-semibold">Add Progress Photo</p>
+                      <Upload className="w-6 h-6 text-primary" />
+                      <p className="text-primary text-sm font-semibold">Add Progress Photo</p>
                       <p className="text-white/20 text-xs">Front, side, or back view</p>
                     </>
                   )}
@@ -157,7 +157,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
                         <img src={url} alt="" className="w-full h-full object-cover rounded-xl" />
                         <button onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))}
                           className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
-                          style={{ background: '#EF4444' }}>
+                          style={{ background: 'rgb(var(--destructive))' }}>
                           <X className="w-3 h-3 text-white" />
                         </button>
                       </div>
@@ -172,7 +172,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
               onClick={handleSave}
               disabled={!canSave || saving}
               className="w-full py-3.5 rounded-xl text-white font-bold text-sm mt-5 disabled:opacity-40 transition-all"
-              style={{ background: 'linear-gradient(135deg, #3B82F6, #7C3AED)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
               {saving ? 'Saving...' : 'Save Update'}
             </button>
           </div>

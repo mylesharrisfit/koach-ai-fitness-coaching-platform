@@ -6,11 +6,11 @@ import { X, ArrowRight, TrendingUp, AlertTriangle, Zap, Trophy } from 'lucide-re
 const TYPE_CONFIG = {
   performance: {
     icon: TrendingUp,
-    gradient: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-    border: '#bfdbfe',
-    iconBg: '#2563eb',
+    gradient: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent)))',
+    border: 'rgb(var(--accent))',
+    iconBg: 'rgb(var(--primary))',
     tag: 'Performance',
-    dot: '#2563eb',
+    dot: 'rgb(var(--primary))',
   },
   risk: {
     icon: AlertTriangle,
@@ -22,26 +22,26 @@ const TYPE_CONFIG = {
   },
   opportunity: {
     icon: Zap,
-    gradient: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
-    border: '#bbf7d0',
-    iconBg: '#16a34a',
+    gradient: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))',
+    border: 'rgb(var(--success))',
+    iconBg: 'rgb(var(--success))',
     tag: 'Opportunity',
-    dot: '#16a34a',
+    dot: 'rgb(var(--success))',
   },
   celebration: {
     icon: Trophy,
-    gradient: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
-    border: '#fde68a',
-    iconBg: '#d97706',
+    gradient: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))',
+    border: 'rgb(var(--warning))',
+    iconBg: 'rgb(var(--warning))',
     tag: 'Celebrate',
-    dot: '#d97706',
+    dot: 'rgb(var(--warning))',
   },
 };
 
 const CONFIDENCE_COLORS = {
-  High: { bg: 'rgba(22,163,74,0.12)', text: '#16a34a' },
+  High: { bg: 'rgba(22,163,74,0.12)', text: 'rgb(var(--success))' },
   Medium: { bg: 'rgba(202,138,4,0.12)', text: '#ca8a04' },
-  Low: { bg: 'rgba(107,114,128,0.12)', text: '#6b7280' },
+  Low: { bg: 'rgba(107,114,128,0.12)', text: 'rgb(var(--muted-foreground))' },
 };
 
 export default function InsightCard({ insight, index = 0, onDismiss, onNotRelevant }) {
@@ -66,14 +66,14 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: cfg.iconBg }}>
-            <Icon style={{ width: 18, height: 18, color: '#fff' }} />
+            <Icon style={{ width: 18, height: 18, color: 'rgb(var(--card))' }} />
           </div>
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: cfg.iconBg }}>
               {cfg.tag}
             </span>
             {insight.clientName && (
-              <p className="text-[10px] text-gray-500 font-medium leading-none mt-0.5">{insight.clientName}</p>
+              <p className="text-[10px] text-muted-foreground font-medium leading-none mt-0.5">{insight.clientName}</p>
             )}
           </div>
         </div>
@@ -86,15 +86,15 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
           )}
           <button onClick={() => onDismiss(insight.id)}
             className="p-1 rounded-md opacity-30 hover:opacity-70 transition-opacity">
-            <X className="w-3.5 h-3.5 text-gray-600" />
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
       </div>
 
       {/* Content */}
       <div>
-        <p className="text-sm font-bold text-gray-900 leading-snug">{insight.headline}</p>
-        <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{insight.body}</p>
+        <p className="text-sm font-bold text-foreground leading-snug">{insight.headline}</p>
+        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{insight.body}</p>
       </div>
 
       {/* Actions */}
@@ -102,19 +102,19 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
         <button
           onClick={() => navigate(insight.actionPath)}
           className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg transition-all hover:opacity-90 active:scale-95"
-          style={{ background: cfg.iconBg, color: '#fff' }}>
+          style={{ background: cfg.iconBg, color: 'rgb(var(--card))' }}>
           {insight.actionLabel}
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
         {insight.actionAlt && (
           <button
             onClick={() => navigate(insight.actionAltPath)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg border border-gray-200 bg-white/60 text-gray-600 hover:bg-white transition-all">
+            className="text-xs font-semibold px-3 py-2 rounded-lg border border-border bg-white/60 text-muted-foreground hover:bg-card transition-all">
             {insight.actionAlt}
           </button>
         )}
         <button onClick={() => onNotRelevant(insight.id, insight.type)}
-          className="text-[10px] text-gray-400 hover:text-gray-600 transition-colors ml-auto">
+          className="text-[10px] text-muted-foreground hover:text-muted-foreground transition-colors ml-auto">
           Not relevant
         </button>
       </div>

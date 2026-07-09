@@ -39,7 +39,7 @@ export default function SendGridConnectModal({ open, onClose }) {
         to: user?.email,
         toName: user?.full_name || 'Coach',
         subject: 'Resend Test — KOACH AI ✅',
-        html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:#111827;border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">✅ Resend Connected!</h1><p style="color:rgba(255,255,255,0.6);margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
+        html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:rgb(var(--foreground));border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">✅ Resend Connected!</h1><p style="color:rgba(255,255,255,0.6);margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
       });
       if (!result?.error) {
         setTestOk(true);
@@ -81,12 +81,12 @@ export default function SendGridConnectModal({ open, onClose }) {
         <div className="space-y-4 mt-1">
           {isConnected ? (
             <div className="space-y-3">
-              <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <div className="flex items-center gap-2 p-3 bg-success/10 border border-success rounded-xl">
+                <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-emerald-700">Connected</p>
+                  <p className="text-sm font-semibold text-success">Connected</p>
                   {settings?.resend_from_email && (
-                    <p className="text-xs text-emerald-600">From: {settings.resend_from_email}</p>
+                    <p className="text-xs text-success">From: {settings.resend_from_email}</p>
                   )}
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default function SendGridConnectModal({ open, onClose }) {
                     <ExternalLink className="w-3.5 h-3.5" /> Resend Dashboard
                   </Button>
                 </a>
-                <Button variant="outline" className="text-red-500 hover:bg-red-50 hover:border-red-200 text-xs"
+                <Button variant="outline" className="text-destructive hover:bg-destructive/10 hover:border-destructive text-xs"
                   onClick={handleDisconnect} disabled={saveMutation.isPending}>
                   Disconnect
                 </Button>
@@ -104,12 +104,12 @@ export default function SendGridConnectModal({ open, onClose }) {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-[#F5F5F5] border border-[#E5E7EB] rounded-xl p-4">
-                <p className="text-xs font-semibold text-[#111827] mb-2">Setup Instructions</p>
-                <ol className="text-xs text-[#374151] space-y-1.5 list-decimal list-inside leading-relaxed">
+              <div className="bg-[#F5F5F5] border border-border rounded-xl p-4">
+                <p className="text-xs font-semibold text-foreground mb-2">Setup Instructions</p>
+                <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
                   <li>Get your free API key at <a href="https://resend.com" target="_blank" className="text-black underline font-medium">resend.com</a></li>
-                  <li>Add <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_RESEND_API_KEY</code> to your app secrets</li>
-                  <li>Optionally set <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_EMAIL</code> and <code className="bg-white border border-[#E5E7EB] px-1 rounded font-mono text-[10px]">VITE_FROM_NAME</code></li>
+                  <li>Add <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_RESEND_API_KEY</code> to your app secrets</li>
+                  <li>Optionally set <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_FROM_EMAIL</code> and <code className="bg-card border border-border px-1 rounded font-mono text-[10px]">VITE_FROM_NAME</code></li>
                 </ol>
                 <a href="https://resend.com/api-keys" target="_blank"
                   className="flex items-center gap-1 text-xs text-black font-semibold mt-2.5 hover:underline">
@@ -118,9 +118,9 @@ export default function SendGridConnectModal({ open, onClose }) {
               </div>
 
               {testOk && (
-                <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <p className="text-sm font-semibold text-emerald-700">Test email sent successfully!</p>
+                <div className="flex items-center gap-2 p-3 bg-success/10 border border-success rounded-xl">
+                  <CheckCircle2 className="w-4 h-4 text-success" />
+                  <p className="text-sm font-semibold text-success">Test email sent successfully!</p>
                 </div>
               )}
 
@@ -129,7 +129,7 @@ export default function SendGridConnectModal({ open, onClose }) {
                   {testing ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> Sending test...</> : 'Test Connection'}
                 </Button>
                 {testOk && (
-                  <Button className="flex-1 bg-[#111827] hover:bg-[#1F2A44]" onClick={handleSave}
+                  <Button className="flex-1 bg-sidebar hover:bg-sidebar" onClick={handleSave}
                     disabled={saveMutation.isPending}>
                     Save & Connect
                   </Button>

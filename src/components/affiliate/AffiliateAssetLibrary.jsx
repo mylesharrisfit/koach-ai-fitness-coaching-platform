@@ -39,17 +39,17 @@ export default function AffiliateAssetLibrary({ tier }) {
   return (
     <div className="space-y-6">
       {/* Banners & Images */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-900 mb-4">📸 Banners & Images</h3>
+      <div className="bg-card rounded-2xl border border-border p-6">
+        <h3 className="font-bold text-foreground mb-4">📸 Banners & Images</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {ASSETS_BY_TYPE.banners.map((asset, i) => (
-            <div key={i} className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
+            <div key={i} className="p-4 rounded-lg bg-muted border border-border space-y-3">
               <div>
-                <p className="font-bold text-slate-900 text-sm">{asset.name}</p>
-                <p className="text-xs text-slate-500 mt-1">{asset.sizes}</p>
+                <p className="font-bold text-foreground text-sm">{asset.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">{asset.sizes}</p>
               </div>
               <button onClick={() => downloadAsset(asset.name)}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-blue-500 text-white text-xs font-bold hover:bg-blue-600">
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
                 <Download className="w-3 h-3" /> Download
               </button>
             </div>
@@ -58,17 +58,17 @@ export default function AffiliateAssetLibrary({ tier }) {
       </div>
 
       {/* Videos */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-900 mb-4">🎬 Videos</h3>
+      <div className="bg-card rounded-2xl border border-border p-6">
+        <h3 className="font-bold text-foreground mb-4">🎬 Videos</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {ASSETS_BY_TYPE.videos.map((asset, i) => (
-            <div key={i} className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
+            <div key={i} className="p-4 rounded-lg bg-muted border border-border space-y-3">
               <div>
-                <p className="font-bold text-slate-900 text-sm">{asset.name}</p>
-                <p className="text-xs text-slate-500 mt-1">{asset.duration}</p>
+                <p className="font-bold text-foreground text-sm">{asset.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">{asset.duration}</p>
               </div>
               <button onClick={() => downloadAsset(asset.name)}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-blue-500 text-white text-xs font-bold hover:bg-blue-600">
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
                 <Download className="w-3 h-3" /> Download MP4
               </button>
             </div>
@@ -77,17 +77,17 @@ export default function AffiliateAssetLibrary({ tier }) {
       </div>
 
       {/* Copy Templates */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-900 mb-4">✍️ Copy Templates</h3>
+      <div className="bg-card rounded-2xl border border-border p-6">
+        <h3 className="font-bold text-foreground mb-4">✍️ Copy Templates</h3>
         <div className="space-y-2">
           {ASSETS_BY_TYPE.copy.map((asset, i) => (
-            <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100">
+            <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted border border-border hover:bg-muted">
               <div>
-                <p className="font-bold text-slate-900 text-sm">{asset.name}</p>
-                <p className="text-xs text-slate-500 mt-1">{asset.count}</p>
+                <p className="font-bold text-foreground text-sm">{asset.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">{asset.count}</p>
               </div>
               <button onClick={() => downloadAsset(asset.name)}
-                className="px-4 py-2 rounded-lg bg-blue-500 text-white text-xs font-bold hover:bg-blue-600">
+                className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
                 View
               </button>
             </div>
@@ -96,15 +96,15 @@ export default function AffiliateAssetLibrary({ tier }) {
       </div>
 
       {/* Talking Points */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-900 mb-4">💡 Talking Points</h3>
+      <div className="bg-card rounded-2xl border border-border p-6">
+        <h3 className="font-bold text-foreground mb-4">💡 Talking Points</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {ASSETS_BY_TYPE.talking_points.map((asset, i) => (
-            <div key={i} className="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-              <p className="font-bold text-slate-900 text-sm">{asset.name}</p>
-              <p className="text-xs text-slate-500">{asset.desc}</p>
+            <div key={i} className="p-4 rounded-lg bg-muted border border-border space-y-2">
+              <p className="font-bold text-foreground text-sm">{asset.name}</p>
+              <p className="text-xs text-muted-foreground">{asset.desc}</p>
               <button onClick={() => downloadAsset(asset.name)}
-                className="w-full px-3 py-2 rounded-lg bg-blue-500 text-white text-xs font-bold hover:bg-blue-600">
+                className="w-full px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
                 View
               </button>
             </div>
@@ -114,34 +114,34 @@ export default function AffiliateAssetLibrary({ tier }) {
 
       {/* Custom asset requests (Gold+) */}
       {isGoldPlus && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 p-6">
-          <h3 className="font-bold text-amber-900 mb-4">🌟 Custom Asset Requests</h3>
-          <p className="text-sm text-amber-800 mb-4">As a {tier} affiliate, you can request custom assets</p>
+        <div className="bg-gradient-to-r from-warning/10 to-orange-50 rounded-2xl border border-warning p-6">
+          <h3 className="font-bold text-warning mb-4">🌟 Custom Asset Requests</h3>
+          <p className="text-sm text-warning mb-4">As a {tier} affiliate, you can request custom assets</p>
           <div className="space-y-2 mb-4">
-            <p className="text-sm font-semibold text-amber-900">Available:</p>
-            <ul className="text-sm text-amber-800 space-y-1 pl-4">
+            <p className="text-sm font-semibold text-warning">Available:</p>
+            <ul className="text-sm text-warning space-y-1 pl-4">
               <li>✓ Co-branded content with your logo</li>
               <li>✓ Custom landing page design</li>
               <li>✓ Personalized video assets</li>
             </ul>
           </div>
           <button className="w-full px-4 py-3 rounded-lg font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #D97706, #F59E0B)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
             Request Custom Assets
           </button>
         </div>
       )}
 
       {/* Logo files */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 className="font-bold text-slate-900 mb-4">🎨 Logo Files</h3>
-        <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 border border-slate-200">
+      <div className="bg-card rounded-2xl border border-border p-6">
+        <h3 className="font-bold text-foreground mb-4">🎨 Logo Files</h3>
+        <div className="flex items-center justify-between p-4 rounded-lg bg-muted border border-border">
           <div>
-            <p className="font-bold text-slate-900">KOACH AI Logo</p>
-            <p className="text-xs text-slate-500 mt-1">PNG, SVG, AI formats + usage guidelines</p>
+            <p className="font-bold text-foreground">KOACH AI Logo</p>
+            <p className="text-xs text-muted-foreground mt-1">PNG, SVG, AI formats + usage guidelines</p>
           </div>
           <button onClick={() => downloadAsset('KOACH AI Logo')}
-            className="px-4 py-2 rounded-lg bg-blue-500 text-white text-xs font-bold hover:bg-blue-600">
+            className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
             Download
           </button>
         </div>

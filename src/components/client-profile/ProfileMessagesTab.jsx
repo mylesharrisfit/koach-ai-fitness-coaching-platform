@@ -9,12 +9,12 @@ import { format, isToday, isYesterday } from 'date-fns';
 import { toast } from 'sonner';
 
 const TAG_STYLES = {
-  urgent:     'bg-red-50 text-red-600 border-red-100',
-  check_in:   'bg-blue-50 text-blue-600 border-blue-100',
-  nutrition:  'bg-emerald-50 text-emerald-700 border-emerald-100',
-  training:   'bg-purple-50 text-purple-700 border-purple-100',
-  motivation: 'bg-amber-50 text-amber-700 border-amber-100',
-  general:    'bg-[#F6F7FB] text-[#6B7280] border-[#E7EAF3]',
+  urgent:     'bg-destructive/10 text-destructive border-destructive',
+  check_in:   'bg-accent text-primary border-accent',
+  nutrition:  'bg-success/10 text-success border-success',
+  training:   'bg-ai/10 text-ai border-ai',
+  motivation: 'bg-warning/10 text-warning border-warning',
+  general:    'bg-muted text-muted-foreground border-border',
 };
 
 function msgDate(dateStr) {
@@ -46,14 +46,14 @@ export default function ProfileMessagesTab({ client, messages }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Compose box */}
-      <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 shadow-sm">
-        <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-2">New Message</p>
+      <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
+        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">New Message</p>
         <Textarea
           placeholder={`Write a message to ${client.name}…`}
           value={text}
           onChange={e => setText(e.target.value)}
           rows={3}
-          className="resize-none border-[#E7EAF3] text-sm bg-[#F8F9FD] focus:bg-white rounded-xl mb-3 transition-colors"
+          className="resize-none border-border text-sm bg-[#F8F9FD] focus:bg-card rounded-xl mb-3 transition-colors"
           onKeyDown={e => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && text.trim()) {
               sendMutation.mutate();
@@ -61,7 +61,7 @@ export default function ProfileMessagesTab({ client, messages }) {
           }}
         />
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-[#9CA3AF]">⌘+Enter to send</span>
+          <span className="text-[10px] text-muted-foreground">⌘+Enter to send</span>
           <Button
             size="sm"
             onClick={() => sendMutation.mutate()}
@@ -76,12 +76,12 @@ export default function ProfileMessagesTab({ client, messages }) {
 
       {/* Messages thread */}
       {messages.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#E7EAF3] flex flex-col items-center justify-center py-14 text-center px-6">
-          <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center mb-3">
-            <MessageCircle className="w-5 h-5 text-[#9CA3AF]" />
+        <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
+          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+            <MessageCircle className="w-5 h-5 text-muted-foreground" />
           </div>
-          <p className="text-sm font-semibold text-[#374151]">No messages yet</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">Start a conversation with {client.name}</p>
+          <p className="text-sm font-semibold text-foreground">No messages yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Start a conversation with {client.name}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -99,10 +99,10 @@ export default function ProfileMessagesTab({ client, messages }) {
                   'max-w-[85%] rounded-2xl px-4 py-3 border',
                   isCoach
                     ? 'bg-primary text-white border-transparent rounded-tr-md'
-                    : 'bg-white text-[#1F2A44] border-[#E7EAF3] rounded-tl-md'
+                    : 'bg-card text-foreground border-border rounded-tl-md'
                 )}>
                   <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className={cn('text-[10px] font-bold', isCoach ? 'text-white/70' : 'text-[#9CA3AF]')}>
+                    <span className={cn('text-[10px] font-bold', isCoach ? 'text-white/70' : 'text-muted-foreground')}>
                       {isCoach ? 'You' : client.name}
                     </span>
                     <div className="flex items-center gap-1.5">
@@ -119,7 +119,7 @@ export default function ProfileMessagesTab({ client, messages }) {
                       </span>
                     </div>
                   </div>
-                  <p className={cn('text-sm leading-relaxed', isCoach ? 'text-white' : 'text-[#374151]')}>
+                  <p className={cn('text-sm leading-relaxed', isCoach ? 'text-white' : 'text-foreground')}>
                     {msg.content}
                   </p>
                 </div>

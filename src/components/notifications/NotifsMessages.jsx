@@ -26,7 +26,7 @@ export default function NotifsMessages({ s, set }) {
         title="New message from client"
         description="Get notified when a client sends you a message">
         <NDelivery value={d.new_message.delivery} onChange={v => upd('new_message', { delivery: v })} />
-        <label className="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium cursor-pointer">
           <NToggle value={d.new_message.skip_if_active} onChange={v => upd('new_message', { skip_if_active: v })} />
           Skip if I'm active in app
         </label>

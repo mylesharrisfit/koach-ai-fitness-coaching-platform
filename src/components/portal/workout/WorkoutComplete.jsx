@@ -17,7 +17,7 @@ function Confetti() {
       y: -20 - Math.random() * 100,
       vx: (Math.random() - 0.5) * 4,
       vy: 2 + Math.random() * 4,
-      color: ['#2563EB', '#7C3AED', '#F59E0B', '#EF4444', '#10B981', '#EC4899'][Math.floor(Math.random() * 6)],
+      color: ['rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--warning))', 'rgb(var(--destructive))', 'rgb(var(--success))', '#EC4899'][Math.floor(Math.random() * 6)],
       size: 5 + Math.random() * 7,
       angle: Math.random() * Math.PI * 2,
       spin: (Math.random() - 0.5) * 0.2,
@@ -87,7 +87,7 @@ export default function WorkoutComplete({ workout, exerciseLogs, durationSeconds
             transition={{ type: 'spring', stiffness: 200, damping: 14, delay: 0.1 }}
             className="mb-5">
             <div className="w-24 h-24 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #059669, #10B981)', boxShadow: '0 0 60px rgba(16,185,129,0.4)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', boxShadow: '0 0 60px rgba(16,185,129,0.4)' }}>
               <svg viewBox="0 0 52 52" className="w-12 h-12">
                 <motion.path
                   fill="none" stroke="white" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round"
@@ -130,7 +130,7 @@ export default function WorkoutComplete({ workout, exerciseLogs, durationSeconds
             <div className="flex justify-center gap-3 mb-4">
               {[1, 2, 3, 4, 5].map(n => (
                 <motion.button key={n} whileTap={{ scale: 0.85 }} onClick={() => setRating(n)}>
-                  <Star className={`w-9 h-9 transition-all ${n <= rating ? 'text-amber-400 fill-amber-400' : 'text-white/15'}`} />
+                  <Star className={`w-9 h-9 transition-all ${n <= rating ? 'text-warning fill-warning' : 'text-white/15'}`} />
                 </motion.button>
               ))}
             </div>
@@ -146,7 +146,7 @@ export default function WorkoutComplete({ workout, exerciseLogs, durationSeconds
             className="w-full space-y-3">
             <button onClick={() => onClose(rating, note)}
               className="w-full py-4 rounded-2xl font-black text-base text-white"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 24px rgba(37,99,235,0.4)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 24px rgba(37,99,235,0.4)' }}>
               Save &amp; Return Home
             </button>
             <button onClick={onMessageCoach}

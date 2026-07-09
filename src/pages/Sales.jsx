@@ -118,7 +118,7 @@ export default function Sales() {
   return (
     <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto overflow-x-hidden">
       {/* Header */}
-      <div className="rounded-2xl p-4 sm:p-5 text-white mb-4 sm:mb-5" style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+      <div className="rounded-2xl p-4 sm:p-5 text-white mb-4 sm:mb-5" style={{ background: 'rgb(var(--sidebar))' }}>
         <div className="flex items-center justify-between gap-3 mb-3">
           <div>
             <h1 className="text-lg sm:text-xl font-bold text-white">Sales & Pipeline</h1>
@@ -127,7 +127,7 @@ export default function Sales() {
           <button
             onClick={() => openAddLead()}
             className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-bold min-h-[44px] flex-shrink-0"
-            style={{ background: '#fff', color: '#111827' }}
+            style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' }}
           >
             <Plus className="w-4 h-4" /> <span className="hidden xs:inline">Add Lead</span><span className="xs:hidden">Add</span>
           </button>
@@ -138,7 +138,7 @@ export default function Sales() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className="px-4 py-1.5 rounded-md text-sm font-semibold capitalize transition-all min-h-[36px]"
-              style={activeTab === tab ? { background: '#fff', color: '#111827' } : { color: 'rgba(255,255,255,0.6)' }}
+              style={activeTab === tab ? { background: 'rgb(var(--card))', color: 'rgb(var(--foreground))' } : { color: 'rgba(255,255,255,0.6)' }}
             >
               {tab}
             </button>
@@ -154,7 +154,7 @@ export default function Sales() {
           { label: 'Closed Revenue', value: `$${closedValue.toLocaleString()}`, icon: DollarSign },
           { label: 'Close Rate', value: `${conversionRate}%`, icon: Target },
         ].map(s => (
-          <div key={s.label} className="bg-[#111827] rounded-xl p-4 flex items-center gap-4">
+          <div key={s.label} className="bg-sidebar rounded-xl p-4 flex items-center gap-4">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
               <s.icon className="w-4 h-4 text-white/40" />
             </div>
@@ -170,7 +170,7 @@ export default function Sales() {
         <>
           {/* View toggle */}
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <div className="flex items-center gap-1 p-1 bg-white border border-[#E5E7EB] rounded-xl">
+            <div className="flex items-center gap-1 p-1 bg-card border border-border rounded-xl">
               {PIPELINE_VIEWS.map(v => (
                 <button
                   key={v.key}
@@ -178,8 +178,8 @@ export default function Sales() {
                   className={cn(
                     'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
                     pipelineView === v.key
-                      ? 'bg-[#111827] text-white shadow-sm'
-                      : 'text-[#374151] hover:bg-[#F3F4F6]'
+                      ? 'bg-sidebar text-white shadow-sm'
+                      : 'text-foreground hover:bg-muted'
                   )}
                 >
                   <v.icon className="w-3.5 h-3.5" />
@@ -191,7 +191,7 @@ export default function Sales() {
             {/* Search (list/funnel) */}
             {pipelineView !== 'kanban' && (
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                 <Input
                   placeholder="Search leads..."
                   value={search}
@@ -207,13 +207,13 @@ export default function Sales() {
             <>
               <FunnelView leads={leads} onStageClick={setSelectedStage} selectedStage={selectedStage} />
               {selectedStage && (
-                <button onClick={() => setSelectedStage(null)} className="text-xs text-[#6B7280] hover:text-[#374151] underline mb-3 block">
+                <button onClick={() => setSelectedStage(null)} className="text-xs text-muted-foreground hover:text-foreground underline mb-3 block">
                   Clear stage filter
                 </button>
               )}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
                 {filteredLeads.length === 0 ? (
-                  <div className="col-span-full text-center py-12 text-[#9CA3AF]">
+                  <div className="col-span-full text-center py-12 text-muted-foreground">
                     <Target className="w-8 h-8 mx-auto mb-2 opacity-30" />
                     <p className="text-sm">No leads. Add your first lead to get started.</p>
                   </div>
@@ -221,22 +221,22 @@ export default function Sales() {
                   <div
                     key={lead.id}
                     onClick={() => openView(lead)}
-                    className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:shadow-md hover:border-blue-200 transition-all cursor-pointer"
+                    className="bg-card border border-border rounded-xl p-4 hover:shadow-md hover:border-primary transition-all cursor-pointer"
                   >
                     <div className="flex items-center gap-3 mb-2">
                       <div
                         className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                        style={{ background: ['#6366F1', '#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EC4899'][lead.name.charCodeAt(0) % 6] }}
+                        style={{ background: ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', '#EC4899'][lead.name.charCodeAt(0) % 6] }}
                       >
                         {lead.name.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-bold text-[#111827] text-sm">{lead.name}</p>
-                        {lead.email && <p className="text-xs text-[#9CA3AF]">{lead.email}</p>}
+                        <p className="font-bold text-foreground text-sm">{lead.name}</p>
+                        {lead.email && <p className="text-xs text-muted-foreground">{lead.email}</p>}
                       </div>
                     </div>
-                    {lead.deal_value > 0 && <p className="text-sm font-bold text-emerald-600">${lead.deal_value.toLocaleString()}/mo</p>}
-                    {lead.notes && <p className="text-xs text-[#6B7280] mt-1 line-clamp-2">{lead.notes}</p>}
+                    {lead.deal_value > 0 && <p className="text-sm font-bold text-success">${lead.deal_value.toLocaleString()}/mo</p>}
+                    {lead.notes && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{lead.notes}</p>}
                   </div>
                 ))}
               </div>

@@ -7,12 +7,12 @@ import { format, differenceInDays, isValid } from 'date-fns';
 import confetti from 'canvas-confetti';
 
 export const KANBAN_STAGES = [
-  { key: 'new_lead',      label: '🆕 New Lead',       color: '#6366F1', bg: '#EEF2FF', border: '#C7D2FE' },
-  { key: 'dmd',           label: '💬 DM\'d',           color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
-  { key: 'call_booked',   label: '📞 Call Booked',     color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE' },
-  { key: 'proposal_sent', label: '📄 Proposal Sent',   color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE' },
-  { key: 'closed_won',    label: '🎉 Closed / Won',    color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0' },
-  { key: 'lost',          label: '❌ Lost',             color: '#EF4444', bg: '#FEF2F2', border: '#FECACA' },
+  { key: 'new_lead',      label: '🆕 New Lead',       color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', border: 'rgb(var(--accent))' },
+  { key: 'dmd',           label: '💬 DM\'d',           color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', border: 'rgb(var(--warning))' },
+  { key: 'call_booked',   label: '📞 Call Booked',     color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', border: 'rgb(var(--accent))' },
+  { key: 'proposal_sent', label: '📄 Proposal Sent',   color: 'rgb(var(--ai))', bg: 'rgb(var(--ai))', border: 'rgb(var(--ai))' },
+  { key: 'closed_won',    label: '🎉 Closed / Won',    color: 'rgb(var(--success))', bg: 'rgb(var(--success))', border: '#A7F3D0' },
+  { key: 'lost',          label: '❌ Lost',             color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' },
 ];
 
 const SOURCE_LABELS = {
@@ -31,8 +31,8 @@ function getTemperature(lead) {
 
 function TemperatureIcon({ temp }) {
   if (temp === 'hot') return <Flame className="w-3 h-3 text-orange-500" title="Hot" />;
-  if (temp === 'warm') return <Zap className="w-3 h-3 text-yellow-500" title="Warm" />;
-  return <Snowflake className="w-3 h-3 text-blue-400" title="Cold" />;
+  if (temp === 'warm') return <Zap className="w-3 h-3 text-warning" title="Warm" />;
+  return <Snowflake className="w-3 h-3 text-primary" title="Cold" />;
 }
 
 function daysInStage(lead) {
@@ -46,7 +46,7 @@ function KanbanLeadCard({ lead, index, onView }) {
   const days = daysInStage(lead);
   const isFollowUpOverdue = lead.follow_up_date && new Date(lead.follow_up_date) < new Date();
 
-  const avatarColors = ['#6366F1', '#F59E0B', '#3B82F6', '#8B5CF6', '#10B981', '#EC4899', '#14B8A6'];
+  const avatarColors = ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--success))', '#EC4899', '#14B8A6'];
   const avatarColor = avatarColors[lead.name.charCodeAt(0) % avatarColors.length];
 
   return (
@@ -58,9 +58,9 @@ function KanbanLeadCard({ lead, index, onView }) {
           {...provided.dragHandleProps}
           onClick={() => onView(lead)}
           className={cn(
-            'bg-white rounded-xl border border-[#E5E7EB] p-3 cursor-pointer select-none',
-            'hover:shadow-md hover:border-blue-200 transition-all group',
-            snapshot.isDragging && 'shadow-xl border-blue-400 rotate-1 scale-105'
+            'bg-card rounded-xl border border-border p-3 cursor-pointer select-none',
+            'hover:shadow-md hover:border-primary transition-all group',
+            snapshot.isDragging && 'shadow-xl border-primary rotate-1 scale-105'
           )}
         >
           <div className="flex items-start gap-2.5">
@@ -72,11 +72,11 @@ function KanbanLeadCard({ lead, index, onView }) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-1">
-                <p className="font-bold text-[#111827] text-xs leading-tight truncate">{lead.name}</p>
+                <p className="font-bold text-foreground text-xs leading-tight truncate">{lead.name}</p>
                 <TemperatureIcon temp={temp} />
               </div>
               {lead.source && (
-                <span className="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#F3F4F6] text-[#6B7280] mt-0.5">
+                <span className="inline-block text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground mt-0.5">
                   {SOURCE_LABELS[lead.source] || lead.source}
                 </span>
               )}
@@ -85,17 +85,17 @@ function KanbanLeadCard({ lead, index, onView }) {
 
           <div className="mt-2 flex items-center justify-between">
             {lead.deal_value > 0 ? (
-              <span className="text-xs font-bold text-emerald-600">${lead.deal_value.toLocaleString()}/mo</span>
+              <span className="text-xs font-bold text-success">${lead.deal_value.toLocaleString()}/mo</span>
             ) : <span />}
             {days !== null && (
-              <span className="text-[10px] text-[#9CA3AF]">Day {days}</span>
+              <span className="text-[10px] text-muted-foreground">Day {days}</span>
             )}
           </div>
 
           {lead.follow_up_date && (
             <div className={cn(
               'mt-1.5 flex items-center gap-1 text-[10px]',
-              isFollowUpOverdue ? 'text-red-500' : 'text-[#9CA3AF]'
+              isFollowUpOverdue ? 'text-destructive' : 'text-muted-foreground'
             )}>
               {isFollowUpOverdue && <AlertCircle className="w-2.5 h-2.5" />}
               <Clock className="w-2.5 h-2.5" />
@@ -104,12 +104,12 @@ function KanbanLeadCard({ lead, index, onView }) {
           )}
 
           {/* Hover quick actions */}
-          <div className="mt-2 pt-2 border-t border-[#F3F4F6] hidden group-hover:flex items-center gap-1 text-[10px] text-[#6B7280]">
-            <span className="cursor-pointer hover:text-blue-600">💬 Msg</span>
-            <span className="text-[#E5E7EB] mx-0.5">·</span>
-            <span className="cursor-pointer hover:text-blue-600">📅 Book</span>
-            <span className="text-[#E5E7EB] mx-0.5">·</span>
-            <span className="cursor-pointer hover:text-blue-600">👤 View</span>
+          <div className="mt-2 pt-2 border-t border-muted hidden group-hover:flex items-center gap-1 text-[10px] text-muted-foreground">
+            <span className="cursor-pointer hover:text-primary">💬 Msg</span>
+            <span className="text-border mx-0.5">·</span>
+            <span className="cursor-pointer hover:text-primary">📅 Book</span>
+            <span className="text-border mx-0.5">·</span>
+            <span className="cursor-pointer hover:text-primary">👤 View</span>
           </div>
         </div>
       )}
@@ -152,8 +152,8 @@ function KanbanColumn({ stage, leads, onView, onAddLead }) {
             className={cn(
               'flex-1 overflow-y-auto rounded-b-xl border border-t-0 p-2 space-y-2 min-h-[100px] transition-colors',
               snapshot.isDraggingOver
-                ? 'bg-blue-50 border-blue-300'
-                : 'bg-[#F9FAFB] border-[#E5E7EB]'
+                ? 'bg-accent border-primary'
+                : 'bg-background border-border'
             )}
           >
             {leads.map((lead, i) => (
@@ -167,7 +167,7 @@ function KanbanColumn({ stage, leads, onView, onAddLead }) {
       {/* Add lead button */}
       <button
         onClick={() => onAddLead(stage.key)}
-        className="mt-1 w-full text-[11px] font-semibold text-[#9CA3AF] hover:text-[#374151] py-1.5 flex items-center justify-center gap-1 rounded-lg hover:bg-[#F3F4F6] transition-colors"
+        className="mt-1 w-full text-[11px] font-semibold text-muted-foreground hover:text-foreground py-1.5 flex items-center justify-center gap-1 rounded-lg hover:bg-muted transition-colors"
       >
         <Plus className="w-3 h-3" /> Add Lead
       </button>

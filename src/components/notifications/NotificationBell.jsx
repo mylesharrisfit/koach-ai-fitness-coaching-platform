@@ -93,7 +93,7 @@ export default function NotificationBell() {
             initial={{ scale: 1, opacity: 0.6 }}
             animate={{ scale: 2.2, opacity: 0 }}
             transition={{ duration: 1.2, ease: 'easeOut' }}
-            className="absolute inset-0 rounded-xl bg-blue-400"
+            className="absolute inset-0 rounded-xl bg-primary"
           />
         )}
         <motion.div
@@ -109,7 +109,7 @@ export default function NotificationBell() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             className="absolute -top-1 -right-1 min-w-[17px] h-[17px] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 leading-none"
-            style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)', boxShadow: '0 0 0 2px #0D0D0D' }}
+            style={{ background: 'linear-gradient(135deg, rgb(var(--destructive)), rgb(var(--destructive)))', boxShadow: '0 0 0 2px #0D0D0D' }}
           >
             {displayCount}
           </motion.span>

@@ -104,7 +104,7 @@ export default function PerformanceCard({ workoutSessions }) {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <span className="text-white font-bold text-sm">{pb.weight} lbs × {pb.reps}</span>
                 {isNew(pb.date) && (
-                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(252,211,77,0.2)', color: '#FCD34D' }}>🏆 NEW</span>
+                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(252,211,77,0.2)', color: 'rgb(var(--warning))' }}>🏆 NEW</span>
                 )}
               </div>
             </div>
@@ -129,8 +129,8 @@ export default function PerformanceCard({ workoutSessions }) {
                   <XAxis dataKey="date" tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 8 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                   <YAxis tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 8 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="weight" stroke="#A78BFA" strokeWidth={2} dot={false}
-                    activeDot={{ r: 4, fill: '#A78BFA', stroke: '#fff', strokeWidth: 2 }} />
+                  <Line type="monotone" dataKey="weight" stroke="rgb(var(--ai))" strokeWidth={2} dot={false}
+                    activeDot={{ r: 4, fill: 'rgb(var(--ai))', stroke: 'rgb(var(--card))', strokeWidth: 2 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -173,7 +173,7 @@ function WorkoutHeatmap({ sessions }) {
           {week.map(day => (
             <div key={day.key} className="w-4 h-4 rounded-sm"
               style={{
-                background: day.hasWorkout ? '#3B82F6' : 'rgba(255,255,255,0.06)',
+                background: day.hasWorkout ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.06)',
                 border: day.isToday ? '1px solid rgba(59,130,246,0.5)' : 'none',
               }} />
           ))}

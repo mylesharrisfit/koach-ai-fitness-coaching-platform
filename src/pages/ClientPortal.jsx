@@ -77,9 +77,9 @@ function BottomNav({ user, hideForActiveWorkout }) {
   if (hideForActiveWorkout || hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white"
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card"
       style={{
-        borderTop: '1px solid #F1F5F9',
+        borderTop: '1px solid rgb(var(--muted))',
         boxShadow: '0 -4px 24px rgba(0,0,0,0.07)',
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}>
@@ -94,24 +94,24 @@ function BottomNav({ user, hideForActiveWorkout }) {
               {isActive && (
                 <motion.div layoutId="nav-indicator"
                   className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
-                  style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+                  style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
               )}
               <div className="relative">
                 <item.icon
                   className="w-5 h-5 transition-all"
                   strokeWidth={isActive ? 2.5 : 1.8}
-                  style={{ color: isActive ? '#2563EB' : '#94A3B8' }}
+                  style={{ color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}
                 />
                 {badge && (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
                     className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-black text-white px-1"
-                    style={{ background: badge === '!' ? '#EF4444' : '#2563EB' }}>
+                    style={{ background: badge === '!' ? 'rgb(var(--destructive))' : 'rgb(var(--primary))' }}>
                     {badge}
                   </motion.div>
                 )}
               </div>
               <span className="text-[10px] font-semibold transition-all"
-                style={{ color: isActive ? '#2563EB' : '#94A3B8' }}>
+                style={{ color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
                 {item.label}
               </span>
             </Link>
@@ -167,7 +167,7 @@ export default function ClientPortal() {
   };
 
   return (
-    <div className="fixed inset-0" style={{ background: '#F8F9FA' }}>
+    <div className="fixed inset-0" style={{ background: 'rgb(var(--muted))' }}>
       <div className="absolute inset-0 overflow-y-auto">
         <Routes>
           <Route path="/"          element={<PortalHome user={user} />} />

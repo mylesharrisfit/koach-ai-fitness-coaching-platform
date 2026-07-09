@@ -14,20 +14,20 @@ function BenchmarkRow({ label, coachVal, benchmarkVal, unit, isHigherBetter = tr
   const diff = coachVal - benchmarkVal;
   const pct = benchmarkVal > 0 ? Math.round((coachVal / benchmarkVal) * 100) : 100;
   const isBetter = isHigherBetter ? diff >= 0 : diff <= 0;
-  const color = isBetter ? '#22C55E' : '#EF4444';
+  const color = isBetter ? 'rgb(var(--success))' : 'rgb(var(--destructive))';
   const Icon = diff === 0 ? Minus : isBetter ? TrendingUp : TrendingDown;
 
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-gray-50 last:border-0">
-      <p className="text-xs text-gray-600 flex-1">{label}</p>
+    <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
+      <p className="text-xs text-muted-foreground flex-1">{label}</p>
       <div className="flex items-center gap-3">
         <div className="text-right">
-          <p className="text-xs font-bold text-gray-900">{unit === '$' ? `$${coachVal}` : `${coachVal}${unit}`}</p>
-          <p className="text-[9px] text-gray-400">You</p>
+          <p className="text-xs font-bold text-foreground">{unit === '$' ? `$${coachVal}` : `${coachVal}${unit}`}</p>
+          <p className="text-[9px] text-muted-foreground">You</p>
         </div>
         <div className="text-right opacity-50">
-          <p className="text-xs font-medium text-gray-500">{unit === '$' ? `$${benchmarkVal}` : `${benchmarkVal}${unit}`}</p>
-          <p className="text-[9px] text-gray-400">Avg</p>
+          <p className="text-xs font-medium text-muted-foreground">{unit === '$' ? `$${benchmarkVal}` : `${benchmarkVal}${unit}`}</p>
+          <p className="text-[9px] text-muted-foreground">Avg</p>
         </div>
         <div className="flex items-center gap-1" style={{ color }}>
           <Icon className="w-3.5 h-3.5" />
@@ -68,16 +68,16 @@ export default function BIBenchmarks({ clients, checkIns }) {
   const percentileLabel = overallPct >= 125 ? 'top 10%' : overallPct >= 110 ? 'top 25%' : overallPct >= 90 ? 'top 50%' : 'bottom 50%';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-1">
-        <Award className="w-4 h-4 text-amber-500" />
-        <h3 className="text-sm font-bold text-gray-900">Industry Benchmarks</h3>
+        <Award className="w-4 h-4 text-warning" />
+        <h3 className="text-sm font-bold text-foreground">Industry Benchmarks</h3>
       </div>
-      <p className="text-xs text-gray-400 mb-4">Anonymous aggregated data from fitness coaches</p>
+      <p className="text-xs text-muted-foreground mb-4">Anonymous aggregated data from fitness coaches</p>
 
-      <div className="p-3 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 mb-4">
-        <p className="text-xs text-blue-600 font-semibold">
-          You're in the <span className="font-bold text-blue-800">{percentileLabel}</span> of coaches overall
+      <div className="p-3 rounded-xl bg-gradient-to-r from-accent to-accent border border-accent mb-4">
+        <p className="text-xs text-primary font-semibold">
+          You're in the <span className="font-bold text-primary">{percentileLabel}</span> of coaches overall
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export default function BIBenchmarks({ clients, checkIns }) {
       <BenchmarkRow label="Avg Adherence Score" coachVal={avgAdherence} benchmarkVal={BENCHMARKS.adherence.value} unit="%" />
       <BenchmarkRow label="Coach Response Rate" coachVal={responseRate} benchmarkVal={BENCHMARKS.response_rate.value} unit="%" />
 
-      <p className="text-[9px] text-gray-300 text-center mt-3">Benchmarks are estimates based on industry averages</p>
+      <p className="text-[9px] text-border text-center mt-3">Benchmarks are estimates based on industry averages</p>
     </div>
   );
 }

@@ -49,11 +49,11 @@ export default function MigrationInvites({ importedClients = [], onComplete, onS
   if (results) {
     return (
       <div className="space-y-4">
-        <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
-          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+        <div className="flex items-center gap-3 p-4 bg-success/10 border border-success rounded-xl">
+          <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
           <div>
-            <p className="font-semibold text-emerald-800 text-sm">{results.ok.length} invites sent!</p>
-            {results.fail.length > 0 && <p className="text-xs text-emerald-600 mt-0.5">{results.fail.length} failed — check emails</p>}
+            <p className="font-semibold text-success text-sm">{results.ok.length} invites sent!</p>
+            {results.fail.length > 0 && <p className="text-xs text-success mt-0.5">{results.fail.length} failed — check emails</p>}
           </div>
         </div>
         <button
@@ -120,9 +120,9 @@ export default function MigrationInvites({ importedClients = [], onComplete, onS
           </div>
 
           {noEmail.length > 0 && (
-            <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-100 rounded-xl">
-              <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-              <p className="text-xs text-amber-700">
+            <div className="flex items-center gap-2 p-3 bg-warning/10 border border-warning rounded-xl">
+              <AlertCircle className="w-4 h-4 text-warning shrink-0" />
+              <p className="text-xs text-warning">
                 {noEmail.length} client{noEmail.length !== 1 ? 's have' : ' has'} no email — add them manually to invite.
               </p>
             </div>

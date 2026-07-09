@@ -22,14 +22,14 @@ export default function DailyGoalRings({ log, completed, total, pct }) {
   };
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4">
+    <div className="bg-card border border-border rounded-xl p-4">
       <div className="flex items-center gap-5">
         {/* Big ring */}
         <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
             <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={8} stroke="rgba(0,0,0,0.06)" />
             <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={8}
-              stroke="#2563EB"
+              stroke="rgb(var(--primary))"
               strokeDasharray={circ}
               strokeDashoffset={offset}
               strokeLinecap="round"
@@ -37,8 +37,8 @@ export default function DailyGoalRings({ log, completed, total, pct }) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold text-[#111827] leading-none">{pct}%</span>
-            <span className="text-[10px] text-[#9CA3AF] mt-0.5">today</span>
+            <span className="text-2xl font-bold text-foreground leading-none">{pct}%</span>
+            <span className="text-[10px] text-muted-foreground mt-0.5">today</span>
           </div>
         </div>
 
@@ -50,22 +50,22 @@ export default function DailyGoalRings({ log, completed, total, pct }) {
             return (
               <div key={g.key} className="flex items-center gap-2">
                 <div className={cn('w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0',
-                  done ? 'bg-[#DCFCE7]' : 'bg-[#F3F4F6]')}>
+                  done ? 'bg-success/10' : 'bg-muted')}>
                   {done
-                    ? <Check className="w-3.5 h-3.5 text-[#16A34A]" />
-                    : <Icon className="w-3.5 h-3.5 text-[#9CA3AF]" />
+                    ? <Check className="w-3.5 h-3.5 text-success" />
+                    : <Icon className="w-3.5 h-3.5 text-muted-foreground" />
                   }
                 </div>
-                <span className="text-xs text-[#374151]">{g.label}</span>
+                <span className="text-xs text-foreground">{g.label}</span>
               </div>
             );
           })}
         </div>
       </div>
 
-      <div className="mt-3 pt-3 border-t border-[#F3F4F6] flex items-center justify-between">
-        <p className="text-sm text-[#6B7280]">Goals completed</p>
-        <span className="text-sm font-bold text-[#111827]">{completed}/{total}</span>
+      <div className="mt-3 pt-3 border-t border-muted flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">Goals completed</p>
+        <span className="text-sm font-bold text-foreground">{completed}/{total}</span>
       </div>
     </div>
   );

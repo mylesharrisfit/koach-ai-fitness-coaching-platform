@@ -13,7 +13,7 @@ export default function CheckInQuestionWeight({ value, onChange, lastValue }) {
 
   const diff = numVal && lastValue ? (numVal - lastValue).toFixed(1) : null;
   const TrendIcon = diff === null ? null : diff < 0 ? TrendingDown : diff > 0 ? TrendingUp : Minus;
-  const trendColor = diff === null ? '' : diff < 0 ? '#22C55E' : diff > 0 ? '#EF4444' : '#9CA3AF';
+  const trendColor = diff === null ? '' : diff < 0 ? 'rgb(var(--success))' : diff > 0 ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))';
 
   return (
     <div className="space-y-6">
@@ -24,7 +24,7 @@ export default function CheckInQuestionWeight({ value, onChange, lastValue }) {
             className="flex-1 py-2.5 text-sm font-bold transition-all"
             style={{
               background: unit === u ? 'rgba(59,130,246,0.3)' : 'transparent',
-              color: unit === u ? '#3B82F6' : 'rgba(255,255,255,0.3)',
+              color: unit === u ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)',
             }}>
             {u}
           </button>

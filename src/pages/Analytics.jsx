@@ -9,7 +9,7 @@ import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
 import { differenceInDays, parseISO, format, startOfWeek, addDays } from 'date-fns';
 import { cn } from '@/lib/utils';
 
-const BLUE = '#2563EB';
+const BLUE = 'rgb(var(--primary))';
 
 // ── Client Activity Table ──────────────────────────────────────────────────
 function ClientActivityTable({ clients, checkIns }) {
@@ -29,48 +29,48 @@ function ClientActivityTable({ clients, checkIns }) {
     .sort((a, b) => b.adherence - a.adherence),
   [clients, checkIns]);
 
-  const adherenceColor = (v) => v >= 80 ? 'text-emerald-600 bg-emerald-50' : v >= 60 ? 'text-amber-600 bg-amber-50' : 'text-red-500 bg-red-50';
-  const statusColors = { active: 'bg-emerald-100 text-emerald-700', at_risk: 'bg-red-100 text-red-600', completed: 'bg-violet-100 text-violet-700', alumni: 'bg-gray-100 text-gray-600', lead: 'bg-blue-100 text-blue-700' };
+  const adherenceColor = (v) => v >= 80 ? 'text-success bg-success/10' : v >= 60 ? 'text-warning bg-warning/10' : 'text-destructive bg-destructive/10';
+  const statusColors = { active: 'bg-success/10 text-success', at_risk: 'bg-destructive/10 text-destructive', completed: 'bg-ai/10 text-ai', alumni: 'bg-muted text-muted-foreground', lead: 'bg-accent text-primary' };
 
   if (rows.length === 0) return null;
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-[#E5E7EB]">
-        <p className="text-sm font-semibold text-[#111827]">Client Activity Summary</p>
-        <p className="text-xs text-[#6B7280] mt-0.5">All clients sorted by adherence score</p>
+    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-border">
+        <p className="text-sm font-semibold text-foreground">Client Activity Summary</p>
+        <p className="text-xs text-muted-foreground mt-0.5">All clients sorted by adherence score</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
-              <th className="text-left px-5 py-2.5 text-xs font-semibold text-[#6B7280]">Client</th>
-              <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#6B7280]">Status</th>
-              <th className="text-left px-4 py-2.5 text-xs font-semibold text-[#6B7280]">Last Check-In</th>
-              <th className="text-center px-4 py-2.5 text-xs font-semibold text-[#6B7280]">Adherence</th>
-              <th className="text-center px-4 py-2.5 text-xs font-semibold text-[#6B7280]">Streak</th>
-              <th className="text-center px-4 py-2.5 text-xs font-semibold text-[#6B7280]">Trend</th>
+            <tr className="border-b border-border bg-background">
+              <th className="text-left px-5 py-2.5 text-xs font-semibold text-muted-foreground">Client</th>
+              <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground">Status</th>
+              <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground">Last Check-In</th>
+              <th className="text-center px-4 py-2.5 text-xs font-semibold text-muted-foreground">Adherence</th>
+              <th className="text-center px-4 py-2.5 text-xs font-semibold text-muted-foreground">Streak</th>
+              <th className="text-center px-4 py-2.5 text-xs font-semibold text-muted-foreground">Trend</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(({ client, adherence, streak, lastDate, daysSince, trend }) => (
-              <tr key={client.id} className="border-b border-[#E5E7EB] last:border-0 hover:bg-[#F9FAFB] transition-colors">
+              <tr key={client.id} className="border-b border-border last:border-0 hover:bg-background transition-colors">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-[#EEF4FF] flex items-center justify-center text-xs font-bold text-primary shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center text-xs font-bold text-primary shrink-0">
                       {client.name?.[0]}
                     </div>
-                    <span className="font-medium text-[#111827] text-sm">{client.name}</span>
+                    <span className="font-medium text-foreground text-sm">{client.name}</span>
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize', statusColors[client.lifecycle_status] || 'bg-gray-100 text-gray-600')}>
+                  <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full capitalize', statusColors[client.lifecycle_status] || 'bg-muted text-muted-foreground')}>
                     {client.lifecycle_status?.replace('_', ' ') || 'unknown'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs text-[#6B7280]">
+                <td className="px-4 py-3 text-xs text-muted-foreground">
                   {lastDate ? (
-                    <span className={daysSince > 14 ? 'text-red-500 font-medium' : daysSince > 7 ? 'text-amber-600' : 'text-[#6B7280]'}>
+                    <span className={daysSince > 14 ? 'text-destructive font-medium' : daysSince > 7 ? 'text-warning' : 'text-muted-foreground'}>
                       {daysSince === 0 ? 'Today' : daysSince === 1 ? 'Yesterday' : `${daysSince}d ago`}
                     </span>
                   ) : '—'}
@@ -81,13 +81,13 @@ function ClientActivityTable({ clients, checkIns }) {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <span className="text-xs font-semibold text-[#111827]">{streak > 0 ? `🔥 ${streak}d` : '—'}</span>
+                  <span className="text-xs font-semibold text-foreground">{streak > 0 ? `🔥 ${streak}d` : '—'}</span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  {trend === null ? <span className="text-[#9CA3AF]">—</span>
-                    : trend > 3 ? <ArrowUp className="w-4 h-4 text-emerald-500 mx-auto" />
-                    : trend < -3 ? <ArrowDown className="w-4 h-4 text-red-500 mx-auto" />
-                    : <Minus className="w-4 h-4 text-[#9CA3AF] mx-auto" />}
+                  {trend === null ? <span className="text-muted-foreground">—</span>
+                    : trend > 3 ? <ArrowUp className="w-4 h-4 text-success mx-auto" />
+                    : trend < -3 ? <ArrowDown className="w-4 h-4 text-destructive mx-auto" />
+                    : <Minus className="w-4 h-4 text-muted-foreground mx-auto" />}
                 </td>
               </tr>
             ))}
@@ -116,31 +116,31 @@ function WeeklyGrid({ checkIns }) {
   const maxCount = Math.max(...days.map(d => d.count), 1);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
-      <p className="text-sm font-semibold text-[#111827] mb-1">Weekly Performance Grid</p>
-      <p className="text-xs text-[#6B7280] mb-4">Check-in activity this week (Mon–Sun)</p>
+    <div className="bg-card border border-border rounded-2xl p-5">
+      <p className="text-sm font-semibold text-foreground mb-1">Weekly Performance Grid</p>
+      <p className="text-xs text-muted-foreground mb-4">Check-in activity this week (Mon–Sun)</p>
       <div className="grid grid-cols-7 gap-2">
         {days.map(d => {
           const intensity = d.count === 0 ? 0 : Math.round((d.count / maxCount) * 5);
-          const bgMap = ['bg-[#F3F4F6]', 'bg-blue-100', 'bg-blue-200', 'bg-blue-300', 'bg-blue-400', 'bg-[#2563EB]'];
-          const textMap = ['text-[#9CA3AF]', 'text-blue-700', 'text-blue-800', 'text-white', 'text-white', 'text-white'];
+          const bgMap = ['bg-muted', 'bg-accent', 'bg-primary', 'bg-primary', 'bg-primary', 'bg-primary'];
+          const textMap = ['text-muted-foreground', 'text-primary', 'text-primary', 'text-white', 'text-white', 'text-white'];
           return (
             <div key={d.dateStr} className="flex flex-col items-center gap-1.5">
               <div className={cn('w-full aspect-square rounded-xl flex items-center justify-center font-bold text-sm transition-all', bgMap[intensity], textMap[intensity])}>
                 {d.count || '0'}
               </div>
-              <span className="text-[10px] text-[#9CA3AF] font-medium">{d.label}</span>
-              {d.count > 0 && <span className="text-[10px] text-[#6B7280]">{d.avgComp}%</span>}
+              <span className="text-[10px] text-muted-foreground font-medium">{d.label}</span>
+              {d.count > 0 && <span className="text-[10px] text-muted-foreground">{d.avgComp}%</span>}
             </div>
           );
         })}
       </div>
       <div className="flex items-center gap-1.5 mt-3">
-        <span className="text-[10px] text-[#9CA3AF]">Less</span>
-        {['bg-[#F3F4F6]', 'bg-blue-100', 'bg-blue-200', 'bg-blue-300', 'bg-blue-400', 'bg-[#2563EB]'].map((bg, i) => (
+        <span className="text-[10px] text-muted-foreground">Less</span>
+        {['bg-muted', 'bg-accent', 'bg-primary', 'bg-primary', 'bg-primary', 'bg-primary'].map((bg, i) => (
           <div key={i} className={cn('w-3.5 h-3.5 rounded', bg)} />
         ))}
-        <span className="text-[10px] text-[#9CA3AF]">More</span>
+        <span className="text-[10px] text-muted-foreground">More</span>
       </div>
     </div>
   );
@@ -169,22 +169,22 @@ function TopMetricCards({ clients, checkIns }) {
     }
 
     return [
-      { icon: <TrendingUp className="w-4 h-4 text-emerald-600" />, label: 'Most Improved', bg: 'bg-emerald-50', ...mostImproved },
-      { icon: <Zap className="w-4 h-4 text-amber-500" />, label: 'Highest Streak', bg: 'bg-amber-50', ...highestStreak },
-      { icon: <Shield className="w-4 h-4 text-blue-600" />, label: 'Most Consistent', bg: 'bg-blue-50', ...mostConsistent },
-      { icon: <AlertTriangle className="w-4 h-4 text-red-500" />, label: 'Churn Risk', bg: 'bg-red-50', ...churnRisk },
+      { icon: <TrendingUp className="w-4 h-4 text-success" />, label: 'Most Improved', bg: 'bg-success/10', ...mostImproved },
+      { icon: <Zap className="w-4 h-4 text-warning" />, label: 'Highest Streak', bg: 'bg-warning/10', ...highestStreak },
+      { icon: <Shield className="w-4 h-4 text-primary" />, label: 'Most Consistent', bg: 'bg-accent', ...mostConsistent },
+      { icon: <AlertTriangle className="w-4 h-4 text-destructive" />, label: 'Churn Risk', bg: 'bg-destructive/10', ...churnRisk },
     ];
   }, [clients, checkIns]);
 
   return (
     <div className="grid grid-cols-2 gap-3">
       {metrics.map((m, i) => (
-        <div key={i} className="bg-white border border-[#E5E7EB] rounded-xl p-4 flex items-start gap-3">
+        <div key={i} className="bg-card border border-border rounded-xl p-4 flex items-start gap-3">
           <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0', m.bg)}>{m.icon}</div>
           <div className="min-w-0">
-            <p className="text-xs text-[#6B7280] font-medium">{m.label}</p>
-            <p className="text-sm font-bold text-[#111827] mt-0.5 truncate">{m.client?.name || '—'}</p>
-            <p className="text-xs text-[#6B7280] mt-0.5">{m.value || 'No data'}</p>
+            <p className="text-xs text-muted-foreground font-medium">{m.label}</p>
+            <p className="text-sm font-bold text-foreground mt-0.5 truncate">{m.client?.name || '—'}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{m.value || 'No data'}</p>
           </div>
         </div>
       ))}
@@ -213,9 +213,9 @@ function RetentionFunnel({ clients }) {
   const maxCount = Math.max(...stages.map(s => s.count), 1);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
-      <p className="text-sm font-semibold text-[#111827] mb-1">Retention Funnel</p>
-      <p className="text-xs text-[#6B7280] mb-4">Client lifecycle stage distribution</p>
+    <div className="bg-card border border-border rounded-2xl p-5">
+      <p className="text-sm font-semibold text-foreground mb-1">Retention Funnel</p>
+      <p className="text-xs text-muted-foreground mb-4">Client lifecycle stage distribution</p>
       <div className="space-y-3">
         {stages.map((s, i) => {
           const barPct = maxCount > 0 ? (s.count / maxCount) * 100 : 0;
@@ -224,19 +224,19 @@ function RetentionFunnel({ clients }) {
             <div key={s.label}>
               {i > 0 && conversion !== null && (
                 <div className="flex items-center gap-2 my-1 pl-1">
-                  <div className="w-px h-3 bg-[#E5E7EB] ml-3" />
-                  <span className="text-[10px] text-[#9CA3AF]">{conversion}% conversion</span>
+                  <div className="w-px h-3 bg-border ml-3" />
+                  <span className="text-[10px] text-muted-foreground">{conversion}% conversion</span>
                 </div>
               )}
               <div className="flex items-center gap-3">
-                <span className="text-xs text-[#374151] w-20 shrink-0 font-medium">{s.label}</span>
-                <div className="flex-1 bg-[#F3F4F6] rounded-full h-7 overflow-hidden relative">
-                  <div className="h-full bg-[#E5E7EB] rounded-full transition-all" style={{ width: `${Math.max(barPct, 2)}%` }} />
-                  <span className="absolute inset-0 flex items-center px-3 text-xs font-semibold text-[#374151]">
+                <span className="text-xs text-foreground w-20 shrink-0 font-medium">{s.label}</span>
+                <div className="flex-1 bg-muted rounded-full h-7 overflow-hidden relative">
+                  <div className="h-full bg-border rounded-full transition-all" style={{ width: `${Math.max(barPct, 2)}%` }} />
+                  <span className="absolute inset-0 flex items-center px-3 text-xs font-semibold text-foreground">
                     {s.count} clients
                   </span>
                 </div>
-                <span className="text-xs font-bold text-[#111827] w-10 text-right">{s.pct}%</span>
+                <span className="text-xs font-bold text-foreground w-10 text-right">{s.pct}%</span>
               </div>
             </div>
           );
@@ -280,7 +280,7 @@ export default function Analytics() {
   return (
     <div className="p-3 sm:p-6 lg:p-6 max-w-6xl mx-auto space-y-5 w-full">
       {/* ── Dark header ── */}
-      <div className="bg-[#111827] rounded-xl p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-sidebar rounded-xl p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
             <BarChart3 className="w-5 h-5 text-white" />
@@ -301,7 +301,7 @@ export default function Analytics() {
             <option value="180">Last 6 months</option>
             <option value="all">All time</option>
           </select>
-          <button onClick={handleExport} className="px-4 py-1.5 bg-white text-[#111827] rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
+          <button onClick={handleExport} className="px-4 py-1.5 bg-card text-foreground rounded-lg text-sm font-semibold hover:bg-white/90 transition-colors">
             Export
           </button>
         </div>
@@ -323,15 +323,15 @@ export default function Analytics() {
       {/* ── Trend charts ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <AnalyticsTrendCard title="Client Retention Rate" subtitle="% of enrolled clients staying active" data={retentionTrend} unit="%" color={BLUE} referenceValue={80}
-          badge={`${stats.retentionRate}%`} badgeColor="bg-blue-50 text-blue-700" />
+          badge={`${stats.retentionRate}%`} badgeColor="bg-accent text-primary" />
         <AnalyticsTrendCard title="Avg Adherence Score" subtitle="Training + nutrition compliance" data={adherenceTrend} unit="%" color={BLUE} referenceValue={70}
-          badge={`${stats.avgAdherence}%`} badgeColor="bg-blue-50 text-blue-700" />
+          badge={`${stats.avgAdherence}%`} badgeColor="bg-accent text-primary" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <AnalyticsTrendCard title="Avg Weight Progress" subtitle="Mean lbs change from each client's baseline" data={weightTrend} unit=" lbs" color={BLUE} referenceValue={0}
-          formatter={v => `${v > 0 ? '+' : ''}${v} lbs`} badge={stats.avgWeightDelta != null ? `${stats.avgWeightDelta > 0 ? '+' : ''}${stats.avgWeightDelta} lbs` : '—'} badgeColor="bg-blue-50 text-blue-700" />
+          formatter={v => `${v > 0 ? '+' : ''}${v} lbs`} badge={stats.avgWeightDelta != null ? `${stats.avgWeightDelta > 0 ? '+' : ''}${stats.avgWeightDelta} lbs` : '—'} badgeColor="bg-accent text-primary" />
         <AnalyticsTrendCard title="Churn Rate" subtitle="% of clients flagged at-risk each month" data={churnTrend} unit="%" color={BLUE} referenceValue={10}
-          badge={`${stats.churnRate}%`} badgeColor={stats.churnRate > 10 ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-700'} />
+          badge={`${stats.churnRate}%`} badgeColor={stats.churnRate > 10 ? 'bg-destructive/10 text-destructive' : 'bg-accent text-primary'} />
       </div>
 
       {/* ── Client Activity Table ── */}
@@ -341,7 +341,7 @@ export default function Analytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <WeeklyGrid checkIns={checkIns} />
         <div className="space-y-3">
-          <p className="text-sm font-semibold text-[#111827]">Top Metrics</p>
+          <p className="text-sm font-semibold text-foreground">Top Metrics</p>
           <TopMetricCards clients={clients} checkIns={checkIns} />
         </div>
       </div>

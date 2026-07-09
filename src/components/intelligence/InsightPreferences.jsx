@@ -14,11 +14,11 @@ function Toggle({ value, onChange }) {
     <button onClick={() => onChange(!value)}
       className="relative w-10 h-5.5 rounded-full transition-colors flex-shrink-0"
       style={{
-        background: value ? '#2563eb' : '#e5e7eb',
+        background: value ? 'rgb(var(--primary))' : 'rgb(var(--border))',
         height: 22,
         width: 40,
       }}>
-      <div className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all"
+      <div className="absolute top-0.5 w-4 h-4 rounded-full bg-card shadow transition-all"
         style={{ left: value ? 22 : 2 }} />
     </button>
   );
@@ -52,24 +52,24 @@ export default function InsightPreferences({ onClose }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-bold text-gray-900">Insight Preferences</h2>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X className="w-4 h-4" /></button>
+        <h2 className="text-sm font-bold text-foreground">Insight Preferences</h2>
+        <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground"><X className="w-4 h-4" /></button>
       </div>
-      <p className="text-xs text-gray-500">Choose which types of insights you want to see. Hidden types won't appear in your feed.</p>
+      <p className="text-xs text-muted-foreground">Choose which types of insights you want to see. Hidden types won't appear in your feed.</p>
       <div className="space-y-2">
         {INSIGHT_TYPES.map(({ type, label, desc, emoji }) => (
-          <div key={type} className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50">
+          <div key={type} className="flex items-center gap-3 p-4 rounded-xl border border-border bg-muted">
             <span className="text-xl">{emoji}</span>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-800">{label}</p>
-              <p className="text-[11px] text-gray-400">{desc}</p>
+              <p className="text-sm font-semibold text-foreground">{label}</p>
+              <p className="text-[11px] text-muted-foreground">{desc}</p>
             </div>
             <Toggle value={!disabled.has(type)} onChange={() => toggle(type)} />
           </div>
         ))}
       </div>
       <button onClick={handleReset}
-        className="w-full py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all">
+        className="w-full py-2.5 rounded-xl text-sm font-semibold border border-border text-muted-foreground hover:bg-muted transition-all">
         Reset All Preferences & Dismissed Cards
       </button>
     </div>

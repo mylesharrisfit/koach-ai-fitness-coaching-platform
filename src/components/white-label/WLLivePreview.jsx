@@ -17,13 +17,13 @@ const DEVICES = [
 ];
 
 function PortalMockup({ s, screen }) {
-  const primary = s.primary_color || '#2563EB';
-  const secondary = s.secondary_color || '#7C3AED';
-  const bg = s.bg_color || '#F8F9FA';
-  const card = s.card_color || '#FFFFFF';
-  const textPrimary = s.text_primary || '#0F172A';
-  const textSecondary = s.text_secondary || '#64748B';
-  const navBg = s.portal_nav_bg === 'brand' ? primary : s.portal_nav_bg === 'dark' ? '#0A0A0A' : '#FFFFFF';
+  const primary = s.primary_color || 'rgb(var(--primary))';
+  const secondary = s.secondary_color || 'rgb(var(--ai))';
+  const bg = s.bg_color || 'rgb(var(--muted))';
+  const card = s.card_color || 'rgb(var(--card))';
+  const textPrimary = s.text_primary || 'rgb(var(--foreground))';
+  const textSecondary = s.text_secondary || 'rgb(var(--muted-foreground))';
+  const navBg = s.portal_nav_bg === 'brand' ? primary : s.portal_nav_bg === 'dark' ? '#0A0A0A' : 'rgb(var(--card))';
   const grad = `linear-gradient(${s.gradient_direction || '135deg'}, ${primary}, ${secondary})`;
   const businessName = s.business_name || 'Your App';
 
@@ -82,7 +82,7 @@ function PortalMockup({ s, screen }) {
             <div className="rounded-xl p-3 text-center" style={{ background: card }}>
               <p className="font-black text-lg" style={{ color: primary }}>1,847</p>
               <p style={{ color: textSecondary, fontSize: 8 }}>of 2,200 calories</p>
-              <div className="h-1.5 rounded-full bg-slate-100 mt-2">
+              <div className="h-1.5 rounded-full bg-muted mt-2">
                 <div className="h-full rounded-full" style={{ width: '84%', background: grad }} />
               </div>
             </div>
@@ -133,10 +133,10 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
   const previewContent = (
     <div className={`${modal ? 'p-4' : 'p-4'} flex flex-col h-full`}>
       <div className="flex items-center justify-between mb-3 flex-shrink-0">
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Live Preview</p>
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Live Preview</p>
         {modal && (
-          <button onClick={onClose} className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
-            <X className="w-3.5 h-3.5 text-slate-600" />
+          <button onClick={onClose} className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center hover:bg-border transition-colors">
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -147,8 +147,8 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
           <button key={d.id} onClick={() => setDevice(d.id)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
-              background: device === d.id ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#F1F5F9',
-              color: device === d.id ? 'white' : '#64748B',
+              background: device === d.id ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted))',
+              color: device === d.id ? 'white' : 'rgb(var(--muted-foreground))',
             }}>
             <d.icon className="w-3 h-3" />
             {d.label}
@@ -162,9 +162,9 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
           <button key={sc.id} onClick={() => setScreen(sc.id)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 transition-all"
             style={{
-              background: screen === sc.id ? '#1E293B' : '#F8FAFC',
-              color: screen === sc.id ? 'white' : '#94A3B8',
-              border: screen === sc.id ? 'none' : '1px solid #E2E8F0',
+              background: screen === sc.id ? 'rgb(var(--foreground))' : 'rgb(var(--muted))',
+              color: screen === sc.id ? 'white' : 'rgb(var(--muted-foreground))',
+              border: screen === sc.id ? 'none' : '1px solid rgb(var(--border))',
             }}>
             <sc.icon className="w-3 h-3" />
             {sc.label}
@@ -174,7 +174,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
 
       {/* Device frame */}
       <div className="flex-1 flex items-center justify-center overflow-hidden">
-        <div className="relative rounded-3xl border-4 border-slate-800 overflow-hidden bg-slate-800"
+        <div className="relative rounded-3xl border-4 border-border overflow-hidden bg-sidebar"
           style={{
             width: 240,
             height: device === 'ipad' ? 320 : device === 'desktop' ? 200 : 420,
@@ -183,7 +183,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
           <div className="absolute inset-0 overflow-hidden rounded-2xl">
             <PortalMockup s={s} screen={screen} />
           </div>
-          {device !== 'desktop' && <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full bg-slate-600" />}
+          {device !== 'desktop' && <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full bg-muted-foreground" />}
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
   if (modal) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.5)' }}>
-        <div className="bg-white rounded-3xl w-full max-w-sm" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+        <div className="bg-card rounded-3xl w-full max-w-sm" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
           <div className="h-[600px]">{previewContent}</div>
         </div>
       </div>
@@ -200,7 +200,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
   }
 
   return (
-    <div className="sticky top-4 bg-white rounded-2xl border border-slate-200 h-[600px]"
+    <div className="sticky top-4 bg-card rounded-2xl border border-border h-[600px]"
       style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
       {previewContent}
     </div>

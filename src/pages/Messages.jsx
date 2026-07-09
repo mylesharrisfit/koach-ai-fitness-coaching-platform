@@ -163,10 +163,10 @@ export default function Messages() {
   const clientCheckIns = checkIns.filter(ci => ci.client_id === selectedClientId);
 
   return (
-    <div className="h-[calc(100dvh-56px-64px)] md:h-[calc(100dvh-0px)] flex overflow-hidden bg-[#F9FAFB]">
+    <div className="h-[calc(100dvh-56px-64px)] md:h-[calc(100dvh-0px)] flex overflow-hidden bg-background">
       {/* ── Left: Conversation list (280px) ── */}
       <div className={cn(
-        'flex-shrink-0 flex-col border-r border-[#E5E7EB]',
+        'flex-shrink-0 flex-col border-r border-border',
         mobileView === 'chat' ? 'hidden' : 'flex',
         'md:flex w-full md:w-[280px]'
       )}>
@@ -200,7 +200,7 @@ export default function Messages() {
             <div
               ref={messagesContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto px-5 py-4 space-y-0.5 bg-[#F9FAFB]"
+              className="flex-1 overflow-y-auto px-5 py-4 space-y-0.5 bg-background"
             >
               {clientMessages.length === 0 ? (
                 <ConversationEmpty client={selectedClient} onSelect={(text) => setNewMessage(text)} />
@@ -227,7 +227,7 @@ export default function Messages() {
             {showJumpToLatest && (
               <button
                 onClick={scrollToBottom}
-                className="absolute bottom-24 right-5 flex items-center gap-1.5 bg-[#111827] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:bg-black transition-all z-10"
+                className="absolute bottom-24 right-5 flex items-center gap-1.5 bg-sidebar text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg hover:bg-black transition-all z-10"
               >
                 <ArrowDown className="w-3.5 h-3.5" /> Jump to latest
               </button>
@@ -246,11 +246,11 @@ export default function Messages() {
             />
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] gap-3 bg-[#F9FAFB]">
-            <div className="w-16 h-16 rounded-2xl bg-[#EEF4FF] flex items-center justify-center">
-              <Send className="w-7 h-7 text-[#2563EB]" />
+          <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground gap-3 bg-background">
+            <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center">
+              <Send className="w-7 h-7 text-primary" />
             </div>
-            <p className="text-sm font-medium text-[#6B7280]">Select a conversation to start messaging</p>
+            <p className="text-sm font-medium text-muted-foreground">Select a conversation to start messaging</p>
           </div>
         )}
       </div>

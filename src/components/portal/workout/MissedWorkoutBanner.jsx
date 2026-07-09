@@ -19,7 +19,7 @@ export default function MissedWorkoutBanner({ workoutName, onDoNow, onSkip }) {
             <div className="flex gap-2 mt-3">
               <button onClick={onDoNow}
                 className="px-3 py-1.5 rounded-xl text-xs font-bold text-white"
-                style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}>
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
                 Do it now
               </button>
               <button onClick={() => { setVisible(false); onSkip?.(); }}

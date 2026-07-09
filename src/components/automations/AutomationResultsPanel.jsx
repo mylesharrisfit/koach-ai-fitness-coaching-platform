@@ -120,7 +120,7 @@ function ClientRow({ rule, client, detail }) {
   const aMeta = ACTION_META[rule.action_type] || {};
 
   return (
-    <div className={cn('flex items-center gap-2.5 p-2.5 rounded-xl transition-all', done ? 'bg-emerald-500/5 opacity-60' : 'bg-secondary/40')}>
+    <div className={cn('flex items-center gap-2.5 p-2.5 rounded-xl transition-all', done ? 'bg-success/5 opacity-60' : 'bg-secondary/40')}>
       <div className="w-7 h-7 rounded-full bg-destructive/20 flex items-center justify-center text-xs font-bold text-destructive flex-shrink-0">
         {client.name?.[0] || '?'}
       </div>
@@ -134,7 +134,7 @@ function ClientRow({ rule, client, detail }) {
         className={cn(
           'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition-all active:scale-95 whitespace-nowrap',
           done
-            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 cursor-default'
+            ? 'bg-success/10 border-success/20 text-success cursor-default'
             : 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20'
         )}
       >

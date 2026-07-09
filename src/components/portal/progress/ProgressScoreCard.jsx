@@ -38,7 +38,7 @@ function getMotivationalLabel(score) {
   return "Every journey starts here 🌱";
 }
 
-function CircleRing({ score, size = 120, strokeWidth = 10, color = '#3B82F6' }) {
+function CircleRing({ score, size = 120, strokeWidth = 10, color = 'rgb(var(--primary))' }) {
   const r = (size - strokeWidth * 2) / 2;
   const circ = 2 * Math.PI * r;
   const dash = (score / 100) * circ;
@@ -89,7 +89,7 @@ export default function ProgressScoreCard({ checkIns, workoutSessions, foodLogs,
       <div className="flex items-center gap-5">
         {/* Big ring */}
         <div className="relative flex-shrink-0">
-          <CircleRing score={scores.total} size={110} strokeWidth={9} color="#3B82F6" />
+          <CircleRing score={scores.total} size={110} strokeWidth={9} color="rgb(var(--primary))" />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-white font-black text-3xl leading-none">{scores.total}</span>
             <span className="text-white/30 text-[9px] font-semibold">/100</span>
@@ -101,16 +101,16 @@ export default function ProgressScoreCard({ checkIns, workoutSessions, foodLogs,
           <p className="text-white text-sm font-bold leading-tight">{label}</p>
           {trend && (
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold" style={{ color: trend === 'up' ? '#22C55E' : trend === 'down' ? '#EF4444' : '#9CA3AF' }}>
+              <span className="text-[10px] font-semibold" style={{ color: trend === 'up' ? 'rgb(var(--success))' : trend === 'down' ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))' }}>
                 {trend === 'up' ? '↑ Improved' : trend === 'down' ? '↓ Dropped' : '→ Same'} vs last week
               </span>
             </div>
           )}
           <div className="space-y-1.5 pt-1">
-            <MiniBar label="Fitness" value={scores.fitness} color="#3B82F6" />
-            <MiniBar label="Nutrition" value={scores.nutrition} color="#10B981" />
-            <MiniBar label="Consistency" value={scores.consistency} color="#F59E0B" />
-            <MiniBar label="Mindset" value={scores.mindset} color="#A78BFA" />
+            <MiniBar label="Fitness" value={scores.fitness} color="rgb(var(--primary))" />
+            <MiniBar label="Nutrition" value={scores.nutrition} color="rgb(var(--success))" />
+            <MiniBar label="Consistency" value={scores.consistency} color="rgb(var(--warning))" />
+            <MiniBar label="Mindset" value={scores.mindset} color="rgb(var(--ai))" />
           </div>
         </div>
       </div>

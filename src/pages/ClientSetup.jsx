@@ -7,14 +7,14 @@ function PasswordInput({ label, value, onChange, placeholder }) {
   const [show, setShow] = useState(false);
   return (
     <div className="space-y-1.5">
-      <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">{label}</label>
+      <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</label>
       <div className="relative">
         <input
           type={show ? 'text' : 'password'}
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-4 py-3.5 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-blue-500/60 transition-colors"
+          className="w-full px-4 py-3.5 pr-16 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/20 text-sm focus:outline-none focus:border-primary/60 transition-colors"
         />
         <button
           type="button"
@@ -31,7 +31,7 @@ function PasswordInput({ label, value, onChange, placeholder }) {
 function StrengthBar({ password }) {
   if (!password) return null;
   const strength = password.length < 6 ? 1 : password.length < 10 ? 2 : /[A-Z]/.test(password) && /[0-9]/.test(password) ? 4 : 3;
-  const colors = ['', '#EF4444', '#F59E0B', '#3B82F6', '#10B981'];
+  const colors = ['', 'rgb(var(--destructive))', 'rgb(var(--warning))', 'rgb(var(--primary))', 'rgb(var(--success))'];
   const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
   return (
     <div className="flex items-center gap-2 mt-1.5">
@@ -80,12 +80,12 @@ export default function ClientSetup() {
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center px-5"
-      style={{ background: 'linear-gradient(160deg, #0A0A0A 0%, #0F172A 60%, #0A0A0A 100%)' }}>
+      style={{ background: 'rgb(var(--sidebar))' }}>
 
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.06]"
-          style={{ background: 'radial-gradient(circle, #3B82F6 0%, transparent 65%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary)) 0%, transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       <div className="relative z-10 w-full max-w-sm flex flex-col items-center gap-6">
@@ -95,7 +95,7 @@ export default function ClientSetup() {
         {/* ── LOADING ── */}
         {status === 'loading' && (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-6 h-6 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+            <div className="w-6 h-6 rounded-full border-2 border-primary/30 border-t-blue-500 animate-spin" />
             <p className="text-sm text-white/40">Verifying your invite…</p>
           </div>
         )}
@@ -136,7 +136,7 @@ export default function ClientSetup() {
             <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
               style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)' }}>
               <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0"
-                style={{ background: 'rgba(59,130,246,0.2)', color: '#93C5FD' }}>
+                style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))' }}>
                 {client.name?.[0]?.toUpperCase() || '?'}
               </div>
               <div>
@@ -164,7 +164,7 @@ export default function ClientSetup() {
               />
 
               {error && (
-                <div className="px-4 py-3 rounded-xl text-xs font-medium text-red-400"
+                <div className="px-4 py-3 rounded-xl text-xs font-medium text-destructive"
                   style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
                   {error}
                 </div>
@@ -175,7 +175,7 @@ export default function ClientSetup() {
                 disabled={submitting || !password || !confirmPassword}
                 className="w-full py-4 rounded-xl font-bold text-base text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
-                  background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                  background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
                   boxShadow: '0 0 24px rgba(37,99,235,0.25)',
                 }}
               >
@@ -191,7 +191,7 @@ export default function ClientSetup() {
             <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
               style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <path d="M6 14L11 19L22 8" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6 14L11 19L22 8" stroke="rgb(var(--success))" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <div>

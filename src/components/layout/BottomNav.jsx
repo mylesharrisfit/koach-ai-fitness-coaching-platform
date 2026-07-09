@@ -61,7 +61,7 @@ export default function BottomNav() {
               <div className="relative">
                 <item.icon className={cn('w-5 h-5', isActive ? 'text-primary' : 'text-muted-foreground')} />
                 {badge > 0 && (
-                  <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white bg-red-500">
+                  <span className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center px-0.5 text-white bg-destructive">
                     {badge > 9 ? '9+' : badge}
                   </span>
                 )}

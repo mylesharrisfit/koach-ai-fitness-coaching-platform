@@ -23,10 +23,10 @@ const LOGIN_BG_TYPES = [
   { value: 'image', label: 'Image' },
 ];
 const DOMAIN_STATUS = {
-  pending: { icon: Clock, color: '#D97706', bg: '#FFFBEB', label: 'Pending DNS setup' },
-  verified: { icon: CheckCircle, color: '#2563EB', bg: '#EFF6FF', label: 'Domain verified' },
-  active: { icon: CheckCircle, color: '#059669', bg: '#ECFDF5', label: 'Active & live' },
-  error: { icon: AlertCircle, color: '#DC2626', bg: '#FEF2F2', label: 'DNS error — check records' },
+  pending: { icon: Clock, color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))', label: 'Pending DNS setup' },
+  verified: { icon: CheckCircle, color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))', label: 'Domain verified' },
+  active: { icon: CheckCircle, color: 'rgb(var(--success))', bg: 'rgb(var(--success))', label: 'Active & live' },
+  error: { icon: AlertCircle, color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive))', label: 'DNS error — check records' },
 };
 
 export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpriseLocked }) {
@@ -38,7 +38,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
     <WLSection title="Client Portal Branding" emoji="📱"
       description="Customize the look and feel of your client-facing app" locked={locked}>
 
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Header & Navigation</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Header & Navigation</p>
       <WLRow label="Show business logo" hint="Display your logo in the portal header">
         <WLToggle value={s.portal_show_logo !== false} onChange={v => set('portal_show_logo', v)} />
       </WLRow>
@@ -50,11 +50,11 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
       </WLRow>
       <WLRow label="Hide 'Powered by KOACH AI'" hint="Remove KOACH AI badge from footer (Elite+)">
         <WLToggle value={s.portal_hide_koach_badge || false} onChange={v => set('portal_hide_koach_badge', v)} disabled={eliteLocked} />
-        {eliteLocked && <p className="text-xs text-amber-600 font-medium mt-1">⭐ Available on Elite and above</p>}
+        {eliteLocked && <p className="text-xs text-warning font-medium mt-1">⭐ Available on Elite and above</p>}
       </WLRow>
 
       <WLDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Loading Screen</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Loading Screen</p>
       <WLRow label="Custom splash screen">
         <WLToggle value={s.splash_enabled !== false} onChange={v => set('splash_enabled', v)} />
       </WLRow>
@@ -70,7 +70,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
       )}
 
       <WLDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Login Page</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Login Page</p>
       <WLRow label="Background type">
         <WLSelect value={s.login_bg_type || 'gradient'} onChange={v => set('login_bg_type', v)} options={LOGIN_BG_TYPES} />
       </WLRow>
@@ -98,9 +98,9 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
       <WLDivider />
       <div className="flex items-start gap-3">
         <div className="flex-1">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             Custom Domain
-            {enterpriseLocked && <span className="text-[10px] bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full">Enterprise only</span>}
+            {enterpriseLocked && <span className="text-[10px] bg-ai/10 text-ai font-bold px-2 py-0.5 rounded-full">Enterprise only</span>}
           </p>
           <WLRow label="Domain" hint="e.g. app.mylesharrisfitness.com">
             <WLInput value={s.custom_domain} onChange={v => { set('custom_domain', v); setShowDnsInstructions(!!v); }}
@@ -111,27 +111,27 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
                 style={{ background: domainStatus.bg }}>
                 <StatusIcon className="w-4 h-4 flex-shrink-0" style={{ color: domainStatus.color }} />
                 <span className="text-xs font-semibold" style={{ color: domainStatus.color }}>{domainStatus.label}</span>
-                <span className="text-xs text-slate-400 ml-1">· SSL auto-provisioned</span>
+                <span className="text-xs text-muted-foreground ml-1">· SSL auto-provisioned</span>
               </div>
             )}
           </WLRow>
           {showDnsInstructions && s.custom_domain && !enterpriseLocked && (
-            <div className="mt-3 p-4 rounded-xl bg-slate-50 border border-slate-200">
-              <p className="text-xs font-bold text-slate-700 mb-2">DNS Setup Instructions</p>
+            <div className="mt-3 p-4 rounded-xl bg-muted border border-border">
+              <p className="text-xs font-bold text-foreground mb-2">DNS Setup Instructions</p>
               <div className="space-y-1 font-mono text-xs">
-                <p className="text-slate-600">Add a CNAME record to your DNS provider:</p>
-                <div className="bg-white border border-slate-200 rounded-lg p-2 mt-1">
-                  <p><span className="text-blue-600">Type:</span> CNAME</p>
-                  <p><span className="text-blue-600">Name:</span> {s.custom_domain.split('.')[0]}</p>
-                  <p><span className="text-blue-600">Value:</span> portal.koach.ai</p>
-                  <p><span className="text-blue-600">TTL:</span> 300</p>
+                <p className="text-muted-foreground">Add a CNAME record to your DNS provider:</p>
+                <div className="bg-card border border-border rounded-lg p-2 mt-1">
+                  <p><span className="text-primary">Type:</span> CNAME</p>
+                  <p><span className="text-primary">Name:</span> {s.custom_domain.split('.')[0]}</p>
+                  <p><span className="text-primary">Value:</span> portal.koach.ai</p>
+                  <p><span className="text-primary">TTL:</span> 300</p>
                 </div>
               </div>
             </div>
           )}
         </div>
       </div>
-      <p className="text-xs text-slate-400">💡 Custom domain requires Enterprise plan and DNS access. Allow up to 48 hours for DNS propagation.</p>
+      <p className="text-xs text-muted-foreground">💡 Custom domain requires Enterprise plan and DNS access. Allow up to 48 hours for DNS propagation.</p>
     </WLSection>
   );
 }

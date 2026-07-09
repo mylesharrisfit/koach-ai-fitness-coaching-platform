@@ -12,11 +12,11 @@ const FILTER_CHIPS = [
 ];
 
 const AVATAR_COLORS = [
-  ['bg-blue-100', 'text-blue-700'],
-  ['bg-violet-100', 'text-violet-700'],
-  ['bg-emerald-100', 'text-emerald-700'],
-  ['bg-amber-100', 'text-amber-700'],
-  ['bg-rose-100', 'text-rose-700'],
+  ['bg-accent', 'text-primary'],
+  ['bg-ai/10', 'text-ai'],
+  ['bg-success/10', 'text-success'],
+  ['bg-warning/10', 'text-warning'],
+  ['bg-destructive/10', 'text-destructive'],
   ['bg-cyan-100', 'text-cyan-700'],
 ];
 
@@ -81,7 +81,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
   return (
     <div className="flex flex-col h-full">
       {/* Dark header */}
-      <div className="bg-[#111827] p-4 flex-shrink-0">
+      <div className="bg-sidebar p-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-white">Messages</h2>
           <button
@@ -101,7 +101,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
       </div>
 
       {/* Filter chips */}
-      <div className="flex gap-1.5 px-3 py-2.5 border-b border-[#E7EAF3] overflow-x-auto flex-shrink-0 bg-white">
+      <div className="flex gap-1.5 px-3 py-2.5 border-b border-border overflow-x-auto flex-shrink-0 bg-card">
         {FILTER_CHIPS.map(chip => (
           <button
             key={chip.key}
@@ -109,24 +109,24 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
             className={cn(
               'text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap transition-all',
               filter === chip.key
-                ? 'bg-[#111827] text-white'
-                : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
+                ? 'bg-sidebar text-white'
+                : 'bg-muted text-muted-foreground hover:bg-border'
             )}
           >
             {chip.label}
             {chip.key === 'unread' && (() => {
               const total = clients.reduce((s, c) => s + (clientMeta[c.id]?.unread || 0), 0);
-              return total > 0 ? <span className="ml-1 bg-blue-500 text-white text-[9px] font-bold rounded-full px-1">{total}</span> : null;
+              return total > 0 ? <span className="ml-1 bg-primary text-white text-[9px] font-bold rounded-full px-1">{total}</span> : null;
             })()}
           </button>
         ))}
       </div>
 
       {/* Conversation list */}
-      <div className="flex-1 overflow-y-auto bg-white">
+      <div className="flex-1 overflow-y-auto bg-card">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center px-4">
-            <p className="text-xs text-[#9CA3AF]">No conversations found</p>
+            <p className="text-xs text-muted-foreground">No conversations found</p>
           </div>
         ) : filtered.map(client => {
           const meta = clientMeta[client.id] || { lastMsg: null, unread: 0 };
@@ -142,34 +142,34 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
               key={client.id}
               onClick={() => onSelectClient(client.id)}
               className={cn(
-                'w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-b border-[#F3F4F6] relative',
-                isSelected ? 'bg-[#F0F4FF]' : 'hover:bg-[#F9FAFB]'
+                'w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-b border-muted relative',
+                isSelected ? 'bg-[#F0F4FF]' : 'hover:bg-background'
               )}
             >
-              {isSelected && <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-r-full bg-[#2563EB]" />}
+              {isSelected && <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-r-full bg-primary" />}
               <div className="relative flex-shrink-0">
                 <div className={cn('w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm overflow-hidden', client.avatar_url ? '' : `${avatarBg} ${avatarText}`)}>
                   {client.avatar_url ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" /> : initials}
                 </div>
-                {online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white" />}
+                {online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success border-2 border-white" />}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1 mb-0.5">
-                  <p className={cn('text-sm truncate leading-tight', hasUnread ? 'font-bold text-[#111827]' : 'font-medium text-[#374151]')}>
+                  <p className={cn('text-sm truncate leading-tight', hasUnread ? 'font-bold text-foreground' : 'font-medium text-foreground')}>
                     {client.name}
                   </p>
                   {lastMsg && (
-                    <span className={cn('text-[10px] flex-shrink-0', hasUnread ? 'text-[#2563EB] font-semibold' : 'text-[#9CA3AF]')}>
+                    <span className={cn('text-[10px] flex-shrink-0', hasUnread ? 'text-primary font-semibold' : 'text-muted-foreground')}>
                       {formatMsgTime(lastMsg.created_date)}
                     </span>
                   )}
                 </div>
-                <p className={cn('text-xs truncate leading-tight', hasUnread ? 'text-[#374151] font-medium' : 'text-[#9CA3AF]')}>
+                <p className={cn('text-xs truncate leading-tight', hasUnread ? 'text-foreground font-medium' : 'text-muted-foreground')}>
                   {lastMsg ? (lastMsg.sender === 'coach' ? '↩ ' : '') + lastMsg.content : <span className="italic">No messages yet</span>}
                 </p>
               </div>
               {hasUnread && (
-                <div className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-[#2563EB] text-white text-[10px] font-bold flex items-center justify-center px-1">
+                <div className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center px-1">
                   {unread > 99 ? '99+' : unread}
                 </div>
               )}

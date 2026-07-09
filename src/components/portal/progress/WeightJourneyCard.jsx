@@ -56,7 +56,7 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
               className="px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all"
               style={{
                 background: range === r.label ? 'rgba(59,130,246,0.25)' : 'transparent',
-                color: range === r.label ? '#60A5FA' : 'rgba(255,255,255,0.25)',
+                color: range === r.label ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.25)',
               }}>
               {r.label}
             </button>
@@ -82,10 +82,10 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
                   domain={[d => Math.floor(d - 3), d => Math.ceil(d + 3)]} />
                 <Tooltip content={<CustomTooltip />} />
                 {goalWeight && (
-                  <ReferenceLine y={goalWeight} stroke="rgba(34,197,94,0.4)" strokeDasharray="4 4" label={{ value: 'Goal', fill: '#22C55E', fontSize: 9 }} />
+                  <ReferenceLine y={goalWeight} stroke="rgba(34,197,94,0.4)" strokeDasharray="4 4" label={{ value: 'Goal', fill: 'rgb(var(--success))', fontSize: 9 }} />
                 )}
-                <Line type="monotone" dataKey="weight" stroke="#3B82F6" strokeWidth={2.5} dot={false}
-                  activeDot={{ r: 5, fill: '#3B82F6', stroke: '#fff', strokeWidth: 2 }} />
+                <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2.5} dot={false}
+                  activeDot={{ r: 5, fill: 'rgb(var(--primary))', stroke: 'rgb(var(--card))', strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -99,17 +99,17 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
             <div className="flex-1 relative">
               <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }}>
                 {goalWeight && firstWeight && (
-                  <div className="h-full rounded-full bg-blue-500"
+                  <div className="h-full rounded-full bg-primary"
                     style={{ width: `${Math.min(100, Math.max(0, Math.abs((lastWeight - firstWeight) / (goalWeight - firstWeight)) * 100))}%` }} />
                 )}
               </div>
               <div className="absolute top-1/2 -translate-y-1/2 flex justify-center" style={{ left: '50%' }}>
-                <div className="w-3 h-3 rounded-full bg-blue-400 border-2 border-white" />
+                <div className="w-3 h-3 rounded-full bg-primary border-2 border-white" />
               </div>
             </div>
             <div className="text-center">
               <p className="text-white/40 text-[9px]">Goal</p>
-              <p className="text-emerald-400 text-xs font-bold">{goalWeight ? `${goalWeight} lbs` : '—'}</p>
+              <p className="text-success text-xs font-bold">{goalWeight ? `${goalWeight} lbs` : '—'}</p>
             </div>
           </div>
 

@@ -270,7 +270,7 @@ export default function CoachIntegrations() {
   return (
     <div>
       {/* Dark header banner */}
-      <div className="bg-[#111827] rounded-xl p-5 text-white mb-6">
+      <div className="bg-sidebar rounded-xl p-5 text-white mb-6">
         <h1 className="text-xl font-semibold text-white">Integrations</h1>
         <p className="text-sm text-white/50 mt-0.5">Connect third-party services to power your coaching workflow</p>
       </div>
@@ -280,13 +280,13 @@ export default function CoachIntegrations() {
         placeholder="Search integrations..."
         value={search}
         onChange={e => setSearch(e.target.value)}
-        className="w-full border border-[#E5E7EB] rounded-xl px-4 py-2.5 text-sm mb-6 outline-none focus:border-[#111827] bg-white"
+        className="w-full border border-border rounded-xl px-4 py-2.5 text-sm mb-6 outline-none focus:border-foreground bg-card"
       />
 
       <div className="space-y-6">
         {filteredGroups.map((group) => (
           <div key={group.label}>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">{group.label}</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">{group.label}</p>
             <div className="space-y-2.5">
               {group.items.map((integration) => {
                 const isConnected = !!connected[integration.id];
@@ -295,42 +295,42 @@ export default function CoachIntegrations() {
                   <div
                     key={integration.id}
                     className={cn(
-                      'bg-white border rounded-2xl p-4 transition-all',
-                      isConnected ? 'border-emerald-200 bg-emerald-50/20' : 'border-[#E7EAF3]'
+                      'bg-card border rounded-2xl p-4 transition-all',
+                      isConnected ? 'border-success bg-success/20' : 'border-border'
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl border border-[#E7EAF3] bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <div className="w-11 h-11 rounded-xl border border-border bg-card flex items-center justify-center flex-shrink-0 shadow-sm">
                         {integration.icon}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-semibold text-[#1F2A44] text-sm">{integration.name}</p>
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3] text-[#374151]">
+                          <p className="font-semibold text-foreground text-sm">{integration.name}</p>
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-muted border border-border text-foreground">
                             {integration.category}
                           </span>
                           {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected) || (integration.id === 'zoom' && zoomConnected) || (integration.id === 'calendly' && calendlyConnected) || (integration.id === 'sendgrid' && sendgridConnected)) && (
-                            <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+                            <span className="flex items-center gap-1 text-[10px] font-semibold text-success bg-success/10 border border-success px-2 py-0.5 rounded-full">
                               <CheckCircle2 className="w-3 h-3" /> Connected
                             </span>
                           )}
                           {integration.id === 'zapier' && zapierConnected && todayLogs.length > 0 && (
-                            <span className="text-[10px] text-[#6B7280] px-2 py-0.5 rounded-full bg-[#F6F7FB] border border-[#E7EAF3]">
+                            <span className="text-[10px] text-muted-foreground px-2 py-0.5 rounded-full bg-muted border border-border">
                               {todayLogs.length} events today
                             </span>
                           )}
                           {integration.id === 'zapier' && zapierConnected && zapierLastTriggered && (
-                            <span className="text-[10px] text-[#9CA3AF] flex items-center gap-1">
+                            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                               <Clock className="w-3 h-3" /> Last triggered {formatDistanceToNow(new Date(zapierLastTriggered), { addSuffix: true })}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-[#6B7280] mt-0.5 leading-snug line-clamp-1">{integration.description}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 leading-snug line-clamp-1">{integration.description}</p>
                       </div>
                       <div className="flex items-center gap-1.5 flex-shrink-0">
                         <button
                           onClick={() => setExpandedNote(showNote ? null : integration.id)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[#9CA3AF] hover:text-primary hover:bg-[#EEF4FF] transition-colors"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-accent/10 transition-colors"
                           title="How it works"
                         >
                           <Info className="w-3.5 h-3.5" />
@@ -369,7 +369,7 @@ export default function CoachIntegrations() {
                           <Button size="sm" variant={isConnected ? 'outline' : 'default'}
                             onClick={() => handleConnect(integration)}
                             className={cn('text-xs h-8 px-3',
-                              isConnected && 'border-[#E7EAF3] text-[#374151] hover:border-red-200 hover:text-red-500 hover:bg-red-50'
+                              isConnected && 'border-border text-foreground hover:border-destructive hover:text-destructive hover:bg-destructive/10'
                             )}>
                             {isConnected ? 'Disconnect' : 'Connect'}
                           </Button>
@@ -377,9 +377,9 @@ export default function CoachIntegrations() {
                       </div>
                     </div>
                     {showNote && (
-                      <div className="mt-3 flex items-start gap-2 bg-[#EEF4FF] border border-blue-100 rounded-xl px-3 py-2.5">
+                      <div className="mt-3 flex items-start gap-2 bg-accent/10 border border-accent rounded-xl px-3 py-2.5">
                         <Info className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                        <p className="text-xs text-[#374151] leading-snug">{integration.note}</p>
+                        <p className="text-xs text-foreground leading-snug">{integration.note}</p>
                       </div>
                     )}
                   </div>
@@ -389,21 +389,21 @@ export default function CoachIntegrations() {
           </div>
         ))}
         {filteredGroups.length === 0 && (
-          <p className="text-sm text-[#9CA3AF] text-center py-8">No integrations match "{search}"</p>
+          <p className="text-sm text-muted-foreground text-center py-8">No integrations match "{search}"</p>
         )}
       </div>
 
       {/* Zapier log panel */}
       {zapierConnected && zapierLogs.length > 0 && (
         <div className="mt-6">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#9CA3AF] mb-3">Recent Webhook Events</p>
-          <div className="bg-white border border-[#E7EAF3] rounded-2xl overflow-hidden">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Recent Webhook Events</p>
+          <div className="bg-card border border-border rounded-2xl overflow-hidden">
             {zapierLogs.slice(0, 10).map((log, i) => (
-              <div key={log.id} className={cn('flex items-center gap-3 px-4 py-3', i !== 0 && 'border-t border-[#F6F7FB]')}>
-                <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-emerald-400' : 'bg-red-400')} />
-                <span className="text-xs font-mono text-[#374151] flex-1 truncate">{log.event_type}</span>
-                {log.client_name && <span className="text-xs text-[#6B7280] truncate max-w-[120px]">{log.client_name}</span>}
-                <span className="text-[10px] text-[#9CA3AF] flex items-center gap-1 flex-shrink-0">
+              <div key={log.id} className={cn('flex items-center gap-3 px-4 py-3', i !== 0 && 'border-t border-muted')}>
+                <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-success' : 'bg-destructive')} />
+                <span className="text-xs font-mono text-foreground flex-1 truncate">{log.event_type}</span>
+                {log.client_name && <span className="text-xs text-muted-foreground truncate max-w-[120px]">{log.client_name}</span>}
+                <span className="text-[10px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
                   <Clock className="w-3 h-3" />
                   {log.sent_at ? formatDistanceToNow(new Date(log.sent_at), { addSuffix: true }) : ''}
                 </span>

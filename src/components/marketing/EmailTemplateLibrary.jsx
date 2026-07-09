@@ -104,86 +104,86 @@ export default function EmailTemplateLibrary({ coachId }) {
               <button key={template.type} onClick={() => handleSelectTemplate(template)}
                 className={`p-4 rounded-2xl border-2 text-left transition-all ${
                   exists
-                    ? 'border-emerald-300 bg-emerald-50'
-                    : 'border-slate-200 bg-white hover:border-blue-300'
+                    ? 'border-success bg-success/10'
+                    : 'border-border bg-card hover:border-primary'
                 }`}>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="font-bold text-slate-900">{template.name}</h3>
-                    <p className="text-xs text-slate-500 mt-1">{template.use}</p>
-                    <p className="text-xs text-slate-600 font-mono mt-2 line-clamp-1">{template.subject}</p>
+                    <h3 className="font-bold text-foreground">{template.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">{template.use}</p>
+                    <p className="text-xs text-muted-foreground font-mono mt-2 line-clamp-1">{template.subject}</p>
                   </div>
-                  {exists && <span className="text-xs font-bold text-emerald-600 whitespace-nowrap ml-2">✓ Saved</span>}
+                  {exists && <span className="text-xs font-bold text-success whitespace-nowrap ml-2">✓ Saved</span>}
                 </div>
               </button>
             );
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="bg-card rounded-2xl border border-border p-6">
           <button onClick={() => setSelectedTemplate(null)}
-            className="text-sm font-bold text-blue-600 hover:text-blue-700 mb-4">
+            className="text-sm font-bold text-primary hover:text-primary mb-4">
             ← Back to Templates
           </button>
 
           {editMode ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-slate-900 mb-1">Template Name</label>
+                <label className="block text-sm font-bold text-foreground mb-1">Template Name</label>
                 <input
                   type="text"
                   value={editData?.template_name || ''}
                   onChange={(e) => setEditData({ ...editData, template_name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-900 mb-1">Subject Line</label>
+                <label className="block text-sm font-bold text-foreground mb-1">Subject Line</label>
                 <input
                   type="text"
                   value={editData?.subject_line || ''}
                   onChange={(e) => setEditData({ ...editData, subject_line: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-900 mb-1">HTML Content</label>
+                <label className="block text-sm font-bold text-foreground mb-1">HTML Content</label>
                 <textarea
                   value={editData?.html_content || ''}
                   onChange={(e) => setEditData({ ...editData, html_content: e.target.value })}
                   rows={10}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 rounded-lg border border-border text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div className="flex gap-2">
                 <button onClick={handleSaveTemplate} disabled={saveMutation.isPending}
-                  className="px-6 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 disabled:opacity-50">
+                  className="px-6 py-2 rounded-lg bg-primary text-white font-bold hover:bg-primary disabled:opacity-50">
                   Save Template
                 </button>
                 <button onClick={() => setEditMode(false)}
-                  className="px-6 py-2 rounded-lg bg-slate-200 text-slate-900 font-bold hover:bg-slate-300">
+                  className="px-6 py-2 rounded-lg bg-border text-foreground font-bold hover:bg-border">
                   Cancel
                 </button>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
-              <h3 className="font-bold text-slate-900">{selectedTemplate.template_name}</h3>
-              <p className="text-sm text-slate-600">{selectedTemplate.use_case}</p>
-              <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                <p className="text-xs text-slate-600 font-bold mb-2">Subject: </p>
-                <p className="text-sm text-slate-900">{selectedTemplate.subject_line}</p>
+              <h3 className="font-bold text-foreground">{selectedTemplate.template_name}</h3>
+              <p className="text-sm text-muted-foreground">{selectedTemplate.use_case}</p>
+              <div className="p-4 rounded-lg bg-muted border border-border">
+                <p className="text-xs text-muted-foreground font-bold mb-2">Subject: </p>
+                <p className="text-sm text-foreground">{selectedTemplate.subject_line}</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => handleCopyHtml(selectedTemplate.html_content)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-slate-900 font-bold hover:bg-slate-50">
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-foreground font-bold hover:bg-muted">
                   <Copy className="w-4 h-4" /> Copy HTML
                 </button>
                 <button onClick={() => setEditMode(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600">
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-bold hover:bg-primary">
                   <Eye className="w-4 h-4" /> Edit Template
                 </button>
               </div>

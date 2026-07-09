@@ -23,8 +23,8 @@ export default function ProgramRing({ program, startDate }) {
             strokeLinecap="round" style={{ transition: 'stroke-dashoffset 1s ease' }} />
           <defs>
             <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#8B5CF6" />
+              <stop offset="0%" stopColor="rgb(var(--primary))" />
+              <stop offset="100%" stopColor="rgb(var(--ai))" />
             </linearGradient>
           </defs>
         </svg>
@@ -37,7 +37,7 @@ export default function ProgramRing({ program, startDate }) {
         <p className="text-white font-bold text-sm">{program.title}</p>
         <p className="text-white/40 text-xs mt-0.5">Week {weeksPassed} of {totalWeeks}</p>
         <div className="mt-1.5 w-32 h-1 rounded-full bg-white/10 overflow-hidden">
-          <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #3B82F6, #8B5CF6)' }} />
+          <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
         </div>
       </div>
     </div>

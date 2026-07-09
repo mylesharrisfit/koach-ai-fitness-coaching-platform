@@ -20,18 +20,18 @@ export default function BIDashboardCard() {
   }).length;
 
   const metrics = [
-    { label: 'MRR', value: `$${mrr.toLocaleString()}`, icon: DollarSign, color: '#3B82F6' },
-    { label: 'Active', value: activeClients.length, icon: Users, color: '#22C55E' },
-    { label: 'At Risk', value: atRisk, icon: TrendingUp, color: atRisk > 0 ? '#EF4444' : '#9CA3AF' },
-    { label: 'New', value: `+${newThisMonth}`, icon: TrendingUp, color: '#8B5CF6' },
+    { label: 'MRR', value: `$${mrr.toLocaleString()}`, icon: DollarSign, color: 'rgb(var(--primary))' },
+    { label: 'Active', value: activeClients.length, icon: Users, color: 'rgb(var(--success))' },
+    { label: 'At Risk', value: atRisk, icon: TrendingUp, color: atRisk > 0 ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))' },
+    { label: 'New', value: `+${newThisMonth}`, icon: TrendingUp, color: 'rgb(var(--ai))' },
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+    <div className="bg-card rounded-2xl border border-border shadow-sm p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <BarChart2 className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-bold text-gray-900">Business Intelligence</h3>
+          <h3 className="text-sm font-bold text-foreground">Business Intelligence</h3>
         </div>
         <Link to="/business" className="flex items-center gap-1 text-xs text-primary font-semibold hover:opacity-70 transition-opacity">
           View all <ArrowRight className="w-3 h-3" />
@@ -40,9 +40,9 @@ export default function BIDashboardCard() {
 
       <div className="grid grid-cols-4 gap-2">
         {metrics.map(m => (
-          <div key={m.label} className="text-center p-2 rounded-xl bg-gray-50">
+          <div key={m.label} className="text-center p-2 rounded-xl bg-muted">
             <p className="text-sm font-bold" style={{ color: m.color }}>{m.value}</p>
-            <p className="text-[9px] text-gray-400 mt-0.5 font-medium">{m.label}</p>
+            <p className="text-[9px] text-muted-foreground mt-0.5 font-medium">{m.label}</p>
           </div>
         ))}
       </div>

@@ -66,14 +66,14 @@ function BadgeModal({ badge, earned, onClose }) {
       <motion.div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.7)' }}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
         <motion.div className="w-full max-w-sm m-4 p-6 rounded-2xl text-center"
-          style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.12)' }}
+          style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(255,255,255,0.12)' }}
           initial={{ y: 80 }} animate={{ y: 0 }} exit={{ y: 80 }}
           onClick={e => e.stopPropagation()}>
           <div className="text-5xl mb-3" style={{ filter: earned ? 'none' : 'grayscale(100%)' }}>{badge.emoji}</div>
           <p className="text-white font-bold text-lg">{badge.name}</p>
           <p className="text-white/50 text-sm mt-1">{badge.desc}</p>
           {earned ? (
-            <p className="text-emerald-400 text-xs mt-2 font-semibold">✓ Earned!</p>
+            <p className="text-success text-xs mt-2 font-semibold">✓ Earned!</p>
           ) : (
             <p className="text-white/30 text-xs mt-2">Keep going to unlock this achievement</p>
           )}

@@ -12,11 +12,11 @@ function WeightTrend({ checkIns }) {
   const last  = withWeight[withWeight.length - 1].weight;
   const diff  = +(last - first).toFixed(1);
 
-  if (diff === 0) return <span className="inline-flex items-center gap-1 text-xs text-slate-500"><Minus className="w-3.5 h-3.5" /> No change</span>;
+  if (diff === 0) return <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Minus className="w-3.5 h-3.5" /> No change</span>;
 
   const loss = diff < 0;
   return (
-    <span className={cn('inline-flex items-center gap-1 text-xs font-semibold', loss ? 'text-emerald-600' : 'text-rose-500')}>
+    <span className={cn('inline-flex items-center gap-1 text-xs font-semibold', loss ? 'text-success' : 'text-destructive')}>
       {loss ? <TrendingDown className="w-3.5 h-3.5" /> : <TrendingUp className="w-3.5 h-3.5" />}
       {loss ? '' : '+'}{diff} lbs
     </span>
@@ -28,11 +28,11 @@ function ComplianceBar({ value, label, color }) {
   const pct = Math.min(value, 100);
   return (
     <div className="space-y-1">
-      <div className="flex justify-between text-xs text-slate-500">
+      <div className="flex justify-between text-xs text-muted-foreground">
         <span>{label}</span>
-        <span className={cn('font-semibold', pct >= 80 ? 'text-emerald-600' : pct >= 60 ? 'text-amber-500' : 'text-rose-500')}>{pct}%</span>
+        <span className={cn('font-semibold', pct >= 80 ? 'text-success' : pct >= 60 ? 'text-warning' : 'text-destructive')}>{pct}%</span>
       </div>
-      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
         <div className={cn('h-full rounded-full transition-all', color)} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -64,11 +64,11 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
   const lowMood      = latest?.mood === 'stressed' || latest?.mood === 'tired';
   const hasFlags     = missedCI || lowAdherence || lowNutrition || lowMood;
 
-  const statusColor = hasFlags ? 'border-amber-200 bg-amber-50/40' : 'border-emerald-200 bg-emerald-50/30';
-  const avatarBg    = hasFlags ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700';
+  const statusColor = hasFlags ? 'border-warning bg-warning/40' : 'border-success bg-success/30';
+  const avatarBg    = hasFlags ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success';
 
   return (
-    <div className={cn('rounded-2xl border p-4 flex flex-col gap-3 shadow-sm bg-white transition-all hover:shadow-md', statusColor)}>
+    <div className={cn('rounded-2xl border p-4 flex flex-col gap-3 shadow-sm bg-card transition-all hover:shadow-md', statusColor)}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
@@ -80,16 +80,16 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
             </div>
           )}
           <div className="min-w-0">
-            <p className="font-semibold text-sm text-slate-800 truncate">{client.name}</p>
-            <p className="text-xs text-slate-400 capitalize">{client.goal?.replace('_', ' ') || 'General fitness'}</p>
+            <p className="font-semibold text-sm text-foreground truncate">{client.name}</p>
+            <p className="text-xs text-muted-foreground capitalize">{client.goal?.replace('_', ' ') || 'General fitness'}</p>
           </div>
         </div>
         {hasFlags ? (
-          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-warning/10 text-warning border border-warning">
             <AlertTriangle className="w-2.5 h-2.5" /> Needs attention
           </span>
         ) : (
-          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-success/10 text-success border border-success">
             <CheckCircle2 className="w-2.5 h-2.5" /> On track
           </span>
         )}
@@ -97,31 +97,31 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
 
       {/* Weight + Workout row */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="bg-white/80 border border-slate-100 rounded-xl p-2.5 text-center">
-          <p className="text-[10px] text-slate-400 font-medium mb-0.5">Weight</p>
-          <p className="text-sm font-bold text-slate-700">{weightNow ? `${weightNow} lbs` : '—'}</p>
+        <div className="bg-white/80 border border-border rounded-xl p-2.5 text-center">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Weight</p>
+          <p className="text-sm font-bold text-foreground">{weightNow ? `${weightNow} lbs` : '—'}</p>
           {weightDiff !== null && (
-            <p className={cn('text-[10px] font-semibold', weightDiff < 0 ? 'text-emerald-600' : weightDiff > 0 ? 'text-rose-500' : 'text-slate-400')}>
+            <p className={cn('text-[10px] font-semibold', weightDiff < 0 ? 'text-success' : weightDiff > 0 ? 'text-destructive' : 'text-muted-foreground')}>
               {weightDiff > 0 ? '+' : ''}{weightDiff} lbs
             </p>
           )}
         </div>
-        <div className="bg-white/80 border border-slate-100 rounded-xl p-2.5 text-center">
-          <p className="text-[10px] text-slate-400 font-medium mb-0.5">Workouts</p>
-          <p className="text-sm font-bold text-slate-700">{weekWorkouts}</p>
-          <p className="text-[10px] text-slate-400">this week</p>
+        <div className="bg-white/80 border border-border rounded-xl p-2.5 text-center">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Workouts</p>
+          <p className="text-sm font-bold text-foreground">{weekWorkouts}</p>
+          <p className="text-[10px] text-muted-foreground">this week</p>
         </div>
-        <div className="bg-white/80 border border-slate-100 rounded-xl p-2.5 text-center">
-          <p className="text-[10px] text-slate-400 font-medium mb-0.5">Check-in</p>
+        <div className="bg-white/80 border border-border rounded-xl p-2.5 text-center">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Check-in</p>
           {missedCI ? (
             <>
-              <p className="text-sm font-bold text-rose-500">Missed</p>
-              <p className="text-[10px] text-rose-400">{lastCheckInDays !== null ? `${lastCheckInDays}d ago` : 'Never'}</p>
+              <p className="text-sm font-bold text-destructive">Missed</p>
+              <p className="text-[10px] text-destructive">{lastCheckInDays !== null ? `${lastCheckInDays}d ago` : 'Never'}</p>
             </>
           ) : (
             <>
-              <p className="text-sm font-bold text-emerald-600">Done</p>
-              <p className="text-[10px] text-slate-400">{lastCheckInDays === 0 ? 'Today' : `${lastCheckInDays}d ago`}</p>
+              <p className="text-sm font-bold text-success">Done</p>
+              <p className="text-[10px] text-muted-foreground">{lastCheckInDays === 0 ? 'Today' : `${lastCheckInDays}d ago`}</p>
             </>
           )}
         </div>
@@ -130,27 +130,27 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
       {/* Compliance bars */}
       {latest && (
         <div className="space-y-1.5">
-          <ComplianceBar value={latest.compliance_training} label="Training" color={latest.compliance_training >= 80 ? 'bg-emerald-500' : latest.compliance_training >= 60 ? 'bg-amber-400' : 'bg-rose-400'} />
-          <ComplianceBar value={latest.compliance_nutrition} label="Nutrition" color={latest.compliance_nutrition >= 80 ? 'bg-emerald-500' : latest.compliance_nutrition >= 60 ? 'bg-amber-400' : 'bg-rose-400'} />
+          <ComplianceBar value={latest.compliance_training} label="Training" color={latest.compliance_training >= 80 ? 'bg-success' : latest.compliance_training >= 60 ? 'bg-warning' : 'bg-destructive'} />
+          <ComplianceBar value={latest.compliance_nutrition} label="Nutrition" color={latest.compliance_nutrition >= 80 ? 'bg-success' : latest.compliance_nutrition >= 60 ? 'bg-warning' : 'bg-destructive'} />
         </div>
       )}
 
       {/* Client notes snippet */}
       {latest?.notes && (
-        <div className="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
-          <p className="text-[11px] text-blue-700 italic leading-relaxed line-clamp-2">"{latest.notes}"</p>
+        <div className="bg-accent border border-accent rounded-lg px-3 py-2">
+          <p className="text-[11px] text-primary italic leading-relaxed line-clamp-2">"{latest.notes}"</p>
         </div>
       )}
 
       {/* Mood + mood flag */}
       {latest?.mood && (
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-slate-400">Mood:</span>
-          <span className={cn('text-xs font-semibold capitalize', lowMood ? 'text-rose-500' : 'text-emerald-600')}>
+          <span className="text-xs text-muted-foreground">Mood:</span>
+          <span className={cn('text-xs font-semibold capitalize', lowMood ? 'text-destructive' : 'text-success')}>
             {latest.mood}
           </span>
           {latest.sleep_hours != null && (
-            <span className="text-xs text-slate-400 ml-2">· Sleep: <span className={cn('font-semibold', latest.sleep_hours < 6 ? 'text-rose-500' : 'text-slate-600')}>{latest.sleep_hours}h</span></span>
+            <span className="text-xs text-muted-foreground ml-2">· Sleep: <span className={cn('font-semibold', latest.sleep_hours < 6 ? 'text-destructive' : 'text-muted-foreground')}>{latest.sleep_hours}h</span></span>
           )}
         </div>
       )}
@@ -165,7 +165,7 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
         </button>
         <button
           onClick={() => navigate(`/messages?clientId=${client.id}`)}
-          className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+          className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-border text-muted-foreground hover:bg-muted transition-colors"
         >
           <MessageSquare className="w-3 h-3" />
         </button>

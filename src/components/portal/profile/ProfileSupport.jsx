@@ -18,8 +18,8 @@ export default function ProfileSupport() {
           <p className="text-white font-bold text-sm">KOACH AI</p>
           <p className="text-white/30 text-[10px] mt-0.5">Version 1.0.0</p>
           <div className="flex gap-3 mt-2">
-            <button className="text-blue-400 text-[10px] underline">Terms of Service</button>
-            <button className="text-blue-400 text-[10px] underline">Privacy Policy</button>
+            <button className="text-primary text-[10px] underline">Terms of Service</button>
+            <button className="text-primary text-[10px] underline">Privacy Policy</button>
           </div>
         </div>
 

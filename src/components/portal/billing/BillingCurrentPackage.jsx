@@ -7,7 +7,7 @@ const BILLING_LABEL = { one_time: 'One-time', monthly: '/mo', quarterly: '/quart
 function InclusionRow({ label }) {
   return (
     <div className="flex items-center gap-2 py-1">
-      <CheckCircle2 className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+      <CheckCircle2 className="w-3.5 h-3.5 text-success flex-shrink-0" />
       <span className="text-white/60 text-xs">{label}</span>
     </div>
   );
@@ -35,7 +35,7 @@ export default function BillingCurrentPackage({ client, packages, invoices, onMa
     );
   }
 
-  const statusColor = billingStatus === 'active' ? '#10B981' : billingStatus === 'past_due' ? '#F59E0B' : '#6B7280';
+  const statusColor = billingStatus === 'active' ? 'rgb(var(--success))' : billingStatus === 'past_due' ? 'rgb(var(--warning))' : 'rgb(var(--muted-foreground))';
   const statusLabel = billingStatus === 'active' ? 'Active' : billingStatus === 'past_due' ? 'Past Due' : billingStatus === 'cancelled' ? 'Cancelled' : 'Inactive';
 
   const nextBilling = addMonths(new Date(), 1);

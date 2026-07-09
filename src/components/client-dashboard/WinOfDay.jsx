@@ -71,8 +71,8 @@ export default function WinOfDay({ win = '', mindsetScore = 0, onWinChange, onMi
         />
         {win && (
           <div className="flex items-center gap-1 mt-1 pt-2 border-t border-border/50">
-            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-            <span className="text-[10px] text-amber-400 font-medium">Saved</span>
+            <Star className="w-3 h-3 text-warning fill-warning" />
+            <span className="text-[10px] text-warning font-medium">Saved</span>
           </div>
         )}
       </div>

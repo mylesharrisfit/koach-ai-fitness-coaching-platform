@@ -17,11 +17,11 @@ function PortalBellButton({ navigate, userEmail }) {
   return (
     <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/notifications')}
       className="relative w-10 h-10 rounded-xl flex items-center justify-center"
-      style={{ background: unread > 0 ? '#EFF6FF' : '#F8FAFC', border: `1px solid ${unread > 0 ? '#DBEAFE' : '#E2E8F0'}` }}>
-      <Bell className="w-5 h-5" style={{ color: unread > 0 ? '#2563EB' : '#94A3B8' }} />
+      style={{ background: unread > 0 ? 'rgb(var(--accent))' : 'rgb(var(--muted))', border: `1px solid ${unread > 0 ? 'rgb(var(--accent))' : 'rgb(var(--border))'}` }}>
+      <Bell className="w-5 h-5" style={{ color: unread > 0 ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }} />
       {unread > 0 && (
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-          className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center"
+          className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive flex items-center justify-center"
           style={{ boxShadow: '0 0 0 2px white' }}>
           <span className="text-[9px] font-black text-white">{unread > 9 ? '9+' : unread}</span>
         </motion.div>
@@ -42,18 +42,18 @@ function getGreeting() {
 
 function getWorkoutGradient(name) {
   const n = (name || '').toLowerCase();
-  if (n.includes('push') || n.includes('chest') || n.includes('shoulder')) return 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)';
-  if (n.includes('pull') || n.includes('back') || n.includes('bicep')) return 'linear-gradient(135deg, #0F766E 0%, #2563EB 100%)';
-  if (n.includes('leg') || n.includes('squat') || n.includes('glute')) return 'linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)';
-  if (n.includes('rest') || n.includes('recover')) return 'linear-gradient(135deg, #475569 0%, #334155 100%)';
-  return 'linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)';
+  if (n.includes('push') || n.includes('chest') || n.includes('shoulder')) return 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)';
+  if (n.includes('pull') || n.includes('back') || n.includes('bicep')) return 'linear-gradient(135deg, #0F766E 0%, rgb(var(--primary)) 100%)';
+  if (n.includes('leg') || n.includes('squat') || n.includes('glute')) return 'linear-gradient(135deg, rgb(var(--ai)) 0%, #DB2777 100%)';
+  if (n.includes('rest') || n.includes('recover')) return 'linear-gradient(135deg, rgb(var(--muted-foreground)) 0%, rgb(var(--foreground)) 100%)';
+  return 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)';
 }
 
 /* ── Daily Rings ── */
 function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterGoal, navigate }) {
   const rings = [
-    { label: 'Move', pct: workoutDone ? 100 : 0, color: '#2563EB', trackColor: '#DBEAFE', icon: '💪', path: '/portal/workouts' },
-    { label: 'Eat', pct: Math.min(100, Math.round((mealsLogged / Math.max(totalMeals, 1)) * 100)), color: '#10B981', trackColor: '#D1FAE5', icon: '🥗', path: '/portal/nutrition' },
+    { label: 'Move', pct: workoutDone ? 100 : 0, color: 'rgb(var(--primary))', trackColor: 'rgb(var(--accent))', icon: '💪', path: '/portal/workouts' },
+    { label: 'Eat', pct: Math.min(100, Math.round((mealsLogged / Math.max(totalMeals, 1)) * 100)), color: 'rgb(var(--success))', trackColor: 'rgb(var(--success))', icon: '🥗', path: '/portal/nutrition' },
     { label: 'Hydrate', pct: Math.min(100, Math.round((waterGlasses / waterGoal) * 100)), color: '#06B6D4', trackColor: '#CFFAFE', icon: '💧', path: '/portal/nutrition' },
   ];
   const doneCount = rings.filter(r => r.pct >= 100).length;
@@ -61,10 +61,10 @@ function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterG
 
   return (
     <div className="px-4">
-      <div className="bg-white rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+      <div className="bg-card rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
         <div className="flex items-center justify-between mb-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Daily Goals</p>
-          <p className="text-xs font-semibold text-slate-400">{doneCount} of 3 complete</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Daily Goals</p>
+          <p className="text-xs font-semibold text-muted-foreground">{doneCount} of 3 complete</p>
         </div>
         <div className="flex items-center justify-around">
           {rings.map((ring, i) => {
@@ -91,8 +91,8 @@ function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterG
                   )}
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-700 text-xs font-bold">{ring.label}</p>
-                  <p className="text-xs font-semibold" style={{ color: ring.pct >= 100 ? ring.color : '#94A3B8' }}>{ring.pct}%</p>
+                  <p className="text-foreground text-xs font-bold">{ring.label}</p>
+                  <p className="text-xs font-semibold" style={{ color: ring.pct >= 100 ? ring.color : 'rgb(var(--muted-foreground))' }}>{ring.pct}%</p>
                 </div>
               </motion.button>
             );
@@ -102,8 +102,8 @@ function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterG
           {allDone && (
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               className="mt-4 py-2.5 rounded-2xl text-center"
-              style={{ background: 'linear-gradient(135deg, #ECFDF5, #EFF6FF)', border: '1px solid #A7F3D0' }}>
-              <p className="text-emerald-600 font-bold text-sm">🎉 Perfect Day! All goals complete!</p>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--accent)))', border: '1px solid #A7F3D0' }}>
+              <p className="text-success font-bold text-sm">🎉 Perfect Day! All goals complete!</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -114,14 +114,14 @@ function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterG
 
 /* ── Stats Chips ── */
 function StatsChips({ streak, weight, weeklyWorkouts, daysUntilCheckIn, navigate }) {
-  const checkInColor = daysUntilCheckIn !== null && daysUntilCheckIn <= 0 ? '#EF4444' : daysUntilCheckIn !== null && daysUntilCheckIn <= 2 ? '#F59E0B' : '#0F172A';
+  const checkInColor = daysUntilCheckIn !== null && daysUntilCheckIn <= 0 ? 'rgb(var(--destructive))' : daysUntilCheckIn !== null && daysUntilCheckIn <= 2 ? 'rgb(var(--warning))' : 'rgb(var(--foreground))';
   const checkInLabel = daysUntilCheckIn === null ? '—' : daysUntilCheckIn <= 0 ? 'Due today!' : `in ${daysUntilCheckIn}d`;
   const displayWeight = weight && weight > 0 && weight < 999 ? `${Number(weight).toFixed(1)} lbs` : '—';
 
   const chips = [
-    { emoji: '🔥', value: `${streak}d`, label: 'Streak', path: '/portal/progress', valueColor: streak > 0 ? '#F59E0B' : '#0F172A' },
-    { emoji: '⚖️', value: displayWeight, label: 'Weight', path: '/portal/progress', valueColor: '#0F172A' },
-    { emoji: '💪', value: weeklyWorkouts, label: 'This week', path: '/portal/workouts', valueColor: '#2563EB' },
+    { emoji: '🔥', value: `${streak}d`, label: 'Streak', path: '/portal/progress', valueColor: streak > 0 ? 'rgb(var(--warning))' : 'rgb(var(--foreground))' },
+    { emoji: '⚖️', value: displayWeight, label: 'Weight', path: '/portal/progress', valueColor: 'rgb(var(--foreground))' },
+    { emoji: '💪', value: weeklyWorkouts, label: 'This week', path: '/portal/workouts', valueColor: 'rgb(var(--primary))' },
     { emoji: '📋', value: checkInLabel, label: 'Check-in', path: '/portal/checkin', valueColor: checkInColor },
   ];
 
@@ -130,12 +130,12 @@ function StatsChips({ streak, weight, weeklyWorkouts, daysUntilCheckIn, navigate
       <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
         {chips.map(chip => (
           <motion.button key={chip.label} whileTap={{ scale: 0.95 }} onClick={() => navigate(chip.path)}
-            className="flex-shrink-0 bg-white flex items-center gap-3 px-4 py-3 rounded-2xl"
-            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+            className="flex-shrink-0 bg-card flex items-center gap-3 px-4 py-3 rounded-2xl"
+            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
             <span className="text-lg">{chip.emoji}</span>
             <div className="text-left">
               <p className="font-extrabold text-sm leading-none" style={{ color: chip.valueColor }}>{chip.value}</p>
-              <p className="text-slate-400 text-[10px] mt-0.5">{chip.label}</p>
+              <p className="text-muted-foreground text-[10px] mt-0.5">{chip.label}</p>
             </div>
           </motion.button>
         ))}
@@ -154,13 +154,13 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
     return (
       <div className="px-4">
         <div className="rounded-3xl p-5 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)', border: '1px solid #A7F3D0', boxShadow: '0 4px 24px rgba(16,185,129,0.12)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: '1px solid #A7F3D0', boxShadow: '0 4px 24px rgba(16,185,129,0.12)' }}>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-2xl flex-shrink-0">🎉</div>
+            <div className="w-14 h-14 rounded-2xl bg-success flex items-center justify-center text-2xl flex-shrink-0">🎉</div>
             <div>
-              <p className="text-emerald-700 font-black text-lg">Workout Complete!</p>
-              <p className="text-emerald-600 text-sm mt-0.5">{workout?.day_name || 'Great work today'}</p>
-              <p className="text-emerald-500 text-xs mt-1 font-semibold">Keep the momentum going 🔥</p>
+              <p className="text-success font-black text-lg">Workout Complete!</p>
+              <p className="text-success text-sm mt-0.5">{workout?.day_name || 'Great work today'}</p>
+              <p className="text-success text-xs mt-1 font-semibold">Keep the momentum going 🔥</p>
             </div>
           </div>
         </div>
@@ -171,13 +171,13 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
   if (isRest) {
     return (
       <div className="px-4">
-        <div className="rounded-3xl p-5" style={{ background: 'linear-gradient(135deg, #F8FAFC, #F1F5F9)', border: '1px solid #E2E8F0', boxShadow: '0 2px 20px rgba(0,0,0,0.05)' }}>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">TODAY</p>
+        <div className="rounded-3xl p-5" style={{ background: 'linear-gradient(135deg, rgb(var(--muted)), rgb(var(--muted)))', border: '1px solid rgb(var(--border))', boxShadow: '0 2px 20px rgba(0,0,0,0.05)' }}>
+          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">TODAY</p>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-slate-200 flex items-center justify-center text-3xl flex-shrink-0">🛌</div>
+            <div className="w-14 h-14 rounded-2xl bg-border flex items-center justify-center text-3xl flex-shrink-0">🛌</div>
             <div>
-              <p className="text-slate-800 font-black text-xl">Rest & Recover</p>
-              <p className="text-slate-500 text-sm mt-0.5">Recovery is where progress happens</p>
+              <p className="text-foreground font-black text-xl">Rest & Recover</p>
+              <p className="text-muted-foreground text-sm mt-0.5">Recovery is where progress happens</p>
             </div>
           </div>
         </div>
@@ -225,8 +225,8 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
 
           <motion.button whileTap={{ scale: 0.97 }} onClick={onStart}
             className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2"
-            style={{ background: 'rgba(255,255,255,0.95)', color: '#2563EB', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
-            <Play className="w-5 h-5" fill="#2563EB" />
+            style={{ background: 'rgba(255,255,255,0.95)', color: 'rgb(var(--primary))', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+            <Play className="w-5 h-5" fill="rgb(var(--primary))" />
             Start Workout →
           </motion.button>
         </div>
@@ -245,21 +245,21 @@ function CoachMsgCard({ msg, navigate }) {
   return (
     <div className="px-4">
       <motion.button whileTap={{ scale: 0.98 }} onClick={() => navigate('/portal/messages')}
-        className="w-full bg-white rounded-2xl p-4 text-left flex items-center gap-3"
-        style={{ boxShadow: '0 2px 20px rgba(37,99,235,0.08)', border: '1px solid #DBEAFE', borderLeft: '4px solid #2563EB' }}>
+        className="w-full bg-card rounded-2xl p-4 text-left flex items-center gap-3"
+        style={{ boxShadow: '0 2px 20px rgba(37,99,235,0.08)', border: '1px solid rgb(var(--accent))', borderLeft: '4px solid rgb(var(--primary))' }}>
         <div className="relative flex-shrink-0">
           <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>C</div>
-          <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white" />
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>C</div>
+          <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-success border-2 border-white" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <p className="text-slate-800 font-bold text-sm">Your Coach</p>
-            <p className="text-slate-400 text-[10px]">{timeStr}</p>
+            <p className="text-foreground font-bold text-sm">Your Coach</p>
+            <p className="text-muted-foreground text-[10px]">{timeStr}</p>
           </div>
-          <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">{msg.content}</p>
+          <p className="text-muted-foreground text-xs mt-0.5 line-clamp-1">{msg.content}</p>
         </div>
-        <div className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
+        <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
       </motion.button>
     </div>
   );
@@ -272,15 +272,15 @@ function DailyTasks({ tasks, onToggle }) {
 
   return (
     <div className="px-4">
-      <div className="bg-white rounded-3xl overflow-hidden" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-        <div className="h-1 w-full" style={{ background: '#F1F5F9' }}>
+      <div className="bg-card rounded-3xl overflow-hidden" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
+        <div className="h-1 w-full" style={{ background: 'rgb(var(--muted))' }}>
           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }}
-            className="h-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+            className="h-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
         </div>
         <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-          <p className="text-slate-800 font-bold text-sm">Today's Tasks</p>
+          <p className="text-foreground font-bold text-sm">Today's Tasks</p>
           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
             {done} of {tasks.length}
           </span>
         </div>
@@ -288,21 +288,21 @@ function DailyTasks({ tasks, onToggle }) {
           {tasks.map(task => (
             <motion.button key={task.id} whileTap={{ scale: 0.98 }} onClick={() => onToggle(task.id)}
               className="w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all"
-              style={{ background: task.completed ? '#F0FDF4' : '#F8FAFC', border: `1px solid ${task.completed ? '#BBF7D0' : '#F1F5F9'}` }}>
+              style={{ background: task.completed ? 'rgb(var(--success))' : 'rgb(var(--muted))', border: `1px solid ${task.completed ? 'rgb(var(--success))' : 'rgb(var(--muted))'}` }}>
               <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
                 style={task.completed
-                  ? { background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }
-                  : { background: '#F1F5F9', border: '2px solid #E2E8F0' }}>
+                  ? { background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }
+                  : { background: 'rgb(var(--muted))', border: '2px solid rgb(var(--border))' }}>
                 {task.completed
                   ? <Check className="w-4 h-4 text-white" strokeWidth={3} />
                   : <span className="text-sm">{task.emoji}</span>
                 }
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-semibold ${task.completed ? 'line-through text-slate-400' : 'text-slate-800'}`}>{task.label}</p>
-                {task.sublabel && <p className="text-slate-400 text-[10px] mt-0.5">{task.sublabel}</p>}
+                <p className={`text-sm font-semibold ${task.completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{task.label}</p>
+                {task.sublabel && <p className="text-muted-foreground text-[10px] mt-0.5">{task.sublabel}</p>}
               </div>
-              {!task.completed && <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />}
+              {!task.completed && <ChevronRight className="w-4 h-4 text-border flex-shrink-0" />}
             </motion.button>
           ))}
         </div>
@@ -330,19 +330,19 @@ function WeeklyDots({ recentLogs, checkIns, streak }) {
 
   return (
     <div className="px-4">
-      <div className="bg-white rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+      <div className="bg-card rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
         <div className="flex items-center justify-between mb-4">
-          <p className="text-slate-800 font-bold text-sm">This Week</p>
+          <p className="text-foreground font-bold text-sm">This Week</p>
           {streak > 0 && (
-            <p className="text-amber-500 text-xs font-bold">🔥 {streak} day streak</p>
+            <p className="text-warning text-xs font-bold">🔥 {streak} day streak</p>
           )}
         </div>
         <div className="flex items-center justify-between">
           {days.map((day, i) => {
             const status = weekLogs[i];
             const isToday = i === todayIdx;
-            const bg = status === 'done' ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : status === 'missed' ? '#FEE2E2' : '#F1F5F9';
-            const iconColor = status === 'done' ? 'text-white' : status === 'missed' ? 'text-red-400' : 'text-slate-300';
+            const bg = status === 'done' ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : status === 'missed' ? 'rgb(var(--destructive))' : 'rgb(var(--muted))';
+            const iconColor = status === 'done' ? 'text-white' : status === 'missed' ? 'text-destructive' : 'text-border';
             return (
               <div key={i} className="flex flex-col items-center gap-1.5">
                 <motion.div animate={isToday ? { scale: [1, 1.12, 1] } : {}} transition={{ repeat: Infinity, duration: 2 }}
@@ -350,14 +350,14 @@ function WeeklyDots({ recentLogs, checkIns, streak }) {
                   style={{
                     width: isToday ? 36 : 28, height: isToday ? 36 : 28,
                     background: isToday ? 'transparent' : bg,
-                    border: isToday ? '2.5px solid #2563EB' : status === 'done' ? 'none' : '1.5px solid #E2E8F0',
+                    border: isToday ? '2.5px solid rgb(var(--primary))' : status === 'done' ? 'none' : '1.5px solid rgb(var(--border))',
                     boxShadow: isToday ? '0 0 0 3px rgba(37,99,235,0.15)' : 'none',
                   }}>
                   {status === 'done' && !isToday && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
-                  {status === 'missed' && !isToday && <span className="text-red-400 text-[9px] font-bold">✕</span>}
-                  {isToday && <span style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 900 }}>{format(new Date(), 'd')}</span>}
+                  {status === 'missed' && !isToday && <span className="text-destructive text-[9px] font-bold">✕</span>}
+                  {isToday && <span style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 900 }}>{format(new Date(), 'd')}</span>}
                 </motion.div>
-                <p className={`text-[9px] font-bold ${isToday ? 'text-blue-600' : 'text-slate-400'}`}>{day}</p>
+                <p className={`text-[9px] font-bold ${isToday ? 'text-primary' : 'text-muted-foreground'}`}>{day}</p>
               </div>
             );
           })}
@@ -467,22 +467,22 @@ export default function PortalHome({ user }) {
   const weeklyWorkouts = `${recentLogs.filter(l => l.workout_done).slice(0, 7).length}/7`;
 
   return (
-    <div className="pb-32 space-y-4" style={{ background: '#F8F9FA', minHeight: '100vh' }}>
+    <div className="pb-32 space-y-4" style={{ background: 'rgb(var(--muted))', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="bg-white px-5 pt-14 pb-5" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+      <div className="bg-card px-5 pt-14 pb-5" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-slate-400 text-xs font-semibold">{format(new Date(), 'EEEE, MMMM d')}</p>
-            <h1 className="text-slate-900 font-black text-2xl leading-tight mt-0.5">
+            <p className="text-muted-foreground text-xs font-semibold">{format(new Date(), 'EEEE, MMMM d')}</p>
+            <h1 className="text-foreground font-black text-2xl leading-tight mt-0.5">
               {getGreeting()}, {firstName}! 👋
             </h1>
-            <p className="text-blue-600 text-sm font-semibold mt-1">{motivLine}</p>
+            <p className="text-primary text-sm font-semibold mt-1">{motivLine}</p>
           </div>
           <div className="flex items-center gap-2 ml-4">
             <PortalBellButton navigate={navigate} userEmail={user?.email} />
             <motion.button whileTap={{ scale: 0.9 }} onClick={() => navigate('/portal/profile')}
               className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
               {user?.full_name
                 ? <span className="text-white font-bold text-sm">{user.full_name[0]}</span>
                 : <User className="w-5 h-5 text-white" />
@@ -500,9 +500,9 @@ export default function PortalHome({ user }) {
       <WeeklyDots recentLogs={recentLogs} checkIns={checkIns} streak={streak} />
 
       <div className="px-4 pb-4">
-        <div className="bg-white rounded-2xl p-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid #F1F5F9' }}>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-2">Daily Motivation</p>
-          <p className="text-slate-600 text-sm leading-relaxed italic">"The pain you feel today will be the strength you feel tomorrow."</p>
+        <div className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-2">Daily Motivation</p>
+          <p className="text-muted-foreground text-sm leading-relaxed italic">"The pain you feel today will be the strength you feel tomorrow."</p>
         </div>
       </div>
     </div>

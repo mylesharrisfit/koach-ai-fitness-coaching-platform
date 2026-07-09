@@ -34,7 +34,7 @@ export default function DailyTasks({ tasks, onToggle }) {
                 animate={{ scale: task.completed ? [1.2, 1] : 1 }}
                 transition={{ duration: 0.2 }}>
                 {task.completed
-                  ? <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                  ? <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
                   : <Circle className="w-5 h-5 text-white/20 flex-shrink-0" />}
               </motion.div>
               <div className="flex-1 min-w-0">

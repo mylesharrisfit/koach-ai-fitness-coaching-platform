@@ -11,11 +11,11 @@ function MiniRecRow({ rec, checkIn, client }) {
   const confirmText = getConfirmText(rec);
 
   const priorityDot = {
-    critical: 'bg-red-400',
-    high: 'bg-amber-400',
+    critical: 'bg-destructive',
+    high: 'bg-warning',
     medium: 'bg-primary',
-    low: 'bg-[#6B7280]',
-  }[rec.priority] || 'bg-[#6B7280]';
+    low: 'bg-muted-foreground',
+  }[rec.priority] || 'bg-muted-foreground';
 
   const handleApplyClick = (e) => {
     e.preventDefault(); e.stopPropagation();
@@ -41,15 +41,15 @@ function MiniRecRow({ rec, checkIn, client }) {
   return (
     <div className={cn(
       'rounded-xl border transition-all',
-      stage === 'done' ? 'opacity-50 bg-[#F6F7FB] border-[#E7EAF3]' : 'bg-white border-[#E7EAF3] hover:border-primary/20',
+      stage === 'done' ? 'opacity-50 bg-muted border-border' : 'bg-card border-border hover:border-primary/20',
       stage === 'confirm' && 'border-primary/30'
     )}>
       <div className="flex items-center gap-3 px-3 py-2.5">
         <span className={cn('w-2 h-2 rounded-full flex-shrink-0', priorityDot)} />
         <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-[#1F2A44] truncate">{rec.title}</p>
-          <p className="text-[11px] text-[#6B7280] truncate">{client?.name || checkIn.client_name}</p>
+          <p className="text-xs font-semibold text-foreground truncate">{rec.title}</p>
+          <p className="text-[11px] text-muted-foreground truncate">{client?.name || checkIn.client_name}</p>
         </div>
 
         {stage === 'idle' && (
@@ -60,9 +60,9 @@ function MiniRecRow({ rec, checkIn, client }) {
             <Zap className="w-3 h-3" /> {rec.actionLabel}
           </button>
         )}
-        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-[#6B7280] flex-shrink-0" />}
+        {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground flex-shrink-0" />}
         {stage === 'done' && (
-          <span className="flex-shrink-0 flex items-center gap-1 text-[11px] font-semibold text-emerald-500">
+          <span className="flex-shrink-0 flex items-center gap-1 text-[11px] font-semibold text-success">
             <Check className="w-3 h-3" /> Done
           </span>
         )}
@@ -73,7 +73,7 @@ function MiniRecRow({ rec, checkIn, client }) {
               <Check className="w-3 h-3" /> Yes
             </button>
             <button onClick={handleCancel}
-              className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] text-[#6B7280]">
+              className="flex items-center justify-center w-7 h-7 rounded-lg bg-muted border border-border text-muted-foreground">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -84,10 +84,10 @@ function MiniRecRow({ rec, checkIn, client }) {
         <div className="px-3 pb-2.5">
           <div className="flex items-start gap-1.5 bg-primary/5 rounded-lg px-2.5 py-2">
             <AlertCircle className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-            <p className="text-[11px] text-[#1F2A44] leading-snug">{confirmText}</p>
+            <p className="text-[11px] text-foreground leading-snug">{confirmText}</p>
           </div>
           {rec.action === 'message' && rec.actionData?.content && (
-            <p className="mt-1.5 text-[10px] text-[#6B7280] italic border-l-2 border-primary/30 pl-2 leading-relaxed line-clamp-2">
+            <p className="mt-1.5 text-[10px] text-muted-foreground italic border-l-2 border-primary/30 pl-2 leading-relaxed line-clamp-2">
               "{rec.actionData.content}"
             </p>
           )}
@@ -127,18 +127,18 @@ export default function RecommendationsWidget({ clients, checkIns }) {
   const urgentCount = topRecs.filter(r => r.rec.priority === 'critical' || r.rec.priority === 'high').length;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#E7EAF3]">
+    <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3.5 border-b border-border">
         <div className="flex items-center gap-2">
           <span className="text-base">⚡</span>
-          <span className="font-heading font-semibold text-sm text-[#1F2A44]">Recommended Actions</span>
+          <span className="font-heading font-semibold text-sm text-foreground">Recommended Actions</span>
           {urgentCount > 0 && (
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-lg bg-red-50 text-red-500 border border-red-100">
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-lg bg-destructive/10 text-destructive border border-destructive">
               {urgentCount} urgent
             </span>
           )}
         </div>
-        <Link to="/checkin-review" className="flex items-center gap-0.5 text-[11px] text-[#6B7280] hover:text-primary transition-colors font-medium">
+        <Link to="/checkin-review" className="flex items-center gap-0.5 text-[11px] text-muted-foreground hover:text-primary transition-colors font-medium">
           See all <ChevronRight className="w-3 h-3" />
         </Link>
       </div>

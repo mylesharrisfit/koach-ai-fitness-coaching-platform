@@ -62,40 +62,40 @@ const CATEGORY_SHORTCUTS = [
 ];
 
 const MUSCLE_COLORS = {
-  chest: '#2563EB', back: '#10B981', shoulders: '#F59E0B', biceps: '#7C3AED',
-  triceps: '#7C3AED', core: '#EF4444', glutes: '#EC4899', legs: '#06B6D4',
-  hamstrings: '#06B6D4', calves: '#84CC16', full_body: '#F97316', cardio: '#8B5CF6',
+  chest: 'rgb(var(--primary))', back: 'rgb(var(--success))', shoulders: 'rgb(var(--warning))', biceps: 'rgb(var(--ai))',
+  triceps: 'rgb(var(--ai))', core: 'rgb(var(--destructive))', glutes: '#EC4899', legs: '#06B6D4',
+  hamstrings: '#06B6D4', calves: '#84CC16', full_body: '#F97316', cardio: 'rgb(var(--ai))',
 };
 
 function ExerciseListRow({ exercise, onView, onEdit }) {
   return (
-    <div onClick={onView} className="flex items-center gap-3 px-4 py-3 bg-white border border-[#E5E7EB] rounded-xl hover:border-primary/30 hover:shadow-sm cursor-pointer transition-all group">
+    <div onClick={onView} className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-xl hover:border-primary/30 hover:shadow-sm cursor-pointer transition-all group">
       <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-        style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || '#374151'}18` }}>
-        <Dumbbell className="w-4 h-4" style={{ color: MUSCLE_COLORS[exercise.muscle_group] || '#374151' }} />
+        style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))'}18` }}>
+        <Dumbbell className="w-4 h-4" style={{ color: MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))' }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm text-[#111827] truncate">{exercise.name}</p>
+        <p className="font-semibold text-sm text-foreground truncate">{exercise.name}</p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         {exercise.muscle_group && (
           <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || '#374151'}18`, color: MUSCLE_COLORS[exercise.muscle_group] || '#374151' }}>
+            style={{ background: `${MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))'}18`, color: MUSCLE_COLORS[exercise.muscle_group] || 'rgb(var(--foreground))' }}>
             {exercise.muscle_group.replace('_', ' ')}
           </span>
         )}
         {exercise.equipment && (
-          <span className="text-[10px] text-[#6B7280] hidden sm:inline">{exercise.equipment.replace('_', ' ')}</span>
+          <span className="text-[10px] text-muted-foreground hidden sm:inline">{exercise.equipment.replace('_', ' ')}</span>
         )}
         {exercise.difficulty && (
           <span className={cn('text-[10px] font-semibold hidden md:inline capitalize',
-            exercise.difficulty === 'beginner' ? 'text-emerald-600' :
-            exercise.difficulty === 'intermediate' ? 'text-amber-600' : 'text-red-500')}>
+            exercise.difficulty === 'beginner' ? 'text-success' :
+            exercise.difficulty === 'intermediate' ? 'text-warning' : 'text-destructive')}>
             {exercise.difficulty}
           </span>
         )}
         {exercise.is_coach_branded && (
-          <Star className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" fill="currentColor" />
+          <Star className="w-3.5 h-3.5 text-warning flex-shrink-0" fill="currentColor" />
         )}
       </div>
     </div>
@@ -178,7 +178,7 @@ export default function ExerciseLibrary() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       {/* ── Header ── */}
       <div className="rounded-2xl p-4 sm:p-5 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)', border: '1px solid rgba(255,255,255,0.07)' }}>
+        style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(255,255,255,0.07)' }}>
         <div>
           <h1 className="text-xl font-bold text-white">Exercise Library</h1>
           <p className="text-xs mt-0.5 text-white/50">{exercises.length} exercises · {stats.custom} custom</p>
@@ -186,7 +186,7 @@ export default function ExerciseLibrary() {
         <div className="flex items-center gap-2 flex-wrap">
 <button onClick={() => { setEditingExercise(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff', boxShadow: '0 2px 12px rgba(37,99,235,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', boxShadow: '0 2px 12px rgba(37,99,235,0.4)' }}>
             <Plus className="w-4 h-4" /> Add Exercise
           </button>
         </div>
@@ -194,37 +194,37 @@ export default function ExerciseLibrary() {
 
       {/* ── 4 Stat Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-        <div className="bg-white rounded-xl border border-blue-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-accent p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <div className="w-2 h-2 rounded-full bg-blue-400" />
-            <Dumbbell className="w-4 h-4 text-blue-400" />
+            <div className="w-2 h-2 rounded-full bg-primary" />
+            <Dumbbell className="w-4 h-4 text-primary" />
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.total}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Total Exercises</p>
+          <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Total Exercises</p>
         </div>
-        <div className="bg-white rounded-xl border border-purple-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-ai p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <div className="w-2 h-2 rounded-full bg-purple-400" />
-            <Star className="w-4 h-4 text-purple-400" />
+            <div className="w-2 h-2 rounded-full bg-ai" />
+            <Star className="w-4 h-4 text-ai" />
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.custom}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Custom Exercises</p>
+          <p className="text-2xl font-bold text-foreground">{stats.custom}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Custom Exercises</p>
         </div>
-        <div className="bg-white rounded-xl border border-orange-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-orange-100 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <div className="w-2 h-2 rounded-full bg-orange-400" />
             <span className="text-orange-400 text-sm">🏆</span>
           </div>
-          <p className="text-lg font-bold text-[#111827] truncate">{exercises.find(e => e.is_coach_branded)?.name || 'Bench Press'}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Most Used</p>
+          <p className="text-lg font-bold text-foreground truncate">{exercises.find(e => e.is_coach_branded)?.name || 'Bench Press'}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Most Used</p>
         </div>
-        <div className="bg-white rounded-xl border border-emerald-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-success p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-emerald-500 text-sm">✨</span>
+            <div className="w-2 h-2 rounded-full bg-success" />
+            <span className="text-success text-sm">✨</span>
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.recent}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Added This Month</p>
+          <p className="text-2xl font-bold text-foreground">{stats.recent}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Added This Month</p>
         </div>
       </div>
 
@@ -233,37 +233,37 @@ export default function ExerciseLibrary() {
         {CATEGORY_SHORTCUTS.map(cat => (
           <button key={cat.label} onClick={() => setActiveShortcut(activeShortcut?.label === cat.label ? null : cat)}
             className={cn('flex-shrink-0 px-3 py-2 rounded-xl text-xs font-semibold border transition-all',
-              activeShortcut?.label === cat.label ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white text-[#374151] border-[#E5E7EB] hover:border-[#D1D5DB]')}>
+              activeShortcut?.label === cat.label ? 'bg-sidebar text-white border-foreground' : 'bg-card text-foreground border-border hover:border-muted-foreground')}>
             {cat.label}
           </button>
         ))}
       </div>
 
       {/* ── Search & Filters ── */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 mb-5 space-y-3">
+      <div className="bg-card border border-border rounded-xl p-4 mb-5 space-y-3">
         {/* Search row */}
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Search by name, muscle group, or equipment..."
-              className="w-full pl-9 pr-9 py-2 text-sm border border-[#E5E7EB] rounded-lg focus:outline-none focus:ring-1 focus:ring-primary" />
-            {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X className="w-3.5 h-3.5 text-[#9CA3AF]" /></button>}
+              className="w-full pl-9 pr-9 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary" />
+            {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X className="w-3.5 h-3.5 text-muted-foreground" /></button>}
           </div>
           {/* Sort */}
           <div className="relative">
             <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-              className="appearance-none pl-3 pr-8 py-2 text-xs border border-[#E5E7EB] rounded-lg bg-white text-[#374151] focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+              className="appearance-none pl-3 pr-8 py-2 text-xs border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
               {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
           </div>
           {/* View toggle */}
-          <div className="flex border border-[#E5E7EB] rounded-lg overflow-hidden">
-            <button onClick={() => setViewMode('grid')} className={cn('p-2 transition-colors', viewMode === 'grid' ? 'bg-primary text-white' : 'bg-white text-[#6B7280] hover:bg-[#F9FAFB]')}>
+          <div className="flex border border-border rounded-lg overflow-hidden">
+            <button onClick={() => setViewMode('grid')} className={cn('p-2 transition-colors', viewMode === 'grid' ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-background')}>
               <LayoutGrid className="w-4 h-4" />
             </button>
-            <button onClick={() => setViewMode('list')} className={cn('p-2 transition-colors', viewMode === 'list' ? 'bg-primary text-white' : 'bg-white text-[#6B7280] hover:bg-[#F9FAFB]')}>
+            <button onClick={() => setViewMode('list')} className={cn('p-2 transition-colors', viewMode === 'list' ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-background')}>
               <List className="w-4 h-4" />
             </button>
           </div>
@@ -276,7 +276,7 @@ export default function ExerciseLibrary() {
             {MUSCLE_GROUPS.map(mg => (
               <button key={mg.value} onClick={() => { setMuscleFilter(muscleFilter === mg.value ? 'all' : mg.value); setActiveShortcut(null); }}
                 className={cn('flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all',
-                  muscleFilter === mg.value ? 'bg-primary text-white border-primary' : 'bg-[#F9FAFB] text-[#374151] border-[#E5E7EB] hover:border-primary/30')}>
+                  muscleFilter === mg.value ? 'bg-primary text-white border-primary' : 'bg-background text-foreground border-border hover:border-primary/30')}>
                 {mg.label}
               </button>
             ))}
@@ -287,19 +287,19 @@ export default function ExerciseLibrary() {
         <div className="flex gap-2 flex-wrap items-center">
           <div className="relative">
             <select value={equipmentFilter} onChange={e => setEquipmentFilter(e.target.value)}
-              className="appearance-none pl-3 pr-7 py-1.5 text-xs border border-[#E5E7EB] rounded-lg bg-white text-[#374151] focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+              className="appearance-none pl-3 pr-7 py-1.5 text-xs border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
               {EQUIPMENT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
-            <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
           </div>
           <div className="relative">
             <select value={difficultyFilter} onChange={e => setDifficultyFilter(e.target.value)}
-              className="appearance-none pl-3 pr-7 py-1.5 text-xs border border-[#E5E7EB] rounded-lg bg-white text-[#374151] focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+              className="appearance-none pl-3 pr-7 py-1.5 text-xs border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
               {DIFFICULTY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
-            <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
           </div>
-          <span className="text-xs text-[#9CA3AF] ml-auto">{filtered.length} exercises</span>
+          <span className="text-xs text-muted-foreground ml-auto">{filtered.length} exercises</span>
           {activeFilterCount > 0 && (
             <button onClick={clearAll} className="text-xs text-primary hover:underline flex items-center gap-1">
               <X className="w-3 h-3" /> Clear all ({activeFilterCount})
@@ -311,13 +311,13 @@ export default function ExerciseLibrary() {
       {/* ── Exercise grid / list ── */}
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array(8).fill(0).map((_, i) => <div key={i} className="h-64 bg-white rounded-2xl border border-[#E5E7EB] animate-pulse" />)}
+          {Array(8).fill(0).map((_, i) => <div key={i} className="h-64 bg-card rounded-2xl border border-border animate-pulse" />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
-          <Dumbbell className="w-12 h-12 text-[#D1D5DB] mx-auto mb-4" />
-          <p className="font-semibold text-[#374151]">No exercises found</p>
-          <p className="text-sm text-[#9CA3AF] mt-1">Try adjusting your filters or add a new exercise</p>
+          <Dumbbell className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="font-semibold text-foreground">No exercises found</p>
+          <p className="text-sm text-muted-foreground mt-1">Try adjusting your filters or add a new exercise</p>
 
         </div>
       ) : viewMode === 'grid' ? (

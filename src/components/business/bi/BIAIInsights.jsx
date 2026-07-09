@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { differenceInDays, parseISO, startOfMonth } from 'date-fns';
 
 const INSIGHT_ICONS = { revenue: DollarSign, retention: Users, pricing: TrendingUp, efficiency: Clock, growth: Target };
-const INSIGHT_COLORS = { revenue: '#3B82F6', retention: '#8B5CF6', pricing: '#F59E0B', efficiency: '#06B6D4', growth: '#22C55E' };
+const INSIGHT_COLORS = { revenue: 'rgb(var(--primary))', retention: 'rgb(var(--ai))', pricing: 'rgb(var(--warning))', efficiency: '#06B6D4', growth: 'rgb(var(--success))' };
 
 export default function BIAIInsights({ clients, checkIns, leads, payments }) {
   const [insights, setInsights] = useState(null);
@@ -72,13 +72,13 @@ Categories: revenue, retention, pricing, efficiency, growth`,
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-primary" /> AI Business Insights
           </h3>
-          <p className="text-xs text-gray-400 mt-0.5">AI-generated recommendations based on your data</p>
+          <p className="text-xs text-muted-foreground mt-0.5">AI-generated recommendations based on your data</p>
         </div>
         <button onClick={generateInsights} disabled={loading}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-xl text-xs font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60">
@@ -88,7 +88,7 @@ Categories: revenue, retention, pricing, efficiency, growth`,
       </div>
 
       {loading && (
-        <div className="py-8 flex flex-col items-center gap-3 text-gray-400">
+        <div className="py-8 flex flex-col items-center gap-3 text-muted-foreground">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
           <p className="text-sm">Analyzing your business data…</p>
         </div>
@@ -96,9 +96,9 @@ Categories: revenue, retention, pricing, efficiency, growth`,
 
       {!loading && !insights && (
         <div className="py-8 text-center">
-          <Sparkles className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-          <p className="text-sm text-gray-500 font-medium">Generate AI-powered insights</p>
-          <p className="text-xs text-gray-400 mt-1">Click "Generate Insights" to get personalized recommendations</p>
+          <Sparkles className="w-10 h-10 text-border mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground font-medium">Generate AI-powered insights</p>
+          <p className="text-xs text-muted-foreground mt-1">Click "Generate Insights" to get personalized recommendations</p>
         </div>
       )}
 
@@ -106,7 +106,7 @@ Categories: revenue, retention, pricing, efficiency, growth`,
         <div className="space-y-3">
           {insights.map((ins, i) => {
             const Icon = INSIGHT_ICONS[ins.category] || TrendingUp;
-            const color = INSIGHT_COLORS[ins.category] || '#6B7280';
+            const color = INSIGHT_COLORS[ins.category] || 'rgb(var(--muted-foreground))';
             return (
               <div key={i} className="p-3.5 rounded-xl border" style={{ borderColor: `${color}20`, background: `${color}05` }}>
                 <div className="flex items-start gap-3">
@@ -118,10 +118,10 @@ Categories: revenue, retention, pricing, efficiency, growth`,
                       <span className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md" style={{ background: `${color}15`, color }}>
                         {ins.category}
                       </span>
-                      {ins.impact && <span className="text-[9px] text-gray-400">{ins.impact}</span>}
+                      {ins.impact && <span className="text-[9px] text-muted-foreground">{ins.impact}</span>}
                     </div>
-                    <p className="text-xs font-bold text-gray-900 mb-1">{ins.headline}</p>
-                    <p className="text-xs text-gray-500 leading-relaxed">{ins.body}</p>
+                    <p className="text-xs font-bold text-foreground mb-1">{ins.headline}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{ins.body}</p>
                     {ins.action && (
                       <p className="text-xs font-semibold mt-2" style={{ color }}>→ {ins.action}</p>
                     )}

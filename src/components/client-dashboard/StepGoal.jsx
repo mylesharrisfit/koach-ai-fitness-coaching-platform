@@ -20,42 +20,42 @@ export default function StepGoal({ steps = 0, goal = 10000, onChange }) {
 
   return (
     <div className={cn(
-      'bg-white rounded-2xl border shadow-sm p-5',
-      done ? 'border-[#BBF7D0]' : 'border-[#E5E7EB]'
+      'bg-card rounded-2xl border shadow-sm p-5',
+      done ? 'border-success' : 'border-border'
     )}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0',
-            done ? 'bg-[#DCFCE7]' : 'bg-[#F3F4F6]')}>
+            done ? 'bg-success/10' : 'bg-muted')}>
             {done
-              ? <CheckCircle2 className="w-5 h-5 text-[#16A34A]" />
-              : <Footprints className="w-5 h-5 text-[#6B7280]" />
+              ? <CheckCircle2 className="w-5 h-5 text-success" />
+              : <Footprints className="w-5 h-5 text-muted-foreground" />
             }
           </div>
           <div>
-            <p className="text-xs text-[#9CA3AF] font-medium">Daily Steps</p>
-            <p className="text-xl font-bold text-[#111827]" style={{ letterSpacing: '-0.04em' }}>
+            <p className="text-xs text-muted-foreground font-medium">Daily Steps</p>
+            <p className="text-xl font-bold text-foreground" style={{ letterSpacing: '-0.04em' }}>
               {steps.toLocaleString()}
-              <span className="text-sm font-normal text-[#9CA3AF] ml-1">/ {goal.toLocaleString()}</span>
+              <span className="text-sm font-normal text-muted-foreground ml-1">/ {goal.toLocaleString()}</span>
             </p>
           </div>
         </div>
         <div className="text-right">
           {done
-            ? <span className="text-sm font-bold text-[#16A34A] bg-[#F0FDF4] px-3 py-1.5 rounded-full border border-[#BBF7D0]">Goal met! 🎉</span>
+            ? <span className="text-sm font-bold text-success bg-success/10 px-3 py-1.5 rounded-full border border-success">Goal met! 🎉</span>
             : <div>
-                <p className="text-xl font-bold text-[#111827]" style={{ letterSpacing: '-0.04em' }}>{Math.round(pct)}%</p>
-                <p className="text-xs text-[#9CA3AF]">{remaining.toLocaleString()} left</p>
+                <p className="text-xl font-bold text-foreground" style={{ letterSpacing: '-0.04em' }}>{Math.round(pct)}%</p>
+                <p className="text-xs text-muted-foreground">{remaining.toLocaleString()} left</p>
               </div>
           }
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="h-3 bg-[#F3F4F6] rounded-full overflow-hidden mb-4">
+      <div className="h-3 bg-muted rounded-full overflow-hidden mb-4">
         <div
-          className={cn('h-full rounded-full transition-all duration-700', done ? 'bg-[#16A34A]' : 'bg-[#2563EB]')}
+          className={cn('h-full rounded-full transition-all duration-700', done ? 'bg-success' : 'bg-primary')}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -70,10 +70,10 @@ export default function StepGoal({ steps = 0, goal = 10000, onChange }) {
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
             placeholder="Steps to add..."
-            className="flex-1 h-10 px-3 text-sm border border-[#E5E7EB] rounded-xl outline-none focus:border-[#2563EB] text-[#111827]"
+            className="flex-1 h-10 px-3 text-sm border border-border rounded-xl outline-none focus:border-primary text-foreground"
           />
-          <button onClick={handleAdd} className="px-4 h-10 bg-[#111827] text-white text-sm font-bold rounded-xl hover:bg-[#1F2937] transition-colors">Add</button>
-          <button onClick={() => setAdding(false)} className="px-3 h-10 border border-[#E5E7EB] text-sm text-[#6B7280] rounded-xl hover:bg-[#F9FAFB] transition-colors">✕</button>
+          <button onClick={handleAdd} className="px-4 h-10 bg-sidebar text-white text-sm font-bold rounded-xl hover:bg-[#1F2937] transition-colors">Add</button>
+          <button onClick={() => setAdding(false)} className="px-3 h-10 border border-border text-sm text-muted-foreground rounded-xl hover:bg-background transition-colors">✕</button>
         </div>
       ) : (
         <div className="flex gap-2">
@@ -81,14 +81,14 @@ export default function StepGoal({ steps = 0, goal = 10000, onChange }) {
             <button
               key={n}
               onClick={() => onChange(steps + n)}
-              className="flex-1 h-9 rounded-xl border border-[#E5E7EB] text-xs font-semibold text-[#374151] hover:border-[#111827] hover:bg-[#F9FAFB] active:scale-95 transition-all"
+              className="flex-1 h-9 rounded-xl border border-border text-xs font-semibold text-foreground hover:border-foreground hover:bg-background active:scale-95 transition-all"
             >
               +{n.toLocaleString()}
             </button>
           ))}
           <button
             onClick={() => setAdding(true)}
-            className="w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#111827] transition-all"
+            className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:border-foreground transition-all"
           >
             <Plus className="w-3.5 h-3.5" />
           </button>

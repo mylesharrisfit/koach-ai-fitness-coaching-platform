@@ -21,7 +21,7 @@ export default function NotifsCommunity({ s, set }) {
         title="New community post"
         description="Notify when a client posts in the community">
         <NDelivery value={d.new_post.delivery} onChange={v => upd('new_post', { delivery: v })} />
-        <label className="flex items-center gap-1.5 text-xs text-slate-600 font-medium cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium cursor-pointer">
           <NToggle value={d.new_post.flagged_only} onChange={v => upd('new_post', { flagged_only: v })} />
           Only flagged/reported content
         </label>

@@ -12,8 +12,8 @@ import { formatDistanceToNow } from 'date-fns';
 const QUICK_ACTIONS = [
   {
     label: 'Nutrition',
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
+    color: 'text-success',
+    bg: 'bg-success/10',
     actions: [
       { label: 'Calorie Adjustment', key: 'calorie_adjust' },
       { label: 'Macro Recalculation', key: 'macro_recalc' },
@@ -23,8 +23,8 @@ const QUICK_ACTIONS = [
   },
   {
     label: 'Programming',
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
+    color: 'text-primary',
+    bg: 'bg-accent',
     actions: [
       { label: 'Workout Progression', key: 'workout_progression' },
       { label: 'Deload Week Planning', key: 'deload_week' },
@@ -34,8 +34,8 @@ const QUICK_ACTIONS = [
   },
   {
     label: 'Client Management',
-    color: 'text-purple-600',
-    bg: 'bg-purple-50',
+    color: 'text-ai',
+    bg: 'bg-ai/10',
     actions: [
       { label: 'Check-In Response Draft', key: 'checkin_response' },
       { label: 'Weekly Summary', key: 'weekly_summary' },
@@ -121,7 +121,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
   return (
     <div className="w-full lg:w-[280px] lg:shrink-0 flex flex-col gap-4 overflow-y-auto pr-1">
       {/* Client selector */}
-      <div className="bg-white border border-border rounded-xl p-4">
+      <div className="bg-card border border-border rounded-xl p-4">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Client Context</p>
         <Select value={selectedClient?.id || ''} onValueChange={id => onSelectClient(clients.find(c => c.id === id) || null)}>
           <SelectTrigger className="text-sm">
@@ -140,7 +140,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
           <div className="mt-3 pt-3 border-t border-border space-y-1.5">
             <p className="text-xs font-semibold truncate">{selectedClient.name}</p>
             <div className="flex flex-wrap gap-1">
-              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium capitalize">{selectedClient.goal?.replace(/_/g, ' ')}</span>
+              <span className="text-[10px] bg-accent text-primary px-2 py-0.5 rounded-full font-medium capitalize">{selectedClient.goal?.replace(/_/g, ' ')}</span>
               {selectedClient.current_weight && (
                 <span className="text-[10px] bg-secondary text-muted-foreground px-2 py-0.5 rounded-full">{selectedClient.current_weight} lbs</span>
               )}
@@ -164,7 +164,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-4 py-3 border-b border-border">Quick Actions</p>
         {QUICK_ACTIONS.map(cat => (
           <div key={cat.label} className="border-b border-border last:border-0">
@@ -194,7 +194,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
 
       {/* Recent Conversations */}
       {conversations.length > 0 && (
-        <div className="bg-white border border-border rounded-xl overflow-hidden">
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Recent Chats</p>
             <button onClick={onNewChat} className="text-[10px] text-primary font-semibold hover:underline">+ New</button>
@@ -253,7 +253,7 @@ export default function Assistant() {
   return (
     <div className="p-4 lg:p-6 max-w-[1400px] mx-auto">
       {/* Header */}
-      <div className="bg-[#111827] rounded-xl p-5 text-white mb-5">
+      <div className="bg-sidebar rounded-xl p-5 text-white mb-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">

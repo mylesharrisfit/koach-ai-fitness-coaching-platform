@@ -67,7 +67,7 @@ export default function MeasurementsCard({ checkIns, onLogMeasurements }) {
         <p className="text-white font-bold text-sm">📏 Body Measurements</p>
         <button onClick={onLogMeasurements}
           className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
-          style={{ background: 'rgba(59,130,246,0.2)', color: '#60A5FA', border: '1px solid rgba(59,130,246,0.25)' }}>
+          style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.25)' }}>
           <Plus className="w-3 h-3" /> Log
         </button>
       </div>
@@ -77,7 +77,7 @@ export default function MeasurementsCard({ checkIns, onLogMeasurements }) {
           const isProgress = m.change !== null && m.change < 0;
           const isRegress = m.change !== null && m.change > 0;
           const TrendIcon = isProgress ? TrendingDown : isRegress ? TrendingUp : Minus;
-          const trendColor = isProgress ? '#22C55E' : isRegress ? '#EF4444' : 'rgba(255,255,255,0.3)';
+          const trendColor = isProgress ? 'rgb(var(--success))' : isRegress ? 'rgb(var(--destructive))' : 'rgba(255,255,255,0.3)';
 
           return (
             <div key={m.key} className="flex items-center gap-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>

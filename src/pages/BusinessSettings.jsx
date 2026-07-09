@@ -29,7 +29,7 @@ const EMPTY = {
   allow_session_requests: true, session_types: [], booking_notice_hours: 24, max_sessions_per_month: 0, session_buffer_minutes: 0,
   pipeline_stages: [], auto_move_pipeline_enabled: false, auto_move_pipeline_days: 7,
   followup_reminder_enabled: true, followup_reminder_days: 3,
-  brand_color: '#2563EB', logo_url: '', email_signature: '', reply_to_email: '',
+  brand_color: 'rgb(var(--primary))', logo_url: '', email_signature: '', reply_to_email: '',
 };
 
 export default function BusinessSettings() {
@@ -131,26 +131,26 @@ export default function BusinessSettings() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Link to="/settings" className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
-            <ArrowLeft className="w-4 h-4 text-slate-600" />
+          <Link to="/settings" className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center hover:bg-border transition-colors">
+            <ArrowLeft className="w-4 h-4 text-muted-foreground" />
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-slate-900">Business Settings</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Configure how your coaching business operates</p>
+            <h1 className="text-2xl font-black text-foreground">Business Settings</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Configure how your coaching business operates</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <AnimatePresence>
             {savedAt && !isDirty && (
               <motion.p initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
-                className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                className="text-xs text-success font-semibold flex items-center gap-1">
                 <Check className="w-3 h-3" /> Saved ✓
               </motion.p>
             )}
           </AnimatePresence>
           <button onClick={save} disabled={saving}
             className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60 transition-opacity"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
           </button>
@@ -167,17 +167,17 @@ export default function BusinessSettings() {
         <BSBranding {...sharedProps} />
 
         {/* Export/Import */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between shadow-sm">
+        <div className="bg-card rounded-2xl border border-border p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="font-bold text-slate-700 text-sm">Backup & Restore</p>
-            <p className="text-xs text-slate-400 mt-0.5">Export your settings as JSON or import from a backup</p>
+            <p className="font-bold text-foreground text-sm">Backup & Restore</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Export your settings as JSON or import from a backup</p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={exportSettings}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-muted-foreground bg-muted border border-border hover:bg-border transition-colors">
               <Download className="w-4 h-4" /> Export
             </button>
-            <label className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors cursor-pointer">
+            <label className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-muted-foreground bg-muted border border-border hover:bg-border transition-colors cursor-pointer">
               <Upload className="w-4 h-4" /> Import
               <input type="file" accept=".json" className="hidden" onChange={importSettings} />
             </label>
@@ -188,7 +188,7 @@ export default function BusinessSettings() {
         <div className="flex justify-end pb-8">
           <button onClick={save} disabled={saving}
             className="px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save All Changes
           </button>

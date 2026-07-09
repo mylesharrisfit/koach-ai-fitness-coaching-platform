@@ -6,32 +6,32 @@ const ACTIONS = [
     id: 'calorie_adjust',
     label: 'Calorie Adjustment',
     icon: Scale,
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20',
+    color: 'text-primary',
+    bg: 'bg-primary/10 border-primary/20 hover:bg-primary/20',
     prompt: (client) => `Analyze ${client ? client.name + "'s" : "the selected client's"} recent weight trend from their check-ins and suggest a specific calorie adjustment. Include: current estimated intake, recommended change (+/- calories), and reasoning based on their goal of ${client?.goal || 'general fitness'}.`,
   },
   {
     id: 'workout_progression',
     label: 'Workout Progression',
     icon: Dumbbell,
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20',
+    color: 'text-success',
+    bg: 'bg-success/10 border-success/20 hover:bg-success/20',
     prompt: (client) => `Review ${client ? client.name + "'s" : "the selected client's"} assigned workout program and recent compliance data. Suggest specific progressive overload adjustments — which exercises to increase weight or reps, and by how much. Apply the changes to their program.`,
   },
   {
     id: 'checkin_response',
     label: 'Generate Check-in Response',
     icon: MessageSquare,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10 border-purple-500/20 hover:bg-purple-500/20',
+    color: 'text-ai',
+    bg: 'bg-ai/10 border-ai/20 hover:bg-ai/20',
     prompt: (client) => `Write a warm, personalized weekly check-in response message from the coach to ${client ? client.name : "the client"} based on their most recent check-in data. Acknowledge their progress, address any concerns, and give 2 specific action items for next week. Then send it as a message.`,
   },
   {
     id: 'compliance_analysis',
     label: 'Compliance Issues',
     icon: AlertTriangle,
-    color: 'text-amber-400',
-    bg: 'bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/20',
+    color: 'text-warning',
+    bg: 'bg-warning/10 border-warning/20 hover:bg-warning/20',
     prompt: (client) => `Detect any compliance issues for ${client ? client.name : "the selected client"} — low training adherence, poor nutrition compliance, sleep issues, or missed check-ins. For each issue found, suggest a concrete, actionable solution the coach can implement today.`,
   },
   {
@@ -54,8 +54,8 @@ const ACTIONS = [
 
 export default function QuickActions({ onAction, selectedClient }) {
   return (
-    <div className="p-4 border-b border-[#E7EAF3]">
-      <p className="text-xs font-semibold text-[#374151] uppercase tracking-wider mb-3">Quick Actions</p>
+    <div className="p-4 border-b border-border">
+      <p className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3">Quick Actions</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {ACTIONS.map(action => {
           const Icon = action.icon;

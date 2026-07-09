@@ -24,10 +24,10 @@ export default function TrialBanner({ user }) {
     return (
       <div className={`flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm mb-5 ${
         urgency
-          ? 'bg-amber-500/10 border border-amber-500/30'
-          : 'bg-blue-500/10 border border-blue-500/20'
+          ? 'bg-warning/10 border border-warning/30'
+          : 'bg-primary/10 border border-primary/20'
       }`}>
-        <div className={`flex items-center gap-2 ${urgency ? 'text-amber-300' : 'text-blue-300'}`}>
+        <div className={`flex items-center gap-2 ${urgency ? 'text-warning' : 'text-primary'}`}>
           <Zap className="w-4 h-4 flex-shrink-0" />
           <span className="font-medium">
             🎉 You're on a free trial —{' '}
@@ -39,11 +39,11 @@ export default function TrialBanner({ user }) {
           <button
             onClick={() => navigate('/subscription')}
             className="text-xs font-bold text-white px-3 py-1.5 rounded-lg transition-all"
-            style={{ background: 'linear-gradient(to right, #3b82f6, #8b5cf6)' }}
+            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))' }}
           >
             Upgrade Now
           </button>
-          <button onClick={() => setDismissed(true)} className="text-slate-500 hover:text-slate-300">
+          <button onClick={() => setDismissed(true)} className="text-muted-foreground hover:text-border">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -62,8 +62,8 @@ export default function TrialBanner({ user }) {
     };
 
     return (
-      <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm mb-5 bg-red-500/10 border border-red-500/30">
-        <div className="flex items-center gap-2 text-red-300">
+      <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm mb-5 bg-destructive/10 border border-destructive/30">
+        <div className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           <span className="font-medium">
             ⚠️ Payment failed — please update your billing info to keep your account active
@@ -71,7 +71,7 @@ export default function TrialBanner({ user }) {
         </div>
         <button
           onClick={handleFixPayment}
-          className="flex items-center gap-1.5 text-xs font-bold text-red-300 border border-red-500/30 px-3 py-1.5 rounded-lg hover:bg-red-500/10 transition-colors flex-shrink-0"
+          className="flex items-center gap-1.5 text-xs font-bold text-destructive border border-destructive/30 px-3 py-1.5 rounded-lg hover:bg-destructive/10 transition-colors flex-shrink-0"
         >
           <ExternalLink className="w-3 h-3" /> Fix Payment
         </button>

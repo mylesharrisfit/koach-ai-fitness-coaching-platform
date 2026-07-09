@@ -24,8 +24,8 @@ export default function Migration() {
   if (allDone) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
-        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mb-5">
-          <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+        <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mb-5">
+          <CheckCircle2 className="w-10 h-10 text-success" />
         </div>
         <h2 className="text-2xl font-heading font-black text-foreground mb-2">You're all set! 🎉</h2>
         <p className="text-muted-foreground text-sm max-w-sm">
@@ -62,20 +62,20 @@ export default function Migration() {
                 onClick={() => setStep(i)}
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all shrink-0',
-                  isDone ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                  isDone ? 'bg-success/10 border-success text-success'
                     : isActive ? 'bg-primary/10 border-primary/30 text-primary'
-                    : 'bg-white border-border text-muted-foreground hover:text-foreground'
+                    : 'bg-card border-border text-muted-foreground hover:text-foreground'
                 )}
               >
                 {isDone
-                  ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  ? <CheckCircle2 className="w-3.5 h-3.5 text-success" />
                   : <Icon className="w-3.5 h-3.5" />
                 }
                 <span className="hidden sm:inline">{s.label}</span>
                 <span className="sm:hidden">{i + 1}</span>
               </button>
               {i < STEPS.length - 1 && (
-                <div className={cn('h-px flex-1 min-w-[12px] shrink-0', isDone ? 'bg-emerald-300' : 'bg-border')} />
+                <div className={cn('h-px flex-1 min-w-[12px] shrink-0', isDone ? 'bg-success' : 'bg-border')} />
               )}
             </React.Fragment>
           );
@@ -83,7 +83,7 @@ export default function Migration() {
       </div>
 
       {/* Step panel */}
-      <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
         {/* Panel header */}
         <div className="px-6 py-5 border-b border-border flex items-center gap-4">
           {(() => {

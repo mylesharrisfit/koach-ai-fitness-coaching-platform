@@ -20,18 +20,18 @@ export default function CoachMessageCard({ message, coachName, onReply }) {
         style={{ boxShadow: '0 0 0 1px rgba(59,130,246,0.3)', animationDuration: '2s' }} />
 
       <div className="flex items-center gap-3 mb-2.5">
-        <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           {coachName?.[0]?.toUpperCase() || 'C'}
         </div>
         <div>
           <p className="text-white font-semibold text-xs">{coachName || 'Your Coach'}</p>
-          <p className="text-blue-400 text-[10px]">{hoursAgo === 0 ? 'Just now' : `${hoursAgo}h ago`}</p>
+          <p className="text-primary text-[10px]">{hoursAgo === 0 ? 'Just now' : `${hoursAgo}h ago`}</p>
         </div>
       </div>
       <p className="text-white/70 text-sm leading-relaxed mb-3 line-clamp-3">{message.content}</p>
       <button onClick={onReply}
         className="px-4 py-2 rounded-xl text-xs font-bold text-white"
-        style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
         Reply →
       </button>
     </motion.div>

@@ -28,7 +28,7 @@ export default function HabitMode({ meals, loggedHabits, onToggleHabit }) {
           </div>
         </div>
         <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #22C55E, #10B981)' }}
+          <motion.div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--success)), rgb(var(--success)))' }}
             animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }} />
         </div>
         <p className="text-white/30 text-xs mt-1.5">{pct}% complete today</p>
@@ -54,7 +54,7 @@ export default function HabitMode({ meals, loggedHabits, onToggleHabit }) {
                 </div>
                 <motion.div animate={{ scale: done ? [1.3, 1] : 1 }} transition={{ duration: 0.2 }}>
                   {done
-                    ? <CheckCircle2 className="w-6 h-6 text-emerald-400 flex-shrink-0" />
+                    ? <CheckCircle2 className="w-6 h-6 text-success flex-shrink-0" />
                     : <Circle className="w-6 h-6 text-white/15 flex-shrink-0" />}
                 </motion.div>
               </motion.button>

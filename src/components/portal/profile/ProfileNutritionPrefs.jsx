@@ -35,7 +35,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
                 className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
                 style={{
                   background: dietary.includes(d) ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)',
-                  color: dietary.includes(d) ? '#34D399' : 'rgba(255,255,255,0.4)',
+                  color: dietary.includes(d) ? 'rgb(var(--success))' : 'rgba(255,255,255,0.4)',
                   border: `1px solid ${dietary.includes(d) ? 'rgba(16,185,129,0.4)' : 'transparent'}`,
                 }}>
                 {d}
@@ -48,7 +48,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
         <div>
           <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">Food Allergies</p>
           <input
-            className="w-full bg-transparent text-white/70 text-sm outline-none border-b border-white/10 pb-1 focus:border-blue-500 transition-colors"
+            className="w-full bg-transparent text-white/70 text-sm outline-none border-b border-white/10 pb-1 focus:border-primary transition-colors"
             placeholder="e.g. peanuts, shellfish, tree nuts..."
             value={allergies}
             onChange={e => { setAllergies(e.target.value); setDirty(true); }}
@@ -59,7 +59,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
         <div>
           <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">Foods I Dislike</p>
           <input
-            className="w-full bg-transparent text-white/70 text-sm outline-none border-b border-white/10 pb-1 focus:border-blue-500 transition-colors"
+            className="w-full bg-transparent text-white/70 text-sm outline-none border-b border-white/10 pb-1 focus:border-primary transition-colors"
             placeholder="e.g. broccoli, fish..."
             value={dislikes}
             onChange={e => { setDislikes(e.target.value); setDirty(true); }}
@@ -92,7 +92,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
           <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             onClick={save}
             className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-white"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
             {saved ? '✓ Saved' : 'Save Preferences'}
           </motion.button>
         )}

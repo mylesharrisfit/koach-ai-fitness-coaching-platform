@@ -37,8 +37,8 @@ function ServingSizer({ food, onAdd, onClose }) {
       {/* Macro preview */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { label: 'Cal', value: scaled(food.calories), color: '#F59E0B' },
-          { label: 'Protein', value: scaled(food.protein), color: '#3B82F6' },
+          { label: 'Cal', value: scaled(food.calories), color: 'rgb(var(--warning))' },
+          { label: 'Protein', value: scaled(food.protein), color: 'rgb(var(--primary))' },
           { label: 'Carbs', value: scaled(food.carbs), color: '#F97316' },
           { label: 'Fats', value: scaled(food.fats), color: '#EAB308' },
         ].map(m => (
@@ -63,7 +63,7 @@ function ServingSizer({ food, onAdd, onClose }) {
       </div>
       <button onClick={() => onAdd({ ...food, serving_quantity: qty, serving_unit: unit, calories: scaled(food.calories), protein: scaled(food.protein), carbs: scaled(food.carbs), fats: scaled(food.fats) })}
         className="w-full py-4 rounded-xl font-bold text-white text-base"
-        style={{ background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
         Add to Log
       </button>
     </motion.div>

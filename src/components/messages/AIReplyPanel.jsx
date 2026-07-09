@@ -30,7 +30,7 @@ export default function AIReplyPanel({
 
   return (
     <div className="mx-3 mb-2 rounded-2xl border border-primary/20 overflow-hidden shadow-md"
-      style={{ background: 'linear-gradient(135deg, #EEF4FF 0%, #F5F3FF 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, rgb(var(--accent)) 0%, rgb(var(--ai)) 100%)' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-primary/10">
         <div className="flex items-center gap-1.5">
@@ -45,7 +45,7 @@ export default function AIReplyPanel({
           )}
         </div>
         <button onClick={onDismiss} className="p-0.5 rounded-full hover:bg-black/10 transition-colors">
-          <X className="w-3.5 h-3.5 text-[#6B7280]" />
+          <X className="w-3.5 h-3.5 text-muted-foreground" />
         </button>
       </div>
 
@@ -55,17 +55,17 @@ export default function AIReplyPanel({
           <div className="flex items-center gap-2.5 py-2">
             <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />
             <div>
-              <p className="text-xs font-medium text-[#374151]">Analyzing conversation…</p>
-              <p className="text-[10px] text-[#6B7280]">Reading check-ins, messages & context</p>
+              <p className="text-xs font-medium text-foreground">Analyzing conversation…</p>
+              <p className="text-[10px] text-muted-foreground">Reading check-ins, messages & context</p>
             </div>
           </div>
         ) : suggestion?.message ? (
           <>
             {/* Message preview */}
             <div className="bg-white/80 rounded-xl border border-white px-3 py-2.5 mb-2.5 shadow-sm">
-              <p className="text-xs text-[#1F2A44] leading-relaxed">{suggestion.message}</p>
+              <p className="text-xs text-foreground leading-relaxed">{suggestion.message}</p>
               {suggestion.context_reason && (
-                <p className="text-[10px] text-[#9CA3AF] mt-1.5 italic">💡 {suggestion.context_reason}</p>
+                <p className="text-[10px] text-muted-foreground mt-1.5 italic">💡 {suggestion.context_reason}</p>
               )}
             </div>
 
@@ -82,7 +82,7 @@ export default function AIReplyPanel({
               {/* Edit First */}
               <button
                 onClick={() => onEditFirst(suggestion.message)}
-                className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 bg-white border border-primary/25 text-primary rounded-full hover:bg-primary/5 transition-colors"
+                className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 bg-card border border-primary/25 text-primary rounded-full hover:bg-primary/5 transition-colors"
               >
                 <Edit3 className="w-3 h-3" /> Edit First
               </button>
@@ -90,7 +90,7 @@ export default function AIReplyPanel({
               {/* Try Again */}
               <button
                 onClick={onRetry}
-                className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 bg-card border border-border text-muted-foreground rounded-full hover:bg-muted transition-colors"
               >
                 <RotateCw className="w-3 h-3" /> Try Again
               </button>
@@ -99,19 +99,19 @@ export default function AIReplyPanel({
               <div className="relative ml-auto">
                 <button
                   onClick={() => setShowTones(v => !v)}
-                  className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 bg-card border border-border text-muted-foreground rounded-full hover:bg-muted transition-colors"
                 >
                   <Zap className="w-3 h-3" /> Tone <ChevronDown className="w-2.5 h-2.5" />
                 </button>
                 {showTones && (
-                  <div className="absolute bottom-full mb-1 right-0 bg-white border border-[#E7EAF3] rounded-xl shadow-xl p-1.5 w-52 z-30">
+                  <div className="absolute bottom-full mb-1 right-0 bg-card border border-border rounded-xl shadow-xl p-1.5 w-52 z-30">
                     {TONES.filter(t => t.key !== 'auto').map(t => (
                       <button
                         key={t.key}
                         onClick={() => { onChangeTone(t.key); setShowTones(false); }}
                         className={cn(
                           'w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs hover:bg-primary/5 transition-colors text-left',
-                          currentTone === t.key ? 'text-primary font-semibold bg-primary/5' : 'text-[#374151]'
+                          currentTone === t.key ? 'text-primary font-semibold bg-primary/5' : 'text-foreground'
                         )}
                       >
                         <span>{t.emoji}</span> {t.label}
@@ -124,7 +124,7 @@ export default function AIReplyPanel({
 
             {/* Dismiss link */}
             <div className="flex justify-end mt-1.5">
-              <button onClick={onDismiss} className="text-[10px] text-[#9CA3AF] hover:text-gray-500 underline underline-offset-2">
+              <button onClick={onDismiss} className="text-[10px] text-muted-foreground hover:text-muted-foreground underline underline-offset-2">
                 Dismiss
               </button>
             </div>

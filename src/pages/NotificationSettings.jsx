@@ -96,18 +96,18 @@ export default function NotificationSettings() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Link to="/settings" className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors">
-            <ArrowLeft className="w-4 h-4 text-slate-600" />
+          <Link to="/settings" className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center hover:bg-border transition-colors">
+            <ArrowLeft className="w-4 h-4 text-muted-foreground" />
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-slate-900">Notification Settings</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Control every alert you receive from KOACH AI</p>
+            <h1 className="text-2xl font-black text-foreground">Notification Settings</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Control every alert you receive from KOACH AI</p>
           </div>
         </div>
         <AnimatePresence>
           {saved && (
             <motion.div initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
-              className="flex items-center gap-1.5 text-sm text-emerald-600 font-semibold">
+              className="flex items-center gap-1.5 text-sm text-success font-semibold">
               <Check className="w-4 h-4" /> Saved ✓
             </motion.div>
           )}
@@ -117,20 +117,20 @@ export default function NotificationSettings() {
       <div className="space-y-5">
 
         {/* ── MASTER TOGGLE ── */}
-        <div className="bg-white rounded-2xl border-2 p-5 flex items-center justify-between"
+        <div className="bg-card rounded-2xl border-2 p-5 flex items-center justify-between"
           style={{
-            borderColor: allOff ? '#FECACA' : '#E2E8F0',
+            borderColor: allOff ? 'rgb(var(--destructive))' : 'rgb(var(--border))',
             background: allOff ? '#FFF5F5' : 'white',
             boxShadow: '0 1px 8px rgba(0,0,0,0.05)',
           }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: allOff ? '#FEE2E2' : 'linear-gradient(135deg, #EFF6FF, #F5F3FF)' }}>
-              {allOff ? <BellOff className="w-5 h-5 text-red-400" /> : <Bell className="w-5 h-5 text-blue-600" />}
+              style={{ background: allOff ? 'rgb(var(--destructive))' : 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+              {allOff ? <BellOff className="w-5 h-5 text-destructive" /> : <Bell className="w-5 h-5 text-primary" />}
             </div>
             <div>
-              <p className="font-bold text-slate-800 text-sm">All Notifications</p>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="font-bold text-foreground text-sm">All Notifications</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 {allOff ? '⚠️ All notifications are muted' : 'Receiving notifications normally'}
               </p>
             </div>
@@ -139,18 +139,18 @@ export default function NotificationSettings() {
         </div>
 
         {/* ── GLOBAL DELIVERY ── */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
-          <div className="flex items-center gap-2 px-6 py-4 border-b border-slate-100 bg-slate-50/60">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden" style={{ boxShadow: '0 1px 8px rgba(0,0,0,0.05)' }}>
+          <div className="flex items-center gap-2 px-6 py-4 border-b border-border bg-muted/60">
             <span className="text-base">📬</span>
-            <h2 className="font-bold text-slate-800 text-sm">Global Delivery Preferences</h2>
+            <h2 className="font-bold text-foreground text-sm">Global Delivery Preferences</h2>
           </div>
           <div className="p-6 space-y-4">
-            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Default delivery for all notifications</p>
+            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Default delivery for all notifications</p>
             <div className="space-y-3">
               {[
-                { key: 'push_enabled', icon: Smartphone, label: 'Push Notifications', desc: 'Sent to your mobile device', color: '#7C3AED' },
-                { key: 'email_enabled', icon: Mail, label: 'Email Notifications', desc: `Sent to ${user?.email || 'your business email'}`, color: '#2563EB' },
-                { key: 'inapp_enabled', icon: Monitor, label: 'In-App Notifications', desc: 'Always on — cannot be disabled', color: '#059669', locked: true },
+                { key: 'push_enabled', icon: Smartphone, label: 'Push Notifications', desc: 'Sent to your mobile device', color: 'rgb(var(--ai))' },
+                { key: 'email_enabled', icon: Mail, label: 'Email Notifications', desc: `Sent to ${user?.email || 'your business email'}`, color: 'rgb(var(--primary))' },
+                { key: 'inapp_enabled', icon: Monitor, label: 'In-App Notifications', desc: 'Always on — cannot be disabled', color: 'rgb(var(--success))', locked: true },
               ].map(({ key, icon: Icon, label, desc, color, locked }) => (
                 <div key={key} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
@@ -159,10 +159,10 @@ export default function NotificationSettings() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-slate-800">{label}</p>
-                        {locked && <span className="text-[10px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-full">Always on</span>}
+                        <p className="text-sm font-semibold text-foreground">{label}</p>
+                        {locked && <span className="text-[10px] bg-muted text-muted-foreground font-bold px-2 py-0.5 rounded-full">Always on</span>}
                       </div>
-                      <p className="text-xs text-slate-500">{desc}</p>
+                      <p className="text-xs text-muted-foreground">{desc}</p>
                     </div>
                   </div>
                   <NToggle value={s[key] !== false} onChange={v => set(key, v)} disabled={locked} />
@@ -170,34 +170,34 @@ export default function NotificationSettings() {
               ))}
             </div>
 
-            <div className="border-t border-slate-100 pt-4">
+            <div className="border-t border-border pt-4">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-slate-500" />
-                  <p className="text-sm font-bold text-slate-800">Quiet Hours</p>
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <p className="text-sm font-bold text-foreground">Quiet Hours</p>
                 </div>
                 <NToggle value={s.quiet_hours_enabled} onChange={v => set('quiet_hours_enabled', v)} />
               </div>
               {s.quiet_hours_enabled && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden">
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-3">
+                  <div className="p-4 rounded-xl bg-muted border border-border space-y-3">
                     <div className="flex items-center gap-4 flex-wrap">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-slate-600">From</span>
+                        <span className="text-xs font-semibold text-muted-foreground">From</span>
                         <input type="time" value={s.quiet_hours_start || '22:00'} onChange={e => set('quiet_hours_start', e.target.value)}
-                          className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-400" />
+                          className="px-2.5 py-1.5 rounded-lg border border-border text-sm font-semibold text-foreground focus:outline-none focus:border-primary" />
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-slate-600">To</span>
+                        <span className="text-xs font-semibold text-muted-foreground">To</span>
                         <input type="time" value={s.quiet_hours_end || '07:00'} onChange={e => set('quiet_hours_end', e.target.value)}
-                          className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 focus:outline-none focus:border-blue-400" />
+                          className="px-2.5 py-1.5 rounded-lg border border-border text-sm font-semibold text-foreground focus:outline-none focus:border-primary" />
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-muted-foreground">
                       🔕 Push notifications silenced during quiet hours. Emails still send.
                     </p>
-                    <p className="text-xs text-blue-600 font-medium">🌍 Your timezone: America/New_York</p>
+                    <p className="text-xs text-primary font-medium">🌍 Your timezone: America/New_York</p>
                   </div>
                 </motion.div>
               )}
@@ -207,16 +207,16 @@ export default function NotificationSettings() {
 
         {/* ── PUSH PERMISSION BANNER ── */}
         {typeof Notification !== 'undefined' && Notification.permission !== 'granted' && s.push_enabled && (
-          <div className="flex items-center justify-between p-4 rounded-2xl border-2 border-amber-200 bg-amber-50">
+          <div className="flex items-center justify-between p-4 rounded-2xl border-2 border-warning bg-warning/10">
             <div className="flex items-center gap-3">
               <span className="text-xl">📱</span>
               <div>
-                <p className="text-sm font-bold text-amber-800">Enable Push Notifications</p>
-                <p className="text-xs text-amber-600 mt-0.5">Allow browser notifications to receive push alerts</p>
+                <p className="text-sm font-bold text-warning">Enable Push Notifications</p>
+                <p className="text-xs text-warning mt-0.5">Allow browser notifications to receive push alerts</p>
               </div>
             </div>
             <button onClick={() => Notification.requestPermission().then(p => { if (p === 'granted') toast.success('Push notifications enabled!'); })}
-              className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg, #D97706, #B45309)' }}>
+              className="px-4 py-2 rounded-xl text-sm font-bold text-white flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))' }}>
               Enable
             </button>
           </div>
@@ -237,7 +237,7 @@ export default function NotificationSettings() {
 
         {/* ── HISTORY BUTTON ── */}
         <button onClick={() => setShowHistory(true)}
-          className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-slate-200 text-slate-500 font-semibold text-sm hover:border-blue-300 hover:text-blue-600 transition-colors">
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-border text-muted-foreground font-semibold text-sm hover:border-primary hover:text-primary transition-colors">
           <History className="w-4 h-4" /> View Notification History (Last 30 Days)
         </button>
 

@@ -9,14 +9,14 @@ function RoleBadge({ role }) {
   if (role === 'owner') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-        style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B', border: '1px solid rgba(245,158,11,0.3)' }}>
+        style={{ background: 'rgba(245,158,11,0.15)', color: 'rgb(var(--warning))', border: '1px solid rgba(245,158,11,0.3)' }}>
         <Crown className="w-2.5 h-2.5" /> Owner
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-      style={{ background: 'rgba(59,130,246,0.15)', color: '#3B82F6', border: '1px solid rgba(59,130,246,0.3)' }}>
+      style={{ background: 'rgba(59,130,246,0.15)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.3)' }}>
       Coach
     </span>
   );
@@ -25,13 +25,13 @@ function RoleBadge({ role }) {
 function StatusBadge({ status }) {
   if (status === 'accepted') {
     return (
-      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-500">
+      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-success">
         <Check className="w-3 h-3" /> Active
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-500">
+    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-warning">
       <Clock className="w-3 h-3" /> Invite Pending
     </span>
   );
@@ -44,21 +44,21 @@ function RoleDropdown({ member, onChangeRole }) {
     <div className="relative">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-1 px-2 py-0.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-1 px-2 py-0.5 rounded-lg border border-border text-xs font-semibold text-muted-foreground hover:border-border hover:bg-muted transition-colors"
         title="Change role"
       >
         Change role <ChevronDown className="w-3 h-3" />
       </button>
       {open && (
-        <div className="absolute right-0 top-7 bg-white border border-gray-100 rounded-xl shadow-lg z-10 w-36 overflow-hidden">
+        <div className="absolute right-0 top-7 bg-card border border-border rounded-xl shadow-lg z-10 w-36 overflow-hidden">
           {['owner', 'coach'].map(role => (
             <button
               key={role}
               onClick={() => { onChangeRole(member, role); setOpen(false); }}
-              className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-gray-50 capitalize flex items-center gap-2"
+              className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-muted capitalize flex items-center gap-2"
             >
-              {role === 'owner' && <Crown className="w-3 h-3 text-amber-500" />}
-              {role === member.role_label && <Check className="w-3 h-3 text-blue-500" />}
+              {role === 'owner' && <Crown className="w-3 h-3 text-warning" />}
+              {role === member.role_label && <Check className="w-3 h-3 text-primary" />}
               {role}
             </button>
           ))}
@@ -71,17 +71,17 @@ function RoleDropdown({ member, onChangeRole }) {
 function MemberRow({ member, isYou, onRemove, onChangeRole, isOwnerViewing }) {
   const initials = member.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
   return (
-    <div className="flex items-center gap-4 px-5 py-4 border-b border-gray-100 last:border-0">
+    <div className="flex items-center gap-4 px-5 py-4 border-b border-border last:border-0">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-        style={{ background: member.role_label === 'owner' ? 'rgba(245,158,11,0.15)' : 'rgba(59,130,246,0.12)', color: member.role_label === 'owner' ? '#F59E0B' : '#2563EB' }}>
+        style={{ background: member.role_label === 'owner' ? 'rgba(245,158,11,0.15)' : 'rgba(59,130,246,0.12)', color: member.role_label === 'owner' ? 'rgb(var(--warning))' : 'rgb(var(--primary))' }}>
         {initials}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-semibold text-gray-900">{member.name}</p>
-          {isYou && <span className="text-[10px] text-gray-400 font-medium">(you)</span>}
+          <p className="text-sm font-semibold text-foreground">{member.name}</p>
+          {isYou && <span className="text-[10px] text-muted-foreground font-medium">(you)</span>}
         </div>
-        <p className="text-xs text-gray-400 truncate">{member.email}</p>
+        <p className="text-xs text-muted-foreground truncate">{member.email}</p>
       </div>
       <div className="flex items-center gap-3 flex-shrink-0">
         <StatusBadge status={member.invite_status} />
@@ -91,7 +91,7 @@ function MemberRow({ member, isYou, onRemove, onChangeRole, isOwnerViewing }) {
           <>
             <RoleDropdown member={member} onChangeRole={onChangeRole} />
             <button onClick={() => onRemove(member)}
-              className="w-6 h-6 rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+              className="w-6 h-6 rounded-full flex items-center justify-center text-border hover:text-destructive hover:bg-destructive/10 transition-colors"
               title="Remove from team">
               <X className="w-3.5 h-3.5" />
             </button>
@@ -131,16 +131,16 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
       try {
         const htmlBody = `
           <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
-            <h2 style="color:#111827;margin-bottom:8px">You've been invited to KOACH AI</h2>
+            <h2 style="color:rgb(var(--foreground));margin-bottom:8px">You've been invited to KOACH AI</h2>
             <p style="color:#4B5563">Hi ${name.trim()},</p>
             <p style="color:#4B5563">You've been invited to join a coaching team on KOACH AI.</p>
             <p style="margin:24px 0">
-              <a href="https://app.base44.com" style="background:#2563EB;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
+              <a href="https://app.base44.com" style="background:rgb(var(--primary));color:rgb(var(--card));padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
                 Accept Invite &rarr;
               </a>
             </p>
-            <p style="color:#6B7280;font-size:13px">Sign up or log in with this email address and you'll be connected to the team automatically.</p>
-            <p style="color:#9CA3AF;font-size:12px;margin-top:24px">The KOACH AI Team</p>
+            <p style="color:rgb(var(--muted-foreground));font-size:13px">Sign up or log in with this email address and you'll be connected to the team automatically.</p>
+            <p style="color:rgb(var(--muted-foreground));font-size:12px;margin-top:24px">The KOACH AI Team</p>
           </div>`;
 
         await Promise.race([
@@ -174,48 +174,48 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+      <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-base font-bold text-gray-900">Invite a Coach</h3>
-          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+          <h3 className="text-base font-bold text-foreground">Invite a Coach</h3>
+          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
             <X className="w-4 h-4" />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1">Full Name</label>
+            <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Full Name</label>
             <input
               autoFocus
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Jane Smith"
-              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full text-sm border border-border rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <div>
-            <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1">Email Address</label>
+            <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Email Address</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="coach@example.com"
-              className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full text-sm border border-border rounded-xl px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          <div className="pt-1 rounded-xl bg-blue-50 border border-blue-100 px-4 py-3">
-            <p className="text-xs text-blue-700 leading-relaxed">
+          <div className="pt-1 rounded-xl bg-accent border border-accent px-4 py-3">
+            <p className="text-xs text-primary leading-relaxed">
               The coach will receive an email invite. Once they sign up or log in with this email address on KOACH AI, they'll be connected to your team.
             </p>
           </div>
           <div className="flex gap-2 pt-1">
             <button type="button" onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50">
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-border text-muted-foreground hover:bg-muted">
               Cancel
             </button>
             <button type="submit" disabled={loading}
               className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</> : <><Mail className="w-4 h-4" /> Send Invite</>}
             </button>
           </div>
@@ -307,7 +307,7 @@ export default function Team() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Header */}
-      <div className="bg-[#111827] rounded-2xl p-5 flex items-center justify-between">
+      <div className="bg-sidebar rounded-2xl p-5 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-white">Team</h1>
           <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
@@ -318,7 +318,7 @@ export default function Team() {
           <button
             onClick={() => setShowInvite(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
             <UserPlus className="w-4 h-4" /> Invite Coach
           </button>
         )}
@@ -326,15 +326,15 @@ export default function Team() {
 
       {/* No team state */}
       {!isLoading && !team && (
-        <div className="bg-white border border-gray-100 rounded-2xl p-10 text-center shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
-            <Users className="w-6 h-6 text-blue-500" />
+        <div className="bg-card border border-border rounded-2xl p-10 text-center shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-accent flex items-center justify-center mx-auto mb-4">
+            <Users className="w-6 h-6 text-primary" />
           </div>
-          <p className="text-sm font-semibold text-gray-800 mb-1">No team set up yet</p>
-          <p className="text-xs text-gray-400 mb-5">Set up your team to start adding coaches.</p>
+          <p className="text-sm font-semibold text-foreground mb-1">No team set up yet</p>
+          <p className="text-xs text-muted-foreground mb-5">Set up your team to start adding coaches.</p>
           <button onClick={handleSeedTeam}
             className="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
-            style={{ background: '#2563EB' }}>
+            style={{ background: 'rgb(var(--primary))' }}>
             Set Up My Team
           </button>
         </div>
@@ -342,13 +342,13 @@ export default function Team() {
 
       {/* Team members list */}
       {team && (
-        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
           {/* Stats row */}
-          <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50"
-            style={{ background: '#FAFAFA' }}>
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-border"
+            style={{ background: 'rgb(var(--background))' }}>
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-gray-400" />
-              <span className="text-xs font-semibold text-gray-500">
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-semibold text-muted-foreground">
                 {sortedMembers.length} {sortedMembers.length === 1 ? 'member' : 'members'} ·{' '}
                 {sortedMembers.filter(m => m.invite_status === 'pending').length} pending invite
                 {sortedMembers.filter(m => m.invite_status === 'pending').length !== 1 ? 's' : ''}
@@ -359,13 +359,13 @@ export default function Team() {
           {/* Loading */}
           {isLoading && (
             <div className="py-12 text-center">
-              <Loader2 className="w-5 h-5 animate-spin text-gray-300 mx-auto" />
+              <Loader2 className="w-5 h-5 animate-spin text-border mx-auto" />
             </div>
           )}
 
           {/* Members */}
           {!isLoading && sortedMembers.length === 0 && (
-            <div className="py-12 text-center text-sm text-gray-400">No team members found.</div>
+            <div className="py-12 text-center text-sm text-muted-foreground">No team members found.</div>
           )}
           {!isLoading && sortedMembers.map(member => (
             <MemberRow
@@ -382,8 +382,8 @@ export default function Team() {
 
       {/* Info card — owner sees how-to, coach sees read-only note */}
       {team && isOwner && (
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
-          <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-2">How team invites work</p>
+        <div className="bg-accent border border-accent rounded-2xl p-4">
+          <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">How team invites work</p>
           <div className="space-y-1.5">
             {[
               'Click "Invite Coach" and enter their name and email.',
@@ -392,17 +392,17 @@ export default function Team() {
               'Use the "Change role" control to promote a coach to owner.',
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-2">
-                <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                <p className="text-xs text-blue-800 leading-relaxed">{step}</p>
+                <span className="w-4 h-4 rounded-full bg-primary text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                <p className="text-xs text-primary leading-relaxed">{step}</p>
               </div>
             ))}
           </div>
         </div>
       )}
       {team && !isOwner && (
-        <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex items-start gap-3">
-          <ShieldAlert className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-amber-800 leading-relaxed">
+        <div className="bg-warning/10 border border-warning rounded-2xl p-4 flex items-start gap-3">
+          <ShieldAlert className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-warning leading-relaxed">
             You have <strong>Coach</strong> access. Only the team owner can invite or remove coaches and manage billing. Contact your team owner for changes.
           </p>
         </div>

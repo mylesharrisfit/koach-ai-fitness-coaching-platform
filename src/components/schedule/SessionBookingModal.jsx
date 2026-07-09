@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const SESSION_TYPES = [
-  { id: 'checkin', label: 'Check-in Call', icon: Phone, color: '#3b82f6', bgColor: 'bg-blue-50' },
-  { id: 'program', label: 'Program Review', icon: Zap, color: '#8b5cf6', bgColor: 'bg-purple-50' },
-  { id: 'onboarding', label: 'Onboarding Call', icon: Target, color: '#10b981', bgColor: 'bg-emerald-50' },
-  { id: 'progress', label: 'Progress Review', icon: TrendingUp, color: '#f59e0b', bgColor: 'bg-amber-50' },
-  { id: 'consultation', label: 'Free Consultation', icon: HelpCircle, color: '#6b7280', bgColor: 'bg-gray-50' },
+  { id: 'checkin', label: 'Check-in Call', icon: Phone, color: 'rgb(var(--primary))', bgColor: 'bg-accent' },
+  { id: 'program', label: 'Program Review', icon: Zap, color: 'rgb(var(--ai))', bgColor: 'bg-ai/10' },
+  { id: 'onboarding', label: 'Onboarding Call', icon: Target, color: 'rgb(var(--success))', bgColor: 'bg-success/10' },
+  { id: 'progress', label: 'Progress Review', icon: TrendingUp, color: 'rgb(var(--warning))', bgColor: 'bg-warning/10' },
+  { id: 'consultation', label: 'Free Consultation', icon: HelpCircle, color: 'rgb(var(--muted-foreground))', bgColor: 'bg-muted' },
 ];
 
 const TIME_SLOTS = Array.from({ length: (22 - 6) * 4 }, (_, i) => {
@@ -163,10 +163,10 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           onClick={e => e.stopPropagation()}
-          className="bg-white rounded-2xl shadow-2xl max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
+          className="bg-card rounded-2xl shadow-2xl max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-violet-600 px-6 py-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-primary to-ai px-6 py-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-white font-heading">Schedule a Session</h2>
             <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/20 transition-colors">
               <X className="w-5 h-5 text-white" />
@@ -181,21 +181,21 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                   type="checkbox"
                   checked={isGroup}
                   onChange={e => { setIsGroup(e.target.checked); setSelectedClients([]); }}
-                  className="w-4 h-4 rounded border-[#E7EAF3]"
+                  className="w-4 h-4 rounded border-border"
                 />
-                <span className="text-sm font-medium text-[#374151]">Group Session</span>
+                <span className="text-sm font-medium text-foreground">Group Session</span>
               </label>
             </div>
 
             {/* Client Selection */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#1F2A44]">
+              <label className="text-sm font-semibold text-foreground">
                 {isGroup ? 'Select Clients' : 'Client'} *
               </label>
               <div className="relative">
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className="w-full text-left px-3 py-2 rounded-lg border border-[#E7EAF3] bg-white hover:border-primary/50 transition-colors text-sm text-[#374151]"
+                  className="w-full text-left px-3 py-2 rounded-lg border border-border bg-card hover:border-primary/50 transition-colors text-sm text-foreground"
                 >
                   {selectedClients.length === 0 ? 'Select client' : selectedClients.length === 1 ? clients.find(c => c.id === selectedClients[0])?.name : `${selectedClients.length} clients`}
                 </button>
@@ -205,16 +205,16 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                       initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
-                      className="absolute top-full mt-1 left-0 right-0 bg-white border border-[#E7EAF3] rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto"
+                      className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto"
                     >
-                      <div className="p-2 sticky top-0 bg-white border-b border-[#E7EAF3]">
+                      <div className="p-2 sticky top-0 bg-card border-b border-border">
                         <input
                           autoFocus
                           type="text"
                           placeholder="Search clients..."
                           value={searchQuery}
                           onChange={e => setSearchQuery(e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm border border-[#E7EAF3] rounded outline-none focus:border-primary/50"
+                          className="w-full px-2 py-1.5 text-sm border border-border rounded outline-none focus:border-primary/50"
                         />
                       </div>
                       <div className="p-1">
@@ -224,7 +224,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                             onClick={() => handleToggleClient(c.id)}
                             className={cn(
                               'w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors',
-                              selectedClients.includes(c.id) ? 'bg-primary/10 text-primary' : 'hover:bg-gray-50'
+                              selectedClients.includes(c.id) ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
                             )}
                           >
                             <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
@@ -241,14 +241,14 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                   )}
                 </AnimatePresence>
               </div>
-              {errors.clients && <p className="text-xs text-red-500">{errors.clients}</p>}
+              {errors.clients && <p className="text-xs text-destructive">{errors.clients}</p>}
             </div>
 
-            <div className="h-px bg-[#E7EAF3]" />
+            <div className="h-px bg-border" />
 
             {/* Session Type */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#1F2A44]">Session Type *</label>
+              <label className="text-sm font-semibold text-foreground">Session Type *</label>
               <div className="grid grid-cols-2 gap-2">
                 {SESSION_TYPES.map(t => {
                   const Icon = t.icon;
@@ -260,10 +260,10 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                         'p-2.5 rounded-lg border-2 text-left transition-all',
                         type === t.id
                           ? `border-[${t.color}] bg-[${t.bgColor}]`
-                          : 'border-[#E7EAF3] hover:border-primary/30'
+                          : 'border-border hover:border-primary/30'
                       )}
                     >
-                      <Icon className="w-4 h-4 mb-1" style={{ color: type === t.id ? t.color : '#9CA3AF' }} />
+                      <Icon className="w-4 h-4 mb-1" style={{ color: type === t.id ? t.color : 'rgb(var(--muted-foreground))' }} />
                       <p className="text-xs font-medium">{t.label}</p>
                     </button>
                   );
@@ -275,31 +275,31 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold text-[#1F2A44]">Date *</label>
+                  <label className="text-sm font-semibold text-foreground">Date *</label>
                   <input
                     type="date"
                     value={date}
                     onChange={e => setDate(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#E7EAF3] focus:border-primary/50 outline-none"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:border-primary/50 outline-none"
                   />
-                  {errors.date && <p className="text-xs text-red-500">{errors.date}</p>}
+                  {errors.date && <p className="text-xs text-destructive">{errors.date}</p>}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold text-[#1F2A44]">Start Time *</label>
+                  <label className="text-sm font-semibold text-foreground">Start Time *</label>
                   <select
                     value={startTime}
                     onChange={e => setStartTime(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#E7EAF3] focus:border-primary/50 outline-none"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:border-primary/50 outline-none"
                   >
                     {TIME_SLOTS.map(t => <option key={t}>{t}</option>)}
                   </select>
-                  {errors.startTime && <p className="text-xs text-red-500">{errors.startTime}</p>}
+                  {errors.startTime && <p className="text-xs text-destructive">{errors.startTime}</p>}
                 </div>
               </div>
 
               {/* Duration */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#1F2A44]">Duration *</label>
+                <label className="text-sm font-semibold text-foreground">Duration *</label>
                 <div className="grid grid-cols-3 gap-2">
                   {DURATIONS.map(d => (
                     <button
@@ -309,7 +309,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                         'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                         duration === d.mins && duration !== null
                           ? 'bg-primary text-white'
-                          : 'bg-gray-100 text-[#374151] hover:bg-gray-200'
+                          : 'bg-muted text-foreground hover:bg-border'
                       )}
                     >
                       {d.label}
@@ -321,7 +321,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                       'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                       duration === null
                         ? 'bg-primary text-white'
-                        : 'bg-gray-100 text-[#374151] hover:bg-gray-200'
+                        : 'bg-muted text-foreground hover:bg-border'
                     )}
                   >
                     Custom
@@ -335,39 +335,39 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                     onChange={e => { setCustomDuration(e.target.value); setDuration(Number(e.target.value) || 60); }}
                     min="5"
                     max="240"
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#E7EAF3] focus:border-primary/50 outline-none"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:border-primary/50 outline-none"
                   />
                 )}
               </div>
 
               {/* End time display */}
               {endTime && (
-                <p className="text-sm text-[#6B7280]">
+                <p className="text-sm text-muted-foreground">
                   <span className="font-medium">End time:</span> {endTime}
                 </p>
               )}
 
               {/* Overlap warning */}
               {checkOverlap() && (
-                <div className="flex gap-2 p-2.5 rounded-lg bg-amber-50 border border-amber-200">
-                  <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-amber-700">You already have a session at this time</p>
+                <div className="flex gap-2 p-2.5 rounded-lg bg-warning/10 border border-warning">
+                  <AlertCircle className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-warning">You already have a session at this time</p>
                 </div>
               )}
             </div>
 
-            <div className="h-px bg-[#E7EAF3]" />
+            <div className="h-px bg-border" />
 
             {/* Additional Options */}
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-[#1F2A44] block mb-2">Notes</label>
+                <label className="text-sm font-semibold text-foreground block mb-2">Notes</label>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   placeholder="Add any prep notes or agenda items..."
                   rows={2}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-[#E7EAF3] focus:border-primary/50 outline-none resize-none"
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:border-primary/50 outline-none resize-none"
                 />
               </div>
 
@@ -376,17 +376,17 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                   type="checkbox"
                   checked={sendConfirmation}
                   onChange={e => setSendConfirmation(e.target.checked)}
-                  className="w-4 h-4 rounded border-[#E7EAF3]"
+                  className="w-4 h-4 rounded border-border"
                 />
-                <span className="text-sm font-medium text-[#374151]">Send confirmation to client</span>
+                <span className="text-sm font-medium text-foreground">Send confirmation to client</span>
               </label>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#1F2A44]">Reminder</label>
+                <label className="text-sm font-semibold text-foreground">Reminder</label>
                 <select
                   value={reminder}
                   onChange={e => setReminder(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-[#E7EAF3] focus:border-primary/50 outline-none"
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:border-primary/50 outline-none"
                 >
                   <option value="none">No reminder</option>
                   <option value="15min">15 minutes before</option>
@@ -397,11 +397,11 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-[#1F2A44]">Repeat</label>
+                <label className="text-sm font-semibold text-foreground">Repeat</label>
                 <select
                   value={repeat}
                   onChange={e => setRepeat(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-[#E7EAF3] focus:border-primary/50 outline-none"
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:border-primary/50 outline-none"
                 >
                   <option value="none">Does not repeat</option>
                   <option value="weekly">Weekly</option>
@@ -411,25 +411,25 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
               </div>
             </div>
 
-            <div className="h-px bg-[#E7EAF3]" />
+            <div className="h-px bg-border" />
 
             {/* Summary */}
-            <div className="bg-[#F9FAFB] rounded-xl p-4 space-y-2">
-              <p className="text-xs font-semibold text-[#9CA3AF] uppercase">Session Summary</p>
+            <div className="bg-background rounded-xl p-4 space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase">Session Summary</p>
               <div className="space-y-1">
                 {selectedClients.map(id => {
                   const c = clients.find(cl => cl.id === id);
                   return (
-                    <p key={id} className="text-sm font-medium text-[#1F2A44]">{c?.name}</p>
+                    <p key={id} className="text-sm font-medium text-foreground">{c?.name}</p>
                   );
                 })}
               </div>
-              <p className="text-sm text-[#6B7280]">{selectedType.label}</p>
-              <p className="text-sm text-[#6B7280]">
+              <p className="text-sm text-muted-foreground">{selectedType.label}</p>
+              <p className="text-sm text-muted-foreground">
                 {format(parse(date, 'yyyy-MM-dd', new Date()), 'MMM d, yyyy')} • {startTime} - {endTime}
               </p>
               {sendConfirmation && (
-                <p className="text-xs text-[#6B7280]">✓ Confirmation will be sent</p>
+                <p className="text-xs text-muted-foreground">✓ Confirmation will be sent</p>
               )}
             </div>
 
@@ -437,13 +437,13 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
             <div className="flex gap-3 pt-2">
               <button
                 onClick={onClose}
-                className="flex-1 text-sm font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
+                className="flex-1 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                className="flex-1 px-4 py-2.5 rounded-lg text-white font-semibold bg-gradient-to-r from-blue-500 to-violet-600 hover:opacity-90 transition-opacity"
+                className="flex-1 px-4 py-2.5 rounded-lg text-white font-semibold bg-gradient-to-r from-primary to-ai hover:opacity-90 transition-opacity"
               >
                 Schedule Session
               </button>

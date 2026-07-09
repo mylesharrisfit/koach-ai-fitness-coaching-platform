@@ -9,9 +9,9 @@ import { toast } from 'sonner';
 const moodEmoji = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😤' };
 
 const STATUS_CONFIG = {
-  pending:  { label: 'Pending',  icon: Clock,         class: 'bg-amber-50 border-amber-100 text-amber-600' },
-  reviewed: { label: 'Reviewed', icon: CheckCircle2,  class: 'bg-emerald-50 border-emerald-100 text-emerald-600' },
-  flagged:  { label: 'Flagged',  icon: Flag,          class: 'bg-red-50 border-red-100 text-red-500' },
+  pending:  { label: 'Pending',  icon: Clock,         class: 'bg-warning/10 border-warning text-warning' },
+  reviewed: { label: 'Reviewed', icon: CheckCircle2,  class: 'bg-success/10 border-success text-success' },
+  flagged:  { label: 'Flagged',  icon: Flag,          class: 'bg-destructive/10 border-destructive text-destructive' },
 };
 
 function StatusBadge({ status, onChange }) {
@@ -50,20 +50,20 @@ function CheckInCard({ ci, clientId }) {
 
   return (
     <div className={cn(
-      'bg-white rounded-2xl border overflow-hidden transition-all',
-      status === 'flagged' ? 'border-red-200' : status === 'reviewed' ? 'border-emerald-100' : 'border-[#E7EAF3]'
+      'bg-card rounded-2xl border overflow-hidden transition-all',
+      status === 'flagged' ? 'border-destructive' : status === 'reviewed' ? 'border-success' : 'border-border'
     )}>
       {/* Header row */}
       <button
         className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-[#F8F9FD] transition-colors text-left"
         onClick={() => setOpen(v => !v)}
       >
-        <div className="w-9 h-9 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3] flex items-center justify-center text-base flex-shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-muted border border-border flex items-center justify-center text-base flex-shrink-0">
           {moodEmoji[ci.mood] || '📋'}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-[#1F2A44]">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
-          <p className="text-xs text-[#9CA3AF]">
+          <p className="text-sm font-semibold text-foreground">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
+          <p className="text-xs text-muted-foreground">
             {[ci.weight && `${ci.weight} lbs`, ci.compliance_training != null && `${ci.compliance_training}% training`]
               .filter(Boolean).join(' · ') || 'No metrics'}
           </p>
@@ -72,31 +72,31 @@ function CheckInCard({ ci, clientId }) {
           <StatusBadge status={status} onChange={(val) => updateStatus.mutate(val)} />
         </div>
         <div className="ml-1 flex-shrink-0">
-          {open ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+          {open ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </div>
       </button>
 
       {/* Expanded detail */}
       {open && (
-        <div className="border-t border-[#F0F2F8] px-4 pb-4 pt-3 space-y-3">
+        <div className="border-t border-border px-4 pb-4 pt-3 space-y-3">
           {/* Metrics grid */}
           <div className="grid grid-cols-3 gap-2">
             {ci.weight && (
-              <div className="bg-[#F6F7FB] rounded-xl p-2.5 text-center">
-                <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{ci.weight}</p>
-                <p className="text-[9px] text-[#9CA3AF]">lbs</p>
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <p className="text-sm font-bold tabular-nums text-foreground">{ci.weight}</p>
+                <p className="text-[9px] text-muted-foreground">lbs</p>
               </div>
             )}
             {ci.sleep_hours && (
-              <div className="bg-[#F6F7FB] rounded-xl p-2.5 text-center">
-                <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{ci.sleep_hours}h</p>
-                <p className="text-[9px] text-[#9CA3AF]">sleep</p>
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <p className="text-sm font-bold tabular-nums text-foreground">{ci.sleep_hours}h</p>
+                <p className="text-[9px] text-muted-foreground">sleep</p>
               </div>
             )}
             {ci.energy_level && (
-              <div className="bg-[#F6F7FB] rounded-xl p-2.5 text-center">
-                <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{ci.energy_level}/10</p>
-                <p className="text-[9px] text-[#9CA3AF]">energy</p>
+              <div className="bg-muted rounded-xl p-2.5 text-center">
+                <p className="text-sm font-bold tabular-nums text-foreground">{ci.energy_level}/10</p>
+                <p className="text-[9px] text-muted-foreground">energy</p>
               </div>
             )}
           </div>
@@ -106,8 +106,8 @@ function CheckInCard({ ci, clientId }) {
             <div className="space-y-2">
               {ci.compliance_training != null && (
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-[#9CA3AF] w-16 flex-shrink-0">Training</span>
-                  <div className="flex-1 h-1.5 bg-[#F0F2F8] rounded-full overflow-hidden">
+                  <span className="text-[10px] text-muted-foreground w-16 flex-shrink-0">Training</span>
+                  <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
                     <div className="bg-primary h-full rounded-full" style={{ width: `${ci.compliance_training}%` }} />
                   </div>
                   <span className="text-[10px] font-bold text-primary w-8 text-right">{ci.compliance_training}%</span>
@@ -115,11 +115,11 @@ function CheckInCard({ ci, clientId }) {
               )}
               {ci.compliance_nutrition != null && (
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-[#9CA3AF] w-16 flex-shrink-0">Nutrition</span>
-                  <div className="flex-1 h-1.5 bg-[#F0F2F8] rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${ci.compliance_nutrition}%` }} />
+                  <span className="text-[10px] text-muted-foreground w-16 flex-shrink-0">Nutrition</span>
+                  <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
+                    <div className="bg-success h-full rounded-full" style={{ width: `${ci.compliance_nutrition}%` }} />
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-600 w-8 text-right">{ci.compliance_nutrition}%</span>
+                  <span className="text-[10px] font-bold text-success w-8 text-right">{ci.compliance_nutrition}%</span>
                 </div>
               )}
             </div>
@@ -127,21 +127,21 @@ function CheckInCard({ ci, clientId }) {
 
           {ci.notes && (
             <div>
-              <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-1.5">Client Notes</p>
-              <p className="text-sm text-[#374151] leading-relaxed">{ci.notes}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Client Notes</p>
+              <p className="text-sm text-foreground leading-relaxed">{ci.notes}</p>
             </div>
           )}
 
           {ci.coach_notes && (
-            <div className="bg-[#EEF4FF] rounded-xl p-3">
+            <div className="bg-accent/10 rounded-xl p-3">
               <p className="text-[10px] font-bold text-primary uppercase tracking-wide mb-1">Coach Response</p>
-              <p className="text-sm text-[#374151] leading-relaxed">{ci.coach_notes}</p>
+              <p className="text-sm text-foreground leading-relaxed">{ci.coach_notes}</p>
             </div>
           )}
 
           {ci.photo_urls?.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wide mb-1.5">Photos</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Photos</p>
               <div className="grid grid-cols-3 gap-2">
                 {ci.photo_urls.map((url, i) => (
                   <a key={i} href={url} target="_blank" rel="noreferrer">
@@ -172,12 +172,12 @@ export default function ProfileCheckInsTab({ client, checkIns }) {
   };
 
   if (checkIns.length === 0) return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] flex flex-col items-center justify-center py-14 text-center px-6">
-      <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center mb-3">
-        <ClipboardCheck className="w-5 h-5 text-[#9CA3AF]" />
+    <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
+      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+        <ClipboardCheck className="w-5 h-5 text-muted-foreground" />
       </div>
-      <p className="text-sm font-semibold text-[#374151]">No check-ins yet</p>
-      <p className="text-xs text-[#9CA3AF] mt-1">Client check-ins will appear here once submitted</p>
+      <p className="text-sm font-semibold text-foreground">No check-ins yet</p>
+      <p className="text-xs text-muted-foreground mt-1">Client check-ins will appear here once submitted</p>
     </div>
   );
 
@@ -198,7 +198,7 @@ export default function ProfileCheckInsTab({ client, checkIns }) {
               'text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors',
               filter === f.key
                 ? 'bg-primary text-white border-transparent'
-                : 'bg-white text-[#374151] border-[#E7EAF3] hover:bg-[#F6F7FB]'
+                : 'bg-card text-foreground border-border hover:bg-muted'
             )}
           >
             {f.label}
@@ -211,7 +211,7 @@ export default function ProfileCheckInsTab({ client, checkIns }) {
       ))}
 
       {filtered.length === 0 && (
-        <div className="text-center py-10 text-xs text-[#9CA3AF]">No check-ins for this filter</div>
+        <div className="text-center py-10 text-xs text-muted-foreground">No check-ins for this filter</div>
       )}
     </div>
   );

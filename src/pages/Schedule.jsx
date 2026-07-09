@@ -22,12 +22,12 @@ import { createZoomMeeting } from '@/lib/zoom';
 import { getScheduledEvents } from '@/lib/calendly';
 
 const SESSION_TYPE_COLORS = {
-  check_in:  'bg-blue-500',
-  strategy:  'bg-[#111827]',
-  assessment:'bg-amber-500',
-  video_call:'bg-purple-500',
-  in_person: 'bg-emerald-500',
-  custom:    'bg-gray-400',
+  check_in:  'bg-primary',
+  strategy:  'bg-sidebar',
+  assessment:'bg-warning',
+  video_call:'bg-ai',
+  in_person: 'bg-success',
+  custom:    'bg-muted-foreground',
 };
 
 export default function Schedule() {
@@ -314,7 +314,7 @@ export default function Schedule() {
   return (
     <div className="p-3 sm:p-4 lg:p-6 max-w-screen-2xl mx-auto overflow-x-hidden">
       {/* ── Header ── */}
-      <div className="bg-[#111827] rounded-xl p-4 sm:p-5 mb-4">
+      <div className="bg-sidebar rounded-xl p-4 sm:p-5 mb-4">
         <h1 className="text-lg sm:text-xl font-semibold text-white">Calendar</h1>
         <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>Schedule and manage coaching sessions</p>
       </div>

@@ -5,19 +5,19 @@ function ScoreRing({ score, size = 120, stroke = 10 }) {
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;
   const progress = (score / 100) * circumference;
-  const color = score >= 75 ? '#22C55E' : score >= 50 ? '#F59E0B' : '#EF4444';
+  const color = score >= 75 ? 'rgb(var(--success))' : score >= 50 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#F3F4F6" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgb(var(--muted))" strokeWidth={stroke} />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
           strokeDasharray={`${progress} ${circumference}`} strokeLinecap="round"
           style={{ transition: 'stroke-dasharray 1s ease' }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <p className="text-2xl font-bold" style={{ color }}>{score}</p>
-        <p className="text-[9px] text-gray-400 font-medium">/ 100</p>
+        <p className="text-[9px] text-muted-foreground font-medium">/ 100</p>
       </div>
     </div>
   );
@@ -26,8 +26,8 @@ function ScoreRing({ score, size = 120, stroke = 10 }) {
 function CategoryBar({ label, score, color }) {
   return (
     <div className="flex items-center gap-2">
-      <p className="text-xs text-gray-600 w-28 flex-shrink-0">{label}</p>
-      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+      <p className="text-xs text-muted-foreground w-28 flex-shrink-0">{label}</p>
+      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all duration-700" style={{ width: `${score}%`, background: color }} />
       </div>
       <span className="text-xs font-bold w-8 text-right" style={{ color }}>{score}</span>
@@ -80,24 +80,24 @@ export default function BIHealthScore({ clients, checkIns, leads }) {
   }, [clients, checkIns, leads, mrr]);
 
   const categories = [
-    { label: 'Revenue Health', score: scores.revenueScore, color: scores.revenueScore >= 70 ? '#22C55E' : scores.revenueScore >= 40 ? '#F59E0B' : '#EF4444' },
-    { label: 'Client Health', score: scores.clientScore, color: scores.clientScore >= 70 ? '#22C55E' : scores.clientScore >= 40 ? '#F59E0B' : '#EF4444' },
-    { label: 'Growth Health', score: scores.growthScore, color: scores.growthScore >= 70 ? '#22C55E' : scores.growthScore >= 40 ? '#F59E0B' : '#EF4444' },
-    { label: 'Operational', score: scores.operationalScore, color: scores.operationalScore >= 70 ? '#22C55E' : scores.operationalScore >= 40 ? '#F59E0B' : '#EF4444' },
+    { label: 'Revenue Health', score: scores.revenueScore, color: scores.revenueScore >= 70 ? 'rgb(var(--success))' : scores.revenueScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
+    { label: 'Client Health', score: scores.clientScore, color: scores.clientScore >= 70 ? 'rgb(var(--success))' : scores.clientScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
+    { label: 'Growth Health', score: scores.growthScore, color: scores.growthScore >= 70 ? 'rgb(var(--success))' : scores.growthScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
+    { label: 'Operational', score: scores.operationalScore, color: scores.operationalScore >= 70 ? 'rgb(var(--success))' : scores.operationalScore >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))' },
   ];
 
   const label = scores.overall >= 75 ? 'Excellent' : scores.overall >= 60 ? 'Good' : scores.overall >= 40 ? 'Needs Work' : 'Critical';
-  const labelColor = scores.overall >= 75 ? '#22C55E' : scores.overall >= 60 ? '#3B82F6' : scores.overall >= 40 ? '#F59E0B' : '#EF4444';
+  const labelColor = scores.overall >= 75 ? 'rgb(var(--success))' : scores.overall >= 60 ? 'rgb(var(--primary))' : scores.overall >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-      <h3 className="text-sm font-bold text-gray-900 mb-4">Business Health Score</h3>
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+      <h3 className="text-sm font-bold text-foreground mb-4">Business Health Score</h3>
       <div className="flex items-center gap-6 mb-5">
         <ScoreRing score={scores.overall} />
         <div>
           <p className="text-lg font-bold" style={{ color: labelColor }}>{label}</p>
-          <p className="text-xs text-gray-400 mt-0.5">Overall business health</p>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-muted-foreground mt-0.5">Overall business health</p>
+          <p className="text-xs text-muted-foreground mt-2">
             {scores.overall < 60 ? 'Focus on client retention and pipeline growth to improve your score.' :
               scores.overall < 75 ? 'Good foundation — increase check-in review rate for a boost.' :
               'Excellent! Keep maintaining strong client relationships.'}

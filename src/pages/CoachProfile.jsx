@@ -50,12 +50,12 @@ const EMPTY = {
 /* ── Sub-components ── */
 function SectionCard({ icon: Icon, title, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-100">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #EFF6FF, #F5F3FF)' }}>
-          <Icon className="w-4 h-4 text-blue-600" />
+    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+          <Icon className="w-4 h-4 text-primary" />
         </div>
-        <h2 className="font-bold text-slate-800 text-base">{title}</h2>
+        <h2 className="font-bold text-foreground text-base">{title}</h2>
       </div>
       <div className="p-6">{children}</div>
     </div>
@@ -65,9 +65,9 @@ function SectionCard({ icon: Icon, title, children }) {
 function Field({ label, children, hint }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">{label}</label>
+      <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{label}</label>
       {children}
-      {hint && <p className="text-xs text-slate-400 mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
     </div>
   );
 }
@@ -75,16 +75,16 @@ function Field({ label, children, hint }) {
 function Input({ value, onChange, placeholder, prefix, maxLength, className = '' }) {
   return (
     <div className="relative flex items-center">
-      {prefix && <span className="absolute left-3 text-slate-400 text-sm font-medium pointer-events-none">{prefix}</span>}
+      {prefix && <span className="absolute left-3 text-muted-foreground text-sm font-medium pointer-events-none">{prefix}</span>}
       <input
         value={value || ''}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full px-3 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-400 transition-colors ${prefix ? 'pl-7' : ''} ${className}`}
+        className={`w-full px-3 py-2.5 rounded-xl border border-border text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors ${prefix ? 'pl-7' : ''} ${className}`}
       />
       {maxLength && (
-        <span className="absolute right-3 text-[10px] text-slate-300 pointer-events-none">
+        <span className="absolute right-3 text-[10px] text-border pointer-events-none">
           {(value || '').length}/{maxLength}
         </span>
       )}
@@ -101,10 +101,10 @@ function Textarea({ value, onChange, placeholder, maxLength, rows = 3 }) {
         placeholder={placeholder}
         maxLength={maxLength}
         rows={rows}
-        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-400 transition-colors resize-none"
+        className="w-full px-3 py-2.5 rounded-xl border border-border text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
       />
       {maxLength && (
-        <span className="absolute bottom-3 right-3 text-[10px] text-slate-300">
+        <span className="absolute bottom-3 right-3 text-[10px] text-border">
           {(value || '').length}/{maxLength}
         </span>
       )}
@@ -118,7 +118,7 @@ function Select({ value, onChange, options, placeholder }) {
       <select
         value={value || ''}
         onChange={e => onChange(e.target.value)}
-        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-blue-400 appearance-none bg-white transition-colors"
+        className="w-full px-3 py-2.5 rounded-xl border border-border text-foreground text-sm focus:outline-none focus:border-primary appearance-none bg-card transition-colors"
       >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map(o => (
@@ -127,7 +127,7 @@ function Select({ value, onChange, options, placeholder }) {
           </option>
         ))}
       </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
     </div>
   );
 }
@@ -143,8 +143,8 @@ function ChipSelector({ options, selected = [], onChange }) {
         <button key={opt} onClick={() => toggle(opt)}
           className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
           style={selected.includes(opt)
-            ? { background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: 'white' }
-            : { background: '#F1F5F9', color: '#64748B', border: '1px solid #E2E8F0' }
+            ? { background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'white' }
+            : { background: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))', border: '1px solid rgb(var(--border))' }
           }>
           {opt}
         </button>
@@ -159,16 +159,16 @@ function CertificationRow({ cert, onChange, onRemove }) {
       <div className="flex-1 grid grid-cols-3 gap-2">
         <input value={cert.name || ''} onChange={e => onChange({ ...cert, name: e.target.value })}
           placeholder="Certification name"
-          className="px-3 py-2 rounded-xl border border-slate-200 text-slate-800 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-400 col-span-1" />
+          className="px-3 py-2 rounded-xl border border-border text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:border-primary col-span-1" />
         <input value={cert.organization || ''} onChange={e => onChange({ ...cert, organization: e.target.value })}
           placeholder="Issuing organization"
-          className="px-3 py-2 rounded-xl border border-slate-200 text-slate-800 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-400 col-span-1" />
+          className="px-3 py-2 rounded-xl border border-border text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:border-primary col-span-1" />
         <input value={cert.year || ''} onChange={e => onChange({ ...cert, year: e.target.value })}
           placeholder="Year"
-          className="px-3 py-2 rounded-xl border border-slate-200 text-slate-800 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-400 col-span-1" />
+          className="px-3 py-2 rounded-xl border border-border text-foreground text-sm placeholder-muted-foreground focus:outline-none focus:border-primary col-span-1" />
       </div>
-      <button onClick={onRemove} className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5 hover:bg-red-100 transition-colors">
-        <X className="w-3.5 h-3.5 text-red-400" />
+      <button onClick={onRemove} className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5 hover:bg-destructive/10 transition-colors">
+        <X className="w-3.5 h-3.5 text-destructive" />
       </button>
     </div>
   );
@@ -178,10 +178,10 @@ function CertificationRow({ cert, onChange, onRemove }) {
 function ProfilePreviewCard({ profile }) {
   const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ') || 'Your Name';
   return (
-    <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white max-w-sm mx-auto">
+    <div className="bg-gradient-to-br from-sidebar to-sidebar rounded-2xl p-6 text-white max-w-sm mx-auto">
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden flex items-center justify-center text-xl font-black"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 0 0 3px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 0 3px rgba(37,99,235,0.3)' }}>
           {profile.avatar_url
             ? <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
             : name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
@@ -203,7 +203,7 @@ function ProfilePreviewCard({ profile }) {
       {profile.specialties?.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4">
           {profile.specialties.slice(0, 4).map(s => (
-            <span key={s} className="px-2 py-1 rounded-full text-[10px] font-semibold" style={{ background: 'rgba(59,130,246,0.2)', color: '#93C5FD' }}>{s}</span>
+            <span key={s} className="px-2 py-1 rounded-full text-[10px] font-semibold" style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))' }}>{s}</span>
           ))}
           {profile.specialties.length > 4 && (
             <span className="px-2 py-1 rounded-full text-[10px] font-semibold" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>+{profile.specialties.length - 4}</span>
@@ -214,7 +214,7 @@ function ProfilePreviewCard({ profile }) {
         <div className="space-y-1 mb-4">
           {profile.certifications.filter(c => c.name).slice(0, 2).map((c, i) => (
             <div key={i} className="flex items-center gap-2 text-xs text-white/50">
-              <Award className="w-3 h-3 text-amber-400 flex-shrink-0" />
+              <Award className="w-3 h-3 text-warning flex-shrink-0" />
               {c.name}{c.organization ? ` · ${c.organization}` : ''}{c.year ? ` · ${c.year}` : ''}
             </div>
           ))}
@@ -239,30 +239,30 @@ function CompletionBar({ profile, onJump }) {
   const pct = Math.round((done / items.length) * 100);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
+    <div className="bg-card rounded-2xl border border-border p-6">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-bold text-slate-800">Profile Completion</h2>
-        <span className="text-2xl font-black" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{pct}%</span>
+        <h2 className="font-bold text-foreground">Profile Completion</h2>
+        <span className="text-2xl font-black" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{pct}%</span>
       </div>
-      <div className="h-2.5 rounded-full bg-slate-100 mb-5">
+      <div className="h-2.5 rounded-full bg-muted mb-5">
         <motion.div animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+          className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
       </div>
       <div className="space-y-2">
         {items.map(item => (
           <div key={item.key} className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-emerald-500' : 'bg-slate-200'}`}>
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-success' : 'bg-border'}`}>
                 {item.done
                   ? <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                  : <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  : <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
                 }
               </div>
-              <span className={`text-sm ${item.done ? 'text-slate-400 line-through' : 'text-slate-700 font-medium'}`}>{item.label}</span>
+              <span className={`text-sm ${item.done ? 'text-muted-foreground line-through' : 'text-foreground font-medium'}`}>{item.label}</span>
             </div>
             {!item.done && (
               <button onClick={() => onJump(item.section)}
-                className="text-xs text-blue-600 font-semibold hover:underline">
+                className="text-xs text-primary font-semibold hover:underline">
                 Complete
               </button>
             )}
@@ -373,14 +373,14 @@ export default function CoachProfile() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-black text-slate-900">My Profile</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Manage your public coaching profile and business information</p>
+          <h1 className="text-2xl font-black text-foreground">My Profile</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage your public coaching profile and business information</p>
         </div>
         <div className="flex items-center gap-4">
           <AnimatePresence>
             {savedAt && !isDirty && (
               <motion.p initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
-                className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                className="text-xs text-success font-semibold flex items-center gap-1">
                 <Check className="w-3 h-3" /> All changes saved
               </motion.p>
             )}
@@ -388,7 +388,7 @@ export default function CoachProfile() {
           <button onClick={() => save()}
             disabled={saving}
             className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60 transition-opacity"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
           </button>
@@ -403,7 +403,7 @@ export default function CoachProfile() {
             <div className="flex flex-col items-center mb-8">
               <div className="relative mb-4">
                 <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center text-3xl font-black text-white"
-                  style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 0 0 4px white, 0 0 0 6px rgba(37,99,235,0.3)' }}>
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 0 4px white, 0 0 0 6px rgba(37,99,235,0.3)' }}>
                   {profile.avatar_url
                     ? <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
                     : initials
@@ -411,19 +411,19 @@ export default function CoachProfile() {
                 </div>
                 <button onClick={() => fileRef.current?.click()}
                   className="absolute bottom-0 right-0 w-9 h-9 rounded-full flex items-center justify-center text-white"
-                  style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 2px 8px rgba(37,99,235,0.4), 0 0 0 3px white' }}>
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 2px 8px rgba(37,99,235,0.4), 0 0 0 3px white' }}>
                   <Camera className="w-4 h-4" />
                 </button>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
               </div>
               <div className="flex gap-3">
                 <button onClick={() => fileRef.current?.click()}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors">
+                  className="px-4 py-2 rounded-xl text-sm font-semibold text-primary bg-accent border border-primary hover:bg-accent transition-colors">
                   Upload Photo
                 </button>
                 {profile.avatar_url && (
                   <button onClick={() => set('avatar_url', '')}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold text-red-500 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors">
+                    className="px-4 py-2 rounded-xl text-sm font-semibold text-destructive bg-destructive/10 border border-destructive hover:bg-destructive/10 transition-colors">
                     Remove
                   </button>
                 )}
@@ -507,7 +507,7 @@ export default function CoachProfile() {
                   ))}
                 </div>
                 <button onClick={addCert}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors">
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-primary bg-accent border border-primary hover:bg-accent transition-colors">
                   <Plus className="w-4 h-4" /> Add Certification
                 </button>
               </Field>
@@ -528,10 +528,10 @@ export default function CoachProfile() {
         {/* SECTION 4 — Public Profile Preview */}
         <div ref={sectionRefs.preview}>
           <SectionCard icon={Eye} title="Public Profile Preview">
-            <p className="text-sm text-slate-500 mb-5">This is how your profile appears to clients on package landing pages. Updates live as you edit.</p>
+            <p className="text-sm text-muted-foreground mb-5">This is how your profile appears to clients on package landing pages. Updates live as you edit.</p>
             <ProfilePreviewCard profile={profile} />
             <div className="flex justify-center mt-5">
-              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-blue-600 border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors">
+              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-primary border border-primary bg-accent hover:bg-accent transition-colors">
                 <ExternalLink className="w-4 h-4" /> View Public Profile
               </button>
             </div>
@@ -546,7 +546,7 @@ export default function CoachProfile() {
           <button onClick={() => save()}
             disabled={saving}
             className="px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
           </button>

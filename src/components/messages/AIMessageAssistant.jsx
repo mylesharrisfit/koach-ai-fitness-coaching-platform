@@ -110,7 +110,7 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
     return (
       <button
         onClick={() => generate(null)}
-        className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 text-primary hover:from-primary/15 hover:to-purple-500/15 transition-all"
+        className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-ai/10 border border-primary/20 text-primary hover:from-primary/15 hover:to-ai/15 transition-all"
       >
         <Sparkles className="w-3 h-3" />
         AI Suggest Reply
@@ -119,17 +119,17 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
   }
 
   return (
-    <div className="mx-1 mb-2 rounded-xl border border-primary/20 bg-gradient-to-br from-[#EEF4FF] to-[#F5F3FF] p-3 shadow-sm">
+    <div className="mx-1 mb-2 rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-ai/10 p-3 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           <span className="text-[11px] font-semibold text-primary">AI Suggested Reply</span>
           {!loading && toneLabel !== 'Auto' && (
-            <span className="text-[10px] text-[#9CA3AF] bg-white/70 px-1.5 py-0.5 rounded-full">{toneLabel}</span>
+            <span className="text-[10px] text-muted-foreground bg-white/70 px-1.5 py-0.5 rounded-full">{toneLabel}</span>
           )}
         </div>
-        <button onClick={() => { setVisible(false); setSuggestion(null); }} className="text-[#9CA3AF] hover:text-gray-600 transition-colors">
+        <button onClick={() => { setVisible(false); setSuggestion(null); }} className="text-muted-foreground hover:text-muted-foreground transition-colors">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -138,14 +138,14 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
       {loading && (
         <div className="flex items-center gap-2 py-3">
           <Loader2 className="w-4 h-4 animate-spin text-primary" />
-          <span className="text-xs text-[#6B7280]">Reading conversation & generating reply…</span>
+          <span className="text-xs text-muted-foreground">Reading conversation & generating reply…</span>
         </div>
       )}
 
       {/* Suggestion */}
       {suggestion && !loading && (
         <>
-          <p className="text-xs text-[#374151] leading-relaxed bg-white/70 rounded-lg p-2.5 mb-2.5 border border-white">
+          <p className="text-xs text-foreground leading-relaxed bg-white/70 rounded-lg p-2.5 mb-2.5 border border-white">
             {suggestion}
           </p>
           <div className="flex items-center gap-2 flex-wrap">
@@ -154,25 +154,25 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
               <Check className="w-3 h-3" /> Use This
             </button>
             <button onClick={() => { onEditFirst(suggestion); setVisible(false); setSuggestion(null); }}
-              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-white border border-primary/30 text-primary rounded-full hover:bg-primary/5 transition-colors">
+              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-card border border-primary/30 text-primary rounded-full hover:bg-primary/5 transition-colors">
               <Edit3 className="w-3 h-3" /> Edit First
             </button>
             <button onClick={() => generate(tone)}
-              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50 transition-colors">
+              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-card border border-border text-muted-foreground rounded-full hover:bg-muted transition-colors">
               <RefreshCw className="w-3 h-3" /> Try Again
             </button>
 
             {/* Tone picker */}
             <div className="relative ml-auto">
               <button onClick={() => setShowTonePicker(s => !s)}
-                className="flex items-center gap-1 text-[11px] text-[#9CA3AF] hover:text-primary transition-colors">
+                className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors">
                 Change Tone <ChevronDown className="w-3 h-3" />
               </button>
               {showTonePicker && (
-                <div className="absolute bottom-full mb-1 right-0 bg-white border border-[#E7EAF3] rounded-xl shadow-xl p-1.5 w-48 z-30">
+                <div className="absolute bottom-full mb-1 right-0 bg-card border border-border rounded-xl shadow-xl p-1.5 w-48 z-30">
                   {TONE_OPTIONS.map(t => (
                     <button key={t.key} onClick={() => handleToneChange(t.key)}
-                      className="w-full text-left text-[11px] px-3 py-1.5 rounded-lg hover:bg-primary/5 text-[#374151] transition-colors">
+                      className="w-full text-left text-[11px] px-3 py-1.5 rounded-lg hover:bg-primary/5 text-foreground transition-colors">
                       {t.label}
                     </button>
                   ))}

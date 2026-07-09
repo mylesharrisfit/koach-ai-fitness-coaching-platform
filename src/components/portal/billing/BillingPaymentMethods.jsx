@@ -6,7 +6,7 @@ const CARD_BRANDS = {
   visa: { color: '#1A1F71', label: 'Visa' },
   mastercard: { color: '#EB001B', label: 'MC' },
   amex: { color: '#2E77BC', label: 'Amex' },
-  default: { color: '#374151', label: '●●●●' },
+  default: { color: 'rgb(var(--foreground))', label: '●●●●' },
 };
 
 function MockCard({ card, isDefault, onSetDefault, onRemove }) {
@@ -28,7 +28,7 @@ function MockCard({ card, isDefault, onSetDefault, onRemove }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {isDefault && <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />}
+          {isDefault && <Star className="w-4 h-4 text-warning fill-warning" />}
           {expiringSoon && <AlertTriangle className="w-4 h-4 text-orange-400" />}
         </div>
       </div>
@@ -39,20 +39,20 @@ function MockCard({ card, isDefault, onSetDefault, onRemove }) {
         {!isDefault && (
           <button onClick={() => onSetDefault(card.id)}
             className="flex-1 py-2 rounded-xl text-xs font-semibold"
-            style={{ background: 'rgba(59,130,246,0.15)', color: '#60A5FA', border: '1px solid rgba(59,130,246,0.25)' }}>
+            style={{ background: 'rgba(59,130,246,0.15)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.25)' }}>
             Set as default
           </button>
         )}
         {isDefault && (
           <div className="flex-1 py-2 rounded-xl text-xs font-semibold text-center"
-            style={{ background: 'rgba(59,130,246,0.1)', color: '#93C5FD' }}>
+            style={{ background: 'rgba(59,130,246,0.1)', color: 'rgb(var(--primary))' }}>
             ★ Default card
           </div>
         )}
         <button onClick={() => onRemove(card.id)}
           className="w-10 h-[34px] rounded-xl flex items-center justify-center"
           style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
-          <Trash2 className="w-3.5 h-3.5 text-red-400" />
+          <Trash2 className="w-3.5 h-3.5 text-destructive" />
         </button>
       </div>
     </div>
@@ -100,7 +100,7 @@ export default function BillingPaymentMethods({ client }) {
       )}
 
       {removeConfirm && (
-        <p className="text-red-400 text-xs text-center animate-pulse">Tap remove again to confirm deletion</p>
+        <p className="text-destructive text-xs text-center animate-pulse">Tap remove again to confirm deletion</p>
       )}
 
       <button onClick={() => setShowAdd(s => !s)}
@@ -114,16 +114,16 @@ export default function BillingPaymentMethods({ client }) {
         <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <p className="text-white/60 text-xs text-center mb-3">🔒 Secured by Stripe — PCI compliant</p>
           <div className="space-y-3">
-            <input placeholder="Card number" className="w-full px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-blue-500/50" />
+            <input placeholder="Card number" className="w-full px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-primary/50" />
             <div className="flex gap-3">
-              <input placeholder="MM/YY" className="flex-1 px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-blue-500/50" />
-              <input placeholder="CVC" className="flex-1 px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-blue-500/50" />
+              <input placeholder="MM/YY" className="flex-1 px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-primary/50" />
+              <input placeholder="CVC" className="flex-1 px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-primary/50" />
             </div>
-            <input placeholder="Name on card" className="w-full px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-blue-500/50" />
+            <input placeholder="Name on card" className="w-full px-4 py-3 rounded-xl text-sm text-white bg-white/10 border border-white/10 outline-none focus:border-primary/50" />
           </div>
           <button onClick={() => setShowAdd(false)}
             className="w-full mt-3 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
             Add Card
           </button>
         </div>

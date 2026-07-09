@@ -38,20 +38,20 @@ export default function WLTypography({ s, set, locked, enterpriseLocked }) {
       </WLRow>
 
       <WLRow label="Preview">
-        <div className="p-5 rounded-xl bg-slate-50 border border-slate-100">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Font Preview — {s.font_primary || 'Inter'}</p>
+        <div className="p-5 rounded-xl bg-muted border border-border">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Font Preview — {s.font_primary || 'Inter'}</p>
           <h2 className="text-2xl mb-1" style={{ fontFamily: font, fontWeight: weight }}>
             {s.business_name || 'Your Coaching Business'}
           </h2>
           <p className="text-base mb-1" style={{ fontFamily: font, fontWeight: 600 }}>Weekly Check-In Due</p>
-          <p className="text-sm text-slate-500" style={{ fontFamily: font, fontWeight: 400 }}>
+          <p className="text-sm text-muted-foreground" style={{ fontFamily: font, fontWeight: 400 }}>
             Your progress this week has been incredible. Keep pushing toward your goals!
           </p>
           <div className="flex gap-2 mt-3">
-            <button className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ fontFamily: font, fontWeight: 600, background: s.primary_color || '#2563EB' }}>
+            <button className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ fontFamily: font, fontWeight: 600, background: s.primary_color || 'rgb(var(--primary))' }}>
               Start Workout
             </button>
-            <button className="px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 text-slate-700" style={{ fontFamily: font }}>
+            <button className="px-4 py-2 rounded-xl text-sm font-medium border border-border text-foreground" style={{ fontFamily: font }}>
               View Plan
             </button>
           </div>
@@ -59,11 +59,11 @@ export default function WLTypography({ s, set, locked, enterpriseLocked }) {
       </WLRow>
 
       {enterpriseLocked && (
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-50 border border-purple-100">
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-ai/10 border border-ai">
           <span className="text-lg">🔒</span>
           <div>
-            <p className="text-sm font-bold text-purple-800">Custom Font Upload</p>
-            <p className="text-xs text-purple-600">Upload your own font files — available on Enterprise plan</p>
+            <p className="text-sm font-bold text-ai">Custom Font Upload</p>
+            <p className="text-xs text-ai">Upload your own font files — available on Enterprise plan</p>
           </div>
         </div>
       )}

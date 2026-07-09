@@ -28,7 +28,7 @@ function MacroChip({ label, value, unit = 'g', color }) {
 function ProgressBar({ value, max, color = 'bg-primary' }) {
   const p = pct(value, max);
   return (
-    <div className="h-1.5 bg-[#F0F2F8] rounded-full overflow-hidden">
+    <div className="h-1.5 bg-border rounded-full overflow-hidden">
       <motion.div
         className={cn('h-full rounded-full', color)}
         initial={{ width: 0 }}
@@ -65,15 +65,15 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 30 }}
-        className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+        className="bg-card rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
       >
-        <div className="px-5 py-4 border-b border-[#E7EAF3] flex items-center justify-between">
-          <h3 className="text-sm font-bold text-[#1F2A44]">Assign Nutrition Plan</h3>
-          <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#374151] text-lg leading-none">×</button>
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+          <h3 className="text-sm font-bold text-foreground">Assign Nutrition Plan</h3>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-lg leading-none">×</button>
         </div>
         <div className="max-h-72 overflow-y-auto px-4 py-3 space-y-2">
           {plans.length === 0 && (
-            <p className="text-xs text-[#9CA3AF] text-center py-6">No plans available. Create one first.</p>
+            <p className="text-xs text-muted-foreground text-center py-6">No plans available. Create one first.</p>
           )}
           {plans.map(plan => (
             <button
@@ -83,13 +83,13 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border text-left transition-all',
                 selected === plan.id
                   ? 'border-primary bg-primary/5'
-                  : 'border-[#E7EAF3] hover:border-primary/30'
+                  : 'border-border hover:border-primary/30'
               )}
             >
               <span className="text-xl">{plan.emoji || '🥗'}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#1F2A44] truncate">{plan.title}</p>
-                <p className="text-[10px] text-[#9CA3AF]">
+                <p className="text-sm font-semibold text-foreground truncate">{plan.title}</p>
+                <p className="text-[10px] text-muted-foreground">
                   {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
                   {plan.calories ? ` · ${plan.calories} kcal` : ''}
                 </p>
@@ -98,7 +98,7 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
             </button>
           ))}
         </div>
-        <div className="px-4 py-3 border-t border-[#E7EAF3] flex gap-2">
+        <div className="px-4 py-3 border-t border-border flex gap-2">
           <Button variant="outline" onClick={onClose} className="flex-1 text-xs h-9">Cancel</Button>
           <Button onClick={assign} disabled={!selected} className="flex-1 text-xs h-9">Assign Plan</Button>
         </div>
@@ -126,13 +126,13 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
   };
 
   if (!assigned) return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-6 flex flex-col items-center text-center gap-3">
-      <div className="w-12 h-12 rounded-full bg-[#F6F7FB] flex items-center justify-center">
-        <Apple className="w-5 h-5 text-[#9CA3AF]" />
+    <div className="bg-card rounded-2xl border border-border p-6 flex flex-col items-center text-center gap-3">
+      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+        <Apple className="w-5 h-5 text-muted-foreground" />
       </div>
       <div>
-        <p className="text-sm font-semibold text-[#374151]">No nutrition plan assigned yet</p>
-        <p className="text-xs text-[#9CA3AF] mt-0.5">Assign an existing plan or create a new one</p>
+        <p className="text-sm font-semibold text-foreground">No nutrition plan assigned yet</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Assign an existing plan or create a new one</p>
       </div>
       <div className="flex gap-2 flex-wrap justify-center">
         <Button size="sm" onClick={onOpenAssign} className="gap-1.5 h-8 text-xs">
@@ -141,7 +141,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
         <Button
           size="sm"
           variant="outline"
-          className="gap-1.5 h-8 text-xs border-[#E7EAF3]"
+          className="gap-1.5 h-8 text-xs border-border"
           onClick={() => navigate(`/nutrition?client=${client.id}`)}
         >
           <Plus className="w-3 h-3" /> Create New Plan
@@ -157,23 +157,23 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3"
+      className="bg-card rounded-2xl border border-border p-4 space-y-3"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <span className="text-2xl">{assigned.emoji || '🥗'}</span>
           <div>
-            <p className="text-sm font-bold text-[#1F2A44] leading-tight">{assigned.title}</p>
+            <p className="text-sm font-bold text-foreground leading-tight">{assigned.title}</p>
             {assigned.description && (
-              <p className="text-xs text-[#9CA3AF] mt-0.5 line-clamp-1">{assigned.description}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{assigned.description}</p>
             )}
           </div>
         </div>
         <span className={cn(
           'text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
           isHabits
-            ? 'bg-purple-50 text-purple-600 border-purple-100'
-            : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+            ? 'bg-ai/10 text-ai border-ai'
+            : 'bg-success/10 text-success border-success'
         )}>
           {isHabits ? 'Habit Mode' : 'Macro Tracking'}
         </span>
@@ -182,25 +182,25 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
       {!isHabits && assigned.calories > 0 && (
         <div className="flex gap-2">
           <MacroChip label="Calories" value={assigned.calories} unit="kcal" color="bg-[#FFF7ED] text-orange-700" />
-          {assigned.protein_g > 0 && <MacroChip label="Protein" value={assigned.protein_g} color="bg-blue-50 text-blue-700" />}
-          {assigned.carbs_g   > 0 && <MacroChip label="Carbs"   value={assigned.carbs_g}   color="bg-amber-50 text-amber-700" />}
-          {assigned.fats_g    > 0 && <MacroChip label="Fats"    value={assigned.fats_g}     color="bg-rose-50 text-rose-600" />}
+          {assigned.protein_g > 0 && <MacroChip label="Protein" value={assigned.protein_g} color="bg-accent text-primary" />}
+          {assigned.carbs_g   > 0 && <MacroChip label="Carbs"   value={assigned.carbs_g}   color="bg-warning/10 text-warning" />}
+          {assigned.fats_g    > 0 && <MacroChip label="Fats"    value={assigned.fats_g}     color="bg-destructive/10 text-destructive" />}
         </div>
       )}
 
       <div className="space-y-1">
         <div className="flex items-center justify-between text-[11px]">
-          <span className="text-[#6B7280] font-medium">Weekly Adherence</span>
-          <span className="font-bold text-[#374151]">{adherencePct}%</span>
+          <span className="text-muted-foreground font-medium">Weekly Adherence</span>
+          <span className="font-bold text-foreground">{adherencePct}%</span>
         </div>
-        <ProgressBar value={adherencePct} max={100} color={adherencePct >= 80 ? 'bg-emerald-400' : adherencePct >= 60 ? 'bg-amber-400' : 'bg-red-400'} />
+        <ProgressBar value={adherencePct} max={100} color={adherencePct >= 80 ? 'bg-success' : adherencePct >= 60 ? 'bg-warning' : 'bg-destructive'} />
       </div>
 
       <div className="flex gap-2 pt-1">
         <Button
           size="sm"
           variant="outline"
-          className="flex-1 text-xs h-8 border-[#E7EAF3] gap-1"
+          className="flex-1 text-xs h-8 border-border gap-1"
           onClick={() => navigate('/nutrition')}
         >
           View Plan <ChevronRight className="w-3 h-3" />
@@ -208,7 +208,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
         <Button
           size="sm"
           variant="outline"
-          className="flex-1 text-xs h-8 border-[#E7EAF3]"
+          className="flex-1 text-xs h-8 border-border"
           onClick={onOpenAssign}
         >
           Change Plan
@@ -242,24 +242,24 @@ function TodayFoodLog({ client, assignedPlan }) {
   const targetCals = assignedPlan?.calories || 0;
   const targetProtein = assignedPlan?.protein_g || 0;
 
-  if (isLoading) return <div className="h-24 bg-white rounded-2xl animate-pulse border border-[#E7EAF3]" />;
+  if (isLoading) return <div className="h-24 bg-card rounded-2xl animate-pulse border border-border" />;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] overflow-hidden">
-      <div className="px-4 py-3 border-b border-[#F0F2F8] flex items-center justify-between">
+    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Utensils className="w-3.5 h-3.5 text-[#9CA3AF]" />
-          <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">Today's Food Log</span>
+          <Utensils className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-xs font-bold text-foreground uppercase tracking-wide">Today's Food Log</span>
         </div>
-        <span className="text-[11px] text-[#9CA3AF]">{format(new Date(), 'MMM d')}</span>
+        <span className="text-[11px] text-muted-foreground">{format(new Date(), 'MMM d')}</span>
       </div>
 
       {/* Daily totals bar */}
       {logs.length > 0 && (
-        <div className="px-4 py-3 bg-[#F8F9FC] border-b border-[#F0F2F8] space-y-2">
+        <div className="px-4 py-3 bg-[#F8F9FC] border-b border-border space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#6B7280]">Calories</span>
-            <span className="font-semibold text-[#374151] tabular-nums">
+            <span className="text-muted-foreground">Calories</span>
+            <span className="font-semibold text-foreground tabular-nums">
               {totalCals}{targetCals > 0 ? ` / ${targetCals}` : ''} kcal
             </span>
           </div>
@@ -267,10 +267,10 @@ function TodayFoodLog({ client, assignedPlan }) {
           {targetProtein > 0 && (
             <>
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#6B7280]">Protein</span>
-                <span className="font-semibold text-blue-600 tabular-nums">{totalProtein} / {targetProtein}g</span>
+                <span className="text-muted-foreground">Protein</span>
+                <span className="font-semibold text-primary tabular-nums">{totalProtein} / {targetProtein}g</span>
               </div>
-              <ProgressBar value={totalProtein} max={targetProtein} color="bg-blue-400" />
+              <ProgressBar value={totalProtein} max={targetProtein} color="bg-primary" />
             </>
           )}
         </div>
@@ -278,34 +278,34 @@ function TodayFoodLog({ client, assignedPlan }) {
 
       {logs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 gap-2">
-          <Utensils className="w-8 h-8 text-[#D1D5DB]" />
-          <p className="text-sm text-[#9CA3AF]">No food logged today</p>
+          <Utensils className="w-8 h-8 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">No food logged today</p>
         </div>
       ) : (
-        <div className="divide-y divide-[#F0F2F8]">
+        <div className="divide-y divide-border">
           {Object.entries(grouped).map(([mealName, items]) => {
             const mealCals = items.reduce((s, i) => s + (i.calories || 0), 0);
             return (
               <div key={mealName}>
-                <div className="flex items-center justify-between px-4 py-2 bg-[#FAFBFD]">
-                  <span className="text-xs font-semibold text-[#374151]">{mealName}</span>
+                <div className="flex items-center justify-between px-4 py-2 bg-background">
+                  <span className="text-xs font-semibold text-foreground">{mealName}</span>
                   {mealCals > 0 && <span className="text-[11px] font-semibold text-orange-600 tabular-nums">{mealCals} kcal</span>}
                 </div>
                 {items.map((item, i) => (
                   <div key={i} className="flex items-center justify-between px-4 py-2 last:pb-2">
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs text-[#1F2A44] font-medium">{item.food_name}</span>
+                      <span className="text-xs text-foreground font-medium">{item.food_name}</span>
                       {item.serving_quantity && (
-                        <span className="text-[11px] text-[#9CA3AF] ml-1.5">
+                        <span className="text-[11px] text-muted-foreground ml-1.5">
                           {item.serving_quantity}{item.serving_unit || ''}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-medium shrink-0 ml-2">
-                      {item.protein > 0  && <span className="text-blue-500">{item.protein}P</span>}
-                      {item.carbs > 0    && <span className="text-amber-500">{item.carbs}C</span>}
-                      {item.fats > 0     && <span className="text-rose-400">{item.fats}F</span>}
-                      {item.calories > 0 && <span className="text-[#374151] font-semibold">{item.calories}</span>}
+                      {item.protein > 0  && <span className="text-primary">{item.protein}P</span>}
+                      {item.carbs > 0    && <span className="text-warning">{item.carbs}C</span>}
+                      {item.fats > 0     && <span className="text-destructive">{item.fats}F</span>}
+                      {item.calories > 0 && <span className="text-foreground font-semibold">{item.calories}</span>}
                     </div>
                   </div>
                 ))}
@@ -350,22 +350,22 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
     : 0;
 
   const squareColor = {
-    hit:    'bg-emerald-400',
-    missed: 'bg-amber-300',
-    logged: 'bg-blue-300',
-    none:   'bg-[#E7EAF3]',
+    hit:    'bg-success',
+    missed: 'bg-warning',
+    logged: 'bg-primary',
+    none:   'bg-border',
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3">
+    <div className="bg-card rounded-2xl border border-border p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BarChart3 className="w-3.5 h-3.5 text-[#9CA3AF]" />
-          <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">7-Day Adherence</span>
+          <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-xs font-bold text-foreground uppercase tracking-wide">7-Day Adherence</span>
         </div>
         <span className={cn(
           'text-xs font-bold tabular-nums',
-          adherencePct >= 80 ? 'text-emerald-600' : adherencePct >= 50 ? 'text-amber-500' : 'text-[#9CA3AF]'
+          adherencePct >= 80 ? 'text-success' : adherencePct >= 50 ? 'text-warning' : 'text-muted-foreground'
         )}>
           {loggedCount > 0 ? `${adherencePct}%` : '—'}
         </span>
@@ -384,16 +384,16 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
                 isToday(day) && 'ring-2 ring-primary ring-offset-1'
               )}
             />
-            <span className="text-[9px] text-[#9CA3AF] font-medium">{format(day, 'EEE')}</span>
+            <span className="text-[9px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
             <span className="text-[8px] text-[#C4C9D4]">{format(day, 'd')}</span>
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-3 text-[10px] text-[#9CA3AF] flex-wrap">
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-emerald-400 inline-block" /> Hit target</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-300 inline-block" /> Logged, missed</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#E7EAF3] inline-block" /> Nothing logged</span>
+      <div className="flex items-center gap-3 text-[10px] text-muted-foreground flex-wrap">
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-success inline-block" /> Hit target</span>
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-warning inline-block" /> Logged, missed</span>
+        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-border inline-block" /> Nothing logged</span>
       </div>
     </div>
   );
@@ -408,34 +408,34 @@ function PlanHistory({ client, allPlans }) {
   );
 
   if (history.length === 0) return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4">
+    <div className="bg-card rounded-2xl border border-border p-4">
       <div className="flex items-center gap-2 mb-3">
-        <Calendar className="w-3.5 h-3.5 text-[#9CA3AF]" />
-        <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">Plan History</span>
+        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="text-xs font-bold text-foreground uppercase tracking-wide">Plan History</span>
       </div>
-      <p className="text-xs text-[#9CA3AF] text-center py-4">No previous plans on record</p>
+      <p className="text-xs text-muted-foreground text-center py-4">No previous plans on record</p>
     </div>
   );
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E7EAF3] p-4 space-y-3">
+    <div className="bg-card rounded-2xl border border-border p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <Calendar className="w-3.5 h-3.5 text-[#9CA3AF]" />
-        <span className="text-xs font-bold text-[#374151] uppercase tracking-wide">Plan History</span>
+        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="text-xs font-bold text-foreground uppercase tracking-wide">Plan History</span>
       </div>
       <div className="space-y-3">
         {history.map((plan, i) => (
           <div key={plan.id} className="flex items-center gap-3">
             <div className="flex flex-col items-center">
-              <div className="w-2 h-2 rounded-full bg-[#D1D5DB]" />
-              {i < history.length - 1 && <div className="w-px h-8 bg-[#E7EAF3] mt-1" />}
+              <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+              {i < history.length - 1 && <div className="w-px h-8 bg-border mt-1" />}
             </div>
-            <div className="flex-1 pb-3 border-b border-[#F0F2F8] last:border-0 last:pb-0">
+            <div className="flex-1 pb-3 border-b border-border last:border-0 last:pb-0">
               <div className="flex items-center gap-2">
                 <span className="text-base">{plan.emoji || '🥗'}</span>
                 <div>
-                  <p className="text-xs font-semibold text-[#374151]">{plan.title}</p>
-                  <p className="text-[10px] text-[#9CA3AF]">
+                  <p className="text-xs font-semibold text-foreground">{plan.title}</p>
+                  <p className="text-[10px] text-muted-foreground">
                     {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
                     {plan.calories ? ` · ${plan.calories} kcal` : ''}
                   </p>
@@ -466,7 +466,7 @@ export default function ProfileNutritionTab({ client }) {
   if (isLoading) return (
     <div className="space-y-3">
       {[1, 2, 3].map(i => (
-        <div key={i} className="h-24 bg-white rounded-2xl animate-pulse border border-[#E7EAF3]" />
+        <div key={i} className="h-24 bg-card rounded-2xl animate-pulse border border-border" />
       ))}
     </div>
   );

@@ -10,7 +10,7 @@ function FieldRow({ label, value, field, editValues, setEditValues, editing, set
       {editing === field ? (
         <input
           autoFocus
-          className="w-full bg-transparent text-white text-sm outline-none border-b border-blue-500 pb-1"
+          className="w-full bg-transparent text-white text-sm outline-none border-b border-primary pb-1"
           value={editValues[field] || ''}
           onChange={e => setEditValues(p => ({ ...p, [field]: e.target.value }))}
           onBlur={() => setEditing(null)}
@@ -67,7 +67,7 @@ export default function ProfileMyInfo({ user, client, queryClient }) {
           <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             onClick={save}
             className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-white"
-            style={{ background: 'linear-gradient(135deg, #3B82F6, #6366F1)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
             {saved ? '✓ Saved' : 'Save Changes'}
           </motion.button>
         )}

@@ -6,13 +6,13 @@ import { Play, ChevronDown, ChevronUp, Check, Info } from 'lucide-react';
 import ExerciseInfoSheet from './ExerciseInfoSheet';
 
 const MUSCLE_COLORS = {
-  chest: { bg: '#FEE2E2', text: '#DC2626' },
-  back: { bg: '#DBEAFE', text: '#1D4ED8' },
-  shoulders: { bg: '#EDE9FE', text: '#7C3AED' },
-  arms: { bg: '#FEF3C7', text: '#D97706' },
-  biceps: { bg: '#FEF3C7', text: '#D97706' },
-  triceps: { bg: '#FEF9C3', text: '#CA8A04' },
-  legs: { bg: '#D1FAE5', text: '#059669' },
+  chest: { bg: 'rgb(var(--destructive))', text: 'rgb(var(--destructive))' },
+  back: { bg: 'rgb(var(--accent))', text: 'rgb(var(--primary))' },
+  shoulders: { bg: 'rgb(var(--ai))', text: 'rgb(var(--ai))' },
+  arms: { bg: 'rgb(var(--warning))', text: 'rgb(var(--warning))' },
+  biceps: { bg: 'rgb(var(--warning))', text: 'rgb(var(--warning))' },
+  triceps: { bg: 'rgb(var(--warning))', text: '#CA8A04' },
+  legs: { bg: 'rgb(var(--success))', text: 'rgb(var(--success))' },
   glutes: { bg: '#FCE7F3', text: '#DB2777' },
   core: { bg: '#FFEDD5', text: '#EA580C' },
   cardio: { bg: '#CFFAFE', text: '#0891B2' },
@@ -47,7 +47,7 @@ function getEquipment(exercises = []) {
 function ExerciseRow({ ex, idx, libraryExercises, onInfoClick }) {
   const muscle = getMuscleTag(ex.name);
   const key = muscle.toLowerCase();
-  const color = MUSCLE_COLORS[key] || { bg: '#F1F5F9', text: '#64748B' };
+  const color = MUSCLE_COLORS[key] || { bg: 'rgb(var(--muted))', text: 'rgb(var(--muted-foreground))' };
 
   // Check if there's library data (photo/instructions)
   const libraryEx = libraryExercises?.find(le =>
@@ -56,19 +56,19 @@ function ExerciseRow({ ex, idx, libraryExercises, onInfoClick }) {
   const hasInfo = libraryEx && ((libraryEx.instructions?.length > 0) || libraryEx.image_url || libraryEx.video_url || (libraryEx.form_cues?.length > 0));
 
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
-      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-black text-slate-500 bg-slate-100">{idx + 1}</div>
-      <p className="flex-1 text-slate-800 font-semibold text-sm truncate">{ex.name}</p>
-      <span className="text-slate-400 text-xs font-semibold whitespace-nowrap">{ex.sets}×{ex.reps}</span>
+    <div className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
+      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-black text-muted-foreground bg-muted">{idx + 1}</div>
+      <p className="flex-1 text-foreground font-semibold text-sm truncate">{ex.name}</p>
+      <span className="text-muted-foreground text-xs font-semibold whitespace-nowrap">{ex.sets}×{ex.reps}</span>
       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap"
         style={{ background: color.bg, color: color.text }}>{muscle}</span>
       {hasInfo && (
         <button
           onClick={e => { e.stopPropagation(); onInfoClick(libraryEx); }}
           className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ background: '#EEF2FF' }}
+          style={{ background: 'rgb(var(--accent))' }}
         >
-          <Info className="w-3.5 h-3.5 text-blue-600" />
+          <Info className="w-3.5 h-3.5 text-primary" />
         </button>
       )}
     </div>
@@ -88,16 +88,16 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
   if (!workout || workout.day_name?.toLowerCase().includes('rest')) {
     return (
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-        className="mx-4 bg-white rounded-[20px] overflow-hidden"
-        style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+        className="mx-4 bg-card rounded-[20px] overflow-hidden"
+        style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
         <div className="p-6 text-center">
-          <div className="w-20 h-20 rounded-3xl bg-slate-50 flex items-center justify-center mx-auto mb-4 text-4xl">🛌</div>
-          <p className="text-slate-900 font-black text-2xl">Rest Day</p>
-          <p className="text-slate-500 text-sm mt-1 mb-5">Recovery is where the gains happen</p>
+          <div className="w-20 h-20 rounded-3xl bg-muted flex items-center justify-center mx-auto mb-4 text-4xl">🛌</div>
+          <p className="text-foreground font-black text-2xl">Rest Day</p>
+          <p className="text-muted-foreground text-sm mt-1 mb-5">Recovery is where the gains happen</p>
           <div className="grid grid-cols-2 gap-2">
             {['💧 Stay hydrated', '😴 8 hours sleep', '🧘 Light stretching', '🥗 Hit your macros'].map((tip, i) => (
-              <div key={i} className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <p className="text-slate-600 text-xs font-semibold">{tip}</p>
+              <div key={i} className="p-3 rounded-xl bg-muted border border-border">
+                <p className="text-muted-foreground text-xs font-semibold">{tip}</p>
               </div>
             ))}
           </div>
@@ -114,11 +114,11 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
   return (
     <>
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-        className="mx-4 bg-white rounded-[20px] overflow-hidden"
-        style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #F1F5F9' }}>
+        className="mx-4 bg-card rounded-[20px] overflow-hidden"
+        style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid rgb(var(--muted))' }}>
 
         {/* Gradient header */}
-        <div className="p-5" style={{ background: 'linear-gradient(135deg, #1D4ED8 0%, #7C3AED 100%)' }}>
+        <div className="p-5" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)' }}>
           {isDone && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
               style={{ background: 'rgba(16,185,129,0.25)', color: '#6EE7B7' }}>
@@ -140,8 +140,8 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
         {/* Exercise list */}
         <div className="px-5 pt-3">
           {libraryExercises.length > 0 && (
-            <p className="text-[10px] text-slate-400 font-medium mb-2 flex items-center gap-1">
-              <Info className="w-3 h-3" /> Tap <Info className="w-3 h-3 text-blue-500" /> to see how to perform an exercise
+            <p className="text-[10px] text-muted-foreground font-medium mb-2 flex items-center gap-1">
+              <Info className="w-3 h-3" /> Tap <Info className="w-3 h-3 text-primary" /> to see how to perform an exercise
             </p>
           )}
           {previewExs.map((ex, i) => (
@@ -153,7 +153,7 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
           ))}
           {exercises.length > 3 && (
             <button onClick={() => setShowAll(v => !v)}
-              className="w-full py-3 flex items-center justify-center gap-1.5 text-sm font-bold text-blue-600">
+              className="w-full py-3 flex items-center justify-center gap-1.5 text-sm font-bold text-primary">
               {showAll ? <><ChevronUp className="w-4 h-4" /> Show less</> : <><ChevronDown className="w-4 h-4" /> +{exercises.length - 3} more exercises</>}
             </button>
           )}
@@ -163,7 +163,7 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
         <div className="px-5 pb-5 pt-2">
           <button onClick={onStart}
             className="w-full flex items-center justify-center gap-2 font-black text-base text-white rounded-2xl transition-transform active:scale-[0.97]"
-            style={{ height: 56, background: isDone ? 'linear-gradient(135deg, #059669, #10B981)' : 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: isDone ? '0 4px 16px rgba(5,150,105,0.3)' : '0 4px 20px rgba(37,99,235,0.35)' }}>
+            style={{ height: 56, background: isDone ? 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: isDone ? '0 4px 16px rgba(5,150,105,0.3)' : '0 4px 20px rgba(37,99,235,0.35)' }}>
             <Play className="w-5 h-5 fill-white" />
             {isDone ? 'Do Again' : isToday ? 'Start Workout' : 'Preview Workout'}
           </button>

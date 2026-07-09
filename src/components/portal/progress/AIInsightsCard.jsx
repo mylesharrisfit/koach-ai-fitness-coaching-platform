@@ -17,13 +17,13 @@ export default function AIInsightsCard({ client }) {
   return (
     <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.1))', border: '1px solid rgba(124,58,237,0.2)' }}>
       <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-purple-400" />
+        <Sparkles className="w-4 h-4 text-ai" />
         <p className="text-white font-bold text-sm">AI Progress Insights</p>
       </div>
 
       {isLoading ? (
         <div className="flex items-center gap-2 py-4 justify-center">
-          <div className="w-4 h-4 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-ai/30 border-t-purple-400 rounded-full animate-spin" />
           <p className="text-white/40 text-xs">Loading insights...</p>
         </div>
       ) : insights.length === 0 ? (

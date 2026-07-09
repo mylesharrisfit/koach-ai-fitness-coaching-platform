@@ -12,41 +12,41 @@ export default function BICapacity({ clients, user }) {
   const revenuePerSlot = planLimit > 0 ? Math.round(mrr / planLimit) : 0;
   const availableSlots = Math.max(0, planLimit - activeClients.length);
 
-  const color = utilizationPct >= 90 ? '#EF4444' : utilizationPct >= 70 ? '#F59E0B' : '#22C55E';
+  const color = utilizationPct >= 90 ? 'rgb(var(--destructive))' : utilizationPct >= 70 ? 'rgb(var(--warning))' : 'rgb(var(--success))';
 
   // Project weeks to capacity (assume ~2 new clients/month)
   const weeksToCapacity = availableSlots > 0 ? Math.round((availableSlots / 2) * 4.33) : 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-      <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+      <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
         <Gauge className="w-4 h-4 text-primary" /> Capacity Analysis
       </h3>
 
       <div className="flex items-center gap-4 mb-4">
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs text-gray-500">Client capacity</p>
+            <p className="text-xs text-muted-foreground">Client capacity</p>
             <p className="text-xs font-bold" style={{ color }}>{utilizationPct}%</p>
           </div>
-          <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
             <div className="h-full rounded-full transition-all duration-700" style={{ width: `${utilizationPct}%`, background: color }} />
           </div>
           <div className="flex justify-between mt-1">
-            <p className="text-[10px] text-gray-400">{activeClients.length} active</p>
-            <p className="text-[10px] text-gray-400">{planLimit} limit</p>
+            <p className="text-[10px] text-muted-foreground">{activeClients.length} active</p>
+            <p className="text-[10px] text-muted-foreground">{planLimit} limit</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="p-2.5 bg-gray-50 rounded-xl text-center">
-          <p className="text-[10px] text-gray-400 font-medium mb-0.5">Available Slots</p>
-          <p className="text-lg font-bold text-gray-800">{availableSlots}</p>
+        <div className="p-2.5 bg-muted rounded-xl text-center">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Available Slots</p>
+          <p className="text-lg font-bold text-foreground">{availableSlots}</p>
         </div>
-        <div className="p-2.5 bg-gray-50 rounded-xl text-center">
-          <p className="text-[10px] text-gray-400 font-medium mb-0.5">Revenue / Slot</p>
-          <p className="text-lg font-bold text-gray-800">${revenuePerSlot}</p>
+        <div className="p-2.5 bg-muted rounded-xl text-center">
+          <p className="text-[10px] text-muted-foreground font-medium mb-0.5">Revenue / Slot</p>
+          <p className="text-lg font-bold text-foreground">${revenuePerSlot}</p>
         </div>
       </div>
 
@@ -62,8 +62,8 @@ export default function BICapacity({ clients, user }) {
       )}
 
       {utilizationPct < 60 && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-green-50 border border-green-100 text-xs text-green-700">
-          <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-green-500" />
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-success/10 border border-success text-xs text-success">
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-success" />
           <p>You have room for <strong>{availableSlots} more clients</strong> — great time to grow your pipeline!</p>
         </div>
       )}

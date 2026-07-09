@@ -35,7 +35,7 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
   return (
     <BSSection icon={Users} title="Coaching Preferences" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
       {/* Check-in */}
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Client Management</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Management</p>
       <BSRow label="Default check-in frequency">
         <BSSelect value={s.checkin_frequency} onChange={v => set('checkin_frequency', v)} options={FREQ_OPTIONS} />
       </BSRow>
@@ -83,7 +83,7 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Client Limits</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Limits</p>
       <BSRow label="Maximum active clients">
         <div className="flex items-center gap-3">
           <BSToggle value={s.max_clients_unlimited} onChange={v => set('max_clients_unlimited', v)} label="Unlimited" />
@@ -100,35 +100,35 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Client Categorization</p>
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Categorization</p>
       <BSRow label="Default client tags" hint="Applied to all new clients automatically">
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2 mb-2">
             {(s.default_tags || []).map((tag, i) => (
-              <span key={i} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+              <span key={i} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-accent text-primary border border-primary">
                 {tag}
-                <button onClick={() => removeTag(i)} className="text-blue-400 hover:text-blue-600 ml-0.5 font-bold">×</button>
+                <button onClick={() => removeTag(i)} className="text-primary hover:text-primary ml-0.5 font-bold">×</button>
               </span>
             ))}
           </div>
           <div className="flex gap-2">
             <input value={newTag} onChange={e => setNewTag(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addTag()}
-              placeholder="Add a tag..." className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-400" />
-            <button onClick={addTag} className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>Add</button>
+              placeholder="Add a tag..." className="flex-1 px-3 py-2 rounded-xl border border-border text-sm focus:outline-none focus:border-primary" />
+            <button onClick={addTag} className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>Add</button>
           </div>
         </div>
       </BSRow>
       <BSRow label="At Risk threshold" hint="Auto-tag client as 'At Risk'">
         <div className="flex items-center gap-2">
           <BSInput type="number" value={s.auto_tag_at_risk_pct} onChange={v => set('auto_tag_at_risk_pct', v)} min={0} max={100} className="w-24" />
-          <span className="text-sm text-slate-500">% adherence or below</span>
+          <span className="text-sm text-muted-foreground">% adherence or below</span>
         </div>
       </BSRow>
       <BSRow label="High Performer threshold" hint="Auto-tag client as 'High Performer'">
         <div className="flex items-center gap-2">
           <BSInput type="number" value={s.auto_tag_high_performer_pct} onChange={v => set('auto_tag_high_performer_pct', v)} min={0} max={100} className="w-24" />
-          <span className="text-sm text-slate-500">% adherence or above</span>
+          <span className="text-sm text-muted-foreground">% adherence or above</span>
         </div>
       </BSRow>
     </BSSection>

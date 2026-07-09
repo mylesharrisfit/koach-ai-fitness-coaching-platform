@@ -15,7 +15,7 @@ const TABS = [
 ];
 
 function avatarColor(name) {
-  const colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700'];
+  const colors = ['bg-accent text-primary', 'bg-ai/10 text-ai', 'bg-success/10 text-success', 'bg-warning/10 text-warning', 'bg-destructive/10 text-destructive'];
   return colors[(name?.charCodeAt(0) || 0) % colors.length];
 }
 
@@ -46,20 +46,20 @@ function GroupDetail({ group, user, myClient, allClients, queryClient }) {
   return (
     <div className="flex flex-col flex-1">
       {/* Tabs */}
-      <div className="bg-white px-5 pb-0" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
-        <div className="flex border-b border-slate-100">
+      <div className="bg-card px-5 pb-0" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
+        <div className="flex border-b border-border">
           {TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className="flex items-center gap-1.5 px-4 py-3 text-sm font-bold transition-all relative flex-1 justify-center"
-                style={{ color: isActive ? '#2563EB' : '#94A3B8' }}>
+                style={{ color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}>
                 <Icon size={14} />
                 {tab.label}
                 {isActive && (
                   <motion.div layoutId="portal-community-tab"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[#2563EB]" />
+                    className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-primary" />
                 )}
               </button>
             );
@@ -120,21 +120,21 @@ export default function PortalCommunity({ user }) {
   const liveGroup = selectedGroup ? myGroups.find(g => g.id === selectedGroup.id) || selectedGroup : null;
 
   return (
-    <div className="flex flex-col min-h-screen pb-24" style={{ background: '#F8F9FA' }}>
+    <div className="flex flex-col min-h-screen pb-24" style={{ background: 'rgb(var(--muted))' }}>
       {/* Header */}
-      <div className="bg-white px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+      <div className="bg-card px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <div className="flex items-center gap-3 mb-1">
           {liveGroup && (
             <button onClick={() => setSelectedGroup(null)}
-              className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-              <ArrowLeft className="w-4 h-4 text-slate-500" />
+              className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+              <ArrowLeft className="w-4 h-4 text-muted-foreground" />
             </button>
           )}
           <div>
-            <h1 className="text-slate-900 font-black text-2xl">
+            <h1 className="text-foreground font-black text-2xl">
               {liveGroup ? liveGroup.name : 'Community'}
             </h1>
-            <p className="text-slate-400 text-sm">
+            <p className="text-muted-foreground text-sm">
               {liveGroup ? (liveGroup.description || 'Group community') : (myGroups.length + ' group' + (myGroups.length !== 1 ? 's' : ''))}
             </p>
           </div>
@@ -149,8 +149,8 @@ export default function PortalCommunity({ user }) {
           {myGroups.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
               <div className="text-5xl mb-4">👥</div>
-              <h3 className="text-slate-900 font-black text-lg mb-2">No groups yet</h3>
-              <p className="text-slate-400 text-sm">Your coach will add you to a community group soon.</p>
+              <h3 className="text-foreground font-black text-lg mb-2">No groups yet</h3>
+              <p className="text-muted-foreground text-sm">Your coach will add you to a community group soon.</p>
             </div>
           ) : (
             myGroups.map(group => {
@@ -158,7 +158,7 @@ export default function PortalCommunity({ user }) {
               const members = allClients.filter(c => memberIds.includes(c.id));
               return (
                 <button key={group.id} onClick={() => setSelectedGroup(group)}
-                  className="w-full bg-white rounded-2xl overflow-hidden text-left"
+                  className="w-full bg-card rounded-2xl overflow-hidden text-left"
                   style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
                   {group.cover_image_url ? (
                     <div className="h-24 overflow-hidden">
@@ -166,15 +166,15 @@ export default function PortalCommunity({ user }) {
                     </div>
                   ) : (
                     <div className="h-24 flex items-center justify-center"
-                      style={{ background: 'linear-gradient(135deg, #0E1525 0%, #2563EB 100%)' }}>
+                      style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, rgb(var(--primary)) 100%)' }}>
                       <Users className="w-8 h-8 text-white/40" />
                     </div>
                   )}
                   <div className="p-4 flex items-center gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-slate-900 text-base truncate">{group.name}</p>
+                      <p className="font-bold text-foreground text-base truncate">{group.name}</p>
                       {group.description && (
-                        <p className="text-slate-400 text-sm truncate">{group.description}</p>
+                        <p className="text-muted-foreground text-sm truncate">{group.description}</p>
                       )}
                       <div className="flex items-center gap-2 mt-1.5">
                         <div className="flex -space-x-1">
@@ -184,10 +184,10 @@ export default function PortalCommunity({ user }) {
                             </div>
                           ))}
                         </div>
-                        <span className="text-slate-400 text-xs">{members.length} members</span>
+                        <span className="text-muted-foreground text-xs">{members.length} members</span>
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-slate-300 flex-shrink-0" />
+                    <ChevronRight className="w-5 h-5 text-border flex-shrink-0" />
                   </div>
                 </button>
               );

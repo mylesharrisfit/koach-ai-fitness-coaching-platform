@@ -34,10 +34,10 @@ function Ring({ value, max, color, size = 80, label, icon }) {
 export default function DailyRings({ log }) {
   return (
     <div className="flex justify-around items-center py-4 px-2">
-      <Ring value={log?.workout_done ? 1 : 0} max={1} color="#3b82f6" icon="🏋️" label="Workout" />
-      <Ring value={log?.meals_logged} max={4} color="#10b981" icon="🥗" label="Meals" />
+      <Ring value={log?.workout_done ? 1 : 0} max={1} color="rgb(var(--primary))" icon="🏋️" label="Workout" />
+      <Ring value={log?.meals_logged} max={4} color="rgb(var(--success))" icon="🥗" label="Meals" />
       <Ring value={log?.water_glasses} max={8} color="#06b6d4" icon="💧" label="Water" />
-      <Ring value={log?.steps} max={10000} color="#f59e0b" icon="👟" label="Steps" />
+      <Ring value={log?.steps} max={10000} color="rgb(var(--warning))" icon="👟" label="Steps" />
     </div>
   );
 }

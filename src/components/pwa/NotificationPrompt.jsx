@@ -36,29 +36,29 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             className="fixed bottom-0 left-0 right-0 z-50 w-full"
             onClick={e => e.stopPropagation()}>
-            <div className="w-full bg-white rounded-t-[28px] pt-8 pb-8 px-5 shadow-2xl"
+            <div className="w-full bg-card rounded-t-[28px] pt-8 pb-8 px-5 shadow-2xl"
               style={{ boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}>
 
               {/* Close button */}
               <button onClick={onDismiss}
                 className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ background: '#F1F5F9' }}>
-                <X className="w-4 h-4 text-slate-400" />
+                style={{ background: 'rgb(var(--muted))' }}>
+                <X className="w-4 h-4 text-muted-foreground" />
               </button>
 
               {/* Icon */}
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
                 <Bell className="w-8 h-8 text-white" />
               </div>
 
               {/* Headline */}
-              <h2 className="text-slate-900 text-2xl font-black text-center mb-2">
+              <h2 className="text-foreground text-2xl font-black text-center mb-2">
                 Stay on top of your coaching 🔔
               </h2>
 
               {/* Subheadline */}
-              <p className="text-slate-500 text-sm text-center mb-5">
+              <p className="text-muted-foreground text-sm text-center mb-5">
                 Get real-time updates about your training and progress
               </p>
 
@@ -72,10 +72,10 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
                   <motion.div key={i} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 * i }}
                     className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: '#DBEAFE' }}>
-                      <span className="text-blue-600 font-black text-sm">✓</span>
+                      style={{ background: 'rgb(var(--accent))' }}>
+                      <span className="text-primary font-black text-sm">✓</span>
                     </div>
-                    <p className="text-slate-700 text-sm font-medium">{benefit}</p>
+                    <p className="text-foreground text-sm font-medium">{benefit}</p>
                   </motion.div>
                 ))}
               </div>
@@ -83,7 +83,7 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
               {/* Buttons */}
               <button onClick={handleEnable} disabled={loading}
                 className="w-full py-4 rounded-xl font-bold text-white text-base mb-3 flex items-center justify-center gap-2 transition-all"
-                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', opacity: loading ? 0.7 : 1 }}>
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', opacity: loading ? 0.7 : 1 }}>
                 {loading ? (
                   <>
                     <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
@@ -95,12 +95,12 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
               </button>
 
               <button onClick={onDismiss}
-                className="w-full py-3 text-blue-600 font-bold text-sm text-center">
+                className="w-full py-3 text-primary font-bold text-sm text-center">
                 Maybe Later
               </button>
 
               {/* Privacy note */}
-              <p className="text-center text-xs text-slate-400 mt-4">
+              <p className="text-center text-xs text-muted-foreground mt-4">
                 We'll never spam you. You can manage notifications anytime.
               </p>
             </div>

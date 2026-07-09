@@ -19,17 +19,17 @@ export default function ClientAchievements({ clientId }) {
   if (recent.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-5">
+    <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-[#FEF3C7] flex items-center justify-center">
-            <Trophy className="w-4 h-4 text-[#D97706]" />
+          <div className="w-8 h-8 rounded-xl bg-warning/10 flex items-center justify-center">
+            <Trophy className="w-4 h-4 text-warning" />
           </div>
-          <p className="text-base font-bold text-[#111827]">Achievements</p>
+          <p className="text-base font-bold text-foreground">Achievements</p>
         </div>
         <button
           onClick={() => navigate('/adherence')}
-          className="flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] transition-colors"
+          className="flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary transition-colors"
         >
           View All <ChevronRight className="w-3.5 h-3.5" />
         </button>
@@ -40,11 +40,11 @@ export default function ClientAchievements({ clientId }) {
           const config = BADGE_CONFIG[b.badge_key] || {};
           return (
             <div key={b.id}
-              className="flex flex-col items-center text-center p-3 rounded-xl border border-[#F3F4F6] bg-[#FAFAFA] hover:border-[#FDE68A] hover:bg-[#FFFBEB] transition-all cursor-default">
+              className="flex flex-col items-center text-center p-3 rounded-xl border border-muted bg-background hover:border-warning hover:bg-warning/10 transition-all cursor-default">
               <div className="text-3xl mb-1.5">{config.emoji || '🏅'}</div>
-              <p className="text-xs font-bold text-[#111827] leading-tight">{config.label || b.badge_key}</p>
+              <p className="text-xs font-bold text-foreground leading-tight">{config.label || b.badge_key}</p>
               {b.created_date && (
-                <p className="text-[10px] text-[#9CA3AF] mt-0.5">{format(new Date(b.created_date), 'MMM d')}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{format(new Date(b.created_date), 'MMM d')}</p>
               )}
             </div>
           );

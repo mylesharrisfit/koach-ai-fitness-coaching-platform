@@ -17,24 +17,24 @@ function SignOutModal({ onCancel }) {
       style={{ background: 'rgba(0,0,0,0.4)' }}
       onClick={onCancel}>
       <motion.div initial={{ y: 200 }} animate={{ y: 0 }} exit={{ y: 200 }}
-        className="w-full max-w-md bg-white rounded-t-3xl p-6 pb-10"
+        className="w-full max-w-md bg-card rounded-t-3xl p-6 pb-10"
         onClick={e => e.stopPropagation()}>
-        <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5" />
+        <div className="w-10 h-1 rounded-full bg-border mx-auto mb-5" />
         <div className="text-center mb-6">
-          <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3">
-            <LogOut className="w-7 h-7 text-red-500" />
+          <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-3">
+            <LogOut className="w-7 h-7 text-destructive" />
           </div>
-          <h3 className="text-slate-900 font-black text-lg">Sign Out?</h3>
-          <p className="text-slate-400 text-sm mt-1">You'll need to sign in again to access your account.</p>
+          <h3 className="text-foreground font-black text-lg">Sign Out?</h3>
+          <p className="text-muted-foreground text-sm mt-1">You'll need to sign in again to access your account.</p>
         </div>
         <button
           onClick={() => base44.auth.logout('/')}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-3"
-          style={{ background: 'linear-gradient(135deg, #EF4444, #DC2626)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--destructive)), rgb(var(--destructive)))' }}>
           Yes, Sign Out
         </button>
         <button onClick={onCancel}
-          className="w-full py-4 rounded-2xl font-bold text-slate-600 text-base bg-slate-100">
+          className="w-full py-4 rounded-2xl font-bold text-muted-foreground text-base bg-muted">
           Cancel
         </button>
       </motion.div>
@@ -56,27 +56,27 @@ function CompletionCard({ client }) {
   if (pct === 100 || dismissed) return null;
 
   return (
-    <div className="mx-5 mt-4 bg-white rounded-2xl p-4 relative"
-      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.07)', border: '1px solid #F1F5F9' }}>
+    <div className="mx-5 mt-4 bg-card rounded-2xl p-4 relative"
+      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.07)', border: '1px solid rgb(var(--muted))' }}>
       <button onClick={() => setDismissed(true)}
-        className="absolute top-3 right-3 w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-bold">
+        className="absolute top-3 right-3 w-6 h-6 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs font-bold">
         ✕
       </button>
-      <p className="text-slate-900 font-black text-sm">Complete your profile</p>
-      <p className="text-slate-400 text-xs mt-0.5 mb-3">Get the most out of KOACH AI</p>
-      <div className="h-2 rounded-full bg-slate-100 mb-3">
+      <p className="text-foreground font-black text-sm">Complete your profile</p>
+      <p className="text-muted-foreground text-xs mt-0.5 mb-3">Get the most out of KOACH AI</p>
+      <div className="h-2 rounded-full bg-muted mb-3">
         <motion.div animate={{ width: `${pct}%` }} transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, #2563EB, #7C3AED)' }} />
+          className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--ai)))' }} />
       </div>
       <div className="space-y-1.5">
         {items.filter(i => !i.done).map(item => (
           <div key={item.label} className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full border-2 border-slate-200 flex-shrink-0" />
-            <p className="text-slate-500 text-xs">{item.label}</p>
+            <div className="w-4 h-4 rounded-full border-2 border-border flex-shrink-0" />
+            <p className="text-muted-foreground text-xs">{item.label}</p>
           </div>
         ))}
       </div>
-      <p className="text-blue-600 text-xs mt-2 font-bold">{pct}% complete</p>
+      <p className="text-primary text-xs mt-2 font-bold">{pct}% complete</p>
     </div>
   );
 }
@@ -85,13 +85,13 @@ function CompletionCard({ client }) {
 function StatCard({ icon: Icon, iconBg, iconColor, value, label, sublabel, onClick }) {
   return (
     <button onClick={onClick}
-      className="flex-1 bg-white rounded-2xl p-3 flex flex-col items-center gap-1 min-w-0"
-      style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
+      className="flex-1 bg-card rounded-2xl p-3 flex flex-col items-center gap-1 min-w-0"
+      style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
         <Icon className="w-4.5 h-4.5" style={{ color: iconColor }} size={18} />
       </div>
-      <p className="text-slate-900 font-black text-lg leading-none mt-1">{value}</p>
-      <p className="text-slate-400 text-[10px] font-semibold">{sublabel}</p>
+      <p className="text-foreground font-black text-lg leading-none mt-1">{value}</p>
+      <p className="text-muted-foreground text-[10px] font-semibold">{sublabel}</p>
     </button>
   );
 }
@@ -100,20 +100,20 @@ function StatCard({ icon: Icon, iconBg, iconColor, value, label, sublabel, onCli
 function SettingsRow({ icon: Icon, iconBg, iconColor, label, subtitle, onClick, badge }) {
   return (
     <button onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3.5 bg-white text-left active:bg-slate-50 transition-colors">
+      className="w-full flex items-center gap-3 px-4 py-3.5 bg-card text-left active:bg-muted transition-colors">
       <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: iconBg }}>
         <Icon size={16} style={{ color: iconColor }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-slate-900 font-semibold text-sm">{label}</p>
-        <p className="text-slate-400 text-xs mt-0.5">{subtitle}</p>
+        <p className="text-foreground font-semibold text-sm">{label}</p>
+        <p className="text-muted-foreground text-xs mt-0.5">{subtitle}</p>
       </div>
       {badge ? (
-        <span className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-[9px] font-black text-white flex-shrink-0">
+        <span className="w-5 h-5 rounded-full bg-destructive flex items-center justify-center text-[9px] font-black text-white flex-shrink-0">
           {badge}
         </span>
       ) : (
-        <ChevronRight className="w-4 h-4 text-slate-300 flex-shrink-0" />
+        <ChevronRight className="w-4 h-4 text-border flex-shrink-0" />
       )}
     </button>
   );
@@ -186,23 +186,23 @@ export default function PortalProfile({ user }) {
   };
 
   return (
-    <div className="pb-32 min-h-screen" style={{ background: '#F8F9FA' }}>
+    <div className="pb-32 min-h-screen" style={{ background: 'rgb(var(--muted))' }}>
 
       {/* ── Top Nav ── */}
-      <div className="flex items-center gap-3 px-5 pt-14 pb-4 bg-white" style={{ boxShadow: '0 1px 0 #F1F5F9' }}>
+      <div className="flex items-center gap-3 px-5 pt-14 pb-4 bg-card" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <button onClick={() => navigate('/portal')}
-          className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center">
-          <ChevronLeft className="w-5 h-5 text-slate-500" />
+          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </button>
-        <h1 className="text-slate-900 font-black text-lg">Profile & Settings</h1>
+        <h1 className="text-foreground font-black text-lg">Profile & Settings</h1>
       </div>
 
       {/* ── SECTION 1: Profile Header ── */}
-      <div className="bg-white pt-8 pb-6 flex flex-col items-center text-center border-b border-slate-100">
+      <div className="bg-card pt-8 pb-6 flex flex-col items-center text-center border-b border-border">
         {/* Avatar */}
         <div className="relative mb-4">
           <div className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
             {myClient?.avatar_url
               ? <img src={myClient.avatar_url} alt="avatar" className="w-full h-full object-cover" />
               : <span className="text-white font-black text-2xl">{initials}</span>
@@ -210,41 +210,41 @@ export default function PortalProfile({ user }) {
           </div>
           <button onClick={() => fileRef.current?.click()}
             className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
-            style={{ background: '#2563EB', border: '2.5px solid white', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}>
+            style={{ background: 'rgb(var(--primary))', border: '2.5px solid white', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}>
             <Camera className="w-3.5 h-3.5 text-white" />
           </button>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
         </div>
 
         {/* Name */}
-        <h2 className="text-slate-900 font-black text-2xl leading-tight">
+        <h2 className="text-foreground font-black text-2xl leading-tight">
           {user?.full_name || myClient?.name || 'My Profile'}
         </h2>
 
         {/* Member since */}
         {memberSince && (
-          <p className="text-slate-400 text-xs mt-1 font-medium">Member since {memberSince}</p>
+          <p className="text-muted-foreground text-xs mt-1 font-medium">Member since {memberSince}</p>
         )}
 
         {/* Edit Profile button */}
-        <button className="mt-3 px-5 py-2 rounded-xl text-sm font-bold text-blue-600 border-2 border-blue-200 bg-blue-50">
+        <button className="mt-3 px-5 py-2 rounded-xl text-sm font-bold text-primary border-2 border-primary bg-accent">
           Edit Profile
         </button>
       </div>
 
       {/* ── SECTION 2: Quick Stats ── */}
-      <div className="px-5 py-4 bg-white border-b border-slate-100">
+      <div className="px-5 py-4 bg-card border-b border-border">
         <div className="flex gap-3">
-          <StatCard icon={User} iconBg="#EFF6FF" iconColor="#2563EB"
+          <StatCard icon={User} iconBg="rgb(var(--accent))" iconColor="rgb(var(--primary))"
             value={workoutSessions.length} sublabel="Workouts"
             onClick={() => navigate('/portal/workouts')} />
-          <StatCard icon={Target} iconBg="#F0FDF4" iconColor="#16A34A"
+          <StatCard icon={Target} iconBg="rgb(var(--success))" iconColor="rgb(var(--success))"
             value={checkIns.length} sublabel="Check-ins"
             onClick={() => navigate('/portal/checkin')} />
-          <StatCard icon={Bell} iconBg="#FFFBEB" iconColor="#D97706"
+          <StatCard icon={Bell} iconBg="rgb(var(--warning))" iconColor="rgb(var(--warning))"
             value={`${streak}d`} sublabel="Streak"
             onClick={() => navigate('/portal/progress')} />
-          <StatCard icon={Star} iconBg="#FDF4FF" iconColor="#9333EA"
+          <StatCard icon={Star} iconBg="#FDF4FF" iconColor="rgb(var(--ai))"
             value={badges.length} sublabel="Awards"
             onClick={() => navigate('/portal/progress')} />
         </div>
@@ -254,61 +254,61 @@ export default function PortalProfile({ user }) {
       <CompletionCard client={myClient} />
 
       {/* ── SECTION 4: Settings List ── */}
-      <div className="mx-5 mt-4 bg-white rounded-2xl overflow-hidden"
-        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-        <SettingsRow icon={User} iconBg="#EFF6FF" iconColor="#2563EB"
+      <div className="mx-5 mt-4 bg-card rounded-2xl overflow-hidden"
+        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
+        <SettingsRow icon={User} iconBg="rgb(var(--accent))" iconColor="rgb(var(--primary))"
           label="Personal Information" subtitle="Update your details"
           onClick={() => {}} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={Target} iconBg="#F0FDF4" iconColor="#16A34A"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={Target} iconBg="rgb(var(--success))" iconColor="rgb(var(--success))"
           label="Goals & Fitness" subtitle="Your fitness profile"
           onClick={() => {}} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={Bell} iconBg="#FFFBEB" iconColor="#D97706"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={Bell} iconBg="rgb(var(--warning))" iconColor="rgb(var(--warning))"
           label="Notifications" subtitle="Manage your alerts"
           onClick={() => {}} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={CreditCard} iconBg="#EFF6FF" iconColor="#2563EB"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={CreditCard} iconBg="rgb(var(--accent))" iconColor="rgb(var(--primary))"
           label="Billing & Payments" subtitle="Invoices and payment methods"
           badge={unpaidCount > 0 ? unpaidCount : null}
           onClick={() => navigate('/portal/billing')} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={Lock} iconBg="#FFF1F2" iconColor="#E11D48"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={Lock} iconBg="#FFF1F2" iconColor="rgb(var(--destructive))"
           label="Privacy & Security" subtitle="Password and account security"
           onClick={() => {}} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={Smartphone} iconBg="#F0FDF4" iconColor="#16A34A"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={Smartphone} iconBg="rgb(var(--success))" iconColor="rgb(var(--success))"
           label="Connected Apps" subtitle="Sync your devices"
           onClick={() => {}} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={Star} iconBg="#FDF4FF" iconColor="#9333EA"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={Star} iconBg="#FDF4FF" iconColor="rgb(var(--ai))"
           label="Rate KOACH AI" subtitle="Share your feedback"
           onClick={() => {}} />
-        <div className="mx-4 h-px bg-slate-100" />
-        <SettingsRow icon={HelpCircle} iconBg="#F8FAFC" iconColor="#64748B"
+        <div className="mx-4 h-px bg-muted" />
+        <SettingsRow icon={HelpCircle} iconBg="rgb(var(--muted))" iconColor="rgb(var(--muted-foreground))"
           label="Help & Support" subtitle="Get assistance"
           onClick={() => {}} />
       </div>
 
       {/* ── SECTION 5: Coach Card ── */}
-      <div className="mx-5 mt-4 bg-white rounded-2xl p-4"
-        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #F1F5F9' }}>
-        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3">Your Coach</p>
+      <div className="mx-5 mt-4 bg-card rounded-2xl p-4"
+        style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
+        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">Your Coach</p>
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-base text-white flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
+              background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
               boxShadow: '0 0 0 3px white, 0 0 0 5px rgba(37,99,235,0.2)',
             }}>
             C
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-slate-900 font-bold text-sm">Your Coach</p>
-            <p className="text-slate-400 text-xs">KOACH AI Platform</p>
+            <p className="text-foreground font-bold text-sm">Your Coach</p>
+            <p className="text-muted-foreground text-xs">KOACH AI Platform</p>
           </div>
           <button onClick={() => navigate('/portal/messages')}
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', boxShadow: '0 2px 10px rgba(37,99,235,0.25)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 2px 10px rgba(37,99,235,0.25)' }}>
             <MessageSquare className="w-3.5 h-3.5" />
             Message
           </button>
@@ -318,7 +318,7 @@ export default function PortalProfile({ user }) {
       {/* ── SECTION 6: Sign Out ── */}
       <div className="px-5 mt-6 mb-8">
         <button onClick={() => setShowSignOut(true)}
-          className="w-full py-4 rounded-2xl font-bold text-red-500 text-base border-2 border-red-100 bg-white"
+          className="w-full py-4 rounded-2xl font-bold text-destructive text-base border-2 border-destructive bg-card"
           style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
           Sign Out
         </button>

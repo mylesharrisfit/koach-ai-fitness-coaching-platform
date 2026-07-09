@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 
 // Mini adherence bar shown under the % value
 function AdherenceBar({ pct }) {
-  const color = pct < 40 ? '#dc2626' : '#2563EB';
+  const color = pct < 40 ? 'rgb(var(--destructive))' : 'rgb(var(--primary))';
   return (
-    <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: '#f3f4f6' }}>
+    <div className="mt-2 h-1.5 w-full rounded-full" style={{ background: 'rgb(var(--muted))' }}>
       <div
         className="h-full rounded-full transition-all"
         style={{ width: `${Math.min(pct, 100)}%`, background: color }}
@@ -23,7 +23,7 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
       <div
         className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:opacity-90 cursor-default"
         onClick={onClick}
-        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)', minHeight: 110 }}
+        style={{ background: 'rgb(var(--sidebar))', minHeight: 110 }}
       >
         <div className="flex items-center justify-between">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
@@ -44,23 +44,23 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
       className="rounded-xl p-4 flex flex-col gap-2 transition-all hover:shadow-md cursor-default"
       onClick={onClick}
       style={{
-        background: '#ffffff',
-        border: '1px solid #E5E7EB',
+        background: 'rgb(var(--card))',
+        border: '1px solid rgb(var(--border))',
         minHeight: 110,
       }}
     >
       <div className="flex items-center justify-between">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#F9FAFB' }}>
-          <Icon className="w-4 h-4 text-[#D1D5DB]" />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgb(var(--background))' }}>
+          <Icon className="w-4 h-4 text-muted-foreground" />
         </div>
-        <p className="text-xs font-bold uppercase tracking-wide text-[#6B7280]">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{label}</p>
       </div>
       <div>
-        <p className="text-2xl font-bold leading-none text-[#111827]" style={{ letterSpacing: '-0.02em' }}>
+        <p className="text-2xl font-bold leading-none text-foreground" style={{ letterSpacing: '-0.02em' }}>
           {value}
         </p>
         {sub && (
-          <p className="text-xs mt-1" style={{ color: subColor || '#6B7280' }}>{sub}</p>
+          <p className="text-xs mt-1" style={{ color: subColor || 'rgb(var(--muted-foreground))' }}>{sub}</p>
         )}
         {extra}
       </div>
@@ -102,10 +102,10 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
     return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   }, [clients, checkIns]);
 
-  const adherenceColor = avgAdherence === null ? '#9ca3af'
-    : avgAdherence >= 80 ? '#16A34A'
-    : avgAdherence >= 50 ? '#D97706'
-    : '#DC2626';
+  const adherenceColor = avgAdherence === null ? 'rgb(var(--muted-foreground))'
+    : avgAdherence >= 80 ? 'rgb(var(--success))'
+    : avgAdherence >= 50 ? 'rgb(var(--warning))'
+    : 'rgb(var(--destructive))';
 
   // Pending reviews
   const pendingReviews = useMemo(() =>
@@ -183,9 +183,9 @@ export default function DashboardKPIs({ clients, checkIns, payments }) {
             : 'this month'
         }
         subColor={
-          monthRevenue === 0 ? '#6B7280'
-          : revenueTrend !== null && revenueTrend >= 0 ? '#16A34A'
-          : '#DC2626'
+          monthRevenue === 0 ? 'rgb(var(--muted-foreground))'
+          : revenueTrend !== null && revenueTrend >= 0 ? 'rgb(var(--success))'
+          : 'rgb(var(--destructive))'
         }
         onClick={monthRevenue === 0 ? () => navigate('/revenue') : undefined}
       />

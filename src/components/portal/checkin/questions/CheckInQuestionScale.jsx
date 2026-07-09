@@ -5,10 +5,10 @@ const SCALE_EMOJIS = { 1: '😫', 2: '😞', 3: '😕', 4: '🙁', 5: '😐', 6:
 
 function getScaleColor(val, max = 10) {
   const pct = val / max;
-  if (pct <= 0.3) return '#EF4444';
-  if (pct <= 0.5) return '#F59E0B';
+  if (pct <= 0.3) return 'rgb(var(--destructive))';
+  if (pct <= 0.5) return 'rgb(var(--warning))';
   if (pct <= 0.7) return '#EAB308';
-  return '#22C55E';
+  return 'rgb(var(--success))';
 }
 
 function getScaleLabel(val, label) {
@@ -21,7 +21,7 @@ function getScaleLabel(val, label) {
 
 export default function CheckInQuestionScale({ value, onChange, min = 1, max = 10, label, isNumber = false, lastValue }) {
   const numVal = parseFloat(value) || (isNumber ? '' : min);
-  const color = numVal ? getScaleColor(numVal, max) : '#6B7280';
+  const color = numVal ? getScaleColor(numVal, max) : 'rgb(var(--muted-foreground))';
 
   if (isNumber) {
     return (
