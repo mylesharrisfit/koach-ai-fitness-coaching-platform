@@ -36,9 +36,9 @@ export default function AchievementBell() {
         onClick={() => setOpen(v => !v)}
         className="relative flex items-center justify-center w-8 h-8 rounded-lg transition-colors hover:bg-white/10"
       >
-        <Bell size={16} className={hasNew ? 'text-[#FFD700]' : 'text-[#6B7280]'} />
+        <Bell size={16} className={hasNew ? 'text-[#FFD700]' : 'text-muted-foreground'} />
         {hasNew && (
-          <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 border border-[#0A0A0A]" />
+          <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-destructive border border-[#0A0A0A]" />
         )}
       </button>
 
@@ -87,7 +87,7 @@ export default function AchievementBell() {
             <Link
               to="/adherence"
               onClick={() => setOpen(false)}
-              className="text-xs font-bold text-[#2563EB] hover:text-[#60A5FA] transition-colors"
+              className="text-xs font-bold text-primary hover:text-primary transition-colors"
             >
               View all achievements →
             </Link>

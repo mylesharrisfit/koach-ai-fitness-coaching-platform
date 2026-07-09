@@ -7,7 +7,7 @@ export default function AchievementToast({ badge, clientName }) {
     <div
       className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl"
       style={{
-        background: '#111827',
+        background: 'rgb(var(--sidebar))',
         border: `1px solid ${tier.accent}40`,
         boxShadow: `0 4px 24px rgba(0,0,0,0.5), 0 0 12px ${tier.glow}`,
         minWidth: 260,

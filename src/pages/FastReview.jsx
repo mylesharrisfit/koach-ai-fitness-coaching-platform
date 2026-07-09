@@ -107,7 +107,7 @@ function WeightSparkline({ clientCIs }) {
   const diff = (vals[vals.length - 1] - vals[0]).toFixed(1);
   const isDown = Number(diff) < 0;
   const isUp = Number(diff) > 0;
-  const color = isDown ? '#34d399' : isUp ? '#f87171' : '#9ca3af';
+  const color = isDown ? 'rgb(var(--success))' : isUp ? 'rgb(var(--destructive))' : 'rgb(var(--muted-foreground))';
 
   return (
     <div className="flex items-center gap-2">
@@ -116,9 +116,9 @@ function WeightSparkline({ clientCIs }) {
         <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3" fill={color} />
       </svg>
       <div>
-        <p className="text-sm font-bold tabular-nums text-[#1F2A44]">{vals[vals.length - 1]} lbs</p>
+        <p className="text-sm font-bold tabular-nums text-foreground">{vals[vals.length - 1]} lbs</p>
         <p className={cn('text-[10px] font-semibold flex items-center gap-0.5',
-          isDown ? 'text-emerald-500' : isUp ? 'text-red-500' : 'text-[#6B7280]')}>
+          isDown ? 'text-success' : isUp ? 'text-destructive' : 'text-muted-foreground')}>
           {isDown ? <TrendingDown className="w-2.5 h-2.5" /> : isUp ? <TrendingUp className="w-2.5 h-2.5" /> : <Minus className="w-2.5 h-2.5" />}
           {isUp ? '+' : ''}{diff} lbs
         </p>
@@ -130,11 +130,11 @@ function WeightSparkline({ clientCIs }) {
 /* ─── Stat tile ─── */
 function StatTile({ icon: Icon, label, value, sub, color, bg }) {
   return (
-    <div className={cn('flex flex-col items-center gap-1 rounded-xl py-3 px-1 border', bg || 'bg-[#F6F7FB] border-[#E7EAF3]')}>
-      <Icon className={cn('w-3.5 h-3.5', color || 'text-[#6B7280]')} />
-      <span className={cn('text-base font-bold tabular-nums leading-none', color || 'text-[#1F2A44]')}>{value ?? '–'}</span>
-      {sub && <span className="text-[9px] text-[#6B7280]">{sub}</span>}
-      <span className="text-[9px] text-[#6B7280] text-center">{label}</span>
+    <div className={cn('flex flex-col items-center gap-1 rounded-xl py-3 px-1 border', bg || 'bg-muted border-border')}>
+      <Icon className={cn('w-3.5 h-3.5', color || 'text-muted-foreground')} />
+      <span className={cn('text-base font-bold tabular-nums leading-none', color || 'text-foreground')}>{value ?? '–'}</span>
+      {sub && <span className="text-[9px] text-muted-foreground">{sub}</span>}
+      <span className="text-[9px] text-muted-foreground text-center">{label}</span>
     </div>
   );
 }
@@ -143,15 +143,15 @@ function StatTile({ icon: Icon, label, value, sub, color, bg }) {
 function ComplianceBar({ label, value, icon }) {
   if (value == null) return null;
   const pct = Math.min(100, Math.max(0, value));
-  const color = pct >= 80 ? 'bg-emerald-400' : pct >= 60 ? 'bg-amber-400' : 'bg-red-400';
-  const textColor = pct >= 80 ? 'text-emerald-600' : pct >= 60 ? 'text-amber-600' : 'text-red-500';
+  const color = pct >= 80 ? 'bg-success' : pct >= 60 ? 'bg-warning' : 'bg-destructive';
+  const textColor = pct >= 80 ? 'text-success' : pct >= 60 ? 'text-warning' : 'text-destructive';
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs font-medium text-[#374151] flex items-center gap-1">{icon} {label}</span>
+        <span className="text-xs font-medium text-foreground flex items-center gap-1">{icon} {label}</span>
         <span className={cn('text-xs font-bold tabular-nums', textColor)}>{pct}%</span>
       </div>
-      <div className="h-2 bg-[#E7EAF3] rounded-full overflow-hidden">
+      <div className="h-2 bg-border rounded-full overflow-hidden">
         <div className={cn('h-full rounded-full transition-all duration-700', color)} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -178,40 +178,40 @@ function InlineRec({ rec, checkIn, client }) {
 
   return (
     <div className={cn('rounded-xl border transition-all',
-      stage === 'done' ? 'opacity-50 bg-[#F6F7FB] border-[#E7EAF3]'
-      : stage === 'confirm' ? 'bg-blue-50 border-blue-200'
-      : 'bg-white border-[#E7EAF3] hover:border-blue-200')}>
+      stage === 'done' ? 'opacity-50 bg-muted border-border'
+      : stage === 'confirm' ? 'bg-accent border-primary'
+      : 'bg-card border-border hover:border-primary')}>
       <div className="flex items-center gap-2.5 px-3 py-2.5">
         <div className={cn('w-1.5 h-1.5 rounded-full flex-shrink-0', styles.dot)} />
         <span className="text-sm flex-shrink-0">{CATEGORY_ICONS[rec.category]}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-[#1F2A44] leading-tight">{rec.title}</p>
-          <p className="text-[11px] text-[#6B7280] leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
+          <p className="text-xs font-semibold text-foreground leading-tight">{rec.title}</p>
+          <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-1">{rec.reason}</p>
         </div>
         {stage === 'idle' && (
           <button onClick={() => setStage('confirm')}
-            className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border bg-[#EEF4FF] border-blue-200 text-primary hover:bg-blue-100 active:scale-95 transition-all">
+            className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border bg-accent/10 border-primary text-primary hover:bg-accent active:scale-95 transition-all">
             <Zap className="w-3 h-3" /> {rec.actionLabel}
           </button>
         )}
         {stage === 'applying' && <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />}
-        {stage === 'done' && <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 flex-shrink-0"><Check className="w-3 h-3" /> Done</span>}
+        {stage === 'done' && <span className="flex items-center gap-1 text-[11px] font-bold text-success flex-shrink-0"><Check className="w-3 h-3" /> Done</span>}
         {stage === 'confirm' && (
           <div className="flex gap-1.5 flex-shrink-0">
             <button onClick={handleConfirm} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold active:scale-95">
               <Check className="w-3 h-3" /> Apply
             </button>
-            <button onClick={() => setStage('idle')} className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-[#E7EAF3] active:scale-95">
-              <X className="w-3 h-3 text-[#6B7280]" />
+            <button onClick={() => setStage('idle')} className="w-7 h-7 flex items-center justify-center rounded-lg bg-card border border-border active:scale-95">
+              <X className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
         )}
       </div>
       {stage === 'confirm' && confirmText && (
         <div className="px-3 pb-2.5">
-          <div className="flex items-start gap-1.5 bg-white border border-blue-100 rounded-lg px-2.5 py-2">
+          <div className="flex items-start gap-1.5 bg-card border border-accent rounded-lg px-2.5 py-2">
             <AlertCircle className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-            <p className="text-[11px] text-[#1F2A44] leading-snug">{confirmText}</p>
+            <p className="text-[11px] text-foreground leading-snug">{confirmText}</p>
           </div>
         </div>
       )}
@@ -250,23 +250,23 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative">
           <button onClick={() => setShowTemplates(s => !s)}
-            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-[#E7EAF3] bg-white text-xs font-medium text-[#374151] hover:text-[#1F2A44] hover:bg-[#F6F7FB]">
+            className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border bg-card text-xs font-medium text-foreground hover:text-foreground hover:bg-muted">
             <BookOpen className="w-3 h-3" /> Templates <ChevronDown className="w-3 h-3" />
           </button>
           {showTemplates && (
-            <div className="absolute left-0 top-9 z-30 bg-white border border-[#E7EAF3] rounded-xl shadow-xl p-2 w-72 max-h-64 overflow-y-auto">
+            <div className="absolute left-0 top-9 z-30 bg-card border border-border rounded-xl shadow-xl p-2 w-72 max-h-64 overflow-y-auto">
               {TEMPLATES.map((t, i) => (
                 <button key={i} onClick={() => { setText(t.text); setShowTemplates(false); }}
-                  className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-[#F6F7FB] transition-colors">
-                  <p className="text-xs font-semibold text-[#1F2A44]">{t.label}</p>
-                  <p className="text-[11px] text-[#6B7280] line-clamp-1 mt-0.5">{t.text}</p>
+                  className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-muted transition-colors">
+                  <p className="text-xs font-semibold text-foreground">{t.label}</p>
+                  <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">{t.text}</p>
                 </button>
               ))}
             </div>
           )}
         </div>
         <button onClick={generateAI} disabled={aiLoading}
-          className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-blue-200 bg-[#EEF4FF] text-xs font-medium text-primary hover:bg-blue-100 disabled:opacity-60 transition-colors">
+          className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-primary bg-accent/10 text-xs font-medium text-primary hover:bg-accent disabled:opacity-60 transition-colors">
           {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
           {aiLoading ? 'Generating…' : 'AI Draft'}
         </button>
@@ -276,7 +276,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
         placeholder="Write your coaching response..." className="text-sm resize-none" rows={4} autoFocus
       />
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-[#6B7280]">{text.length} chars</span>
+        <span className="text-[11px] text-muted-foreground">{text.length} chars</span>
         <button onClick={send} disabled={sending || !text.trim()}
           className="flex items-center gap-1.5 h-9 px-5 rounded-xl bg-primary text-white text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all hover:bg-primary/90">
           {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
@@ -332,21 +332,21 @@ function ApplyChangesPanel({ checkIn, client, onCalDone, onCardioDone }) {
     <div className="space-y-3">
       {/* Calories */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-wide text-[#6B7280] mb-2 flex items-center gap-1.5">
+        <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1.5">
           <Flame className="w-3 h-3 text-orange-400" /> Adjust Calories
         </p>
         {calResult ? (
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 border border-emerald-100">
-            <Check className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="text-xs font-semibold text-emerald-600">{calResult}</span>
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-success/10 border border-success">
+            <Check className="w-3.5 h-3.5 text-success" />
+            <span className="text-xs font-semibold text-success">{calResult}</span>
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-1.5">
             {[[-250, '−250'], [-150, '−150'], [+150, '+150'], [+250, '+250']].map(([d, l]) => (
               <button key={d} onClick={() => adjustCal(d)} disabled={saving}
                 className={cn('py-2.5 rounded-xl text-xs font-bold border transition-all active:scale-95',
-                  d < 0 ? 'bg-red-50 border-red-100 text-red-500 hover:bg-red-100'
-                        : 'bg-emerald-50 border-emerald-100 text-emerald-600 hover:bg-emerald-100')}>
+                  d < 0 ? 'bg-destructive/10 border-destructive text-destructive hover:bg-destructive/10'
+                        : 'bg-success/10 border-success text-success hover:bg-success/10')}>
                 {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : l}
               </button>
             ))}
@@ -356,22 +356,22 @@ function ApplyChangesPanel({ checkIn, client, onCalDone, onCardioDone }) {
 
       {/* Cardio */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-wide text-[#6B7280] mb-2 flex items-center gap-1.5">
-          <Footprints className="w-3 h-3 text-blue-400" /> Adjust Cardio
+        <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1.5">
+          <Footprints className="w-3 h-3 text-primary" /> Adjust Cardio
         </p>
         {cardioResult ? (
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 border border-emerald-100">
-            <Check className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="text-xs font-semibold text-emerald-600">{cardioResult}</span>
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-success/10 border border-success">
+            <Check className="w-3.5 h-3.5 text-success" />
+            <span className="text-xs font-semibold text-success">{cardioResult}</span>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-1.5">
             <button onClick={() => adjustCardio('up')} disabled={saving}
-              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border bg-blue-50 border-blue-100 text-blue-600 hover:bg-blue-100 active:scale-95 transition-all">
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border bg-accent border-accent text-primary hover:bg-accent active:scale-95 transition-all">
               <ChevronUp className="w-3.5 h-3.5" /> Increase
             </button>
             <button onClick={() => adjustCardio('down')} disabled={saving}
-              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border bg-[#F6F7FB] border-[#E7EAF3] text-[#374151] hover:bg-[#ECEEF5] active:scale-95 transition-all">
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border bg-muted border-border text-foreground hover:bg-[#ECEEF5] active:scale-95 transition-all">
               <ChevronDown className="w-3.5 h-3.5" /> Decrease
             </button>
           </div>
@@ -398,20 +398,20 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
   const photos = checkIn.photo_urls || [];
 
   const TIER = {
-    0: { label: 'At Risk', bg: 'bg-red-50', border: 'border-red-100', text: 'text-red-500', dot: 'bg-red-400' },
-    1: { label: 'Overdue', bg: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-600', dot: 'bg-amber-400' },
-    2: { label: 'New', bg: 'bg-blue-50', border: 'border-blue-100', text: 'text-primary', dot: 'bg-primary' },
+    0: { label: 'At Risk', bg: 'bg-destructive/10', border: 'border-destructive', text: 'text-destructive', dot: 'bg-destructive' },
+    1: { label: 'Overdue', bg: 'bg-warning/10', border: 'border-warning', text: 'text-warning', dot: 'bg-warning' },
+    2: { label: 'New', bg: 'bg-accent', border: 'border-accent', text: 'text-primary', dot: 'bg-primary' },
   }[tier];
 
-  const sleepColor = !checkIn.sleep_hours ? 'text-[#6B7280]'
-    : checkIn.sleep_hours >= 7 ? 'text-emerald-600'
-    : checkIn.sleep_hours >= 6 ? 'text-amber-600' : 'text-red-500';
-  const energyColor = !checkIn.energy_level ? 'text-[#6B7280]'
-    : checkIn.energy_level >= 7 ? 'text-emerald-600'
-    : checkIn.energy_level >= 4 ? 'text-amber-600' : 'text-red-500';
-  const stressColor = !checkIn.stress_level ? 'text-[#6B7280]'
-    : checkIn.stress_level <= 3 ? 'text-emerald-600'
-    : checkIn.stress_level <= 6 ? 'text-amber-600' : 'text-red-500';
+  const sleepColor = !checkIn.sleep_hours ? 'text-muted-foreground'
+    : checkIn.sleep_hours >= 7 ? 'text-success'
+    : checkIn.sleep_hours >= 6 ? 'text-warning' : 'text-destructive';
+  const energyColor = !checkIn.energy_level ? 'text-muted-foreground'
+    : checkIn.energy_level >= 7 ? 'text-success'
+    : checkIn.energy_level >= 4 ? 'text-warning' : 'text-destructive';
+  const stressColor = !checkIn.stress_level ? 'text-muted-foreground'
+    : checkIn.stress_level <= 3 ? 'text-success'
+    : checkIn.stress_level <= 6 ? 'text-warning' : 'text-destructive';
 
   const sendAI = async () => {
     if (aiSending || aiDone || feedbackSent) return;
@@ -442,25 +442,25 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
 
       {/* ── Header ── */}
       <div className="flex items-start gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-100 flex items-center justify-center text-primary font-bold text-2xl flex-shrink-0 shadow-sm">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent to-accent border border-accent flex items-center justify-center text-primary font-bold text-2xl flex-shrink-0 shadow-sm">
           {(client?.name || checkIn.client_name || '?')[0].toUpperCase()}
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <h2 className="font-heading font-bold text-xl text-[#1F2A44] leading-tight">{client?.name || checkIn.client_name}</h2>
+            <h2 className="font-heading font-bold text-xl text-foreground leading-tight">{client?.name || checkIn.client_name}</h2>
             <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', TIER.bg, TIER.border, TIER.text)}>
               {TIER.label}
             </span>
             {(feedbackSent || isReviewedLocal) && (
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-success bg-success/10 border border-success px-2 py-0.5 rounded-full">
                 <Check className="w-2.5 h-2.5" /> Reviewed
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 flex-wrap text-xs text-[#6B7280]">
+          <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
             <span>{format(parseISO(checkIn.date), 'MMM d')}</span>
             {daysAgo > 0 && (
-              <span className={cn(daysAgo > 7 ? 'text-red-500 font-medium' : daysAgo > 3 ? 'text-amber-600' : '')}>
+              <span className={cn(daysAgo > 7 ? 'text-destructive font-medium' : daysAgo > 3 ? 'text-warning' : '')}>
                 · {daysAgo}d ago
               </span>
             )}
@@ -470,8 +470,8 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
         </div>
         {avgScore !== null && (
           <div className="text-right flex-shrink-0">
-            <p className="text-[10px] text-[#6B7280] mb-0.5">Adherence</p>
-            <p className={cn('text-2xl font-bold tabular-nums leading-none', scoreColor(avgScore))}>{avgScore}<span className="text-sm font-normal text-[#6B7280]">%</span></p>
+            <p className="text-[10px] text-muted-foreground mb-0.5">Adherence</p>
+            <p className={cn('text-2xl font-bold tabular-nums leading-none', scoreColor(avgScore))}>{avgScore}<span className="text-sm font-normal text-muted-foreground">%</span></p>
           </div>
         )}
       </div>
@@ -480,7 +480,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {riskEntry?.flags?.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {riskEntry.flags.slice(0, 5).map(f => (
-            <span key={f.key} className="flex items-center gap-1 text-[10px] font-medium text-red-500 bg-red-50 border border-red-100 px-2 py-1 rounded-full">
+            <span key={f.key} className="flex items-center gap-1 text-[10px] font-medium text-destructive bg-destructive/10 border border-destructive px-2 py-1 rounded-full">
               <AlertTriangle className="w-2.5 h-2.5" /> {f.label}
             </span>
           ))}
@@ -490,12 +490,12 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {/* ── Wellness stats ── */}
       <div className="grid grid-cols-5 gap-2">
         <StatTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} sub="hrs" color={sleepColor}
-          bg={!checkIn.sleep_hours ? 'bg-[#F6F7FB] border-[#E7EAF3]' : checkIn.sleep_hours < 6 ? 'bg-red-50 border-red-100' : 'bg-[#F6F7FB] border-[#E7EAF3]'} />
+          bg={!checkIn.sleep_hours ? 'bg-muted border-border' : checkIn.sleep_hours < 6 ? 'bg-destructive/10 border-destructive' : 'bg-muted border-border'} />
         <StatTile icon={Zap} label="Energy" value={checkIn.energy_level} sub="/10" color={energyColor}
-          bg={!checkIn.energy_level ? 'bg-[#F6F7FB] border-[#E7EAF3]' : checkIn.energy_level < 4 ? 'bg-red-50 border-red-100' : 'bg-[#F6F7FB] border-[#E7EAF3]'} />
+          bg={!checkIn.energy_level ? 'bg-muted border-border' : checkIn.energy_level < 4 ? 'bg-destructive/10 border-destructive' : 'bg-muted border-border'} />
         <StatTile icon={Brain} label="Stress" value={checkIn.stress_level} sub="/10" color={stressColor}
-          bg={!checkIn.stress_level ? 'bg-[#F6F7FB] border-[#E7EAF3]' : checkIn.stress_level > 6 ? 'bg-red-50 border-red-100' : 'bg-[#F6F7FB] border-[#E7EAF3]'} />
-        <div className="col-span-2 flex flex-col justify-center bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl py-3 px-3 gap-2.5">
+          bg={!checkIn.stress_level ? 'bg-muted border-border' : checkIn.stress_level > 6 ? 'bg-destructive/10 border-destructive' : 'bg-muted border-border'} />
+        <div className="col-span-2 flex flex-col justify-center bg-muted border border-border rounded-xl py-3 px-3 gap-2.5">
           <ComplianceBar label="Training" value={checkIn.compliance_training} icon="💪" />
           <ComplianceBar label="Nutrition" value={checkIn.compliance_nutrition} icon="🥗" />
         </div>
@@ -503,15 +503,15 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
 
       {/* ── Weight + adherence strip ── */}
       {clientCIs.filter(c => c.weight).length >= 2 && (
-        <div className="flex items-center justify-between bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl px-4 py-3">
+        <div className="flex items-center justify-between bg-muted border border-border rounded-xl px-4 py-3">
           <div>
-            <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-1.5">Weight Trend</p>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Weight Trend</p>
             <WeightSparkline clientCIs={clientCIs} />
           </div>
           {client?.target_weight && (
             <div className="text-right">
-              <p className="text-[10px] text-[#6B7280]">Goal</p>
-              <p className="text-sm font-bold text-[#1F2A44] tabular-nums">{client.target_weight} lbs</p>
+              <p className="text-[10px] text-muted-foreground">Goal</p>
+              <p className="text-sm font-bold text-foreground tabular-nums">{client.target_weight} lbs</p>
             </div>
           )}
         </div>
@@ -520,17 +520,17 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {/* ── Progress photos ── */}
       {photos.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2 flex items-center gap-1.5">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
             <Camera className="w-3 h-3" /> Progress Photos ({photos.length})
           </p>
           <a href={photos[photoIdx]} target="_blank" rel="noreferrer">
-            <img src={photos[photoIdx]} alt="progress" className="w-full h-52 object-cover rounded-xl border border-[#E7EAF3] hover:opacity-95 transition-opacity" />
+            <img src={photos[photoIdx]} alt="progress" className="w-full h-52 object-cover rounded-xl border border-border hover:opacity-95 transition-opacity" />
           </a>
           {photos.length > 1 && (
             <div className="flex gap-1.5 mt-2 justify-center">
               {photos.map((_, i) => (
                 <button key={i} onClick={() => setPhotoIdx(i)}
-                  className={cn('w-2 h-2 rounded-full transition-all', i === photoIdx ? 'bg-primary' : 'bg-[#E7EAF3]')} />
+                  className={cn('w-2 h-2 rounded-full transition-all', i === photoIdx ? 'bg-primary' : 'bg-border')} />
               ))}
             </div>
           )}
@@ -539,17 +539,17 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
 
       {/* ── Client notes ── */}
       {checkIn.notes && (
-        <div className="bg-[#FFFBF0] border border-amber-100 rounded-xl p-3.5">
-          <p className="text-[10px] font-bold uppercase tracking-wide text-amber-600 mb-1.5">Client Notes</p>
-          <p className="text-sm text-[#1F2A44] leading-relaxed">{checkIn.notes}</p>
+        <div className="bg-[#FFFBF0] border border-warning rounded-xl p-3.5">
+          <p className="text-[10px] font-bold uppercase tracking-wide text-warning mb-1.5">Client Notes</p>
+          <p className="text-sm text-foreground leading-relaxed">{checkIn.notes}</p>
         </div>
       )}
 
       {/* ── Previous coach response ── */}
       {checkIn.coach_notes && (
-        <div className="bg-[#EEF4FF] border border-blue-100 rounded-xl p-3.5">
+        <div className="bg-accent/10 border border-accent rounded-xl p-3.5">
           <p className="text-[10px] font-bold uppercase tracking-wide text-primary mb-1.5">Your Previous Response</p>
-          <p className="text-sm text-[#1F2A44] leading-relaxed">{checkIn.coach_notes}</p>
+          <p className="text-sm text-foreground leading-relaxed">{checkIn.coach_notes}</p>
         </div>
       )}
 
@@ -561,8 +561,8 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
             className={cn(
               'flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
               aiDone || feedbackSent
-                ? 'bg-purple-50 border-purple-100 text-purple-400 opacity-60 cursor-default'
-                : 'bg-purple-50 border-purple-100 text-purple-600 hover:bg-purple-100')}>
+                ? 'bg-ai/10 border-ai text-ai opacity-60 cursor-default'
+                : 'bg-ai/10 border-ai text-ai hover:bg-ai/10')}>
             {aiSending ? <Loader2 className="w-4 h-4 animate-spin" /> : (aiDone || feedbackSent) ? <Check className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
             {aiDone ? 'AI Sent ✓' : feedbackSent ? 'Responded ✓' : 'AI Feedback'}
           </button>
@@ -571,8 +571,8 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
             className={cn(
               'flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
               activePanel === 'feedback'
-                ? 'bg-[#EEF4FF] border-blue-300 text-primary shadow-sm'
-                : 'bg-white border-[#E7EAF3] text-primary hover:bg-[#EEF4FF] hover:border-blue-200')}>
+                ? 'bg-accent/10 border-primary text-primary shadow-sm'
+                : 'bg-card border-border text-primary hover:bg-accent/10 hover:border-primary')}>
             <MessageSquare className="w-4 h-4" /> Send Feedback
           </button>
         </div>
@@ -593,14 +593,14 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
               className={cn(
                 'flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-95',
                 activePanel === 'recs'
-                  ? 'bg-[#EEF4FF] border-blue-300 text-primary shadow-sm'
-                  : 'bg-[#F6F7FB] border-[#E7EAF3] text-[#374151] hover:bg-[#ECEEF5]')}>
-              <Zap className="w-4 h-4 text-amber-500" />
+                  ? 'bg-accent/10 border-primary text-primary shadow-sm'
+                  : 'bg-muted border-border text-foreground hover:bg-[#ECEEF5]')}>
+              <Zap className="w-4 h-4 text-warning" />
               Suggestions ({recommendations.length})
             </button>
           )}
           {recommendations.length === 0 && (
-            <div className="flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-[#E7EAF3] text-xs text-[#9CA3AF]">
+            <div className="flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-border text-xs text-muted-foreground">
               No suggestions
             </div>
           )}
@@ -608,14 +608,14 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
 
         {/* Expanded panels */}
         {activePanel === 'feedback' && (
-          <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-4 fade-up">
+          <div className="bg-muted border border-border rounded-xl p-4 fade-up">
             <FeedbackComposer checkIn={checkIn} client={client} allCIs={clientCIs}
               onSent={() => { setFeedbackSent(true); setActivePanel(null); }} />
           </div>
         )}
 
         {activePanel === 'changes' && (
-          <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-4 fade-up">
+          <div className="bg-muted border border-border rounded-xl p-4 fade-up">
             <ApplyChangesPanel checkIn={checkIn} client={client} />
           </div>
         )}
@@ -633,8 +633,8 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
           className={cn(
             'w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border text-sm font-semibold transition-all active:scale-95',
             isReviewedLocal
-              ? 'bg-emerald-50 border-emerald-100 text-emerald-600 cursor-default opacity-80'
-              : 'bg-emerald-50 border-emerald-100 text-emerald-700 hover:bg-emerald-100')}>
+              ? 'bg-success/10 border-success text-success cursor-default opacity-80'
+              : 'bg-success/10 border-success text-success hover:bg-success/10')}>
           {markSaving
             ? <Loader2 className="w-4 h-4 animate-spin" />
             : isReviewedLocal
@@ -693,7 +693,7 @@ export default function FastReview() {
   const goPrev = () => { if (safeIdx > 0) setIdx(i => i - 1); };
 
   if (isLoading) return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F6F7FB]">
+    <div className="flex justify-center items-center min-h-screen bg-muted">
       <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
     </div>
   );
@@ -701,35 +701,35 @@ export default function FastReview() {
   const allDone = activeQueue.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#F6F7FB]">
+    <div className="min-h-screen bg-muted">
       {/* ── Top nav bar ── */}
-      <div className="sticky top-0 z-40 bg-white border-b border-[#E7EAF3] px-4 py-3 flex items-center gap-3 shadow-sm">
-        <Link to="/" className="flex items-center justify-center w-9 h-9 rounded-xl border border-[#E7EAF3] bg-white hover:bg-[#F6F7FB] transition-colors flex-shrink-0">
-          <Home className="w-4 h-4 text-[#6B7280]" />
+      <div className="sticky top-0 z-40 bg-card border-b border-border px-4 py-3 flex items-center gap-3 shadow-sm">
+        <Link to="/" className="flex items-center justify-center w-9 h-9 rounded-xl border border-border bg-card hover:bg-muted transition-colors flex-shrink-0">
+          <Home className="w-4 h-4 text-muted-foreground" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-[15px] font-heading font-bold text-[#1F2A44] flex items-center gap-2">
+          <h1 className="text-[15px] font-heading font-bold text-foreground flex items-center gap-2">
             <Play className="w-4 h-4 text-primary fill-primary" />
             Run My Day
           </h1>
           {!allDone && (
-            <p className="text-[11px] text-[#6B7280] tabular-nums">
+            <p className="text-[11px] text-muted-foreground tabular-nums">
               {safeIdx + 1} of {activeQueue.length} · {completedCount > 0 && `${completedCount} done`}
             </p>
           )}
         </div>
         {!allDone && (
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            {atRiskCount > 0 && <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-red-50 border border-red-100 text-red-500">🚨 {atRiskCount}</span>}
-            {overdueCount > 0 && <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-amber-50 border border-amber-100 text-amber-600">⏰ {overdueCount}</span>}
-            {newCount > 0 && <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-[#EEF4FF] border border-blue-100 text-primary">📋 {newCount}</span>}
+            {atRiskCount > 0 && <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-destructive/10 border border-destructive text-destructive">🚨 {atRiskCount}</span>}
+            {overdueCount > 0 && <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-warning/10 border border-warning text-warning">⏰ {overdueCount}</span>}
+            {newCount > 0 && <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-accent/10 border border-accent text-primary">📋 {newCount}</span>}
           </div>
         )}
       </div>
 
       {/* ── Progress bar ── */}
       {!allDone && (
-        <div className="h-1 bg-[#E7EAF3]">
+        <div className="h-1 bg-border">
           <div className="h-full bg-primary transition-all duration-500"
             style={{ width: `${Math.max(progressPct, completedCount > 0 ? 5 : 2)}%` }} />
         </div>
@@ -741,12 +741,12 @@ export default function FastReview() {
         {allDone ? (
           /* All done state */
           <div className="flex flex-col items-center justify-center py-24 gap-5 text-center">
-            <div className="w-20 h-20 rounded-3xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+            <div className="w-20 h-20 rounded-3xl bg-success/10 border border-success flex items-center justify-center">
+              <CheckCircle2 className="w-10 h-10 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-[#1F2A44] font-heading">All caught up! 🎉</p>
-              <p className="text-sm text-[#6B7280] mt-2">
+              <p className="text-2xl font-bold text-foreground font-heading">All caught up! 🎉</p>
+              <p className="text-sm text-muted-foreground mt-2">
                 {completedCount > 0
                   ? `You reviewed ${completedCount} client${completedCount !== 1 ? 's' : ''} — great coaching session!`
                   : 'No pending check-ins right now. Check back soon!'}
@@ -760,7 +760,7 @@ export default function FastReview() {
         ) : (
           /* Client card */
           current && (
-            <div key={current.ci.id} className="bg-white border border-[#E7EAF3] rounded-2xl p-4 sm:p-5 shadow-sm fade-up">
+            <div key={current.ci.id} className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-sm fade-up">
               <ClientReviewCard
                 item={current}
                 onMarkReviewed={handleMark}
@@ -773,10 +773,10 @@ export default function FastReview() {
 
       {/* ── Sticky bottom nav ── */}
       {!allDone && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-[#E7EAF3] safe-area-inset-bottom">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-border safe-area-inset-bottom">
           <div className="max-w-xl mx-auto px-4 py-3 flex gap-3">
             <button onClick={goPrev} disabled={safeIdx === 0}
-              className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-[#E7EAF3] bg-white text-sm font-semibold text-[#374151] disabled:opacity-30 active:scale-95 transition-all flex-shrink-0 hover:bg-[#F6F7FB]">
+              className="flex items-center gap-1.5 h-12 px-4 rounded-xl border border-border bg-card text-sm font-semibold text-foreground disabled:opacity-30 active:scale-95 transition-all flex-shrink-0 hover:bg-muted">
               <ChevronLeft className="w-4 h-4" /> Back
             </button>
             <button
@@ -785,7 +785,7 @@ export default function FastReview() {
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-bold transition-all active:scale-95',
                 safeIdx >= activeQueue.length - 1
-                  ? 'bg-emerald-50 border border-emerald-100 text-emerald-600 cursor-default'
+                  ? 'bg-success/10 border border-success text-success cursor-default'
                   : 'bg-primary text-white hover:bg-primary/90 shadow-sm'
               )}>
               {safeIdx >= activeQueue.length - 1

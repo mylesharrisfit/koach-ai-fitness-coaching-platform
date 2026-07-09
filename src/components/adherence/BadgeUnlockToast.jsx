@@ -14,7 +14,7 @@ export default function BadgeUnlockToast({ badgeKey, clientName, onClose }) {
       particleCount: 80,
       spread: 70,
       origin: { y: 0.5 },
-      colors: [tier.accent, '#ffffff', tier.bg],
+      colors: [tier.accent, 'rgb(var(--card))', tier.bg],
     });
     // Mobile vibration
     if (navigator.vibrate) navigator.vibrate([80, 40, 120]);

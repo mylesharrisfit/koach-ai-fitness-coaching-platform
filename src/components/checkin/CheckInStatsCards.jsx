@@ -71,43 +71,43 @@ export default function CheckInStatsCards({ checkIns, clients, latestPerClient }
       label: 'Reviewed This Week',
       value: stats.reviewedThisWeek,
       icon: CheckCircle2,
-      color: 'text-emerald-600',
-      bg: 'bg-emerald-50',
-      border: 'border-emerald-100',
-      dot: 'bg-emerald-400',
+      color: 'text-success',
+      bg: 'bg-success/10',
+      border: 'border-success',
+      dot: 'bg-success',
     },
     {
       label: 'Avg Response Rate',
       value: `${stats.responseRate}%`,
       icon: TrendingUp,
-      color: 'text-blue-600',
-      bg: 'bg-blue-50',
-      border: 'border-blue-100',
-      dot: 'bg-blue-400',
+      color: 'text-primary',
+      bg: 'bg-accent',
+      border: 'border-accent',
+      dot: 'bg-primary',
     },
     {
       label: 'Streak Leaders',
       value: stats.streakLeaders,
       icon: Flame,
-      color: 'text-purple-600',
-      bg: 'bg-purple-50',
-      border: 'border-purple-100',
-      dot: 'bg-purple-400',
+      color: 'text-ai',
+      bg: 'bg-ai/10',
+      border: 'border-ai',
+      dot: 'bg-ai',
     },
   ];
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
       {cards.map(({ label, value, icon: Icon, color, bg, border, dot }) => (
-        <div key={label} className={cn('bg-white rounded-xl border p-4 shadow-sm', border)}>
+        <div key={label} className={cn('bg-card rounded-xl border p-4 shadow-sm', border)}>
           <div className="flex items-center justify-between mb-3">
             <div className={cn('w-2 h-2 rounded-full', dot)} />
             <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', bg)}>
               <Icon className={cn('w-4 h-4', color)} />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{value}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">{label}</p>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
         </div>
       ))}
     </div>

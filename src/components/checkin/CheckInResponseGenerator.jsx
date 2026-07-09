@@ -30,7 +30,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
 
   return (
     <div className="rounded-xl border border-primary/20 overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #EEF4FF, #F5F3FF)' }}>
+      style={{ background: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
       {/* Trigger / header */}
       <button
         onClick={result ? () => setExpanded(v => !v) : generate}
@@ -43,7 +43,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
           <p className="text-sm font-bold text-primary">
             {loading ? 'Generating response…' : result ? 'AI Response Ready' : '✨ Generate AI Response'}
           </p>
-          <p className="text-[11px] text-[#6B7280]">
+          <p className="text-[11px] text-muted-foreground">
             {loading ? 'Analyzing check-in data…' : result ? 'Tap to expand, edit & send' : 'Personalized based on all check-in data'}
           </p>
         </div>
@@ -60,26 +60,26 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
           {loading ? (
             <div className="flex items-center gap-2 py-1">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
-              <p className="text-xs text-[#6B7280]">Reading check-in, trends & context…</p>
+              <p className="text-xs text-muted-foreground">Reading check-in, trends & context…</p>
             </div>
           ) : result ? (
             <>
               {/* AI response text */}
-              <div className="bg-white rounded-xl border border-white shadow-sm px-3.5 py-3">
-                <p className="text-xs text-[#1F2A44] leading-relaxed whitespace-pre-wrap">{result.response}</p>
+              <div className="bg-card rounded-xl border border-white shadow-sm px-3.5 py-3">
+                <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">{result.response}</p>
               </div>
 
               {/* Highlights */}
               {result.highlights?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wide mb-1.5 flex items-center gap-1">
-                    <Star className="w-3 h-3 text-amber-400" /> What went well
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                    <Star className="w-3 h-3 text-warning" /> What went well
                   </p>
                   <div className="space-y-1">
                     {result.highlights.map((h, i) => (
                       <div key={i} className="flex items-start gap-1.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
-                        <p className="text-[11px] text-[#374151]">{h}</p>
+                        <div className="w-1.5 h-1.5 rounded-full bg-success mt-1.5 flex-shrink-0" />
+                        <p className="text-[11px] text-foreground">{h}</p>
                       </div>
                     ))}
                   </div>
@@ -89,14 +89,14 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
               {/* Coaching points */}
               {result.coaching_points?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wide mb-1.5 flex items-center gap-1">
-                    <Target className="w-3 h-3 text-blue-400" /> Coaching points
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                    <Target className="w-3 h-3 text-primary" /> Coaching points
                   </p>
                   <div className="space-y-1">
                     {result.coaching_points.map((p, i) => (
                       <div key={i} className="flex items-start gap-1.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
-                        <p className="text-[11px] text-[#374151]">{p}</p>
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                        <p className="text-[11px] text-foreground">{p}</p>
                       </div>
                     ))}
                   </div>
@@ -113,13 +113,13 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
                 </button>
                 <button
                   onClick={() => onInsert(result.response, true)}
-                  className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 bg-white border border-primary/25 text-primary rounded-full hover:bg-primary/5 transition-colors"
+                  className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 bg-card border border-primary/25 text-primary rounded-full hover:bg-primary/5 transition-colors"
                 >
                   <Edit3 className="w-3 h-3" /> Edit First
                 </button>
                 <button
                   onClick={handleRetry}
-                  className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 bg-white border border-gray-200 text-[#6B7280] rounded-full hover:bg-gray-50 transition-colors ml-auto"
+                  className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 bg-card border border-border text-muted-foreground rounded-full hover:bg-muted transition-colors ml-auto"
                 >
                   <RotateCw className="w-3 h-3" /> Regenerate
                 </button>

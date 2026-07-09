@@ -49,7 +49,7 @@ export default function CommunityToggle({ settings, settingsId }) {
                 enabled ? "bg-primary" : "bg-secondary"
               )}>
                 <div className={cn(
-                  "w-3.5 h-3.5 rounded-full bg-white absolute top-0.5 transition-all shadow-sm",
+                  "w-3.5 h-3.5 rounded-full bg-card absolute top-0.5 transition-all shadow-sm",
                   enabled ? "right-0.5" : "left-0.5"
                 )} />
               </div>

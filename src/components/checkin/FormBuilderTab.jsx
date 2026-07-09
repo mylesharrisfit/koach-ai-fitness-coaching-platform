@@ -19,40 +19,40 @@ function FormCard({ form, clients, onEdit, onDuplicate, onDelete }) {
     : (form.assigned_client_ids?.length || 0);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-sm hover:border-[#D1D5DB] hover:shadow-md transition-all">
+    <div className="bg-card border border-border rounded-xl p-5 shadow-sm hover:border-muted-foreground hover:shadow-md transition-all">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-sm text-[#111827] truncate">{form.name}</h3>
-          {form.description && <p className="text-xs text-[#6B7280] mt-0.5 line-clamp-2">{form.description}</p>}
+          <h3 className="font-bold text-sm text-foreground truncate">{form.name}</h3>
+          {form.description && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{form.description}</p>}
         </div>
         <span className={cn(
           'text-[10px] font-bold px-2 py-1 rounded-full border flex-shrink-0',
-          form.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-[#F3F4F6] text-[#6B7280] border-[#E5E7EB]'
+          form.is_active ? 'bg-success/10 text-success border-success' : 'bg-muted text-muted-foreground border-border'
         )}>
           {form.is_active ? 'Active' : 'Inactive'}
         </span>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
-          <ClipboardList className="w-3.5 h-3.5 text-[#9CA3AF] mx-auto mb-1" />
-          <p className="text-sm font-bold text-[#111827]">{form.questions?.length || 0}</p>
-          <p className="text-[10px] text-[#6B7280]">Questions</p>
+        <div className="bg-background rounded-lg p-2.5 text-center">
+          <ClipboardList className="w-3.5 h-3.5 text-muted-foreground mx-auto mb-1" />
+          <p className="text-sm font-bold text-foreground">{form.questions?.length || 0}</p>
+          <p className="text-[10px] text-muted-foreground">Questions</p>
         </div>
-        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
-          <Users className="w-3.5 h-3.5 text-[#9CA3AF] mx-auto mb-1" />
-          <p className="text-sm font-bold text-[#111827]">{assignedCount}</p>
-          <p className="text-[10px] text-[#6B7280]">Clients</p>
+        <div className="bg-background rounded-lg p-2.5 text-center">
+          <Users className="w-3.5 h-3.5 text-muted-foreground mx-auto mb-1" />
+          <p className="text-sm font-bold text-foreground">{assignedCount}</p>
+          <p className="text-[10px] text-muted-foreground">Clients</p>
         </div>
-        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
-          <Calendar className="w-3.5 h-3.5 text-[#9CA3AF] mx-auto mb-1" />
-          <p className="text-sm font-bold text-[#111827]">{FREQ_LABELS[form.frequency] || 'Weekly'}</p>
-          <p className="text-[10px] text-[#6B7280]">Frequency</p>
+        <div className="bg-background rounded-lg p-2.5 text-center">
+          <Calendar className="w-3.5 h-3.5 text-muted-foreground mx-auto mb-1" />
+          <p className="text-sm font-bold text-foreground">{FREQ_LABELS[form.frequency] || 'Weekly'}</p>
+          <p className="text-[10px] text-muted-foreground">Frequency</p>
         </div>
       </div>
 
       {form.last_submission_date && (
-        <p className="text-[10px] text-[#9CA3AF] mb-4">
+        <p className="text-[10px] text-muted-foreground mb-4">
           Last submission: {format(parseISO(form.last_submission_date), 'MMM d, yyyy')}
         </p>
       )}
@@ -65,7 +65,7 @@ function FormCard({ form, clients, onEdit, onDuplicate, onDelete }) {
           <Copy className="w-3 h-3" />
         </Button>
         <Button variant="outline" size="sm" onClick={() => onDelete(form)}
-          className="gap-1.5 border-red-100 text-red-500 hover:bg-red-50">
+          className="gap-1.5 border-destructive text-destructive hover:bg-destructive/10">
           <Trash2 className="w-3 h-3" />
         </Button>
       </div>
@@ -134,8 +134,8 @@ export default function FormBuilderTab({ clients }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <p className="text-sm text-[#6B7280]">{forms.length} form{forms.length !== 1 ? 's' : ''}</p>
-        <Button onClick={handleNew} className="gap-2" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+        <p className="text-sm text-muted-foreground">{forms.length} form{forms.length !== 1 ? 's' : ''}</p>
+        <Button onClick={handleNew} className="gap-2" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
           <Plus className="w-4 h-4" /> New Form
         </Button>
       </div>
@@ -146,14 +146,14 @@ export default function FormBuilderTab({ clients }) {
         </div>
       ) : forms.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#F3F4F6] flex items-center justify-center">
-            <ClipboardList className="w-8 h-8 text-[#9CA3AF]" />
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+            <ClipboardList className="w-8 h-8 text-muted-foreground" />
           </div>
           <div className="text-center">
-            <p className="font-semibold text-[#111827] mb-1">No check-in forms yet</p>
-            <p className="text-sm text-[#6B7280]">Create your first form to start collecting client check-ins</p>
+            <p className="font-semibold text-foreground mb-1">No check-in forms yet</p>
+            <p className="text-sm text-muted-foreground">Create your first form to start collecting client check-ins</p>
           </div>
-          <Button onClick={handleNew} className="gap-2 mt-2" style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          <Button onClick={handleNew} className="gap-2 mt-2" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
             <Plus className="w-4 h-4" /> Create Your First Form
           </Button>
         </div>

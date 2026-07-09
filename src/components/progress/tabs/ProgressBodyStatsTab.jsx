@@ -54,16 +54,16 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
   }, [sorted, heightInches]);
 
   const TOOLTIP = {
-    contentStyle: { background: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: 12 },
-    labelStyle: { color: '#111827', fontWeight: 600 },
+    contentStyle: { background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '8px', fontSize: 12 },
+    labelStyle: { color: 'rgb(var(--foreground))', fontWeight: 600 },
   };
 
   return (
     <div className="p-6 space-y-6">
       {/* Weight Section */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB]">
-          <h3 className="text-sm font-semibold text-[#111827]">Weight History</h3>
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Weight History</h3>
           <button onClick={() => setShowLog(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90">
             <Plus className="w-3 h-3" /> Log Weight
@@ -75,46 +75,46 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
               <AreaChart data={weightData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="wGrad2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.12} />
-                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                    <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.12} />
+                    <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
                 <Tooltip {...TOOLTIP} formatter={v => [`${v} lbs`, 'Weight']} />
-                <Area type="monotone" dataKey="value" stroke="#2563EB" strokeWidth={2} fill="url(#wGrad2)"
-                  dot={{ r: 3, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
+                <Area type="monotone" dataKey="value" stroke="rgb(var(--primary))" strokeWidth={2} fill="url(#wGrad2)"
+                  dot={{ r: 3, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         )}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#F9FAFB]">
+            <thead className="bg-background">
               <tr>
                 {['Date', 'Weight (lbs)', 'Change', 'BMI', 'Body Fat %', 'Notes'].map(h => (
-                  <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-[#6B7280]">{h}</th>
+                  <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-muted-foreground">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {tableRows.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-8 text-center text-[#9CA3AF] text-xs">No entries logged yet</td></tr>
+                <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground text-xs">No entries logged yet</td></tr>
               ) : tableRows.map(({ ci, weightChange, bmi }, i) => (
-                <tr key={i} className="border-t border-[#F3F4F6] hover:bg-[#F9FAFB] transition-colors">
-                  <td className="px-4 py-2 text-xs text-[#374151]">{format(parseISO(ci.date), 'MMM d, yyyy')}</td>
-                  <td className="px-4 py-2 text-sm font-semibold text-[#111827]">{ci.weight ?? '—'}</td>
+                <tr key={i} className="border-t border-muted hover:bg-background transition-colors">
+                  <td className="px-4 py-2 text-xs text-foreground">{format(parseISO(ci.date), 'MMM d, yyyy')}</td>
+                  <td className="px-4 py-2 text-sm font-semibold text-foreground">{ci.weight ?? '—'}</td>
                   <td className="px-4 py-2 text-xs font-semibold">
                     {weightChange !== null ? (
-                      <span className={weightChange < 0 ? 'text-emerald-600' : weightChange > 0 ? 'text-red-500' : 'text-[#9CA3AF]'}>
+                      <span className={weightChange < 0 ? 'text-success' : weightChange > 0 ? 'text-destructive' : 'text-muted-foreground'}>
                         {weightChange > 0 ? '+' : ''}{weightChange}
                       </span>
                     ) : '—'}
                   </td>
-                  <td className="px-4 py-2 text-xs text-[#374151]">{bmi ?? '—'}</td>
-                  <td className="px-4 py-2 text-xs text-[#374151]">{ci.body_fat_pct ? `${ci.body_fat_pct}%` : '—'}</td>
-                  <td className="px-4 py-2 text-xs text-[#6B7280] max-w-[180px] truncate">{ci.notes || '—'}</td>
+                  <td className="px-4 py-2 text-xs text-foreground">{bmi ?? '—'}</td>
+                  <td className="px-4 py-2 text-xs text-foreground">{ci.body_fat_pct ? `${ci.body_fat_pct}%` : '—'}</td>
+                  <td className="px-4 py-2 text-xs text-muted-foreground max-w-[180px] truncate">{ci.notes || '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -124,9 +124,9 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
 
       {/* Body Fat Section */}
       {bfData.length > 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#E5E7EB]">
-            <h3 className="text-sm font-semibold text-[#111827]">Body Fat % Trend</h3>
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <h3 className="text-sm font-semibold text-foreground">Body Fat % Trend</h3>
           </div>
           {bfData.length >= 2 && (
             <div className="p-4">
@@ -134,16 +134,16 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
                 <AreaChart data={bfData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="bfGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.12} />
-                      <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
+                      <stop offset="5%" stopColor="rgb(var(--warning))" stopOpacity={0.12} />
+                      <stop offset="95%" stopColor="rgb(var(--warning))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
                   <Tooltip {...TOOLTIP} formatter={v => [`${v}%`, 'Body Fat']} />
-                  <Area type="monotone" dataKey="value" stroke="#F59E0B" strokeWidth={2} fill="url(#bfGrad)"
-                    dot={{ r: 3, fill: '#F59E0B', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
+                  <Area type="monotone" dataKey="value" stroke="rgb(var(--warning))" strokeWidth={2} fill="url(#bfGrad)"
+                    dot={{ r: 3, fill: 'rgb(var(--warning))', strokeWidth: 0 }} activeDot={{ r: 5 }} connectNulls />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

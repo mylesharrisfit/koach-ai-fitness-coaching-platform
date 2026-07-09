@@ -14,7 +14,7 @@ const BOARDS = [
 ];
 
 function avatarColor(name) {
-  const colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-green-100 text-green-700', 'bg-amber-100 text-amber-700', 'bg-rose-100 text-rose-700'];
+  const colors = ['bg-accent text-primary', 'bg-ai/10 text-ai', 'bg-success/10 text-success', 'bg-warning/10 text-warning', 'bg-destructive/10 text-destructive'];
   return colors[(name?.charCodeAt(0) || 0) % colors.length];
 }
 
@@ -59,7 +59,7 @@ export default function Leaderboard({ clients }) {
           return (
             <button key={b.key} onClick={() => setActive(b.key)}
               className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
-                active === b.key ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white border-[#E5E7EB] text-[#374151] hover:border-[#111827]')}>
+                active === b.key ? 'bg-sidebar text-white border-foreground' : 'bg-card border-border text-foreground hover:border-foreground')}>
               <Icon className="w-3.5 h-3.5" /> {b.label}
             </button>
           );
@@ -67,10 +67,10 @@ export default function Leaderboard({ clients }) {
       </div>
 
       {ranked.length === 0 ? (
-        <div className="text-center py-14 bg-white border border-[#E5E7EB] rounded-xl">
-          <Trophy className="w-9 h-9 mx-auto mb-3 text-[#D1D5DB]" />
-          <p className="text-sm font-semibold text-[#374151]">No data yet</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">Encourage clients to log check-ins!</p>
+        <div className="text-center py-14 bg-card border border-border rounded-xl">
+          <Trophy className="w-9 h-9 mx-auto mb-3 text-muted-foreground" />
+          <p className="text-sm font-semibold text-foreground">No data yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Encourage clients to log check-ins!</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -78,38 +78,38 @@ export default function Leaderboard({ clients }) {
           {top3.map((client, idx) => (
             <div key={client.id} className={cn(
               'flex items-center gap-3 p-4 rounded-xl border',
-              idx === 0 ? 'bg-[#111827] text-white border-[#111827]' : 'bg-white border-[#E5E7EB]'
+              idx === 0 ? 'bg-sidebar text-white border-foreground' : 'bg-card border-border'
             )}>
               <span className={cn('w-7 h-7 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0',
-                idx === 0 ? 'bg-white/20 text-white' : idx === 1 ? 'bg-[#F3F4F6] text-[#374151]' : 'bg-[#FEF3C7] text-[#D97706]')}>
+                idx === 0 ? 'bg-white/20 text-white' : idx === 1 ? 'bg-muted text-foreground' : 'bg-warning/10 text-warning')}>
                 {idx + 1}
               </span>
               <div className={cn('w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0',
                 idx === 0 ? 'bg-white/10 text-white' : avatarColor(client.name))}>
                 {client.name?.[0]?.toUpperCase()}
               </div>
-              <p className={cn('flex-1 text-sm font-semibold truncate', idx === 0 ? 'text-white' : 'text-[#111827]')}>{client.name}</p>
-              <div className={cn('flex items-center gap-1.5 font-bold text-sm', idx === 0 ? 'text-white' : 'text-[#111827]')}>
+              <p className={cn('flex-1 text-sm font-semibold truncate', idx === 0 ? 'text-white' : 'text-foreground')}>{client.name}</p>
+              <div className={cn('flex items-center gap-1.5 font-bold text-sm', idx === 0 ? 'text-white' : 'text-foreground')}>
                 <BoardIcon className="w-4 h-4 opacity-70" />
                 {active === 'steps' ? client.score.toLocaleString() : client.score}
-                <span className={cn('text-xs font-normal', idx === 0 ? 'text-white/60' : 'text-[#9CA3AF]')}>{board.unit}</span>
+                <span className={cn('text-xs font-normal', idx === 0 ? 'text-white/60' : 'text-muted-foreground')}>{board.unit}</span>
               </div>
             </div>
           ))}
 
           {/* Rest as table */}
           {rest.length > 0 && (
-            <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
               {rest.map((client, i) => (
-                <div key={client.id} className={cn('flex items-center gap-3 px-4 py-2.5', i < rest.length - 1 && 'border-b border-[#F3F4F6]')}>
-                  <span className="w-6 text-xs text-[#9CA3AF] font-bold text-center">{i + 4}</span>
+                <div key={client.id} className={cn('flex items-center gap-3 px-4 py-2.5', i < rest.length - 1 && 'border-b border-muted')}>
+                  <span className="w-6 text-xs text-muted-foreground font-bold text-center">{i + 4}</span>
                   <div className={cn('w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0', avatarColor(client.name))}>
                     {client.name?.[0]?.toUpperCase()}
                   </div>
-                  <p className="flex-1 text-sm text-[#374151] truncate">{client.name}</p>
-                  <span className="text-sm font-semibold text-[#111827]">
+                  <p className="flex-1 text-sm text-foreground truncate">{client.name}</p>
+                  <span className="text-sm font-semibold text-foreground">
                     {active === 'steps' ? client.score.toLocaleString() : client.score}
-                    <span className="text-xs font-normal text-[#9CA3AF] ml-1">{board.unit}</span>
+                    <span className="text-xs font-normal text-muted-foreground ml-1">{board.unit}</span>
                   </span>
                 </div>
               ))}

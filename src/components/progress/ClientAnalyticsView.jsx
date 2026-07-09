@@ -93,7 +93,7 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${view === v ? 'bg-[#2563EB] text-white' : 'bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#2563EB] hover:text-[#2563EB]'}`}
+              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${view === v ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}
             >
               {v}
             </button>
@@ -104,7 +104,7 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
             <button
               key={c.key}
               onClick={() => setActiveChart(c.key)}
-              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${activeChart === c.key ? 'bg-[#111827] text-white' : 'bg-white border border-[#E5E7EB] text-[#6B7280] hover:border-[#374151] hover:text-[#374151]'}`}
+              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${activeChart === c.key ? 'bg-sidebar text-white' : 'bg-card border border-border text-muted-foreground hover:border-foreground hover:text-foreground'}`}
             >
               {c.label}
             </button>
@@ -147,8 +147,8 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-8 gap-2">
-          <BarChart2 className="w-8 h-8 text-[#D1D5DB]" />
-          <p className="text-[#9CA3AF] text-sm">Not enough data for this time range.</p>
+          <BarChart2 className="w-8 h-8 text-muted-foreground" />
+          <p className="text-muted-foreground text-sm">Not enough data for this time range.</p>
         </div>
       )}
 
@@ -165,7 +165,7 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
                   <p className="text-xs text-muted-foreground mb-1">{d.label}</p>
                   <p className="text-lg font-bold font-heading">{d.thisWeek || '–'}</p>
                   {d.lastWeek > 0 && (
-                    <p className={`text-xs mt-0.5 ${positive ? 'text-emerald-400' : 'text-destructive'}`}>
+                    <p className={`text-xs mt-0.5 ${positive ? 'text-success' : 'text-destructive'}`}>
                       {positive ? '+' : ''}{diff} vs last wk
                     </p>
                   )}
@@ -206,28 +206,28 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
       )}
 
       {/* AI Summary */}
-      <div className="bg-[#F8FAFF] border border-[#DBEAFE] rounded-xl p-4">
+      <div className="bg-[#F8FAFF] border border-accent rounded-xl p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#2563EB]" />
-            <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-wider">AI Coach Summary</p>
+            <Sparkles className="w-4 h-4 text-primary" />
+            <p className="text-xs font-semibold text-primary uppercase tracking-wider">AI Coach Summary</p>
           </div>
-          <button onClick={fetchAiSummary} disabled={aiLoading} className="text-[#2563EB] hover:text-[#1D4ED8] disabled:opacity-50">
+          <button onClick={fetchAiSummary} disabled={aiLoading} className="text-primary hover:text-primary disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${aiLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
         {aiSummary ? (
-          <p className="text-sm text-[#111827] leading-relaxed">{aiSummary}</p>
+          <p className="text-sm text-foreground leading-relaxed">{aiSummary}</p>
         ) : aiLoading ? (
           <div className="flex items-center gap-2 py-3">
-            <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
-            <p className="text-sm text-[#6B7280]">Analyzing {client.name}'s progress...</p>
+            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Analyzing {client.name}'s progress...</p>
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-sm text-[#6B7280]">Generate an AI-powered progress summary for this client.</p>
-            <Button size="sm" onClick={fetchAiSummary} className="bg-[#2563EB] text-white hover:bg-[#1D4ED8] ml-4 flex-shrink-0">
+            <p className="text-sm text-muted-foreground">Generate an AI-powered progress summary for this client.</p>
+            <Button size="sm" onClick={fetchAiSummary} className="bg-primary text-white hover:bg-primary ml-4 flex-shrink-0">
               Generate
             </Button>
           </div>

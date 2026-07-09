@@ -47,8 +47,8 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       : `0 0 14px 2px ${tier.glow}, 0 4px 16px rgba(0,0,0,0.4)`,
     animation: isElite ? 'eliteGlow 2.4s ease-in-out infinite' : undefined,
   } : light ? {
-    background: '#F9FAFB',
-    border: '1px solid #E5E7EB',
+    background: 'rgb(var(--background))',
+    border: '1px solid rgb(var(--border))',
     boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
   } : {
     background: '#18191F',
@@ -92,7 +92,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Lock overlay for unearned */}
       {!earned && (
         <span className="absolute top-2 right-2 opacity-40">
-          <Lock size={10} color={light ? '#D1D5DB' : '#9CA3AF'} />
+          <Lock size={10} color={light ? 'rgb(var(--muted-foreground))' : 'rgb(var(--muted-foreground))'} />
         </span>
       )}
 
@@ -109,7 +109,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Name */}
       <p
         className="text-[11px] font-bold leading-tight"
-        style={{ color: earned ? tier.text : (light ? '#111827' : '#4B5563') }}
+        style={{ color: earned ? tier.text : (light ? 'rgb(var(--foreground))' : '#4B5563') }}
       >
         {cfg.label}
       </p>
@@ -120,7 +120,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
         style={earned
           ? { background: `${tier.accent}22`, color: tier.accent, border: `1px solid ${tier.accent}55` }
           : light
-            ? { background: '#F3F4F6', color: '#9CA3AF', border: '1px solid #E5E7EB' }
+            ? { background: 'rgb(var(--muted))', color: 'rgb(var(--muted-foreground))', border: '1px solid rgb(var(--border))' }
             : { background: 'rgba(255,255,255,0.04)', color: '#4B5563', border: '1px solid rgba(255,255,255,0.08)' }
         }
       >
@@ -128,7 +128,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       </span>
 
       {/* Description */}
-      <p className="text-[9px] leading-tight" style={{ color: earned ? `${tier.accent}99` : (light ? '#6B7280' : '#374151') }}>
+      <p className="text-[9px] leading-tight" style={{ color: earned ? `${tier.accent}99` : (light ? 'rgb(var(--muted-foreground))' : 'rgb(var(--foreground))') }}>
         {cfg.desc}
       </p>
 
@@ -152,10 +152,10 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Progress ring for unearned */}
       {showProgress && (
         <div className="flex flex-col items-center gap-0.5 mt-0.5">
-          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-[#E5E7EB]' : 'bg-[#1F2937]'}`}>
+          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-border' : 'bg-[#1F2937]'}`}>
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, #3B82F6, #60A5FA)' }}
+              style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))' }}
             />
           </div>
           <span className="text-[9px] text-[#4B5563]">{progress}/{progressMax}</span>

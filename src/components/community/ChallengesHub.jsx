@@ -20,8 +20,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'workouts',
     goal: 7,
     duration_days: 7,
-    color: '#2563EB',
-    bg: '#EFF6FF',
+    color: 'rgb(var(--primary))',
+    bg: 'rgb(var(--accent))',
     difficulty: 'Beginner',
   },
   {
@@ -32,8 +32,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'workouts',
     goal: 20,
     duration_days: 30,
-    color: '#7C3AED',
-    bg: '#F5F3FF',
+    color: 'rgb(var(--ai))',
+    bg: 'rgb(var(--ai))',
     difficulty: 'Intermediate',
   },
   {
@@ -44,8 +44,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'steps',
     goal: 70000,
     duration_days: 14,
-    color: '#059669',
-    bg: '#ECFDF5',
+    color: 'rgb(var(--success))',
+    bg: 'rgb(var(--success))',
     difficulty: 'Beginner',
   },
   {
@@ -56,7 +56,7 @@ const CHALLENGE_TEMPLATES = [
     type: 'custom',
     goal: 21,
     duration_days: 21,
-    color: '#0EA5E9',
+    color: 'rgb(var(--primary))',
     bg: '#F0F9FF',
     difficulty: 'Beginner',
   },
@@ -68,8 +68,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'weight_loss',
     goal: 5,
     duration_days: 30,
-    color: '#DC2626',
-    bg: '#FEF2F2',
+    color: 'rgb(var(--destructive))',
+    bg: 'rgb(var(--destructive))',
     difficulty: 'Intermediate',
   },
   {
@@ -80,8 +80,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'streak',
     goal: 21,
     duration_days: 21,
-    color: '#D97706',
-    bg: '#FFFBEB',
+    color: 'rgb(var(--warning))',
+    bg: 'rgb(var(--warning))',
     difficulty: 'Intermediate',
   },
   {
@@ -92,8 +92,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'custom',
     goal: 14,
     duration_days: 14,
-    color: '#6366F1',
-    bg: '#EEF2FF',
+    color: 'rgb(var(--primary))',
+    bg: 'rgb(var(--accent))',
     difficulty: 'Beginner',
   },
   {
@@ -104,8 +104,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'custom',
     goal: 20,
     duration_days: 30,
-    color: '#10B981',
-    bg: '#ECFDF5',
+    color: 'rgb(var(--success))',
+    bg: 'rgb(var(--success))',
     difficulty: 'Advanced',
   },
   {
@@ -116,8 +116,8 @@ const CHALLENGE_TEMPLATES = [
     type: 'workouts',
     goal: 5,
     duration_days: 7,
-    color: '#F59E0B',
-    bg: '#FFFBEB',
+    color: 'rgb(var(--warning))',
+    bg: 'rgb(var(--warning))',
     difficulty: 'Advanced',
   },
 ];
@@ -131,16 +131,16 @@ const TYPE_CONFIG = {
 };
 
 const DIFFICULTY_CONFIG = {
-  Beginner:     { color: '#16A34A', bg: '#F0FDF4' },
-  Intermediate: { color: '#D97706', bg: '#FFFBEB' },
-  Advanced:     { color: '#DC2626', bg: '#FEF2F2' },
+  Beginner:     { color: 'rgb(var(--success))', bg: 'rgb(var(--success))' },
+  Intermediate: { color: 'rgb(var(--warning))', bg: 'rgb(var(--warning))' },
+  Advanced:     { color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive))' },
 };
 
 // ── Template card ─────────────────────────────────────────────────────────────
 function TemplateCard({ tpl, onUse }) {
   const diff = DIFFICULTY_CONFIG[tpl.difficulty] || DIFFICULTY_CONFIG.Beginner;
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 hover:border-[#2563EB]/40 hover:shadow-sm transition-all group">
+    <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all group">
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
@@ -148,7 +148,7 @@ function TemplateCard({ tpl, onUse }) {
             {tpl.emoji}
           </div>
           <div>
-            <p className="font-semibold text-sm text-[#111827]">{tpl.title}</p>
+            <p className="font-semibold text-sm text-foreground">{tpl.title}</p>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: diff.bg, color: diff.color }}>
               {tpl.difficulty}
@@ -156,8 +156,8 @@ function TemplateCard({ tpl, onUse }) {
           </div>
         </div>
       </div>
-      <p className="text-xs text-[#6B7280] leading-relaxed mb-3 line-clamp-2">{tpl.description}</p>
-      <div className="flex items-center gap-3 text-[11px] text-[#9CA3AF] mb-3">
+      <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">{tpl.description}</p>
+      <div className="flex items-center gap-3 text-[11px] text-muted-foreground mb-3">
         <span className="flex items-center gap-1"><Target className="w-3 h-3" /> Goal: {tpl.goal.toLocaleString()} {TYPE_CONFIG[tpl.type]?.unit}</span>
         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {tpl.duration_days} days</span>
       </div>
@@ -184,60 +184,60 @@ function LiveChallengeCard({ challenge, isCoach, clients, groups, onToggle, onDe
   const challengeGroup = groups.find(g => g.id === challenge.group_id);
 
   return (
-    <div className={cn('bg-white border rounded-xl p-4 space-y-3', isActive ? 'border-[#E5E7EB]' : 'border-[#E5E7EB] opacity-60')}>
+    <div className={cn('bg-card border rounded-xl p-4 space-y-3', isActive ? 'border-border' : 'border-border opacity-60')}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ background: '#F3F4F6' }}>
+            style={{ background: 'rgb(var(--muted))' }}>
             {challenge.emoji || '🏆'}
           </div>
           <div>
-            <p className="font-semibold text-sm text-[#111827]">{challenge.title}</p>
-            <p className="text-[10px] text-[#9CA3AF]">{cfg.label} challenge</p>
+            <p className="font-semibold text-sm text-foreground">{challenge.title}</p>
+            <p className="text-[10px] text-muted-foreground">{cfg.label} challenge</p>
           </div>
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           {isActive && daysLeft !== null && (
             <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border',
-              daysLeft <= 2 ? 'bg-[#FEF2F2] border-[#FECACA] text-[#DC2626]' : 'bg-[#F0FDF4] border-[#BBF7D0] text-[#16A34A]')}>
+              daysLeft <= 2 ? 'bg-destructive/10 border-destructive text-destructive' : 'bg-success/10 border-success text-success')}>
               {daysLeft <= 0 ? 'Ended today' : `${daysLeft}d left`}
             </span>
           )}
-          {!isActive && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F3F4F6] border border-[#E5E7EB] text-[#9CA3AF]">Inactive</span>}
+          {!isActive && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-muted border border-border text-muted-foreground">Inactive</span>}
         </div>
       </div>
 
-      {challenge.description && <p className="text-xs text-[#6B7280]">{challenge.description}</p>}
+      {challenge.description && <p className="text-xs text-muted-foreground">{challenge.description}</p>}
 
-      <div className="flex items-center gap-3 text-[11px] text-[#6B7280] flex-wrap">
+      <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
         <span className="flex items-center gap-1"><Target className="w-3 h-3" /> {challenge.goal?.toLocaleString()} {cfg.unit}</span>
         {challenge.end_date && <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {format(parseISO(challenge.end_date), 'MMM d')}</span>}
         {participants.length > 0 && <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {participants.length} participants</span>}
-        {challengeGroup && <span className="flex items-center gap-1 text-[#7C3AED] font-semibold">#{challengeGroup.name}</span>}
+        {challengeGroup && <span className="flex items-center gap-1 text-ai font-semibold">#{challengeGroup.name}</span>}
       </div>
 
       {/* Participants preview */}
       {participantClients.length > 0 && (
         <div className="flex items-center gap-1.5 flex-wrap">
           {participantClients.slice(0, 5).map(c => (
-            <span key={c.id} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F3F4F6] text-[#374151]">
+            <span key={c.id} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted text-foreground">
               {c.name?.split(' ')[0]}
             </span>
           ))}
           {participantClients.length > 5 && (
-            <span className="text-[10px] text-[#9CA3AF]">+{participantClients.length - 5} more</span>
+            <span className="text-[10px] text-muted-foreground">+{participantClients.length - 5} more</span>
           )}
         </div>
       )}
 
       {isCoach && (
-        <div className="flex items-center gap-2 pt-2 border-t border-[#F3F4F6]">
+        <div className="flex items-center gap-2 pt-2 border-t border-muted">
           <button onClick={() => onToggle(challenge)}
-            className="text-[10px] font-semibold px-3 py-1 rounded-lg border border-[#E5E7EB] text-[#374151] hover:border-[#111827] transition-colors">
+            className="text-[10px] font-semibold px-3 py-1 rounded-lg border border-border text-foreground hover:border-foreground transition-colors">
             {challenge.is_active ? 'Deactivate' : 'Activate'}
           </button>
           <button onClick={() => { if (confirm('Delete this challenge?')) onDelete(challenge.id); }}
-            className="text-[10px] font-semibold px-3 py-1 rounded-lg border border-[#FECACA] text-[#DC2626] hover:bg-[#FEF2F2] transition-colors">
+            className="text-[10px] font-semibold px-3 py-1 rounded-lg border border-destructive text-destructive hover:bg-destructive/10 transition-colors">
             Delete
           </button>
         </div>
@@ -308,7 +308,7 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
     <Dialog open={open} onOpenChange={v => { if (!v) onClose(); }}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-[#111827] font-bold flex items-center gap-2">
+          <DialogTitle className="text-foreground font-bold flex items-center gap-2">
             <span>{form.emoji}</span> {prefill ? 'Customize Challenge' : 'Create Challenge'}
           </DialogTitle>
         </DialogHeader>
@@ -316,90 +316,90 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
         <form onSubmit={handleSubmit} className="space-y-4 mt-1">
           {/* Title + Emoji */}
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Challenge Name *</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Challenge Name *</label>
             <div className="flex gap-2">
               <input type="text" maxLength={2} value={form.emoji}
                 onChange={e => setForm(f => ({ ...f, emoji: e.target.value }))}
-                className="w-12 border border-[#E5E7EB] rounded-lg px-2 py-2 text-center text-base outline-none focus:ring-2 focus:ring-blue-400" />
+                className="w-12 border border-border rounded-lg px-2 py-2 text-center text-base outline-none focus:ring-2 focus:ring-primary" />
               <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 placeholder="Challenge title…"
-                className="flex-1 border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400" />
+                className="flex-1 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary" />
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Description</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Description</label>
             <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               placeholder="Describe what clients need to do…"
               rows={2}
-              className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400 resize-none" />
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary resize-none" />
           </div>
 
           {/* Type + Goal */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1">Type</label>
+              <label className="text-xs font-semibold text-foreground block mb-1">Type</label>
               <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white">
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary bg-card">
                 {Object.entries(TYPE_CONFIG).map(([k, v]) => (
                   <option key={k} value={k}>{v.label}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1">
+              <label className="text-xs font-semibold text-foreground block mb-1">
                 Goal ({TYPE_CONFIG[form.type]?.unit})
               </label>
               <input required type="number" value={form.goal} onChange={e => setForm(f => ({ ...f, goal: e.target.value }))}
                 placeholder="e.g. 7"
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400" />
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary" />
             </div>
           </div>
 
           {/* Dates */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1">Start Date</label>
+              <label className="text-xs font-semibold text-foreground block mb-1">Start Date</label>
               <input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400" />
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1">End Date *</label>
+              <label className="text-xs font-semibold text-foreground block mb-1">End Date *</label>
               <input required type="date" value={form.end_date} onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400" />
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary" />
             </div>
           </div>
 
           {/* Participants */}
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-2">Who Participates?</label>
+            <label className="text-xs font-semibold text-foreground block mb-2">Who Participates?</label>
             <div className="flex gap-2 mb-3">
               {[{ key: 'clients', label: 'Select Clients' }, { key: 'group', label: 'Community Group' }].map(opt => (
                 <button key={opt.key} type="button"
                   onClick={() => setForm(f => ({ ...f, participant_mode: opt.key }))}
                   className={cn('flex-1 py-2 text-xs font-bold rounded-lg border-2 transition-all',
                     form.participant_mode === opt.key
-                      ? 'border-[#2563EB] bg-[#EFF6FF] text-[#2563EB]'
-                      : 'border-[#E5E7EB] text-[#6B7280]')}>
+                      ? 'border-primary bg-accent/10 text-primary'
+                      : 'border-border text-muted-foreground')}>
                   {opt.label}
                 </button>
               ))}
             </div>
 
             {form.participant_mode === 'clients' && (
-              <div className="border border-[#E5E7EB] rounded-xl p-3 max-h-40 overflow-y-auto space-y-1">
-                {clients.length === 0 && <p className="text-xs text-[#9CA3AF] text-center py-2">No clients found</p>}
+              <div className="border border-border rounded-xl p-3 max-h-40 overflow-y-auto space-y-1">
+                {clients.length === 0 && <p className="text-xs text-muted-foreground text-center py-2">No clients found</p>}
                 {clients.map(c => (
                   <label key={c.id} className={cn('flex items-center gap-2.5 p-2 rounded-lg cursor-pointer transition-colors',
-                    form.participants.includes(c.id) ? 'bg-[#EFF6FF]' : 'hover:bg-[#F9FAFB]')}>
+                    form.participants.includes(c.id) ? 'bg-accent/10' : 'hover:bg-background')}>
                     <input type="checkbox" checked={form.participants.includes(c.id)}
                       onChange={() => toggleClient(c.id)}
-                      className="accent-[#2563EB] w-3.5 h-3.5" />
-                    <div className="w-6 h-6 rounded-full bg-[#2563EB] flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                      className="accent-[rgb(var(--primary))] w-3.5 h-3.5" />
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
                       {c.name?.[0]?.toUpperCase()}
                     </div>
-                    <span className="text-xs font-semibold text-[#374151]">{c.name}</span>
+                    <span className="text-xs font-semibold text-foreground">{c.name}</span>
                   </label>
                 ))}
               </div>
@@ -407,7 +407,7 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
 
             {form.participant_mode === 'group' && (
               <select value={form.group_id} onChange={e => setForm(f => ({ ...f, group_id: e.target.value }))}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white">
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary bg-card">
                 <option value="">— Select a community group —</option>
                 {groups.map(g => (
                   <option key={g.id} value={g.id}>{g.name} ({(g.member_ids || []).length} members)</option>
@@ -416,13 +416,13 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
             )}
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#E5E7EB]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-border">
             <button type="button" onClick={onClose}
-              className="px-4 py-2 border border-[#E5E7EB] text-sm font-semibold text-[#374151] rounded-lg hover:bg-[#F9FAFB] transition-colors">
+              className="px-4 py-2 border border-border text-sm font-semibold text-foreground rounded-lg hover:bg-background transition-colors">
               Cancel
             </button>
             <button type="submit"
-              className="px-5 py-2 bg-[#2563EB] text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors">
+              className="px-5 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary transition-colors">
               Launch Challenge 🚀
             </button>
           </div>
@@ -500,10 +500,10 @@ export default function ChallengesHub({ isCoach, user }) {
     <div className="space-y-5">
       {/* Header card */}
       <div className="rounded-xl p-5 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-        style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, rgb(var(--primary)) 100%)' }}>
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Trophy className="w-5 h-5 text-yellow-400" />
+            <Trophy className="w-5 h-5 text-warning" />
             <h2 className="text-lg font-bold text-white">Challenges</h2>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/10">
               {tierName}
@@ -511,7 +511,7 @@ export default function ChallengesHub({ isCoach, user }) {
           </div>
           <p className="text-sm text-white/60">Create fitness challenges for your clients using preset templates</p>
           <div className="flex items-center gap-3 mt-2">
-            <span className="flex items-center gap-1 text-xs text-yellow-400 font-semibold">
+            <span className="flex items-center gap-1 text-xs text-warning font-semibold">
               <Zap className="w-3.5 h-3.5" /> {active.length} active
             </span>
             <span className="text-xs text-white/40">·</span>
@@ -525,7 +525,7 @@ export default function ChallengesHub({ isCoach, user }) {
               <Plus className="w-4 h-4" /> Custom
             </button>
             <button onClick={() => setView('templates')}
-              className="flex items-center gap-1.5 px-4 py-2 bg-yellow-400 text-[#0F172A] text-sm font-bold rounded-lg hover:bg-yellow-300 transition-colors">
+              className="flex items-center gap-1.5 px-4 py-2 bg-warning text-foreground text-sm font-bold rounded-lg hover:bg-warning transition-colors">
               <Star className="w-4 h-4" /> From Template
             </button>
           </div>
@@ -533,7 +533,7 @@ export default function ChallengesHub({ isCoach, user }) {
       </div>
 
       {/* View toggle */}
-      <div className="flex gap-1 bg-[#F3F4F6] border border-[#E5E7EB] rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-muted border border-border rounded-xl p-1 w-fit">
         {[
           { key: 'templates', label: '✨ Templates', count: null },
           { key: 'active', label: '🔥 Active', count: active.length },
@@ -541,10 +541,10 @@ export default function ChallengesHub({ isCoach, user }) {
         ].map(tab => (
           <button key={tab.key} onClick={() => setView(tab.key)}
             className={cn('flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all',
-              view === tab.key ? 'bg-white shadow-sm text-[#0F172A]' : 'text-[#6B7280] hover:text-[#0F172A]')}>
+              view === tab.key ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
             {tab.label}
             {tab.count !== null && tab.count > 0 && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#2563EB] text-white ml-1">{tab.count}</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white ml-1">{tab.count}</span>
             )}
           </button>
         ))}
@@ -554,7 +554,7 @@ export default function ChallengesHub({ isCoach, user }) {
       {view === 'templates' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#6B7280]">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               {filteredTemplates.length} Ready-Made Challenges
             </p>
             <div className="flex gap-1.5">
@@ -562,8 +562,8 @@ export default function ChallengesHub({ isCoach, user }) {
                 <button key={d} onClick={() => setFilterDifficulty(d)}
                   className={cn('text-xs font-semibold px-3 py-1 rounded-full border transition-all',
                     filterDifficulty === d
-                      ? 'bg-[#111827] text-white border-[#111827]'
-                      : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#111827]')}>
+                      ? 'bg-sidebar text-white border-foreground'
+                      : 'border-border text-muted-foreground hover:border-foreground')}>
                   {d}
                 </button>
               ))}
@@ -578,9 +578,9 @@ export default function ChallengesHub({ isCoach, user }) {
           </div>
 
           {!isCoach && (
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center">
-              <p className="text-sm text-blue-700 font-semibold">Challenges are launched by your coach</p>
-              <p className="text-xs text-blue-500 mt-1">Check Active Challenges to see what's running right now</p>
+            <div className="bg-accent border border-accent rounded-xl p-4 text-center">
+              <p className="text-sm text-primary font-semibold">Challenges are launched by your coach</p>
+              <p className="text-xs text-primary mt-1">Check Active Challenges to see what's running right now</p>
             </div>
           )}
         </div>
@@ -590,12 +590,12 @@ export default function ChallengesHub({ isCoach, user }) {
       {view === 'active' && (
         <div className="space-y-4">
           {active.length === 0 ? (
-            <div className="text-center py-16 border border-dashed border-[#E5E7EB] rounded-xl bg-[#F9FAFB]">
-              <Trophy className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB]" />
-              <p className="text-sm font-semibold text-[#374151]">No active challenges</p>
+            <div className="text-center py-16 border border-dashed border-border rounded-xl bg-background">
+              <Trophy className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+              <p className="text-sm font-semibold text-foreground">No active challenges</p>
               {isCoach && (
                 <button onClick={() => setView('templates')}
-                  className="mt-3 text-xs font-bold text-[#2563EB] hover:underline flex items-center gap-1 mx-auto">
+                  className="mt-3 text-xs font-bold text-primary hover:underline flex items-center gap-1 mx-auto">
                   Browse Templates <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -617,9 +617,9 @@ export default function ChallengesHub({ isCoach, user }) {
       {view === 'past' && (
         <div className="space-y-4">
           {past.length === 0 ? (
-            <div className="text-center py-16 border border-dashed border-[#E5E7EB] rounded-xl bg-[#F9FAFB]">
-              <Clock className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB]" />
-              <p className="text-sm font-semibold text-[#374151]">No past challenges yet</p>
+            <div className="text-center py-16 border border-dashed border-border rounded-xl bg-background">
+              <Clock className="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+              <p className="text-sm font-semibold text-foreground">No past challenges yet</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

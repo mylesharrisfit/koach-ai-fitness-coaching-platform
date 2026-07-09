@@ -75,7 +75,7 @@ export default function RecommendationCard({ recommendation: rec, checkIn, clien
           )}
 
           {stage === 'done' && (
-            <div className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+            <div className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-success/10 border border-success/20 text-success">
               <Check className="w-3.5 h-3.5" /> Done
             </div>
           )}

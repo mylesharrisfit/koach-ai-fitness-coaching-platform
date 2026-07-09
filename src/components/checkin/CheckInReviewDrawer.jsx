@@ -26,12 +26,12 @@ const REACTIONS = [
 function MetricTile({ icon: Icon, label, value, unit, color }) {
   if (value == null) return null;
   return (
-    <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3 flex flex-col gap-1">
+    <div className="bg-muted border border-border rounded-xl p-3 flex flex-col gap-1">
       <div className="flex items-center gap-1.5">
         <Icon className={cn('w-3.5 h-3.5', color || 'text-muted-foreground')} />
         <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
       </div>
-      <p className="text-lg font-bold text-[#1F2A44]">
+      <p className="text-lg font-bold text-foreground">
         {value}
         {unit && <span className="text-xs font-normal text-muted-foreground ml-0.5">{unit}</span>}
       </p>
@@ -89,12 +89,12 @@ Client notes: ${checkIn.notes || 'none'}`;
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-100 rounded-xl p-4">
+      <div className="bg-gradient-to-br from-ai/10 to-accent border border-ai rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-4 h-4 text-purple-500" />
-          <span className="text-xs font-bold text-purple-700 uppercase tracking-wide">AI Analysis</span>
+          <Sparkles className="w-4 h-4 text-ai" />
+          <span className="text-xs font-bold text-ai uppercase tracking-wide">AI Analysis</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-purple-600">
+        <div className="flex items-center gap-2 text-sm text-ai">
           <Loader2 className="w-4 h-4 animate-spin" /> Analyzing check-in...
         </div>
       </div>
@@ -104,13 +104,13 @@ Client notes: ${checkIn.notes || 'none'}`;
   if (!summary) return null;
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-100 rounded-xl p-4 space-y-3">
+    <div className="bg-gradient-to-br from-ai/10 to-accent border border-ai rounded-xl p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-purple-500" />
-        <span className="text-xs font-bold text-purple-700 uppercase tracking-wide">AI Analysis</span>
+        <Sparkles className="w-4 h-4 text-ai" />
+        <span className="text-xs font-bold text-ai uppercase tracking-wide">AI Analysis</span>
       </div>
 
-      <p className="text-sm text-[#374151] leading-relaxed">{summary.summary}</p>
+      <p className="text-sm text-foreground leading-relaxed">{summary.summary}</p>
 
       {summary.flags?.length > 0 && (
         <div className="space-y-1">
@@ -124,9 +124,9 @@ Client notes: ${checkIn.notes || 'none'}`;
       )}
 
       {summary.suggested_response && (
-        <div className="bg-white/70 rounded-lg p-3 border border-purple-100">
-          <p className="text-[10px] font-bold text-purple-600 uppercase tracking-wide mb-1">Suggested Response</p>
-          <p className="text-xs text-[#374151] leading-relaxed italic">"{summary.suggested_response}"</p>
+        <div className="bg-white/70 rounded-lg p-3 border border-ai">
+          <p className="text-[10px] font-bold text-ai uppercase tracking-wide mb-1">Suggested Response</p>
+          <p className="text-xs text-foreground leading-relaxed italic">"{summary.suggested_response}"</p>
         </div>
       )}
     </div>
@@ -207,10 +207,10 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
       <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E7EAF3] flex-shrink-0 bg-white">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-border flex-shrink-0 bg-card">
           <div className="relative">
             {client?.avatar_url ? (
-              <img src={client.avatar_url} alt={clientName} className="w-10 h-10 rounded-full object-cover border border-[#E5E7EB]" />
+              <img src={client.avatar_url} alt={clientName} className="w-10 h-10 rounded-full object-cover border border-border" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                 {clientName[0]?.toUpperCase()}
@@ -218,25 +218,25 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-sm text-[#111827]">{clientName}</p>
-            <p className="text-xs text-[#6B7280]">
+            <p className="font-bold text-sm text-foreground">{clientName}</p>
+            <p className="text-xs text-muted-foreground">
               {format(parseISO(checkIn.date), 'EEEE, MMM d, yyyy')}
               {checkIn.mood && <span className="ml-1.5">{MOOD_EMOJI[checkIn.mood]}</span>}
             </p>
           </div>
           {isReviewed && (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-success/10 text-success border border-success">
               Reviewed
             </span>
           )}
-          <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg hover:bg-[#F6F7FB] transition-colors ml-auto">
+          <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg hover:bg-muted transition-colors ml-auto">
             <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
         {/* Navigation */}
         {total > 1 && (
-          <div className="flex items-center justify-between px-5 py-2 bg-[#F6F7FB] border-b border-[#E7EAF3] flex-shrink-0">
+          <div className="flex items-center justify-between px-5 py-2 bg-muted border-b border-border flex-shrink-0">
             <button
               disabled={currentIndex === 0}
               onClick={() => onNavigate(currentIndex - 1)}
@@ -263,7 +263,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
           {/* Score */}
           {score !== null && (
-            <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F7FB] border border-[#E7EAF3]">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-muted border border-border">
               <span className="text-sm font-semibold">Overall Score</span>
               <span className={cn('text-2xl font-extrabold', scoreColor(score))}>
                 {score}<span className="text-sm font-normal text-muted-foreground">%</span>
@@ -275,23 +275,23 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">This Week's Metrics</p>
             <div className="grid grid-cols-2 gap-2">
-              <MetricTile icon={Scale} label="Weight" value={checkIn.weight} unit="lbs" color="text-blue-500" />
+              <MetricTile icon={Scale} label="Weight" value={checkIn.weight} unit="lbs" color="text-primary" />
               <MetricTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} unit="hrs"
-                color={checkIn.sleep_hours >= 7 ? 'text-indigo-500' : 'text-amber-500'} />
+                color={checkIn.sleep_hours >= 7 ? 'text-primary' : 'text-warning'} />
               <MetricTile icon={Zap} label="Energy" value={checkIn.energy_level} unit="/10"
-                color={checkIn.energy_level >= 7 ? 'text-emerald-500' : 'text-amber-500'} />
+                color={checkIn.energy_level >= 7 ? 'text-success' : 'text-warning'} />
               <MetricTile icon={Heart} label="Stress" value={checkIn.stress_level} unit="/10"
-                color={checkIn.stress_level <= 4 ? 'text-emerald-500' : 'text-red-500'} />
+                color={checkIn.stress_level <= 4 ? 'text-success' : 'text-destructive'} />
               <MetricTile icon={Dumbbell} label="Training" value={checkIn.compliance_training} unit="%"
-                color={checkIn.compliance_training >= 75 ? 'text-emerald-500' : 'text-amber-500'} />
+                color={checkIn.compliance_training >= 75 ? 'text-success' : 'text-warning'} />
               <MetricTile icon={Salad} label="Nutrition" value={checkIn.compliance_nutrition} unit="%"
-                color={checkIn.compliance_nutrition >= 75 ? 'text-emerald-500' : 'text-amber-500'} />
+                color={checkIn.compliance_nutrition >= 75 ? 'text-success' : 'text-warning'} />
             </div>
           </div>
 
           {/* Compare to previous */}
           {prevCI && (
-            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+            <div className="bg-muted border border-border rounded-xl p-3">
               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">vs Previous ({format(parseISO(prevCI.date), 'MMM d')})</p>
               <div className="grid grid-cols-3 gap-2 text-xs text-center">
                 {[
@@ -303,10 +303,10 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                   const improved = diff !== null ? (lower ? diff < 0 : diff > 0) : null;
                   return (
                     <div key={label} className="text-center">
-                      <p className="text-[#9CA3AF] mb-1">{label}</p>
-                      <p className="font-bold text-[#111827]">{curr ?? '–'}{curr != null && unit}</p>
+                      <p className="text-muted-foreground mb-1">{label}</p>
+                      <p className="font-bold text-foreground">{curr ?? '–'}{curr != null && unit}</p>
                       {diff !== null && (
-                        <p className={cn('text-[10px] font-medium', improved ? 'text-emerald-600' : diff == 0 ? 'text-[#9CA3AF]' : 'text-red-500')}>
+                        <p className={cn('text-[10px] font-medium', improved ? 'text-success' : diff == 0 ? 'text-muted-foreground' : 'text-destructive')}>
                           {diff > 0 ? '+' : ''}{diff}
                         </p>
                       )}
@@ -326,7 +326,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
               <div className="flex gap-2 flex-wrap">
                 {checkIn.photo_urls.map((url, i) => (
                   <a key={i} href={url} target="_blank" rel="noreferrer">
-                    <img src={url} alt="progress" className="w-20 h-20 object-cover rounded-xl border border-[#E7EAF3] hover:scale-105 transition-transform" />
+                    <img src={url} alt="progress" className="w-20 h-20 object-cover rounded-xl border border-border hover:scale-105 transition-transform" />
                   </a>
                 ))}
               </div>
@@ -335,13 +335,13 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
           {/* Measurements */}
           {checkIn.measurements && Object.values(checkIn.measurements).some(Boolean) && (
-            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+            <div className="bg-muted border border-border rounded-xl p-3">
               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Measurements (in)</p>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 {Object.entries(checkIn.measurements).filter(([, v]) => v).map(([k, v]) => (
                   <div key={k} className="text-center">
-                    <p className="text-[#9CA3AF] capitalize">{k}</p>
-                    <p className="font-bold text-[#111827]">{v}"</p>
+                    <p className="text-muted-foreground capitalize">{k}</p>
+                    <p className="font-bold text-foreground">{v}"</p>
                   </div>
                 ))}
               </div>
@@ -350,15 +350,15 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
           {/* Client notes */}
           {checkIn.notes && (
-            <div className="bg-[#F6F7FB] border border-[#E7EAF3] rounded-xl p-3">
+            <div className="bg-muted border border-border rounded-xl p-3">
               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
 
           {/* Coach tools tabs */}
-          <div className="border border-[#E7EAF3] rounded-xl overflow-hidden">
-            <div className="flex border-b border-[#E7EAF3]">
+          <div className="border border-border rounded-xl overflow-hidden">
+            <div className="flex border-b border-border">
               {[
                 { key: 'response', label: 'Response', icon: MessageSquare },
                 { key: 'notes', label: 'Private Notes', icon: Lock },
@@ -369,8 +369,8 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                   className={cn(
                     'flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-semibold transition-colors',
                     activeTab === key
-                      ? 'bg-white text-primary border-b-2 border-primary'
-                      : 'bg-[#F6F7FB] text-[#6B7280] hover:text-[#374151]'
+                      ? 'bg-card text-primary border-b-2 border-primary'
+                      : 'bg-muted text-muted-foreground hover:text-foreground'
                   )}
                 >
                   <Icon className="w-3.5 h-3.5" /> {label}
@@ -378,18 +378,18 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
               ))}
             </div>
 
-            <div className="p-3 bg-white">
+            <div className="p-3 bg-card">
               {activeTab === 'response' && (
                 <div className="space-y-3">
                   {/* Reaction quick-sends */}
                   <div>
-                    <p className="text-[10px] font-semibold text-[#6B7280] mb-2">Quick reaction</p>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-2">Quick reaction</p>
                     <div className="flex gap-2 flex-wrap">
                       {REACTIONS.map((r) => (
                         <button
                           key={r.label}
                           onClick={() => handleReaction(r)}
-                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#F6F7FB] border border-[#E7EAF3] text-xs font-medium hover:bg-primary/5 hover:border-primary/20 transition-colors"
+                          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted border border-border text-xs font-medium hover:bg-primary/5 hover:border-primary/20 transition-colors"
                         >
                           {r.emoji} {r.label}
                         </button>
@@ -399,7 +399,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
                   {/* Voice note placeholder */}
                   <div>
-                    <p className="text-[10px] font-semibold text-[#6B7280] mb-1.5">Voice note</p>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Voice note</p>
                     <button
                       onMouseDown={() => setRecording(true)}
                       onMouseUp={() => { setRecording(false); toast.info('Voice notes coming soon'); }}
@@ -408,8 +408,8 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                       className={cn(
                         'flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold transition-all w-full justify-center',
                         recording
-                          ? 'bg-red-50 border-red-300 text-red-600 animate-pulse'
-                          : 'bg-[#F6F7FB] border-[#E7EAF3] text-[#374151] hover:bg-[#F0F1F5]'
+                          ? 'bg-destructive/10 border-destructive text-destructive animate-pulse'
+                          : 'bg-muted border-border text-foreground hover:bg-[#F0F1F5]'
                       )}
                     >
                       {recording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
@@ -432,13 +432,13 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
                   {/* Text response */}
                   <div>
-                   <p className="text-[10px] font-semibold text-[#6B7280] mb-1.5">Text response</p>
+                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Text response</p>
                    <textarea
                      rows={4}
                      value={coachResponse}
                      onChange={e => setCoachResponse(e.target.value)}
                      placeholder="Type your coaching feedback..."
-                     className="w-full rounded-xl border border-[#E7EAF3] bg-[#F6F7FB] px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40 focus:bg-white transition-colors"
+                     className="w-full rounded-xl border border-border bg-muted px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40 focus:bg-card transition-colors"
                    />
                     <Button
                       size="sm"
@@ -454,7 +454,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
               {activeTab === 'notes' && (
                 <div className="space-y-2">
-                  <p className="text-xs text-[#6B7280] flex items-center gap-1.5">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                     <Lock className="w-3 h-3" /> These notes are private and not visible to the client
                   </p>
                   <textarea
@@ -462,7 +462,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                     value={internalNotes}
                     onChange={e => setInternalNotes(e.target.value)}
                     placeholder="Private coaching notes, observations, action items..."
-                    className="w-full rounded-xl border border-[#E7EAF3] bg-[#F6F7FB] px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40 focus:bg-white transition-colors"
+                    className="w-full rounded-xl border border-border bg-muted px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-primary/40 focus:bg-card transition-colors"
                   />
                   <Button size="sm" onClick={handleSaveNotes} disabled={updateMutation.isPending} variant="outline" className="w-full">
                     Save Notes
@@ -482,7 +482,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 border-t border-[#E7EAF3] px-5 py-3 flex gap-2 bg-white">
+        <div className="flex-shrink-0 border-t border-border px-5 py-3 flex gap-2 bg-card">
           <Button
             variant="outline"
             size="sm"
@@ -494,7 +494,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           </Button>
           <Button
             size="sm"
-            className="flex-1 gap-1.5 bg-emerald-500 hover:bg-emerald-600"
+            className="flex-1 gap-1.5 bg-success hover:bg-success"
             onClick={handleMarkReviewed}
             disabled={updateMutation.isPending || isReviewed}
           >

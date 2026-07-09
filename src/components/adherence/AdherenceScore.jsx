@@ -14,8 +14,8 @@ function strokeHsl(score) {
 export function AdherencePill({ score, showLabel = true }) {
   const color = score === null
     ? 'bg-secondary text-muted-foreground'
-    : score >= 80 ? 'bg-emerald-500/15 text-emerald-400'
-    : score >= 60 ? 'bg-amber-500/15 text-amber-400'
+    : score >= 80 ? 'bg-success/15 text-success'
+    : score >= 60 ? 'bg-warning/15 text-warning'
     : 'bg-destructive/15 text-destructive';
 
   return (
@@ -41,8 +41,8 @@ export function AdherenceBreakdown({ breakdown }) {
             <div
               className={cn('h-full rounded-full transition-all duration-700',
                 item.score === null ? 'w-0' :
-                item.score >= 80 ? 'bg-emerald-400' :
-                item.score >= 60 ? 'bg-amber-400' : 'bg-destructive'
+                item.score >= 80 ? 'bg-success' :
+                item.score >= 60 ? 'bg-warning' : 'bg-destructive'
               )}
               style={{ width: item.score !== null ? `${item.score}%` : '0%' }}
             />

@@ -6,10 +6,10 @@ import { cn } from '@/lib/utils';
 
 const CATEGORY_META = {
   calories:  { icon: Flame,     color: 'text-orange-400',  bg: 'bg-orange-500/10 border-orange-500/20' },
-  cardio:    { icon: Footprints, color: 'text-blue-400',    bg: 'bg-blue-500/10 border-blue-500/20' },
-  intensity: { icon: Dumbbell,  color: 'text-purple-400',  bg: 'bg-purple-500/10 border-purple-500/20' },
-  nutrition: { icon: Utensils,  color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
-  recovery:  { icon: Zap,       color: 'text-amber-400',   bg: 'bg-amber-500/10 border-amber-500/20' },
+  cardio:    { icon: Footprints, color: 'text-primary',    bg: 'bg-primary/10 border-primary/20' },
+  intensity: { icon: Dumbbell,  color: 'text-ai',  bg: 'bg-ai/10 border-ai/20' },
+  nutrition: { icon: Utensils,  color: 'text-success', bg: 'bg-success/10 border-success/20' },
+  recovery:  { icon: Zap,       color: 'text-warning',   bg: 'bg-warning/10 border-warning/20' },
 };
 
 function buildPrompt(client, checkIn, allClientCIs, nutritionPlan) {
@@ -61,7 +61,7 @@ Only suggest what the data justifies. Be specific with numbers. No vague suggest
 function SuggestionCard({ suggestion, onApply, applied }) {
   const meta = CATEGORY_META[suggestion.category] || CATEGORY_META.intensity;
   const Icon = meta.icon;
-  const impactColor = suggestion.impact === 'high' ? 'text-destructive' : suggestion.impact === 'medium' ? 'text-amber-400' : 'text-muted-foreground';
+  const impactColor = suggestion.impact === 'high' ? 'text-destructive' : suggestion.impact === 'medium' ? 'text-warning' : 'text-muted-foreground';
 
   return (
     <div className={cn('border rounded-xl p-3.5 space-y-2 transition-all', meta.bg, applied && 'opacity-50')}>
@@ -206,7 +206,7 @@ export default function AIProgramSuggestions({ checkIn, client, allClientCIs = [
         <div className="px-4 py-2.5 flex items-center gap-2">
           <span className="text-xs text-muted-foreground">{suggestions.length} suggestions generated</span>
           {appliedCount > 0 && (
-            <span className="flex items-center gap-1 text-[11px] text-emerald-400">
+            <span className="flex items-center gap-1 text-[11px] text-success">
               <Check className="w-3 h-3" />{appliedCount} applied
             </span>
           )}

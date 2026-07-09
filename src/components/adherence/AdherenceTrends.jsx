@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { averageAdherenceScore } from '@/lib/adherence';
 
 const CHART_TABS = ['Overall', 'Workout', 'Nutrition'];
-const COLORS = ['#2563EB', '#10B981', '#F59E0B', '#7C3AED', '#EF4444', '#06B6D4', '#EC4899', '#84CC16'];
+const COLORS = ['rgb(var(--primary))', 'rgb(var(--success))', 'rgb(var(--warning))', 'rgb(var(--ai))', 'rgb(var(--destructive))', '#06B6D4', '#EC4899', '#84CC16'];
 
 function buildWeeklyData(clients, cisByClient, key, rangeWeeks) {
   const weeks = [];
@@ -43,15 +43,15 @@ function buildWeeklyData(clients, cisByClient, key, rangeWeeks) {
 const CustomTooltip = ({ active, payload, label, clients }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl px-3 py-2.5 shadow-xl text-xs min-w-[140px]">
-      <p className="font-bold text-[#111827] mb-2">{label}</p>
+    <div className="bg-card border border-border rounded-xl px-3 py-2.5 shadow-xl text-xs min-w-[140px]">
+      <p className="font-bold text-foreground mb-2">{label}</p>
       {payload.map((p, i) => {
         const clientName = p.dataKey === 'team_avg' ? 'Team Avg' : clients.find(c => c.id === p.dataKey)?.name || p.dataKey;
         return (
           <div key={i} className="flex items-center justify-between gap-3 mb-0.5">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: p.color }} />
-              <span className="text-[#374151]">{clientName}</span>
+              <span className="text-foreground">{clientName}</span>
             </div>
             <span className="font-bold" style={{ color: p.color }}>{p.value !== null ? `${p.value}%` : '—'}</span>
           </div>
@@ -122,14 +122,14 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
   const visibleClients = clients.slice(0, 8);
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
       {/* Tab bar */}
-      <div className="flex items-center gap-1 px-4 py-3 border-b border-[#E5E7EB]">
-        <p className="text-sm font-semibold text-[#111827] mr-3">Adherence Trends</p>
+      <div className="flex items-center gap-1 px-4 py-3 border-b border-border">
+        <p className="text-sm font-semibold text-foreground mr-3">Adherence Trends</p>
         {CHART_TABS.map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={cn('px-3 py-1 rounded-lg text-xs font-semibold transition-all',
-              tab === t ? 'bg-primary text-white' : 'bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]')}>
+              tab === t ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-border')}>
             {t}
           </button>
         ))}
@@ -139,8 +139,8 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
         {/* Client legend toggles */}
         <div className="flex flex-wrap gap-2 mb-4">
           <div className="flex items-center gap-1.5 mr-2">
-            <div className="w-8 h-0.5 bg-[#111827]" style={{ borderTop: '2px dashed #111827' }} />
-            <span className="text-[10px] text-[#6B7280] font-medium">Team Avg</span>
+            <div className="w-8 h-0.5 bg-sidebar" style={{ borderTop: '2px dashed rgb(var(--foreground))' }} />
+            <span className="text-[10px] text-muted-foreground font-medium">Team Avg</span>
           </div>
           {visibleClients.map((c, i) => (
             <button key={c.id} onClick={() => toggleClient(c.id)}
@@ -154,18 +154,18 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
 
         {/* Chart */}
         {chartData.length < 2 ? (
-          <div className="flex items-center justify-center h-48 text-sm text-[#9CA3AF]">
+          <div className="flex items-center justify-center h-48 text-sm text-muted-foreground">
             Not enough data — log more check-ins to see trends.
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={chartData} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-              <XAxis dataKey="week" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
+              <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} domain={[0, 100]} />
               <Tooltip content={<CustomTooltip clients={visibleClients} />} />
               {/* Team avg dashed */}
-              <Line type="monotone" dataKey="team_avg" stroke="#111827" strokeWidth={2} strokeDasharray="6 3"
+              <Line type="monotone" dataKey="team_avg" stroke="rgb(var(--foreground))" strokeWidth={2} strokeDasharray="6 3"
                 dot={false} connectNulls name="Team Avg" />
               {/* Per-client lines */}
               {visibleClients.map((c, i) => (
@@ -182,32 +182,32 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
         {/* Summary pills */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
           {summary.best && (
-            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-emerald-50 border border-emerald-100">
-              <span className="text-emerald-600 text-lg">🏆</span>
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-success/10 border border-success">
+              <span className="text-success text-lg">🏆</span>
               <div className="min-w-0">
-                <p className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wide">Best This Period</p>
-                <p className="text-xs font-bold text-emerald-800 truncate">{summary.best.client.name}</p>
-                <p className="text-[10px] text-emerald-600">{summary.best.val}% adherence</p>
+                <p className="text-[10px] text-success font-semibold uppercase tracking-wide">Best This Period</p>
+                <p className="text-xs font-bold text-success truncate">{summary.best.client.name}</p>
+                <p className="text-[10px] text-success">{summary.best.val}% adherence</p>
               </div>
             </div>
           )}
           {summary.mostImproved && (
-            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-blue-50 border border-blue-100">
-              <span className="text-blue-600 text-lg">📈</span>
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-accent border border-accent">
+              <span className="text-primary text-lg">📈</span>
               <div className="min-w-0">
-                <p className="text-[10px] text-blue-600 font-semibold uppercase tracking-wide">Most Improved</p>
-                <p className="text-xs font-bold text-blue-800 truncate">{summary.mostImproved.client.name}</p>
-                <p className="text-[10px] text-blue-600">+{summary.mostImproved.improvement}% vs last period</p>
+                <p className="text-[10px] text-primary font-semibold uppercase tracking-wide">Most Improved</p>
+                <p className="text-xs font-bold text-primary truncate">{summary.mostImproved.client.name}</p>
+                <p className="text-[10px] text-primary">+{summary.mostImproved.improvement}% vs last period</p>
               </div>
             </div>
           )}
           {summary.needsAttention && (
-            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-red-50 border border-red-100">
-              <span className="text-red-500 text-lg">⚠️</span>
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-destructive/10 border border-destructive">
+              <span className="text-destructive text-lg">⚠️</span>
               <div className="min-w-0">
-                <p className="text-[10px] text-red-500 font-semibold uppercase tracking-wide">Needs Attention</p>
-                <p className="text-xs font-bold text-red-700 truncate">{summary.needsAttention.client.name}</p>
-                <p className="text-[10px] text-red-500">{summary.needsAttention.val}% adherence</p>
+                <p className="text-[10px] text-destructive font-semibold uppercase tracking-wide">Needs Attention</p>
+                <p className="text-xs font-bold text-destructive truncate">{summary.needsAttention.client.name}</p>
+                <p className="text-[10px] text-destructive">{summary.needsAttention.val}% adherence</p>
               </div>
             </div>
           )}

@@ -148,7 +148,7 @@ export default function Progress() {
     <div className="p-3 sm:p-5 lg:p-8 max-w-7xl mx-auto overflow-x-hidden">
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl px-5 py-4"
-        style={{ background: 'linear-gradient(135deg, #111827 0%, #1E293B 100%)' }}>
+        style={{ background: 'rgb(var(--sidebar))' }}>
         <div>
           <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">Progress</h1>
           <p className="text-xs sm:text-sm mt-0.5 text-white/50">
@@ -170,54 +170,54 @@ export default function Progress() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        <div className="bg-white rounded-xl border border-emerald-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-success p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-50">
-              <Scale className="w-4 h-4 text-emerald-600" />
+            <div className="w-2 h-2 rounded-full bg-success" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-success/10">
+              <Scale className="w-4 h-4 text-success" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.totalLost}<span className="text-sm font-normal text-[#6B7280] ml-1">lbs</span></p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Total Weight Lost</p>
+          <p className="text-2xl font-bold text-foreground">{stats.totalLost}<span className="text-sm font-normal text-muted-foreground ml-1">lbs</span></p>
+          <p className="text-xs text-muted-foreground mt-0.5">Total Weight Lost</p>
         </div>
-        <div className="bg-white rounded-xl border border-blue-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-accent p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-2 h-2 rounded-full bg-blue-400" />
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-50">
-              <BarChart3 className="w-4 h-4 text-blue-600" />
+            <div className="w-2 h-2 rounded-full bg-primary" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent">
+              <BarChart3 className="w-4 h-4 text-primary" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.avgScore}<span className="text-sm font-normal text-[#6B7280] ml-1">/100</span></p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Avg Progress Score</p>
+          <p className="text-2xl font-bold text-foreground">{stats.avgScore}<span className="text-sm font-normal text-muted-foreground ml-1">/100</span></p>
+          <p className="text-xs text-muted-foreground mt-0.5">Avg Progress Score</p>
         </div>
-        <div className="bg-white rounded-xl border border-orange-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-orange-100 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div className="w-2 h-2 rounded-full bg-orange-400" />
             <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-50">
               <Star className="w-4 h-4 text-orange-500" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.personalBests}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Personal Bests This Week</p>
+          <p className="text-2xl font-bold text-foreground">{stats.personalBests}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Personal Bests This Week</p>
         </div>
-        <div className="bg-white rounded-xl border border-purple-100 p-4 shadow-sm">
+        <div className="bg-card rounded-xl border border-ai p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-2 h-2 rounded-full bg-purple-400" />
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-purple-50">
-              <Image className="w-4 h-4 text-purple-500" />
+            <div className="w-2 h-2 rounded-full bg-ai" />
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-ai/10">
+              <Image className="w-4 h-4 text-ai" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-[#111827]">{stats.photoClients}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">Before/After Photos</p>
+          <p className="text-2xl font-bold text-foreground">{stats.photoClients}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Before/After Photos</p>
         </div>
       </div>
 
       {/* Client List */}
       {visibleClients.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-[#E5E7EB]">
-          <BarChart3 className="w-12 h-12 text-[#D1D5DB] mb-3" />
-          <p className="font-semibold text-[#374151]">No active clients yet</p>
-          <p className="text-sm text-[#9CA3AF] mt-1">Add clients and start logging check-ins to track progress.</p>
+        <div className="flex flex-col items-center justify-center py-24 bg-card rounded-2xl border border-border">
+          <BarChart3 className="w-12 h-12 text-muted-foreground mb-3" />
+          <p className="font-semibold text-foreground">No active clients yet</p>
+          <p className="text-sm text-muted-foreground mt-1">Add clients and start logging check-ins to track progress.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -245,30 +245,30 @@ function ClientProgressRow({ row, onViewProgress }) {
   const { client, cis, sessions, startWeight, currentWeight, goalWeight, weeksActive, trend, score, goalPct, lastDate } = row;
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-  const trendColor = trend === 'down' ? 'text-emerald-500' : trend === 'up' ? 'text-red-400' : 'text-[#9CA3AF]';
-  const trendBg = trend === 'down' ? 'bg-emerald-50' : trend === 'up' ? 'bg-red-50' : 'bg-[#F3F4F6]';
+  const trendColor = trend === 'down' ? 'text-success' : trend === 'up' ? 'text-destructive' : 'text-muted-foreground';
+  const trendBg = trend === 'down' ? 'bg-success/10' : trend === 'up' ? 'bg-destructive/10' : 'bg-muted';
 
   // Goal label
   const goalLabel = { weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength', endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness' }[client.goal] || 'General';
 
   return (
-    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-card border border-border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
       {/* Row 1: Avatar + Score + CTA */}
       <div className="flex items-center gap-3 mb-3">
         <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-sm"
-          style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
           {client.avatar_url
             ? <img src={client.avatar_url} alt={client.name} className="w-10 h-10 rounded-full object-cover" />
             : client.name?.[0]?.toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[#111827] truncate text-sm">{client.name}</p>
-          <p className="text-xs text-[#6B7280]">{goalLabel}</p>
+          <p className="font-semibold text-foreground truncate text-sm">{client.name}</p>
+          <p className="text-xs text-muted-foreground">{goalLabel}</p>
         </div>
         {score !== null && (
           <div className="text-center flex-shrink-0">
-            <div className={cn('text-base font-bold', score >= 70 ? 'text-emerald-600' : score >= 50 ? 'text-orange-500' : 'text-red-400')}>{score}</div>
-            <div className="text-[9px] text-[#9CA3AF] uppercase tracking-wide">Score</div>
+            <div className={cn('text-base font-bold', score >= 70 ? 'text-success' : score >= 50 ? 'text-orange-500' : 'text-destructive')}>{score}</div>
+            <div className="text-[9px] text-muted-foreground uppercase tracking-wide">Score</div>
           </div>
         )}
         <button onClick={onViewProgress}
@@ -284,18 +284,18 @@ function ClientProgressRow({ row, onViewProgress }) {
           <TrendIcon className="w-3 h-3" />
         </div>
         <WeightPill label="Now" value={currentWeight} highlight />
-        <span className="text-[#D1D5DB] text-xs flex-shrink-0">→</span>
+        <span className="text-muted-foreground text-xs flex-shrink-0">→</span>
         <WeightPill label="Goal" value={goalWeight} goal />
       </div>
 
       {/* Row 3: Progress bar */}
       <div className="mb-2">
-        <div className="flex justify-between text-[10px] text-[#9CA3AF] mb-1">
+        <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
           <span>Goal Progress</span>
           <span>{goalPct !== null ? `${goalPct}%` : 'N/A'}</span>
         </div>
-        <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all"
+        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-primary to-success rounded-full transition-all"
             style={{ width: `${goalPct ?? 0}%` }} />
         </div>
       </div>
@@ -315,18 +315,18 @@ function WeightPill({ label, value, highlight, goal }) {
   return (
     <div className="text-center">
       <div className={cn('text-xs font-bold',
-        highlight ? 'text-[#2563EB]' : goal ? 'text-emerald-600' : 'text-[#374151]')}>
+        highlight ? 'text-primary' : goal ? 'text-success' : 'text-foreground')}>
         {value ? `${value}` : '—'}
         {value && <span className="text-[9px] font-normal ml-0.5">lbs</span>}
       </div>
-      <div className="text-[9px] text-[#9CA3AF] uppercase tracking-wide">{label}</div>
+      <div className="text-[9px] text-muted-foreground uppercase tracking-wide">{label}</div>
     </div>
   );
 }
 
 function Chip({ label }) {
   return (
-    <span className="px-2 py-0.5 bg-[#F3F4F6] rounded-full text-[10px] text-[#6B7280] font-medium whitespace-nowrap">
+    <span className="px-2 py-0.5 bg-muted rounded-full text-[10px] text-muted-foreground font-medium whitespace-nowrap">
       {label}
     </span>
   );

@@ -15,10 +15,10 @@ const MEASUREMENTS = [
 ];
 
 function Sparkline({ data, lowerIsBetter }) {
-  if (data.length < 2) return <div className="h-8 text-[10px] text-[#9CA3AF] flex items-center">—</div>;
+  if (data.length < 2) return <div className="h-8 text-[10px] text-muted-foreground flex items-center">—</div>;
   const trend = data[data.length - 1].v - data[0].v;
   const improving = lowerIsBetter ? trend < 0 : trend > 0;
-  const color = improving ? '#10B981' : trend === 0 ? '#9CA3AF' : '#EF4444';
+  const color = improving ? 'rgb(var(--success))' : trend === 0 ? 'rgb(var(--muted-foreground))' : 'rgb(var(--destructive))';
   return (
     <ResponsiveContainer width={80} height={32}>
       <LineChart data={data} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
@@ -67,9 +67,9 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
   return (
     <div className="p-6 space-y-6">
       {/* Measurements Grid */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB]">
-          <h3 className="text-sm font-semibold text-[#111827]">Body Measurements</h3>
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Body Measurements</h3>
           <button onClick={() => setShowModal(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90">
             <Plus className="w-3 h-3" /> Log Measurements
@@ -79,18 +79,18 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
           {MEASUREMENTS.map((m) => {
             const { start, current, change, data } = getStats(m.key);
             const improving = m.lowerIsBetter ? change < 0 : change > 0;
-            const changeColor = change === null ? '#9CA3AF' : change === 0 ? '#9CA3AF' : improving ? '#10B981' : '#EF4444';
+            const changeColor = change === null ? 'rgb(var(--muted-foreground))' : change === 0 ? 'rgb(var(--muted-foreground))' : improving ? 'rgb(var(--success))' : 'rgb(var(--destructive))';
             return (
-              <div key={m.key} className="px-5 py-4 border-b border-r border-[#F3F4F6]">
+              <div key={m.key} className="px-5 py-4 border-b border-r border-muted">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-semibold text-[#374151]">{m.label}</p>
-                    <p className="text-xl font-bold text-[#111827] mt-0.5">{current ? `${current}"` : '—'}</p>
+                    <p className="text-xs font-semibold text-foreground">{m.label}</p>
+                    <p className="text-xl font-bold text-foreground mt-0.5">{current ? `${current}"` : '—'}</p>
                   </div>
                   <Sparkline data={data} lowerIsBetter={m.lowerIsBetter} />
                 </div>
                 <div className="flex gap-3 mt-2 text-[10px]">
-                  <span className="text-[#9CA3AF]">Start: <span className="font-medium text-[#374151]">{start ? `${start}"` : '—'}</span></span>
+                  <span className="text-muted-foreground">Start: <span className="font-medium text-foreground">{start ? `${start}"` : '—'}</span></span>
                   {change !== null && (
                     <span style={{ color: changeColor }} className="font-semibold">
                       {change > 0 ? '+' : ''}{change}"
@@ -105,26 +105,26 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
 
       {/* History Table */}
       {historyRows.length > 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#E5E7EB]">
-            <h3 className="text-sm font-semibold text-[#111827]">Measurement History</h3>
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-border">
+            <h3 className="text-sm font-semibold text-foreground">Measurement History</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
-              <thead className="bg-[#F9FAFB]">
+              <thead className="bg-background">
                 <tr>
-                  <th className="px-4 py-2 text-left font-semibold text-[#6B7280]">Date</th>
+                  <th className="px-4 py-2 text-left font-semibold text-muted-foreground">Date</th>
                   {MEASUREMENTS.map(m => (
-                    <th key={m.key} className="px-4 py-2 text-left font-semibold text-[#6B7280]">{m.label} (in)</th>
+                    <th key={m.key} className="px-4 py-2 text-left font-semibold text-muted-foreground">{m.label} (in)</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {historyRows.map(({ ci, measurements }, i) => (
-                  <tr key={i} className="border-t border-[#F3F4F6] hover:bg-[#F9FAFB]">
-                    <td className="px-4 py-2 text-[#374151]">{format(parseISO(ci.date), 'MMM d, yyyy')}</td>
+                  <tr key={i} className="border-t border-muted hover:bg-background">
+                    <td className="px-4 py-2 text-foreground">{format(parseISO(ci.date), 'MMM d, yyyy')}</td>
                     {MEASUREMENTS.map(m => (
-                      <td key={m.key} className="px-4 py-2 text-[#374151]">{measurements?.[m.key] ?? '—'}</td>
+                      <td key={m.key} className="px-4 py-2 text-foreground">{measurements?.[m.key] ?? '—'}</td>
                     ))}
                   </tr>
                 ))}
@@ -137,28 +137,28 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
       {/* Log Measurements Modal */}
       {showModal && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-[#111827]">Log Measurements</h3>
-              <button onClick={() => setShowModal(false)}><X className="w-4 h-4 text-[#6B7280]" /></button>
+              <h3 className="font-semibold text-foreground">Log Measurements</h3>
+              <button onClick={() => setShowModal(false)}><X className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <div>
-              <label className="block text-xs text-[#6B7280] mb-1">Date</label>
+              <label className="block text-xs text-muted-foreground mb-1">Date</label>
               <input type="date" value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))}
-                className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+                className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               {MEASUREMENTS.map(m => (
                 <div key={m.key}>
-                  <label className="block text-xs text-[#6B7280] mb-1">{m.label} (inches)</label>
+                  <label className="block text-xs text-muted-foreground mb-1">{m.label} (inches)</label>
                   <input type="number" step="0.1" placeholder="—" value={form[m.key]}
                     onChange={e => setForm(p => ({ ...p, [m.key]: e.target.value }))}
-                    className="w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
                 </div>
               ))}
             </div>
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 text-xs rounded-lg border border-[#E5E7EB] text-[#374151]">Cancel</button>
+              <button onClick={() => setShowModal(false)} className="px-4 py-2 text-xs rounded-lg border border-border text-foreground">Cancel</button>
               <button onClick={handleSave} disabled={logMutation.isPending}
                 className="px-4 py-2 text-xs rounded-lg bg-primary text-white font-semibold disabled:opacity-50">
                 {logMutation.isPending ? 'Saving...' : 'Save'}

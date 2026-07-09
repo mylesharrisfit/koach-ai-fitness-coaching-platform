@@ -51,11 +51,11 @@ export default function ProgressSidebar({ activeKey, onSelect }) {
   const toggle = (id) => setCollapsed(p => ({ ...p, [id]: !p[id] }));
 
   return (
-    <div className="w-[260px] flex-shrink-0 bg-white border-r border-[#E5E7EB] overflow-y-auto">
+    <div className="w-[260px] flex-shrink-0 bg-card border-r border-border overflow-y-auto">
       {METRIC_CATEGORIES.map(cat => (
         <div key={cat.id}>
           <button
-            className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-bold tracking-widest text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+            className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-bold tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors"
             onClick={() => toggle(cat.id)}
           >
             {cat.label}
@@ -72,8 +72,8 @@ export default function ProgressSidebar({ activeKey, onSelect }) {
                   className={cn(
                     'w-full text-left px-4 py-2 text-sm transition-all',
                     activeKey === item.key
-                      ? 'bg-[#EFF6FF] text-[#2563EB] border-l-2 border-[#2563EB] font-medium'
-                      : 'text-[#374151] hover:bg-[#F9FAFB] border-l-2 border-transparent'
+                      ? 'bg-accent/10 text-primary border-l-2 border-primary font-medium'
+                      : 'text-foreground hover:bg-background border-l-2 border-transparent'
                   )}
                 >
                   {item.label}

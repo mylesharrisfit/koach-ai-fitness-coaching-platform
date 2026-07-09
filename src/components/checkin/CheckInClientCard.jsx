@@ -34,9 +34,9 @@ function getStatus(checkIn, allClientCIs) {
   const isAtRisk = (score !== null && score < 60) || flags.length >= 2;
   const needsAttention = flags.length > 0 || (score !== null && score < 80);
 
-  if (isAtRisk) return { label: 'At Risk', color: 'bg-[#FEF2F2] text-[#DC2626] border-[#FCA5A5]', leftColor: '#DC2626', flags };
-  if (needsAttention) return { label: 'Needs Attention', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', leftColor: '#D97706', flags };
-  return { label: 'Good', color: 'bg-[#F3F4F6] text-[#374151] border-[#E5E7EB]', leftColor: '#16A34A', flags };
+  if (isAtRisk) return { label: 'At Risk', color: 'bg-destructive/10 text-destructive border-destructive', leftColor: 'rgb(var(--destructive))', flags };
+  if (needsAttention) return { label: 'Needs Attention', color: 'bg-muted text-foreground border-border', leftColor: 'rgb(var(--warning))', flags };
+  return { label: 'Good', color: 'bg-muted text-foreground border-border', leftColor: 'rgb(var(--success))', flags };
 }
 
 function WeightDelta({ current, previous }) {
@@ -49,7 +49,7 @@ function WeightDelta({ current, previous }) {
       <span className="text-sm font-bold tabular-nums">{current}</span>
       <span className={cn(
         'flex items-center gap-0.5 text-[11px] font-bold',
-        num < 0 ? 'text-emerald-400' : num > 0 ? 'text-destructive' : 'text-muted-foreground'
+        num < 0 ? 'text-success' : num > 0 ? 'text-destructive' : 'text-muted-foreground'
       )}>
         {num < 0 ? <TrendingDown className="w-3 h-3" /> : num > 0 ? <TrendingUp className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
         {num > 0 ? '+' : ''}{diff}
@@ -106,20 +106,20 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
     }
   };
 
-  const sleepColor = checkIn.sleep_hours >= 7 ? 'text-[#16A34A]' : checkIn.sleep_hours >= 6 ? 'text-[#D97706]' : 'text-[#DC2626]';
-  const energyColor = checkIn.energy_level >= 4 ? 'text-[#16A34A]' : checkIn.energy_level >= 2 ? 'text-[#D97706]' : 'text-[#DC2626]';
+  const sleepColor = checkIn.sleep_hours >= 7 ? 'text-success' : checkIn.sleep_hours >= 6 ? 'text-warning' : 'text-destructive';
+  const energyColor = checkIn.energy_level >= 4 ? 'text-success' : checkIn.energy_level >= 2 ? 'text-warning' : 'text-destructive';
 
   return (
     <div className={cn(
-      'bg-white border rounded-2xl overflow-hidden transition-all duration-300 shadow-sm',
-      justCompleted && 'ring-2 ring-emerald-500/40 border-emerald-500/30',
+      'bg-card border rounded-2xl overflow-hidden transition-all duration-300 shadow-sm',
+      justCompleted && 'ring-2 ring-success/40 border-success/30',
       !justCompleted && status.borderLeft
     )}
     style={!justCompleted ? { borderLeft: `3px solid ${status.leftColor}` } : {}}
     >
       {/* ── Summary row (always visible) ── */}
       <button
-        className="w-full p-4 hover:bg-[#F9FAFB] active:bg-[#F9FAFB] transition-colors text-left"
+        className="w-full p-4 hover:bg-background active:bg-background transition-colors text-left"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex items-start gap-3">
@@ -142,10 +142,10 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             </div>
 
             {/* Date */}
-            <p className="text-xs text-[#374151] mb-3 flex items-center gap-1">
+            <p className="text-xs text-foreground mb-3 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {format(parseISO(checkIn.date), 'MMM d')}
-              {daysAgo > 0 && <span className={cn(daysAgo > 14 ? 'text-amber-400' : '')}> · {daysAgo}d ago</span>}
+              {daysAgo > 0 && <span className={cn(daysAgo > 14 ? 'text-warning' : '')}> · {daysAgo}d ago</span>}
               {checkIn.mood && <span className="ml-1">{MOOD_EMOJI[checkIn.mood]}</span>}
               {checkIn.photo_urls?.length > 0 && (
                 <span className="flex items-center gap-0.5 ml-1"><ImageIcon className="w-3 h-3" />{checkIn.photo_urls.length}</span>
@@ -153,26 +153,26 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             </p>
 
             {/* Key metrics row */}
-            <div className="grid grid-cols-4 gap-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-2.5">
+            <div className="grid grid-cols-4 gap-2 bg-background border border-border rounded-xl p-2.5">
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] text-[#374151]">Weight</span>
+                <span className="text-[10px] text-foreground">Weight</span>
                 <WeightDelta current={checkIn.weight} previous={prevCI?.weight} />
                 <span className="text-[10px] text-muted-foreground">lbs</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <Moon className="w-3.5 h-3.5 text-[#374151]" />
+                <Moon className="w-3.5 h-3.5 text-foreground" />
                 <span className={cn('text-sm font-bold tabular-nums', sleepColor)}>{checkIn.sleep_hours ?? '–'}</span>
-                <span className="text-[10px] text-[#374151]">hrs sleep</span>
+                <span className="text-[10px] text-foreground">hrs sleep</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <Zap className="w-3.5 h-3.5 text-[#374151]" />
+                <Zap className="w-3.5 h-3.5 text-foreground" />
                 <span className={cn('text-sm font-bold tabular-nums', energyColor)}>{checkIn.energy_level ?? '–'}<span className="text-[10px] font-normal">/10</span></span>
-                <span className="text-[10px] text-[#374151]">energy</span>
+                <span className="text-[10px] text-foreground">energy</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] text-[#374151]">Adherence</span>
+                <span className="text-[10px] text-foreground">Adherence</span>
                 <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-[10px] font-normal">%</span></span>
-                <span className="text-[10px] text-[#374151]">avg</span>
+                <span className="text-[10px] text-foreground">avg</span>
               </div>
             </div>
 
@@ -210,7 +210,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
       {/* ── Expanded detail ── */}
       {expanded && (
-        <div className="border-t border-[#E5E7EB] p-4 space-y-4">
+        <div className="border-t border-border p-4 space-y-4">
           {/* View full detail */}
           <button
             onClick={() => navigate(`/checkin-detail?id=${checkIn.id}&clientId=${checkIn.client_id}`)}
@@ -223,11 +223,11 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-[#374151] uppercase tracking-wide mb-2">Progress Photos</p>
+              <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2">Progress Photos</p>
               <div className="flex gap-2 flex-wrap">
                 {checkIn.photo_urls.map((url, i) => (
                   <a key={i} href={url} target="_blank" rel="noreferrer">
-                    <img src={url} alt="progress" className="w-24 h-24 object-cover rounded-xl border border-[#E7EAF3] hover:scale-105 transition-transform" />
+                    <img src={url} alt="progress" className="w-24 h-24 object-cover rounded-xl border border-border hover:scale-105 transition-transform" />
                   </a>
                 ))}
               </div>
@@ -236,10 +236,10 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Adherence breakdown */}
           {breakdown && (
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-3">
-              <p className="text-xs font-semibold text-[#374151] uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
+            <div className="bg-background border border-border rounded-xl p-3">
+              <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-[#374151]">Overall</span>
+                <span className="text-xs text-foreground">Overall</span>
                 <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}%</span>
               </div>
               <AdherenceBreakdown breakdown={breakdown} />
@@ -251,8 +251,8 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Client notes */}
           {checkIn.notes && (
-            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-3">
-              <p className="text-xs font-semibold text-[#374151] uppercase tracking-wide mb-1.5">Client Notes</p>
+            <div className="bg-background border border-border rounded-xl p-3">
+              <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
@@ -267,7 +267,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* ── ⚡ Top Recommendation (prominent) ── */}
           <div>
-            <p className="text-xs font-semibold text-[#374151] uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
               <span>⚡</span> Coach Recommendation
             </p>
             <TopRecommendationBadge checkIn={checkIn} client={client} allClientCIs={allClientCIs} />
@@ -299,7 +299,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
 
           {/* Response box */}
           {showFeedback && (
-            <div className="bg-[#F9FAFB] rounded-xl p-4 border border-[#E5E7EB] fade-up">
+            <div className="bg-background rounded-xl p-4 border border-border fade-up">
               <CheckInResponseBox
                 checkIn={checkIn}
                 client={client}

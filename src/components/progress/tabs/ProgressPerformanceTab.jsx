@@ -37,7 +37,7 @@ function WorkoutHeatmap({ sessions }) {
                 title={day?.date || ''}
                 className={cn('w-3 h-3 rounded-sm',
                   day === null ? 'bg-transparent' :
-                  day.active ? 'bg-emerald-500' : 'bg-[#E5E7EB]'
+                  day.active ? 'bg-success' : 'bg-border'
                 )} />
             ))}
           </div>
@@ -112,38 +112,38 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
   }, [sorted, selectedExercise]);
 
   const TOOLTIP = {
-    contentStyle: { background: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: 12 },
+    contentStyle: { background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: '8px', fontSize: 12 },
   };
 
   return (
     <div className="p-6 space-y-6">
       {/* Personal Bests */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E5E7EB]">
-          <h3 className="text-sm font-semibold text-[#111827]">Personal Bests</h3>
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Personal Bests</h3>
         </div>
         {personalBests.length === 0 ? (
-          <div className="px-5 py-10 text-center text-xs text-[#9CA3AF]">No workout data logged yet</div>
+          <div className="px-5 py-10 text-center text-xs text-muted-foreground">No workout data logged yet</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
-              <thead className="bg-[#F9FAFB]">
+              <thead className="bg-background">
                 <tr>
                   {['Exercise', 'Best Weight', 'Best Reps', 'Volume (w×r)', 'Date', 'PR'].map(h => (
-                    <th key={h} className="px-4 py-2 text-left font-semibold text-[#6B7280]">{h}</th>
+                    <th key={h} className="px-4 py-2 text-left font-semibold text-muted-foreground">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {personalBests.slice(0, 15).map((pb, i) => (
-                  <tr key={i} className="border-t border-[#F3F4F6] hover:bg-[#F9FAFB]">
-                    <td className="px-4 py-2 text-[#374151] font-medium">{pb.name}</td>
-                    <td className="px-4 py-2 text-[#374151]">{pb.weight} lbs</td>
-                    <td className="px-4 py-2 text-[#374151]">{pb.reps}</td>
-                    <td className="px-4 py-2 text-[#374151]">{Math.round(pb.vol)}</td>
-                    <td className="px-4 py-2 text-[#374151]">{pb.date ? format(parseISO(pb.date.slice(0, 10)), 'MMM d, yyyy') : '—'}</td>
+                  <tr key={i} className="border-t border-muted hover:bg-background">
+                    <td className="px-4 py-2 text-foreground font-medium">{pb.name}</td>
+                    <td className="px-4 py-2 text-foreground">{pb.weight} lbs</td>
+                    <td className="px-4 py-2 text-foreground">{pb.reps}</td>
+                    <td className="px-4 py-2 text-foreground">{Math.round(pb.vol)}</td>
+                    <td className="px-4 py-2 text-foreground">{pb.date ? format(parseISO(pb.date.slice(0, 10)), 'MMM d, yyyy') : '—'}</td>
                     <td className="px-4 py-2">
-                      {pb.isNew && <span className="text-xs">🏆 <span className="text-amber-600 font-bold">New PR!</span></span>}
+                      {pb.isNew && <span className="text-xs">🏆 <span className="text-warning font-bold">New PR!</span></span>}
                     </td>
                   </tr>
                 ))}
@@ -155,13 +155,13 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
 
       {/* Exercise Strength Chart */}
       {exercises.length > 0 && (
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+        <div className="bg-card border border-border rounded-xl p-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h3 className="text-sm font-semibold text-[#111827]">Strength Progress</h3>
+            <h3 className="text-sm font-semibold text-foreground">Strength Progress</h3>
             <select
               value={selectedExercise}
               onChange={e => setSelectedExercise(e.target.value)}
-              className="border border-[#E5E7EB] rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary">
+              className="border border-border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary">
               <option value="">Select exercise...</option>
               {exercises.map(ex => <option key={ex} value={ex}>{ex}</option>)}
             </select>
@@ -169,16 +169,16 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
           {exerciseChart.length >= 2 ? (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={exerciseChart} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
                 <Tooltip {...TOOLTIP} formatter={(v, n) => [`${v} lbs`, 'Max Weight']} />
-                <Line type="monotone" dataKey="weight" stroke="#2563EB" strokeWidth={2.5}
-                  dot={{ r: 4, fill: '#2563EB', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
+                <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2.5}
+                  dot={{ r: 4, fill: 'rgb(var(--primary))', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-32 text-xs text-[#9CA3AF]">
+            <div className="flex items-center justify-center h-32 text-xs text-muted-foreground">
               {selectedExercise ? 'Not enough data for this exercise' : 'Select an exercise above'}
             </div>
           )}
@@ -186,28 +186,28 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
       )}
 
       {/* Workout Consistency Heatmap */}
-      <div className="bg-white border border-[#E5E7EB] rounded-xl p-5">
+      <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-[#111827]">Workout Consistency</h3>
-          <div className="flex items-center gap-2 text-xs text-[#6B7280]">
+          <h3 className="text-sm font-semibold text-foreground">Workout Consistency</h3>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-sm bg-[#E5E7EB]" />
+              <div className="w-3 h-3 rounded-sm bg-border" />
               <span>Rest</span>
             </div>
             <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-sm bg-emerald-500" />
+              <div className="w-3 h-3 rounded-sm bg-success" />
               <span>Workout</span>
             </div>
           </div>
         </div>
         {sessions.length === 0 ? (
-          <div className="text-center text-xs text-[#9CA3AF] py-8">No workouts logged yet</div>
+          <div className="text-center text-xs text-muted-foreground py-8">No workouts logged yet</div>
         ) : (
           <>
             <WorkoutHeatmap sessions={sessions} />
             <div className="mt-3 flex items-center gap-2">
-              <Trophy className="w-4 h-4 text-amber-500" />
-              <span className="text-xs text-[#374151] font-medium">Current streak: <span className="font-bold text-[#111827]">{streak} day{streak !== 1 ? 's' : ''}</span></span>
+              <Trophy className="w-4 h-4 text-warning" />
+              <span className="text-xs text-foreground font-medium">Current streak: <span className="font-bold text-foreground">{streak} day{streak !== 1 ? 's' : ''}</span></span>
             </div>
           </>
         )}
