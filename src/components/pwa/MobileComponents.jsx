@@ -44,7 +44,7 @@ export function MobileCard({ children, className = '', onClick, style = {} }) {
       whileTap={onClick ? { scale: 0.98 } : undefined}
       onClick={onClick}
       className={cn('bg-card rounded-2xl p-4', className)}
-      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))', ...style }}
+      style={{ boxShadow: '0 2px 16px color-mix(in srgb, black 6%, transparent)', border: '1px solid var(--tc-muted)', ...style }}
     >
       {children}
     </motion.div>
@@ -72,8 +72,8 @@ export function MobileButton({
       disabled={disabled || loading}
       className={cn(base, variants[variant], fullWidth ? 'w-full' : '', disabled || loading ? 'opacity-50' : '', className)}
       style={variant === 'primary' ? {
-        background: disabled ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-        boxShadow: disabled ? 'none' : '0 4px 16px rgb(var(--primary) / 0.3)',
+        background: disabled ? 'var(--tc-muted-foreground)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
+        boxShadow: disabled ? 'none' : '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)',
       } : undefined}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : children}
@@ -136,7 +136,7 @@ export function MobileHeader({ title, onBack, rightAction, rightLabel, transpare
       className="flex items-center justify-between px-4 h-14 flex-shrink-0"
       style={{
         background: transparent ? 'transparent' : 'white',
-        borderBottom: transparent ? 'none' : '1px solid rgb(var(--muted))',
+        borderBottom: transparent ? 'none' : '1px solid var(--tc-muted)',
         paddingTop: 'env(safe-area-inset-top, 0px)',
       }}
     >
@@ -232,7 +232,7 @@ export function Skeleton({ className = '', style = {} }) {
 
 export function CardSkeleton() {
   return (
-    <div className="bg-card rounded-2xl p-4 space-y-3" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
+    <div className="bg-card rounded-2xl p-4 space-y-3" style={{ boxShadow: '0 2px 12px color-mix(in srgb, black 5%, transparent)', border: '1px solid var(--tc-muted)' }}>
       <Skeleton className="h-4 w-3/4" />
       <Skeleton className="h-3 w-full" />
       <Skeleton className="h-3 w-2/3" />

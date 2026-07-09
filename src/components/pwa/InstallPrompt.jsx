@@ -36,7 +36,7 @@ function IOSInstructions({ onClose }) {
 
         <div className="flex items-center gap-3 mb-5">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             💪
           </div>
           <div>
@@ -89,7 +89,7 @@ function AndroidPrompt({ onInstall, onClose }) {
 
         <div className="flex items-center gap-3 mb-5">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             💪
           </div>
           <div>
@@ -100,9 +100,9 @@ function AndroidPrompt({ onInstall, onClose }) {
 
         <div className="grid grid-cols-3 gap-3 mb-6">
           {[
-            { icon: <WifiOff className="w-5 h-5" />, label: 'Works offline', color: 'rgb(var(--primary))' },
-            { icon: <Zap className="w-5 h-5" />, label: 'Faster', color: 'rgb(var(--ai))' },
-            { icon: <Smartphone className="w-5 h-5" />, label: 'Full screen', color: 'rgb(var(--success))' },
+            { icon: <WifiOff className="w-5 h-5" />, label: 'Works offline', color: 'var(--tc-primary)' },
+            { icon: <Zap className="w-5 h-5" />, label: 'Faster', color: 'var(--tc-ai)' },
+            { icon: <Smartphone className="w-5 h-5" />, label: 'Full screen', color: 'var(--tc-success)' },
           ].map((feat, i) => (
             <div key={i} className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-muted text-center">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: feat.color + '15', color: feat.color }}>
@@ -116,7 +116,7 @@ function AndroidPrompt({ onInstall, onClose }) {
         <button
           onClick={onInstall}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-3"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.35)' }}
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 35%, transparent)' }}
         >
           <Download className="w-5 h-5 inline mr-2" />
           Install App

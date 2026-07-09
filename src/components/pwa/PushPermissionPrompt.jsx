@@ -79,7 +79,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
           <button
             onClick={handleSettings}
             className="mt-3 w-full py-2 rounded-lg font-bold text-sm text-white"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Go to Settings
           </button>
         </div>
@@ -104,7 +104,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
 
           <div className="text-center">
             <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center"
-              style={{ background: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning))' }}>
+              style={{ background: 'var(--tc-warning)', border: '1px solid var(--tc-warning)' }}>
               <Bell className="w-6 h-6 text-warning" />
             </div>
             <p className="text-foreground font-black text-lg mb-1">Notifications Disabled</p>
@@ -114,7 +114,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
             <button
               onClick={handleSettings}
               className="w-full py-3 rounded-xl font-bold text-white mb-2"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               Open Device Settings
             </button>
             <button onClick={onDismiss} className="w-full py-3 rounded-xl font-semibold text-muted-foreground">
@@ -132,7 +132,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[60] flex items-end"
-      style={{ background: 'rgba(0,0,0,0.3)' }}
+      style={{ background: 'color-mix(in srgb, black 30%, transparent)' }}
       onClick={onDismiss}>
       <motion.div
         initial={{ y: 400 }}
@@ -144,7 +144,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
         {/* Icon */}
         <div className="text-center mb-4">
           <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             <Bell className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -176,7 +176,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
           onClick={handleEnable}
           disabled={step === 'processing'}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-2 transition-opacity disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
           {step === 'processing' ? 'Enabling...' : 'Enable Notifications'}
         </button>
 

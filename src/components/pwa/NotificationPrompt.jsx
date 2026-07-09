@@ -27,7 +27,7 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
             exit={{ opacity: 0 }}
             onClick={onDismiss}
             className="fixed inset-0 z-40"
-            style={{ background: 'rgba(0,0,0,0.35)' }} />
+            style={{ background: 'color-mix(in srgb, black 35%, transparent)' }} />
 
           <motion.div
             initial={{ y: 400, opacity: 0 }}
@@ -37,18 +37,18 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
             className="fixed bottom-0 left-0 right-0 z-50 w-full"
             onClick={e => e.stopPropagation()}>
             <div className="w-full bg-card rounded-t-[28px] pt-8 pb-8 px-5 shadow-2xl"
-              style={{ boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }}>
+              style={{ boxShadow: '0 -8px 40px color-mix(in srgb, black 12%, transparent)' }}>
 
               {/* Close button */}
               <button onClick={onDismiss}
                 className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ background: 'rgb(var(--muted))' }}>
+                style={{ background: 'var(--tc-muted)' }}>
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
 
               {/* Icon */}
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+                style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                 <Bell className="w-8 h-8 text-white" />
               </div>
 
@@ -72,7 +72,7 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
                   <motion.div key={i} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 * i }}
                     className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: 'rgb(var(--accent))' }}>
+                      style={{ background: 'var(--tc-accent)' }}>
                       <span className="text-primary font-black text-sm">✓</span>
                     </div>
                     <p className="text-foreground text-sm font-medium">{benefit}</p>
@@ -83,7 +83,7 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
               {/* Buttons */}
               <button onClick={handleEnable} disabled={loading}
                 className="w-full py-4 rounded-xl font-bold text-white text-base mb-3 flex items-center justify-center gap-2 transition-all"
-                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', opacity: loading ? 0.7 : 1 }}>
+                style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', opacity: loading ? 0.7 : 1 }}>
                 {loading ? (
                   <>
                     <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
