@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 
 function PasswordInput({ label, value, onChange, placeholder }) {
@@ -58,7 +58,7 @@ export default function ClientSetup() {
   useEffect(() => {
     if (!token) { setStatus('invalid'); return; }
 
-    base44.functions.invoke('validateInviteToken', { token })
+    supabase.functions.invoke('validateInviteToken', { token })
       .then(res => {
         const data = res.data;
         if (!data?.valid) { setStatus('invalid'); return; }
@@ -68,14 +68,26 @@ export default function ClientSetup() {
       .catch(() => setStatus('invalid'));
   }, [token]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     if (password !== confirmPassword) { setError('Passwords do not match.'); return; }
     setSubmitting(true);
-    // Placeholder: fragment 3 will wire up account creation here
-    setTimeout(() => { setSubmitting(false); setStatus('success'); }, 600);
+    try {
+      // One-time account bootstrap (Step 3b): the edge function validates the
+      // invite (by hash), creates/links the client's Supabase Auth account, and
+      // single-uses the token. The client then signs in with email + password.
+      const res = await supabase.functions.invoke('setupPortalAccount', { token, password });
+      if (!res.data?.success) throw new Error(res.data?.error || 'Setup failed');
+      await supabase.auth.login({ email: res.data.email, password });
+      setStatus('success');
+      setTimeout(() => { window.location.assign('/portal'); }, 800);
+    } catch (err) {
+      setError(err.message || 'Could not set up your account. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

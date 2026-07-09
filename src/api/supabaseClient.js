@@ -295,13 +295,68 @@ const auth = {
     throwIf(uErr);
     return aliasRow(data);
   },
-  async logout() {
+  async logout(nextUrl) {
     await getSupabase().auth.signOut();
-    if (typeof window !== 'undefined') window.location.assign('/');
+    if (typeof window !== 'undefined') window.location.assign('/login');
   },
-  /** Login UI is Step 3 scope; route to the app's login page. */
+  /** Route to the in-app login page (Supabase auth, Step 3). */
   redirectToLogin() {
     if (typeof window !== 'undefined') window.location.assign('/login');
+  },
+
+  // --- real Supabase Auth session (Step 3a) ---------------------------------
+
+  /** True if there is a live session (used by AuthContext to gate the shell). */
+  async hasSession() {
+    const { data: { session } } = await getSupabase().auth.getSession();
+    return !!session;
+  },
+
+  /** Email/password sign-in. Returns me() on success. */
+  async login({ email, password }) {
+    const { error } = await getSupabase().auth.signInWithPassword({ email, password });
+    throwIf(error);
+    return this.me();
+  },
+
+  /**
+   * Email/password sign-up. full_name is stored in user_metadata, which the
+   * handle_new_user() trigger copies into the new profiles row. If the project
+   * requires email confirmation, `session` is null until the user confirms.
+   */
+  async signup({ email, password, full_name }) {
+    const sb = getSupabase();
+    const emailRedirectTo =
+      typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: full_name ?? '' }, emailRedirectTo },
+    });
+    throwIf(error);
+    return { needsConfirmation: !data.session, user: data.user };
+  },
+
+  /** Trigger Supabase's built-in password-reset email. */
+  async requestPasswordReset(email) {
+    const redirectTo =
+      typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined;
+    const { error } = await getSupabase().auth.resetPasswordForEmail(email, { redirectTo });
+    throwIf(error);
+    return { sent: true };
+  },
+
+  /** Set a new password (during the reset-link session, or while signed in). */
+  async updatePassword(newPassword) {
+    const { error } = await getSupabase().auth.updateUser({ password: newPassword });
+    throwIf(error);
+    return { updated: true };
+  },
+
+  /** Subscribe to auth-state changes (login/logout/token refresh). */
+  onAuthStateChange(cb) {
+    const { data } = getSupabase().auth.onAuthStateChange((_event, session) => cb(session));
+    return () => data?.subscription?.unsubscribe?.();
   },
 };
 

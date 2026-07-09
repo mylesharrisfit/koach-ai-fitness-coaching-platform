@@ -69,6 +69,10 @@ import Challenges from './pages/Challenges';
 import Team from './pages/Team';
 import InstallPrompt from './components/pwa/InstallPrompt';
 import { Navigate } from 'react-router-dom';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 
 // Gates the dashboard: unauthenticated → /start, authenticated without subscription → /start?resume=checkout
 const AuthGuardedDashboard = () => {
@@ -152,7 +156,7 @@ const AuthenticatedApp = () => {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
       // Don't redirect public routes (/start, /join, /client-onboarding, /packages) to login
-      const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal'];
+      const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup'];
       const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
       if (!isPublicPath) {
         navigateToLogin();
@@ -218,6 +222,11 @@ const AuthenticatedApp = () => {
         <Route path="/fast-review" element={<FastReview />} />
       </Route>
       <Route path="/start" element={<PremiumOnboarding />} />
+      {/* Supabase-auth pages (Step 3a; active when VITE_AUTH_PROVIDER=supabase) */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/packages/:slug" element={<PackageLanding />} />
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="/join/:code" element={<ClientInviteJoin />} />

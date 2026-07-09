@@ -1,4 +1,4 @@
-# Schema Migration: Base44 → Supabase (Steps 1–2)
+# Schema Migration: Base44 → Supabase (Steps 1–3)
 
 This document covers **Step 1 only**: porting the 63 Base44 entities
 (`base44/entities/*.jsonc`) to Postgres tables with row-level security, as
@@ -123,6 +123,111 @@ call shapes against the migrated local database **with RLS enforced** —
 including portal-view routing, read-only enforcement, and cross-tenant
 denial. 21/21 checks pass.
 
+## Step 3 — Auth migration
+
+### What Base44's login flow actually was
+
+A **hosted redirect**, not an in-app form. `base44.auth.redirectToLogin(next)`
+(from `AuthContext.navigateToLogin` and the onboarding screens) sends the
+browser to `${appBaseUrl}/login?from_url=…`; Base44 returns an `access_token`
+in the URL, which `app-params.js` reads (and strips) into `appParams.token`,
+and `AuthContext.checkAppState` hydrates via `base44.auth.me()`. The SDK also
+supports email/password, email OTP, SSO/OAuth, and password reset, but the app
+never called them directly — everything went through the hosted page. Signup =
+`/start` (PremiumOnboarding) → same hosted redirect. Portal-client auth was
+**half-built**: `ClientSetup.jsx`'s password submit was an explicit
+placeholder, and portal pages resolved the client via `auth.me()` →
+`Client.filter({ email })`.
+
+### 3a. Coach auth (Supabase Auth), behind a feature flag
+
+- Flag `VITE_AUTH_PROVIDER` = `base44` (default) | `supabase`
+  (`src/lib/authConfig.js`). Auth is one session for the whole shell, so it
+  flips **all at once**, never module-by-module. The switch lives in
+  `src/api/base44Client.js`: a Proxy delegates `.auth` to the Supabase facade
+  when the flag is `supabase`, while `.entities`/`.functions` stay on Base44 —
+  so the Step 2 incremental data cutover is unaffected by the auth cutover.
+- New in-app pages (`src/pages/auth/`): `Login`, `Signup`, `ForgotPassword`,
+  `ResetPassword`, sharing an `AuthShell` that reuses the existing ClientSetup
+  design tokens (no new styling system). Email/password only — magic-link and
+  OAuth are supported by Supabase but deliberately **not built**, since the
+  app doesn't use them today.
+- Facade auth (`supabaseClient.js`) gained real-session methods: `login`,
+  `signup` (full_name → user_metadata → picked up by `handle_new_user`),
+  `requestPasswordReset`, `updatePassword`, `hasSession`,
+  `onAuthStateChange`; `me()`/`logout()`/`redirectToLogin()` now drive a real
+  Supabase session and route to `/login`.
+- `AuthContext` branches on the flag: the Supabase path skips Base44's
+  public-settings probe, treats the session as the source of truth, and
+  subscribes to auth-state changes. Password reset / email confirmation use
+  Supabase's built-in flows (`resetPasswordForEmail`, `signUp` confirmation).
+- The `handle_new_user` trigger from Step 1 provisions the `profiles` row on
+  signup — **verified firing** in the rehearsal (check below).
+
+### 3b. Client portal — re-platformed invite-token exchange
+
+Three Supabase Edge Functions under `supabase/functions/`, sharing
+`_shared/portalToken.js` (portable Web-Crypto module — identical code runs in
+Deno and the Node verifier). The legacy `base44/functions/{validateInviteToken,
+sendClientInvite}` are **left in place**: they serve the `base44`-flag path
+against Base44's own backend (which still holds plaintext tokens); the new
+Supabase functions serve the `supabase`-flag path against Postgres.
+
+- **`sendClientInvite`** (generation — the easy-to-miss half): mints a 32-byte
+  token, stores **only** `sha256(token)` in `invite_token_hash`, and emails the
+  plaintext solely inside the `/client-setup/<token>` link. Runs the client
+  update under the **caller's** JWT so RLS enforces coach-owns-client. Without
+  this, new invites would silently reintroduce the plaintext-token issue Step
+  1.5 closed.
+- **`validateInviteToken`** (validation): sha256-hashes the incoming token,
+  service-role lookup by `invite_token_hash` + expiry check, then mints a
+  short-lived (**1h**) portal JWT. Never logs/persists the plaintext.
+- **`setupPortalAccount`** (bootstrap): validates the token, creates/links a
+  real Supabase Auth user for the client's email + chosen password, sets
+  `clients.portal_user_id`, and **single-uses** the token (clears hash +
+  expiry). `ClientSetup.jsx`'s placeholder submit now calls this, then signs
+  the client in.
+
+**Minted portal JWT shape** (HS256, signed with `SUPABASE_JWT_SECRET`;
+signature independently verified in the rehearsal):
+```json
+{ "role": "authenticated", "aud": "authenticated",
+  "iat": <now>, "exp": <now+3600>,
+  "portal_client_id": "<client uuid>", "portal": true }
+```
+`sub` is intentionally omitted on the claim-based token (no `auth.users` row in
+that path), so `auth.uid()` stays null and access is granted solely via
+`portal_client_id` → `app.portal_client_id()` → `app.is_portal_client()`. Both
+paths the Step 1.5 helper supports are exercised.
+
+**DECISION (3b.4): portal clients get a REAL Supabase Auth account**, linked
+via `clients.portal_user_id`; the invite token is a one-time bootstrap, not a
+per-session credential. Rationale: the ClientSetup UI already collects a
+password; portal access must outlive the 7-day invite window; a real account
+gives password reset + revocation for free; and `is_portal_client()` then
+resolves via the durable `portal_user_id = auth.uid()` path instead of a
+re-minted 1h claim. The claim-minting exchange is retained as the immediate,
+first-access mechanism (and remains a valid fallback the helper supports).
+
+### 3c. Verification
+
+`npm run verify:auth` (with `POSTGRES_URL`) rehearses against local Postgres +
+the auth shim, running the **real** `_shared/portalToken.js` for all hashing
+and JWT minting. 22/22 checks pass, covering: signup → `handle_new_user`
+provisions the profile (role defaults to `user`); coach-session RLS isolation
+via a real session identity; generate-stores-hash-only (plaintext never in the
+DB); validate re-hashes deterministically and mints a JWT whose
+`portal_client_id` claim `app.is_portal_client()` accepts (read + write through
+`check_ins_portal_view`); wrong-client claim sees nothing; and
+`setupPortalAccount` linking `portal_user_id` + single-using the token, after
+which the durable account path resolves. The JWT's HS256 signature was also
+verified independently against the secret.
+
+**Not yet exercisable locally:** the real GoTrue email flows (confirmation /
+reset delivery) and PostgREST verifying the minted JWT signature over the wire
+— both require a live Supabase project. The signing/claims are proven correct;
+the transport is not.
+
 ## Global conventions
 
 - **Base44 built-ins** → `id uuid primary key default gen_random_uuid()`,
@@ -173,27 +278,28 @@ then satisfied Base44 rules like `data.client_id == user.id`.
 1. ~~Route every portal read/write through service-role edge functions~~ —
    works but makes RLS vacuous for the portal and bloats Step 5.
 2. **Chosen: scoped JWT claim.** An edge function (re-platformed
-   `validateInviteToken`, Step 4/5) validates the token + expiry using the
-   service role, then mints a short-lived JWT signed with the project's JWT
-   secret carrying `role: "authenticated"` and a custom claim
+   `validateInviteToken`, **implemented in Step 3b**) validates the token +
+   expiry using the service role, then mints a short-lived JWT signed with the
+   project's JWT secret carrying `role: "authenticated"` and a custom claim
    `portal_client_id: "<client uuid>"`. The portal uses that JWT as its
-   Supabase session token.
+   Supabase session token. (See "Step 3 — Auth migration" for the exact JWT
+   shape and the final account-model decision.)
 3. Forward-compatible: `clients.portal_user_id` (new column) links a real
    Supabase Auth user once client auth lands in Step 3; the same helper
-   `app.is_portal_client()` accepts either path, so **no policy changes are
-   needed in Step 3**.
+   `app.is_portal_client()` accepts either path, so **no policy changes were
+   needed in Step 3** — confirmed.
 
 Policies never read the invite token; portal access only ever routes through
 `app.is_portal_client()` (verified by grep — no policy references the
 column). Since Step 1.5, the column is `invite_token_hash` (`unique`, sha256
 hex — see `20260709000600_invite_token_hash.sql`): the plaintext token
-exists only inside the emailed `/client-setup/<token>` link. **Step 4/5
-contract:** the re-platformed `sendClientInvite` must store
-`sha256(token)` while emailing the plaintext, and the re-platformed
-`validateInviteToken` must hash the incoming token before its service-role
-lookup (`encode(digest(token, 'sha256'), 'hex')`), then check
-`invite_token_expires`. Because there is no anon-readable path to
-`clients`, hashes are not enumerable through the API either.
+exists only inside the emailed `/client-setup/<token>` link. **Contract (now
+implemented in Step 3b):** `sendClientInvite` stores `sha256(token)` while
+emailing the plaintext, and `validateInviteToken` hashes the incoming token
+before its service-role lookup, then checks `invite_token_expires`. Both use
+the shared `supabase/functions/_shared/portalToken.js`. Because there is no
+anon-readable path to `clients`, hashes are not enumerable through the API
+either.
 
 **What the portal claim grants** (exactly one client's data):
 read/write own `daily_logs`, `food_logs`, `in_body_scans`,

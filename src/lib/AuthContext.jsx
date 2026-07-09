@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { isSupabaseAuth } from '@/lib/authConfig';
 
 const AuthContext = createContext();
 
@@ -15,8 +16,36 @@ export const AuthProvider = ({ children }) => {
   const [appPublicSettings, setAppPublicSettings] = useState(null); // Contains only { id, public_settings }
 
   useEffect(() => {
+    if (isSupabaseAuth()) {
+      checkSupabaseAuth();
+      // Reflect login/logout/token-refresh across the shell.
+      const unsub = base44.auth.onAuthStateChange?.(() => checkSupabaseAuth());
+      return () => { if (typeof unsub === 'function') unsub(); };
+    }
     checkAppState();
   }, []);
+
+  /**
+   * Supabase-provider auth check (Step 3a). No Base44 public-settings probe —
+   * the session IS the source of truth. me() rejects when signed out.
+   */
+  const checkSupabaseAuth = async () => {
+    setIsLoadingPublicSettings(false);
+    setAppPublicSettings(null);
+    try {
+      const currentUser = await base44.auth.me();
+      setUser(currentUser);
+      setIsAuthenticated(true);
+      setAuthError(null);
+      acceptPendingTeamInvite(currentUser);
+    } catch (_) {
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoadingAuth(false);
+      setAuthChecked(true);
+    }
+  };
 
   const checkAppState = async () => {
     try {
@@ -113,6 +142,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const checkUserAuth = async () => {
+    if (isSupabaseAuth()) return checkSupabaseAuth();
     try {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);

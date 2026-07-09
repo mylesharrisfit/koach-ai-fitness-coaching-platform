@@ -11,7 +11,8 @@
     "typecheck": "tsc -p ./jsconfig.json",
     "preview": "vite preview",
     "migrate:base44": "node scripts/migrate-base44-to-supabase.mjs",
-    "verify:facade": "node scripts/verify-facade.mjs"
+    "verify:facade": "node scripts/verify-facade.mjs",
+    "verify:auth": "node scripts/verify-auth.mjs"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.37",
