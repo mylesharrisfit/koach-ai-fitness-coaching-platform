@@ -5,7 +5,7 @@ export function BSSection({ icon: Icon, title, onReset, children }) {
     <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
       <div className="flex items-center justify-between px-6 py-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgb(var(--accent)), rgb(var(--ai)))' }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--tc-accent), var(--tc-ai))' }}>
             <Icon className="w-4 h-4 text-primary" />
           </div>
           <h2 className="font-bold text-foreground text-base">{title}</h2>
@@ -41,7 +41,7 @@ export function BSToggle({ value, onChange, label }) {
       <div className="relative w-10 h-5.5 rounded-full transition-all flex-shrink-0"
         style={{
           width: 40, height: 22,
-          background: value ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--border))',
+          background: value ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-border)',
           transition: 'background 0.2s',
         }}>
         <div className="absolute top-0.5 rounded-full bg-card shadow transition-all"

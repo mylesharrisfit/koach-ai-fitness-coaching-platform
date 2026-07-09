@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { BSSection, BSRow, BSInput, BSTextarea, BSDivider } from './BSSection';
 
-const BRAND_COLORS = ['rgb(var(--primary))', 'rgb(var(--ai))', 'rgb(var(--destructive))', 'rgb(var(--success))', 'rgb(var(--warning))', '#0891B2', '#DB2777', 'rgb(var(--foreground))'];
+const BRAND_COLORS = ['var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-destructive)', 'var(--tc-success)', 'var(--tc-warning)', 'var(--kc-0891b2)', 'var(--kc-db2777)', 'var(--tc-foreground)'];
 
 const DEFAULTS = {
-  brand_color: 'rgb(var(--primary))', logo_url: '',
+  brand_color: 'var(--tc-primary)', logo_url: '',
   email_signature: '', reply_to_email: '',
 };
 
@@ -48,10 +48,10 @@ export default function BSBranding({ s, set }) {
           ))}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full border-2 border-border overflow-hidden">
-              <input type="color" value={s.brand_color || 'rgb(var(--primary))'} onChange={e => set('brand_color', e.target.value)}
+              <input type="color" value={s.brand_color || 'var(--tc-primary)'} onChange={e => set('brand_color', e.target.value)}
                 className="w-full h-full scale-125 cursor-pointer border-none outline-none" />
             </div>
-            <span className="text-xs text-muted-foreground font-mono">{s.brand_color || 'rgb(var(--primary))'}</span>
+            <span className="text-xs text-muted-foreground font-mono">{s.brand_color || 'var(--tc-primary)'}</span>
           </div>
         </div>
       </BSRow>

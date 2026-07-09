@@ -74,8 +74,8 @@ export default function ReferralSettings({ coachId }) {
             }`}
             style={{
               background: settings.is_enabled
-                ? 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))'
-                : 'rgb(var(--muted-foreground))',
+                ? 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))'
+                : 'var(--tc-muted-foreground)',
             }} >
             <div
               className={`w-5 h-5 rounded-full bg-card transition-transform ${
@@ -146,8 +146,8 @@ export default function ReferralSettings({ coachId }) {
                 className={`w-12 h-7 rounded-full transition-colors`}
                 style={{
                   background: settings.reward_referred_friend_too
-                    ? 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))'
-                    : 'rgb(var(--muted-foreground))',
+                    ? 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))'
+                    : 'var(--tc-muted-foreground)',
                 }} >
                 <div
                   className={`w-5 h-5 rounded-full bg-card transition-transform ${
@@ -180,8 +180,8 @@ export default function ReferralSettings({ coachId }) {
                 className={`w-12 h-7 rounded-full transition-colors`}
                 style={{
                   background: settings.auto_apply_rewards
-                    ? 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))'
-                    : 'rgb(var(--muted-foreground))',
+                    ? 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))'
+                    : 'var(--tc-muted-foreground)',
                 }} >
                 <div
                   className={`w-5 h-5 rounded-full bg-card transition-transform ${
@@ -209,7 +209,7 @@ export default function ReferralSettings({ coachId }) {
           onClick={handleSave}
           disabled={saving}
           className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
           <Save className="w-4 h-4" />
           {saving ? 'Saving...' : 'Save Settings'}
         </button>

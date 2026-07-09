@@ -29,7 +29,7 @@ export default function BSLeadSales({ s, set }) {
             <div key={stage.id} className="flex items-center gap-2">
               <GripVertical className="w-4 h-4 text-border flex-shrink-0" />
               <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>{i + 1}</div>
+                style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>{i + 1}</div>
               <input value={stage.label} onChange={e => updateStage(stage.id, e.target.value)}
                 className="flex-1 px-3 py-2 rounded-xl border border-border text-sm focus:outline-none focus:border-primary" />
               <button onClick={() => removeStage(stage.id)} className="text-muted-foreground hover:text-destructive transition-colors flex-shrink-0">
