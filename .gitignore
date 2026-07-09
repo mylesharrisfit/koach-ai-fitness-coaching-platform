@@ -30,3 +30,4 @@ dist-ssr
 .env
 .vite
 migration-logs/
+darkmode-audit/out/
