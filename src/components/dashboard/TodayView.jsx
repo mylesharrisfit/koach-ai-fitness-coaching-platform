@@ -47,10 +47,9 @@ function ActionCenterSection({ clients, checkIns, messages, payments }) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-bold text-gray-900 tracking-tight">Action Center</h2>
+          <h2 className="text-sm font-bold text-foreground tracking-tight">Action Center</h2>
           {totalUnresolved > 0 && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' }}>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
               {totalUnresolved}
             </span>
           )}
@@ -58,12 +57,12 @@ function ActionCenterSection({ clients, checkIns, messages, payments }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setRefreshKey(k => k + 1)}
-            className="p-1 rounded-md hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+            className="p-1 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
             title="Refresh action items"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
-          <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium bg-[#F3F4F6] text-[#374151] border border-[#E5E7EB]">
+          <span className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium bg-muted text-muted-foreground border border-border">
             <Zap className="w-2.5 h-2.5" /> AI
           </span>
         </div>
@@ -93,7 +92,7 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
     <div className="max-w-4xl mx-auto px-4 sm:px-8 py-4 sm:py-8 space-y-5 sm:space-y-7 pb-24">
 
       {/* ── Header ─────────────────────────────────── */}
-      <div className="flex items-center justify-between gap-3 bg-[#111827] rounded-xl p-4 sm:p-6">
+      <div className="flex items-center justify-between gap-3 bg-sidebar rounded-xl p-4 sm:p-6">
         <div>
           <h1 className="text-base sm:text-xl font-semibold text-white" style={{ letterSpacing: '-0.02em' }}>
             {greeting}, Coach
@@ -105,7 +104,7 @@ export default function TodayView({ clients, checkIns, messages, payments = [] }
         <button
           onClick={() => navigate('/clients')}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all shrink-0 border min-h-[44px]"
-          style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+          style={{ background: 'rgba(255,255,255,0.1)', color: 'rgb(var(--sidebar-accent-foreground))', borderColor: 'rgba(255,255,255,0.2)' }}
         >
           <UserPlus className="w-3.5 h-3.5" />
           Add Client

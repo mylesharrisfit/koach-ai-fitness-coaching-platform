@@ -8,6 +8,8 @@ import { isClientRole } from '@/lib/useRoleGuard';
 import { Menu, X } from 'lucide-react';
 import KoachLogo from '@/components/brand/KoachLogo';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { ThemeToggleButton } from '@/components/settings/ThemeToggle';
+import { useBrandColor } from '@/lib/useBrandColor';
 
 export const SubscriptionContext = createContext({
   user: null,
@@ -28,6 +30,9 @@ export default function AppLayout() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
+  // Apply the coach's white-label brand color across the app (light + dark).
+  useBrandColor();
+
   // Clients must use the portal, never the coach app
   if (user && isClientRole(user)) {
     return <Navigate to="/portal" replace />;
@@ -40,7 +45,7 @@ export default function AppLayout() {
         <Sidebar user={user} onUpgrade={setUpgradeFeature} />
 
         {/* Mobile top bar */}
-        <div className="fixed top-0 left-0 right-0 z-30 flex md:hidden items-center justify-between px-4 h-14 bg-[#0D0D0D] border-b border-white/5">
+        <div className="fixed top-0 left-0 right-0 z-30 flex md:hidden items-center justify-between px-4 h-14 bg-sidebar border-b border-sidebar-border">
           <button
             onClick={() => setMobileSidebarOpen(true)}
             className="w-10 h-10 flex items-center justify-center rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-colors"
@@ -50,6 +55,7 @@ export default function AppLayout() {
           </button>
           <KoachLogo size={28} rounded="rounded-xl" glow={false} bg={true} />
           <div className="flex items-center gap-1">
+            <ThemeToggleButton onDark />
             <NotificationBell />
           </div>
         </div>
@@ -63,8 +69,8 @@ export default function AppLayout() {
               onClick={() => setMobileSidebarOpen(false)}
             />
             {/* Sidebar panel */}
-            <div className="relative w-72 max-w-[85vw] h-full flex flex-col" style={{ background: '#0D0D0D' }}>
-              <div className="flex items-center justify-between px-4 h-14 border-b border-white/5 flex-shrink-0">
+            <div className="relative w-72 max-w-[85vw] h-full flex flex-col bg-sidebar">
+              <div className="flex items-center justify-between px-4 h-14 border-b border-sidebar-border flex-shrink-0">
                 <div className="flex items-center gap-2.5">
                   <KoachLogo size={28} rounded="rounded-xl" glow={true} bg={true} />
                   <div>

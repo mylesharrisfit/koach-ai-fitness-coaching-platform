@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Plug, Bell, Shield, Zap, ChevronRight, Briefcase, Gift, Share2, Lock, Eye, EyeOff, Check, AlertTriangle, Trash2, Loader2 } from 'lucide-react';
+import { User, Plug, Bell, Shield, Zap, ChevronRight, Briefcase, Gift, Share2, Lock, Eye, EyeOff, Check, AlertTriangle, Trash2, Loader2, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,9 +8,11 @@ import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import IntegrationsTab from '../components/integrations/IntegrationsTab';
 import DefaultAssignmentSettings from '../components/settings/DefaultAssignmentSettings';
+import { ThemeToggle } from '../components/settings/ThemeToggle';
 
 const TABS = [
   { id: 'profile', label: 'Profile', icon: User },
+  { id: 'appearance', label: 'Appearance', icon: Palette },
   { id: 'referral', label: 'Refer & Earn', icon: Gift },
   { id: 'affiliate', label: 'Affiliate Program', icon: Gift },
   { id: 'marketing', label: 'Marketing Tools', icon: Share2 },
@@ -19,6 +21,26 @@ const TABS = [
   { id: 'security', label: 'Security', icon: Shield },
   { id: 'auto-assign', label: 'Auto-Assign', icon: Zap },
 ];
+
+function AppearanceTab() {
+  return (
+    <div>
+      <div className="mb-5">
+        <h2 className="text-base font-semibold text-foreground">Appearance</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">Choose how KOACH looks on this device</p>
+      </div>
+      <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h3 className="font-bold text-foreground text-sm">Theme</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Light, dark, or match your system setting</p>
+          </div>
+          <ThemeToggle />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ProfileTab() {
   return (
@@ -333,6 +355,7 @@ export default function Settings() {
 
       {/* Tab Content */}
       {activeTab === 'profile' && <ProfileTab />}
+      {activeTab === 'appearance' && <AppearanceTab />}
       {activeTab === 'referral' && (
         <div>
           <div className="mb-5">

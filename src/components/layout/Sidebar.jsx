@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import { ThemeToggleButton } from '@/components/settings/ThemeToggle';
 
 import {
   LayoutDashboard, Users, MessageSquare, Calendar,
@@ -123,12 +124,12 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
           : 'hover:text-white'
       )}
       style={{
-        color: isActive ? '#fff' : 'rgba(255,255,255,0.38)',
-        background: isActive ? 'rgba(59,130,246,0.12)' : 'transparent',
+        color: isActive ? 'rgb(var(--sidebar-accent-foreground))' : 'rgba(255,255,255,0.38)',
+        background: isActive ? 'rgb(var(--sidebar-primary) / 0.14)' : 'transparent',
       }}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: '#3B82F6' }} />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-r-full" style={{ background: 'rgb(var(--sidebar-primary))' }} />
       )}
       <item.icon className={cn('w-[16px] h-[16px] flex-shrink-0 transition-colors')} />
       {!collapsed && <span className="flex-1">{item.label}</span>}
@@ -200,13 +201,13 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         'fixed left-0 top-0 h-screen z-50 flex-col transition-all duration-200 hidden md:flex',
         collapsed ? 'w-[56px]' : 'w-[210px]'
       )}
-      style={{ background: '#0D0D0D', borderRight: '1px solid rgba(255,255,255,0.05)' }}
+      style={{ background: 'rgb(var(--sidebar-background))', borderRight: '1px solid rgb(var(--sidebar-border))' }}
     >
       {/* Logo */}
       <div className={cn(
         'h-[56px] flex items-center flex-shrink-0',
         collapsed ? 'px-3 justify-center' : 'px-4 gap-3'
-      )} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+      )} style={{ borderBottom: '1px solid rgb(var(--sidebar-border))' }}>
         <KoachLogo size={32} rounded="rounded-xl" glow={true} bg={true} />
         {!collapsed && (
           <>
@@ -214,6 +215,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               <span className="block font-bold text-[13px] text-white tracking-tight leading-none">KOACH AI</span>
             </div>
             <div className="flex items-center gap-1">
+              <ThemeToggleButton onDark />
               <NotificationBell />
             </div>
           </>
@@ -248,7 +250,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               title={collapsed ? item.label : undefined}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all"
               style={{ color: 'rgba(255,255,255,0.35)' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseEnter={e => e.currentTarget.style.color = 'rgb(var(--sidebar-accent-foreground))'}
               onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.35)'}
             >
               <item.icon className="w-[16px] h-[16px] flex-shrink-0" />
@@ -262,7 +264,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
           title={collapsed ? 'Logout' : undefined}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all w-full"
           style={{ color: 'rgba(255,255,255,0.25)' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
+          onMouseEnter={e => e.currentTarget.style.color = 'rgb(var(--destructive))'}
           onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.25)'}
         >
           <LogOut className="w-[16px] h-[16px] flex-shrink-0" />
