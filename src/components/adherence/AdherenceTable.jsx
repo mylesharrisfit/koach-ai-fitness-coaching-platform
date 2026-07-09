@@ -183,7 +183,7 @@ export default function AdherenceTable({ clients, checkIns, rangeWeeks, onSelect
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-xs"
-                      style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+                      style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                       {client.name?.[0]?.toUpperCase()}
                     </div>
                     <span className="font-semibold text-foreground text-xs">{client.name}</span>
@@ -197,15 +197,15 @@ export default function AdherenceTable({ clients, checkIns, rangeWeeks, onSelect
                 </td>
                 {/* Workout */}
                 <td className="px-4 py-3 min-w-[120px]">
-                  <MiniBar value={workout} color="rgb(var(--primary))" />
+                  <MiniBar value={workout} color="var(--tc-primary)" />
                 </td>
                 {/* Nutrition */}
                 <td className="px-4 py-3 min-w-[120px]">
-                  <MiniBar value={nutrition} color="rgb(var(--warning))" />
+                  <MiniBar value={nutrition} color="var(--tc-warning)" />
                 </td>
                 {/* Check-in */}
                 <td className="px-4 py-3 min-w-[120px]">
-                  <MiniBar value={ciAdherence} color="rgb(var(--ai))" />
+                  <MiniBar value={ciAdherence} color="var(--tc-ai)" />
                 </td>
                 {/* Streak */}
                 <td className="px-4 py-3">

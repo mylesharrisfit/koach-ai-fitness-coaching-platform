@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { averageAdherenceScore } from '@/lib/adherence';
 
 const CHART_TABS = ['Overall', 'Workout', 'Nutrition'];
-const COLORS = ['rgb(var(--primary))', 'rgb(var(--success))', 'rgb(var(--warning))', 'rgb(var(--ai))', 'rgb(var(--destructive))', '#06B6D4', '#EC4899', '#84CC16'];
+const COLORS = ['var(--tc-primary)', 'var(--tc-success)', 'var(--tc-warning)', 'var(--tc-ai)', 'var(--tc-destructive)', 'var(--kc-06b6d4)', 'var(--kc-ec4899)', 'var(--kc-84cc16)'];
 
 function buildWeeklyData(clients, cisByClient, key, rangeWeeks) {
   const weeks = [];
@@ -139,7 +139,7 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
         {/* Client legend toggles */}
         <div className="flex flex-wrap gap-2 mb-4">
           <div className="flex items-center gap-1.5 mr-2">
-            <div className="w-8 h-0.5 bg-sidebar" style={{ borderTop: '2px dashed rgb(var(--foreground))' }} />
+            <div className="w-8 h-0.5 bg-sidebar" style={{ borderTop: '2px dashed var(--tc-foreground)' }} />
             <span className="text-[10px] text-muted-foreground font-medium">Team Avg</span>
           </div>
           {visibleClients.map((c, i) => (
@@ -160,12 +160,12 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
         ) : (
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={chartData} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
-              <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} domain={[0, 100]} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
+              <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} domain={[0, 100]} />
               <Tooltip content={<CustomTooltip clients={visibleClients} />} />
               {/* Team avg dashed */}
-              <Line type="monotone" dataKey="team_avg" stroke="rgb(var(--foreground))" strokeWidth={2} strokeDasharray="6 3"
+              <Line type="monotone" dataKey="team_avg" stroke="var(--tc-foreground)" strokeWidth={2} strokeDasharray="6 3"
                 dot={false} connectNulls name="Team Avg" />
               {/* Per-client lines */}
               {visibleClients.map((c, i) => (

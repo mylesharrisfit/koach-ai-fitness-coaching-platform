@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const TABS = ['Overview', 'Workout', 'Nutrition', 'Check-ins'];
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const PIE_COLORS = ['rgb(var(--primary))', 'rgb(var(--warning))', 'rgb(var(--ai))', 'rgb(var(--success))'];
+const PIE_COLORS = ['var(--tc-primary)', 'var(--tc-warning)', 'var(--tc-ai)', 'var(--tc-success)'];
 
 function calcCheckInAdherence(checkIns, weeksBack = 4) {
   const cutoff = subWeeks(new Date(), weeksBack);
@@ -98,16 +98,16 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
       <div className="w-full max-w-lg h-full bg-card shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="px-5 py-4 border-b border-border flex items-center gap-3 flex-shrink-0"
-          style={{ background: 'rgb(var(--sidebar))' }}>
+          style={{ background: 'var(--tc-sidebar)' }}>
           <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {client.name?.[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-white">{client.name}</p>
             <p className="text-xs text-white/50">{sorted.length} check-ins · Streak: {streak}w {streak >= 7 ? '🔥' : ''}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--kc-w-10)] flex items-center justify-center hover:bg-[var(--kc-w-20)]">
             <X className="w-4 h-4 text-white" />
           </button>
         </div>
@@ -132,10 +132,10 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
                 <ScoreDonut workout={workout} nutrition={nutrition} checkin={checkin} />
                 <div className="flex-1 space-y-2">
                   {[
-                    { label: 'Workout (40%)', val: workout, color: 'rgb(var(--primary))' },
-                    { label: 'Nutrition (30%)', val: nutrition, color: 'rgb(var(--warning))' },
-                    { label: 'Check-ins (20%)', val: checkin, color: 'rgb(var(--ai))' },
-                    { label: 'Engagement (10%)', val: 70, color: 'rgb(var(--success))' },
+                    { label: 'Workout (40%)', val: workout, color: 'var(--tc-primary)' },
+                    { label: 'Nutrition (30%)', val: nutrition, color: 'var(--tc-warning)' },
+                    { label: 'Check-ins (20%)', val: checkin, color: 'var(--tc-ai)' },
+                    { label: 'Engagement (10%)', val: 70, color: 'var(--tc-success)' },
                   ].map(({ label, val, color }) => (
                     <div key={label}>
                       <div className="flex justify-between text-[10px] mb-0.5 text-foreground">
@@ -152,7 +152,7 @@ export default function AdherenceDetailDrawer({ client, checkIns, open, onClose 
 
               {/* Legend */}
               <div className="flex flex-wrap gap-2 text-[10px]">
-                {[['rgb(var(--primary))', 'Workout'], ['rgb(var(--warning))', 'Nutrition'], ['rgb(var(--ai))', 'Check-ins'], ['rgb(var(--success))', 'Engagement']].map(([color, label]) => (
+                {[['var(--tc-primary)', 'Workout'], ['var(--tc-warning)', 'Nutrition'], ['var(--tc-ai)', 'Check-ins'], ['var(--tc-success)', 'Engagement']].map(([color, label]) => (
                   <span key={label} className="flex items-center gap-1"><div className="w-2 h-2 rounded-full" style={{ background: color }} />{label}</span>
                 ))}
               </div>
@@ -268,7 +268,7 @@ function NutritionTab({ checkIns }) {
         <div className="space-y-1.5">
           {recent.map((ci, i) => {
             const val = ci.compliance_nutrition;
-            const color = val == null ? 'rgb(var(--border))' : val >= 80 ? 'rgb(var(--success))' : val >= 50 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+            const color = val == null ? 'var(--tc-border)' : val >= 80 ? 'var(--tc-success)' : val >= 50 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
             return (
               <div key={i} className="flex items-center gap-2">
                 <span className="text-[10px] text-muted-foreground w-16 flex-shrink-0">{format(parseISO(ci.date), 'MMM d')}</span>
