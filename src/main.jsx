@@ -2,6 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from '@/App.jsx'
 import '@/index.css'
+import { initTheme } from '@/lib/theme'
+
+// Apply the coach's saved theme (or OS preference) before first paint.
+initTheme()
 
 // Register Service Worker (only in production)
 if ('serviceWorker' in navigator) {
