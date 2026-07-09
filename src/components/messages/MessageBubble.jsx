@@ -56,11 +56,11 @@ function VoicePlayer({ url, durationSeconds, isCoach }) {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   // Colour tokens depending on whose bubble it's in
-  const trackBg    = isCoach ? 'rgba(255,255,255,0.25)' : 'rgb(var(--border))';
-  const fillBg     = isCoach ? 'rgba(255,255,255,0.85)' : 'rgb(var(--primary))';
+  const trackBg    = isCoach ? 'color-mix(in srgb, white 25%, transparent)' : 'var(--tc-border)';
+  const fillBg     = isCoach ? 'color-mix(in srgb, white 85%, transparent)' : 'var(--tc-primary)';
   const iconColor  = isCoach ? 'text-white'             : 'text-primary';
   const timeColor  = isCoach ? 'text-white/70'          : 'text-muted-foreground';
-  const btnBg      = isCoach ? 'bg-white/20 hover:bg-white/30' : 'bg-primary/10 hover:bg-primary/20';
+  const btnBg      = isCoach ? 'bg-[var(--kc-w-20)] hover:bg-[var(--kc-w-30)]' : 'bg-primary/10 hover:bg-primary/20';
 
   if (error) {
     return (
@@ -159,7 +159,7 @@ function FileAttachment({ url, isCoach }) {
       className={cn(
         'flex items-center gap-2 mt-1 px-3 py-2 rounded-xl border transition-colors',
         isCoach
-          ? 'border-white/20 bg-white/10 hover:bg-white/20'
+          ? 'border-white/20 bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)]'
           : 'border-border bg-muted hover:bg-accent/10'
       )}
     >

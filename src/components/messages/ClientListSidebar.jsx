@@ -87,7 +87,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
           <button
             onClick={onBroadcast}
             title="Broadcast message"
-            className="p-1.5 rounded-lg bg-white/10 text-white/60 hover:bg-white/20 hover:text-white transition-all"
+            className="p-1.5 rounded-lg bg-[var(--kc-w-10)] text-white/60 hover:bg-[var(--kc-w-20)] hover:text-white transition-all"
           >
             <Megaphone className="w-3.5 h-3.5" />
           </button>
@@ -96,7 +96,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search conversations..."
-          className="w-full bg-white/10 text-white placeholder-white/40 rounded-lg px-3 py-1.5 text-sm border-0 outline-none focus:bg-white/15 transition-colors"
+          className="w-full bg-[var(--kc-w-10)] text-white placeholder-white/40 rounded-lg px-3 py-1.5 text-sm border-0 outline-none focus:bg-[var(--kc-w-15)] transition-colors"
         />
       </div>
 

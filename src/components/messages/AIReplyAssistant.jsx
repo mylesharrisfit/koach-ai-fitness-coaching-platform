@@ -113,7 +113,7 @@ export default function AIReplyAssistant({
         </div>
       ) : suggestion ? (
         <>
-          <div className="bg-white/80 border border-white rounded-lg p-3 mb-3 shadow-sm">
+          <div className="bg-[var(--kc-w-80)] border border-white rounded-lg p-3 mb-3 shadow-sm">
             <p className="text-sm text-foreground leading-relaxed">{suggestion}</p>
           </div>
 

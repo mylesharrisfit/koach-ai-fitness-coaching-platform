@@ -30,7 +30,7 @@ export default function AIReplyPanel({
 
   return (
     <div className="mx-3 mb-2 rounded-2xl border border-primary/20 overflow-hidden shadow-md"
-      style={{ background: 'linear-gradient(135deg, rgb(var(--accent)) 0%, rgb(var(--ai)) 100%)' }}>
+      style={{ background: 'linear-gradient(135deg, var(--tc-accent) 0%, var(--tc-ai) 100%)' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-primary/10">
         <div className="flex items-center gap-1.5">
@@ -62,7 +62,7 @@ export default function AIReplyPanel({
         ) : suggestion?.message ? (
           <>
             {/* Message preview */}
-            <div className="bg-white/80 rounded-xl border border-white px-3 py-2.5 mb-2.5 shadow-sm">
+            <div className="bg-[var(--kc-w-80)] rounded-xl border border-white px-3 py-2.5 mb-2.5 shadow-sm">
               <p className="text-xs text-foreground leading-relaxed">{suggestion.message}</p>
               {suggestion.context_reason && (
                 <p className="text-[10px] text-muted-foreground mt-1.5 italic">💡 {suggestion.context_reason}</p>

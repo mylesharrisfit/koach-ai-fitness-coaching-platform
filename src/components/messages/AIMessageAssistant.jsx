@@ -126,7 +126,7 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           <span className="text-[11px] font-semibold text-primary">AI Suggested Reply</span>
           {!loading && toneLabel !== 'Auto' && (
-            <span className="text-[10px] text-muted-foreground bg-white/70 px-1.5 py-0.5 rounded-full">{toneLabel}</span>
+            <span className="text-[10px] text-muted-foreground bg-[var(--kc-w-70)] px-1.5 py-0.5 rounded-full">{toneLabel}</span>
           )}
         </div>
         <button onClick={() => { setVisible(false); setSuggestion(null); }} className="text-muted-foreground hover:text-muted-foreground transition-colors">
@@ -145,7 +145,7 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
       {/* Suggestion */}
       {suggestion && !loading && (
         <>
-          <p className="text-xs text-foreground leading-relaxed bg-white/70 rounded-lg p-2.5 mb-2.5 border border-white">
+          <p className="text-xs text-foreground leading-relaxed bg-[var(--kc-w-70)] rounded-lg p-2.5 mb-2.5 border border-white">
             {suggestion}
           </p>
           <div className="flex items-center gap-2 flex-wrap">
