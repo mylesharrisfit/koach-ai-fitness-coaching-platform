@@ -1,0 +1,7 @@
+{
+  "_comment": "Deno import map for the edge functions. The _shared modules use a bare 'date-fns' specifier so Node (verification harness) resolves it from node_modules; this map lets Deno resolve the same specifier at deploy time. Keep the version aligned with the Base44 functions (npm:date-fns@3.6.0).",
+  "imports": {
+    "date-fns": "npm:date-fns@3.6.0",
+    "@supabase/supabase-js": "jsr:@supabase/supabase-js@2"
+  }
+}
