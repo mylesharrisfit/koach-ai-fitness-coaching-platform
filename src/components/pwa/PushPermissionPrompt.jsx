@@ -176,7 +176,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
           onClick={handleEnable}
           disabled={step === 'processing'}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-2 transition-opacity disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
           {step === 'processing' ? 'Enabling...' : 'Enable Notifications'}
         </button>
 

@@ -75,7 +75,7 @@ export default function ClientAllergiesScreen({ onNext, onBack, data }) {
             placeholder="e.g. broccoli, tuna, cottage cheese..."
             className="w-full px-4 py-3.5 rounded-xl text-white text-base focus:outline-none transition-all"
             style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)', color: 'rgb(var(--card))' }}
-            onFocus={e => { e.target.style.border = '1px solid rgba(59,130,246,0.45)'; }}
+            onFocus={e => { e.target.style.border = '1px solid rgb(var(--primary) / 0.45)'; }}
             onBlur={e => { e.target.style.border = '1px solid rgba(255,255,255,0.06)'; }}
           />
         </div>

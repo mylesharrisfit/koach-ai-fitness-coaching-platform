@@ -43,8 +43,8 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
             className="w-full rounded-xl px-4 py-3.5 text-sm text-white font-medium outline-none transition-all"
             style={{
               background: '#141414',
-              border: name ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.08)',
-              boxShadow: name ? '0 0 16px rgba(59,130,246,0.1)' : 'none',
+              border: name ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.08)',
+              boxShadow: name ? '0 0 16px rgb(var(--primary) / 0.1)' : 'none',
             }}
           />
         </div>
@@ -83,10 +83,10 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
                 onClick={() => setNiche(n.id)}
                 className="px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
                 style={{
-                  background: niche === n.id ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.04)',
-                  border: niche === n.id ? '1px solid rgba(59,130,246,0.55)' : '1px solid rgba(255,255,255,0.07)',
+                  background: niche === n.id ? 'rgb(var(--primary) / 0.15)' : 'rgba(255,255,255,0.04)',
+                  border: niche === n.id ? '1px solid rgb(var(--primary) / 0.55)' : '1px solid rgba(255,255,255,0.07)',
                   color: niche === n.id ? 'rgb(var(--card))' : '#7A7A7A',
-                  boxShadow: niche === n.id ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
+                  boxShadow: niche === n.id ? '0 0 16px rgb(var(--primary) / 0.15)' : 'none',
                 }}
               >
                 {n.label}

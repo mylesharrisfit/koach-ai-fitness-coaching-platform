@@ -136,7 +136,7 @@ export default function SendInvoiceModal({ invoice, coachUser, onClose, onSent }
 
               {/* Send button */}
               <button onClick={handleSend} disabled={sending}
-                style={{ width: '100%', padding: '14px', borderRadius: 12, fontSize: 15, fontWeight: 700, background: sending ? 'rgb(var(--border))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: sending ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: sending ? 'not-allowed' : 'pointer', boxShadow: sending ? 'none' : '0 0 20px rgba(37,99,235,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                style={{ width: '100%', padding: '14px', borderRadius: 12, fontSize: 15, fontWeight: 700, background: sending ? 'rgb(var(--border))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: sending ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: sending ? 'not-allowed' : 'pointer', boxShadow: sending ? 'none' : '0 0 20px rgb(var(--primary) / 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                 <Send size={16} />
                 {sending ? 'Sending…' : 'Send Now'}
               </button>

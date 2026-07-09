@@ -15,8 +15,8 @@ const SHIMMER_STYLE = `
   50%       { opacity: 1; }
 }
 @keyframes eliteGlow {
-  0%, 100% { box-shadow: 0 0 16px 3px rgba(37,99,235,0.45), 0 0 40px 6px rgba(120,60,255,0.25); }
-  50%       { box-shadow: 0 0 28px 8px rgba(37,99,235,0.7),  0 0 60px 12px rgba(120,60,255,0.45); }
+  0%, 100% { box-shadow: 0 0 16px 3px rgb(var(--primary) / 0.45), 0 0 40px 6px rgba(120,60,255,0.25); }
+  50%       { box-shadow: 0 0 28px 8px rgb(var(--primary) / 0.7),  0 0 60px 12px rgba(120,60,255,0.45); }
 }
 `;
 
@@ -72,7 +72,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
         <span
           className="pointer-events-none absolute inset-0 rounded-2xl"
           style={{
-            background: 'linear-gradient(135deg, transparent 40%, rgba(37,99,235,0.25) 50%, transparent 60%)',
+            background: 'linear-gradient(135deg, transparent 40%, rgb(var(--primary) / 0.25) 50%, transparent 60%)',
             animation: 'borderPulse 2s ease-in-out infinite',
           }}
         />

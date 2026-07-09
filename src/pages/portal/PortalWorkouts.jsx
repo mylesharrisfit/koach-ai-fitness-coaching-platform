@@ -194,7 +194,7 @@ export default function PortalWorkouts({ user, onActiveWorkoutChange }) {
                 background: activeTab === tab ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--card))',
                 color: activeTab === tab ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
                 border: activeTab === tab ? 'none' : '1.5px solid rgb(var(--muted))',
-                boxShadow: activeTab === tab ? '0 4px 12px rgba(37,99,235,0.25)' : '0 1px 4px rgba(0,0,0,0.04)',
+                boxShadow: activeTab === tab ? '0 4px 12px rgb(var(--primary) / 0.25)' : '0 1px 4px rgba(0,0,0,0.04)',
               }}>
               {tab === 'schedule' ? '📅 Schedule' : '📋 History'}
             </button>

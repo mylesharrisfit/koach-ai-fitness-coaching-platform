@@ -14,10 +14,10 @@ function PickRow({ label, options, value, onChange }) {
             whileTap={{ scale: 0.95 }}
             className="flex-1 py-3.5 rounded-2xl text-sm font-medium transition-all"
             style={{
-              background: value === o.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
-              border: value === o.id ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.07)',
+              background: value === o.id ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.04)',
+              border: value === o.id ? '1.5px solid rgb(var(--primary) / 0.5)' : '1.5px solid rgba(255,255,255,0.07)',
               color: value === o.id ? 'rgb(var(--card))' : '#7A7A7A',
-              boxShadow: value === o.id ? '0 0 20px rgba(59,130,246,0.12)' : 'none',
+              boxShadow: value === o.id ? '0 0 20px rgb(var(--primary) / 0.12)' : 'none',
             }}
           >{o.label}</motion.button>
         ))}

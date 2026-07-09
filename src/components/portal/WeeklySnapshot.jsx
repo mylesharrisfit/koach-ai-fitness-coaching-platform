@@ -54,8 +54,8 @@ export default function WeeklySnapshot({ recentLogs, checkIns, program }) {
               <div className={cn('w-full aspect-square rounded-xl flex items-center justify-center',
                 status === 'done' ? '' : status === 'missed' ? '' : '')}
                 style={{
-                  background: status === 'done' ? 'rgba(34,197,94,0.2)' : status === 'missed' ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)',
-                  border: isToday ? '1.5px solid rgba(59,130,246,0.6)' : '1px solid transparent',
+                  background: status === 'done' ? 'rgb(var(--success) / 0.2)' : status === 'missed' ? 'rgb(var(--destructive) / 0.15)' : 'rgba(255,255,255,0.05)',
+                  border: isToday ? '1.5px solid rgb(var(--primary) / 0.6)' : '1px solid transparent',
                 }}>
                 {status === 'done' && <span className="text-success text-[10px]">✓</span>}
                 {status === 'missed' && <span className="text-destructive text-[10px]">✕</span>}

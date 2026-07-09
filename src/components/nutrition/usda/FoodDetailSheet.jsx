@@ -142,7 +142,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
           <div className="space-y-2 pt-2">
             <button onClick={handleAdd}
               className="w-full h-14 rounded-2xl font-black text-base text-white"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
               Add to {mealName || 'Meal'}
             </button>
             <button onClick={handleSave} disabled={saving}

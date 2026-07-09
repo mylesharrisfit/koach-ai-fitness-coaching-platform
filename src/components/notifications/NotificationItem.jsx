@@ -52,7 +52,7 @@ export default function NotificationItem({ n, onMarkRead, onDismiss, onClose }) 
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="relative flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors border-b border-border last:border-0 group"
-      style={{ background: !n.is_read ? 'rgba(37,99,235,0.03)' : 'transparent' }}
+      style={{ background: !n.is_read ? 'rgb(var(--primary) / 0.03)' : 'transparent' }}
     >
       {/* Unread dot */}
       <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full transition-opacity"

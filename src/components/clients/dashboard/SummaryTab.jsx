@@ -446,7 +446,7 @@ function NotesColumn({ client }) {
           <p className="text-sm font-bold" style={{ color: 'rgb(var(--foreground))' }}>Trainer Notes</p>
           {notes.length > 0 && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: 'rgba(37,99,235,0.1)', color: 'rgb(var(--primary))' }}>
+              style={{ background: 'rgb(var(--primary) / 0.1)', color: 'rgb(var(--primary))' }}>
               {notes.length}
             </span>
           )}

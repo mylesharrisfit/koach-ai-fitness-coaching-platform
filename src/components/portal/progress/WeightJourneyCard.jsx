@@ -55,7 +55,7 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
             <button key={r.label} onClick={() => setRange(r.label)}
               className="px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all"
               style={{
-                background: range === r.label ? 'rgba(59,130,246,0.25)' : 'transparent',
+                background: range === r.label ? 'rgb(var(--primary) / 0.25)' : 'transparent',
                 color: range === r.label ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.25)',
               }}>
               {r.label}
@@ -68,7 +68,7 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
         <div className="py-10 text-center">
           <p className="text-white/30 text-xs">Log your starting weight to begin tracking your journey! 💪</p>
           <button onClick={onLogWeight} className="mt-3 px-4 py-2 rounded-xl text-xs font-bold text-white"
-            style={{ background: 'rgba(59,130,246,0.2)', border: '1px solid rgba(59,130,246,0.3)' }}>
+            style={{ background: 'rgb(var(--primary) / 0.2)', border: '1px solid rgb(var(--primary) / 0.3)' }}>
             + Log Weight
           </button>
         </div>
@@ -82,7 +82,7 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
                   domain={[d => Math.floor(d - 3), d => Math.ceil(d + 3)]} />
                 <Tooltip content={<CustomTooltip />} />
                 {goalWeight && (
-                  <ReferenceLine y={goalWeight} stroke="rgba(34,197,94,0.4)" strokeDasharray="4 4" label={{ value: 'Goal', fill: 'rgb(var(--success))', fontSize: 9 }} />
+                  <ReferenceLine y={goalWeight} stroke="rgb(var(--success) / 0.4)" strokeDasharray="4 4" label={{ value: 'Goal', fill: 'rgb(var(--success))', fontSize: 9 }} />
                 )}
                 <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2.5} dot={false}
                   activeDot={{ r: 5, fill: 'rgb(var(--primary))', stroke: 'rgb(var(--card))', strokeWidth: 2 }} />
@@ -122,7 +122,7 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
           <div className="flex gap-2 mt-3">
             <button onClick={onLogWeight}
               className="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl text-xs font-bold text-white"
-              style={{ background: 'rgba(59,130,246,0.2)', border: '1px solid rgba(59,130,246,0.3)' }}>
+              style={{ background: 'rgb(var(--primary) / 0.2)', border: '1px solid rgb(var(--primary) / 0.3)' }}>
               <Plus className="w-3 h-3" /> Log Weight
             </button>
             <button onClick={() => setShowHistory(!showHistory)}

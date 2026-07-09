@@ -22,7 +22,7 @@ export default function CheckInQuestionMeasurements({ value, onChange, lastMeasu
         {['in', 'cm'].map(u => (
           <button key={u} onClick={() => setUnit(u)}
             className="flex-1 py-2.5 text-sm font-bold transition-all"
-            style={{ background: unit === u ? 'rgba(59,130,246,0.3)' : 'transparent', color: unit === u ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)' }}>
+            style={{ background: unit === u ? 'rgb(var(--primary) / 0.3)' : 'transparent', color: unit === u ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)' }}>
             {u}
           </button>
         ))}

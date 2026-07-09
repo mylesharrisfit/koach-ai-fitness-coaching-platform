@@ -3,12 +3,12 @@ import { FileText, Eye, CreditCard, Download, ChevronDown } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 
 const STATUS_CONFIG = {
-  paid: { label: 'Paid', bg: 'rgba(16,185,129,0.15)', color: 'rgb(var(--success))', border: 'rgba(16,185,129,0.25)' },
-  sent: { label: 'Unpaid', bg: 'rgba(245,158,11,0.15)', color: 'rgb(var(--warning))', border: 'rgba(245,158,11,0.25)' },
-  viewed: { label: 'Unpaid', bg: 'rgba(245,158,11,0.15)', color: 'rgb(var(--warning))', border: 'rgba(245,158,11,0.25)' },
-  draft: { label: 'Pending', bg: 'rgba(107,114,128,0.15)', color: 'rgb(var(--muted-foreground))', border: 'rgba(107,114,128,0.25)' },
-  overdue: { label: 'Overdue', bg: 'rgba(239,68,68,0.15)', color: 'rgb(var(--destructive))', border: 'rgba(239,68,68,0.25)' },
-  cancelled: { label: 'Cancelled', bg: 'rgba(107,114,128,0.15)', color: 'rgb(var(--muted-foreground))', border: 'rgba(107,114,128,0.25)' },
+  paid: { label: 'Paid', bg: 'rgb(var(--success) / 0.15)', color: 'rgb(var(--success))', border: 'rgb(var(--success) / 0.25)' },
+  sent: { label: 'Unpaid', bg: 'rgb(var(--warning) / 0.15)', color: 'rgb(var(--warning))', border: 'rgb(var(--warning) / 0.25)' },
+  viewed: { label: 'Unpaid', bg: 'rgb(var(--warning) / 0.15)', color: 'rgb(var(--warning))', border: 'rgb(var(--warning) / 0.25)' },
+  draft: { label: 'Pending', bg: 'rgb(var(--muted-foreground) / 0.15)', color: 'rgb(var(--muted-foreground))', border: 'rgb(var(--muted-foreground) / 0.25)' },
+  overdue: { label: 'Overdue', bg: 'rgb(var(--destructive) / 0.15)', color: 'rgb(var(--destructive))', border: 'rgb(var(--destructive) / 0.25)' },
+  cancelled: { label: 'Cancelled', bg: 'rgb(var(--muted-foreground) / 0.15)', color: 'rgb(var(--muted-foreground))', border: 'rgb(var(--muted-foreground) / 0.25)' },
 };
 
 const fmt = (n) => `$${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -38,7 +38,7 @@ export default function BillingInvoiceList({ invoices, onView, onPay }) {
           return (
             <div key={inv.id} className="rounded-2xl p-3.5" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(59,130,246,0.15)' }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgb(var(--primary) / 0.15)' }}>
                   <FileText className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -67,13 +67,13 @@ export default function BillingInvoiceList({ invoices, onView, onPay }) {
                 {isUnpaid && (
                   <button onClick={() => onPay(inv)}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold"
-                    style={{ background: 'rgba(37,99,235,0.2)', color: 'rgb(var(--primary))', border: '1px solid rgba(37,99,235,0.3)' }}>
+                    style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.3)' }}>
                     <CreditCard className="w-3.5 h-3.5" /> Pay
                   </button>
                 )}
                 {inv.status === 'paid' && (
                   <button className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold"
-                    style={{ background: 'rgba(16,185,129,0.1)', color: 'rgb(var(--success))', border: '1px solid rgba(16,185,129,0.2)' }}>
+                    style={{ background: 'rgb(var(--success) / 0.1)', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success) / 0.2)' }}>
                     <Download className="w-3.5 h-3.5" /> Receipt
                   </button>
                 )}

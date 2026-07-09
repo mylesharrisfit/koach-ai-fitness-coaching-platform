@@ -186,7 +186,7 @@ function InvoicingTab() {
       {/* Sub-header actions */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
         <button onClick={() => { setEditingInvoice(null); setShowForm(true); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgb(var(--primary) / 0.25)' }}>
           <Plus size={16} /> New Invoice
         </button>
       </div>
@@ -279,7 +279,7 @@ function PackagesTab() {
           ))}
         </div>
         <button onClick={() => { setEditingPkg(null); setShowForm(true); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgb(var(--primary) / 0.25)' }}>
           <Plus size={16} /> Create Package
         </button>
       </div>

@@ -57,12 +57,12 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
     <div className={cn(
       'relative flex flex-col rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:-translate-y-1',
       isElite
-        ? 'bg-gradient-to-b from-[#1a1040] to-[#120c35] hover:shadow-[0_0_40px_rgba(139,92,246,0.25)] md:scale-[1.03] z-10'
+        ? 'bg-gradient-to-b from-[#1a1040] to-[#120c35] hover:shadow-[0_0_40px_rgb(var(--ai) / 0.25)] md:scale-[1.03] z-10'
         : 'bg-[#0f1117] hover:shadow-[0_8px_32px_rgba(0,0,0,0.5)]',
     )}>
       {/* Top accent border */}
       {isElite ? (
-        <div className="h-[3px] w-full" style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 12px rgba(139,92,246,0.6)' }} />
+        <div className="h-[3px] w-full" style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 12px rgb(var(--ai) / 0.6)' }} />
       ) : (
         <div className="h-[3px] w-full" style={{ background: config.accentColor }} />
       )}
@@ -139,7 +139,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
           <button
             onClick={() => onSelect(tierKey)}
             className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgba(139,92,246,0.4)' }}
+            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.4)' }}
           >
             {isUpgrade ? `Upgrade to ${tier.name} →` : `Switch to ${tier.name}`}
           </button>

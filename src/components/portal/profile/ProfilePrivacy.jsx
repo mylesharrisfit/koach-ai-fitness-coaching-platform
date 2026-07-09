@@ -67,7 +67,7 @@ export default function ProfilePrivacy({ client }) {
       <AnimatePresence>
         {showDelete && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="mt-4 p-4 rounded-2xl" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)' }}>
+            className="mt-4 p-4 rounded-2xl" style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-4 h-4 text-destructive" />
               <p className="text-destructive font-bold text-sm">Delete Account</p>
@@ -85,7 +85,7 @@ export default function ProfilePrivacy({ client }) {
                 style={{ background: 'rgba(255,255,255,0.07)' }}>Cancel</button>
               <button onClick={handleDelete}
                 className="flex-1 py-2 rounded-xl text-sm font-bold text-white"
-                style={{ background: 'rgba(239,68,68,0.7)' }}>Delete</button>
+                style={{ background: 'rgb(var(--destructive) / 0.7)' }}>Delete</button>
             </div>
           </motion.div>
         )}

@@ -46,7 +46,7 @@ export default function BillingCurrentPackage({ client, packages, invoices, onMa
   const customInclusions = pkg?.custom_inclusions || [];
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(17,24,39,0.8))', border: '1px solid rgba(37,99,235,0.25)' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.15), rgb(var(--foreground) / 0.8))', border: '1px solid rgb(var(--primary) / 0.25)' }}>
       <div className="p-4">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">

@@ -46,7 +46,7 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
         <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={10}
-              stroke={allDone ? 'rgba(22,163,74,0.12)' : 'rgba(37,99,235,0.08)'} />
+              stroke={allDone ? 'rgb(var(--success) / 0.12)' : 'rgb(var(--primary) / 0.08)'} />
             <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={10}
               stroke={allDone ? 'rgb(var(--success))' : 'rgb(var(--primary))'}
               strokeDasharray={circ}

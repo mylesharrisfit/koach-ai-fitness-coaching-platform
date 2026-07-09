@@ -6,8 +6,8 @@ export default function CheckInQuestionYesNo({ value, onChange }) {
     <div className="space-y-4">
       <div className="flex gap-4">
         {[
-          { val: 'yes', label: 'Yes', emoji: '✅', color: 'rgb(var(--success))', bg: 'rgba(34,197,94,0.15)', border: 'rgba(34,197,94,0.4)' },
-          { val: 'no', label: 'No', emoji: '❌', color: 'rgb(var(--destructive))', bg: 'rgba(239,68,68,0.15)', border: 'rgba(239,68,68,0.4)' },
+          { val: 'yes', label: 'Yes', emoji: '✅', color: 'rgb(var(--success))', bg: 'rgb(var(--success) / 0.15)', border: 'rgb(var(--success) / 0.4)' },
+          { val: 'no', label: 'No', emoji: '❌', color: 'rgb(var(--destructive))', bg: 'rgb(var(--destructive) / 0.15)', border: 'rgb(var(--destructive) / 0.4)' },
         ].map(opt => (
           <motion.button key={opt.val}
             onClick={() => onChange(opt.val)}

@@ -37,9 +37,9 @@ export default function ProfileConnectedApps() {
             <button onClick={() => toggle(app.id)}
               className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
               style={{
-                background: connected[app.id] ? 'rgba(16,185,129,0.15)' : 'rgba(59,130,246,0.15)',
+                background: connected[app.id] ? 'rgb(var(--success) / 0.15)' : 'rgb(var(--primary) / 0.15)',
                 color: connected[app.id] ? 'rgb(var(--success))' : 'rgb(var(--primary))',
-                border: `1px solid ${connected[app.id] ? 'rgba(16,185,129,0.3)' : 'rgba(59,130,246,0.3)'}`,
+                border: `1px solid ${connected[app.id] ? 'rgb(var(--success) / 0.3)' : 'rgb(var(--primary) / 0.3)'}`,
               }}>
               {connected[app.id] ? 'Connected ✓' : 'Connect'}
             </button>

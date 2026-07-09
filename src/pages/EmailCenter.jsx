@@ -292,7 +292,7 @@ export default function EmailCenter() {
             {/* Send button */}
             <Button
               className="w-full font-bold gap-2"
-              style={{ background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}
+              style={{ background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', boxShadow: '0 4px 12px rgb(var(--primary) / 0.3)' }}
               onClick={handleSendToClient}
               disabled={sending || (toMode === 'single' && !selectedClient)}
             >

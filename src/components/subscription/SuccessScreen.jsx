@@ -28,7 +28,7 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-sidebar p-8 text-center shadow-2xl">
         {/* Logo / Icon */}
         <div className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 40px rgba(139,92,246,0.4)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 40px rgb(var(--ai) / 0.4)' }}>
           ⚡
         </div>
 
@@ -62,7 +62,7 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
           <button
             onClick={() => navigate('/')}
             className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
-            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgba(139,92,246,0.3)' }}
+            style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.3)' }}
           >
             Explore New Features →
           </button>

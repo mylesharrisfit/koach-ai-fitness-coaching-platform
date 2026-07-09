@@ -11,13 +11,13 @@ export default function CoachMessageCard({ message, coachName, onReply }) {
     <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
       className="mx-5 p-4 rounded-2xl relative overflow-hidden"
       style={{
-        background: 'rgba(59,130,246,0.08)',
-        border: '1.5px solid rgba(59,130,246,0.35)',
-        boxShadow: '0 0 20px rgba(59,130,246,0.12)',
+        background: 'rgb(var(--primary) / 0.08)',
+        border: '1.5px solid rgb(var(--primary) / 0.35)',
+        boxShadow: '0 0 20px rgb(var(--primary) / 0.12)',
       }}>
       {/* Pulsing border effect */}
       <div className="absolute inset-0 rounded-2xl animate-pulse pointer-events-none"
-        style={{ boxShadow: '0 0 0 1px rgba(59,130,246,0.3)', animationDuration: '2s' }} />
+        style={{ boxShadow: '0 0 0 1px rgb(var(--primary) / 0.3)', animationDuration: '2s' }} />
 
       <div className="flex items-center gap-3 mb-2.5">
         <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">

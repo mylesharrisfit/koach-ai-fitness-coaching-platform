@@ -104,7 +104,7 @@ export default function ConsistencyCard({ checkIns, workoutSessions, foodLogs })
           <BarChart data={weeklyData} margin={{ top: 0, right: 0, left: -24, bottom: 0 }}>
             <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 9 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="pct" fill="rgba(59,130,246,0.4)" radius={[4, 4, 0, 0]}
+            <Bar dataKey="pct" fill="rgb(var(--primary) / 0.4)" radius={[4, 4, 0, 0]}
               label={{ position: 'top', formatter: v => `${Math.round(v)}%`, fill: 'rgba(255,255,255,0.3)', fontSize: 8 }} />
           </BarChart>
         </ResponsiveContainer>

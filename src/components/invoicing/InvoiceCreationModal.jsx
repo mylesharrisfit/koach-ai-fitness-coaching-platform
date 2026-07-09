@@ -481,7 +481,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             Save as Draft
           </button>
           <button onClick={handleSend} disabled={saving || !form.client_id}
-            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'rgb(var(--border))' : 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: (!form.client_id || saving) ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px rgba(37,99,235,0.25)' }}>
+            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'rgb(var(--border))' : 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: (!form.client_id || saving) ? 'rgb(var(--muted-foreground))' : 'rgb(var(--card))', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px rgb(var(--primary) / 0.25)' }}>
             {saving ? 'Saving…' : 'Send Invoice →'}
           </button>
         </div>

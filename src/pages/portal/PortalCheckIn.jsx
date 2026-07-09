@@ -53,7 +53,7 @@ function StatusCard({ lastCheckIn, todayCheckIn, onStart }) {
     return (
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
         className="mx-5 p-5 rounded-[20px] bg-card"
-        style={{ boxShadow: '0 2px 12px rgba(239,68,68,0.15)', border: '1px solid rgb(var(--destructive))' }}>
+        style={{ boxShadow: '0 2px 12px rgb(var(--destructive) / 0.15)', border: '1px solid rgb(var(--destructive))' }}>
         <div className="flex items-start gap-3">
           <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-destructive/10">
             <AlertCircle className="w-6 h-6 text-destructive" />
@@ -76,7 +76,7 @@ function StatusCard({ lastCheckIn, todayCheckIn, onStart }) {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}
         className="mx-5 p-5 rounded-[20px] relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 6px 28px rgba(37,99,235,0.3)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 6px 28px rgb(var(--primary) / 0.3)' }}>
         {/* Pulsing glow */}
         <motion.div animate={{ opacity: [0.2, 0.4, 0.2] }} transition={{ duration: 2, repeat: Infinity }}
           className="absolute inset-0 rounded-[20px]"
@@ -119,10 +119,10 @@ function StatusCard({ lastCheckIn, todayCheckIn, onStart }) {
 
 function CheckInHistoryItem({ checkIn, onTap }) {
   const statusColor = checkIn.review_status === 'reviewed'
-    ? { bg: 'rgba(34,197,94,0.12)', text: 'rgb(var(--success))', label: '✓ Reviewed' }
+    ? { bg: 'rgb(var(--success) / 0.12)', text: 'rgb(var(--success))', label: '✓ Reviewed' }
     : checkIn.review_status === 'flagged'
-    ? { bg: 'rgba(239,68,68,0.12)', text: 'rgb(var(--destructive))', label: '⚑ Flagged' }
-    : { bg: 'rgba(251,191,36,0.1)', text: '#FBB724', label: 'Pending' };
+    ? { bg: 'rgb(var(--destructive) / 0.12)', text: 'rgb(var(--destructive))', label: '⚑ Flagged' }
+    : { bg: 'rgb(var(--warning) / 0.1)', text: '#FBB724', label: 'Pending' };
 
   const moodEmoji = { great: '😄', good: '🙂', okay: '😐', tired: '😕', stressed: '😫' }[checkIn.mood] || '—';
 

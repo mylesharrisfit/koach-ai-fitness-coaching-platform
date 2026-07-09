@@ -104,7 +104,7 @@ export default function ClientSetup() {
         {status === 'invalid' && (
           <div className="w-full text-center space-y-4">
             <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
-              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)' }}>
+              style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
               <span className="text-2xl">⛔</span>
             </div>
             <div>
@@ -134,9 +134,9 @@ export default function ClientSetup() {
 
             {/* Client identity card */}
             <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
-              style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)' }}>
+              style={{ background: 'rgb(var(--primary) / 0.07)', border: '1px solid rgb(var(--primary) / 0.18)' }}>
               <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0"
-                style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))' }}>
+                style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))' }}>
                 {client.name?.[0]?.toUpperCase() || '?'}
               </div>
               <div>
@@ -165,7 +165,7 @@ export default function ClientSetup() {
 
               {error && (
                 <div className="px-4 py-3 rounded-xl text-xs font-medium text-destructive"
-                  style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  style={{ background: 'rgb(var(--destructive) / 0.08)', border: '1px solid rgb(var(--destructive) / 0.2)' }}>
                   {error}
                 </div>
               )}
@@ -176,7 +176,7 @@ export default function ClientSetup() {
                 className="w-full py-4 rounded-xl font-bold text-base text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
                   background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
-                  boxShadow: '0 0 24px rgba(37,99,235,0.25)',
+                  boxShadow: '0 0 24px rgb(var(--primary) / 0.25)',
                 }}
               >
                 {submitting ? 'Setting up…' : 'Set Password & Continue →'}
@@ -189,7 +189,7 @@ export default function ClientSetup() {
         {status === 'success' && (
           <div className="w-full text-center space-y-4">
             <div className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center"
-              style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.25)' }}>
+              style={{ background: 'rgb(var(--success) / 0.1)', border: '1px solid rgb(var(--success) / 0.25)' }}>
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                 <path d="M6 14L11 19L22 8" stroke="rgb(var(--success))" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

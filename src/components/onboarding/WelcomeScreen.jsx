@@ -61,7 +61,7 @@ export default function WelcomeScreen({ onNext }) {
             return (
             <div key={feat.label} className="flex flex-col items-center gap-1.5">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                style={{ background: 'rgb(var(--primary) / 0.1)', border: '1px solid rgb(var(--primary) / 0.2)' }}>
                 <FeatIcon className="w-4 h-4" style={{ color: 'rgb(var(--primary))' }} />
               </div>
               <span className="text-[10px] font-semibold" style={{ color: '#555' }}>{feat.label}</span>
@@ -77,10 +77,10 @@ export default function WelcomeScreen({ onNext }) {
         >
           <motion.button
             onClick={onNext}
-            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.5)' }}
+            whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgb(var(--primary) / 0.5)' }}
             whileTap={{ scale: 0.97 }}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgb(var(--primary) / 0.3)' }}
           >
             Start Free Trial
             <ArrowRight className="w-5 h-5" />

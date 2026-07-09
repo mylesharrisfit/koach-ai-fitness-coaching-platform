@@ -278,12 +278,12 @@ function ClientAnalysisPanel({ analysis }) {
         </div>
       ))}
       {analysis.prediction && (
-        <div className="px-3 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.1))', border: '1px solid rgba(34,197,94,0.25)' }}>
+        <div className="px-3 py-3 rounded-xl" style={{ background: 'linear-gradient(135deg, rgb(var(--success) / 0.15), rgb(var(--success) / 0.1))', border: '1px solid rgb(var(--success) / 0.25)' }}>
           <p className="text-success text-sm font-semibold">🎯 {analysis.prediction}</p>
         </div>
       )}
       {analysis.tip && (
-        <div className="px-3 py-2.5 rounded-xl" style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
+        <div className="px-3 py-2.5 rounded-xl" style={{ background: 'rgb(var(--primary) / 0.12)', border: '1px solid rgb(var(--primary) / 0.25)' }}>
           <p className="text-primary text-xs font-semibold">💡 This week: {analysis.tip}</p>
         </div>
       )}
@@ -339,7 +339,7 @@ export default function AIProgressAnalyzer({
   // Client-facing wrapper
   if (isClientFacing) {
     return (
-      <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.12), rgba(59,130,246,0.1))', border: '1px solid rgba(124,58,237,0.2)' }}>
+      <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, rgb(var(--ai) / 0.12), rgb(var(--primary) / 0.1))', border: '1px solid rgb(var(--ai) / 0.2)' }}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-ai" />

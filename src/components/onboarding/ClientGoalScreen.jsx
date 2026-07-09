@@ -21,9 +21,9 @@ function GoalCard({ goal, selected, onClick }) {
       whileTap={{ scale: 0.985 }}
       className="relative w-full text-left rounded-2xl p-5 transition-all"
       style={{
-        background: selected ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-        border: selected ? '1.5px solid rgba(59,130,246,0.6)' : '1.5px solid rgba(255,255,255,0.07)',
-        boxShadow: selected ? '0 0 30px rgba(59,130,246,0.15)' : 'none',
+        background: selected ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.03)',
+        border: selected ? '1.5px solid rgb(var(--primary) / 0.6)' : '1.5px solid rgba(255,255,255,0.07)',
+        boxShadow: selected ? '0 0 30px rgb(var(--primary) / 0.15)' : 'none',
       }}
     >
       {selected && (

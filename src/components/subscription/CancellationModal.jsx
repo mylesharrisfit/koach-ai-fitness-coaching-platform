@@ -141,7 +141,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                 <button
                   onClick={handleAcceptOffer}
                   className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
-                  style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgba(139,92,246,0.25)' }}
+                  style={{ background: 'linear-gradient(to right, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 20px rgb(var(--ai) / 0.25)' }}
                 >
                   {offer.cta}
                 </button>

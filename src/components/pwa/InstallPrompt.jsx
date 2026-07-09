@@ -116,7 +116,7 @@ function AndroidPrompt({ onInstall, onClose }) {
         <button
           onClick={onInstall}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-3"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.35)' }}
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.35)' }}
         >
           <Download className="w-5 h-5 inline mr-2" />
           Install App

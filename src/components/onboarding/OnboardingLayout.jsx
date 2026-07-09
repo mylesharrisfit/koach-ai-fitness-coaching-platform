@@ -94,12 +94,12 @@ export default function OnboardingLayout({
             <motion.button
               onClick={onNext}
               disabled={nextDisabled}
-              whileHover={!nextDisabled ? { scale: 1.02, boxShadow: '0 0 35px rgba(59,130,246,0.4)' } : {}}
+              whileHover={!nextDisabled ? { scale: 1.02, boxShadow: '0 0 35px rgb(var(--primary) / 0.4)' } : {}}
               whileTap={!nextDisabled ? { scale: 0.98 } : {}}
               className="w-full py-4 rounded-2xl text-white font-semibold text-base transition-all"
               style={{
                 background: nextDisabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
-                boxShadow: nextDisabled ? 'none' : '0 0 24px rgba(59,130,246,0.25)',
+                boxShadow: nextDisabled ? 'none' : '0 0 24px rgb(var(--primary) / 0.25)',
                 color: nextDisabled ? '#555' : 'rgb(var(--card))',
               }}
             >

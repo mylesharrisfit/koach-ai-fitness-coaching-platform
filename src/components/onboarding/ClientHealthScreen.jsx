@@ -49,7 +49,7 @@ export default function ClientHealthScreen({ onNext, onBack, data }) {
             rows={4}
             className="w-full px-4 py-4 rounded-2xl text-white text-sm leading-relaxed resize-none focus:outline-none transition-all"
             style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.06)', color: 'rgb(var(--card))' }}
-            onFocus={e => { e.target.style.border = '1px solid rgba(59,130,246,0.45)'; }}
+            onFocus={e => { e.target.style.border = '1px solid rgb(var(--primary) / 0.45)'; }}
             onBlur={e => { e.target.style.border = '1px solid rgba(255,255,255,0.06)'; }}
           />
         </div>

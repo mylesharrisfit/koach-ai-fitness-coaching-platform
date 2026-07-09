@@ -74,7 +74,7 @@ function CoachBillingBlock() {
       style={{ background: 'rgb(var(--sidebar))' }}>
       <div className="max-w-sm w-full text-center">
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-          style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
+          style={{ background: 'rgb(var(--destructive) / 0.12)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
           <ShieldAlert className="w-7 h-7 text-destructive" />
         </div>
         <h2 className="text-xl font-bold text-white mb-2">Billing is owner-only</h2>

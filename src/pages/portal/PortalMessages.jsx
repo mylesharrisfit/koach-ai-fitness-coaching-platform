@@ -365,7 +365,7 @@ export default function PortalMessages({ user }) {
       {/* Coach Card */}
       <motion.button whileTap={{ scale: 0.98 }} onClick={() => setView('conversation')}
         className="w-full p-5 rounded-2xl text-left relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(99,102,241,0.1))', border: '1.5px solid rgba(59,130,246,0.25)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.15), rgba(99,102,241,0.1))', border: '1.5px solid rgb(var(--primary) / 0.25)' }}>
         <div className="flex items-start gap-4">
           <div className="relative flex-shrink-0">
             <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white"

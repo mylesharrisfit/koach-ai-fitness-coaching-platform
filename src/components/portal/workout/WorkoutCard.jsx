@@ -121,7 +121,7 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
         <div className="p-5" style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)' }}>
           {isDone && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
-              style={{ background: 'rgba(16,185,129,0.25)', color: '#6EE7B7' }}>
+              style={{ background: 'rgb(var(--success) / 0.25)', color: '#6EE7B7' }}>
               <Check className="w-3 h-3" strokeWidth={3} /> Completed Today
             </span>
           )}
@@ -163,7 +163,7 @@ export default function WorkoutCard({ workout, isToday, dayDate, isDone, onStart
         <div className="px-5 pb-5 pt-2">
           <button onClick={onStart}
             className="w-full flex items-center justify-center gap-2 font-black text-base text-white rounded-2xl transition-transform active:scale-[0.97]"
-            style={{ height: 56, background: isDone ? 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: isDone ? '0 4px 16px rgba(5,150,105,0.3)' : '0 4px 20px rgba(37,99,235,0.35)' }}>
+            style={{ height: 56, background: isDone ? 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: isDone ? '0 4px 16px rgba(5,150,105,0.3)' : '0 4px 20px rgb(var(--primary) / 0.35)' }}>
             <Play className="w-5 h-5 fill-white" />
             {isDone ? 'Do Again' : isToday ? 'Start Workout' : 'Preview Workout'}
           </button>

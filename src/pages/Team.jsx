@@ -9,14 +9,14 @@ function RoleBadge({ role }) {
   if (role === 'owner') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-        style={{ background: 'rgba(245,158,11,0.15)', color: 'rgb(var(--warning))', border: '1px solid rgba(245,158,11,0.3)' }}>
+        style={{ background: 'rgb(var(--warning) / 0.15)', color: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning) / 0.3)' }}>
         <Crown className="w-2.5 h-2.5" /> Owner
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-      style={{ background: 'rgba(59,130,246,0.15)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.3)' }}>
+      style={{ background: 'rgb(var(--primary) / 0.15)', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.3)' }}>
       Coach
     </span>
   );
@@ -73,7 +73,7 @@ function MemberRow({ member, isYou, onRemove, onChangeRole, isOwnerViewing }) {
   return (
     <div className="flex items-center gap-4 px-5 py-4 border-b border-border last:border-0">
       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-        style={{ background: member.role_label === 'owner' ? 'rgba(245,158,11,0.15)' : 'rgba(59,130,246,0.12)', color: member.role_label === 'owner' ? 'rgb(var(--warning))' : 'rgb(var(--primary))' }}>
+        style={{ background: member.role_label === 'owner' ? 'rgb(var(--warning) / 0.15)' : 'rgb(var(--primary) / 0.12)', color: member.role_label === 'owner' ? 'rgb(var(--warning))' : 'rgb(var(--primary))' }}>
         {initials}
       </div>
       <div className="flex-1 min-w-0">

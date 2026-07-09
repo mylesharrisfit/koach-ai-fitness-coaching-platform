@@ -21,7 +21,7 @@ export default function WorkoutProgramHeader({ program, client, sessions = [] })
 
   return (
     <div className="mx-4 rounded-[20px] overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 6px 28px rgba(37,99,235,0.3)' }}>
+      style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 6px 28px rgb(var(--primary) / 0.3)' }}>
       <div className="p-5" style={{ background: 'rgba(0,0,0,0.1)' }}>
         {/* Program name */}
         <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1">Current Program</p>

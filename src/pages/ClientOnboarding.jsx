@@ -93,12 +93,12 @@ function CTABtn({ label = 'Continue', onClick, disabled }) {
       <motion.button
         onClick={onClick}
         disabled={disabled}
-        whileHover={!disabled ? { scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' } : {}}
+        whileHover={!disabled ? { scale: 1.02, boxShadow: '0 0 40px rgb(var(--primary) / 0.45)' } : {}}
         whileTap={!disabled ? { scale: 0.98 } : {}}
         className="w-full py-4 rounded-2xl font-bold text-base transition-all"
         style={{
           background: disabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))',
-          boxShadow: disabled ? 'none' : '0 0 24px rgba(59,130,246,0.28)',
+          boxShadow: disabled ? 'none' : '0 0 24px rgb(var(--primary) / 0.28)',
           color: disabled ? '#444' : 'rgb(var(--card))',
           cursor: disabled ? 'not-allowed' : 'pointer',
         }}
@@ -116,10 +116,10 @@ function Chip({ label, selected, onClick, emoji }) {
       whileTap={{ scale: 0.94 }}
       className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
       style={{
-        background: selected ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-        border: selected ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
+        background: selected ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+        border: selected ? '1.5px solid rgb(var(--primary) / 0.55)' : '1.5px solid rgba(255,255,255,0.07)',
         color: selected ? 'rgb(var(--card))' : '#6A6A6A',
-        boxShadow: selected ? '0 0 18px rgba(59,130,246,0.15)' : 'none',
+        boxShadow: selected ? '0 0 18px rgb(var(--primary) / 0.15)' : 'none',
       }}
     >
       {emoji && <span className="mr-1.5">{emoji}</span>}{label}
@@ -134,9 +134,9 @@ function BigCard({ emoji, label, sublabel, selected, onClick }) {
       whileTap={{ scale: 0.975 }}
       className="relative w-full text-left rounded-2xl p-4 transition-all"
       style={{
-        background: selected ? 'rgba(59,130,246,0.09)' : 'rgba(255,255,255,0.03)',
-        border: selected ? '1.5px solid rgba(59,130,246,0.6)' : '1.5px solid rgba(255,255,255,0.07)',
-        boxShadow: selected ? '0 0 28px rgba(59,130,246,0.12)' : 'none',
+        background: selected ? 'rgb(var(--primary) / 0.09)' : 'rgba(255,255,255,0.03)',
+        border: selected ? '1.5px solid rgb(var(--primary) / 0.6)' : '1.5px solid rgba(255,255,255,0.07)',
+        boxShadow: selected ? '0 0 28px rgb(var(--primary) / 0.12)' : 'none',
       }}
     >
       <div className="flex items-center gap-4">
@@ -175,7 +175,7 @@ function PremiumField({ label, value, onChange, type = 'text', placeholder, auto
         autoFocus={autoFocus}
         className="w-full px-5 py-4 rounded-2xl text-white text-base font-medium placeholder-[#2E2E2E] outline-none transition-all"
         style={{ background: 'rgb(var(--foreground))', border: '1.5px solid rgba(255,255,255,0.07)' }}
-        onFocus={e => (e.target.style.borderColor = 'rgba(59,130,246,0.5)')}
+        onFocus={e => (e.target.style.borderColor = 'rgb(var(--primary) / 0.5)')}
         onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.07)')}
       />
     </div>
@@ -209,7 +209,7 @@ function SliderRow({ label, value, onChange, min = 1, max = 10, leftLabel, right
         <p className="text-sm font-semibold text-white">{label}</p>
         <span
           className="text-sm font-bold px-2.5 py-0.5 rounded-lg"
-          style={{ background: 'rgba(59,130,246,0.12)', color: 'rgb(var(--primary))' }}
+          style={{ background: 'rgb(var(--primary) / 0.12)', color: 'rgb(var(--primary))' }}
         >
           {value || min}/{max}
         </span>
@@ -252,7 +252,7 @@ function PremiumTextarea({ value, onChange, placeholder, rows = 4 }) {
       rows={rows}
       className="w-full px-5 py-4 rounded-2xl text-white text-base leading-relaxed resize-none focus:outline-none transition-all"
       style={{ background: 'rgb(var(--foreground))', border: '1.5px solid rgba(255,255,255,0.07)' }}
-      onFocus={e => (e.target.style.borderColor = 'rgba(59,130,246,0.45)')}
+      onFocus={e => (e.target.style.borderColor = 'rgb(var(--primary) / 0.45)')}
       onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.07)')}
     />
   );
@@ -304,7 +304,7 @@ function WelcomeStep({ onNext }) {
               <span
                 key={t}
                 className="px-3 py-1 rounded-full text-xs font-semibold"
-                style={{ background: 'rgba(59,130,246,0.08)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.18)' }}
+                style={{ background: 'rgb(var(--primary) / 0.08)', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.18)' }}
               >
                 {t}
               </span>
@@ -317,10 +317,10 @@ function WelcomeStep({ onNext }) {
           >
             <motion.button
               onClick={onNext}
-              whileHover={{ scale: 1.03, boxShadow: '0 0 48px rgba(59,130,246,0.5)' }}
+              whileHover={{ scale: 1.03, boxShadow: '0 0 48px rgb(var(--primary) / 0.5)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-2xl text-white font-bold text-lg"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgba(59,130,246,0.3)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgb(var(--primary) / 0.3)' }}
             >
               Let's Go →
             </motion.button>
@@ -601,10 +601,10 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
                   onClick={() => set('training_days_per_week', d)}
                   className="flex-1 py-3.5 rounded-xl font-bold text-sm transition-all"
                   style={{
-                    background: data.training_days_per_week === d ? 'rgba(59,130,246,0.14)' : 'rgba(255,255,255,0.04)',
-                    border: data.training_days_per_week === d ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
+                    background: data.training_days_per_week === d ? 'rgb(var(--primary) / 0.14)' : 'rgba(255,255,255,0.04)',
+                    border: data.training_days_per_week === d ? '1.5px solid rgb(var(--primary) / 0.55)' : '1.5px solid rgba(255,255,255,0.07)',
                     color: data.training_days_per_week === d ? 'rgb(var(--card))' : '#4A4A4A',
-                    boxShadow: data.training_days_per_week === d ? '0 0 14px rgba(59,130,246,0.12)' : 'none',
+                    boxShadow: data.training_days_per_week === d ? '0 0 14px rgb(var(--primary) / 0.12)' : 'none',
                   }}
                 >
                   {d}
@@ -780,7 +780,7 @@ function MedicalStep({ data, set, onNext, onBack }) {
           />
 
           <SectionDivider label="PAR-Q Health Screening *" />
-          <div className="p-4 rounded-2xl space-y-4" style={{ background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.15)' }}>
+          <div className="p-4 rounded-2xl space-y-4" style={{ background: 'rgb(var(--warning) / 0.05)', border: '1px solid rgb(var(--warning) / 0.15)' }}>
             <div className="flex gap-2">
               <span className="text-lg flex-shrink-0">❤️</span>
               <p className="text-sm leading-relaxed" style={{ color: '#D4A017' }}>
@@ -796,10 +796,10 @@ function MedicalStep({ data, set, onNext, onBack }) {
                   className="flex-1 py-3 rounded-xl font-bold text-sm transition-all"
                   style={{
                     background: data.parq_answer === ans
-                      ? (ans === 'Yes' ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.1)')
+                      ? (ans === 'Yes' ? 'rgb(var(--destructive) / 0.12)' : 'rgb(var(--success) / 0.1)')
                       : 'rgba(255,255,255,0.04)',
                     border: data.parq_answer === ans
-                      ? (ans === 'Yes' ? '1.5px solid rgba(239,68,68,0.55)' : '1.5px solid rgba(34,197,94,0.55)')
+                      ? (ans === 'Yes' ? '1.5px solid rgb(var(--destructive) / 0.55)' : '1.5px solid rgb(var(--success) / 0.55)')
                       : '1.5px solid rgba(255,255,255,0.07)',
                     color: data.parq_answer === ans ? 'rgb(var(--card))' : '#4A4A4A',
                   }}
@@ -811,7 +811,7 @@ function MedicalStep({ data, set, onNext, onBack }) {
             {data.parq_answer === 'Yes' && (
               <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                 className="p-3 rounded-xl text-xs leading-relaxed"
-                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: 'rgb(var(--destructive))' }}>
+                style={{ background: 'rgb(var(--destructive) / 0.08)', border: '1px solid rgb(var(--destructive) / 0.2)', color: 'rgb(var(--destructive))' }}>
                 Please ensure you have medical clearance before starting any exercise program. Your coach will review this and may request documentation.
               </motion.div>
             )}
@@ -886,8 +886,8 @@ function ConsentStep({ data, set, onNext, onBack }) {
             whileTap={{ scale: 0.98 }}
             className="w-full flex items-start gap-4 p-5 rounded-2xl text-left transition-all"
             style={{
-              background: consentChecked ? 'rgba(34,197,94,0.07)' : 'rgba(255,255,255,0.03)',
-              border: consentChecked ? '1.5px solid rgba(34,197,94,0.4)' : '1.5px solid rgba(255,255,255,0.1)',
+              background: consentChecked ? 'rgb(var(--success) / 0.07)' : 'rgba(255,255,255,0.03)',
+              border: consentChecked ? '1.5px solid rgb(var(--success) / 0.4)' : '1.5px solid rgba(255,255,255,0.1)',
             }}
           >
             <div
@@ -1004,9 +1004,9 @@ function ObstaclesStep({ data, set, onNext, onBack }) {
                 transition={{ delay: i * 0.04 }}
                 className="py-4 px-4 rounded-2xl text-left transition-all"
                 style={{
-                  background: selected.includes(o.id) ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                  border: selected.includes(o.id) ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                  boxShadow: selected.includes(o.id) ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                  background: selected.includes(o.id) ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.03)',
+                  border: selected.includes(o.id) ? '1.5px solid rgb(var(--primary) / 0.55)' : '1.5px solid rgba(255,255,255,0.07)',
+                  boxShadow: selected.includes(o.id) ? '0 0 18px rgb(var(--primary) / 0.12)' : 'none',
                 }}
               >
                 <div className="text-xl mb-1.5">{o.emoji}</div>
@@ -1054,9 +1054,9 @@ function CommitmentStep({ data, set, onNext, onBack }) {
                     transition={{ delay: i * 0.07 }}
                     className="py-6 px-4 rounded-2xl text-center transition-all"
                     style={{
-                      background: sel ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                      border: sel ? '1.5px solid rgba(59,130,246,0.55)' : '1.5px solid rgba(255,255,255,0.07)',
-                      boxShadow: sel ? '0 0 30px rgba(59,130,246,0.18)' : 'none',
+                      background: sel ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.03)',
+                      border: sel ? '1.5px solid rgb(var(--primary) / 0.55)' : '1.5px solid rgba(255,255,255,0.07)',
+                      boxShadow: sel ? '0 0 30px rgb(var(--primary) / 0.18)' : 'none',
                       transform: sel ? 'scale(1.03)' : 'scale(1)',
                     }}
                   >
@@ -1070,7 +1070,7 @@ function CommitmentStep({ data, set, onNext, onBack }) {
           </div>
 
           <div className="py-3 px-5 rounded-2xl text-center space-y-1"
-            style={{ background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.1)' }}>
+            style={{ background: 'rgb(var(--primary) / 0.05)', border: '1px solid rgb(var(--primary) / 0.1)' }}>
             <p className="text-xs" style={{ color: '#5A5A5A' }}>
               Your coach uses this to calibrate your plan intensity and accountability level.
             </p>
@@ -1115,15 +1115,15 @@ function GenItemCard({ item }) {
       transition={{ delay: item.activateAt * 0.3, duration: 0.4 }}
       className="flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-500"
       style={{
-        background: status === 'done' ? 'rgba(34,197,94,0.06)' : status === 'loading' ? 'rgba(59,130,246,0.07)' : 'rgba(255,255,255,0.02)',
-        border: status === 'done' ? '1px solid rgba(34,197,94,0.22)' : status === 'loading' ? '1px solid rgba(59,130,246,0.28)' : '1px solid rgba(255,255,255,0.04)',
+        background: status === 'done' ? 'rgb(var(--success) / 0.06)' : status === 'loading' ? 'rgb(var(--primary) / 0.07)' : 'rgba(255,255,255,0.02)',
+        border: status === 'done' ? '1px solid rgb(var(--success) / 0.22)' : status === 'loading' ? '1px solid rgb(var(--primary) / 0.28)' : '1px solid rgba(255,255,255,0.04)',
       }}
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
         <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#2E2E2E' : 'rgb(var(--card))' }}>{item.label}</p>
         <p className="text-[11px] mt-0.5" style={{
-          color: status === 'done' ? 'rgba(34,197,94,0.8)' : status === 'loading' ? 'rgba(59,130,246,0.8)' : '#2E2E2E',
+          color: status === 'done' ? 'rgb(var(--success) / 0.8)' : status === 'loading' ? 'rgb(var(--primary) / 0.8)' : '#2E2E2E',
         }}>
           {status === 'done' ? 'Personalized' : status === 'loading' ? 'Analyzing…' : 'Queued'}
         </p>
@@ -1172,7 +1172,7 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <motion.div
           className="w-[800px] h-[800px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 65%)', filter: 'blur(80px)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary) / 0.08) 0%, transparent 65%)', filter: 'blur(80px)' }}
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -1220,10 +1220,10 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
             className="w-full space-y-3"
           >
             <div className="p-5 rounded-2xl space-y-3"
-              style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.3)' }}>
+              style={{ background: 'rgb(var(--destructive) / 0.07)', border: '1px solid rgb(var(--destructive) / 0.3)' }}>
               <p className="text-sm font-bold text-center" style={{ color: 'rgb(var(--destructive))' }}>⚠️ Submission Failed</p>
               <div className="rounded-xl p-3 text-left"
-                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgb(var(--destructive) / 0.2)' }}>
                 <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: '#6A6A6A' }}>Error details</p>
                 <p className="text-xs leading-relaxed break-words" style={{ color: 'rgb(var(--destructive))', fontFamily: 'monospace' }}>
                   {submitError || 'Unknown error — no message received.'}
@@ -1263,7 +1263,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
           <motion.div
             variants={{ hidden: { scale: 0, opacity: 0 }, show: { scale: 1, opacity: 1, transition: { type: 'spring', stiffness: 200, delay: 0.1 } } }}
             className="w-24 h-24 rounded-3xl flex items-center justify-center"
-            style={{ background: 'rgba(34,197,94,0.1)', border: '2px solid rgba(34,197,94,0.3)' }}
+            style={{ background: 'rgb(var(--success) / 0.1)', border: '2px solid rgb(var(--success) / 0.3)' }}
           >
             <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
               <path d="M9 21L17 29L33 13" stroke="rgb(var(--success))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
@@ -1290,7 +1290,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
             className="w-full space-y-3"
           >
             <div className="py-5 px-5 rounded-2xl space-y-3"
-              style={{ background: 'rgba(59,130,246,0.06)', border: '1.5px solid rgba(59,130,246,0.15)' }}>
+              style={{ background: 'rgb(var(--primary) / 0.06)', border: '1.5px solid rgb(var(--primary) / 0.15)' }}>
               <p className="font-bold text-white text-sm">What happens next?</p>
               {[
                 `${coach} reviews your full intake profile`,
@@ -1299,7 +1299,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
               ].map((step, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                    style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)' }}>
+                    style={{ background: 'rgb(var(--primary) / 0.15)', border: '1px solid rgb(var(--primary) / 0.3)' }}>
                     <span className="text-[9px] font-bold" style={{ color: 'rgb(var(--primary))' }}>{i + 1}</span>
                   </div>
                   <p className="text-sm text-left" style={{ color: '#7A7A7A' }}>{step}</p>
@@ -1310,7 +1310,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
             <div className="flex items-center justify-center gap-2 py-2">
               {['Exclusive', 'Personalised', 'Elite-Grade'].map(t => (
                 <span key={t} className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ background: 'rgba(34,197,94,0.08)', color: 'rgb(var(--success))', border: '1px solid rgba(34,197,94,0.2)' }}>
+                  style={{ background: 'rgb(var(--success) / 0.08)', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success) / 0.2)' }}>
                   {t}
                 </span>
               ))}

@@ -177,7 +177,7 @@ export default function Invoicing() {
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={() => { setEditingInvoice(null); setShowForm(true); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgba(37,99,235,0.25)' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', border: 'none', cursor: 'pointer', boxShadow: '0 0 16px rgb(var(--primary) / 0.25)' }}>
               <Plus size={16} /> New Invoice
             </button>
             <button onClick={() => navigate('/packages')} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'rgb(var(--card))', color: 'rgb(var(--foreground))', border: '1.5px solid rgb(var(--border))', cursor: 'pointer' }}>

@@ -18,7 +18,7 @@ function MetricBox({ label, value, onChange, unit, placeholder }) {
         placeholder={placeholder}
         className="w-full text-center text-3xl font-bold text-white bg-transparent border-0 focus:outline-none placeholder-white/15"
         style={{ minWidth: 0 }}
-        onFocus={e => { e.target.closest('div').style.border = '1.5px solid rgba(59,130,246,0.45)'; }}
+        onFocus={e => { e.target.closest('div').style.border = '1.5px solid rgb(var(--primary) / 0.45)'; }}
         onBlur={e => { e.target.closest('div').style.border = '1.5px solid rgba(255,255,255,0.07)'; }}
       />
       {unit && <p className="text-xs" style={{ color: '#5A5A5A' }}>{unit}</p>}
@@ -70,7 +70,7 @@ export default function ClientMetricsScreen({ onNext, onBack, data }) {
             placeholder={`5'10"`}
             className="w-full px-5 py-4 rounded-2xl text-white text-lg font-semibold bg-transparent focus:outline-none transition-all text-center placeholder-white/15"
             style={{ background: 'rgba(255,255,255,0.03)', border: '1.5px solid rgba(255,255,255,0.07)' }}
-            onFocus={e => { e.target.style.border = '1.5px solid rgba(59,130,246,0.45)'; }}
+            onFocus={e => { e.target.style.border = '1.5px solid rgb(var(--primary) / 0.45)'; }}
             onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; }}
           />
         </div>
@@ -83,10 +83,10 @@ export default function ClientMetricsScreen({ onNext, onBack, data }) {
                 onClick={() => set('activity_level', a.id)}
                 className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={{
-                  background: form.activity_level === a.id ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                  border: form.activity_level === a.id ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                  background: form.activity_level === a.id ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+                  border: form.activity_level === a.id ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.07)',
                   color: form.activity_level === a.id ? 'rgb(var(--card))' : '#7A7A7A',
-                  boxShadow: form.activity_level === a.id ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
+                  boxShadow: form.activity_level === a.id ? '0 0 16px rgb(var(--primary) / 0.15)' : 'none',
                 }}>{a.label}</motion.button>
             ))}
           </div>

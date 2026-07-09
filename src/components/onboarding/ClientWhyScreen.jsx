@@ -31,7 +31,7 @@ export default function ClientWhyScreen({ onNext, onBack, data }) {
               border: '1.5px solid rgba(255,255,255,0.07)',
               color: 'rgb(var(--card))',
             }}
-            onFocus={e => { e.target.style.border = '1.5px solid rgba(59,130,246,0.45)'; e.target.style.boxShadow = '0 0 30px rgba(59,130,246,0.08)'; }}
+            onFocus={e => { e.target.style.border = '1.5px solid rgb(var(--primary) / 0.45)'; e.target.style.boxShadow = '0 0 30px rgb(var(--primary) / 0.08)'; }}
             onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; e.target.style.boxShadow = 'none'; }}
           />
           <div className="absolute bottom-3 right-4 text-xs" style={{ color: '#3A3A3A' }}>

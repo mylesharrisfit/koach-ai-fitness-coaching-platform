@@ -38,9 +38,9 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
   };
 
   const statusConfig = {
-    reviewed: { bg: 'rgba(34,197,94,0.12)', color: 'rgb(var(--success))', label: '✓ Reviewed by coach' },
-    flagged: { bg: 'rgba(239,68,68,0.12)', color: 'rgb(var(--destructive))', label: '⚑ Flagged' },
-    pending: { bg: 'rgba(251,191,36,0.1)', color: '#FBB724', label: 'Awaiting review' },
+    reviewed: { bg: 'rgb(var(--success) / 0.12)', color: 'rgb(var(--success))', label: '✓ Reviewed by coach' },
+    flagged: { bg: 'rgb(var(--destructive) / 0.12)', color: 'rgb(var(--destructive))', label: '⚑ Flagged' },
+    pending: { bg: 'rgb(var(--warning) / 0.1)', color: '#FBB724', label: 'Awaiting review' },
   }[checkIn.review_status] || {};
 
   return (
@@ -111,7 +111,7 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
           {checkIn.coach_notes && (
             <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               className="p-4 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(99,102,241,0.08))', border: '1px solid rgba(59,130,246,0.25)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.12), rgba(99,102,241,0.08))', border: '1px solid rgb(var(--primary) / 0.25)' }}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                   style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' }}>
@@ -162,7 +162,7 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
           {!checkIn.coach_notes && (
             <button onClick={onMessage}
               className="w-full p-4 rounded-2xl flex items-center justify-center gap-2"
-              style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+              style={{ background: 'rgb(var(--primary) / 0.1)', border: '1px solid rgb(var(--primary) / 0.2)' }}>
               <MessageSquare className="w-4 h-4 text-primary" />
               <span className="text-primary text-sm font-semibold">Message my coach</span>
             </button>

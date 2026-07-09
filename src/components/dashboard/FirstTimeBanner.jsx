@@ -37,7 +37,7 @@ export default function FirstTimeBanner({ onDismiss }) {
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
       className="rounded-2xl overflow-hidden"
-      style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgba(59,130,246,0.2)' }}
+      style={{ background: 'rgb(var(--sidebar))', border: '1px solid rgb(var(--primary) / 0.2)' }}
     >
       {/* Top accent line */}
       <div className="h-[2px] w-full" style={{ background: 'linear-gradient(90deg, rgb(var(--primary)), rgb(var(--primary)))' }} />
@@ -80,7 +80,7 @@ export default function FirstTimeBanner({ onDismiss }) {
             const isDone = checked.includes(item.id);
             return (
               <div key={item.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5 group transition-all"
-                style={{ background: isDone ? 'rgba(34,197,94,0.06)' : 'rgba(255,255,255,0.03)', border: isDone ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(255,255,255,0.05)' }}>
+                style={{ background: isDone ? 'rgb(var(--success) / 0.06)' : 'rgba(255,255,255,0.03)', border: isDone ? '1px solid rgb(var(--success) / 0.2)' : '1px solid rgba(255,255,255,0.05)' }}>
                 <button onClick={() => toggle(item.id)}
                   className="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center transition-all"
                   style={{ borderColor: isDone ? 'rgb(var(--success))' : 'rgba(255,255,255,0.2)', background: isDone ? 'rgb(var(--success))' : 'transparent' }}>

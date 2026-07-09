@@ -174,7 +174,7 @@ function WorkoutHeatmap({ sessions }) {
             <div key={day.key} className="w-4 h-4 rounded-sm"
               style={{
                 background: day.hasWorkout ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.06)',
-                border: day.isToday ? '1px solid rgba(59,130,246,0.5)' : 'none',
+                border: day.isToday ? '1px solid rgb(var(--primary) / 0.5)' : 'none',
               }} />
           ))}
         </div>

@@ -49,10 +49,10 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
               onClick={() => toggleFood(f)}
               className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
               style={{
-                background: favFoods.includes(f) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                border: favFoods.includes(f) ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                background: favFoods.includes(f) ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+                border: favFoods.includes(f) ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.07)',
                 color: favFoods.includes(f) ? 'rgb(var(--card))' : '#7A7A7A',
-                boxShadow: favFoods.includes(f) ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
+                boxShadow: favFoods.includes(f) ? '0 0 16px rgb(var(--primary) / 0.15)' : 'none',
               }}
             >
               {f}
@@ -69,8 +69,8 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
                 onClick={() => setDiet(diet === d.id ? null : d.id)}
                 className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={{
-                  background: diet === d.id ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                  border: diet === d.id ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                  background: diet === d.id ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+                  border: diet === d.id ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.07)',
                   color: diet === d.id ? 'rgb(var(--card))' : '#7A7A7A',
                 }}>{d.label}</motion.button>
             ))}
@@ -86,10 +86,10 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
                 onClick={() => setMeals(m.id)}
                 className="py-4 rounded-2xl text-sm font-semibold transition-all"
                 style={{
-                  background: meals === m.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
-                  border: meals === m.id ? '1.5px solid rgba(59,130,246,0.45)' : '1.5px solid rgba(255,255,255,0.07)',
+                  background: meals === m.id ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.04)',
+                  border: meals === m.id ? '1.5px solid rgb(var(--primary) / 0.45)' : '1.5px solid rgba(255,255,255,0.07)',
                   color: meals === m.id ? 'rgb(var(--card))' : '#7A7A7A',
-                  boxShadow: meals === m.id ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                  boxShadow: meals === m.id ? '0 0 18px rgb(var(--primary) / 0.12)' : 'none',
                 }}>{m.label}</motion.button>
             ))}
           </div>

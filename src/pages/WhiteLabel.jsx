@@ -167,7 +167,7 @@ export default function WhiteLabel() {
           </button>
           <button onClick={handlePublish} disabled={publishing || isLocked}
             className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60"
-            style={{ background: isLocked ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: isLocked ? 'none' : '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: isLocked ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: isLocked ? 'none' : '0 4px 16px rgb(var(--primary) / 0.3)' }}>
             {publishing ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : null}
             {isLocked ? <><Lock className="w-3.5 h-3.5" /> Publish</> : 'Publish Changes'}
           </button>
@@ -186,7 +186,7 @@ export default function WhiteLabel() {
           </div>
           <Link to="/subscription"
             className="flex-shrink-0 px-5 py-2.5 rounded-xl font-bold text-white text-sm"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', boxShadow: '0 4px 12px rgba(217,119,6,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--warning)), rgb(var(--warning)))', boxShadow: '0 4px 12px rgb(var(--warning) / 0.3)' }}>
             Upgrade to Unlock
           </Link>
         </div>

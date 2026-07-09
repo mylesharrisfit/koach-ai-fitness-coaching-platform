@@ -29,7 +29,7 @@ function WeightQuestion({ question, value, onChange, lastValue }) {
       </div>
       <button onClick={() => setUnit(u => u === 'lbs' ? 'kg' : 'lbs')}
         className="px-4 py-1.5 rounded-full text-xs font-bold mb-6"
-        style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))' }}>{unit}</button>
+        style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))' }}>{unit}</button>
       {trend !== null && (
         <p className="text-sm font-semibold" style={{ color: trendColor }}>
           {trendEmoji} {Math.abs(trend).toFixed(1)} {unit} from last week
@@ -89,7 +89,7 @@ function MoodQuestion({ question, value, onChange }) {
             style={{
               background: i === selectedIdx ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--card))',
               border: i === selectedIdx ? '3px solid white' : '2px solid rgb(var(--border))',
-              boxShadow: i === selectedIdx ? '0 0 20px rgba(37,99,235,0.4)' : 'none',
+              boxShadow: i === selectedIdx ? '0 0 20px rgb(var(--primary) / 0.4)' : 'none',
             }}>
             {emoji}
           </motion.button>
@@ -124,10 +124,10 @@ function MultipleChoiceQuestion({ question, value, onChange }) {
               className="w-full py-4 rounded-2xl text-center font-bold text-white transition-all"
               style={{
                 background: selected
-                  ? 'linear-gradient(135deg, rgba(37,99,235,0.3), rgba(99,102,241,0.2))'
+                  ? 'linear-gradient(135deg, rgb(var(--primary) / 0.3), rgba(99,102,241,0.2))'
                   : 'rgba(255,255,255,0.05)',
                 border: selected ? '2px solid rgb(var(--primary))' : '1px solid rgba(255,255,255,0.1)',
-                boxShadow: selected ? '0 0 16px rgba(37,99,235,0.2)' : 'none',
+                boxShadow: selected ? '0 0 16px rgb(var(--primary) / 0.2)' : 'none',
               }}>
               {selected && <span className="mr-2">✓</span>}
               {opt}
@@ -252,7 +252,7 @@ export default function CheckInFormScreen({ form, responses, onResponseChange, o
         </button>
         <button onClick={goNext}
           className="flex-1 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 text-white"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
           {currentQ === totalQ - 1 ? 'Review' : 'Next'} <ChevronRight className="w-4 h-4" />
         </button>
       </div>

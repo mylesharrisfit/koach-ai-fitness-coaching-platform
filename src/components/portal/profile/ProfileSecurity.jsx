@@ -84,7 +84,7 @@ export default function ProfileSecurity() {
             <p className="text-white/30 text-[10px]">Extra layer of security</p>
           </div>
           <span className="text-[10px] px-2 py-1 rounded-full font-bold"
-            style={{ background: 'rgba(251,191,36,0.15)', color: '#FBB724' }}>Coming Soon</span>
+            style={{ background: 'rgb(var(--warning) / 0.15)', color: '#FBB724' }}>Coming Soon</span>
         </div>
       </div>
     </ProfileSectionCard>

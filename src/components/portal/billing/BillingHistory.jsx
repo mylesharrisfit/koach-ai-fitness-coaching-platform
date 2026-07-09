@@ -60,9 +60,9 @@ export default function BillingHistory({ payments, invoices }) {
           <button key={f.key} onClick={() => setFilter(f.key)}
             className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
-              background: filter === f.key ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)',
+              background: filter === f.key ? 'rgb(var(--primary) / 0.2)' : 'rgba(255,255,255,0.05)',
               color: filter === f.key ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.35)',
-              border: `1px solid ${filter === f.key ? 'rgba(59,130,246,0.3)' : 'transparent'}`,
+              border: `1px solid ${filter === f.key ? 'rgb(var(--primary) / 0.3)' : 'transparent'}`,
             }}>
             {f.label}
           </button>

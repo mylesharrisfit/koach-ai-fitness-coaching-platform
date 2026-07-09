@@ -24,7 +24,7 @@ export default function WLPublish({ s, onPublish, onSaveDraft, onRollback, onPre
         <div className="flex flex-col sm:flex-row gap-3">
           <button onClick={onPublish} disabled={publishing}
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white text-sm disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.25)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.25)' }}>
             {publishing
               ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               : <Rocket className="w-4 h-4" />

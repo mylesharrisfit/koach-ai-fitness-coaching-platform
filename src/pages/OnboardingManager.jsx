@@ -203,7 +203,7 @@ export default function OnboardingManager() {
             <h1 style="font-size:24px;font-weight:800;color:rgb(var(--foreground));margin:0 0 8px;letter-spacing:-0.02em;">Welcome, ${resp.name?.split(' ')[0]} 👋</h1>
             <p style="color:rgb(var(--muted-foreground));font-size:15px;line-height:1.6;margin:0 0 24px;">${coachName} has approved your application and set up your personal coaching portal. Click below to create your password and get started.</p>
             <div style="text-align:center;margin:28px 0;">
-              <a href="${setupUrl}" style="display:inline-block;background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--primary)));color:rgb(var(--card));font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:12px;box-shadow:0 4px 20px rgba(37,99,235,0.3);">Set Up My Account →</a>
+              <a href="${setupUrl}" style="display:inline-block;background:linear-gradient(135deg,rgb(var(--primary)),rgb(var(--primary)));color:rgb(var(--card));font-weight:700;font-size:15px;text-decoration:none;padding:14px 36px;border-radius:12px;box-shadow:0 4px 20px rgb(var(--primary) / 0.3);">Set Up My Account →</a>
             </div>
             <div style="background:rgb(var(--background));border-radius:10px;padding:16px 20px;margin:24px 0 0;">
               <p style="font-size:12px;color:rgb(var(--muted-foreground));margin:0 0 4px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Setup link</p>
@@ -311,7 +311,7 @@ export default function OnboardingManager() {
               <div>
                 {/* Badge */}
                 <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full mb-1.5"
-                  style={{ background: 'rgba(167,139,250,0.18)', border: '1px solid rgba(167,139,250,0.35)' }}>
+                  style={{ background: 'rgb(var(--ai) / 0.18)', border: '1px solid rgb(var(--ai) / 0.35)' }}>
                   <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--ai))' }}>Pro &amp; Elite</span>
                 </div>
                 <p className="text-base font-bold text-white leading-tight">AI Onboarding</p>
@@ -347,13 +347,13 @@ export default function OnboardingManager() {
               Click to get started →
             </span>
           ) : (
-            <span className="text-xs font-semibold" style={{ color: 'rgba(167,139,250,0.8)' }}>
+            <span className="text-xs font-semibold" style={{ color: 'rgb(var(--ai) / 0.8)' }}>
               Upgrade to Pro or Elite to unlock →
             </span>
           )}
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? 'rgb(var(--success))' : 'rgb(var(--ai))' }} />
-            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? 'rgb(var(--success))' : 'rgba(167,139,250,0.7)' }}>
+            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? 'rgb(var(--success))' : 'rgb(var(--ai) / 0.7)' }}>
               {canAIOnboard ? 'Available' : 'Pro+'}
             </span>
           </div>

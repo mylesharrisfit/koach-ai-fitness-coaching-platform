@@ -34,9 +34,9 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
               <button key={d} onClick={() => toggle(d)}
                 className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
                 style={{
-                  background: dietary.includes(d) ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)',
+                  background: dietary.includes(d) ? 'rgb(var(--success) / 0.2)' : 'rgba(255,255,255,0.06)',
                   color: dietary.includes(d) ? 'rgb(var(--success))' : 'rgba(255,255,255,0.4)',
-                  border: `1px solid ${dietary.includes(d) ? 'rgba(16,185,129,0.4)' : 'transparent'}`,
+                  border: `1px solid ${dietary.includes(d) ? 'rgb(var(--success) / 0.4)' : 'transparent'}`,
                 }}>
                 {d}
               </button>

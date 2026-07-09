@@ -76,7 +76,7 @@ export default function ProfileHeader({ user, client, program, checkIns }) {
         </div>
         <button onClick={() => fileRef.current?.click()}
           className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
-          style={{ background: 'rgb(var(--primary))', border: '2.5px solid white', boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'rgb(var(--primary))', border: '2.5px solid white', boxShadow: '0 2px 8px rgb(var(--primary) / 0.3)' }}>
           <Camera className="w-3.5 h-3.5 text-white" />
         </button>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />

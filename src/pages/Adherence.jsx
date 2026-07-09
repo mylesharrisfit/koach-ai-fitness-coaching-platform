@@ -320,7 +320,7 @@ export default function Adherence() {
       {/* ── At-Risk Alert ── */}
       {atRiskClients.length > 0 && (
         <div className="flex items-center gap-3 rounded-xl px-4 py-3 mb-5 text-sm"
-          style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: 'rgb(var(--destructive))' }}>
+          style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)', color: 'rgb(var(--destructive))' }}>
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           <span><strong>{atRiskClients.length} client{atRiskClients.length > 1 ? 's' : ''}</strong> below threshold: {atRiskClients.map(c => c.name).join(', ')}</span>
         </div>
@@ -377,7 +377,7 @@ export default function Adherence() {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all"
                 style={isActive
                   ? (t === 'All' ? { background: 'rgb(var(--sidebar))', color: 'rgb(var(--card))', borderColor: 'rgb(var(--foreground))' }
-                    : t === 'elite' ? { background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: 'rgb(var(--card))', borderColor: 'rgb(var(--primary))', boxShadow: '0 0 12px rgba(37,99,235,0.4)' }
+                    : t === 'elite' ? { background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))', color: 'rgb(var(--card))', borderColor: 'rgb(var(--primary))', boxShadow: '0 0 12px rgb(var(--primary) / 0.4)' }
                     : { background: TIER_STYLES[t]?.accent, color: 'rgb(var(--foreground))', borderColor: TIER_STYLES[t]?.accent, boxShadow: `0 0 10px ${TIER_STYLES[t]?.glow}` })
                   : { background: 'rgb(var(--card))', color: 'rgb(var(--muted-foreground))', borderColor: 'rgb(var(--border))' }
                 }
@@ -434,7 +434,7 @@ export default function Adherence() {
                   <span className="text-xs text-muted-foreground"><span className="font-bold text-foreground">{clientBadges.length}</span><span className="text-muted-foreground"> / {Object.keys(BADGE_CONFIG).length}</span></span>
                   <button onClick={() => openAwardFor('pr_hit', client.id)}
                     className="text-xs font-bold px-3 py-1 rounded-lg transition-all"
-                    style={{ background: 'rgba(255,215,0,0.12)', color: 'rgb(var(--warning))', border: '1px solid rgba(217,119,6,0.25)' }}>
+                    style={{ background: 'rgba(255,215,0,0.12)', color: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning) / 0.25)' }}>
                     + Award
                   </button>
                 </div>

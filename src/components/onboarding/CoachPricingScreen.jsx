@@ -160,7 +160,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                 {b.label}
                 {b.badge && (
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                    style={{ background: billing === b.key ? 'rgba(255,255,255,0.2)' : 'rgba(34,197,94,0.15)', color: billing === b.key ? 'rgb(var(--card))' : 'rgb(var(--success))' }}>
+                    style={{ background: billing === b.key ? 'rgba(255,255,255,0.2)' : 'rgb(var(--success) / 0.15)', color: billing === b.key ? 'rgb(var(--card))' : 'rgb(var(--success))' }}>
                     {b.badge}
                   </span>
                 )}
@@ -237,7 +237,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
         >
           {['30-day free trial', 'Cancel anytime', 'Card on file required'].map(t => (
             <div key={t} className="flex items-center gap-1.5">
-              <div className="w-3.5 h-3.5 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
+              <div className="w-3.5 h-3.5 rounded-full flex items-center justify-center" style={{ background: 'rgb(var(--success) / 0.15)' }}>
                 <Check className="w-2 h-2" style={{ color: 'rgb(var(--success))' }} />
               </div>
               <span className="text-[11px] font-medium" style={{ color: '#555' }}>{t}</span>
@@ -253,10 +253,10 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
           <motion.button
             onClick={handleStartTrial}
             disabled={loading}
-            whileHover={!loading ? { scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' } : {}}
+            whileHover={!loading ? { scale: 1.02, boxShadow: '0 0 40px rgb(var(--primary) / 0.45)' } : {}}
             whileTap={!loading ? { scale: 0.97 } : {}}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-            style={{ background: loading ? '#1a2a4a' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgba(59,130,246,0.3)', opacity: loading ? 0.7 : 1 }}
+            style={{ background: loading ? '#1a2a4a' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 28px rgb(var(--primary) / 0.3)', opacity: loading ? 0.7 : 1 }}
           >
             {loading ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Redirecting to checkout…</>

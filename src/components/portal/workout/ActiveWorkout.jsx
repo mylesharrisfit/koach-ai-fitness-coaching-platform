@@ -357,7 +357,7 @@ function ExercisePanel({ exercise, exIdx, totalEx, exerciseLogs, prevBest, onLog
               height: 60,
               fontSize: 17,
               background: logFlash ? 'rgb(var(--success))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-              boxShadow: '0 4px 20px rgba(37,99,235,0.4)',
+              boxShadow: '0 4px 20px rgb(var(--primary) / 0.4)',
             }}>
             {logFlash ? '✓ Logged!' : `LOG SET ✓`}
           </motion.button>
@@ -398,7 +398,7 @@ function ExercisePanel({ exercise, exIdx, totalEx, exerciseLogs, prevBest, onLog
               {showNotes && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
                   className="mt-2 px-4 py-3 rounded-2xl"
-                  style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.2)' }}>
+                  style={{ background: 'rgb(var(--warning) / 0.1)', border: '1px solid rgb(var(--warning) / 0.2)' }}>
                   <p className="text-warning text-xs leading-relaxed">{exercise.notes}</p>
                 </motion.div>
               )}

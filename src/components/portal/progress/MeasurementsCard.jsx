@@ -39,7 +39,7 @@ export default function MeasurementsCard({ checkIns, onLogMeasurements }) {
     }).join(' ');
     return (
       <svg width={w} height={h} className="flex-shrink-0">
-        <polyline points={pts} fill="none" stroke="rgba(59,130,246,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points={pts} fill="none" stroke="rgb(var(--primary) / 0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
@@ -53,7 +53,7 @@ export default function MeasurementsCard({ checkIns, onLogMeasurements }) {
         <div className="py-8 text-center">
           <p className="text-white/30 text-xs">No measurements logged yet</p>
           <button onClick={onLogMeasurements} className="mt-3 px-4 py-2 rounded-xl text-xs font-bold text-white"
-            style={{ background: 'rgba(59,130,246,0.2)', border: '1px solid rgba(59,130,246,0.3)' }}>
+            style={{ background: 'rgb(var(--primary) / 0.2)', border: '1px solid rgb(var(--primary) / 0.3)' }}>
             + Log Measurements
           </button>
         </div>
@@ -67,7 +67,7 @@ export default function MeasurementsCard({ checkIns, onLogMeasurements }) {
         <p className="text-white font-bold text-sm">📏 Body Measurements</p>
         <button onClick={onLogMeasurements}
           className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
-          style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))', border: '1px solid rgba(59,130,246,0.25)' }}>
+          style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.25)' }}>
           <Plus className="w-3 h-3" /> Log
         </button>
       </div>

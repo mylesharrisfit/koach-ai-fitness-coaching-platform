@@ -35,15 +35,15 @@ export default function CoachClientsScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.985 }}
               className="w-full flex items-center gap-5 px-5 py-4 rounded-2xl text-left transition-all"
               style={{
-                background: isSelected ? 'rgba(59,130,246,0.09)' : 'rgb(var(--foreground))',
-                border: isSelected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
-                boxShadow: isSelected ? '0 0 24px rgba(59,130,246,0.12)' : 'none',
+                background: isSelected ? 'rgb(var(--primary) / 0.09)' : 'rgb(var(--foreground))',
+                border: isSelected ? '1.5px solid rgb(var(--primary) / 0.5)' : '1.5px solid rgba(255,255,255,0.06)',
+                boxShadow: isSelected ? '0 0 24px rgb(var(--primary) / 0.12)' : 'none',
               }}
             >
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg"
                 style={{
-                  background: isSelected ? 'rgba(59,130,246,0.18)' : 'rgba(255,255,255,0.04)',
+                  background: isSelected ? 'rgb(var(--primary) / 0.18)' : 'rgba(255,255,255,0.04)',
                   color: isSelected ? 'rgb(var(--primary))' : '#555',
                 }}
               >
@@ -57,7 +57,7 @@ export default function CoachClientsScreen({ onNext, onBack, data }) {
               <span
                 className="text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
                 style={{
-                  background: isSelected ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.04)',
+                  background: isSelected ? 'rgb(var(--primary) / 0.15)' : 'rgba(255,255,255,0.04)',
                   color: isSelected ? 'rgb(var(--primary))' : '#444',
                 }}
               >

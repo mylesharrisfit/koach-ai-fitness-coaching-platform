@@ -287,7 +287,7 @@ export default function Clients() {
           <button
             onClick={() => setShowCleanup(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
-            style={{ background: 'rgba(239,68,68,0.15)', color: 'rgb(var(--destructive))', border: '1px solid rgba(239,68,68,0.25)' }}
+            style={{ background: 'rgb(var(--destructive) / 0.15)', color: 'rgb(var(--destructive))', border: '1px solid rgb(var(--destructive) / 0.25)' }}
             title="Review & delete test import records"
           >
             <Trash2 className="w-4 h-4" />

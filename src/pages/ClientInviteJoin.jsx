@@ -76,7 +76,7 @@ function Input({ label, value, onChange, type = 'text', placeholder, required, h
           background: 'rgb(var(--foreground))', color: 'rgb(var(--card))', border: '1.5px solid rgba(255,255,255,0.08)',
           outline: 'none', boxSizing: 'border-box',
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
+        onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.6)'}
         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
       />
       {hint && <div style={{ color: 'rgb(var(--foreground))', fontSize: 10, marginTop: 4 }}>{hint}</div>}
@@ -98,7 +98,7 @@ function Textarea({ label, value, onChange, placeholder, rows = 3 }) {
           background: 'rgb(var(--foreground))', color: 'rgb(var(--card))', border: '1.5px solid rgba(255,255,255,0.08)',
           outline: 'none', resize: 'none', boxSizing: 'border-box',
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
+        onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.6)'}
         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
       />
     </div>
@@ -148,7 +148,7 @@ function PasswordInput({ value, onChange }) {
             background: 'rgb(var(--foreground))', color: 'rgb(var(--card))', border: '1.5px solid rgba(255,255,255,0.08)',
             outline: 'none', boxSizing: 'border-box',
           }}
-          onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
+          onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.6)'}
           onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
         />
         <button type="button" onClick={() => setShow(s => !s)}
@@ -174,8 +174,8 @@ function Chip({ label, selected, onClick }) {
   return (
     <button type="button" onClick={onClick} style={{
       padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 500, cursor: 'pointer',
-      background: selected ? 'rgba(37,99,235,0.12)' : 'rgba(255,255,255,0.04)',
-      border: `1.5px solid ${selected ? 'rgba(37,99,235,0.55)' : 'rgba(255,255,255,0.07)'}`,
+      background: selected ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+      border: `1.5px solid ${selected ? 'rgb(var(--primary) / 0.55)' : 'rgba(255,255,255,0.07)'}`,
       color: selected ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
       transition: 'all 0.15s',
     }}>
@@ -190,7 +190,7 @@ function CTAButton({ label, onClick, disabled }) {
       <button onClick={onClick} disabled={disabled} style={{
         width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
         background: disabled ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-        boxShadow: disabled ? 'none' : '0 0 28px rgba(37,99,235,0.3)',
+        boxShadow: disabled ? 'none' : '0 0 28px rgb(var(--primary) / 0.3)',
         color: disabled ? '#444' : 'rgb(var(--card))',
         border: 'none', cursor: disabled ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s',
@@ -228,7 +228,7 @@ function Welcome({ onNext, onSkip }) {
           <button onClick={onNext} style={{
             width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
             background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-            boxShadow: '0 0 28px rgba(37,99,235,0.35)',
+            boxShadow: '0 0 28px rgb(var(--primary) / 0.35)',
             color: 'rgb(var(--card))', border: 'none', cursor: 'pointer',
           }}>
             Get Started →
@@ -333,7 +333,7 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
                 {data.avatar_url ? <img src={data.avatar_url} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 24 }}>📷</span>}
               </div>
               <div>
-                <button type="button" onClick={() => fileRef.current?.click()} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.3)', color: 'rgb(var(--primary))', cursor: 'pointer' }}>
+                <button type="button" onClick={() => fileRef.current?.click()} style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'rgb(var(--primary) / 0.12)', border: '1px solid rgb(var(--primary) / 0.3)', color: 'rgb(var(--primary))', cursor: 'pointer' }}>
                   {uploading ? 'Uploading…' : data.avatar_url ? 'Change Photo' : 'Upload Photo'}
                 </button>
                 <div style={{ color: 'rgb(var(--foreground))', fontSize: 10, marginTop: 4 }}>You can skip and add later</div>
@@ -372,7 +372,7 @@ function Step4({ data, set, onNext, onBack, onSkip, saving }) {
               <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#4B5563', fontSize: 14, fontWeight: 600 }}>$</span>
               <input type="number" value={data.monthly_rate || ''} onChange={e => set('monthly_rate', e.target.value)} placeholder="150"
                 style={{ width: '100%', padding: '12px 48px 12px 32px', borderRadius: 12, fontSize: 14, background: 'rgb(var(--foreground))', color: 'rgb(var(--card))', border: '1.5px solid rgba(255,255,255,0.08)', outline: 'none', boxSizing: 'border-box' }}
-                onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
+                onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.6)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
               <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: '#4B5563', fontSize: 12 }}>/mo</span>
             </div>
@@ -397,8 +397,8 @@ function Step4({ data, set, onNext, onBack, onSkip, saving }) {
           ].map(opt => (
             <button key={opt.value} type="button" onClick={() => set('payment_method', opt.value)} style={{
               width: '100%', display: 'flex', alignItems: 'flex-start', gap: 12, padding: '14px', borderRadius: 12, textAlign: 'left', marginBottom: 10, cursor: 'pointer',
-              background: paymentMethod === opt.value ? 'rgba(37,99,235,0.1)' : 'rgba(255,255,255,0.03)',
-              border: `1.5px solid ${paymentMethod === opt.value ? 'rgba(37,99,235,0.55)' : 'rgba(255,255,255,0.07)'}`,
+              background: paymentMethod === opt.value ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.03)',
+              border: `1.5px solid ${paymentMethod === opt.value ? 'rgb(var(--primary) / 0.55)' : 'rgba(255,255,255,0.07)'}`,
             }}>
               <div style={{ width: 16, height: 16, borderRadius: '50%', flexShrink: 0, marginTop: 2, border: `2px solid ${paymentMethod === opt.value ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.15)'}`, background: paymentMethod === opt.value ? 'rgb(var(--primary))' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {paymentMethod === opt.value && <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgb(var(--card))' }} />}
@@ -455,7 +455,7 @@ function Step5({ firstName }) {
           <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {checklist.map(({ label, done }) => (
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: done ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.05)', border: `1.5px solid ${done ? 'rgb(var(--success))' : 'rgba(255,255,255,0.1)'}` }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: done ? 'rgb(var(--success) / 0.15)' : 'rgba(255,255,255,0.05)', border: `1.5px solid ${done ? 'rgb(var(--success))' : 'rgba(255,255,255,0.1)'}` }}>
                   {done
                     ? <svg viewBox="0 0 12 12" fill="none" style={{ width: 12, height: 12 }}><path d="M2 6L5 9L10 3" stroke="rgb(var(--success))" strokeWidth="2" strokeLinecap="round" /></svg>
                     : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />}
@@ -470,7 +470,7 @@ function Step5({ firstName }) {
           <button onClick={go} style={{
             width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
             background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-            boxShadow: '0 0 32px rgba(37,99,235,0.35)',
+            boxShadow: '0 0 32px rgb(var(--primary) / 0.35)',
             color: 'rgb(var(--card))', border: 'none', cursor: 'pointer',
           }}>
             Go to Dashboard →

@@ -186,7 +186,7 @@ export default function ExerciseLibrary() {
         <div className="flex items-center gap-2 flex-wrap">
 <button onClick={() => { setEditingExercise(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', boxShadow: '0 2px 12px rgba(37,99,235,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))', boxShadow: '0 2px 12px rgb(var(--primary) / 0.4)' }}>
             <Plus className="w-4 h-4" /> Add Exercise
           </button>
         </div>

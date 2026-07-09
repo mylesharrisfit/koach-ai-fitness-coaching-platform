@@ -37,8 +37,8 @@ function DarkCard({ children, className = '', glow = false }) {
     <div className={`rounded-2xl p-4 ${className}`}
       style={{
         background: '#161616',
-        border: glow ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.06)',
-        boxShadow: glow ? '0 0 20px rgba(59,130,246,0.06)' : 'none',
+        border: glow ? '1px solid rgb(var(--primary) / 0.2)' : '1px solid rgba(255,255,255,0.06)',
+        boxShadow: glow ? '0 0 20px rgb(var(--primary) / 0.06)' : 'none',
       }}>
       {children}
     </div>
@@ -85,7 +85,7 @@ export default function ClientRevealDashboard({ data }) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15, duration: 0.45 }}
         className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3"
-        style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(29,78,216,0.08))', border: '1px solid rgba(59,130,246,0.2)' }}
+        style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.12), rgb(var(--primary) / 0.08))', border: '1px solid rgb(var(--primary) / 0.2)' }}
       >
         <span className="text-xl">🔥</span>
         <div className="flex-1">
@@ -124,7 +124,7 @@ export default function ClientRevealDashboard({ data }) {
                 <p className="text-xs uppercase tracking-widest font-semibold mb-1" style={{ color: '#7A7A7A' }}>Today's Workout</p>
                 <p className="text-base font-bold text-white">Upper Body — Push A</p>
               </div>
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.12)' }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgb(var(--primary) / 0.12)' }}>
                 <Zap className="w-4 h-4" style={{ color: 'rgb(var(--primary))' }} />
               </div>
             </div>
@@ -189,8 +189,8 @@ export default function ClientRevealDashboard({ data }) {
           <div
             className="p-4 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(29,78,216,0.04))',
-              border: '1px solid rgba(59,130,246,0.15)',
+              background: 'linear-gradient(135deg, rgb(var(--primary) / 0.08), rgb(var(--primary) / 0.04))',
+              border: '1px solid rgb(var(--primary) / 0.15)',
             }}
           >
             <div className="flex items-start gap-3">

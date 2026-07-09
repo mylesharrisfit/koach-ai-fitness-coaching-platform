@@ -62,9 +62,9 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
                   ? '2px solid rgb(var(--accent))'
                   : '1.5px solid rgb(var(--muted))',
                 boxShadow: isSelected
-                  ? '0 6px 20px rgba(37,99,235,0.35)'
+                  ? '0 6px 20px rgb(var(--primary) / 0.35)'
                   : isTodayCard
-                  ? '0 2px 12px rgba(37,99,235,0.12)'
+                  ? '0 2px 12px rgb(var(--primary) / 0.12)'
                   : '0 1px 6px rgba(0,0,0,0.05)',
                 display: 'flex',
                 flexDirection: 'column',

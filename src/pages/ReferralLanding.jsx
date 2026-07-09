@@ -157,7 +157,7 @@ export default function ReferralLanding() {
       {/* CTA */}
       <div className="px-5 py-12 bg-gradient-to-t from-muted">
         <button className="w-full max-w-2xl mx-auto block py-4 rounded-xl font-black text-white text-lg flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 32px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 32px rgb(var(--primary) / 0.3)' }}>
           Claim Your Spot <ArrowRight className="w-5 h-5" />
         </button>
         <p className="text-center text-muted-foreground text-sm mt-4">

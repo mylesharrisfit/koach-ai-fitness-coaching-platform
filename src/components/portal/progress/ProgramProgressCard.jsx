@@ -25,7 +25,7 @@ export default function ProgramProgressCard({ program, workoutSessions, client }
 
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{ background: 'rgba(59,130,246,0.15)' }}>
+          style={{ background: 'rgb(var(--primary) / 0.15)' }}>
           <Dumbbell className="w-5 h-5 text-primary" />
         </div>
         <div>
@@ -44,11 +44,11 @@ export default function ProgramProgressCard({ program, workoutSessions, client }
       </div>
 
       <div className="grid grid-cols-2 gap-2 mb-3">
-        <div className="p-2.5 rounded-xl text-center" style={{ background: 'rgba(59,130,246,0.08)' }}>
+        <div className="p-2.5 rounded-xl text-center" style={{ background: 'rgb(var(--primary) / 0.08)' }}>
           <p className="text-primary font-bold text-lg">{stats.completed}</p>
           <p className="text-white/30 text-[9px]">Workouts Done</p>
         </div>
-        <div className="p-2.5 rounded-xl text-center" style={{ background: 'rgba(124,58,237,0.08)' }}>
+        <div className="p-2.5 rounded-xl text-center" style={{ background: 'rgb(var(--ai) / 0.08)' }}>
           <p className="text-ai font-bold text-lg">{stats.totalWeeks - stats.currentWeek + 1}</p>
           <p className="text-white/30 text-[9px]">Weeks Left</p>
         </div>

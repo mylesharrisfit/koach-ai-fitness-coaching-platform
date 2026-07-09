@@ -10,7 +10,7 @@ export default function ProfileCoachCard({ client, onMessage }) {
         <div className="w-11 h-11 rounded-full flex items-center justify-center font-black text-sm text-white flex-shrink-0"
           style={{
             background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-            boxShadow: '0 0 0 3px white, 0 0 0 5px rgba(37,99,235,0.25)',
+            boxShadow: '0 0 0 3px white, 0 0 0 5px rgb(var(--primary) / 0.25)',
           }}>
           C
         </div>
@@ -20,7 +20,7 @@ export default function ProfileCoachCard({ client, onMessage }) {
         </div>
         <button onClick={onMessage}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 2px 10px rgba(37,99,235,0.25)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 2px 10px rgb(var(--primary) / 0.25)' }}>
           <MessageSquare className="w-3.5 h-3.5" />
           Message
         </button>

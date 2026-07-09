@@ -83,7 +83,7 @@ export default function CoachGenerationScreen({ onNext }) {
         <motion.div
           className="w-[700px] h-[700px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 65%)',
+            background: 'radial-gradient(circle, rgb(var(--primary) / 0.1) 0%, transparent 65%)',
             filter: 'blur(80px)',
           }}
           animate={{ scale: [1, 1.1, 1] }}
@@ -156,14 +156,14 @@ export default function CoachGenerationScreen({ onNext }) {
                 className="flex items-center gap-4 px-5 py-3.5 rounded-2xl"
                 style={{
                   background: status === 'done'
-                    ? 'rgba(34,197,94,0.06)'
+                    ? 'rgb(var(--success) / 0.06)'
                     : status === 'loading'
-                    ? 'rgba(59,130,246,0.08)'
+                    ? 'rgb(var(--primary) / 0.08)'
                     : 'rgba(255,255,255,0.02)',
                   border: status === 'done'
-                    ? '1px solid rgba(34,197,94,0.22)'
+                    ? '1px solid rgb(var(--success) / 0.22)'
                     : status === 'loading'
-                    ? '1px solid rgba(59,130,246,0.28)'
+                    ? '1px solid rgb(var(--primary) / 0.28)'
                     : '1px solid rgba(255,255,255,0.04)',
                   transition: 'background 0.4s, border 0.4s',
                 }}
@@ -174,7 +174,7 @@ export default function CoachGenerationScreen({ onNext }) {
                     {item.label}
                   </p>
                   <p className="text-[11px] mt-0.5" style={{
-                    color: status === 'done' ? 'rgba(34,197,94,0.75)' : status === 'loading' ? 'rgba(59,130,246,0.75)' : '#3A3A3A',
+                    color: status === 'done' ? 'rgb(var(--success) / 0.75)' : status === 'loading' ? 'rgb(var(--primary) / 0.75)' : '#3A3A3A',
                   }}>
                     {status === 'done' ? 'Activated' : status === 'loading' ? 'Initializing…' : 'Queued'}
                   </p>

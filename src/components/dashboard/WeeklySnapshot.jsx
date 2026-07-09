@@ -139,7 +139,7 @@ export default function WeeklySnapshot({ checkIns = [], clients = [] }) {
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-border">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15))' }}>
+            style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgb(var(--ai) / 0.15))' }}>
             <BarChart2 className="w-3.5 h-3.5" style={{ color: 'rgb(var(--ai))' }} />
           </div>
           <h2 className="text-sm font-bold text-foreground">Weekly Snapshot</h2>

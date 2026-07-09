@@ -80,8 +80,8 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
 
               <button onClick={() => setView('pause')}
                 className="w-full flex items-center gap-4 p-4 rounded-2xl text-left"
-                style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(245,158,11,0.15)' }}>
+                style={{ background: 'rgb(var(--warning) / 0.08)', border: '1px solid rgb(var(--warning) / 0.2)' }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgb(var(--warning) / 0.15)' }}>
                   <PauseCircle className="w-5 h-5 text-warning" />
                 </div>
                 <div>
@@ -92,8 +92,8 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
 
               <button onClick={() => setView('cancel')}
                 className="w-full flex items-center gap-4 p-4 rounded-2xl text-left"
-                style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.15)' }}>
+                style={{ background: 'rgb(var(--destructive) / 0.08)', border: '1px solid rgb(var(--destructive) / 0.2)' }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgb(var(--destructive) / 0.15)' }}>
                   <XCircle className="w-5 h-5 text-destructive" />
                 </div>
                 <div>
@@ -111,7 +111,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
                 {PAUSE_DURATIONS.map(d => (
                   <button key={d} onClick={() => setPauseDuration(d)}
                     className="w-full flex items-center justify-between p-4 rounded-2xl text-sm font-semibold"
-                    style={{ background: pauseDuration === d ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${pauseDuration === d ? 'rgba(59,130,246,0.3)' : 'rgba(255,255,255,0.08)'}`, color: pauseDuration === d ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.7)' }}>
+                    style={{ background: pauseDuration === d ? 'rgb(var(--primary) / 0.15)' : 'rgba(255,255,255,0.05)', border: `1px solid ${pauseDuration === d ? 'rgb(var(--primary) / 0.3)' : 'rgba(255,255,255,0.08)'}`, color: pauseDuration === d ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.7)' }}>
                     {d}
                     {pauseDuration === d && <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-card" /></div>}
                   </button>
@@ -122,7 +122,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }} />
               <button onClick={handlePause} disabled={!pauseDuration || submitting}
                 className="w-full py-4 rounded-2xl text-sm font-bold transition-all"
-                style={{ background: pauseDuration ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.05)', color: pauseDuration ? 'rgb(var(--warning))' : 'rgba(255,255,255,0.2)', border: `1px solid ${pauseDuration ? 'rgba(245,158,11,0.3)' : 'transparent'}` }}>
+                style={{ background: pauseDuration ? 'rgb(var(--warning) / 0.2)' : 'rgba(255,255,255,0.05)', color: pauseDuration ? 'rgb(var(--warning))' : 'rgba(255,255,255,0.2)', border: `1px solid ${pauseDuration ? 'rgb(var(--warning) / 0.3)' : 'transparent'}` }}>
                 {submitting ? 'Pausing...' : `Pause for ${pauseDuration || '...'}`}
               </button>
             </div>
@@ -130,7 +130,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
 
           {view === 'cancel' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl flex items-start gap-3" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <div className="p-4 rounded-2xl flex items-start gap-3" style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.2)' }}>
                 <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
                 <p className="text-destructive text-sm">Cancelling will end your coaching relationship. You'll lose access to your program, check-ins, and coaching support.</p>
               </div>
@@ -140,7 +140,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
                 {CANCEL_REASONS.map(r => (
                   <button key={r} onClick={() => setCancelReason(r)}
                     className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold"
-                    style={{ background: cancelReason === r ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.04)', color: cancelReason === r ? 'rgb(var(--destructive))' : 'rgba(255,255,255,0.5)', border: `1px solid ${cancelReason === r ? 'rgba(239,68,68,0.25)' : 'transparent'}` }}>
+                    style={{ background: cancelReason === r ? 'rgb(var(--destructive) / 0.12)' : 'rgba(255,255,255,0.04)', color: cancelReason === r ? 'rgb(var(--destructive))' : 'rgba(255,255,255,0.5)', border: `1px solid ${cancelReason === r ? 'rgb(var(--destructive) / 0.25)' : 'transparent'}` }}>
                     {r}
                   </button>
                 ))}
@@ -151,7 +151,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
                 {[{ val: 'end', label: 'End of billing period', sub: 'Keep access until your paid period ends' }, { val: 'now', label: 'Immediately', sub: 'Lose access right away' }].map(opt => (
                   <button key={opt.val} onClick={() => setCancelWhen(opt.val)}
                     className="w-full text-left p-3 rounded-xl text-sm"
-                    style={{ background: cancelWhen === opt.val ? 'rgba(239,68,68,0.08)' : 'rgba(255,255,255,0.04)', border: `1px solid ${cancelWhen === opt.val ? 'rgba(239,68,68,0.2)' : 'transparent'}` }}>
+                    style={{ background: cancelWhen === opt.val ? 'rgb(var(--destructive) / 0.08)' : 'rgba(255,255,255,0.04)', border: `1px solid ${cancelWhen === opt.val ? 'rgb(var(--destructive) / 0.2)' : 'transparent'}` }}>
                     <p className="text-white font-semibold">{opt.label}</p>
                     <p className="text-white/30 text-xs mt-0.5">{opt.sub}</p>
                   </button>
@@ -162,12 +162,12 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
                 <p className="text-white/50 text-xs mb-2">Type <span className="text-destructive font-bold">CANCEL</span> to confirm</p>
                 <input value={confirmText} onChange={e => setConfirmText(e.target.value)} placeholder="Type CANCEL"
                   className="w-full px-4 py-3 rounded-xl text-sm text-white outline-none"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${confirmText === 'CANCEL' ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.1)'}` }} />
+                  style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${confirmText === 'CANCEL' ? 'rgb(var(--destructive) / 0.4)' : 'rgba(255,255,255,0.1)'}` }} />
               </div>
 
               <button onClick={handleCancel} disabled={confirmText !== 'CANCEL' || submitting}
                 className="w-full py-4 rounded-2xl text-sm font-bold"
-                style={{ background: confirmText === 'CANCEL' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.05)', color: confirmText === 'CANCEL' ? 'rgb(var(--destructive))' : 'rgba(255,255,255,0.2)', border: `1px solid ${confirmText === 'CANCEL' ? 'rgba(239,68,68,0.3)' : 'transparent'}` }}>
+                style={{ background: confirmText === 'CANCEL' ? 'rgb(var(--destructive) / 0.2)' : 'rgba(255,255,255,0.05)', color: confirmText === 'CANCEL' ? 'rgb(var(--destructive))' : 'rgba(255,255,255,0.2)', border: `1px solid ${confirmText === 'CANCEL' ? 'rgb(var(--destructive) / 0.3)' : 'transparent'}` }}>
                 {submitting ? 'Cancelling...' : 'Cancel Subscription'}
               </button>
             </div>

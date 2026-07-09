@@ -154,7 +154,7 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
     return (
       <div className="px-4">
         <div className="rounded-3xl p-5 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: '1px solid #A7F3D0', boxShadow: '0 4px 24px rgba(16,185,129,0.12)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--success)), rgb(var(--success)))', border: '1px solid #A7F3D0', boxShadow: '0 4px 24px rgb(var(--success) / 0.12)' }}>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-success flex items-center justify-center text-2xl flex-shrink-0">🎉</div>
             <div>
@@ -189,7 +189,7 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
     <div className="px-4">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-3xl overflow-hidden"
-        style={{ background: gradient, boxShadow: '0 8px 32px rgba(37,99,235,0.3)' }}>
+        style={{ background: gradient, boxShadow: '0 8px 32px rgb(var(--primary) / 0.3)' }}>
         <div className="p-5" style={{ background: 'rgba(0,0,0,0.12)' }}>
           <div className="mb-4">
             <span className="inline-block px-3 py-1 rounded-full text-[10px] font-black text-white/80 uppercase tracking-widest mb-3"
@@ -246,7 +246,7 @@ function CoachMsgCard({ msg, navigate }) {
     <div className="px-4">
       <motion.button whileTap={{ scale: 0.98 }} onClick={() => navigate('/portal/messages')}
         className="w-full bg-card rounded-2xl p-4 text-left flex items-center gap-3"
-        style={{ boxShadow: '0 2px 20px rgba(37,99,235,0.08)', border: '1px solid rgb(var(--accent))', borderLeft: '4px solid rgb(var(--primary))' }}>
+        style={{ boxShadow: '0 2px 20px rgb(var(--primary) / 0.08)', border: '1px solid rgb(var(--accent))', borderLeft: '4px solid rgb(var(--primary))' }}>
         <div className="relative flex-shrink-0">
           <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
             style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>C</div>
@@ -351,7 +351,7 @@ function WeeklyDots({ recentLogs, checkIns, streak }) {
                     width: isToday ? 36 : 28, height: isToday ? 36 : 28,
                     background: isToday ? 'transparent' : bg,
                     border: isToday ? '2.5px solid rgb(var(--primary))' : status === 'done' ? 'none' : '1.5px solid rgb(var(--border))',
-                    boxShadow: isToday ? '0 0 0 3px rgba(37,99,235,0.15)' : 'none',
+                    boxShadow: isToday ? '0 0 0 3px rgb(var(--primary) / 0.15)' : 'none',
                   }}>
                   {status === 'done' && !isToday && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
                   {status === 'missed' && !isToday && <span className="text-destructive text-[9px] font-bold">✕</span>}

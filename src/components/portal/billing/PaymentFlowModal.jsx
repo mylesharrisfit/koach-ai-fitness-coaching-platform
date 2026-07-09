@@ -40,7 +40,7 @@ function PaymentSummary({ invoice, onNext, onClose }) {
         {/* Saved card option */}
         <div>
           <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-2">Pay with</p>
-          <div className="p-4 rounded-2xl" style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)' }}>
+          <div className="p-4 rounded-2xl" style={{ background: 'rgb(var(--primary) / 0.1)', border: '1px solid rgb(var(--primary) / 0.25)' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CreditCard className="w-5 h-5 text-primary" />
@@ -63,7 +63,7 @@ function PaymentSummary({ invoice, onNext, onClose }) {
       <div className="px-5 pb-8 pt-3">
         <button onClick={onNext}
           className="w-full py-4 rounded-2xl text-base font-black text-white"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 24px rgba(37,99,235,0.35)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 24px rgb(var(--primary) / 0.35)' }}>
           Continue — {fmt(invoice.amount)}
         </button>
         <div className="flex items-center justify-center gap-2 mt-3">
@@ -178,7 +178,7 @@ function PaymentConfirmation({ invoice, status, error, user, onBack }) {
       <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center h-full px-5 pb-16 text-center">
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.1 }}
-          className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(16,185,129,0.2)' }}>
+          className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgb(var(--success) / 0.2)' }}>
           <CheckCircle2 className="w-10 h-10 text-success" />
         </motion.div>
         <h2 className="text-white font-black text-2xl mb-2">Payment Successful! 🎉</h2>
@@ -197,7 +197,7 @@ function PaymentConfirmation({ invoice, status, error, user, onBack }) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
       className="flex flex-col items-center justify-center h-full px-5 pb-16 text-center">
-      <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(239,68,68,0.15)' }}>
+      <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgb(var(--destructive) / 0.15)' }}>
         <AlertCircle className="w-10 h-10 text-destructive" />
       </div>
       <h2 className="text-white font-black text-2xl mb-2">Payment Failed</h2>

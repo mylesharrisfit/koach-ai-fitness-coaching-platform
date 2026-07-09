@@ -44,8 +44,8 @@ export default function HabitMode({ meals, loggedHabits, onToggleHabit }) {
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 className={cn('w-full flex items-center gap-4 p-4 rounded-2xl text-left transition-all')}
                 style={{
-                  background: done ? 'rgba(34,197,94,0.1)' : 'rgba(255,255,255,0.05)',
-                  border: `1px solid ${done ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.08)'}`,
+                  background: done ? 'rgb(var(--success) / 0.1)' : 'rgba(255,255,255,0.05)',
+                  border: `1px solid ${done ? 'rgb(var(--success) / 0.25)' : 'rgba(255,255,255,0.08)'}`,
                 }}>
                 <span className="text-2xl flex-shrink-0">{habit.emoji}</span>
                 <div className="flex-1 min-w-0">

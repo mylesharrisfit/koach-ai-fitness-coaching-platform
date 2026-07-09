@@ -14,7 +14,7 @@ export default function ProfileAppearance() {
           <button key={o.value} onClick={() => onChange(o.value)}
             className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
-              background: value === o.value ? 'rgba(59,130,246,0.3)' : 'transparent',
+              background: value === o.value ? 'rgb(var(--primary) / 0.3)' : 'transparent',
               color: value === o.value ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)',
             }}>
             {o.label}
@@ -39,7 +39,7 @@ export default function ProfileAppearance() {
           <div className="flex items-center justify-between">
             <p className="text-white/60 text-sm">English</p>
             <span className="text-[10px] px-2 py-1 rounded-full font-bold"
-              style={{ background: 'rgba(251,191,36,0.15)', color: '#FBB724' }}>Coming Soon</span>
+              style={{ background: 'rgb(var(--warning) / 0.15)', color: '#FBB724' }}>Coming Soon</span>
           </div>
         </div>
       </div>

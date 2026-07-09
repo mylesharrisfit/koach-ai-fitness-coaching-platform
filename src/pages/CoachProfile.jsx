@@ -181,7 +181,7 @@ function ProfilePreviewCard({ profile }) {
     <div className="bg-gradient-to-br from-sidebar to-sidebar rounded-2xl p-6 text-white max-w-sm mx-auto">
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden flex items-center justify-center text-xl font-black"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 0 3px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 0 3px rgb(var(--primary) / 0.3)' }}>
           {profile.avatar_url
             ? <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
             : name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
@@ -203,7 +203,7 @@ function ProfilePreviewCard({ profile }) {
       {profile.specialties?.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4">
           {profile.specialties.slice(0, 4).map(s => (
-            <span key={s} className="px-2 py-1 rounded-full text-[10px] font-semibold" style={{ background: 'rgba(59,130,246,0.2)', color: 'rgb(var(--primary))' }}>{s}</span>
+            <span key={s} className="px-2 py-1 rounded-full text-[10px] font-semibold" style={{ background: 'rgb(var(--primary) / 0.2)', color: 'rgb(var(--primary))' }}>{s}</span>
           ))}
           {profile.specialties.length > 4 && (
             <span className="px-2 py-1 rounded-full text-[10px] font-semibold" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>+{profile.specialties.length - 4}</span>
@@ -388,7 +388,7 @@ export default function CoachProfile() {
           <button onClick={() => save()}
             disabled={saving}
             className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60 transition-opacity"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
           </button>
@@ -403,7 +403,7 @@ export default function CoachProfile() {
             <div className="flex flex-col items-center mb-8">
               <div className="relative mb-4">
                 <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center text-3xl font-black text-white"
-                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 0 4px white, 0 0 0 6px rgba(37,99,235,0.3)' }}>
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 0 0 4px white, 0 0 0 6px rgb(var(--primary) / 0.3)' }}>
                   {profile.avatar_url
                     ? <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
                     : initials
@@ -411,7 +411,7 @@ export default function CoachProfile() {
                 </div>
                 <button onClick={() => fileRef.current?.click()}
                   className="absolute bottom-0 right-0 w-9 h-9 rounded-full flex items-center justify-center text-white"
-                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 2px 8px rgba(37,99,235,0.4), 0 0 0 3px white' }}>
+                  style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 2px 8px rgb(var(--primary) / 0.4), 0 0 0 3px white' }}>
                   <Camera className="w-4 h-4" />
                 </button>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
@@ -546,7 +546,7 @@ export default function CoachProfile() {
           <button onClick={() => save()}
             disabled={saving}
             className="px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
           </button>

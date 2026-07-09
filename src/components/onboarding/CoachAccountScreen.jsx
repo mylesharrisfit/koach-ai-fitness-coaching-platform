@@ -98,7 +98,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
                   background: '#141414',
                   border: '1px solid rgba(255,255,255,0.08)',
                 }}
-                onFocus={e => e.target.style.borderColor = 'rgba(59,130,246,0.5)'}
+                onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.5)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
               />
             </div>
@@ -119,7 +119,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
                   background: '#141414',
                   border: '1px solid rgba(255,255,255,0.08)',
                 }}
-                onFocus={e => e.target.style.borderColor = 'rgba(59,130,246,0.5)'}
+                onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.5)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
               />
             </div>
@@ -140,7 +140,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
                   background: '#141414',
                   border: '1px solid rgba(255,255,255,0.08)',
                 }}
-                onFocus={e => e.target.style.borderColor = 'rgba(59,130,246,0.5)'}
+                onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.5)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
               />
               <button
@@ -169,7 +169,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
                   background: '#141414',
                   border: '1px solid rgba(255,255,255,0.08)',
                 }}
-                onFocus={e => e.target.style.borderColor = 'rgba(59,130,246,0.5)'}
+                onFocus={e => e.target.style.borderColor = 'rgb(var(--primary) / 0.5)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
                 onKeyDown={e => e.key === 'Enter' && canSubmit && handleSubmit()}
               />
@@ -210,7 +210,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-sm text-center py-2 px-4 rounded-xl"
-              style={{ color: 'rgb(var(--destructive))', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+              style={{ color: 'rgb(var(--destructive))', background: 'rgb(var(--destructive) / 0.08)', border: '1px solid rgb(var(--destructive) / 0.2)' }}
             >
               {error}
             </motion.p>
@@ -232,12 +232,12 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
           <motion.button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            whileHover={canSubmit ? { scale: 1.02, boxShadow: '0 0 40px rgba(59,130,246,0.45)' } : {}}
+            whileHover={canSubmit ? { scale: 1.02, boxShadow: '0 0 40px rgb(var(--primary) / 0.45)' } : {}}
             whileTap={canSubmit ? { scale: 0.97 } : {}}
             className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5 transition-opacity"
             style={{
               background: canSubmit ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))' : 'rgb(var(--foreground))',
-              boxShadow: canSubmit ? '0 0 28px rgba(59,130,246,0.3)' : 'none',
+              boxShadow: canSubmit ? '0 0 28px rgb(var(--primary) / 0.3)' : 'none',
               opacity: canSubmit ? 1 : 0.4,
               cursor: canSubmit ? 'pointer' : 'not-allowed',
             }}

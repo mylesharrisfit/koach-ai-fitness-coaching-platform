@@ -40,9 +40,9 @@ export default function CoachBottleneckScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.93 }}
               className="flex flex-col items-center gap-2 py-4 px-2 rounded-2xl text-center transition-all"
               style={{
-                background: isSelected ? 'rgba(59,130,246,0.1)' : 'rgb(var(--foreground))',
-                border: isSelected ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.06)',
-                boxShadow: isSelected ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                background: isSelected ? 'rgb(var(--primary) / 0.1)' : 'rgb(var(--foreground))',
+                border: isSelected ? '1.5px solid rgb(var(--primary) / 0.5)' : '1.5px solid rgba(255,255,255,0.06)',
+                boxShadow: isSelected ? '0 0 18px rgb(var(--primary) / 0.12)' : 'none',
               }}
             >
               <span className="text-xl">{b.emoji}</span>

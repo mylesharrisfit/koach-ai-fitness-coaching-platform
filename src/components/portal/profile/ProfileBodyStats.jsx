@@ -48,7 +48,7 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
           <button key={u} onClick={() => setUnits(u)}
             className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
-              background: units === u ? 'rgba(59,130,246,0.3)' : 'transparent',
+              background: units === u ? 'rgb(var(--primary) / 0.3)' : 'transparent',
               color: units === u ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.3)',
             }}>
             {u === 'imperial' ? 'Imperial' : 'Metric'}

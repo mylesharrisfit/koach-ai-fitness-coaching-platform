@@ -83,7 +83,7 @@ export default function ProgressScoreCard({ checkIns, workoutSessions, foodLogs,
   const gradientId = 'scoreGrad';
 
   return (
-    <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(124,58,237,0.12))', border: '1px solid rgba(59,130,246,0.2)' }}>
+    <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.12), rgb(var(--ai) / 0.12))', border: '1px solid rgb(var(--primary) / 0.2)' }}>
       <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-4">Overall Score</p>
 
       <div className="flex items-center gap-5">

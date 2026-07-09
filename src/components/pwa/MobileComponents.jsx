@@ -73,7 +73,7 @@ export function MobileButton({
       className={cn(base, variants[variant], fullWidth ? 'w-full' : '', disabled || loading ? 'opacity-50' : '', className)}
       style={variant === 'primary' ? {
         background: disabled ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))',
-        boxShadow: disabled ? 'none' : '0 4px 16px rgba(37,99,235,0.3)',
+        boxShadow: disabled ? 'none' : '0 4px 16px rgb(var(--primary) / 0.3)',
       } : undefined}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : children}

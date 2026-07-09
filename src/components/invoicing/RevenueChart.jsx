@@ -40,7 +40,7 @@ export default function RevenueChart({ invoices = [] }) {
           </defs>
           <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
           <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={v => v === 0 ? '' : `$${v >= 1000 ? (v/1000).toFixed(0)+'k' : v}`} />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(37,99,235,0.05)' }} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgb(var(--primary) / 0.05)' }} />
           <Bar dataKey="revenue" fill="url(#revGradient)" radius={[6, 6, 0, 0]} />
           <Line type="monotone" dataKey="revenue" stroke="rgb(var(--warning))" strokeWidth={2} dot={false} strokeDasharray="4 2" />
         </ComposedChart>

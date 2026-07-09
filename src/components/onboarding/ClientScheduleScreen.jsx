@@ -73,10 +73,10 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
                 whileTap={{ scale: 0.98 }}
                 className="py-4 rounded-2xl text-sm font-semibold transition-all"
                 style={{
-                  background: duration === d.id ? 'rgba(59,130,246,0.1)' : '#161616',
-                  border: duration === d.id ? '1px solid rgba(59,130,246,0.45)' : '1px solid rgba(255,255,255,0.06)',
+                  background: duration === d.id ? 'rgb(var(--primary) / 0.1)' : '#161616',
+                  border: duration === d.id ? '1px solid rgb(var(--primary) / 0.45)' : '1px solid rgba(255,255,255,0.06)',
                   color: duration === d.id ? 'rgb(var(--card))' : '#7A7A7A',
-                  boxShadow: duration === d.id ? '0 0 18px rgba(59,130,246,0.12)' : 'none',
+                  boxShadow: duration === d.id ? '0 0 18px rgb(var(--primary) / 0.12)' : 'none',
                 }}
               >{d.label}</motion.button>
             ))}

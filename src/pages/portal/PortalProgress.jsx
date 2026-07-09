@@ -79,7 +79,7 @@ function WeightChart({ checkIns, client }) {
           <XAxis dataKey="date" tick={{ fill: 'rgb(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} />
           <YAxis tick={{ fill: 'rgb(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
           <Tooltip contentStyle={{ background: 'rgb(var(--card))', border: '1px solid rgb(var(--border))', borderRadius: 12, color: 'rgb(var(--foreground))', fontSize: 11, boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }} />
-          {goalW && <ReferenceLine y={goalW} stroke="rgba(34,197,94,0.4)" strokeDasharray="4 4" />}
+          {goalW && <ReferenceLine y={goalW} stroke="rgb(var(--success) / 0.4)" strokeDasharray="4 4" />}
           <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: 'rgb(var(--primary))' }} />
         </LineChart>
       </ResponsiveContainer>
@@ -184,7 +184,7 @@ function AchievementBadge({ badge, earned, onClick }) {
       style={{
         borderColor: earned ? 'rgb(var(--warning))' : 'rgb(var(--muted))',
         background: earned ? 'rgb(var(--warning))' : 'rgb(var(--card))',
-        boxShadow: earned ? '0 2px 12px rgba(245,158,11,0.15)' : '0 1px 4px rgba(0,0,0,0.05)',
+        boxShadow: earned ? '0 2px 12px rgb(var(--warning) / 0.15)' : '0 1px 4px rgba(0,0,0,0.05)',
         filter: earned ? 'none' : 'grayscale(1) opacity(0.5)',
       }}>
       <span className="text-2xl">{badge.emoji}</span>
@@ -254,7 +254,7 @@ function LogModal({ client, onClose, onSaved }) {
         )}
         <button onClick={save}
           className="w-full py-4 rounded-2xl font-black text-white text-sm mt-4"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 16px rgb(var(--primary) / 0.3)' }}>
           Save Update
         </button>
       </motion.div>
@@ -330,7 +330,7 @@ export default function PortalProgress({ user }) {
         </div>
         <button onClick={() => setShowLog(true)}
           className="px-4 py-2.5 rounded-2xl text-sm font-bold text-white flex items-center gap-1.5"
-          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 12px rgba(37,99,235,0.25)' }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 12px rgb(var(--primary) / 0.25)' }}>
           <Plus className="w-4 h-4" /> Log Update
         </button>
       </div>

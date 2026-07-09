@@ -28,7 +28,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.1 }}
         className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
-        style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.25), rgba(16,185,129,0.2))', border: '2px solid rgba(34,197,94,0.4)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--success) / 0.25), rgb(var(--success) / 0.2))', border: '2px solid rgb(var(--success) / 0.4)' }}>
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -48,7 +48,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
         className="w-full space-y-3 mb-8">
         {streak > 1 && (
           <div className="flex items-center gap-3 p-4 rounded-2xl"
-            style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.25)' }}>
+            style={{ background: 'rgb(var(--warning) / 0.12)', border: '1px solid rgb(var(--warning) / 0.25)' }}>
             <Flame className="w-6 h-6 text-orange-400 flex-shrink-0" />
             <div>
               <p className="text-orange-400 font-bold text-sm">🔥 {streak}-week check-in streak!</p>
@@ -67,7 +67,7 @@ export default function CheckInSuccess({ checkIn, totalCheckIns, streak, onDashb
           </div>
         )}
         <div className="flex items-center gap-3 p-4 rounded-2xl"
-          style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}>
+          style={{ background: 'rgb(var(--primary) / 0.1)', border: '1px solid rgb(var(--primary) / 0.2)' }}>
           <span className="text-xl flex-shrink-0">📋</span>
           <div>
             <p className="text-primary font-bold text-sm">Total check-ins: {totalCheckIns}</p>

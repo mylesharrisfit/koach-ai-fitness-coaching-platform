@@ -50,10 +50,10 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.93 }}
               className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
               style={{
-                background: selected.includes(inj.id) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                border: selected.includes(inj.id) ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.07)',
+                background: selected.includes(inj.id) ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+                border: selected.includes(inj.id) ? '1px solid rgb(var(--primary) / 0.5)' : '1px solid rgba(255,255,255,0.07)',
                 color: selected.includes(inj.id) ? 'rgb(var(--card))' : '#7A7A7A',
-                boxShadow: selected.includes(inj.id) ? '0 0 16px rgba(59,130,246,0.15)' : 'none',
+                boxShadow: selected.includes(inj.id) ? '0 0 16px rgb(var(--primary) / 0.15)' : 'none',
               }}
             >
               {inj.label}
@@ -74,7 +74,7 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
               border: '1.5px solid rgba(255,255,255,0.07)',
               color: 'rgb(var(--card))',
             }}
-            onFocus={e => { e.target.style.border = '1.5px solid rgba(59,130,246,0.45)'; }}
+            onFocus={e => { e.target.style.border = '1.5px solid rgb(var(--primary) / 0.45)'; }}
             onBlur={e => { e.target.style.border = '1.5px solid rgba(255,255,255,0.07)'; }}
           />
         </div>

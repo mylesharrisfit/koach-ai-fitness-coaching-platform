@@ -34,14 +34,14 @@ function GenerationCard({ item }) {
       className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500"
       style={{
         background: status === 'done'
-          ? 'rgba(34,197,94,0.06)'
+          ? 'rgb(var(--success) / 0.06)'
           : status === 'loading'
-          ? 'rgba(59,130,246,0.07)'
+          ? 'rgb(var(--primary) / 0.07)'
           : 'rgba(255,255,255,0.03)',
         border: status === 'done'
-          ? '1.5px solid rgba(34,197,94,0.25)'
+          ? '1.5px solid rgb(var(--success) / 0.25)'
           : status === 'loading'
-          ? '1.5px solid rgba(59,130,246,0.25)'
+          ? '1.5px solid rgb(var(--primary) / 0.25)'
           : '1.5px solid rgba(255,255,255,0.06)',
       }}
     >
@@ -50,7 +50,7 @@ function GenerationCard({ item }) {
         <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? '#3A3A3A' : 'rgb(var(--card))' }}>
           {item.label}
         </p>
-        <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'rgba(34,197,94,0.8)' : '#5A5A5A' }}>
+        <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'rgb(var(--success) / 0.8)' : '#5A5A5A' }}>
           {status === 'done' ? 'Complete' : status === 'loading' ? 'Processing...' : 'Queued'}
         </p>
       </div>
@@ -108,7 +108,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <motion.div
           className="w-[700px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.09) 0%, transparent 65%)', filter: 'blur(60px)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--primary) / 0.09) 0%, transparent 65%)', filter: 'blur(60px)' }}
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 4, repeat: Infinity }}
         />

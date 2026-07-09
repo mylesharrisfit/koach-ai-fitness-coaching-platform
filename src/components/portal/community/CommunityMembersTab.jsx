@@ -97,7 +97,7 @@ export default function CommunityMembersTab({ user, myClient, allClients, posts 
       {/* Coach pinned at top */}
       <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">Your Coach</p>
       <div className="bg-card rounded-2xl p-4 flex items-center gap-3 mb-5"
-        style={{ boxShadow: '0 2px 12px rgba(37,99,235,0.08)', border: '1px solid rgb(var(--accent))' }}>
+        style={{ boxShadow: '0 2px 12px rgb(var(--primary) / 0.08)', border: '1px solid rgb(var(--accent))' }}>
         <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-base text-white flex-shrink-0"
           style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
           C

@@ -52,9 +52,9 @@ export default function ClientExperienceScreen({ onNext, onBack, data }) {
               whileTap={{ scale: 0.985 }}
               className="relative w-full text-left rounded-2xl p-5 transition-all"
               style={{
-                background: level === l.id ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                border: level === l.id ? '1.5px solid rgba(59,130,246,0.6)' : '1.5px solid rgba(255,255,255,0.07)',
-                boxShadow: level === l.id ? '0 0 30px rgba(59,130,246,0.15)' : 'none',
+                background: level === l.id ? 'rgb(var(--primary) / 0.1)' : 'rgba(255,255,255,0.03)',
+                border: level === l.id ? '1.5px solid rgb(var(--primary) / 0.6)' : '1.5px solid rgba(255,255,255,0.07)',
+                boxShadow: level === l.id ? '0 0 30px rgb(var(--primary) / 0.15)' : 'none',
               }}
             >
               <div className="flex items-center gap-4">
@@ -87,10 +87,10 @@ export default function ClientExperienceScreen({ onNext, onBack, data }) {
               <motion.button key={d} whileTap={{ scale: 0.93 }} onClick={() => setDays(d)}
                 className="flex-1 py-3.5 rounded-xl font-bold text-sm transition-all"
                 style={{
-                  background: days === d ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
-                  border: days === d ? '1.5px solid rgba(59,130,246,0.5)' : '1.5px solid rgba(255,255,255,0.07)',
+                  background: days === d ? 'rgb(var(--primary) / 0.12)' : 'rgba(255,255,255,0.04)',
+                  border: days === d ? '1.5px solid rgb(var(--primary) / 0.5)' : '1.5px solid rgba(255,255,255,0.07)',
                   color: days === d ? 'rgb(var(--card))' : '#5A5A5A',
-                  boxShadow: days === d ? '0 0 16px rgba(59,130,246,0.12)' : 'none',
+                  boxShadow: days === d ? '0 0 16px rgb(var(--primary) / 0.12)' : 'none',
                 }}>{d}</motion.button>
             ))}
           </div>

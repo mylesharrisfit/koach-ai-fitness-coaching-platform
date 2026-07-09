@@ -88,7 +88,7 @@ export default function PortalReferral({ user }) {
         <>
           {/* Hero */}
           <div className="mx-5 mt-6 rounded-3xl p-6 overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 8px 32px rgba(37,99,235,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 8px 32px rgb(var(--primary) / 0.3)' }}>
             <div style={{ background: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 20 }}>
               <h2 className="text-white font-black text-3xl mb-2">Share the journey 💪</h2>
               <p className="text-white/70 text-sm mb-6">Refer a friend to our coach and earn rewards</p>

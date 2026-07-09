@@ -39,9 +39,9 @@ const TYPE_CONFIG = {
 };
 
 const CONFIDENCE_COLORS = {
-  High: { bg: 'rgba(22,163,74,0.12)', text: 'rgb(var(--success))' },
+  High: { bg: 'rgb(var(--success) / 0.12)', text: 'rgb(var(--success))' },
   Medium: { bg: 'rgba(202,138,4,0.12)', text: '#ca8a04' },
-  Low: { bg: 'rgba(107,114,128,0.12)', text: 'rgb(var(--muted-foreground))' },
+  Low: { bg: 'rgb(var(--muted-foreground) / 0.12)', text: 'rgb(var(--muted-foreground))' },
 };
 
 export default function InsightCard({ insight, index = 0, onDismiss, onNotRelevant }) {

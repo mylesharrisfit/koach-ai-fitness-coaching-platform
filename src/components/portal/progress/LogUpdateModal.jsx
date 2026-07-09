@@ -84,7 +84,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
                 <button key={t.id} onClick={() => setTab(t.id)}
                   className="flex-1 py-2 rounded-lg text-xs font-bold transition-all"
                   style={{
-                    background: tab === t.id ? 'rgba(59,130,246,0.3)' : 'transparent',
+                    background: tab === t.id ? 'rgb(var(--primary) / 0.3)' : 'transparent',
                     color: tab === t.id ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.35)',
                   }}>
                   {t.label}
@@ -138,7 +138,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
                 <button onClick={() => fileRef.current?.click()}
                   className="w-full py-6 rounded-2xl border-2 border-dashed flex flex-col items-center gap-2 transition-all"
-                  style={{ borderColor: 'rgba(59,130,246,0.3)', background: uploading ? 'rgba(59,130,246,0.08)' : 'transparent' }}>
+                  style={{ borderColor: 'rgb(var(--primary) / 0.3)', background: uploading ? 'rgb(var(--primary) / 0.08)' : 'transparent' }}>
                   {uploading ? (
                     <div className="w-6 h-6 border-2 border-primary/30 border-t-blue-400 rounded-full animate-spin" />
                   ) : (

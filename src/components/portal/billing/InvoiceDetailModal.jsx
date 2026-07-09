@@ -40,7 +40,7 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
 
         {/* Status banner */}
         {isPaid && (
-          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.25)' }}>
+          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgb(var(--success) / 0.15)', border: '1px solid rgb(var(--success) / 0.25)' }}>
             <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
             <div>
               <p className="text-success font-bold text-sm">Paid ✓</p>
@@ -50,7 +50,7 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
         )}
 
         {invoice.status === 'overdue' && (
-          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.25)' }}>
+          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgb(var(--destructive) / 0.15)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
             <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
             <div>
               <p className="text-destructive font-bold text-sm">Payment Overdue</p>
@@ -60,7 +60,7 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
         )}
 
         {isUnpaid && invoice.status !== 'overdue' && daysUntilDue !== null && daysUntilDue <= 3 && (
-          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.25)' }}>
+          <div className="mx-5 mb-4 p-3.5 rounded-2xl flex items-center gap-3" style={{ background: 'rgb(var(--warning) / 0.15)', border: '1px solid rgb(var(--warning) / 0.25)' }}>
             <Clock className="w-5 h-5 text-warning flex-shrink-0" />
             <p className="text-warning font-bold text-sm">Due in {daysUntilDue} day{daysUntilDue !== 1 ? 's' : ''}</p>
           </div>
@@ -104,13 +104,13 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
           {isUnpaid && (
             <button onClick={() => { onClose(); onPay(invoice); }}
               className="w-full py-4 rounded-2xl text-base font-black text-white"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 24px rgba(37,99,235,0.4)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 8px 24px rgb(var(--primary) / 0.4)' }}>
               Pay Now — {fmt(invoice.amount)}
             </button>
           )}
           {isPaid && (
             <button className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-bold"
-              style={{ background: 'rgba(16,185,129,0.15)', color: 'rgb(var(--success))', border: '1px solid rgba(16,185,129,0.25)' }}>
+              style={{ background: 'rgb(var(--success) / 0.15)', color: 'rgb(var(--success))', border: '1px solid rgb(var(--success) / 0.25)' }}>
               <Download className="w-4 h-4" />
               Download Receipt
             </button>

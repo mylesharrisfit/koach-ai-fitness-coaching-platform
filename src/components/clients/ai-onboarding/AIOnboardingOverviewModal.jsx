@@ -6,28 +6,28 @@ const BENEFITS = [
   {
     icon: Dumbbell,
     color: 'rgb(var(--primary))',
-    bg: 'rgba(59,130,246,0.12)',
+    bg: 'rgb(var(--primary) / 0.12)',
     title: 'Tailored training program',
     desc: 'AI builds a full starting program matched to the client\'s goal, experience, and schedule.',
   },
   {
     icon: Salad,
     color: 'rgb(var(--success))',
-    bg: 'rgba(16,185,129,0.12)',
+    bg: 'rgb(var(--success) / 0.12)',
     title: 'Personalised meal plan',
     desc: 'A structured nutrition plan aligned with their macros, diet style, and calorie target.',
   },
   {
     icon: Target,
     color: 'rgb(var(--ai))',
-    bg: 'rgba(139,92,246,0.12)',
+    bg: 'rgb(var(--ai) / 0.12)',
     title: 'Built from their real data',
     desc: 'Uses the client\'s goals, weight, height, and questionnaire answers — not a generic template.',
   },
   {
     icon: ShieldCheck,
     color: 'rgb(var(--warning))',
-    bg: 'rgba(245,158,11,0.12)',
+    bg: 'rgb(var(--warning) / 0.12)',
     title: 'You approve before anything goes live',
     desc: 'Full review screen — edit, tweak, or cancel. Nothing saves until you click Approve.',
   },
@@ -70,7 +70,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
 
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-4"
-            style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.3), rgba(124,58,237,0.3))', border: '1px solid rgba(124,58,237,0.4)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.3), rgb(var(--ai) / 0.3))', border: '1px solid rgb(var(--ai) / 0.4)' }}>
             <Sparkles className="w-3 h-3" style={{ color: 'rgb(var(--ai))' }} />
             <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--ai))' }}>Pro &amp; Elite Feature</span>
           </div>
@@ -113,7 +113,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
                 <div key={i} className="flex-1 flex flex-col items-center text-center relative">
                   {i < STEPS.length - 1 && (
                     <div className="absolute top-4 left-1/2 right-0 h-px"
-                      style={{ background: 'linear-gradient(90deg, rgba(37,99,235,0.5), rgba(37,99,235,0.1))' }} />
+                      style={{ background: 'linear-gradient(90deg, rgb(var(--primary) / 0.5), rgb(var(--primary) / 0.1))' }} />
                   )}
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative z-10 mb-2"
                     style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))' }}>

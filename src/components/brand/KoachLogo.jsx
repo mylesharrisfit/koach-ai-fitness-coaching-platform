@@ -10,7 +10,7 @@ export default function KoachLogo({ size = 32, rounded = 'rounded-xl', glow = fa
         width: size,
         height: size,
         background: bg ? '#0A0A0A' : 'transparent',
-        boxShadow: glow ? '0 0 20px rgba(59,130,246,0.4)' : 'none',
+        boxShadow: glow ? '0 0 20px rgb(var(--primary) / 0.4)' : 'none',
       }}
     >
       <img

@@ -68,7 +68,7 @@ function NotifRow({ n, onTap, onDismiss }) {
       exit={{ opacity: 0, x: -20 }}
       layout
       className="flex items-start gap-3 px-4 py-4 border-b border-border active:bg-muted transition-colors relative"
-      style={{ background: !n.is_read ? 'rgba(37,99,235,0.025)' : 'transparent' }}
+      style={{ background: !n.is_read ? 'rgb(var(--primary) / 0.025)' : 'transparent' }}
       onClick={() => onTap(n)}
     >
       {/* Unread dot */}

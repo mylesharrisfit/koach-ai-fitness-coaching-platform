@@ -34,7 +34,7 @@ export default function CheckInReview({ form, responses, onBack, onSubmit, submi
         {/* Key highlights */}
         {weight && (
           <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl p-5 mb-4"
-            style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(99,102,241,0.1))', border: '1px solid rgba(59,130,246,0.3)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.2), rgba(99,102,241,0.1))', border: '1px solid rgb(var(--primary) / 0.3)' }}>
             <p className="text-white/50 text-xs font-bold mb-2">Weight Change</p>
             <div className="flex items-center gap-3">
               <p className="text-white font-black text-2xl">{weight} lbs</p>
@@ -65,7 +65,7 @@ export default function CheckInReview({ form, responses, onBack, onSubmit, submi
           return (
             <motion.div key={q.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
               className="rounded-2xl p-4 flex items-start justify-between"
-              style={{ background: hasVal ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.03)', border: hasVal ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(255,255,255,0.07)' }}>
+              style={{ background: hasVal ? 'rgb(var(--success) / 0.08)' : 'rgba(255,255,255,0.03)', border: hasVal ? '1px solid rgb(var(--success) / 0.2)' : '1px solid rgba(255,255,255,0.07)' }}>
               <div className="flex-1">
                 <p className="text-white/50 text-xs font-semibold">{q.label}</p>
                 <p className="text-white font-bold text-sm mt-1">{getDisplayValue(q, val)}</p>
@@ -80,7 +80,7 @@ export default function CheckInReview({ form, responses, onBack, onSubmit, submi
       <div className="px-5 py-4 flex-shrink-0" style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom))' }}>
         <button onClick={onSubmit} disabled={submitting}
           className="w-full py-4 rounded-2xl font-black text-base text-white flex items-center justify-center gap-2"
-          style={{ background: submitting ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: !submitting ? '0 4px 20px rgba(37,99,235,0.4)' : 'none', transition: 'all 0.3s' }}>
+          style={{ background: submitting ? 'rgb(var(--muted-foreground))' : 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: !submitting ? '0 4px 20px rgb(var(--primary) / 0.4)' : 'none', transition: 'all 0.3s' }}>
           {submitting ? (
             <>
               <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />

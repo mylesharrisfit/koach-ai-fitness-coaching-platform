@@ -24,7 +24,7 @@ export default function ChallengeCard({ challenge, myClient, queryClient }) {
 
   return (
     <div className="bg-card rounded-2xl p-4 border border-warning"
-      style={{ boxShadow: '0 2px 16px rgba(245,158,11,0.1)' }}>
+      style={{ boxShadow: '0 2px 16px rgb(var(--warning) / 0.1)' }}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-xl bg-warning/10 flex items-center justify-center">

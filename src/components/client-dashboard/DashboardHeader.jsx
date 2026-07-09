@@ -32,7 +32,7 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-base flex-shrink-0"
-            style={{ background: 'rgba(59,130,246,0.25)', color: 'rgb(var(--primary))', border: '1.5px solid rgba(59,130,246,0.35)' }}>
+            style={{ background: 'rgb(var(--primary) / 0.25)', color: 'rgb(var(--primary))', border: '1.5px solid rgb(var(--primary) / 0.35)' }}>
             {initial}
           </div>
           <div>

@@ -12,8 +12,8 @@ function Card({ children, glow = false, className = '' }) {
   return (
     <div className={`rounded-2xl p-4 ${className}`} style={{
       background: 'rgb(var(--foreground))',
-      border: glow ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.06)',
-      boxShadow: glow ? '0 0 28px rgba(59,130,246,0.07)' : 'none',
+      border: glow ? '1px solid rgb(var(--primary) / 0.2)' : '1px solid rgba(255,255,255,0.06)',
+      boxShadow: glow ? '0 0 28px rgb(var(--primary) / 0.07)' : 'none',
     }}>
       {children}
     </div>
@@ -42,7 +42,7 @@ export default function CoachRevealDashboard({ data }) {
     <div className="w-full h-full overflow-y-auto" style={{ background: 'rgb(var(--sidebar))' }}>
       {/* Cinematic header glow */}
       <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% -20%, rgba(59,130,246,0.12) 0%, transparent 70%)' }} />
+        style={{ background: 'radial-gradient(ellipse at 50% -20%, rgb(var(--primary) / 0.12) 0%, transparent 70%)' }} />
 
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="relative px-5 pt-14 pb-6">
@@ -92,7 +92,7 @@ export default function CoachRevealDashboard({ data }) {
                 <p className="text-xs mt-0.5" style={{ color: '#555' }}>Complete these to unlock your full system</p>
               </div>
               <span className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-                style={{ background: 'rgba(59,130,246,0.1)', color: 'rgb(var(--primary))' }}>
+                style={{ background: 'rgb(var(--primary) / 0.1)', color: 'rgb(var(--primary))' }}>
                 0 / {CHECKLIST.length}
               </span>
             </div>
@@ -110,7 +110,7 @@ export default function CoachRevealDashboard({ data }) {
                       <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all hover:bg-card/[0.03]"
                         style={{ border: '1px solid rgba(255,255,255,0.04)' }}>
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'rgba(59,130,246,0.1)' }}>
+                          style={{ background: 'rgb(var(--primary) / 0.1)' }}>
                           <Icon className="w-3.5 h-3.5" style={{ color: 'rgb(var(--primary))' }} />
                         </div>
                         <p className="text-sm flex-1" style={{ color: '#C3C3C3' }}>{item.label}</p>
@@ -168,10 +168,10 @@ export default function CoachRevealDashboard({ data }) {
         <motion.div variants={stagger.item}>
           <Link to="/">
             <motion.button
-              whileHover={{ scale: 1.02, boxShadow: '0 0 36px rgba(59,130,246,0.4)' }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 36px rgb(var(--primary) / 0.4)' }}
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 24px rgba(59,130,246,0.25)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary)))', boxShadow: '0 0 24px rgb(var(--primary) / 0.25)' }}
             >
               Enter Full Dashboard
               <ArrowRight className="w-5 h-5" />

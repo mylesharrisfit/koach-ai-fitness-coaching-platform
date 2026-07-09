@@ -10,7 +10,7 @@ export default function MissedWorkoutBanner({ workoutName, onDoNow, onSkip }) {
     <AnimatePresence>
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
         className="mx-4 p-4 rounded-2xl"
-        style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)' }}>
+        style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
         <div className="flex items-start gap-3">
           <span className="text-xl flex-shrink-0">😅</span>
           <div className="flex-1 min-w-0">

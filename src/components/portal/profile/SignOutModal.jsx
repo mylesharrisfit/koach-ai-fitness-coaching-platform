@@ -20,7 +20,7 @@ export default function SignOutModal({ onCancel }) {
         className="w-full max-w-sm mx-4 mb-8 p-6 rounded-3xl"
         style={{ background: '#131928', border: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
-          style={{ background: 'rgba(239,68,68,0.15)' }}>
+          style={{ background: 'rgb(var(--destructive) / 0.15)' }}>
           <LogOut className="w-5 h-5 text-destructive" />
         </div>
         <h3 className="text-white font-bold text-lg text-center mb-1">Sign Out?</h3>
@@ -31,7 +31,7 @@ export default function SignOutModal({ onCancel }) {
             style={{ background: 'rgba(255,255,255,0.07)' }}>Cancel</button>
           <button onClick={() => base44.auth.logout()}
             className="flex-1 py-3.5 rounded-2xl font-bold text-sm text-white"
-            style={{ background: 'rgba(239,68,68,0.7)' }}>Sign Out</button>
+            style={{ background: 'rgb(var(--destructive) / 0.7)' }}>Sign Out</button>
         </div>
       </motion.div>
     </motion.div>

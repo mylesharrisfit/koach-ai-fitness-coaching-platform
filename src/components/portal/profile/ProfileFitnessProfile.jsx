@@ -42,9 +42,9 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
                 onClick={() => { setValues(p => ({ ...p, goal: g })); setDirty(true); }}
                 className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
                 style={{
-                  background: values.goal === g ? 'rgba(59,130,246,0.25)' : 'rgba(255,255,255,0.06)',
+                  background: values.goal === g ? 'rgb(var(--primary) / 0.25)' : 'rgba(255,255,255,0.06)',
                   color: values.goal === g ? 'rgb(var(--primary))' : 'rgba(255,255,255,0.4)',
-                  border: `1px solid ${values.goal === g ? 'rgba(59,130,246,0.4)' : 'transparent'}`,
+                  border: `1px solid ${values.goal === g ? 'rgb(var(--primary) / 0.4)' : 'transparent'}`,
                 }}>
                 {g.replace('_', ' ')}
               </button>

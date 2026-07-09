@@ -174,7 +174,7 @@ export default function CommunityFeedTab({ user, myClient, posts, allClients, qu
         {announcements.map(post => (
           <div key={post.id} className="mx-4 mt-4">
             <div className="rounded-2xl p-4 relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 20px rgba(37,99,235,0.25)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 20px rgb(var(--primary) / 0.25)' }}>
               <div className="flex items-start gap-2 mb-2">
                 <Megaphone className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
                 <p className="text-white/70 text-[10px] font-bold uppercase tracking-widest">Announcement</p>
@@ -218,7 +218,7 @@ export default function CommunityFeedTab({ user, myClient, posts, allClients, qu
       {/* FAB */}
       <motion.button whileTap={{ scale: 0.9 }} onClick={() => setShowComposer(true)}
         className="fixed bottom-28 right-5 w-14 h-14 rounded-full flex items-center justify-center z-40"
-        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 20px rgba(37,99,235,0.4)' }}>
+        style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 20px rgb(var(--primary) / 0.4)' }}>
         <Plus className="w-6 h-6 text-white" />
       </motion.button>
 
