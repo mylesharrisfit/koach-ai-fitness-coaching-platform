@@ -148,7 +148,7 @@ export default function StoreProductCard({ listing, onEdit, onView }) {
               onClick={handleBuyNow}
               disabled={buyingOut}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold text-white transition-all disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))' }}
+              style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))' }}
             >
               {buyingOut ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><ShoppingCart className="w-3.5 h-3.5" /> Buy Now — ${listing.price}</>}
             </button>

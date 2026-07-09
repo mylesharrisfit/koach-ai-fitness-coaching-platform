@@ -72,7 +72,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
                 {listing.category}
               </span>
               {!listing.is_published && (
-                <span className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white/60 inline-flex items-center gap-1">
+                <span className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--kc-w-10)] text-white/60 inline-flex items-center gap-1">
                   <EyeOff className="w-2.5 h-2.5" /> Draft
                 </span>
               )}
@@ -101,7 +101,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
               {listing.category}
             </span>
             {!listing.is_published && (
-              <span className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-white/60 inline-flex items-center gap-1">
+              <span className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--kc-w-10)] text-white/60 inline-flex items-center gap-1">
                 <EyeOff className="w-2.5 h-2.5" /> Draft
               </span>
             )}
@@ -207,7 +207,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
               onClick={handleBuyNow}
               disabled={buyingOut}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg,rgb(var(--primary)),rgb(var(--ai)))' }}
+              style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))' }}
             >
               {buyingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ShoppingCart className="w-4 h-4" /> Buy Now — ${listing.price}</>}
             </button>
