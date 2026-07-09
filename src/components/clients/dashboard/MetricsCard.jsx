@@ -66,17 +66,17 @@ export default function MetricsCard({ client, onUpdated }) {
   const age = calcAge(client.date_of_birth);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+    <div className="bg-card rounded-xl border border-border shadow-sm p-4">
       {/* Section header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-0.5 h-3.5 rounded-full bg-blue-600" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Body Metrics</p>
+          <div className="w-0.5 h-3.5 rounded-full bg-primary" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Body Metrics</p>
         </div>
         {!editing && (
           <button
             onClick={startEdit}
-            className="flex items-center gap-1.5 text-xs font-semibold text-blue-500 hover:text-blue-700 transition-colors px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100"
+            className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary transition-colors px-2.5 py-1 rounded-lg bg-accent hover:bg-accent"
           >
             <Pencil className="w-3 h-3" /> Edit Metrics
           </button>
@@ -84,7 +84,7 @@ export default function MetricsCard({ client, onUpdated }) {
       </div>
 
       {editing ? (
-        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+        <div className="bg-accent rounded-xl p-4 border border-accent">
           <div className="grid grid-cols-2 gap-3">
             <MetricInput label="Height" placeholder="e.g. 5'10&quot; or 178cm"
               value={draft.height} onChange={v => setDraft(d => ({ ...d, height: v }))} type="text" />
@@ -95,11 +95,11 @@ export default function MetricsCard({ client, onUpdated }) {
             <MetricInput label="Target weight (lbs)" placeholder="e.g. 175"
               value={draft.target_weight} onChange={v => setDraft(d => ({ ...d, target_weight: v }))} type="number" />
             <div>
-              <label className="text-[10px] font-semibold text-gray-500 block mb-1">Sex</label>
+              <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Sex</label>
               <select
                 value={draft.sex}
                 onChange={e => setDraft(d => ({ ...d, sex: e.target.value }))}
-                className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-2 bg-white outline-none focus:ring-1 focus:ring-blue-400"
+                className="w-full text-xs border border-border rounded-lg px-2.5 py-2 bg-card outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="">— select —</option>
                 <option value="male">Male</option>
@@ -115,12 +115,12 @@ export default function MetricsCard({ client, onUpdated }) {
             <button
               onClick={save}
               disabled={saving}
-              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
             >
               <Check className="w-4 h-4" /> {saving ? 'Saving…' : 'Save Metrics'}
             </button>
             <button onClick={cancel} disabled={saving}
-              className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg border border-gray-200 bg-white transition-colors">
+              className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground px-4 py-2 rounded-lg border border-border bg-card transition-colors">
               <X className="w-4 h-4" /> Cancel
             </button>
           </div>
@@ -147,8 +147,8 @@ export default function MetricsCard({ client, onUpdated }) {
 function MetricRow({ label, value }) {
   return (
     <div className="flex flex-col gap-0.5 py-1">
-      <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">{label}</span>
-      <span className="text-sm font-semibold text-gray-800">{value ?? <span className="text-gray-300 font-normal">—</span>}</span>
+      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
+      <span className="text-sm font-semibold text-foreground">{value ?? <span className="text-border font-normal">—</span>}</span>
     </div>
   );
 }
@@ -156,13 +156,13 @@ function MetricRow({ label, value }) {
 function MetricInput({ label, value, onChange, type, placeholder }) {
   return (
     <div>
-      <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide block mb-1">{label}</label>
+      <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide block mb-1">{label}</label>
       <input
         type={type}
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-1 focus:ring-blue-400"
+        className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-card outline-none focus:ring-1 focus:ring-primary"
       />
     </div>
   );

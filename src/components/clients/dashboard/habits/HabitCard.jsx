@@ -71,17 +71,17 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
     : (habit.days_of_week || []).sort().map(d => DAY_LABELS[d]).join(' · ');
 
   return (
-    <div className={`bg-white rounded-xl border shadow-sm p-4 transition-opacity ${isInactive ? 'opacity-50 border-gray-100' : 'border-gray-100'}`}>
+    <div className={`bg-card rounded-xl border shadow-sm p-4 transition-opacity ${isInactive ? 'opacity-50 border-border' : 'border-border'}`}>
       {/* Top row */}
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-2.5 min-w-0">
           {habit.emoji && <span className="text-xl flex-shrink-0">{habit.emoji}</span>}
           <div className="min-w-0">
-            <p className="text-sm font-bold text-gray-800 leading-tight">{habit.name}</p>
-            <p className="text-[11px] text-gray-400 mt-0.5">{freqLabel}</p>
+            <p className="text-sm font-bold text-foreground leading-tight">{habit.name}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">{freqLabel}</p>
           </div>
           {isInactive && (
-            <span className="flex items-center gap-1 text-[10px] font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full flex-shrink-0">
+            <span className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full flex-shrink-0">
               <EyeOff className="w-2.5 h-2.5" /> Inactive
             </span>
           )}
@@ -92,24 +92,24 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
           {/* Streak */}
           <div className="text-center">
             <div className="flex items-center gap-0.5 justify-center">
-              <Flame className={`w-3.5 h-3.5 ${streak > 0 ? 'text-orange-400' : 'text-gray-200'}`} />
-              <span className={`text-sm font-bold ${streak > 0 ? 'text-orange-500' : 'text-gray-300'}`}>{streak}</span>
+              <Flame className={`w-3.5 h-3.5 ${streak > 0 ? 'text-orange-400' : 'text-border'}`} />
+              <span className={`text-sm font-bold ${streak > 0 ? 'text-orange-500' : 'text-border'}`}>{streak}</span>
             </div>
-            <p className="text-[9px] text-gray-400 font-semibold uppercase tracking-wide">Streak</p>
+            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wide">Streak</p>
           </div>
           {/* Adherence */}
           <div className="text-center">
-            <p className={`text-sm font-bold ${adherence >= 70 ? 'text-emerald-500' : adherence >= 40 ? 'text-amber-500' : 'text-red-400'}`}>{adherence}%</p>
-            <p className="text-[9px] text-gray-400 font-semibold uppercase tracking-wide">7-day</p>
+            <p className={`text-sm font-bold ${adherence >= 70 ? 'text-success' : adherence >= 40 ? 'text-warning' : 'text-destructive'}`}>{adherence}%</p>
+            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wide">7-day</p>
           </div>
           {/* Actions */}
           <div className="flex items-center gap-0.5 ml-1">
             <button onClick={() => onEdit(habit)} title="Edit"
-              className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+              className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground hover:text-muted-foreground transition-colors">
               <Pencil className="w-3 h-3" />
             </button>
             <button onClick={() => onDelete(habit)} title="Delete"
-              className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
+              className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
               <Trash2 className="w-3 h-3" />
             </button>
           </div>
@@ -127,29 +127,29 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
 
           return (
             <div key={dateStr} className="flex flex-col items-center gap-1 flex-1">
-              <span className={`text-[9px] font-semibold ${today ? 'text-purple-600' : 'text-gray-300'}`}>{label}</span>
+              <span className={`text-[9px] font-semibold ${today ? 'text-ai' : 'text-border'}`}>{label}</span>
               <button
                 onClick={() => scheduled && onToggleDay(habit, dateStr, done)}
                 disabled={!scheduled}
                 title={scheduled ? (done ? 'Mark incomplete' : 'Mark complete') : 'Not scheduled'}
                 className={`w-full aspect-square max-w-[28px] rounded-full border-2 transition-all ${
                   !scheduled
-                    ? 'border-gray-100 bg-gray-50 cursor-default'
+                    ? 'border-border bg-muted cursor-default'
                     : done
-                    ? 'border-purple-500 bg-purple-500 hover:bg-purple-600'
+                    ? 'border-ai bg-ai hover:bg-ai'
                     : today
-                    ? 'border-purple-300 bg-white hover:bg-purple-50'
-                    : 'border-gray-200 bg-white hover:bg-gray-50'
+                    ? 'border-ai bg-card hover:bg-ai/10'
+                    : 'border-border bg-card hover:bg-muted'
                 }`}
               >
                 {done && scheduled && (
                   <div className="w-full h-full flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-card rounded-full" />
                   </div>
                 )}
               </button>
               {today && (
-                <span className="text-[8px] font-bold text-purple-500 uppercase">Today</span>
+                <span className="text-[8px] font-bold text-ai uppercase">Today</span>
               )}
             </div>
           );
@@ -157,12 +157,12 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
       </div>
 
       {/* Adherence bar */}
-      <div className="mt-3 h-1 rounded-full bg-gray-100 overflow-hidden">
+      <div className="mt-3 h-1 rounded-full bg-muted overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${adherence}%`,
-            background: adherence >= 70 ? '#10b981' : adherence >= 40 ? '#f59e0b' : '#ef4444',
+            background: adherence >= 70 ? 'rgb(var(--success))' : adherence >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))',
           }}
         />
       </div>

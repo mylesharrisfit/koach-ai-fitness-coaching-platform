@@ -65,7 +65,7 @@ export default function GoalsHabitsTab({ client }) {
   const completed = goals.filter(g => g.status === 'completed');
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ background: '#f8f9fa' }}>
+    <div className="h-full flex flex-col overflow-hidden" style={{ background: 'rgb(var(--muted))' }}>
 
       {/* ── Section toggle bar ── */}
       <div className="flex-shrink-0 flex items-center gap-1 px-6 pt-4 pb-0">
@@ -78,9 +78,9 @@ export default function GoalsHabitsTab({ client }) {
               onClick={() => setSection(s.key)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-t-lg text-sm font-semibold border-b-2 transition-all"
               style={{
-                borderBottomColor: isActive ? '#2563EB' : 'transparent',
-                color: isActive ? '#2563EB' : '#6B7280',
-                background: isActive ? '#fff' : 'transparent',
+                borderBottomColor: isActive ? 'rgb(var(--primary))' : 'transparent',
+                color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+                background: isActive ? 'rgb(var(--card))' : 'transparent',
               }}
             >
               <Icon className="w-4 h-4" />
@@ -91,7 +91,7 @@ export default function GoalsHabitsTab({ client }) {
       </div>
 
       {/* ── Divider ── */}
-      <div className="flex-shrink-0 border-b border-gray-200" />
+      <div className="flex-shrink-0 border-b border-border" />
 
       {/* ── Goals section ── */}
       {section === 'goals' && (
@@ -101,21 +101,21 @@ export default function GoalsHabitsTab({ client }) {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-gray-900">Client Goals</h3>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <h3 className="text-base font-bold text-foreground">Client Goals</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {active.length} active · {completed.length} completed
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowTemplatePicker(true)}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 bg-white transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary px-3 py-2 rounded-lg border border-border hover:border-primary bg-card transition-colors"
                 >
                   <LayoutTemplate className="w-3.5 h-3.5" /> Templates
                 </button>
                 <button
                   onClick={handleAdd}
-                  className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors"
                 >
                   <Plus className="w-4 h-4" /> Add Goal
                 </button>
@@ -124,30 +124,30 @@ export default function GoalsHabitsTab({ client }) {
 
             {/* Loading */}
             {isLoading && (
-              <div className="text-center py-12 text-sm text-gray-400">Loading goals…</div>
+              <div className="text-center py-12 text-sm text-muted-foreground">Loading goals…</div>
             )}
 
             {/* Empty state */}
             {!isLoading && goals.length === 0 && (
               <div className="text-center py-20">
-                <div className="w-16 h-16 rounded-2xl bg-white border border-gray-100 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                  <Target className="w-7 h-7 text-blue-400" />
+                <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
+                  <Target className="w-7 h-7 text-primary" />
                 </div>
-                <p className="text-sm font-bold text-gray-700 mb-1">No goals yet</p>
-                <p className="text-xs text-gray-400 mb-5">
+                <p className="text-sm font-bold text-foreground mb-1">No goals yet</p>
+                <p className="text-xs text-muted-foreground mb-5">
                   Set goals for this client to track progress over time.
                   <br />You can create from scratch or use a saved template.
                 </p>
                 <div className="flex items-center justify-center gap-3">
                   <button
                     onClick={handleAdd}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-xl transition-colors"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-5 py-2.5 rounded-xl transition-colors"
                   >
                     <Plus className="w-4 h-4" /> Add First Goal
                   </button>
                   <button
                     onClick={() => setShowTemplatePicker(true)}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-blue-600 px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-200 transition-colors"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-primary px-4 py-2.5 rounded-xl border border-border bg-card hover:border-primary transition-colors"
                   >
                     <LayoutTemplate className="w-4 h-4" /> Browse Templates
                   </button>
@@ -159,9 +159,9 @@ export default function GoalsHabitsTab({ client }) {
             {active.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-0.5 h-3 rounded-full bg-blue-500" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Active</p>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600">{active.length}</span>
+                  <div className="w-0.5 h-3 rounded-full bg-primary" />
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Active</p>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-primary">{active.length}</span>
                 </div>
                 {active.map(g => (
                   <GoalCard
@@ -179,9 +179,9 @@ export default function GoalsHabitsTab({ client }) {
             {completed.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-0.5 h-3 rounded-full bg-emerald-400" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Completed</p>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600">{completed.length}</span>
+                  <div className="w-0.5 h-3 rounded-full bg-success" />
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Completed</p>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-success/10 text-success">{completed.length}</span>
                 </div>
                 {completed.map(g => (
                   <GoalCard

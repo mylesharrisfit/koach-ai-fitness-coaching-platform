@@ -63,25 +63,25 @@ export default function GoalsTab({ client }) {
   const completed = goals.filter(g => g.status === 'completed');
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: '#f8f9fa' }}>
+    <div className="h-full overflow-y-auto" style={{ background: 'rgb(var(--muted))' }}>
       <div className="max-w-3xl mx-auto px-6 py-6 space-y-6">
 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-gray-900">Client Goals</h3>
-            <p className="text-xs text-gray-400 mt-0.5">{active.length} active · {completed.length} completed</p>
+            <h3 className="text-base font-bold text-foreground">Client Goals</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{active.length} active · {completed.length} completed</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowTemplatePicker(true)}
-              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary px-3 py-2 rounded-lg border border-border hover:border-primary transition-colors"
             >
               <LayoutTemplate className="w-3.5 h-3.5" /> Templates
             </button>
             <button
               onClick={handleAdd}
-              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" /> Add Goal
             </button>
@@ -90,27 +90,27 @@ export default function GoalsTab({ client }) {
 
         {/* Loading */}
         {isLoading && (
-          <div className="text-center py-12 text-sm text-gray-400">Loading goals…</div>
+          <div className="text-center py-12 text-sm text-muted-foreground">Loading goals…</div>
         )}
 
         {/* Empty state */}
         {!isLoading && goals.length === 0 && (
           <div className="text-center py-16">
-            <div className="w-14 h-14 rounded-2xl bg-white border border-gray-100 flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
               <span className="text-2xl">🎯</span>
             </div>
-            <p className="text-sm font-semibold text-gray-600 mb-1">No goals yet</p>
-            <p className="text-xs text-gray-400 mb-4">Create custom goals to track this client's progress.</p>
+            <p className="text-sm font-semibold text-muted-foreground mb-1">No goals yet</p>
+            <p className="text-xs text-muted-foreground mb-4">Create custom goals to track this client's progress.</p>
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={handleAdd}
-                className="flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-xl transition-colors"
+                className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-5 py-2.5 rounded-xl transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add First Goal
               </button>
               <button
                 onClick={() => setShowTemplatePicker(true)}
-                className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-blue-600 px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-200 transition-colors"
+                className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-primary px-4 py-2.5 rounded-xl border border-border bg-card hover:border-primary transition-colors"
               >
                 <LayoutTemplate className="w-4 h-4" /> Browse Templates
               </button>
@@ -137,8 +137,8 @@ export default function GoalsTab({ client }) {
         {completed.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-0.5 h-3 rounded-full bg-emerald-400" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Completed</p>
+              <div className="w-0.5 h-3 rounded-full bg-success" />
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Completed</p>
             </div>
             {completed.map(g => (
               <GoalCard

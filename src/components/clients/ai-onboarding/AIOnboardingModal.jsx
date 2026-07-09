@@ -132,28 +132,28 @@ export default function AIOnboardingModal({ client, onClose, onSaved }) {
     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
       <div
-        className="relative bg-white rounded-2xl shadow-2xl w-full flex flex-col overflow-hidden"
+        className="relative bg-card rounded-2xl shadow-2xl w-full flex flex-col overflow-hidden"
         style={{ maxWidth: 860, height: '90vh' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0"
-          style={{ background: '#0E1525' }}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0"
+          style={{ background: 'rgb(var(--sidebar))' }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}>
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
               <h2 className="text-sm font-bold text-white">AI Onboarding</h2>
-              <p className="text-[11px]" style={{ color: '#64748B' }}>
+              <p className="text-[11px]" style={{ color: 'rgb(var(--muted-foreground))' }}>
                 {client.name} · Generating starting program &amp; meal plan
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <StepIndicator step={step} />
-            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-500 hover:text-white hover:bg-white/10 transition-colors">
+            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-white hover:bg-white/10 transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -199,18 +199,18 @@ function StepIndicator({ step }) {
       {steps.map((s, i) => (
         <React.Fragment key={s.key}>
           <div className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full transition-all ${
-            i === activeIdx ? 'text-white' : i < activeIdx ? 'text-emerald-400' : 'text-gray-600'
+            i === activeIdx ? 'text-white' : i < activeIdx ? 'text-success' : 'text-muted-foreground'
           }`}>
             {i < activeIdx
               ? <CheckCircle className="w-3 h-3" />
               : <span className="w-3 h-3 rounded-full flex items-center justify-center text-[9px]"
-                  style={{ background: i === activeIdx ? '#2563EB' : '#374151' }}>
+                  style={{ background: i === activeIdx ? 'rgb(var(--primary))' : 'rgb(var(--foreground))' }}>
                   {i + 1}
                 </span>
             }
             <span className="hidden sm:inline">{s.label}</span>
           </div>
-          {i < steps.length - 1 && <div className="w-4 h-px bg-gray-700" />}
+          {i < steps.length - 1 && <div className="w-4 h-px bg-foreground" />}
         </React.Fragment>
       ))}
     </div>
@@ -222,19 +222,19 @@ function GeneratingScreen({ client }) {
     <div className="h-full flex flex-col items-center justify-center gap-6 p-8">
       <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
         style={{ background: 'linear-gradient(135deg, #2563EB22, #7C3AED22)' }}>
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
       <div className="text-center">
-        <h3 className="text-lg font-bold text-gray-900 mb-1">Generating AI Plan…</h3>
-        <p className="text-sm text-gray-500 max-w-sm">
+        <h3 className="text-lg font-bold text-foreground mb-1">Generating AI Plan…</h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
           Building a personalised training program and meal plan for {client.name}.
           This usually takes 20–40 seconds.
         </p>
       </div>
       <div className="flex flex-col gap-2 w-full max-w-xs">
         {['Analysing client profile…', 'Building training split…', 'Calculating macros…', 'Structuring meal plan…'].map((msg, i) => (
-          <div key={i} className="flex items-center gap-2 text-xs text-gray-400">
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" style={{ animationDelay: `${i * 300}ms` }} />
+          <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" style={{ animationDelay: `${i * 300}ms` }} />
             {msg}
           </div>
         ))}

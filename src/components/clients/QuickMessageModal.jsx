@@ -42,12 +42,12 @@ export default function QuickMessageModal({ clients = [], suggestedTemplate = ''
   return (
     <Dialog open onOpenChange={v => !v && onClose()}>
       <DialogContent className="max-w-sm rounded-2xl p-0 overflow-hidden">
-        <div className="px-5 pt-5 pb-4 border-b border-[#E7EAF3]">
-          <DialogTitle className="text-base font-bold text-[#1F2A44] flex items-center gap-2">
+        <div className="px-5 pt-5 pb-4 border-b border-border">
+          <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
             <MessageCircle className="w-4 h-4 text-primary" />
             Quick Message
           </DialogTitle>
-          <p className="text-xs text-[#6B7280] mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {clients.length === 1
               ? `To: ${clients[0].name}`
               : `To: ${clients.length} clients`}
@@ -58,11 +58,11 @@ export default function QuickMessageModal({ clients = [], suggestedTemplate = ''
             value={content}
             onChange={e => setContent(e.target.value)}
             placeholder="Type your message…"
-            className="min-h-[96px] text-sm border-[#E7EAF3] bg-[#F6F7FB] resize-none"
+            className="min-h-[96px] text-sm border-border bg-muted resize-none"
             autoFocus
           />
           <div className="flex gap-2">
-            <Button variant="outline" className="flex-1 text-xs border-[#E7EAF3]" onClick={onClose}>Cancel</Button>
+            <Button variant="outline" className="flex-1 text-xs border-border" onClick={onClose}>Cancel</Button>
             <Button
               className="flex-1 text-xs"
               disabled={!content.trim() || sendMutation.isPending}

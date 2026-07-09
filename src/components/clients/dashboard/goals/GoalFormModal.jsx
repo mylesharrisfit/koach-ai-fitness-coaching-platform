@@ -23,7 +23,7 @@ const EMPTY = {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">{label}</label>
+      <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">{label}</label>
       {children}
     </div>
   );
@@ -36,7 +36,7 @@ function TextInput({ value, onChange, placeholder, type = 'text' }) {
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+      className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-card outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
     />
   );
 }
@@ -164,13 +164,13 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
     <>
       <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={onClose}>
         <div className="absolute inset-0 bg-black/40" />
-        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
           onClick={e => e.stopPropagation()}>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h3 className="text-base font-bold text-gray-900">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
-            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h3 className="text-base font-bold text-foreground">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
+            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -181,7 +181,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             {!isEdit && templates.length > 0 && (
               <Field label="Use a Template">
                 <select
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-card outline-none focus:ring-2 focus:ring-primary"
                   value={selectedTemplate}
                   onChange={e => applyTemplate(e.target.value)}
                 >
@@ -202,12 +202,12 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                     onClick={() => set('goal_type', t.key)}
                     className={`text-left p-3 rounded-xl border-2 transition-all ${
                       form.goal_type === t.key
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-100 bg-gray-50 hover:border-gray-200'
+                        ? 'border-primary bg-accent'
+                        : 'border-border bg-muted hover:border-border'
                     }`}
                   >
-                    <p className={`text-xs font-bold ${form.goal_type === t.key ? 'text-blue-600' : 'text-gray-700'}`}>{t.label}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{t.desc}</p>
+                    <p className={`text-xs font-bold ${form.goal_type === t.key ? 'text-primary' : 'text-foreground'}`}>{t.label}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{t.desc}</p>
                   </button>
                 ))}
               </div>
@@ -238,7 +238,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             {/* ── Nutrition fields ── */}
             {form.goal_type === 'nutrition' && (
               <div className="space-y-4">
-                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Daily Targets</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Daily Targets</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Calories (kcal)">
                     <TextInput type="number" value={form.calories_target} onChange={v => set('calories_target', v)} placeholder="e.g. 2200" />
@@ -253,7 +253,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                     <TextInput type="number" value={form.fat_target} onChange={v => set('fat_target', v)} placeholder="e.g. 70" />
                   </Field>
                 </div>
-                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Current Actuals (today)</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Current Actuals (today)</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Calories (kcal)">
                     <TextInput type="number" value={form.calories_current} onChange={v => set('calories_current', v)} placeholder="e.g. 1800" />
@@ -290,17 +290,17 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                 onChange={e => set('notes', e.target.value)}
                 placeholder="Any additional context…"
                 rows={2}
-                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+                className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-card outline-none focus:ring-2 focus:ring-primary resize-none"
               />
             </Field>
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100">
+          <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-border">
             {/* Save as template (left side) */}
             <button
               onClick={() => setShowSaveTemplate(true)}
-              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary px-3 py-2 rounded-lg border border-border hover:border-primary transition-colors"
               title="Save current settings as a reusable template"
             >
               <BookmarkPlus className="w-3.5 h-3.5" />
@@ -308,13 +308,13 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             </button>
 
             <div className="flex items-center gap-2">
-              <button onClick={onClose} className="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg border border-gray-200 bg-white">
+              <button onClick={onClose} className="text-sm font-semibold text-muted-foreground hover:text-foreground px-4 py-2 rounded-lg border border-border bg-card">
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-primary hover:bg-primary disabled:opacity-50"
               >
                 {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Goal'}
               </button>

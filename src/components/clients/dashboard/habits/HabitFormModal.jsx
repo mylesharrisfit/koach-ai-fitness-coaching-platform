@@ -73,12 +73,12 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+      <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h3 className="text-base font-bold text-gray-900">{isEdit ? 'Edit Habit' : 'Add Habit'}</h3>
-          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h3 className="text-base font-bold text-foreground">{isEdit ? 'Edit Habit' : 'Add Habit'}</h3>
+          <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -88,11 +88,11 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
           {/* Suggested names */}
           {!isEdit && (
             <div>
-              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2">Quick add</p>
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Quick add</p>
               <div className="flex flex-wrap gap-1.5">
                 {SUGGESTED_NAMES.map(n => (
                   <button key={n} onClick={() => set('name', n)}
-                    className="text-xs font-medium px-2.5 py-1 rounded-full border border-gray-200 bg-gray-50 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-colors">
+                    className="text-xs font-medium px-2.5 py-1 rounded-full border border-border bg-muted hover:bg-ai/10 hover:border-ai hover:text-ai transition-colors">
                     {n}
                   </button>
                 ))}
@@ -102,7 +102,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
           {/* Name + emoji row */}
           <div>
-            <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">Habit Name</label>
+            <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Habit Name</label>
             <div className="flex gap-2">
               {/* Emoji picker (just a small input) */}
               <input
@@ -111,21 +111,21 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
                 value={form.emoji}
                 onChange={e => set('emoji', e.target.value)}
                 placeholder="😀"
-                className="w-12 text-center text-lg border border-gray-200 rounded-lg px-1 py-2 bg-white outline-none focus:ring-2 focus:ring-purple-400"
+                className="w-12 text-center text-lg border border-border rounded-lg px-1 py-2 bg-card outline-none focus:ring-2 focus:ring-ai"
               />
               <input
                 type="text"
                 value={form.name}
                 onChange={e => set('name', e.target.value)}
                 placeholder="e.g. Morning vitamins"
-                className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-purple-400"
+                className="flex-1 text-sm border border-border rounded-lg px-3 py-2 bg-card outline-none focus:ring-2 focus:ring-ai"
               />
             </div>
             {/* Emoji suggestions */}
             <div className="flex gap-1.5 mt-2 flex-wrap">
               {SUGGESTED_EMOJIS.map(e => (
                 <button key={e} onClick={() => set('emoji', e)}
-                  className={`text-base w-8 h-8 rounded-lg border transition-colors ${form.emoji === e ? 'border-purple-400 bg-purple-50' : 'border-gray-100 bg-gray-50 hover:bg-purple-50'}`}>
+                  className={`text-base w-8 h-8 rounded-lg border transition-colors ${form.emoji === e ? 'border-ai bg-ai/10' : 'border-border bg-muted hover:bg-ai/10'}`}>
                   {e}
                 </button>
               ))}
@@ -134,14 +134,14 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
           {/* Frequency */}
           <div>
-            <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-2">Frequency</label>
+            <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Frequency</label>
             <div className="flex gap-2 mb-3">
               {[{ key: 'daily', label: 'Every day' }, { key: 'custom', label: 'Specific days' }].map(f => (
                 <button key={f.key} onClick={() => set('frequency', f.key)}
                   className={`flex-1 py-2 text-sm font-semibold rounded-xl border-2 transition-all ${
                     form.frequency === f.key
-                      ? 'border-purple-500 bg-purple-50 text-purple-700'
-                      : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'
+                      ? 'border-ai bg-ai/10 text-ai'
+                      : 'border-border bg-muted text-muted-foreground hover:border-border'
                   }`}>
                   {f.label}
                 </button>
@@ -156,8 +156,8 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
                     <button key={idx} onClick={() => toggleDay(idx)}
                       className={`w-9 h-9 rounded-full text-xs font-bold border-2 transition-all ${
                         active
-                          ? 'border-purple-500 bg-purple-500 text-white'
-                          : 'border-gray-200 bg-white text-gray-400 hover:border-purple-300'
+                          ? 'border-ai bg-ai text-white'
+                          : 'border-border bg-card text-muted-foreground hover:border-ai'
                       }`}>
                       {label}
                     </button>
@@ -169,25 +169,25 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
           {/* Active toggle (edit only) */}
           {isEdit && (
-            <div className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-xl">
-              <span className="text-sm font-semibold text-gray-700">Active</span>
+            <div className="flex items-center justify-between py-2 px-3 bg-muted rounded-xl">
+              <span className="text-sm font-semibold text-foreground">Active</span>
               <button
                 onClick={() => set('is_active', !form.is_active)}
-                className={`w-11 h-6 rounded-full border-2 transition-all relative ${form.is_active ? 'bg-purple-500 border-purple-500' : 'bg-gray-200 border-gray-200'}`}
+                className={`w-11 h-6 rounded-full border-2 transition-all relative ${form.is_active ? 'bg-ai border-ai' : 'bg-border border-border'}`}
               >
-                <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${form.is_active ? 'left-5' : 'left-0.5'}`} />
+                <div className={`absolute top-0.5 w-4 h-4 bg-card rounded-full shadow transition-all ${form.is_active ? 'left-5' : 'left-0.5'}`} />
               </button>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-gray-100">
-          <button onClick={onClose} className="text-sm font-semibold text-gray-500 px-4 py-2 rounded-lg border border-gray-200">
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border">
+          <button onClick={onClose} className="text-sm font-semibold text-muted-foreground px-4 py-2 rounded-lg border border-border">
             Cancel
           </button>
           <button onClick={handleSave} disabled={saving}
-            className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 disabled:opacity-50">
+            className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-ai hover:bg-ai disabled:opacity-50">
             {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Habit'}
           </button>
         </div>

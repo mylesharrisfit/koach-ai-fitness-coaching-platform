@@ -116,12 +116,12 @@ export default function MetricsTab({ client, onClientUpdated }) {
   const currentCat = CATEGORIES.find(c => c.key === activeCategory);
 
   return (
-    <div className="h-full flex overflow-hidden" style={{ background: '#f8f9fa' }}>
+    <div className="h-full flex overflow-hidden" style={{ background: 'rgb(var(--muted))' }}>
 
       {/* ── LEFT: Category list (Trainerize-style) ── */}
-      <div className="w-[220px] flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto">
-        <div className="px-4 py-3 border-b border-gray-100">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Metrics</p>
+      <div className="w-[220px] flex-shrink-0 bg-card border-r border-border overflow-y-auto">
+        <div className="px-4 py-3 border-b border-border">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Metrics</p>
         </div>
         <div className="py-2">
           {CATEGORIES.map(cat => {
@@ -134,21 +134,21 @@ export default function MetricsTab({ client, onClientUpdated }) {
                 className={cn(
                   'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors relative',
                   isActive
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                    ? 'bg-accent text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                 )}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r-full bg-blue-600" />
+                  <span className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r-full bg-primary" />
                 )}
-                <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-blue-600' : 'text-gray-400')} />
+                <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-primary' : 'text-muted-foreground')} />
                 <div className="flex-1 min-w-0">
-                  <p className={cn('text-[13px] font-semibold leading-tight', isActive ? 'text-blue-700' : 'text-gray-700')}>
+                  <p className={cn('text-[13px] font-semibold leading-tight', isActive ? 'text-primary' : 'text-foreground')}>
                     {cat.label}
                   </p>
-                  <p className="text-[10px] text-gray-400 leading-tight mt-0.5 truncate">{cat.description}</p>
+                  <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 truncate">{cat.description}</p>
                 </div>
-                <ChevronRight className={cn('w-3.5 h-3.5 flex-shrink-0', isActive ? 'text-blue-400' : 'text-gray-300')} />
+                <ChevronRight className={cn('w-3.5 h-3.5 flex-shrink-0', isActive ? 'text-primary' : 'text-border')} />
               </button>
             );
           })}
@@ -158,13 +158,13 @@ export default function MetricsTab({ client, onClientUpdated }) {
       {/* ── RIGHT: Detail panel ── */}
       <div className="flex-1 overflow-y-auto">
         {/* Category header */}
-        <div className="px-6 py-4 border-b border-gray-200 bg-white flex items-center gap-3 flex-shrink-0">
+        <div className="px-6 py-4 border-b border-border bg-card flex items-center gap-3 flex-shrink-0">
           {currentCat && (
             <>
-              <currentCat.icon className="w-5 h-5 text-blue-600" />
+              <currentCat.icon className="w-5 h-5 text-primary" />
               <div>
-                <p className="text-sm font-bold text-gray-900">{currentCat.label}</p>
-                <p className="text-xs text-gray-400">{currentCat.description}</p>
+                <p className="text-sm font-bold text-foreground">{currentCat.label}</p>
+                <p className="text-xs text-muted-foreground">{currentCat.description}</p>
               </div>
             </>
           )}

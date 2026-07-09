@@ -16,11 +16,11 @@ import TemplatePickerSheet from './goals/TemplatePickerSheet';
 
 // ── Event type config ─────────────────────────────────────────────────────────
 const TYPES = {
-  checkin:  { label: 'Check-in',    color: '#2563EB', dot: '#3B82F6', emoji: '📋', icon: ClipboardList },
-  session:  { label: 'Session',     color: '#059669', dot: '#10B981', emoji: '📞', icon: Phone },
-  goal:     { label: 'Goal Due',    color: '#D97706', dot: '#F59E0B', emoji: '🎯', icon: Target },
-  habit:    { label: 'Habit',       color: '#7C3AED', dot: '#8B5CF6', emoji: '⚡', icon: Zap },
-  weighin:  { label: 'Weigh-in',    color: '#0EA5E9', dot: '#38BDF8', emoji: '⚖️', icon: Scale },
+  checkin:  { label: 'Check-in',    color: 'rgb(var(--primary))', dot: 'rgb(var(--primary))', emoji: '📋', icon: ClipboardList },
+  session:  { label: 'Session',     color: 'rgb(var(--success))', dot: 'rgb(var(--success))', emoji: '📞', icon: Phone },
+  goal:     { label: 'Goal Due',    color: 'rgb(var(--warning))', dot: 'rgb(var(--warning))', emoji: '🎯', icon: Target },
+  habit:    { label: 'Habit',       color: 'rgb(var(--ai))', dot: 'rgb(var(--ai))', emoji: '⚡', icon: Zap },
+  weighin:  { label: 'Weigh-in',    color: 'rgb(var(--primary))', dot: 'rgb(var(--primary))', emoji: '⚖️', icon: Scale },
   workout:  { label: 'Workout',     color: '#EC4899', dot: '#F472B6', emoji: '💪', icon: Dumbbell },
 };
 
@@ -88,18 +88,18 @@ function DayCell({ day, events, onDayClick }) {
   return (
     <div
       onClick={() => onDayClick(day)}
-      className="border-r border-b border-[#E5E7EB] p-1.5 cursor-pointer hover:bg-blue-50/40 transition-colors group relative"
+      className="border-r border-b border-border p-1.5 cursor-pointer hover:bg-accent/40 transition-colors group relative"
       style={{ minHeight: 90 }}
     >
       {/* Day number */}
       <div className="flex items-center justify-between mb-1">
         <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full
-          ${isT ? 'bg-blue-600 text-white' : 'text-[#374151]'}`}>
+          ${isT ? 'bg-primary text-white' : 'text-foreground'}`}>
           {format(day, 'd')}
         </span>
         <button
           onClick={e => { e.stopPropagation(); onDayClick(day); }}
-          className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded flex items-center justify-center bg-blue-600 text-white transition-opacity"
+          className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded flex items-center justify-center bg-primary text-white transition-opacity"
         >
           <Plus className="w-3 h-3" />
         </button>
@@ -109,7 +109,7 @@ function DayCell({ day, events, onDayClick }) {
       <div className="space-y-0.5">
         {shown.map(ev => <EventChip key={ev.id} event={ev} />)}
         {overflow > 0 && (
-          <p className="text-[10px] text-[#6B7280] font-semibold pl-1">+{overflow} more</p>
+          <p className="text-[10px] text-muted-foreground font-semibold pl-1">+{overflow} more</p>
         )}
       </div>
     </div>
@@ -118,7 +118,7 @@ function DayCell({ day, events, onDayClick }) {
 
 // ── Add Event Modal ───────────────────────────────────────────────────────────
 
-const inputCls = "w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30";
+const inputCls = "w-full border border-border rounded-lg px-3 py-2 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-primary/30";
 
 // ── Repeat Options Modal ──────────────────────────────────────────────────────
 const DAY_LABELS = ['S','M','T','W','T','F','S'];
@@ -144,19 +144,19 @@ function RepeatModal({ repeat, onChange, onClose }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.12 }}
-        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+        className="relative bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-bold text-[#111827] text-base">Repeat options</h3>
-          <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#F3F4F6]">
-            <X className="w-4 h-4 text-[#6B7280]" />
+          <h3 className="font-bold text-foreground text-base">Repeat options</h3>
+          <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-muted">
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1.5">Frequency</label>
+            <label className="text-xs font-semibold text-foreground block mb-1.5">Frequency</label>
             <select className={inputCls} value={freq} onChange={e => setFreq(e.target.value)}>
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -167,8 +167,8 @@ function RepeatModal({ repeat, onChange, onClose }) {
 
           {freq === 'weekly' || freq === 'biweekly' ? (
             <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1.5">
-                Every <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={every} onChange={e => setEvery(Number(e.target.value))}>
+              <label className="text-xs font-semibold text-foreground block mb-1.5">
+                Every <select className="border border-border rounded-lg px-2 py-1 text-sm mx-1" value={every} onChange={e => setEvery(Number(e.target.value))}>
                   {[1,2,3,4].map(n => <option key={n} value={n}>{n}</option>)}
                 </select> week on
               </label>
@@ -177,8 +177,8 @@ function RepeatModal({ repeat, onChange, onClose }) {
                   <button key={i} onClick={() => toggleDay(i)}
                     className="w-9 h-9 rounded-full text-xs font-bold transition-all"
                     style={{
-                      background: days.includes(i) ? '#2563EB' : '#F3F4F6',
-                      color: days.includes(i) ? '#fff' : '#374151',
+                      background: days.includes(i) ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
+                      color: days.includes(i) ? 'rgb(var(--card))' : 'rgb(var(--foreground))',
                     }}>
                     {d}
                   </button>
@@ -187,8 +187,8 @@ function RepeatModal({ repeat, onChange, onClose }) {
             </div>
           ) : freq === 'daily' ? (
             <div>
-              <label className="text-xs font-semibold text-[#374151] block mb-1.5">
-                Every <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={every} onChange={e => setEvery(Number(e.target.value))}>
+              <label className="text-xs font-semibold text-foreground block mb-1.5">
+                Every <select className="border border-border rounded-lg px-2 py-1 text-sm mx-1" value={every} onChange={e => setEvery(Number(e.target.value))}>
                   {[1,2,3].map(n => <option key={n} value={n}>{n}</option>)}
                 </select> day(s)
               </label>
@@ -196,8 +196,8 @@ function RepeatModal({ repeat, onChange, onClose }) {
           ) : null}
 
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1.5">
-              Repeat for <select className="border border-[#E5E7EB] rounded-lg px-2 py-1 text-sm mx-1" value={forWeeks} onChange={e => setForWeeks(Number(e.target.value))}>
+            <label className="text-xs font-semibold text-foreground block mb-1.5">
+              Repeat for <select className="border border-border rounded-lg px-2 py-1 text-sm mx-1" value={forWeeks} onChange={e => setForWeeks(Number(e.target.value))}>
                 {[1,2,3,4,6,8,12,16,20,26,39,52,78,104].map(n => <option key={n} value={n}>{n} {n >= 52 ? `(${Math.round(n/52)}yr${n > 52 ? '+' : ''})` : ''}</option>)}
               </select> {freq === 'daily' ? 'weeks' : 'weeks'}
             </label>
@@ -206,7 +206,7 @@ function RepeatModal({ repeat, onChange, onClose }) {
 
         <button onClick={apply}
           className="w-full mt-5 py-2.5 rounded-xl text-sm font-bold text-white"
-          style={{ background: '#2563EB' }}>
+          style={{ background: 'rgb(var(--primary))' }}>
           Apply
         </button>
       </motion.div>
@@ -252,11 +252,11 @@ function generateRepeatDates(startDate, repeat) {
 // ── Activity type config for sidebar ─────────────────────────────────────────
 const ACTIVITY_TYPES = [
   { key: 'workout',  label: 'Workout',      emoji: '💪', color: '#EC4899' },
-  { key: 'session',  label: 'Session/Call', emoji: '📞', color: '#059669' },
-  { key: 'goal',     label: 'Goal',         emoji: '🎯', color: '#D97706' },
-  { key: 'habit',    label: 'Habit',        emoji: '⚡', color: '#7C3AED' },
-  { key: 'weighin',  label: 'Weigh-in',     emoji: '⚖️', color: '#0EA5E9' },
-  { key: 'checkin',  label: 'Check-in Form',emoji: '📋', color: '#2563EB' },
+  { key: 'session',  label: 'Session/Call', emoji: '📞', color: 'rgb(var(--success))' },
+  { key: 'goal',     label: 'Goal',         emoji: '🎯', color: 'rgb(var(--warning))' },
+  { key: 'habit',    label: 'Habit',        emoji: '⚡', color: 'rgb(var(--ai))' },
+  { key: 'weighin',  label: 'Weigh-in',     emoji: '⚖️', color: 'rgb(var(--primary))' },
+  { key: 'checkin',  label: 'Check-in Form',emoji: '📋', color: 'rgb(var(--primary))' },
 ];
 
 function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
@@ -318,8 +318,8 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <p className="text-3xl mb-2">💪</p>
-          <p className="text-sm font-semibold text-[#374151]">No program assigned</p>
-          <p className="text-xs text-[#6B7280] mt-1">Assign a workout program to this client first.</p>
+          <p className="text-sm font-semibold text-foreground">No program assigned</p>
+          <p className="text-xs text-muted-foreground mt-1">Assign a workout program to this client first.</p>
         </div>
       </div>
     );
@@ -331,18 +331,18 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-4">
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Date</label>
           <div className="flex items-center gap-3">
             <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
             <button onClick={() => setShowRepeat(true)}
-              className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               <RefreshCw className="w-3 h-3" />
               {repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
             </button>
           </div>
           {repeat && (
-            <p className="text-[11px] text-[#6B7280] mt-1">
-              Will create sessions on multiple dates · <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Will create sessions on multiple dates · <button className="text-destructive hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
             </p>
           )}
         </div>
@@ -352,22 +352,22 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
             <span>💪</span>
             <div className="min-w-0">
               <p className="text-xs font-bold text-[#EC4899] truncate">{program.title}</p>
-              <p className="text-[10px] text-[#6B7280]">{workouts.length} workout days</p>
+              <p className="text-[10px] text-muted-foreground">{workouts.length} workout days</p>
             </div>
           </div>
         )}
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-2">Select from current training program</label>
+          <label className="text-xs font-semibold text-foreground block mb-2">Select from current training program</label>
           <div className="space-y-1.5 max-h-40 overflow-y-auto">
             {workouts.map((w, i) => (
-              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[#EC4899] bg-[#FDF2F8]' : 'border-[#E5E7EB] hover:border-[#EC4899]/40'}`}>
+              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[#EC4899] bg-[#FDF2F8]' : 'border-border hover:border-[#EC4899]/40'}`}>
                 <input type="radio" name="workout_day" value={i} checked={selectedWorkoutIdx === String(i)}
                   onChange={() => setSelectedWorkoutIdx(String(i))} className="accent-[#EC4899]" />
                 <div className="min-w-0">
-                  <p className="text-xs font-bold text-[#111827]">{w.day_name || `Day ${w.day_number || i + 1}`}</p>
+                  <p className="text-xs font-bold text-foreground">{w.day_name || `Day ${w.day_number || i + 1}`}</p>
                   {w.exercises?.length > 0 && (
-                    <p className="text-[10px] text-[#6B7280]">{w.exercises.length} exercises</p>
+                    <p className="text-[10px] text-muted-foreground">{w.exercises.length} exercises</p>
                   )}
                 </div>
               </label>
@@ -376,7 +376,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Note (optional)</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Note (optional)</label>
           <input className={inputCls} placeholder="Coaching notes…" value={note} onChange={e => setNote(e.target.value)} />
         </div>
       </div>
@@ -425,18 +425,18 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-3">
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Date</label>
           <div className="flex items-center gap-3">
             <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
-            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               <RefreshCw className="w-3 h-3" />{repeat ? `Repeating` : 'Setup repeat'}
             </button>
           </div>
         </div>
-        <div><label className="text-xs font-semibold text-[#374151] block mb-1">Title</label><input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} /></div>
+        <div><label className="text-xs font-semibold text-foreground block mb-1">Title</label><input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} /></div>
         <div className="grid grid-cols-2 gap-2">
-          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Time</label><input type="time" className={inputCls} value={time} onChange={e => setTime(e.target.value)} /></div>
-          <div><label className="text-xs font-semibold text-[#374151] block mb-1">Type</label>
+          <div><label className="text-xs font-semibold text-foreground block mb-1">Time</label><input type="time" className={inputCls} value={time} onChange={e => setTime(e.target.value)} /></div>
+          <div><label className="text-xs font-semibold text-foreground block mb-1">Type</label>
             <select className={inputCls} value={type} onChange={e => setType(e.target.value)}>
               <option value="video_call">Video Call</option>
               <option value="phone_call">Phone Call</option>
@@ -445,7 +445,7 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
           </div>
         </div>
       </div>
-      <button onClick={save} disabled={saving} className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: '#059669' }}>
+      <button onClick={save} disabled={saving} className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: 'rgb(var(--success))' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
       </button>
     </div>
@@ -514,27 +514,27 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-3">
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Start Date</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Start Date</label>
           <div className="flex items-center gap-3">
             <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
-            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
             </button>
           </div>
           {repeat && (
-            <p className="text-[11px] text-[#6B7280] mt-1">
+            <p className="text-[11px] text-muted-foreground mt-1">
               Will create {generateRepeatDates(parseISO(dateStr), repeat).length} habit entries ·{' '}
-              <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+              <button className="text-destructive hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
             </p>
           )}
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1.5">Quick Add</label>
+          <label className="text-xs font-semibold text-foreground block mb-1.5">Quick Add</label>
           <div className="flex flex-wrap gap-1.5">
             {QUICK_HABITS.map(s => (
               <button key={s.name} onClick={() => { setName(s.name); setEmoji(s.emoji); }}
-                className={`text-xs px-2.5 py-1 rounded-full border font-semibold transition-colors ${name === s.name ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280] hover:bg-purple-50'}`}>
+                className={`text-xs px-2.5 py-1 rounded-full border font-semibold transition-colors ${name === s.name ? 'border-ai bg-ai/10 text-ai' : 'border-border text-muted-foreground hover:bg-ai/10'}`}>
                 {s.emoji} {s.name}
               </button>
             ))}
@@ -542,7 +542,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Habit Name</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Habit Name</label>
           <div className="flex gap-2">
             <input type="text" maxLength={2} value={emoji} onChange={e => setEmoji(e.target.value)}
               placeholder="😀" className={inputCls + ' w-12 text-center text-base'} />
@@ -551,11 +551,11 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-2">Frequency</label>
+          <label className="text-xs font-semibold text-foreground block mb-2">Frequency</label>
           <div className="flex gap-2 mb-2">
             {[{ key: 'daily', label: 'Every day' }, { key: 'custom', label: 'Specific days' }].map(f => (
               <button key={f.key} onClick={() => setFrequency(f.key)}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-xl border-2 transition-all ${frequency === f.key ? 'border-[#7C3AED] bg-purple-50 text-purple-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
+                className={`flex-1 py-1.5 text-xs font-bold rounded-xl border-2 transition-all ${frequency === f.key ? 'border-ai bg-ai/10 text-ai' : 'border-border text-muted-foreground'}`}>
                 {f.label}
               </button>
             ))}
@@ -565,7 +565,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
               {DAY_LABELS.map((d, i) => (
                 <button key={i} onClick={() => toggleDay(i)}
                   className="w-8 h-8 rounded-full text-xs font-bold transition-all"
-                  style={{ background: daysOfWeek.includes(i) ? '#7C3AED' : '#F3F4F6', color: daysOfWeek.includes(i) ? '#fff' : '#374151' }}>
+                  style={{ background: daysOfWeek.includes(i) ? 'rgb(var(--ai))' : 'rgb(var(--muted))', color: daysOfWeek.includes(i) ? 'rgb(var(--card))' : 'rgb(var(--foreground))' }}>
                   {d}
                 </button>
               ))}
@@ -576,7 +576,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
 
       <button onClick={save} disabled={saving || !name.trim()}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: '#7C3AED' }}>
+        style={{ background: 'rgb(var(--ai))' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Adding…' : repeat ? `Add Habit (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Habit'}
       </button>
@@ -636,40 +636,40 @@ function GoalContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDon
       <div className="flex-1 flex flex-col justify-between">
         <div className="space-y-3">
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Due Date</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Due Date</label>
             <div className="flex items-center gap-3">
               <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
-              <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+              <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
                 <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
               </button>
             </div>
             {repeat && (
-              <p className="text-[11px] text-[#6B7280] mt-1">
+              <p className="text-[11px] text-muted-foreground mt-1">
                 Will create {generateRepeatDates(parseISO(dateStr), repeat).length} goals ·{' '}
-                <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+                <button className="text-destructive hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
               </p>
             )}
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Template</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Goal Template</label>
             <button
               onClick={() => setShowTemplatePicker(true)}
-              className="w-full flex items-center gap-2 border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm bg-white hover:bg-gray-50 transition-colors text-left"
+              className="w-full flex items-center gap-2 border border-border rounded-lg px-3 py-2 text-sm bg-card hover:bg-muted transition-colors text-left"
             >
-              <LayoutTemplate className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
-              <span className={appliedTemplate ? 'text-[#111827] font-semibold' : 'text-[#9CA3AF]'}>
+              <LayoutTemplate className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <span className={appliedTemplate ? 'text-foreground font-semibold' : 'text-muted-foreground'}>
                 {appliedTemplate ? appliedTemplate.name : '— Choose a template —'}
               </span>
             </button>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Type</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Goal Type</label>
             <div className="flex gap-1.5">
               {GOAL_TYPES.map(gt => (
                 <button key={gt.key} onClick={() => setGoalType(gt.key)}
-                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${goalType === gt.key ? 'border-[#D97706] bg-amber-50 text-amber-700' : 'border-[#E5E7EB] text-[#6B7280]'}`}>
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${goalType === gt.key ? 'border-warning bg-warning/10 text-warning' : 'border-border text-muted-foreground'}`}>
                   {gt.label}
                 </button>
               ))}
@@ -677,32 +677,32 @@ function GoalContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDon
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Goal Name</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Goal Name</label>
             <input className={inputCls} placeholder="e.g. Reach 175 lbs" value={name} onChange={e => setName(e.target.value)} />
           </div>
 
           {goalType === 'numeric' && (
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-xs font-semibold text-[#374151] block mb-1">Target Value</label>
+                <label className="text-xs font-semibold text-foreground block mb-1">Target Value</label>
                 <input type="number" className={inputCls} placeholder="175" value={targetValue} onChange={e => setTargetValue(e.target.value)} />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#374151] block mb-1">Unit</label>
+                <label className="text-xs font-semibold text-foreground block mb-1">Unit</label>
                 <input className={inputCls} placeholder="lbs, steps…" value={unit} onChange={e => setUnit(e.target.value)} />
               </div>
             </div>
           )}
 
           <div>
-            <label className="text-xs font-semibold text-[#374151] block mb-1">Notes (optional)</label>
+            <label className="text-xs font-semibold text-foreground block mb-1">Notes (optional)</label>
             <input className={inputCls} placeholder="Any context…" value={note} onChange={e => setNote(e.target.value)} />
           </div>
         </div>
 
         <button onClick={save} disabled={saving || !name.trim()}
           className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: '#D97706' }}>
+          style={{ background: 'rgb(var(--warning))' }}>
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           {saving ? 'Adding…' : repeat ? `Add Goal (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Goal to Calendar'}
         </button>
@@ -755,23 +755,23 @@ function CheckInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-3">
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Date</label>
           <div className="flex items-center gap-3">
             <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
-            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
             </button>
           </div>
           {repeat && (
-            <p className="text-[11px] text-[#6B7280] mt-1">
+            <p className="text-[11px] text-muted-foreground mt-1">
               Will create {generateRepeatDates(parseISO(dateStr), repeat).length} check-ins ·{' '}
-              <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+              <button className="text-destructive hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
             </p>
           )}
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Check-in Form</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Check-in Form</label>
           <select className={inputCls} value={formId} onChange={e => setFormId(e.target.value)}>
             <option value="">— No specific form (general check-in) —</option>
             {checkInForms.map(f => (
@@ -779,24 +779,24 @@ function CheckInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
             ))}
           </select>
           {selectedForm && (
-            <p className="text-[11px] text-[#6B7280] mt-1">
+            <p className="text-[11px] text-muted-foreground mt-1">
               {selectedForm.questions?.length || 0} questions · {selectedForm.frequency?.replace('_', ' ')}
             </p>
           )}
           {checkInForms.length === 0 && (
-            <p className="text-[11px] text-[#6B7280] mt-1">No forms created yet — a general check-in will be scheduled.</p>
+            <p className="text-[11px] text-muted-foreground mt-1">No forms created yet — a general check-in will be scheduled.</p>
           )}
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Coach Note (optional)</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Coach Note (optional)</label>
           <input className={inputCls} placeholder="Any notes for this check-in…" value={note} onChange={e => setNote(e.target.value)} />
         </div>
       </div>
 
       <button onClick={save} disabled={saving}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: '#2563EB' }}>
+        style={{ background: 'rgb(var(--primary))' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} check-ins)` : 'Schedule Check-in'}
       </button>
@@ -831,36 +831,36 @@ function WeighInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
   return (
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-4">
-        <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
-          <p className="text-xs font-semibold text-blue-700">📋 Scheduled by coach</p>
-          <p className="text-xs text-blue-600 mt-0.5">This will appear in the client's calendar as a pending weigh-in task. The client logs their own weight in their portal.</p>
+        <div className="p-3 rounded-xl bg-accent border border-accent">
+          <p className="text-xs font-semibold text-primary">📋 Scheduled by coach</p>
+          <p className="text-xs text-primary mt-0.5">This will appear in the client's calendar as a pending weigh-in task. The client logs their own weight in their portal.</p>
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Date</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Date</label>
           <div className="flex items-center gap-3">
             <input type="date" className={inputCls + ' flex-1'} value={dateStr} onChange={e => setDateStr(e.target.value)} />
-            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-[#2563EB] hover:underline whitespace-nowrap">
+            <button onClick={() => setShowRepeat(true)} className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline whitespace-nowrap">
               <RefreshCw className="w-3 h-3" />{repeat ? `Repeating (${repeat.freq})` : 'Setup repeat'}
             </button>
           </div>
           {repeat && (
-            <p className="text-[11px] text-[#6B7280] mt-1">
+            <p className="text-[11px] text-muted-foreground mt-1">
               Will create {generateRepeatDates(parseISO(dateStr), repeat).length} weigh-in prompts ·{' '}
-              <button className="text-red-500 hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
+              <button className="text-destructive hover:underline" onClick={() => setShowRepeat(null)}>Clear</button>
             </p>
           )}
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-[#374151] block mb-1">Coach Note (optional)</label>
+          <label className="text-xs font-semibold text-foreground block mb-1">Coach Note (optional)</label>
           <input className={inputCls} placeholder="e.g. Morning weigh-in, fasted" value={note} onChange={e => setNote(e.target.value)} />
         </div>
       </div>
 
       <button onClick={save} disabled={saving}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: '#0EA5E9' }}>
+        style={{ background: 'rgb(var(--primary))' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} prompts)` : 'Schedule Weigh-in'}
       </button>
@@ -905,25 +905,25 @@ function AddEventModal({ day, client, onClose }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 8 }}
           transition={{ duration: 0.14 }}
-          className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+          className="relative bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
           style={{ maxHeight: '90vh' }}
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
-            <h3 className="font-bold text-[#111827] text-lg">Add Activity</h3>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h3 className="font-bold text-foreground text-lg">Add Activity</h3>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
                   // trigger save from content (handled by individual content components)
                 }}
                 className="px-4 py-1.5 rounded-lg text-sm font-bold text-white"
-                style={{ background: '#2563EB', opacity: 0.9 }}
+                style={{ background: 'rgb(var(--primary))', opacity: 0.9 }}
               >
                 ADD
               </button>
-              <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#F3F4F6]">
-                <X className="w-4 h-4 text-[#6B7280]" />
+              <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-muted">
+                <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
           </div>
@@ -931,17 +931,17 @@ function AddEventModal({ day, client, onClose }) {
           {/* Body: sidebar + content */}
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 400 }}>
             {/* Left sidebar */}
-            <div className="w-44 border-r border-[#E5E7EB] bg-[#FAFAFA] flex-shrink-0 overflow-y-auto">
+            <div className="w-44 border-r border-border bg-background flex-shrink-0 overflow-y-auto">
               {ACTIVITY_TYPES.map(t => (
                 <button key={t.key} onClick={() => setActiveType(t.key)}
                   className={`w-full flex items-center gap-2.5 px-3 py-3 text-left text-sm font-semibold transition-colors border-l-2 ${
                     activeType === t.key
-                      ? 'bg-white border-l-[#2563EB] text-[#111827]'
-                      : 'border-l-transparent text-[#6B7280] hover:bg-white hover:text-[#374151]'
+                      ? 'bg-card border-l-[rgb(var(--primary))] text-foreground'
+                      : 'border-l-transparent text-muted-foreground hover:bg-card hover:text-foreground'
                   }`}
                 >
                   <input type="checkbox" readOnly checked={activeType === t.key}
-                    className="w-3.5 h-3.5 rounded accent-[#2563EB] flex-shrink-0" />
+                    className="w-3.5 h-3.5 rounded accent-[rgb(var(--primary))] flex-shrink-0" />
                   <span className="mr-1">{t.emoji}</span>
                   <span className="text-xs leading-tight">{t.label}</span>
                 </button>
@@ -978,8 +978,8 @@ function AddEventModal({ day, client, onClose }) {
 // ── LEGEND ────────────────────────────────────────────────────────────────────
 function Legend() {
   return (
-    <div className="flex flex-wrap gap-2 px-4 py-2 border-b border-[#E5E7EB] bg-[#FAFAFA]">
-      <span className="text-[10px] font-bold text-[#6B7280] mr-1 self-center">LEGEND</span>
+    <div className="flex flex-wrap gap-2 px-4 py-2 border-b border-border bg-background">
+      <span className="text-[10px] font-bold text-muted-foreground mr-1 self-center">LEGEND</span>
       {Object.entries(TYPES).map(([key, cfg]) => (
         <span key={key} className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: cfg.color }}>
           <span className="w-2 h-2 rounded-full inline-block" style={{ background: cfg.dot }} />
@@ -1063,31 +1063,31 @@ export default function ClientCalendarTab({ client }) {
 
   const stats = [
     { label: 'Workouts',  count: monthEvents.filter(e => e.type === 'workout').length,   color: '#EC4899', emoji: '💪' },
-    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: '#2563EB', emoji: '📋' },
-    { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: '#059669', emoji: '📞' },
-    { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: '#0EA5E9', emoji: '⚖️' },
-    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: '#D97706', emoji: '🎯' },
+    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: 'rgb(var(--primary))', emoji: '📋' },
+    { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: 'rgb(var(--success))', emoji: '📞' },
+    { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: 'rgb(var(--primary))', emoji: '⚖️' },
+    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: 'rgb(var(--warning))', emoji: '🎯' },
   ];
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-hidden">
+    <div className="h-full flex flex-col bg-card overflow-hidden">
 
       {/* ── Top bar ── */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border flex-shrink-0">
         <div className="flex items-center gap-2">
           <button onClick={() => setViewDate(d => subMonths(d, 1))}
-            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#F3F4F6] border border-[#E5E7EB] transition-colors">
-            <ChevronLeft className="w-4 h-4 text-[#374151]" />
+            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-muted border border-border transition-colors">
+            <ChevronLeft className="w-4 h-4 text-foreground" />
           </button>
-          <h2 className="font-bold text-[#111827] text-sm min-w-[130px] text-center">
+          <h2 className="font-bold text-foreground text-sm min-w-[130px] text-center">
             {format(viewDate, 'MMMM yyyy')}
           </h2>
           <button onClick={() => setViewDate(d => addMonths(d, 1))}
-            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[#F3F4F6] border border-[#E5E7EB] transition-colors">
-            <ChevronRight className="w-4 h-4 text-[#374151]" />
+            className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-muted border border-border transition-colors">
+            <ChevronRight className="w-4 h-4 text-foreground" />
           </button>
           <button onClick={() => setViewDate(new Date())}
-            className="ml-1 px-2.5 py-1 rounded-lg border border-[#E5E7EB] text-xs font-semibold text-[#374151] hover:bg-[#F3F4F6] transition-colors">
+            className="ml-1 px-2.5 py-1 rounded-lg border border-border text-xs font-semibold text-foreground hover:bg-muted transition-colors">
             Today
           </button>
         </div>
@@ -1098,14 +1098,14 @@ export default function ClientCalendarTab({ client }) {
             <div key={s.label} className="flex items-center gap-1.5">
               <span className="text-sm">{s.emoji}</span>
               <span className="font-bold text-sm" style={{ color: s.color }}>{s.count}</span>
-              <span className="text-[11px] text-[#6B7280]">{s.label}</span>
+              <span className="text-[11px] text-muted-foreground">{s.label}</span>
             </div>
           ))}
         </div>
 
         <button onClick={() => setActiveDay(new Date())}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white"
-          style={{ background: '#2563EB' }}>
+          style={{ background: 'rgb(var(--primary))' }}>
           <Plus className="w-3.5 h-3.5" /> Add Event
         </button>
       </div>
@@ -1114,9 +1114,9 @@ export default function ClientCalendarTab({ client }) {
       <Legend />
 
       {/* ── Day-of-week headers ── */}
-      <div className="grid grid-cols-7 border-b border-[#E5E7EB] flex-shrink-0">
+      <div className="grid grid-cols-7 border-b border-border flex-shrink-0">
         {DAY_HEADERS.map(d => (
-          <div key={d} className="py-2 text-center text-[11px] font-bold text-[#6B7280] border-r border-[#E5E7EB] last:border-r-0">
+          <div key={d} className="py-2 text-center text-[11px] font-bold text-muted-foreground border-r border-border last:border-r-0">
             {d}
           </div>
         ))}
@@ -1125,11 +1125,11 @@ export default function ClientCalendarTab({ client }) {
       {/* ── Calendar grid ── */}
       <div className="flex-1 overflow-y-auto">
         {weeks.map((week, wi) => (
-          <div key={wi} className="grid grid-cols-7 border-b border-[#E5E7EB] last:border-b-0">
+          <div key={wi} className="grid grid-cols-7 border-b border-border last:border-b-0">
             {week.map((day, di) => {
               const inMonth = isSameMonth(day, viewDate);
               return (
-                <div key={di} className={`${!inMonth ? 'bg-[#FAFAFA] opacity-50' : ''}`}>
+                <div key={di} className={`${!inMonth ? 'bg-background opacity-50' : ''}`}>
                   <DayCell day={day} events={events} onDayClick={setActiveDay} />
                 </div>
               );

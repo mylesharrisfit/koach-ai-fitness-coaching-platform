@@ -2,11 +2,11 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export const LIFECYCLE_CONFIG = {
-  lead:      { label: 'Lead',      dot: 'bg-[#93C5FD]',  badge: 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]' },
-  active:    { label: 'Active',    dot: 'bg-[#16A34A]',  badge: 'bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]' },
-  at_risk:   { label: 'At Risk',   dot: 'bg-[#D97706]',  badge: 'bg-[#FFF7ED] text-[#D97706] border border-[#FED7AA]' },
-  completed: { label: 'Completed', dot: 'bg-[#9CA3AF]',  badge: 'bg-[#F9FAFB] text-[#6B7280] border border-[#E5E7EB]' },
-  alumni:    { label: 'Alumni',    dot: 'bg-[#9CA3AF]',  badge: 'bg-[#F9FAFB] text-[#6B7280] border border-[#E5E7EB]' },
+  lead:      { label: 'Lead',      dot: 'bg-primary',  badge: 'bg-accent/10 text-primary border border-accent' },
+  active:    { label: 'Active',    dot: 'bg-success',  badge: 'bg-success/10 text-success border border-success' },
+  at_risk:   { label: 'At Risk',   dot: 'bg-warning',  badge: 'bg-[#FFF7ED] text-warning border border-[#FED7AA]' },
+  completed: { label: 'Completed', dot: 'bg-muted-foreground',  badge: 'bg-background text-muted-foreground border border-border' },
+  alumni:    { label: 'Alumni',    dot: 'bg-muted-foreground',  badge: 'bg-background text-muted-foreground border border-border' },
 };
 
 export default function LifecycleBadge({ status, className }) {

@@ -5,28 +5,28 @@ import { X, Sparkles, Dumbbell, Salad, Target, ShieldCheck, ArrowRight, Zap } fr
 const BENEFITS = [
   {
     icon: Dumbbell,
-    color: '#3B82F6',
+    color: 'rgb(var(--primary))',
     bg: 'rgba(59,130,246,0.12)',
     title: 'Tailored training program',
     desc: 'AI builds a full starting program matched to the client\'s goal, experience, and schedule.',
   },
   {
     icon: Salad,
-    color: '#10B981',
+    color: 'rgb(var(--success))',
     bg: 'rgba(16,185,129,0.12)',
     title: 'Personalised meal plan',
     desc: 'A structured nutrition plan aligned with their macros, diet style, and calorie target.',
   },
   {
     icon: Target,
-    color: '#8B5CF6',
+    color: 'rgb(var(--ai))',
     bg: 'rgba(139,92,246,0.12)',
     title: 'Built from their real data',
     desc: 'Uses the client\'s goals, weight, height, and questionnaire answers — not a generic template.',
   },
   {
     icon: ShieldCheck,
-    color: '#F59E0B',
+    color: 'rgb(var(--warning))',
     bg: 'rgba(245,158,11,0.12)',
     title: 'You approve before anything goes live',
     desc: 'Full review screen — edit, tweak, or cancel. Nothing saves until you click Approve.',
@@ -47,7 +47,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
 
       <div
         className="relative w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col"
-        style={{ background: '#0E1525', maxHeight: '85vh' }}
+        style={{ background: 'rgb(var(--sidebar))', maxHeight: '85vh' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Close */}
@@ -61,18 +61,18 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
 
         {/* ── HEADER (fixed) ── */}
         <div className="relative px-7 pt-8 pb-6 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #0E1525 0%, #1a2744 100%)', flexShrink: 0 }}>
+          style={{ background: 'linear-gradient(135deg, rgb(var(--foreground)) 0%, #1a2744 100%)', flexShrink: 0 }}>
           {/* Decorative glow */}
           <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, #7C3AED, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, rgb(var(--ai)), transparent 70%)' }} />
           <div className="absolute -bottom-10 -left-6 w-36 h-36 rounded-full opacity-15"
-            style={{ background: 'radial-gradient(circle, #2563EB, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, rgb(var(--primary)), transparent 70%)' }} />
 
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-4"
             style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.3), rgba(124,58,237,0.3))', border: '1px solid rgba(124,58,237,0.4)' }}>
-            <Sparkles className="w-3 h-3" style={{ color: '#A78BFA' }} />
-            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#A78BFA' }}>Pro &amp; Elite Feature</span>
+            <Sparkles className="w-3 h-3" style={{ color: 'rgb(var(--ai))' }} />
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--ai))' }}>Pro &amp; Elite Feature</span>
           </div>
 
           <h2 className="text-2xl font-bold text-white leading-tight mb-2">
@@ -86,7 +86,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
         {/* ── SCROLLABLE MIDDLE ── */}
         <div style={{ flex: '1 1 0', overflowY: 'auto', minHeight: 0 }}>
           {/* Benefits */}
-          <div className="px-7 py-5 space-y-3" style={{ background: '#111827' }}>
+          <div className="px-7 py-5 space-y-3" style={{ background: 'rgb(var(--sidebar))' }}>
             <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>What you get</p>
             {BENEFITS.map((b, i) => {
               const Icon = b.icon;
@@ -106,7 +106,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
           </div>
 
           {/* How it works */}
-          <div className="px-7 py-5" style={{ background: '#0E1525', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="px-7 py-5" style={{ background: 'rgb(var(--sidebar))', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.3)' }}>How it works</p>
             <div className="flex items-start gap-0">
               {STEPS.map((s, i) => (
@@ -116,7 +116,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
                       style={{ background: 'linear-gradient(90deg, rgba(37,99,235,0.5), rgba(37,99,235,0.1))' }} />
                   )}
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative z-10 mb-2"
-                    style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)', color: '#fff' }}>
+                    style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', color: 'rgb(var(--card))' }}>
                     {s.n}
                   </div>
                   <p className="text-[11px] font-semibold text-white leading-tight px-1">{s.label}</p>
@@ -128,12 +128,12 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
         </div>
 
         {/* ── FOOTER (fixed) ── */}
-        <div className="px-7 py-5 space-y-3" style={{ background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
+        <div className="px-7 py-5 space-y-3" style={{ background: 'rgb(var(--sidebar))', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
           {canUse ? (
             <button
               onClick={onGetStarted}
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}
             >
               <Sparkles className="w-4 h-4" />
               Get Started
@@ -144,7 +144,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
               <button
                 onClick={onUpgrade}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ background: 'linear-gradient(135deg, #2563EB, #7C3AED)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}
               >
                 <Zap className="w-4 h-4" />
                 Upgrade to Pro

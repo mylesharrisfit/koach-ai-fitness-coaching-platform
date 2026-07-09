@@ -38,12 +38,12 @@ const goalLabels = {
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness',
 };
 
-function StatCard({ label, value, sub, color = 'text-[#1F2A44]', icon: Icon, iconColor }) {
+function StatCard({ label, value, sub, color = 'text-foreground', icon: Icon, iconColor }) {
   return (
-    <div className="flex-1 min-w-0 flex flex-col items-center justify-center bg-[#F6F7FB] rounded-2xl p-3 gap-0.5 text-center">
-      {Icon && <Icon className={cn('w-3.5 h-3.5 mb-1', iconColor || 'text-[#9CA3AF]')} />}
+    <div className="flex-1 min-w-0 flex flex-col items-center justify-center bg-muted rounded-2xl p-3 gap-0.5 text-center">
+      {Icon && <Icon className={cn('w-3.5 h-3.5 mb-1', iconColor || 'text-muted-foreground')} />}
       <span className={cn('text-[15px] font-bold tabular-nums leading-tight', color)}>{value ?? '—'}</span>
-      <span className="text-[10px] text-[#9CA3AF] font-medium leading-tight mt-0.5">{label}</span>
+      <span className="text-[10px] text-muted-foreground font-medium leading-tight mt-0.5">{label}</span>
       {sub && <span className="text-[9px] text-[#C4C9D4]">{sub}</span>}
     </div>
   );
@@ -101,14 +101,14 @@ export default function ClientProfile() {
   const weightDelta = firstWeight && latestWeight ? +(latestWeight - firstWeight).toFixed(1) : null;
 
   if (isLoading) return (
-    <div className="flex items-center justify-center min-h-screen bg-[#F6F7FB]">
+    <div className="flex items-center justify-center min-h-screen bg-muted">
       <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
     </div>
   );
 
   if (!client) return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-3">
-      <p className="text-[#374151] font-medium">Client not found.</p>
+      <p className="text-foreground font-medium">Client not found.</p>
       <Button variant="outline" onClick={() => navigate('/clients')}>
         <ArrowLeft className="w-4 h-4" /> Back to Clients
       </Button>
@@ -116,31 +116,31 @@ export default function ClientProfile() {
   );
 
   const initials = client.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
-  const scoreColor = score === null ? 'text-[#9CA3AF]' : score >= 80 ? 'text-emerald-600' : score >= 60 ? 'text-amber-500' : 'text-red-500';
-  const scoreIconColor = score === null ? 'text-[#9CA3AF]' : score >= 80 ? 'text-emerald-500' : score >= 60 ? 'text-amber-500' : 'text-red-500';
+  const scoreColor = score === null ? 'text-muted-foreground' : score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive';
+  const scoreIconColor = score === null ? 'text-muted-foreground' : score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive';
 
   return (
-    <div className="min-h-screen bg-[#F6F7FB] flex flex-col">
+    <div className="min-h-screen bg-muted flex flex-col">
 
       {/* ── Sticky top bar ── */}
-      <div className="bg-white border-b border-[#E7EAF3] px-4 sm:px-6 py-3 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
+      <div className="bg-card border-b border-border px-4 sm:px-6 py-3 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
         <button
           onClick={() => navigate('/clients')}
-          className="flex items-center gap-1.5 text-[#6B7280] hover:text-[#1F2A44] transition-colors"
+          className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm font-medium hidden sm:inline">Clients</span>
         </button>
-        <span className="text-[#D1D5DB] hidden sm:inline">/</span>
-        <span className="text-sm font-semibold text-[#1F2A44] truncate flex-1">{client.name}</span>
+        <span className="text-muted-foreground hidden sm:inline">/</span>
+        <span className="text-sm font-semibold text-foreground truncate flex-1">{client.name}</span>
         <div className="flex items-center gap-2 flex-shrink-0">
           {(pendingCheckins > 0 || flaggedCheckins > 0) && (
-            <span className="hidden sm:flex items-center gap-1 text-[10px] font-bold bg-amber-50 border border-amber-100 text-amber-600 px-2 py-1 rounded-full">
+            <span className="hidden sm:flex items-center gap-1 text-[10px] font-bold bg-warning/10 border border-warning text-warning px-2 py-1 rounded-full">
               <AlertTriangle className="w-3 h-3" />
               {pendingCheckins + flaggedCheckins} need review
             </span>
           )}
-          <Button size="sm" variant="ghost" onClick={() => setShowEdit(true)} className="gap-1.5 text-[#6B7280]">
+          <Button size="sm" variant="ghost" onClick={() => setShowEdit(true)} className="gap-1.5 text-muted-foreground">
             <Edit className="w-3.5 h-3.5" />
             <span className="hidden sm:inline text-xs">Edit</span>
           </Button>
@@ -148,40 +148,40 @@ export default function ClientProfile() {
       </div>
 
       {/* ── Hero header ── */}
-      <div className="bg-white border-b border-[#E7EAF3]">
+      <div className="bg-card border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
 
           {/* Avatar + Info row */}
           <div className="flex items-start gap-4 mb-5">
             <div className="relative flex-shrink-0">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#EEF4FF] to-[#DBEAFE] text-primary flex items-center justify-center font-bold text-2xl overflow-hidden border border-[#E7EAF3] shadow-sm">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/10 text-primary flex items-center justify-center font-bold text-2xl overflow-hidden border border-border shadow-sm">
                 {client.avatar_url
                   ? <img src={client.avatar_url} alt={client.name} className="w-full h-full object-cover" />
                   : initials}
               </div>
               {/* Online dot */}
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full" title="Active client" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-success border-2 border-white rounded-full" title="Active client" />
             </div>
 
             <div className="flex-1 min-w-0 pt-1">
               <div className="flex items-center gap-2 flex-wrap mb-1">
-                <h1 className="text-xl sm:text-2xl font-bold text-[#1F2A44] leading-tight">{client.name}</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">{client.name}</h1>
                 <LifecycleBadge status={client.lifecycle_status || 'lead'} />
               </div>
-              <p className="text-sm text-[#6B7280] mb-1">{goalLabels[client.goal] || 'General Fitness'}</p>
+              <p className="text-sm text-muted-foreground mb-1">{goalLabels[client.goal] || 'General Fitness'}</p>
               <div className="flex items-center gap-3 flex-wrap">
                 {client.email && (
-                  <a href={`mailto:${client.email}`} className="flex items-center gap-1 text-xs text-[#9CA3AF] hover:text-primary transition-colors">
+                  <a href={`mailto:${client.email}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors">
                     <Mail className="w-3 h-3" /> {client.email}
                   </a>
                 )}
                 {client.phone && (
-                  <a href={`tel:${client.phone}`} className="flex items-center gap-1 text-xs text-[#9CA3AF] hover:text-primary transition-colors">
+                  <a href={`tel:${client.phone}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors">
                     <Phone className="w-3 h-3" /> {client.phone}
                   </a>
                 )}
                 {client.start_date && (
-                  <span className="flex items-center gap-1 text-xs text-[#9CA3AF]">
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Calendar className="w-3 h-3" /> Since {format(new Date(client.start_date), 'MMM yyyy')}
                   </span>
                 )}
@@ -208,27 +208,27 @@ export default function ClientProfile() {
               label="Check-ins"
               value={checkIns.length}
               sub={pendingCheckins > 0 ? `${pendingCheckins} pending` : undefined}
-              color={pendingCheckins > 0 ? 'text-amber-600' : 'text-[#1F2A44]'}
+              color={pendingCheckins > 0 ? 'text-warning' : 'text-foreground'}
               icon={ClipboardCheck}
             />
             <StatCard
               label="Last Check-in"
               value={lastCI ? formatDistanceToNow(new Date(lastCI.date), { addSuffix: false }) : 'Never'}
               sub={lastCI ? 'ago' : undefined}
-              color={isOverdue ? 'text-red-500' : 'text-[#1F2A44]'}
+              color={isOverdue ? 'text-destructive' : 'text-foreground'}
               icon={Calendar}
-              iconColor={isOverdue ? 'text-red-400' : 'text-[#9CA3AF]'}
+              iconColor={isOverdue ? 'text-destructive' : 'text-muted-foreground'}
             />
           </div>
 
           {/* Alert banner if overdue */}
           {isOverdue && (
-            <div className="flex items-center gap-2.5 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2.5 mb-4">
-              <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
-              <p className="text-xs font-medium text-amber-700 flex-1">No check-in for {daysSinceCI} days — consider reaching out</p>
+            <div className="flex items-center gap-2.5 bg-warning/10 border border-warning rounded-xl px-3.5 py-2.5 mb-4">
+              <AlertTriangle className="w-4 h-4 text-warning flex-shrink-0" />
+              <p className="text-xs font-medium text-warning flex-1">No check-in for {daysSinceCI} days — consider reaching out</p>
               <button
                 onClick={() => setActiveTab('messages')}
-                className="text-xs font-semibold text-amber-600 hover:text-amber-700 flex items-center gap-0.5 flex-shrink-0"
+                className="text-xs font-semibold text-warning hover:text-warning flex items-center gap-0.5 flex-shrink-0"
               >
                 Message <ChevronRight className="w-3 h-3" />
               </button>
@@ -248,7 +248,7 @@ export default function ClientProfile() {
               size="sm"
               variant="outline"
               onClick={() => setActiveTab('programs')}
-              className="gap-1.5 h-9 px-4 text-xs font-semibold border-[#E7EAF3] text-[#374151]"
+              className="gap-1.5 h-9 px-4 text-xs font-semibold border-border text-foreground"
             >
               <Dumbbell className="w-3.5 h-3.5" /> Assign Program
             </Button>
@@ -256,12 +256,12 @@ export default function ClientProfile() {
               size="sm"
               variant="outline"
               onClick={() => setActiveTab('checkins')}
-              className="gap-1.5 h-9 px-4 text-xs font-semibold border-[#E7EAF3] text-[#374151]"
+              className="gap-1.5 h-9 px-4 text-xs font-semibold border-border text-foreground"
             >
               <ClipboardCheck className="w-3.5 h-3.5" />
               Review Check-in
               {pendingCheckins > 0 && (
-                <span className="ml-0.5 min-w-[18px] text-center text-[10px] bg-amber-500 text-white rounded-full px-1.5">
+                <span className="ml-0.5 min-w-[18px] text-center text-[10px] bg-warning text-white rounded-full px-1.5">
                   {pendingCheckins}
                 </span>
               )}
@@ -271,7 +271,7 @@ export default function ClientProfile() {
       </div>
 
       {/* ── Tab bar ── */}
-      <div className="bg-white border-b border-[#E7EAF3] sticky top-[57px] z-20">
+      <div className="bg-card border-b border-border sticky top-[57px] z-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 overflow-x-auto">
           <div className="flex min-w-max">
             {TABS.map(tab => (
@@ -282,18 +282,18 @@ export default function ClientProfile() {
                   'relative px-3 sm:px-4 py-3.5 text-xs sm:text-[13px] font-semibold border-b-2 transition-colors whitespace-nowrap',
                   activeTab === tab.key
                     ? 'border-primary text-primary'
-                    : 'border-transparent text-[#6B7280] hover:text-[#374151]'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 )}
               >
                 {tab.label}
                 {/* Notification dots */}
                 {tab.key === 'checkins' && pendingCheckins > 0 && (
-                  <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 text-[9px] font-bold bg-amber-500 text-white rounded-full px-1">
+                  <span className="ml-1.5 inline-flex items-center justify-center min-w-[16px] h-4 text-[9px] font-bold bg-warning text-white rounded-full px-1">
                     {pendingCheckins}
                   </span>
                 )}
                 {tab.key === 'messages' && messages.filter(m => !m.is_read && m.sender === 'client').length > 0 && (
-                  <span className="ml-1.5 inline-block w-2 h-2 bg-red-500 rounded-full align-top mt-0.5" />
+                  <span className="ml-1.5 inline-block w-2 h-2 bg-destructive rounded-full align-top mt-0.5" />
                 )}
               </button>
             ))}

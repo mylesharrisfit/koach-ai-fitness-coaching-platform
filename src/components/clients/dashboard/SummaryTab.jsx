@@ -21,20 +21,20 @@ function Ring({ pct = 0, label, sublabel, size = 72, active = false }) {
   const r = (size - 10) / 2;
   const circ = 2 * Math.PI * r;
   const dash = Math.max(0, Math.min(pct / 100, 1)) * circ;
-  const activeColor = '#2563EB';
-  const inactiveColor = '#9CA3AF';
+  const activeColor = 'rgb(var(--primary))';
+  const inactiveColor = 'rgb(var(--muted-foreground))';
 
   return (
     <div className={cn('flex flex-col items-center gap-1.5', active && 'scale-105')}>
       <div className="relative rounded-full">
         <svg width={size} height={size} className="-rotate-90">
           {/* Track */}
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E5E7EB" strokeWidth={active ? 7 : 5} />
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgb(var(--border))" strokeWidth={active ? 7 : 5} />
           {/* Progress */}
           <circle
             cx={size / 2} cy={size / 2} r={r}
             fill="none"
-            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : '#E5E7EB'}
+            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : 'rgb(var(--border))'}
             strokeWidth={active ? 7 : 5}
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
@@ -42,17 +42,17 @@ function Ring({ pct = 0, label, sublabel, size = 72, active = false }) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={cn('font-bold tabular-nums leading-none', active ? 'text-sm' : 'text-xs')}
-            style={{ color: active ? activeColor : '#6B7280' }}>
+            style={{ color: active ? activeColor : 'rgb(var(--muted-foreground))' }}>
             {pct}%
           </span>
           {sublabel && (
-            <span className="text-[8px] leading-none mt-0.5" style={{ color: '#9CA3AF' }}>{sublabel}</span>
+            <span className="text-[8px] leading-none mt-0.5" style={{ color: 'rgb(var(--muted-foreground))' }}>{sublabel}</span>
           )}
         </div>
       </div>
       <div className="text-center">
         <p className="text-[10px] font-semibold leading-tight"
-          style={{ color: active ? '#0E1525' : '#9CA3AF' }}>
+          style={{ color: active ? 'rgb(var(--foreground))' : 'rgb(var(--muted-foreground))' }}>
           {label}
         </p>
       </div>
@@ -106,12 +106,12 @@ function generateSmartTags(client, checkIns, messages) {
 }
 
 const TAG_STYLES = {
-  red:    { bg: '#fef2f2', text: '#dc2626', border: '#fecaca' },
+  red:    { bg: 'rgb(var(--destructive))', text: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' },
   orange: { bg: '#fff7ed', text: '#ea580c', border: '#fed7aa' },
-  yellow: { bg: '#fefce8', text: '#ca8a04', border: '#fde68a' },
-  green:  { bg: '#f0fdf4', text: '#16a34a', border: '#bbf7d0' },
-  blue:   { bg: '#eff6ff', text: '#2563eb', border: '#bfdbfe' },
-  gray:   { bg: '#f9fafb', text: '#6b7280', border: '#e5e7eb' },
+  yellow: { bg: 'rgb(var(--warning))', text: '#ca8a04', border: 'rgb(var(--warning))' },
+  green:  { bg: 'rgb(var(--success))', text: 'rgb(var(--success))', border: 'rgb(var(--success))' },
+  blue:   { bg: 'rgb(var(--accent))', text: 'rgb(var(--primary))', border: 'rgb(var(--accent))' },
+  gray:   { bg: 'rgb(var(--background))', text: 'rgb(var(--muted-foreground))', border: 'rgb(var(--border))' },
 };
 
 // ─────────────────────────────────────────────────────────
@@ -148,11 +148,11 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
   };
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: '#f8f9fa' }}>
+    <div className="h-full overflow-y-auto" style={{ background: 'rgb(var(--muted))' }}>
       <div className="grid h-full min-h-0" style={{ gridTemplateColumns: '260px 1fr 280px' }}>
 
         {/* ═══════════════ LEFT COLUMN ═══════════════ */}
-        <div className="border-r border-gray-200 bg-white overflow-y-auto p-5 space-y-5">
+        <div className="border-r border-border bg-card overflow-y-auto p-5 space-y-5">
 
           {/* Contact info */}
           <div className="space-y-1">
@@ -175,7 +175,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
 
           <Section title="Achievements">
             {earnedBadges.length === 0 ? (
-              <p className="text-xs text-gray-400">No achievements yet</p>
+              <p className="text-xs text-muted-foreground">No achievements yet</p>
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {[...earnedBadges].sort((a,b) => new Date(b.earned_date) - new Date(a.earned_date)).slice(0, 8).map(b => {
@@ -197,7 +197,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             {onAwardBadge && (
               <button onClick={onAwardBadge}
                 className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
-                style={{ color: '#2563EB' }}>
+                style={{ color: 'rgb(var(--primary))' }}>
                 <Plus className="w-3 h-3" /> Award Badge
               </button>
             )}
@@ -216,7 +216,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               })}
               {(client.tags || []).map((t, i) => (
                 <span key={`c-${i}`} className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                  style={{ background: '#f5f3ff', color: '#7c3aed', border: '1px solid #ddd6fe' }}>
+                  style={{ background: 'rgb(var(--ai))', color: 'rgb(var(--ai))', border: '1px solid rgb(var(--ai))' }}>
                   #{t}
                 </span>
               ))}
@@ -229,14 +229,14 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
                   onChange={e => setNewTag(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && saveTag()}
                   placeholder="Tag name…"
-                  className="flex-1 text-xs border border-gray-200 rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-blue-400"
+                  className="flex-1 text-xs border border-border rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-primary"
                 />
-                <button onClick={saveTag} className="text-xs text-blue-500 font-semibold px-2">Save</button>
-                <button onClick={() => setAddingTag(false)} className="text-xs text-gray-400 px-1">✕</button>
+                <button onClick={saveTag} className="text-xs text-primary font-semibold px-2">Save</button>
+                <button onClick={() => setAddingTag(false)} className="text-xs text-muted-foreground px-1">✕</button>
               </div>
             ) : (
               <button onClick={() => setAddingTag(true)} className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
-                style={{ color: '#2563EB' }}>
+                style={{ color: 'rgb(var(--primary))' }}>
                 <Plus className="w-3 h-3" /> Add Tag
               </button>
             )}
@@ -252,15 +252,15 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               <div key={app.name} className="flex items-center justify-between py-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{app.icon}</span>
-                  <span className="text-xs text-gray-600">{app.name}</span>
+                  <span className="text-xs text-muted-foreground">{app.name}</span>
                 </div>
-                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: '#2563EB' }}>Connect</button>
+                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: 'rgb(var(--primary))' }}>Connect</button>
               </div>
             ))}
           </Section>
 
           <Section title="Threshold Alerts">
-            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: '#2563EB' }}>
+            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: 'rgb(var(--primary))' }}>
               <Bell className="w-3.5 h-3.5" /> Set up alerts
             </button>
           </Section>
@@ -273,37 +273,37 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           <button
             onClick={() => canAIOnboard ? setShowAIOnboarding(true) : toast.error('AI Onboarding requires Pro or Elite plan')}
             className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-2.5 rounded-xl transition-all"
-            style={{ background: canAIOnboard ? 'linear-gradient(135deg, #2563EB, #7C3AED)' : '#94A3B8' }}
+            style={{ background: canAIOnboard ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted-foreground))' }}
           >
             {canAIOnboard ? <Sparkles className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
             {canAIOnboard ? 'AI Onboarding — Generate Starting Plan' : 'AI Onboarding (Pro+)'}
           </button>
 
           {/* Program card */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+          <div className="bg-card rounded-xl border border-border shadow-sm p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#94A3B8' }}>Current Program</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgb(var(--muted-foreground))' }}>Current Program</p>
                 {program ? (
                   <>
-                    <p className="font-bold text-gray-800">{program.title}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="font-bold text-foreground">{program.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {program.duration_weeks ? `${program.duration_weeks} weeks` : ''}
                       {client.start_date && program.duration_weeks ? ` · ${format(new Date(client.start_date), 'MMM d')} – ${format(new Date(new Date(client.start_date).getTime() + program.duration_weeks * 7 * 86400000), 'MMM d')}` : ''}
                     </p>
                   </>
                 ) : (
-                  <p className="text-sm text-gray-400">No program assigned</p>
+                  <p className="text-sm text-muted-foreground">No program assigned</p>
                 )}
               </div>
-              <Dumbbell className="w-5 h-5 text-gray-300 flex-shrink-0 mt-0.5" />
+              <Dumbbell className="w-5 h-5 text-border flex-shrink-0 mt-0.5" />
             </div>
             {nutritionPlan && (
-              <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2">
-                <Salad className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
+              <div className="mt-3 pt-3 border-t border-border flex items-center gap-2">
+                <Salad className="w-4 h-4 flex-shrink-0" style={{ color: 'rgb(var(--primary))' }} />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>Meal Plan</p>
-                  <p className="text-xs font-semibold cursor-pointer hover:opacity-70" style={{ color: '#2563EB' }}>{nutritionPlan.title}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--muted-foreground))' }}>Meal Plan</p>
+                  <p className="text-xs font-semibold cursor-pointer hover:opacity-70" style={{ color: 'rgb(var(--primary))' }}>{nutritionPlan.title}</p>
                 </div>
               </div>
             )}
@@ -332,7 +332,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
         </div>
 
         {/* ═══════════════ RIGHT COLUMN ═══════════════ */}
-        <div className="border-l border-gray-200 bg-white overflow-hidden flex flex-col">
+        <div className="border-l border-border bg-card overflow-hidden flex flex-col">
           <NotesColumn client={client} />
         </div>
       </div>
@@ -355,8 +355,8 @@ function Section({ title, children }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <div className="w-0.5 h-3 rounded-full" style={{ background: '#2563EB' }} />
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>{title}</p>
+        <div className="w-0.5 h-3 rounded-full" style={{ background: 'rgb(var(--primary))' }} />
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--muted-foreground))' }}>{title}</p>
       </div>
       <div className="space-y-1">{children}</div>
     </div>
@@ -366,8 +366,8 @@ function Section({ title, children }) {
 function InfoRow({ label, value }) {
   return (
     <div className="flex items-center justify-between gap-2 py-0.5">
-      <span className="text-xs text-gray-400 flex-shrink-0">{label}</span>
-      <span className="text-xs font-semibold text-gray-700 text-right truncate">{value ?? '—'}</span>
+      <span className="text-xs text-muted-foreground flex-shrink-0">{label}</span>
+      <span className="text-xs font-semibold text-foreground text-right truncate">{value ?? '—'}</span>
     </div>
   );
 }
@@ -375,7 +375,7 @@ function InfoRow({ label, value }) {
 function AchievementBadge({ emoji, label }) {
   return (
     <div className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-      style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>
+      style={{ background: 'rgb(var(--warning))', color: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning))' }}>
       <span>{emoji}</span> {label}
     </div>
   );
@@ -383,12 +383,12 @@ function AchievementBadge({ emoji, label }) {
 
 function ComplianceSection({ title, weeks, checkIns, type, planLabel }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+    <div className="bg-card rounded-xl border border-border shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--muted-foreground))' }}>
           {title}
         </p>
-        {planLabel && <span className="text-[10px] text-gray-400 font-medium">{planLabel}</span>}
+        {planLabel && <span className="text-[10px] text-muted-foreground font-medium">{planLabel}</span>}
       </div>
       <div className="flex items-end justify-around gap-2">
         {weeks.map((w, i) => {
@@ -440,13 +440,13 @@ function NotesColumn({ client }) {
   return (
     <>
       {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-0.5 h-3.5 rounded-full" style={{ background: '#2563EB' }} />
-          <p className="text-sm font-bold" style={{ color: '#0E1525' }}>Trainer Notes</p>
+          <div className="w-0.5 h-3.5 rounded-full" style={{ background: 'rgb(var(--primary))' }} />
+          <p className="text-sm font-bold" style={{ color: 'rgb(var(--foreground))' }}>Trainer Notes</p>
           {notes.length > 0 && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: 'rgba(37,99,235,0.1)', color: '#2563EB' }}>
+              style={{ background: 'rgba(37,99,235,0.1)', color: 'rgb(var(--primary))' }}>
               {notes.length}
             </span>
           )}
@@ -454,9 +454,9 @@ function NotesColumn({ client }) {
       </div>
 
       {/* Input area */}
-      <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0" style={{ background: '#fafbff' }}>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1.5">Add a note</p>
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="px-4 py-3 border-b border-border flex-shrink-0" style={{ background: 'rgb(var(--background))' }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Add a note</p>
+        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <textarea
             value={newNote}
             onChange={e => setNewNote(e.target.value)}
@@ -469,7 +469,7 @@ function NotesColumn({ client }) {
           onClick={save}
           disabled={saving || !newNote.trim()}
           className="mt-2 w-full text-white text-xs font-semibold py-2 rounded-lg transition-all disabled:opacity-40"
-          style={{ background: '#2563EB' }}
+          style={{ background: 'rgb(var(--primary))' }}
         >
           {saving ? 'Saving…' : 'Save Note'}
         </button>
@@ -478,13 +478,13 @@ function NotesColumn({ client }) {
       {/* Notes list */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {notes.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center pt-4">No notes yet</p>
+          <p className="text-xs text-muted-foreground text-center pt-4">No notes yet</p>
         ) : notes.map(ci => (
-          <div key={ci.id} className="rounded-xl bg-white border border-gray-100 p-3 shadow-sm">
-            <p className="text-[10px] font-bold mb-1" style={{ color: '#2563EB' }}>
+          <div key={ci.id} className="rounded-xl bg-card border border-border p-3 shadow-sm">
+            <p className="text-[10px] font-bold mb-1" style={{ color: 'rgb(var(--primary))' }}>
               {format(new Date(ci.date), 'MMM d, yyyy')}
             </p>
-            <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{ci.coach_notes}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{ci.coach_notes}</p>
           </div>
         ))}
       </div>

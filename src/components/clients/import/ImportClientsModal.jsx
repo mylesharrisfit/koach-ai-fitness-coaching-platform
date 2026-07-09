@@ -113,23 +113,23 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
         }}>
 
           {/* ── REGION 1: HEADER — fixed, never scrolls ── */}
-          <div style={{ flexShrink: 0 }} className="px-6 py-4 border-b border-gray-100">
+          <div style={{ flexShrink: 0 }} className="px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 {step > 0 && step < 3 && (
                   <button
                     onClick={() => setStep(s => s - 1)}
-                    className="text-gray-400 hover:text-gray-700 transition-colors"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
                     disabled={committing}
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                 )}
-                <DialogTitle className="text-base font-bold text-gray-900">
+                <DialogTitle className="text-base font-bold text-foreground">
                   Import Clients from CSV
                 </DialogTitle>
               </div>
-              <span className="text-xs text-gray-400 font-medium">
+              <span className="text-xs text-muted-foreground font-medium">
                 Step {step + 1} of {STEPS.length}
               </span>
             </div>
@@ -137,15 +137,15 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
               {STEPS.map((s, i) => (
                 <React.Fragment key={s}>
                   <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
-                    i === step ? 'bg-blue-100 text-blue-700'
-                    : i < step ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-gray-50 text-gray-400'
+                    i === step ? 'bg-accent text-primary'
+                    : i < step ? 'bg-success/10 text-success'
+                    : 'bg-muted text-muted-foreground'
                   }`}>
                     <span>{i < step ? '✓' : i + 1}</span>
                     <span className="hidden sm:inline">{s}</span>
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div className={`flex-1 h-px ${i < step ? 'bg-emerald-300' : 'bg-gray-100'}`} />
+                    <div className={`flex-1 h-px ${i < step ? 'bg-success' : 'bg-muted'}`} />
                   )}
                 </React.Fragment>
               ))}
@@ -186,15 +186,15 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
 
           {/* ── REGION 3: FOOTER — fixed, always visible ── */}
           {step < 3 && (
-            <div style={{ flexShrink: 0 }} className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div style={{ flexShrink: 0 }} className="px-6 py-4 border-t border-border flex items-center justify-between">
               <div>
                 {step === 1 && !aiLoading && (
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     {parsed?.rows?.length || 0} rows · {parsed?.headers?.length || 0} columns
                   </p>
                 )}
                 {step === 2 && (
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     {parsed?.rows?.length || 0} clients ready to import
                   </p>
                 )}
@@ -210,7 +210,7 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
                     onClick={handleConfirmImport}
                     disabled={committing}
                     size="sm"
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                    className="bg-success hover:bg-success text-white"
                   >
                     {committing
                       ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Importing…</>

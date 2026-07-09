@@ -6,10 +6,10 @@ import { toast } from 'sonner';
 import GoalFormModal from './goals/GoalFormModal';
 
 // ── Mini progress bar ──────────────────────────────────────
-function Bar({ pct, color = '#2563EB' }) {
+function Bar({ pct, color = 'rgb(var(--primary))' }) {
   const p = Math.max(0, Math.min(100, pct || 0));
   return (
-    <div className="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
+    <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
       <div className="h-full rounded-full transition-all" style={{ width: `${p}%`, background: color }} />
     </div>
   );
@@ -41,27 +41,27 @@ function GoalItem({ goal, onEdit, onDelete, onToggle }) {
   }
 
   return (
-    <div className={`bg-white rounded-xl border shadow-sm p-3.5 transition-all ${isComplete ? 'opacity-60 border-gray-100' : 'border-gray-100 hover:border-blue-100'}`}>
+    <div className={`bg-card rounded-xl border shadow-sm p-3.5 transition-all ${isComplete ? 'opacity-60 border-border' : 'border-border hover:border-accent'}`}>
       <div className="flex items-start gap-3">
         {/* Complete toggle */}
         <button onClick={() => onToggle(goal)} className="mt-0.5 flex-shrink-0">
           {isComplete
-            ? <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-            : <Target className="w-4 h-4 text-blue-400" />}
+            ? <CheckCircle2 className="w-4 h-4 text-success" />
+            : <Target className="w-4 h-4 text-primary" />}
         </button>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <p className={`text-sm font-semibold leading-tight ${isComplete ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+            <p className={`text-sm font-semibold leading-tight ${isComplete ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
               {goal.name}
             </p>
             <div className="flex items-center gap-0.5 flex-shrink-0">
               <button onClick={() => onEdit(goal)}
-                className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600">
+                className="w-6 h-6 flex items-center justify-center rounded hover:bg-muted text-muted-foreground hover:text-muted-foreground">
                 <Pencil className="w-3 h-3" />
               </button>
               <button onClick={() => onDelete(goal)}
-                className="w-6 h-6 flex items-center justify-center rounded hover:bg-red-50 text-gray-400 hover:text-red-500">
+                className="w-6 h-6 flex items-center justify-center rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive">
                 <Trash2 className="w-3 h-3" />
               </button>
             </div>
@@ -69,28 +69,28 @@ function GoalItem({ goal, onEdit, onDelete, onToggle }) {
 
           {progress !== null && (
             <div className="space-y-1">
-              <Bar pct={progress} color={isComplete ? '#10b981' : '#2563EB'} />
-              <p className="text-[10px] text-gray-400">{progressLabel}</p>
+              <Bar pct={progress} color={isComplete ? 'rgb(var(--success))' : 'rgb(var(--primary))'} />
+              <p className="text-[10px] text-muted-foreground">{progressLabel}</p>
             </div>
           )}
 
           {goal.goal_type === 'nutrition' && goal.protein_target && (
             <div className="grid grid-cols-3 gap-1 mt-2">
               {[
-                { label: 'Protein', cur: goal.protein_current, tgt: goal.protein_target, color: '#2563EB' },
-                { label: 'Carbs',   cur: goal.carbs_current,   tgt: goal.carbs_target,   color: '#f59e0b' },
-                { label: 'Fat',     cur: goal.fat_current,     tgt: goal.fat_target,     color: '#10b981' },
+                { label: 'Protein', cur: goal.protein_current, tgt: goal.protein_target, color: 'rgb(var(--primary))' },
+                { label: 'Carbs',   cur: goal.carbs_current,   tgt: goal.carbs_target,   color: 'rgb(var(--warning))' },
+                { label: 'Fat',     cur: goal.fat_current,     tgt: goal.fat_target,     color: 'rgb(var(--success))' },
               ].map(m => (
                 <div key={m.label}>
                   <Bar pct={m.tgt ? Math.round(((m.cur ?? 0) / m.tgt) * 100) : 0} color={m.color} />
-                  <p className="text-[9px] text-gray-400 mt-0.5">{m.label} {m.cur ?? 0}/{m.tgt ?? 0}g</p>
+                  <p className="text-[9px] text-muted-foreground mt-0.5">{m.label} {m.cur ?? 0}/{m.tgt ?? 0}g</p>
                 </div>
               ))}
             </div>
           )}
 
           {goal.notes && (
-            <p className="text-[10px] text-gray-400 mt-1 italic">{goal.notes}</p>
+            <p className="text-[10px] text-muted-foreground mt-1 italic">{goal.notes}</p>
           )}
         </div>
       </div>
@@ -139,34 +139,34 @@ export default function GoalsSummarySection({ client }) {
 
   return (
     <>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+      <div className="bg-card rounded-xl border border-border shadow-sm p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-0.5 h-3.5 rounded-full bg-blue-600" />
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Goals</p>
+            <div className="w-0.5 h-3.5 rounded-full bg-primary" />
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Goals</p>
             {goals.length > 0 && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600">
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-primary">
                 {active.length} active
               </span>
             )}
           </div>
           <button
             onClick={handleAdd}
-            className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary px-2.5 py-1.5 rounded-lg bg-accent hover:bg-accent transition-colors"
           >
             <Plus className="w-3.5 h-3.5" /> Add Goal
           </button>
         </div>
 
         {/* Loading */}
-        {isLoading && <p className="text-xs text-gray-400 py-2">Loading…</p>}
+        {isLoading && <p className="text-xs text-muted-foreground py-2">Loading…</p>}
 
         {/* Empty state */}
         {!isLoading && goals.length === 0 && (
           <div className="text-center py-5">
-            <Target className="w-7 h-7 text-gray-200 mx-auto mb-2" />
-            <p className="text-xs text-gray-400">No goals yet — <button onClick={handleAdd} className="text-blue-500 font-semibold hover:underline">add one</button></p>
+            <Target className="w-7 h-7 text-border mx-auto mb-2" />
+            <p className="text-xs text-muted-foreground">No goals yet — <button onClick={handleAdd} className="text-primary font-semibold hover:underline">add one</button></p>
           </div>
         )}
 
@@ -182,8 +182,8 @@ export default function GoalsSummarySection({ client }) {
         {/* Completed */}
         {completed.length > 0 && (
           <div className="mt-3 space-y-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-300 flex items-center gap-1.5">
-              <span className="w-0.5 h-3 rounded-full bg-emerald-400 inline-block" />Completed
+            <p className="text-[10px] font-bold uppercase tracking-widest text-border flex items-center gap-1.5">
+              <span className="w-0.5 h-3 rounded-full bg-success inline-block" />Completed
             </p>
             {completed.map(g => (
               <GoalItem key={g.id} goal={g} onEdit={handleEdit} onDelete={handleDelete} onToggle={handleToggle} />

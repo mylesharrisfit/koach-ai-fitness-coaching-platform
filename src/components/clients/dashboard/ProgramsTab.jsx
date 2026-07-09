@@ -9,10 +9,10 @@ import { toast } from 'sonner';
 import { startOfWeek, addDays, format, isToday } from 'date-fns';
 
 const DIFFICULTY_STYLE = {
-  beginner:     { label: 'Beginner',     bg: 'bg-emerald-100', text: 'text-emerald-700' },
-  intermediate: { label: 'Intermediate', bg: 'bg-amber-100',   text: 'text-amber-700'   },
-  advanced:     { label: 'Advanced',     bg: 'bg-red-100',     text: 'text-red-700'      },
-  elite:        { label: 'Elite',        bg: 'bg-purple-100',  text: 'text-purple-700'   },
+  beginner:     { label: 'Beginner',     bg: 'bg-success/10', text: 'text-success' },
+  intermediate: { label: 'Intermediate', bg: 'bg-warning/10',   text: 'text-warning'   },
+  advanced:     { label: 'Advanced',     bg: 'bg-destructive/10',     text: 'text-destructive'      },
+  elite:        { label: 'Elite',        bg: 'bg-ai/10',  text: 'text-ai'   },
 };
 
 // ── Program Picker ────────────────────────────────────────────────────────────
@@ -27,7 +27,7 @@ function ProgramPicker({ programs, onSelect, onCancel }) {
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Search programs..."
-        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+        className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
       />
       <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
         {filtered.map(p => {
@@ -36,28 +36,28 @@ function ProgramPicker({ programs, onSelect, onCancel }) {
             <button
               key={p.id}
               onClick={() => onSelect(p)}
-              className="w-full text-left p-3 rounded-xl border border-gray-100 bg-white hover:border-primary/40 hover:bg-blue-50/50 transition-all group"
+              className="w-full text-left p-3 rounded-xl border border-border bg-card hover:border-primary/40 hover:bg-accent/50 transition-all group"
             >
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-sm text-gray-800">{p.title}</span>
-                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors" />
+                <span className="font-semibold text-sm text-foreground">{p.title}</span>
+                <ChevronRight className="w-4 h-4 text-border group-hover:text-primary transition-colors" />
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', diff.bg, diff.text)}>
                   {diff.label}
                 </span>
                 {p.duration_weeks && (
-                  <span className="text-[10px] text-gray-400">{p.duration_weeks}w</span>
+                  <span className="text-[10px] text-muted-foreground">{p.duration_weeks}w</span>
                 )}
                 {p.days_per_week && (
-                  <span className="text-[10px] text-gray-400">{p.days_per_week}x/wk</span>
+                  <span className="text-[10px] text-muted-foreground">{p.days_per_week}x/wk</span>
                 )}
               </div>
             </button>
           );
         })}
         {filtered.length === 0 && (
-          <p className="text-xs text-gray-400 text-center py-6">No programs found</p>
+          <p className="text-xs text-muted-foreground text-center py-6">No programs found</p>
         )}
       </div>
       <Button variant="ghost" size="sm" onClick={onCancel} className="w-full text-xs">
@@ -87,8 +87,8 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
 
   if (picking) {
     return (
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-        <h3 className="text-sm font-bold text-gray-700 mb-3">Select a Program</h3>
+      <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
+        <h3 className="text-sm font-bold text-foreground mb-3">Select a Program</h3>
         <ProgramPicker
           programs={allPrograms}
           onSelect={p => assignMutation.mutate(p.id)}
@@ -100,13 +100,13 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
 
   if (!assignedProgram) {
     return (
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm text-center space-y-3">
-        <div className="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mx-auto">
-          <Dumbbell className="w-6 h-6 text-gray-300" />
+      <div className="bg-card rounded-2xl border border-border p-5 shadow-sm text-center space-y-3">
+        <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center mx-auto">
+          <Dumbbell className="w-6 h-6 text-border" />
         </div>
         <div>
-          <p className="font-semibold text-gray-700 text-sm">No program assigned yet</p>
-          <p className="text-xs text-gray-400 mt-0.5">Assign a workout program to get started</p>
+          <p className="font-semibold text-foreground text-sm">No program assigned yet</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Assign a workout program to get started</p>
         </div>
         <div className="flex gap-2 justify-center">
           <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setPicking(true)}>
@@ -123,16 +123,16 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
   const diff = DIFFICULTY_STYLE[assignedProgram.difficulty] || DIFFICULTY_STYLE.intermediate;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
       {assignedProgram.image_url && (
         <img src={assignedProgram.image_url} alt={assignedProgram.title} className="w-full h-28 object-cover" />
       )}
       <div className="p-4 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="font-bold text-gray-900 text-base">{assignedProgram.title}</h3>
+            <h3 className="font-bold text-foreground text-base">{assignedProgram.title}</h3>
             {assignedProgram.description && (
-              <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{assignedProgram.description}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{assignedProgram.description}</p>
             )}
           </div>
           <span className={cn('text-[10px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0', diff.bg, diff.text)}>
@@ -140,7 +140,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
           </span>
         </div>
 
-        <div className="flex gap-3 text-xs text-gray-500">
+        <div className="flex gap-3 text-xs text-muted-foreground">
           {assignedProgram.duration_weeks && (
             <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{assignedProgram.duration_weeks} weeks</span>
           )}
@@ -164,7 +164,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
           <Button
             size="sm"
             variant="ghost"
-            className="gap-1.5 text-xs text-gray-500"
+            className="gap-1.5 text-xs text-muted-foreground"
             onClick={() => setPicking(true)}
           >
             <RefreshCw className="w-3.5 h-3.5" /> Change
@@ -203,23 +203,23 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
   });
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
-      <h3 className="text-sm font-bold text-gray-700">This Week's Schedule</h3>
+    <div className="bg-card rounded-2xl border border-border shadow-sm p-4 space-y-3">
+      <h3 className="text-sm font-bold text-foreground">This Week's Schedule</h3>
       <div className="space-y-1.5">
         {schedule.map(({ date, workout, completed, isToday: todayFlag }) => (
           <div
             key={date.toISOString()}
             className={cn(
               'flex items-center gap-3 px-3 py-2 rounded-xl transition-colors',
-              todayFlag ? 'bg-primary/5 border border-primary/20' : 'bg-gray-50/70'
+              todayFlag ? 'bg-primary/5 border border-primary/20' : 'bg-muted/70'
             )}
           >
             {/* Day label */}
             <div className="w-10 text-center flex-shrink-0">
-              <p className={cn('text-[10px] font-bold uppercase', todayFlag ? 'text-primary' : 'text-gray-400')}>
+              <p className={cn('text-[10px] font-bold uppercase', todayFlag ? 'text-primary' : 'text-muted-foreground')}>
                 {format(date, 'EEE')}
               </p>
-              <p className={cn('text-sm font-bold', todayFlag ? 'text-primary' : 'text-gray-600')}>
+              <p className={cn('text-sm font-bold', todayFlag ? 'text-primary' : 'text-muted-foreground')}>
                 {format(date, 'd')}
               </p>
             </div>
@@ -227,14 +227,14 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
             {/* Workout info or rest day */}
             {workout ? (
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-gray-800 truncate">{workout.day_name || `Day ${workout.day_number || ''}`}</p>
+                <p className="text-xs font-semibold text-foreground truncate">{workout.day_name || `Day ${workout.day_number || ''}`}</p>
                 {workout.exercises?.length > 0 && (
-                  <p className="text-[10px] text-gray-400">{workout.exercises.length} exercises</p>
+                  <p className="text-[10px] text-muted-foreground">{workout.exercises.length} exercises</p>
                 )}
               </div>
             ) : (
               <div className="flex-1">
-                <p className="text-xs text-gray-400 italic">Rest Day</p>
+                <p className="text-xs text-muted-foreground italic">Rest Day</p>
               </div>
             )}
 
@@ -242,9 +242,9 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
             {workout && (
               <div className="flex-shrink-0">
                 {completed ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  <CheckCircle2 className="w-4 h-4 text-success" />
                 ) : (
-                  <Clock className={cn('w-4 h-4', todayFlag ? 'text-primary' : 'text-gray-300')} />
+                  <Clock className={cn('w-4 h-4', todayFlag ? 'text-primary' : 'text-border')} />
                 )}
               </div>
             )}
@@ -280,35 +280,35 @@ function ProgramProgress({ assignedProgram, workoutSessions, client }) {
   }).length;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
-      <h3 className="text-sm font-bold text-gray-700">Program Progress</h3>
+    <div className="bg-card rounded-2xl border border-border shadow-sm p-4 space-y-4">
+      <h3 className="text-sm font-bold text-foreground">Program Progress</h3>
 
       <div className="grid grid-cols-3 gap-3">
         {currentWeek !== null && totalWeeks > 0 && (
-          <div className="text-center p-3 rounded-xl bg-blue-50">
+          <div className="text-center p-3 rounded-xl bg-accent">
             <p className="text-2xl font-bold text-primary">{currentWeek}</p>
-            <p className="text-[10px] text-gray-400 mt-0.5">of {totalWeeks} weeks</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">of {totalWeeks} weeks</p>
           </div>
         )}
-        <div className="text-center p-3 rounded-xl bg-emerald-50">
-          <p className="text-2xl font-bold text-emerald-600">{thisWeekDone}</p>
-          <p className="text-[10px] text-gray-400 mt-0.5">this week</p>
+        <div className="text-center p-3 rounded-xl bg-success/10">
+          <p className="text-2xl font-bold text-success">{thisWeekDone}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">this week</p>
         </div>
-        <div className="text-center p-3 rounded-xl bg-gray-50">
-          <p className="text-2xl font-bold text-gray-700">{completed}</p>
-          <p className="text-[10px] text-gray-400 mt-0.5">total done</p>
+        <div className="text-center p-3 rounded-xl bg-muted">
+          <p className="text-2xl font-bold text-foreground">{completed}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">total done</p>
         </div>
       </div>
 
       {totalWorkouts > 0 && (
         <div>
           <div className="flex justify-between text-xs mb-1.5">
-            <span className="text-gray-500 font-medium">Overall completion</span>
-            <span className="font-bold text-gray-700">{completionPct}%</span>
+            <span className="text-muted-foreground font-medium">Overall completion</span>
+            <span className="font-bold text-foreground">{completionPct}%</span>
           </div>
-          <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2.5 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-violet-500 transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-primary to-ai transition-all duration-500"
               style={{ width: `${completionPct}%` }}
             />
           </div>
@@ -337,7 +337,7 @@ export default function ProgramsTab({ client }) {
 
   if (isLoading) return (
     <div className="p-5 space-y-3">
-      {[1, 2, 3].map(i => <div key={i} className="h-24 bg-gray-100 animate-pulse rounded-xl" />)}
+      {[1, 2, 3].map(i => <div key={i} className="h-24 bg-muted animate-pulse rounded-xl" />)}
     </div>
   );
 
