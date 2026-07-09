@@ -65,7 +65,7 @@ export default function GoalsHabitsTab({ client }) {
   const completed = goals.filter(g => g.status === 'completed');
 
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ background: 'rgb(var(--muted))' }}>
+    <div className="h-full flex flex-col overflow-hidden" style={{ background: 'var(--tc-muted)' }}>
 
       {/* ── Section toggle bar ── */}
       <div className="flex-shrink-0 flex items-center gap-1 px-6 pt-4 pb-0">
@@ -78,9 +78,9 @@ export default function GoalsHabitsTab({ client }) {
               onClick={() => setSection(s.key)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-t-lg text-sm font-semibold border-b-2 transition-all"
               style={{
-                borderBottomColor: isActive ? 'rgb(var(--primary))' : 'transparent',
-                color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
-                background: isActive ? 'rgb(var(--card))' : 'transparent',
+                borderBottomColor: isActive ? 'var(--tc-primary)' : 'transparent',
+                color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)',
+                background: isActive ? 'var(--tc-card)' : 'transparent',
               }}
             >
               <Icon className="w-4 h-4" />

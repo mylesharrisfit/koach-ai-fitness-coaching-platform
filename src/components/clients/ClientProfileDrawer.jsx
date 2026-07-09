@@ -24,7 +24,7 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
   const initials = client.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
   const score = compositeAdherenceScore(checkIns);
   const lastCI = checkIns[0];
-  const scoreColor = score === null ? 'rgb(var(--muted-foreground))' : score >= 80 ? 'rgb(var(--success))' : score >= 60 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const scoreColor = score === null ? 'var(--tc-muted-foreground)' : score >= 80 ? 'var(--tc-success)' : score >= 60 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>

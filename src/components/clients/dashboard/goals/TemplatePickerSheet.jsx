@@ -4,9 +4,9 @@ import { base44 } from '@/api/base44Client';
 import { X, Search, LayoutTemplate, Sparkles } from 'lucide-react';
 
 const TYPE_META = {
-  numeric:   { label: 'Numeric',   color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))' },
-  nutrition: { label: 'Nutrition', color: 'rgb(var(--success))', bg: 'rgb(var(--success))' },
-  simple:    { label: 'Simple',    color: 'rgb(var(--ai))', bg: 'rgb(var(--ai))' },
+  numeric:   { label: 'Numeric',   color: 'var(--tc-primary)', bg: 'var(--tc-accent)' },
+  nutrition: { label: 'Nutrition', color: 'var(--tc-success)', bg: 'var(--tc-success)' },
+  simple:    { label: 'Simple',    color: 'var(--tc-ai)', bg: 'var(--tc-ai)' },
 };
 
 // ── Built-in starter templates ────────────────────────────────────────────────
@@ -129,7 +129,7 @@ function TemplateRow({ t, onSelect }) {
     <button
       onClick={() => onSelect(t)}
       className="w-full text-left p-3.5 rounded-xl border transition-all hover:border-primary hover:bg-accent/40"
-      style={{ borderColor: t._builtin ? 'rgb(var(--ai))' : 'rgb(var(--muted))', background: t._builtin ? 'rgb(var(--ai))' : 'rgb(var(--card))' }}
+      style={{ borderColor: t._builtin ? 'var(--tc-ai)' : 'var(--tc-muted)', background: t._builtin ? 'var(--tc-ai)' : 'var(--tc-card)' }}
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">

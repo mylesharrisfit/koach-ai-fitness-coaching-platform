@@ -208,12 +208,12 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
         onClick={e => e.stopPropagation()}
       >
         {/* ── Navy header ── */}
-        <div className="flex-shrink-0" style={{ background: 'rgb(var(--sidebar))' }}>
+        <div className="flex-shrink-0" style={{ background: 'var(--tc-sidebar)' }}>
 
           {/* Client info row */}
           <div className="flex items-center gap-4 px-6 pt-5 pb-4">
             <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden"
-              style={{ background: '#1E2D45', border: '1.5px solid rgba(255,255,255,0.12)', color: 'rgb(var(--primary))' }}>
+              style={{ background: 'var(--kc-1e2d45)', border: '1.5px solid color-mix(in srgb, white 12%, transparent)', color: 'var(--tc-primary)' }}>
               {localClient.avatar_url
                 ? <img src={localClient.avatar_url} alt={localClient.name} className="w-full h-full object-cover" />
                 : <span>{initials}</span>
@@ -224,35 +224,35 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                 <h2 className="text-base font-bold text-white leading-tight">{localClient.name}</h2>
                 <LifecycleBadge status={localClient.lifecycle_status || 'lead'} />
               </div>
-              <p className="text-xs mt-0.5" style={{ color: 'rgb(var(--muted-foreground))' }}>{localClient.email}</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--tc-muted-foreground)' }}>{localClient.email}</p>
             </div>
             <div className="flex items-center gap-1 flex-shrink-0">
               <button onClick={onEdit} title="Edit client"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-                style={{ color: 'rgb(var(--muted-foreground))' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgb(var(--card))'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgb(var(--muted-foreground))'; }}>
+                style={{ color: 'var(--tc-muted-foreground)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <Edit className="w-4 h-4" />
               </button>
               <button onClick={() => navigate(`/client-profile?id=${client.id}`)} title="Full Profile"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
-                style={{ color: 'rgb(var(--muted-foreground))' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgb(var(--card))'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgb(var(--muted-foreground))'; }}>
+                style={{ color: 'var(--tc-muted-foreground)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <ExternalLink className="w-4 h-4" />
               </button>
               <button onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors ml-1"
-                style={{ color: 'rgb(var(--muted-foreground))' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgb(var(--card))'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgb(var(--muted-foreground))'; }}>
+                style={{ color: 'var(--tc-muted-foreground)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           {/* ── PRIMARY nav: 5 main groups ── */}
-          <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ borderTop: '1px solid color-mix(in srgb, white 6%, transparent)' }}>
             {NAV_GROUPS.map(g => {
               // Hide Overview's Pipeline sub-tab group entirely for non-leads? No —
               // always show Overview. But hide entire group if all its subs are leadOnly and not a lead.
@@ -264,14 +264,14 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                   key={g.key}
                   onClick={() => handleGroupClick(g.key)}
                   className="relative px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0"
-                  style={{ color: isActive ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))' }}
+                  style={{ color: isActive ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}
                 >
                   {g.label}
                   {isActive && (
                     <motion.div
                       layoutId="group-indicator"
                       className="absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full"
-                      style={{ background: 'rgb(var(--primary))' }}
+                      style={{ background: 'var(--tc-primary)' }}
                     />
                   )}
                 </button>
@@ -281,7 +281,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
 
           {/* ── SECONDARY nav: sub-tabs for the active group ── */}
           {visibleSubs.length > 1 && (
-            <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ background: 'rgba(255,255,255,0.04)', borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+            <div className="flex overflow-x-auto px-4 scrollbar-hide" style={{ background: 'color-mix(in srgb, white 4%, transparent)', borderTop: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
               {visibleSubs.map(s => {
                 const isActive = activeTab === s.key;
                 return (
@@ -289,14 +289,14 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                     key={s.key}
                     onClick={() => handleSubTabClick(s.key)}
                     className="relative px-3 py-2 text-[11px] font-medium whitespace-nowrap transition-colors flex-shrink-0"
-                    style={{ color: isActive ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))' }}
+                    style={{ color: isActive ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)' }}
                   >
                     {s.label}
                     {isActive && (
                       <motion.div
                         layoutId="sub-indicator"
                         className="absolute bottom-0 left-0 right-0 h-[1.5px] rounded-t-full"
-                        style={{ background: 'rgb(var(--primary))' }}
+                        style={{ background: 'var(--tc-primary)' }}
                       />
                     )}
                   </button>

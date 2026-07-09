@@ -5,9 +5,9 @@ import { X, Pencil, Trash2, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 
 const TYPE_META = {
-  numeric:   { label: 'Numeric',   color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))' },
-  nutrition: { label: 'Nutrition', color: 'rgb(var(--success))', bg: 'rgb(var(--success))' },
-  simple:    { label: 'Simple',    color: 'rgb(var(--ai))', bg: 'rgb(var(--ai))' },
+  numeric:   { label: 'Numeric',   color: 'var(--tc-primary)', bg: 'var(--tc-accent)' },
+  nutrition: { label: 'Nutrition', color: 'var(--tc-success)', bg: 'var(--tc-success)' },
+  simple:    { label: 'Simple',    color: 'var(--tc-ai)', bg: 'var(--tc-ai)' },
 };
 
 function Field({ label, children }) {

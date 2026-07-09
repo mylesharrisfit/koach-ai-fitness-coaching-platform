@@ -21,20 +21,20 @@ function Ring({ pct = 0, label, sublabel, size = 72, active = false }) {
   const r = (size - 10) / 2;
   const circ = 2 * Math.PI * r;
   const dash = Math.max(0, Math.min(pct / 100, 1)) * circ;
-  const activeColor = 'rgb(var(--primary))';
-  const inactiveColor = 'rgb(var(--muted-foreground))';
+  const activeColor = 'var(--tc-primary)';
+  const inactiveColor = 'var(--tc-muted-foreground)';
 
   return (
     <div className={cn('flex flex-col items-center gap-1.5', active && 'scale-105')}>
       <div className="relative rounded-full">
         <svg width={size} height={size} className="-rotate-90">
           {/* Track */}
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgb(var(--border))" strokeWidth={active ? 7 : 5} />
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--tc-border)" strokeWidth={active ? 7 : 5} />
           {/* Progress */}
           <circle
             cx={size / 2} cy={size / 2} r={r}
             fill="none"
-            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : 'rgb(var(--border))'}
+            stroke={pct > 0 ? (active ? activeColor : inactiveColor) : 'var(--tc-border)'}
             strokeWidth={active ? 7 : 5}
             strokeDasharray={`${dash} ${circ}`}
             strokeLinecap="round"
@@ -42,17 +42,17 @@ function Ring({ pct = 0, label, sublabel, size = 72, active = false }) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={cn('font-bold tabular-nums leading-none', active ? 'text-sm' : 'text-xs')}
-            style={{ color: active ? activeColor : 'rgb(var(--muted-foreground))' }}>
+            style={{ color: active ? activeColor : 'var(--tc-muted-foreground)' }}>
             {pct}%
           </span>
           {sublabel && (
-            <span className="text-[8px] leading-none mt-0.5" style={{ color: 'rgb(var(--muted-foreground))' }}>{sublabel}</span>
+            <span className="text-[8px] leading-none mt-0.5" style={{ color: 'var(--tc-muted-foreground)' }}>{sublabel}</span>
           )}
         </div>
       </div>
       <div className="text-center">
         <p className="text-[10px] font-semibold leading-tight"
-          style={{ color: active ? 'rgb(var(--foreground))' : 'rgb(var(--muted-foreground))' }}>
+          style={{ color: active ? 'var(--tc-foreground)' : 'var(--tc-muted-foreground)' }}>
           {label}
         </p>
       </div>
@@ -106,12 +106,12 @@ function generateSmartTags(client, checkIns, messages) {
 }
 
 const TAG_STYLES = {
-  red:    { bg: 'rgb(var(--destructive))', text: 'rgb(var(--destructive))', border: 'rgb(var(--destructive))' },
-  orange: { bg: 'rgb(var(--warning))', text: '#ea580c', border: 'rgb(var(--warning))' },
-  yellow: { bg: 'rgb(var(--warning))', text: '#ca8a04', border: 'rgb(var(--warning))' },
-  green:  { bg: 'rgb(var(--success))', text: 'rgb(var(--success))', border: 'rgb(var(--success))' },
-  blue:   { bg: 'rgb(var(--accent))', text: 'rgb(var(--primary))', border: 'rgb(var(--accent))' },
-  gray:   { bg: 'rgb(var(--background))', text: 'rgb(var(--muted-foreground))', border: 'rgb(var(--border))' },
+  red:    { bg: 'var(--tc-destructive)', text: 'var(--tc-destructive)', border: 'var(--tc-destructive)' },
+  orange: { bg: 'var(--tc-warning)', text: 'var(--kc-ea580c)', border: 'var(--tc-warning)' },
+  yellow: { bg: 'var(--tc-warning)', text: 'var(--kc-ca8a04)', border: 'var(--tc-warning)' },
+  green:  { bg: 'var(--tc-success)', text: 'var(--tc-success)', border: 'var(--tc-success)' },
+  blue:   { bg: 'var(--tc-accent)', text: 'var(--tc-primary)', border: 'var(--tc-accent)' },
+  gray:   { bg: 'var(--tc-background)', text: 'var(--tc-muted-foreground)', border: 'var(--tc-border)' },
 };
 
 // ─────────────────────────────────────────────────────────
@@ -148,7 +148,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
   };
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: 'rgb(var(--muted))' }}>
+    <div className="h-full overflow-y-auto" style={{ background: 'var(--tc-muted)' }}>
       <div className="grid h-full min-h-0" style={{ gridTemplateColumns: '260px 1fr 280px' }}>
 
         {/* ═══════════════ LEFT COLUMN ═══════════════ */}
@@ -197,7 +197,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             {onAwardBadge && (
               <button onClick={onAwardBadge}
                 className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
-                style={{ color: 'rgb(var(--primary))' }}>
+                style={{ color: 'var(--tc-primary)' }}>
                 <Plus className="w-3 h-3" /> Award Badge
               </button>
             )}
@@ -216,7 +216,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               })}
               {(client.tags || []).map((t, i) => (
                 <span key={`c-${i}`} className="text-[10px] font-semibold px-2.5 py-1 rounded-full"
-                  style={{ background: 'rgb(var(--ai))', color: 'rgb(var(--ai))', border: '1px solid rgb(var(--ai))' }}>
+                  style={{ background: 'var(--tc-ai)', color: 'var(--tc-ai)', border: '1px solid var(--tc-ai)' }}>
                   #{t}
                 </span>
               ))}
@@ -236,7 +236,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               </div>
             ) : (
               <button onClick={() => setAddingTag(true)} className="flex items-center gap-1 text-[10px] font-semibold mt-1.5 hover:opacity-70"
-                style={{ color: 'rgb(var(--primary))' }}>
+                style={{ color: 'var(--tc-primary)' }}>
                 <Plus className="w-3 h-3" /> Add Tag
               </button>
             )}
@@ -254,13 +254,13 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
                   <span className="text-sm">{app.icon}</span>
                   <span className="text-xs text-muted-foreground">{app.name}</span>
                 </div>
-                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: 'rgb(var(--primary))' }}>Connect</button>
+                <button className="text-[10px] font-semibold hover:opacity-70" style={{ color: 'var(--tc-primary)' }}>Connect</button>
               </div>
             ))}
           </Section>
 
           <Section title="Threshold Alerts">
-            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: 'rgb(var(--primary))' }}>
+            <button className="flex items-center gap-1.5 text-xs font-semibold hover:opacity-70" style={{ color: 'var(--tc-primary)' }}>
               <Bell className="w-3.5 h-3.5" /> Set up alerts
             </button>
           </Section>
@@ -273,7 +273,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           <button
             onClick={() => canAIOnboard ? setShowAIOnboarding(true) : toast.error('AI Onboarding requires Pro or Elite plan')}
             className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-2.5 rounded-xl transition-all"
-            style={{ background: canAIOnboard ? 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' : 'rgb(var(--muted-foreground))' }}
+            style={{ background: canAIOnboard ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' : 'var(--tc-muted-foreground)' }}
           >
             {canAIOnboard ? <Sparkles className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
             {canAIOnboard ? 'AI Onboarding — Generate Starting Plan' : 'AI Onboarding (Pro+)'}
@@ -283,7 +283,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           <div className="bg-card rounded-xl border border-border shadow-sm p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgb(var(--muted-foreground))' }}>Current Program</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--tc-muted-foreground)' }}>Current Program</p>
                 {program ? (
                   <>
                     <p className="font-bold text-foreground">{program.title}</p>
@@ -300,10 +300,10 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
             </div>
             {nutritionPlan && (
               <div className="mt-3 pt-3 border-t border-border flex items-center gap-2">
-                <Salad className="w-4 h-4 flex-shrink-0" style={{ color: 'rgb(var(--primary))' }} />
+                <Salad className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--tc-primary)' }} />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--muted-foreground))' }}>Meal Plan</p>
-                  <p className="text-xs font-semibold cursor-pointer hover:opacity-70" style={{ color: 'rgb(var(--primary))' }}>{nutritionPlan.title}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>Meal Plan</p>
+                  <p className="text-xs font-semibold cursor-pointer hover:opacity-70" style={{ color: 'var(--tc-primary)' }}>{nutritionPlan.title}</p>
                 </div>
               </div>
             )}
@@ -355,8 +355,8 @@ function Section({ title, children }) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <div className="w-0.5 h-3 rounded-full" style={{ background: 'rgb(var(--primary))' }} />
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--muted-foreground))' }}>{title}</p>
+        <div className="w-0.5 h-3 rounded-full" style={{ background: 'var(--tc-primary)' }} />
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>{title}</p>
       </div>
       <div className="space-y-1">{children}</div>
     </div>
@@ -375,7 +375,7 @@ function InfoRow({ label, value }) {
 function AchievementBadge({ emoji, label }) {
   return (
     <div className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-      style={{ background: 'rgb(var(--warning))', color: 'rgb(var(--warning))', border: '1px solid rgb(var(--warning))' }}>
+      style={{ background: 'var(--tc-warning)', color: 'var(--tc-warning)', border: '1px solid var(--tc-warning)' }}>
       <span>{emoji}</span> {label}
     </div>
   );
@@ -385,7 +385,7 @@ function ComplianceSection({ title, weeks, checkIns, type, planLabel }) {
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgb(var(--muted-foreground))' }}>
+        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>
           {title}
         </p>
         {planLabel && <span className="text-[10px] text-muted-foreground font-medium">{planLabel}</span>}
@@ -442,11 +442,11 @@ function NotesColumn({ client }) {
       {/* Header */}
       <div className="px-4 py-3 border-b border-border flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-0.5 h-3.5 rounded-full" style={{ background: 'rgb(var(--primary))' }} />
-          <p className="text-sm font-bold" style={{ color: 'rgb(var(--foreground))' }}>Trainer Notes</p>
+          <div className="w-0.5 h-3.5 rounded-full" style={{ background: 'var(--tc-primary)' }} />
+          <p className="text-sm font-bold" style={{ color: 'var(--tc-foreground)' }}>Trainer Notes</p>
           {notes.length > 0 && (
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-              style={{ background: 'rgb(var(--primary) / 0.1)', color: 'rgb(var(--primary))' }}>
+              style={{ background: 'color-mix(in srgb, var(--tc-primary) 10%, transparent)', color: 'var(--tc-primary)' }}>
               {notes.length}
             </span>
           )}
@@ -454,7 +454,7 @@ function NotesColumn({ client }) {
       </div>
 
       {/* Input area */}
-      <div className="px-4 py-3 border-b border-border flex-shrink-0" style={{ background: 'rgb(var(--background))' }}>
+      <div className="px-4 py-3 border-b border-border flex-shrink-0" style={{ background: 'var(--tc-background)' }}>
         <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Add a note</p>
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <textarea
@@ -469,7 +469,7 @@ function NotesColumn({ client }) {
           onClick={save}
           disabled={saving || !newNote.trim()}
           className="mt-2 w-full text-white text-xs font-semibold py-2 rounded-lg transition-all disabled:opacity-40"
-          style={{ background: 'rgb(var(--primary))' }}
+          style={{ background: 'var(--tc-primary)' }}
         >
           {saving ? 'Saving…' : 'Save Note'}
         </button>
@@ -481,7 +481,7 @@ function NotesColumn({ client }) {
           <p className="text-xs text-muted-foreground text-center pt-4">No notes yet</p>
         ) : notes.map(ci => (
           <div key={ci.id} className="rounded-xl bg-card border border-border p-3 shadow-sm">
-            <p className="text-[10px] font-bold mb-1" style={{ color: 'rgb(var(--primary))' }}>
+            <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--tc-primary)' }}>
               {format(new Date(ci.date), 'MMM d, yyyy')}
             </p>
             <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{ci.coach_notes}</p>

@@ -46,7 +46,7 @@ export default function NotesTab({ client }) {
         <button
           onClick={save}
           disabled={saving || !newNote.trim()}
-          className="mt-2 bg-sidebar text-white text-sm font-semibold py-2 px-5 rounded-lg hover:bg-[#2d3a55] transition-colors disabled:opacity-40"
+          className="mt-2 bg-sidebar text-white text-sm font-semibold py-2 px-5 rounded-lg hover:bg-[var(--kc-2d3a55)] transition-colors disabled:opacity-40"
         >
           {saving ? 'Saving…' : 'Save Note'}
         </button>

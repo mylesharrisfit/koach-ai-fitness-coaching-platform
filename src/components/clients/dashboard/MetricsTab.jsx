@@ -116,7 +116,7 @@ export default function MetricsTab({ client, onClientUpdated }) {
   const currentCat = CATEGORIES.find(c => c.key === activeCategory);
 
   return (
-    <div className="h-full flex overflow-hidden" style={{ background: 'rgb(var(--muted))' }}>
+    <div className="h-full flex overflow-hidden" style={{ background: 'var(--tc-muted)' }}>
 
       {/* ── LEFT: Category list (Trainerize-style) ── */}
       <div className="w-[220px] flex-shrink-0 bg-card border-r border-border overflow-y-auto">

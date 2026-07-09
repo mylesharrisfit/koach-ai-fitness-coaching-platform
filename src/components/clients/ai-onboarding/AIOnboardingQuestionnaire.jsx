@@ -243,7 +243,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
             onClick={handleSubmit}
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-3.5 rounded-xl transition-all disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
           >
             <Sparkles className="w-4 h-4" />
             Generate AI Plan for {client.name}

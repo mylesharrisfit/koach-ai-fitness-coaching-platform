@@ -130,7 +130,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
 
   const initials = client.name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
   const score = compositeAdherenceScore(checkIns);
-  const scoreColor = score === null ? 'rgb(var(--muted-foreground))' : score >= 80 ? 'rgb(var(--success))' : score >= 60 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))';
+  const scoreColor = score === null ? 'var(--tc-muted-foreground)' : score >= 80 ? 'var(--tc-success)' : score >= 60 ? 'var(--tc-warning)' : 'var(--tc-destructive)';
   const daysAsClient = client.start_date ? differenceInDays(new Date(), new Date(client.start_date)) : null;
   const lastCheckIn = checkIns[0];
   const lastMsg = messages.length > 0 ? messages[messages.length - 1] : null;
@@ -206,9 +206,9 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
         <div className="flex border-b border-border flex-shrink-0 bg-background">
           {[
             { label: 'Adherence', value: score !== null ? `${score}%` : '—', color: scoreColor },
-            { label: 'Check-ins', value: checkIns.length, color: 'rgb(var(--foreground))' },
-            { label: 'Days Active', value: daysAsClient !== null ? daysAsClient : '—', color: 'rgb(var(--foreground))' },
-            { label: 'Rate', value: client.monthly_rate ? `$${client.monthly_rate}` : '—', color: 'rgb(var(--foreground))' },
+            { label: 'Check-ins', value: checkIns.length, color: 'var(--tc-foreground)' },
+            { label: 'Days Active', value: daysAsClient !== null ? daysAsClient : '—', color: 'var(--tc-foreground)' },
+            { label: 'Rate', value: client.monthly_rate ? `$${client.monthly_rate}` : '—', color: 'var(--tc-foreground)' },
           ].map(stat => (
             <div key={stat.label} className="flex-1 flex flex-col items-center py-2.5 border-r border-border last:border-r-0">
               <span className="text-sm font-bold" style={{ color: stat.color }}>{stat.value}</span>
@@ -550,11 +550,11 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                 {weightData.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={weightData} margin={{ top: 4, right: 8, bottom: 4, left: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" />
-                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} />
-                      <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} domain={['auto', 'auto']} width={40} />
-                      <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid rgb(var(--border))' }} />
-                      <Line type="monotone" dataKey="weight" stroke="rgb(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} />
+                      <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} domain={['auto', 'auto']} width={40} />
+                      <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--tc-border)' }} />
+                      <Line type="monotone" dataKey="weight" stroke="var(--tc-primary)" strokeWidth={2} dot={{ r: 3 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
@@ -570,12 +570,12 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                 {adherenceData.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={adherenceData} margin={{ top: 4, right: 8, bottom: 4, left: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--border))" />
-                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} />
-                      <YAxis tick={{ fontSize: 10, fill: 'rgb(var(--muted-foreground))' }} domain={[0, 100]} width={30} />
-                      <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid rgb(var(--border))' }} />
-                      <Bar dataKey="training" name="Training %" fill="rgb(var(--primary))" radius={[3, 3, 0, 0]} />
-                      <Bar dataKey="nutrition" name="Nutrition %" fill="rgb(var(--success))" radius={[3, 3, 0, 0]} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} />
+                      <YAxis tick={{ fontSize: 10, fill: 'var(--tc-muted-foreground)' }} domain={[0, 100]} width={30} />
+                      <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--tc-border)' }} />
+                      <Bar dataKey="training" name="Training %" fill="var(--tc-primary)" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="nutrition" name="Nutrition %" fill="var(--tc-success)" radius={[3, 3, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (

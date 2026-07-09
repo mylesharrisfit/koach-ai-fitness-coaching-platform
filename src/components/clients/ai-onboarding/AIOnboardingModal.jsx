@@ -138,22 +138,22 @@ export default function AIOnboardingModal({ client, onClose, onSaved }) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0"
-          style={{ background: 'rgb(var(--sidebar))' }}>
+          style={{ background: 'var(--tc-sidebar)' }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
               <h2 className="text-sm font-bold text-white">AI Onboarding</h2>
-              <p className="text-[11px]" style={{ color: 'rgb(var(--muted-foreground))' }}>
+              <p className="text-[11px]" style={{ color: 'var(--tc-muted-foreground)' }}>
                 {client.name} · Generating starting program &amp; meal plan
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <StepIndicator step={step} />
-            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-white hover:bg-white/10 transition-colors">
+            <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-white hover:bg-[var(--kc-w-10)] transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -204,7 +204,7 @@ function StepIndicator({ step }) {
             {i < activeIdx
               ? <CheckCircle className="w-3 h-3" />
               : <span className="w-3 h-3 rounded-full flex items-center justify-center text-[9px]"
-                  style={{ background: i === activeIdx ? 'rgb(var(--primary))' : 'rgb(var(--foreground))' }}>
+                  style={{ background: i === activeIdx ? 'var(--tc-primary)' : 'var(--tc-foreground)' }}>
                   {i + 1}
                 </span>
             }
@@ -221,7 +221,7 @@ function GeneratingScreen({ client }) {
   return (
     <div className="h-full flex flex-col items-center justify-center gap-6 p-8">
       <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, #2563EB22, #7C3AED22)' }}>
+        style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-primary) 13.3333%, transparent), color-mix(in srgb, var(--tc-ai) 13.3333%, transparent))' }}>
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
       <div className="text-center">

@@ -3,7 +3,7 @@ import { CheckCircle2, Pencil, Trash2, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── Thin progress bar ──────────────────────────────────────────────────────
-function Bar({ pct, color = 'rgb(var(--primary))' }) {
+function Bar({ pct, color = 'var(--tc-primary)' }) {
   const clamped = Math.min(100, Math.max(0, pct || 0));
   return (
     <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
@@ -46,9 +46,9 @@ export default function GoalCard({ goal, onEdit, onDelete, onToggleComplete }) {
   const simplePct = goal.goal_type === 'simple' ? (goal.progress_pct ?? 0) : 0;
 
   const TYPE_META = {
-    numeric:   { label: 'Numeric',   color: 'rgb(var(--primary))', bg: 'rgb(var(--accent))' },
-    nutrition: { label: 'Nutrition', color: 'rgb(var(--success))', bg: 'rgb(var(--success))' },
-    simple:    { label: 'Simple',    color: 'rgb(var(--ai))', bg: 'rgb(var(--ai))' },
+    numeric:   { label: 'Numeric',   color: 'var(--tc-primary)', bg: 'var(--tc-accent)' },
+    nutrition: { label: 'Nutrition', color: 'var(--tc-success)', bg: 'var(--tc-success)' },
+    simple:    { label: 'Simple',    color: 'var(--tc-ai)', bg: 'var(--tc-ai)' },
   };
   const meta = TYPE_META[goal.goal_type] || TYPE_META.simple;
 
@@ -117,9 +117,9 @@ export default function GoalCard({ goal, onEdit, onDelete, onToggleComplete }) {
           </div>
           <Bar pct={calPct} color={meta.color} />
           <div className="flex gap-3 mt-3">
-            <MacroBar label="Protein" current={goal.protein_current ?? 0} target={goal.protein_target ?? 0} color="rgb(var(--primary))" />
-            <MacroBar label="Carbs"   current={goal.carbs_current   ?? 0} target={goal.carbs_target   ?? 0} color="rgb(var(--warning))" />
-            <MacroBar label="Fat"     current={goal.fat_current     ?? 0} target={goal.fat_target     ?? 0} color="rgb(var(--destructive))" />
+            <MacroBar label="Protein" current={goal.protein_current ?? 0} target={goal.protein_target ?? 0} color="var(--tc-primary)" />
+            <MacroBar label="Carbs"   current={goal.carbs_current   ?? 0} target={goal.carbs_target   ?? 0} color="var(--tc-warning)" />
+            <MacroBar label="Fat"     current={goal.fat_current     ?? 0} target={goal.fat_target     ?? 0} color="var(--tc-destructive)" />
           </div>
         </div>
       )}

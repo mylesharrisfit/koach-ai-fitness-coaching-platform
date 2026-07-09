@@ -9,7 +9,7 @@ import { Plus, Scale, Trash2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
-const BLUE = 'rgb(var(--primary))';
+const BLUE = 'var(--tc-primary)';
 
 const RANGES = [
   { key: '1W',  label: '1W',  getCutoff: () => subWeeks(new Date(), 1) },
@@ -146,7 +146,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
           <button
             onClick={() => setAdding(a => !a)}
             className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors"
-            style={{ background: adding ? 'rgb(var(--accent))' : 'rgb(var(--muted))', color: adding ? BLUE : 'rgb(var(--muted-foreground))' }}
+            style={{ background: adding ? 'var(--tc-accent)' : 'var(--tc-muted)', color: adding ? BLUE : 'var(--tc-muted-foreground)' }}
           >
             <Plus className="w-3 h-3" /> Log
           </button>
@@ -161,8 +161,8 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
             onClick={() => setRange(r.key)}
             className="text-[10px] font-semibold px-2 py-0.5 rounded-md transition-colors"
             style={{
-              background: range === r.key ? BLUE : 'rgb(var(--muted))',
-              color: range === r.key ? 'rgb(var(--card))' : 'rgb(var(--muted-foreground))',
+              background: range === r.key ? BLUE : 'var(--tc-muted)',
+              color: range === r.key ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
             }}
           >
             {r.label}
@@ -240,29 +240,29 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
                   <stop offset="95%" stopColor={BLUE} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--muted))" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 9, fill: 'rgb(var(--muted-foreground))' }}
+                tick={{ fontSize: 9, fill: 'var(--tc-muted-foreground)' }}
                 axisLine={false}
                 tickLine={false}
                 interval="preserveStartEnd"
               />
               <YAxis
-                tick={{ fontSize: 9, fill: 'rgb(var(--muted-foreground))' }}
+                tick={{ fontSize: 9, fill: 'var(--tc-muted-foreground)' }}
                 axisLine={false}
                 tickLine={false}
                 domain={yDomain}
                 tickCount={4}
               />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgb(var(--border))', strokeWidth: 1, strokeDasharray: '4 2' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--tc-border)', strokeWidth: 1, strokeDasharray: '4 2' }} />
               {client.target_weight && (
                 <ReferenceLine
                   y={client.target_weight}
-                  stroke="rgb(var(--success))"
+                  stroke="var(--tc-success)"
                   strokeDasharray="4 3"
                   strokeWidth={1.5}
-                  label={{ value: `Goal ${client.target_weight}`, position: 'insideTopRight', fontSize: 9, fill: 'rgb(var(--success))' }}
+                  label={{ value: `Goal ${client.target_weight}`, position: 'insideTopRight', fontSize: 9, fill: 'var(--tc-success)' }}
                 />
               )}
               <Line
@@ -271,7 +271,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
                 stroke={BLUE}
                 strokeWidth={2.5}
                 dot={{ r: 3.5, fill: BLUE, strokeWidth: 0 }}
-                activeDot={{ r: 5, fill: BLUE, strokeWidth: 2, stroke: 'rgb(var(--card))' }}
+                activeDot={{ r: 5, fill: BLUE, strokeWidth: 2, stroke: 'var(--tc-card)' }}
               />
             </LineChart>
           </ResponsiveContainer>

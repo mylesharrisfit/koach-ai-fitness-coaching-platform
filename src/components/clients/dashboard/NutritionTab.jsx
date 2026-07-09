@@ -108,7 +108,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
             onClick={assign}
             disabled={!selected || saving}
             className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg, #00d4ff, rgb(var(--primary)))' }}
+            style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))' }}
           >
             {saving ? 'Assigning...' : 'Assign Plan'}
           </button>
@@ -165,7 +165,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
           <button
             onClick={() => setShowDialog(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white"
-            style={{ background: 'linear-gradient(135deg, #00d4ff, rgb(var(--primary)))' }}
+            style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
           </button>

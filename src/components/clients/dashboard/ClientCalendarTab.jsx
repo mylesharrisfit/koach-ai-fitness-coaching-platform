@@ -16,12 +16,12 @@ import TemplatePickerSheet from './goals/TemplatePickerSheet';
 
 // ── Event type config ─────────────────────────────────────────────────────────
 const TYPES = {
-  checkin:  { label: 'Check-in',    color: 'rgb(var(--primary))', dot: 'rgb(var(--primary))', emoji: '📋', icon: ClipboardList },
-  session:  { label: 'Session',     color: 'rgb(var(--success))', dot: 'rgb(var(--success))', emoji: '📞', icon: Phone },
-  goal:     { label: 'Goal Due',    color: 'rgb(var(--warning))', dot: 'rgb(var(--warning))', emoji: '🎯', icon: Target },
-  habit:    { label: 'Habit',       color: 'rgb(var(--ai))', dot: 'rgb(var(--ai))', emoji: '⚡', icon: Zap },
-  weighin:  { label: 'Weigh-in',    color: 'rgb(var(--primary))', dot: 'rgb(var(--primary))', emoji: '⚖️', icon: Scale },
-  workout:  { label: 'Workout',     color: '#EC4899', dot: '#F472B6', emoji: '💪', icon: Dumbbell },
+  checkin:  { label: 'Check-in',    color: 'var(--tc-primary)', dot: 'var(--tc-primary)', emoji: '📋', icon: ClipboardList },
+  session:  { label: 'Session',     color: 'var(--tc-success)', dot: 'var(--tc-success)', emoji: '📞', icon: Phone },
+  goal:     { label: 'Goal Due',    color: 'var(--tc-warning)', dot: 'var(--tc-warning)', emoji: '🎯', icon: Target },
+  habit:    { label: 'Habit',       color: 'var(--tc-ai)', dot: 'var(--tc-ai)', emoji: '⚡', icon: Zap },
+  weighin:  { label: 'Weigh-in',    color: 'var(--tc-primary)', dot: 'var(--tc-primary)', emoji: '⚖️', icon: Scale },
+  workout:  { label: 'Workout',     color: 'var(--kc-ec4899)', dot: 'var(--kc-f472b6)', emoji: '💪', icon: Dumbbell },
 };
 
 function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions, habits, habitCompletions) {
@@ -177,8 +177,8 @@ function RepeatModal({ repeat, onChange, onClose }) {
                   <button key={i} onClick={() => toggleDay(i)}
                     className="w-9 h-9 rounded-full text-xs font-bold transition-all"
                     style={{
-                      background: days.includes(i) ? 'rgb(var(--primary))' : 'rgb(var(--muted))',
-                      color: days.includes(i) ? 'rgb(var(--card))' : 'rgb(var(--foreground))',
+                      background: days.includes(i) ? 'var(--tc-primary)' : 'var(--tc-muted)',
+                      color: days.includes(i) ? 'var(--tc-card)' : 'var(--tc-foreground)',
                     }}>
                     {d}
                   </button>
@@ -206,7 +206,7 @@ function RepeatModal({ repeat, onChange, onClose }) {
 
         <button onClick={apply}
           className="w-full mt-5 py-2.5 rounded-xl text-sm font-bold text-white"
-          style={{ background: 'rgb(var(--primary))' }}>
+          style={{ background: 'var(--tc-primary)' }}>
           Apply
         </button>
       </motion.div>
@@ -251,12 +251,12 @@ function generateRepeatDates(startDate, repeat) {
 
 // ── Activity type config for sidebar ─────────────────────────────────────────
 const ACTIVITY_TYPES = [
-  { key: 'workout',  label: 'Workout',      emoji: '💪', color: '#EC4899' },
-  { key: 'session',  label: 'Session/Call', emoji: '📞', color: 'rgb(var(--success))' },
-  { key: 'goal',     label: 'Goal',         emoji: '🎯', color: 'rgb(var(--warning))' },
-  { key: 'habit',    label: 'Habit',        emoji: '⚡', color: 'rgb(var(--ai))' },
-  { key: 'weighin',  label: 'Weigh-in',     emoji: '⚖️', color: 'rgb(var(--primary))' },
-  { key: 'checkin',  label: 'Check-in Form',emoji: '📋', color: 'rgb(var(--primary))' },
+  { key: 'workout',  label: 'Workout',      emoji: '💪', color: 'var(--kc-ec4899)' },
+  { key: 'session',  label: 'Session/Call', emoji: '📞', color: 'var(--tc-success)' },
+  { key: 'goal',     label: 'Goal',         emoji: '🎯', color: 'var(--tc-warning)' },
+  { key: 'habit',    label: 'Habit',        emoji: '⚡', color: 'var(--tc-ai)' },
+  { key: 'weighin',  label: 'Weigh-in',     emoji: '⚖️', color: 'var(--tc-primary)' },
+  { key: 'checkin',  label: 'Check-in Form',emoji: '📋', color: 'var(--tc-primary)' },
 ];
 
 function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
@@ -325,7 +325,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
     );
   }
 
-  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-[#EC4899]" /></div>;
+  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-[var(--kc-ec4899)]" /></div>;
 
   return (
     <div className="flex-1 flex flex-col justify-between">
@@ -348,10 +348,10 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
         </div>
 
         {program && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FDF2F8] border border-[#EC4899]/20">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--kc-fdf2f8)] border border-[var(--kc-ec4899)]/20">
             <span>💪</span>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-[#EC4899] truncate">{program.title}</p>
+              <p className="text-xs font-bold text-[var(--kc-ec4899)] truncate">{program.title}</p>
               <p className="text-[10px] text-muted-foreground">{workouts.length} workout days</p>
             </div>
           </div>
@@ -361,9 +361,9 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
           <label className="text-xs font-semibold text-foreground block mb-2">Select from current training program</label>
           <div className="space-y-1.5 max-h-40 overflow-y-auto">
             {workouts.map((w, i) => (
-              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[#EC4899] bg-[#FDF2F8]' : 'border-border hover:border-[#EC4899]/40'}`}>
+              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[var(--kc-ec4899)] bg-[var(--kc-fdf2f8)]' : 'border-border hover:border-[var(--kc-ec4899)]/40'}`}>
                 <input type="radio" name="workout_day" value={i} checked={selectedWorkoutIdx === String(i)}
-                  onChange={() => setSelectedWorkoutIdx(String(i))} className="accent-[#EC4899]" />
+                  onChange={() => setSelectedWorkoutIdx(String(i))} className="accent-[var(--kc-ec4899)]" />
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-foreground">{w.day_name || `Day ${w.day_number || i + 1}`}</p>
                   {w.exercises?.length > 0 && (
@@ -383,7 +383,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
 
       <button onClick={save} disabled={saving || selectedWorkoutIdx === ''}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: '#EC4899' }}>
+        style={{ background: 'var(--kc-ec4899)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Adding…' : repeat ? `Add (${generateRepeatDates(parseISO(dateStr), repeat).length} sessions)` : 'Add to Calendar'}
       </button>
@@ -445,7 +445,7 @@ function SessionContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
           </div>
         </div>
       </div>
-      <button onClick={save} disabled={saving} className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: 'rgb(var(--success))' }}>
+      <button onClick={save} disabled={saving} className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: 'var(--tc-success)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}{saving ? 'Adding…' : 'Add to Calendar'}
       </button>
     </div>
@@ -565,7 +565,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
               {DAY_LABELS.map((d, i) => (
                 <button key={i} onClick={() => toggleDay(i)}
                   className="w-8 h-8 rounded-full text-xs font-bold transition-all"
-                  style={{ background: daysOfWeek.includes(i) ? 'rgb(var(--ai))' : 'rgb(var(--muted))', color: daysOfWeek.includes(i) ? 'rgb(var(--card))' : 'rgb(var(--foreground))' }}>
+                  style={{ background: daysOfWeek.includes(i) ? 'var(--tc-ai)' : 'var(--tc-muted)', color: daysOfWeek.includes(i) ? 'var(--tc-card)' : 'var(--tc-foreground)' }}>
                   {d}
                 </button>
               ))}
@@ -576,7 +576,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
 
       <button onClick={save} disabled={saving || !name.trim()}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: 'rgb(var(--ai))' }}>
+        style={{ background: 'var(--tc-ai)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Adding…' : repeat ? `Add Habit (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Habit'}
       </button>
@@ -702,7 +702,7 @@ function GoalContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDon
 
         <button onClick={save} disabled={saving || !name.trim()}
           className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: 'rgb(var(--warning))' }}>
+          style={{ background: 'var(--tc-warning)' }}>
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           {saving ? 'Adding…' : repeat ? `Add Goal (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Goal to Calendar'}
         </button>
@@ -796,7 +796,7 @@ function CheckInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
 
       <button onClick={save} disabled={saving}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: 'rgb(var(--primary))' }}>
+        style={{ background: 'var(--tc-primary)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} check-ins)` : 'Schedule Check-in'}
       </button>
@@ -860,7 +860,7 @@ function WeighInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
 
       <button onClick={save} disabled={saving}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: 'rgb(var(--primary))' }}>
+        style={{ background: 'var(--tc-primary)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} prompts)` : 'Schedule Weigh-in'}
       </button>
@@ -918,7 +918,7 @@ function AddEventModal({ day, client, onClose }) {
                   // trigger save from content (handled by individual content components)
                 }}
                 className="px-4 py-1.5 rounded-lg text-sm font-bold text-white"
-                style={{ background: 'rgb(var(--primary))', opacity: 0.9 }}
+                style={{ background: 'var(--tc-primary)', opacity: 0.9 }}
               >
                 ADD
               </button>
@@ -936,12 +936,12 @@ function AddEventModal({ day, client, onClose }) {
                 <button key={t.key} onClick={() => setActiveType(t.key)}
                   className={`w-full flex items-center gap-2.5 px-3 py-3 text-left text-sm font-semibold transition-colors border-l-2 ${
                     activeType === t.key
-                      ? 'bg-card border-l-[rgb(var(--primary))] text-foreground'
+                      ? 'bg-card border-l-[var(--tc-primary)] text-foreground'
                       : 'border-l-transparent text-muted-foreground hover:bg-card hover:text-foreground'
                   }`}
                 >
                   <input type="checkbox" readOnly checked={activeType === t.key}
-                    className="w-3.5 h-3.5 rounded accent-[rgb(var(--primary))] flex-shrink-0" />
+                    className="w-3.5 h-3.5 rounded accent-[var(--tc-primary)] flex-shrink-0" />
                   <span className="mr-1">{t.emoji}</span>
                   <span className="text-xs leading-tight">{t.label}</span>
                 </button>
@@ -1062,11 +1062,11 @@ export default function ClientCalendarTab({ client }) {
   }, [events, viewDate]);
 
   const stats = [
-    { label: 'Workouts',  count: monthEvents.filter(e => e.type === 'workout').length,   color: '#EC4899', emoji: '💪' },
-    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: 'rgb(var(--primary))', emoji: '📋' },
-    { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: 'rgb(var(--success))', emoji: '📞' },
-    { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: 'rgb(var(--primary))', emoji: '⚖️' },
-    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: 'rgb(var(--warning))', emoji: '🎯' },
+    { label: 'Workouts',  count: monthEvents.filter(e => e.type === 'workout').length,   color: 'var(--kc-ec4899)', emoji: '💪' },
+    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: 'var(--tc-primary)', emoji: '📋' },
+    { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: 'var(--tc-success)', emoji: '📞' },
+    { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: 'var(--tc-primary)', emoji: '⚖️' },
+    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: 'var(--tc-warning)', emoji: '🎯' },
   ];
 
   return (
@@ -1105,7 +1105,7 @@ export default function ClientCalendarTab({ client }) {
 
         <button onClick={() => setActiveDay(new Date())}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white"
-          style={{ background: 'rgb(var(--primary))' }}>
+          style={{ background: 'var(--tc-primary)' }}>
           <Plus className="w-3.5 h-3.5" /> Add Event
         </button>
       </div>

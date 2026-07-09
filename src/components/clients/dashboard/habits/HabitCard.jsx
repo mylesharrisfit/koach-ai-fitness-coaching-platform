@@ -162,7 +162,7 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${adherence}%`,
-            background: adherence >= 70 ? 'rgb(var(--success))' : adherence >= 40 ? 'rgb(var(--warning))' : 'rgb(var(--destructive))',
+            background: adherence >= 70 ? 'var(--tc-success)' : adherence >= 40 ? 'var(--tc-warning)' : 'var(--tc-destructive)',
           }}
         />
       </div>

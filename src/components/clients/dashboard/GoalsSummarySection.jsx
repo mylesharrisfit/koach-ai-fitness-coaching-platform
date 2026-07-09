@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import GoalFormModal from './goals/GoalFormModal';
 
 // ── Mini progress bar ──────────────────────────────────────
-function Bar({ pct, color = 'rgb(var(--primary))' }) {
+function Bar({ pct, color = 'var(--tc-primary)' }) {
   const p = Math.max(0, Math.min(100, pct || 0));
   return (
     <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
@@ -69,7 +69,7 @@ function GoalItem({ goal, onEdit, onDelete, onToggle }) {
 
           {progress !== null && (
             <div className="space-y-1">
-              <Bar pct={progress} color={isComplete ? 'rgb(var(--success))' : 'rgb(var(--primary))'} />
+              <Bar pct={progress} color={isComplete ? 'var(--tc-success)' : 'var(--tc-primary)'} />
               <p className="text-[10px] text-muted-foreground">{progressLabel}</p>
             </div>
           )}
@@ -77,9 +77,9 @@ function GoalItem({ goal, onEdit, onDelete, onToggle }) {
           {goal.goal_type === 'nutrition' && goal.protein_target && (
             <div className="grid grid-cols-3 gap-1 mt-2">
               {[
-                { label: 'Protein', cur: goal.protein_current, tgt: goal.protein_target, color: 'rgb(var(--primary))' },
-                { label: 'Carbs',   cur: goal.carbs_current,   tgt: goal.carbs_target,   color: 'rgb(var(--warning))' },
-                { label: 'Fat',     cur: goal.fat_current,     tgt: goal.fat_target,     color: 'rgb(var(--success))' },
+                { label: 'Protein', cur: goal.protein_current, tgt: goal.protein_target, color: 'var(--tc-primary)' },
+                { label: 'Carbs',   cur: goal.carbs_current,   tgt: goal.carbs_target,   color: 'var(--tc-warning)' },
+                { label: 'Fat',     cur: goal.fat_current,     tgt: goal.fat_target,     color: 'var(--tc-success)' },
               ].map(m => (
                 <div key={m.label}>
                   <Bar pct={m.tgt ? Math.round(((m.cur ?? 0) / m.tgt) * 100) : 0} color={m.color} />

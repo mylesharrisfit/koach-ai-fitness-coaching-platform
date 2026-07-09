@@ -63,7 +63,7 @@ export default function GoalsTab({ client }) {
   const completed = goals.filter(g => g.status === 'completed');
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: 'rgb(var(--muted))' }}>
+    <div className="h-full overflow-y-auto" style={{ background: 'var(--tc-muted)' }}>
       <div className="max-w-3xl mx-auto px-6 py-6 space-y-6">
 
         {/* Header */}
