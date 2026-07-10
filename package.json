@@ -15,6 +15,8 @@
     "verify:auth": "node scripts/verify-auth.mjs",
     "verify:automation": "node scripts/verify-automation.mjs",
     "verify:risk-parity": "node --loader ./scripts/.ext-resolver.mjs scripts/verify-risk-parity.mjs",
+    "verify:stripe": "node scripts/verify-stripe-idempotency.mjs",
+    "verify:digest": "node scripts/verify-digest.mjs",
     "audit:darkmode": "node darkmode-audit/run-audit.mjs"
   },
   "dependencies": {

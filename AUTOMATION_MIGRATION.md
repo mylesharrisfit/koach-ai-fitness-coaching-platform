@@ -118,3 +118,128 @@ degrades to a documented no-op there), so the *scheduling* hop and the live
 edge-function HTTP invocation need a real Supabase project. The evaluation,
 action execution, logging, and idempotency — the substance — are all proven
 against real Postgres.
+
+---
+
+# Step 5 — Function Re-platforming
+
+42 Base44 functions total. **Ported so far (13):** sendClientInvite,
+validateInviteToken, setupPortalAccount (Step 3); runAutomations (Step 4);
+stripeCheckout, stripeCreateSubscription, stripeCancelSubscription,
+stripeWebhook, stripeGetDashboard, stripeClientProxy, storeCheckout,
+storeCreateProduct (Step 5a); weeklyDigest (Step 5b). setupPortalAccount and
+runAutomations are new (no Base44 original), so **11 of the 42 Base44
+functions are ported**; **31 remain**, planned below.
+
+## Step 5a — Stripe/payments (done)
+
+All 8 ported to `supabase/functions/` with the shared `_shared/edgeClients.js`
+(caller-session verification + service client + `ownsClient`). Confirmed:
+signature verification preserved in stripeWebhook; **idempotency added** (new
+`processed_stripe_events` ledger — Base44 had none); secrets env-only and never
+logged (grep-verified, zero `console.*`); coach-facing functions verify the
+caller and act only on the caller's own records, writing trigger-guarded
+billing columns via the service role scoped to the caller's id. Rehearsed:
+`npm run verify:stripe` (redelivered event processed exactly once; failed
+processing releases the claim for retry).
+
+## Step 5b — Digest wired to shared risk scoring (done)
+
+weeklyDigest re-platformed to call `_shared/weeklyDigest.js` →
+`getAtRiskClients` (0–100), replacing its inline 0–10 priorityScore. Email
+language updated ("Risk score: N/100"). **sendCheckInReminders was inspected
+and has NO risk/staleness model** — it's a weekly-completion boolean check
+(checked-in-this-week / worked-out-this-week), a different concern; forcing it
+onto riskScoring would be a reinterpretation, so it stays a straight
+email-function port (backlog below). Rehearsed: `npm run verify:digest`
+(digest scores match `getAtRiskClients` exactly; no local reimplementation).
+
+## Step 5c — Remaining 31 functions (prioritized plan, no code yet)
+
+Priority rationale: **P1** = correctness/data-integrity or blocks the app on
+Supabase (triggers, subscription gate, intake); **P2** = core coach features
+(AI, import, email); **P3** = integrations/seed utilities.
+
+### DB-trigger equivalents (5) — **P1**
+Base44 ran these as entity lifecycle hooks (fired after a record was
+created/updated). Postgres equivalent: an `AFTER INSERT/UPDATE` trigger on the
+table that calls an Edge Function via `pg_net.http_post` (same pattern as the
+automation runner) — chosen over pure plpgsql because each does
+notification/message/email side effects that are far cleaner in JS. Each also
+needs the idempotency discipline from 5a (a trigger can fire on retries).
+
+| fn | fires on | does | complexity | dep |
+|---|---|---|---|---|
+| onCheckInCreated | check_ins INSERT | notify coach, auto-message client, email | med | mailer |
+| onCheckInResponded | check_ins UPDATE (coach_responded) | notify/message client, email | med | mailer |
+| onClientCreated | clients INSERT | welcome messages, defaults, email (6 msg writes) | high | mailer |
+| onIntakeSubmitted | onboarding_responses INSERT | notify coach, seed messages/notifications | high | mailer |
+| onWorkoutCompleted | workout_sessions UPDATE (completed) | notify/message, badge check | med | mailer |
+
+Note: these overlap the Step 4 automation runner's action surface — the
+trigger functions should reuse `_shared/automationRunner.js` executors
+(send_message/notify_coach/award_badge) rather than re-implement them.
+
+### AI-calling functions (7) — **P2**
+Two call the Anthropic API **directly** (accurate, grep-confirmed); five go
+through Base44's `InvokeLLM` integration, which must be repointed at a real
+provider on Supabase (Anthropic, matching the two direct ones — the app's model
+identity is Claude).
+
+| fn | provider today | secret | complexity |
+|---|---|---|---|
+| analyzeProgress | Anthropic direct (claude-opus-4-5) | ANTHROPIC_API_KEY | med |
+| generateExerciseLibrary | Anthropic direct (claude-sonnet-4) | ANTHROPIC_API_KEY | med |
+| aiMessageAssistant | Base44 InvokeLLM → repoint Anthropic | ANTHROPIC_API_KEY | med |
+| claudeAssistant | Base44 InvokeLLM → repoint Anthropic | ANTHROPIC_API_KEY | med |
+| generateAIProgram | Base44 InvokeLLM (+integrations) | ANTHROPIC_API_KEY | high |
+| generateMealPlan | Base44 InvokeLLM (+integrations) | ANTHROPIC_API_KEY | high |
+| generateSmartMeals | Base44 InvokeLLM (+integrations) | ANTHROPIC_API_KEY | med |
+
+Shared work: one `_shared/anthropic.js` client (base URL + key + model ids) so
+all seven share transport, retry, and token handling. Use the latest Claude
+models per the app's stated identity.
+
+### Onboarding / import (6) — **P1/P2**
+| fn | does | complexity | dep |
+|---|---|---|---|
+| submitOnboardingIntake | public intake → onboarding_responses (RLS: service-role insert path from Step 1) | med | — | **P1** |
+| commitClientImport | write mapped CSV rows → clients | med | — | **P2** |
+| mapImportColumns | AI column-mapping for CSV import | med | ANTHROPIC_API_KEY | **P2** |
+| searchFoods | USDA FoodData lookup | low | USDA_API_KEY | **P2** |
+| seedExerciseLibrary | bulk-insert preset exercises | low | — | **P3** |
+| seedTeam | create demo team/data | low | — | **P3** |
+
+### Integrations / email / push (9) — **P2/P3**
+| fn | provider | secret | complexity |
+|---|---|---|---|
+| sendEmailNotification | Resend (`api.resend.com`) | RESEND_API_KEY, FROM_EMAIL/NAME | low — **port first; 5a/5b invoke it** |
+| emailHelper | email templating helper | — | low |
+| sendInvoiceReminder | invoice-due emails (via mailer) | (RESEND via sendEmailNotification) | low |
+| sendCheckInReminders | Fri reminder emails + notifications (weekly-completion, no risk) | RESEND_API_KEY | med |
+| getPushPublicKey | returns VAPID public key | VAPID_PUBLIC_KEY | low |
+| savePushSubscription | store web-push subscription | — | low |
+| storePushSubscription | store web-push subscription (dup of above?) | — | low |
+| googleCalendarProxy | Google Calendar API proxy | Google OAuth creds | high |
+| zoomProxy | Zoom meeting create (server-to-server OAuth) | ZOOM_ACCOUNT_ID/CLIENT_ID/CLIENT_SECRET | high |
+
+**sendEmailNotification is the keystone** — Step 5a's webhook and 5b's digest
+already `invoke('sendEmailNotification', …)` defensively; porting it first turns
+those email paths live. savePushSubscription vs storePushSubscription look
+redundant — reconcile to one when porting.
+
+### Referrals / subscription (4) — **P1/P2**
+| fn | does | complexity | dep |
+|---|---|---|---|
+| validateSubscription | tier/limit gate (max_clients, program/plan counts) — called before create actions | med | — | **P1** (Clients.jsx already calls it) |
+| verifyProgramWorkoutCount | integrity check on a program's workout count | low | — | **P2** |
+| initializeReferralProgram | create a coach's referral_program row | low | — | **P3** |
+| processReferralReward | credit a referral (money-adjacent → idempotency needed) | med | — | **P2** |
+
+### Suggested continuation order
+1. **sendEmailNotification** (unblocks 5a/5b email + all trigger fns).
+2. **validateSubscription** (Clients cutover already depends on it).
+3. **submitOnboardingIntake** + the 5 **DB-trigger** functions (data-integrity
+   path; reuse automationRunner executors).
+4. AI functions behind a shared `_shared/anthropic.js`.
+5. import/referral/integration/seed utilities.

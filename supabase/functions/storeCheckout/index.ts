@@ -1,0 +1,62 @@
+// Supabase Edge Function: storeCheckout  (Migration Step 5a)
+//
+// Faithful port of base44/functions/storeCheckout. A buyer checks out a public
+// store listing. The listing is loaded via service role by id (it's public
+// data), the caller's session is verified to attach their email. No
+// cross-tenant customer/subscription id is trusted (none is supplied here).
+// Secrets from env only; none logged.
+import Stripe from 'npm:stripe@17.3.1';
+import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
+  try {
+    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
+    const caller = await getCaller(req);
+    if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
+    const user = caller.profile;
+
+    const { listing_id, success_url, cancel_url } = await req.json();
+    if (!listing_id) return jsonResponse({ error: 'listing_id required' }, 400);
+
+    const svc = serviceClient();
+    const { data: listing } = await svc.from('plan_listings').select('*').eq('id', listing_id).maybeSingle();
+    if (!listing) return jsonResponse({ error: 'Listing not found' }, 404);
+
+    const origin = 'https://koachai.net';
+    const successUrl = success_url || `${origin}/store/success?listing_id=${listing_id}`;
+    const cancelUrl = cancel_url || `${origin}/store`;
+
+    const sessionParams = {
+      payment_method_types: ['card'],
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      metadata: { listing_id, coach_id: listing.coach_id || '' },
+    };
+    if (user.email) sessionParams.customer_email = user.email;
+
+    if (listing.stripe_price_id) {
+      sessionParams.line_items = [{ price: listing.stripe_price_id, quantity: 1 }];
+      sessionParams.mode = listing.payment_type === 'subscription' ? 'subscription' : 'payment';
+    } else {
+      sessionParams.line_items = [{
+        price_data: {
+          currency: 'usd',
+          unit_amount: Math.round(Number(listing.price) * 100),
+          product_data: {
+            name: listing.title,
+            description: listing.description || listing.title,
+            images: listing.image_url ? [listing.image_url] : [],
+          },
+        },
+        quantity: 1,
+      }];
+      sessionParams.mode = 'payment';
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
+    return jsonResponse({ checkout_url: session.url, session_id: session.id });
+  } catch (error) {
+    return jsonResponse({ error: (error && error.message) || 'Server error' }, 500);
+  }
+});
