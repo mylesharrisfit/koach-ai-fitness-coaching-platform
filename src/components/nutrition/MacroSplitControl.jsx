@@ -87,7 +87,7 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
                 className={cn(
                   'px-2.5 py-1.5 rounded-full text-[11px] font-semibold border transition-all',
                   active
-                    ? 'bg-primary text-white border-primary'
+                    ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-card text-foreground border-border hover:border-primary/50'
                 )}
               >

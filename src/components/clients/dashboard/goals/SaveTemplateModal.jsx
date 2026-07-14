@@ -64,7 +64,7 @@ export default function SaveTemplateModal({ form, onSaved, onClose }) {
         <div className="flex gap-2 justify-end">
           <button onClick={onClose} className="text-sm font-semibold text-muted-foreground px-4 py-2 rounded-lg border border-border">Cancel</button>
           <button onClick={handleSave} disabled={saving}
-            className="text-sm font-semibold text-white bg-primary hover:bg-primary px-4 py-2 rounded-lg disabled:opacity-50">
+            className="text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-4 py-2 rounded-lg disabled:opacity-50">
             {saving ? 'Saving…' : 'Save Template'}
           </button>
         </div>

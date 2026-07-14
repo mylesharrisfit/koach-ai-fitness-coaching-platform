@@ -46,7 +46,7 @@ export default function CoachBottleneckScreen({ onNext, onBack, data }) {
               }}
             >
               <span className="text-xl">{b.emoji}</span>
-              <span className="text-[11px] font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-7a7a7a)' }}>
+              <span className="text-[11px] font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)' }}>
                 {b.label}
               </span>
               {isSelected && (

@@ -468,7 +468,7 @@ function NotesColumn({ client }) {
         <button
           onClick={save}
           disabled={saving || !newNote.trim()}
-          className="mt-2 w-full text-white text-xs font-semibold py-2 rounded-lg transition-all disabled:opacity-40"
+          className="mt-2 w-full text-primary-foreground text-xs font-semibold py-2 rounded-lg transition-all disabled:opacity-40"
           style={{ background: 'var(--tc-primary)' }}
         >
           {saving ? 'Saving…' : 'Save Note'}

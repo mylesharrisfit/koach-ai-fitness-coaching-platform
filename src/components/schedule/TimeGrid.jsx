@@ -112,7 +112,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
               <div
                 className={cn(
                   'w-8 h-8 mx-auto mt-0.5 flex items-center justify-center rounded-full text-sm font-bold',
-                  isToday ? 'bg-primary text-white' : 'text-foreground'
+                  isToday ? 'bg-primary text-primary-foreground' : 'text-foreground'
                 )}
               >
                 {format(day, 'd')}

@@ -80,7 +80,7 @@ Respond with JSON only:
       </div>
       {!plan && (
         <button onClick={generate} disabled={loading}
-          className="w-full py-2.5 rounded-lg bg-ai text-white text-sm font-semibold hover:bg-ai disabled:opacity-60">
+          className="w-full py-2.5 rounded-lg bg-ai text-ai-foreground text-sm font-semibold hover:bg-ai disabled:opacity-60">
           {loading ? 'Generating plan...' : '✨ Generate Personalized Plan'}
         </button>
       )}
@@ -95,7 +95,7 @@ Respond with JSON only:
             <textarea rows={3} value={message} onChange={e => setMessage(e.target.value)}
               className="w-full text-xs text-foreground border border-ai rounded-lg p-2 resize-none focus:outline-none focus:ring-1 focus:ring-ai" />
             <button onClick={() => onSend(message)}
-              className="w-full py-2 rounded-lg bg-ai text-white text-xs font-semibold hover:bg-ai">
+              className="w-full py-2 rounded-lg bg-ai text-ai-foreground text-xs font-semibold hover:bg-ai">
               Send Message
             </button>
           </div>

@@ -98,13 +98,13 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
           {/* Muscle chips */}
           <button onClick={() => setMuscleFilter('')}
             className="text-[10px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0 transition-colors"
-            style={{ background: !muscleFilter ? 'var(--tc-primary)' : 'var(--tc-muted)', color: !muscleFilter ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}>
+            style={{ background: !muscleFilter ? 'var(--tc-primary)' : 'var(--tc-muted)', color: !muscleFilter ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)' }}>
             All
           </button>
           {MUSCLE_OPTIONS.map(m => (
             <button key={m} onClick={() => setMuscleFilter(muscleFilter === m ? '' : m)}
               className="text-[10px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap flex-shrink-0 capitalize transition-colors"
-              style={{ background: muscleFilter === m ? 'var(--tc-primary)' : 'var(--tc-muted)', color: muscleFilter === m ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}>
+              style={{ background: muscleFilter === m ? 'var(--tc-primary)' : 'var(--tc-muted)', color: muscleFilter === m ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)' }}>
               {m.replace(/_/g, ' ')}
             </button>
           ))}
@@ -113,7 +113,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
           <div className="relative flex-shrink-0 ml-1">
             <button onClick={() => setShowEquipDrop(v => !v)}
               className="h-6 flex items-center gap-1 px-2.5 rounded-full text-[10px] font-semibold transition-colors"
-              style={{ background: equipFilter ? 'var(--tc-primary)' : 'var(--tc-muted)', color: equipFilter ? 'var(--tc-card)' : 'var(--tc-muted-foreground)', border: '0.5px solid var(--tc-border)' }}>
+              style={{ background: equipFilter ? 'var(--tc-primary)' : 'var(--tc-muted)', color: equipFilter ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)', border: '0.5px solid var(--tc-border)' }}>
               <span className="capitalize">{equipFilter ? equipFilter.replace(/_/g, ' ') : 'Equipment'}</span>
               <ChevronDown className="w-2.5 h-2.5" />
             </button>
@@ -164,7 +164,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
                         <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Dumbbell className="w-5 h-5 text-[var(--kc-4b5563)]" />
+                          <Dumbbell className="w-5 h-5 text-[var(--tc-muted-foreground)]" />
                         </div>
                       )}
                     </div>
@@ -182,7 +182,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
                           <span className="text-[10px] text-muted-foreground capitalize">{ex.equipment.replace(/_/g, ' ')}</span>
                         )}
                         {ex.difficulty && (
-                          <span className="text-[10px] text-[var(--kc-c4c9d4)] capitalize">· {ex.difficulty}</span>
+                          <span className="text-[10px] text-[var(--tc-muted-foreground)] capitalize">· {ex.difficulty}</span>
                         )}
                       </div>
                     </div>

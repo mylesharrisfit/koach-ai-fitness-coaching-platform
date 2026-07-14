@@ -229,7 +229,7 @@ Generate a personalized intervention plan as JSON:
             </div>
             <div className="flex gap-2">
               <button onClick={handleSendAIMessage}
-                className="flex-1 py-1.5 rounded-lg text-[10px] font-semibold bg-ai text-white hover:bg-ai">
+                className="flex-1 py-1.5 rounded-lg text-[10px] font-semibold bg-ai text-ai-foreground hover:bg-ai">
                 Send Message
               </button>
               <button onClick={() => setAiSuggestion(null)}

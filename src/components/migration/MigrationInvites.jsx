@@ -58,7 +58,7 @@ export default function MigrationInvites({ importedClients = [], onComplete, onS
         </div>
         <button
           onClick={onComplete}
-          className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
+          className="w-full py-3 bg-primary text-primary-foreground rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
         >
           Finish Migration 🎉
         </button>
@@ -138,7 +138,7 @@ export default function MigrationInvites({ importedClients = [], onComplete, onS
           <button
             onClick={sendInvites}
             disabled={sending}
-            className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {sending
               ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Sending...</>
@@ -147,7 +147,7 @@ export default function MigrationInvites({ importedClients = [], onComplete, onS
           </button>
         )}
         {withEmail.length === 0 && (
-          <button onClick={onComplete} className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+          <button onClick={onComplete} className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
             Finish Migration 🎉
           </button>
         )}

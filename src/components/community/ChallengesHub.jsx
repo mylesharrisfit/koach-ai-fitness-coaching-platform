@@ -396,7 +396,7 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
                     <input type="checkbox" checked={form.participants.includes(c.id)}
                       onChange={() => toggleClient(c.id)}
                       className="accent-[var(--tc-primary)] w-3.5 h-3.5" />
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground flex-shrink-0">
                       {c.name?.[0]?.toUpperCase()}
                     </div>
                     <span className="text-xs font-semibold text-foreground">{c.name}</span>
@@ -422,7 +422,7 @@ function CreateChallengeModal({ open, onClose, prefill, clients, groups, onCreat
               Cancel
             </button>
             <button type="submit"
-              className="px-5 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary transition-colors">
+              className="px-5 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-lg hover:bg-primary transition-colors">
               Launch Challenge 🚀
             </button>
           </div>
@@ -499,7 +499,7 @@ export default function ChallengesHub({ isCoach, user }) {
   return (
     <div className="space-y-5">
       {/* Header card */}
-      <div className="rounded-xl p-5 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      <div className="rounded-xl p-5 text-primary-foreground flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--tc-primary) 100%)' }}>
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -544,7 +544,7 @@ export default function ChallengesHub({ isCoach, user }) {
               view === tab.key ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
             {tab.label}
             {tab.count !== null && tab.count > 0 && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white ml-1">{tab.count}</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground ml-1">{tab.count}</span>
             )}
           </button>
         ))}

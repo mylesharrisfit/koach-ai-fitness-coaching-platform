@@ -42,7 +42,7 @@ export default function AddToHomeScreenPrompt({ isOpen, onDismiss, isIOS }) {
             className="mb-5 p-4 rounded-2xl"
             style={{ background: 'var(--tc-muted)', border: '1px solid var(--tc-muted)' }}>
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-black text-white"
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-black text-primary-foreground"
                 style={{ background: 'var(--tc-primary)' }}>1</div>
               <div>
                 <p className="font-bold text-foreground">Tap the Share Button</p>
@@ -62,7 +62,7 @@ export default function AddToHomeScreenPrompt({ isOpen, onDismiss, isIOS }) {
             className="mb-5 p-4 rounded-2xl"
             style={{ background: 'var(--tc-muted)', border: '1px solid var(--tc-muted)' }}>
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-black text-white"
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-black text-primary-foreground"
                 style={{ background: 'var(--tc-primary)' }}>2</div>
               <div>
                 <p className="font-bold text-foreground">Tap "Add to Home Screen"</p>
@@ -82,7 +82,7 @@ export default function AddToHomeScreenPrompt({ isOpen, onDismiss, isIOS }) {
             className="mb-6 p-4 rounded-2xl"
             style={{ background: 'var(--tc-muted)', border: '1px solid var(--tc-muted)' }}>
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-black text-white"
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-black text-primary-foreground"
                 style={{ background: 'var(--tc-primary)' }}>3</div>
               <div>
                 <p className="font-bold text-foreground">Tap "Add"</p>
@@ -92,7 +92,7 @@ export default function AddToHomeScreenPrompt({ isOpen, onDismiss, isIOS }) {
           </motion.div>
 
           <button onClick={onDismiss}
-            className="w-full py-4 rounded-xl font-bold text-white text-base"
+            className="w-full py-4 rounded-xl font-bold text-primary-foreground text-base"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Got it!
           </button>

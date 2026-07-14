@@ -172,7 +172,7 @@ export default function TestimonialCollector({ coachId }) {
                   <button onClick={() => toggleFeatureMutation.mutate(testimonial.id)}
                     className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                       testimonial.is_featured
-                        ? 'bg-primary text-white hover:bg-primary'
+                        ? 'bg-primary text-primary-foreground hover:bg-primary'
                         : 'bg-border text-foreground hover:bg-border'
                     }`}>
                     {testimonial.is_featured ? '⭐ Featured' : 'Feature'}

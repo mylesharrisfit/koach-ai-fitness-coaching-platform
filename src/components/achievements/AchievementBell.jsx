@@ -63,7 +63,7 @@ export default function AchievementBell() {
 
           <div className="max-h-72 overflow-y-auto">
             {recentBadges.length === 0 ? (
-              <p className="text-xs text-[var(--kc-4b5563)] text-center py-6">No achievements in last 24h</p>
+              <p className="text-xs text-[var(--tc-muted-foreground)] text-center py-6">No achievements in last 24h</p>
             ) : recentBadges.map(b => {
               const cfg = BADGE_CONFIG[b.badge_key];
               const tier = cfg ? TIER_STYLES[cfg.tier] : null;
@@ -75,7 +75,7 @@ export default function AchievementBell() {
                     <p className="text-xs font-bold text-white leading-tight">{b.client_name || 'Client'}</p>
                     <p className="text-[11px] truncate" style={{ color: tier.accent }}>{cfg.label}</p>
                   </div>
-                  <p className="text-[9px] text-[var(--kc-4b5563)] flex-shrink-0">
+                  <p className="text-[9px] text-[var(--tc-muted-foreground)] flex-shrink-0">
                     {formatDistanceToNow(new Date(b.created_date || b.earned_date), { addSuffix: true })}
                   </p>
                 </div>

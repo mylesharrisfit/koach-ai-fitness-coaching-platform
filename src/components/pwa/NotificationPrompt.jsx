@@ -82,7 +82,7 @@ export default function NotificationPrompt({ isOpen, onEnable, onDismiss }) {
 
               {/* Buttons */}
               <button onClick={handleEnable} disabled={loading}
-                className="w-full py-4 rounded-xl font-bold text-white text-base mb-3 flex items-center justify-center gap-2 transition-all"
+                className="w-full py-4 rounded-xl font-bold text-primary-foreground text-base mb-3 flex items-center justify-center gap-2 transition-all"
                 style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', opacity: loading ? 0.7 : 1 }}>
                 {loading ? (
                   <>

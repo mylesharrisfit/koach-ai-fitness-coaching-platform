@@ -49,7 +49,7 @@ export default function AffiliateAssetLibrary({ tier }) {
                 <p className="text-xs text-muted-foreground mt-1">{asset.sizes}</p>
               </div>
               <button onClick={() => downloadAsset(asset.name)}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary">
                 <Download className="w-3 h-3" /> Download
               </button>
             </div>
@@ -68,7 +68,7 @@ export default function AffiliateAssetLibrary({ tier }) {
                 <p className="text-xs text-muted-foreground mt-1">{asset.duration}</p>
               </div>
               <button onClick={() => downloadAsset(asset.name)}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary">
                 <Download className="w-3 h-3" /> Download MP4
               </button>
             </div>
@@ -87,7 +87,7 @@ export default function AffiliateAssetLibrary({ tier }) {
                 <p className="text-xs text-muted-foreground mt-1">{asset.count}</p>
               </div>
               <button onClick={() => downloadAsset(asset.name)}
-                className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary">
                 View
               </button>
             </div>
@@ -104,7 +104,7 @@ export default function AffiliateAssetLibrary({ tier }) {
               <p className="font-bold text-foreground text-sm">{asset.name}</p>
               <p className="text-xs text-muted-foreground">{asset.desc}</p>
               <button onClick={() => downloadAsset(asset.name)}
-                className="w-full px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
+                className="w-full px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary">
                 View
               </button>
             </div>
@@ -141,7 +141,7 @@ export default function AffiliateAssetLibrary({ tier }) {
             <p className="text-xs text-muted-foreground mt-1">PNG, SVG, AI formats + usage guidelines</p>
           </div>
           <button onClick={() => downloadAsset('KOACH AI Logo')}
-            className="px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary">
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:bg-primary">
             Download
           </button>
         </div>

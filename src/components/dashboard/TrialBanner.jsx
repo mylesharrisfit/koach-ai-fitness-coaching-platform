@@ -38,7 +38,7 @@ export default function TrialBanner({ user }) {
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
             onClick={() => navigate('/subscription')}
-            className="text-xs font-bold text-white px-3 py-1.5 rounded-lg transition-all"
+            className="text-xs font-bold text-primary-foreground px-3 py-1.5 rounded-lg transition-all"
             style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))' }}
           >
             Upgrade Now

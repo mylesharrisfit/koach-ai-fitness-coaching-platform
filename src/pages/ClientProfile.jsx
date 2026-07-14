@@ -46,7 +46,7 @@ function StatCard({ label, value, sub, color = 'text-foreground', icon: Icon, ic
       {Icon && <Icon className={cn('w-3.5 h-3.5 mb-1', iconColor || 'text-muted-foreground')} />}
       <span className={cn('text-[15px] font-bold tabular-nums leading-tight', color)}>{value ?? '—'}</span>
       <span className="text-[10px] text-muted-foreground font-medium leading-tight mt-0.5">{label}</span>
-      {sub && <span className="text-[9px] text-[var(--kc-c4c9d4)]">{sub}</span>}
+      {sub && <span className="text-[9px] text-[var(--tc-muted-foreground)]">{sub}</span>}
     </div>
   );
 }
@@ -242,7 +242,7 @@ export default function ClientProfile() {
             <Button
               size="sm"
               onClick={() => setActiveTab('messages')}
-              className="gap-1.5 bg-primary text-white h-9 px-4 text-xs font-semibold"
+              className="gap-1.5 bg-primary text-primary-foreground h-9 px-4 text-xs font-semibold"
             >
               <MessageSquare className="w-3.5 h-3.5" /> Message
             </Button>

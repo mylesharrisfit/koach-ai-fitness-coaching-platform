@@ -49,7 +49,7 @@ export default function BadgeRow({ earnedKeys = [], max = 5, onAdd }) {
           </button>
         )}
         {earnedKeys.length === 0 && (
-          <span className="text-xs text-[var(--kc-4b5563)] italic">No achievements yet</span>
+          <span className="text-xs text-[var(--tc-muted-foreground)] italic">No achievements yet</span>
         )}
       </div>
     </TooltipProvider>

@@ -85,7 +85,7 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
                 style={{
                   background: niche === n.id ? 'color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                   border: niche === n.id ? '1px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                  color: niche === n.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  color: niche === n.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                   boxShadow: niche === n.id ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
                 }}
               >

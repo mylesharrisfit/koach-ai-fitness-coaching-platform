@@ -165,7 +165,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
           </div>
         ) : (
           <Button
-            className="w-full bg-primary text-white hover:bg-primary"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary"
             disabled={!clientId || saving}
             onClick={() => onSave(clientId)}
           >

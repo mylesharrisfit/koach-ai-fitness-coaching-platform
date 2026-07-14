@@ -163,7 +163,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
             <React.Fragment key={s}>
               <div className={cn(
                 'flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all',
-                step === s ? 'bg-primary text-white' : step > s ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
+                step === s ? 'bg-primary text-primary-foreground' : step > s ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
               )}>
                 {step > s ? <Check className="w-3 h-3" /> : s}
                 {s === 1 ? 'Recipients' : s === 2 ? 'Compose' : 'Review'}
@@ -187,7 +187,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                     className={cn(
                       'text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all',
                       filter === f.key
-                        ? 'bg-primary text-white border-primary'
+                        ? 'bg-primary text-primary-foreground border-primary'
                         : 'bg-muted text-muted-foreground border-border hover:border-primary/40 hover:text-primary'
                     )}
                   >
@@ -275,7 +275,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
                   <button
                     onClick={generateAI}
                     disabled={aiLoading || selected.size === 0}
-                    className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-primary text-white rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 transition-colors"
                   >
                     {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     {aiLoading ? 'Generating…' : aiVersions.length > 0 ? 'Regenerate' : '✨ AI Write'}
@@ -407,7 +407,7 @@ export default function BroadcastModal({ clients, onClose, onSend, checkIns = []
             <button
               onClick={() => setStep(s => s + 1)}
               disabled={(step === 1 && selected.size === 0) || (step === 2 && !message.trim())}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
               Continue <ChevronRight className="w-4 h-4" />
             </button>

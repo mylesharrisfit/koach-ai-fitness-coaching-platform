@@ -42,7 +42,7 @@ function TopBar({ step, onSkip }) {
       <ProgressBar step={step} />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 8px' }}>
         <KoachLogo size={28} rounded="rounded-lg" glow={false} bg />
-        <button onClick={onSkip} style={{ color: 'var(--kc-4b5563)', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button onClick={onSkip} style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
           Skip setup
         </button>
       </div>
@@ -52,14 +52,14 @@ function TopBar({ step, onSkip }) {
 
 function BackBtn({ onClick }) {
   return (
-    <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--kc-4b5563)', fontSize: 13, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 20px 0' }}>
+    <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--tc-muted-foreground)', fontSize: 13, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 20px 0' }}>
       ← Back
     </button>
   );
 }
 
 function Label({ children }) {
-  return <div style={{ color: 'var(--kc-4b5563)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{children}</div>;
+  return <div style={{ color: 'var(--tc-muted-foreground)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{children}</div>;
 }
 
 function Input({ label, value, onChange, type = 'text', placeholder, required, hint }) {
@@ -73,7 +73,7 @@ function Input({ label, value, onChange, type = 'text', placeholder, required, h
         placeholder={placeholder}
         style={{
           width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
-          background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
+          background: 'var(--tc-foreground)', color: 'var(--tc-sidebar-accent-foreground)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
           outline: 'none', boxSizing: 'border-box',
         }}
         onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
@@ -95,7 +95,7 @@ function Textarea({ label, value, onChange, placeholder, rows = 3 }) {
         rows={rows}
         style={{
           width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
-          background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
+          background: 'var(--tc-foreground)', color: 'var(--tc-sidebar-accent-foreground)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
           outline: 'none', resize: 'none', boxSizing: 'border-box',
         }}
         onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
@@ -114,13 +114,13 @@ function Select({ label, value, onChange, options, required }) {
         onChange={e => onChange(e.target.value)}
         style={{
           width: '100%', padding: '12px 16px', borderRadius: 12, fontSize: 14,
-          background: 'var(--tc-foreground)', color: value ? 'var(--tc-card)' : 'var(--kc-4b5563)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
+          background: 'var(--tc-foreground)', color: value ? 'var(--tc-sidebar-accent-foreground)' : 'var(--tc-muted-foreground)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
           outline: 'none', appearance: 'none', boxSizing: 'border-box',
         }}
       >
-        <option value="" disabled style={{ color: 'var(--kc-4b5563)' }}>Select…</option>
+        <option value="" disabled style={{ color: 'var(--tc-muted-foreground)' }}>Select…</option>
         {options.map(o => (
-          <option key={o.value || o} value={o.value || o} style={{ background: 'var(--tc-foreground)', color: 'var(--tc-card)' }}>
+          <option key={o.value || o} value={o.value || o} style={{ background: 'var(--tc-foreground)', color: 'var(--tc-primary-foreground)' }}>
             {o.label || o}
           </option>
         ))}
@@ -145,14 +145,14 @@ function PasswordInput({ value, onChange }) {
           placeholder="Create a secure password"
           style={{
             width: '100%', padding: '12px 56px 12px 16px', borderRadius: 12, fontSize: 14,
-            background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
+            background: 'var(--tc-foreground)', color: 'var(--tc-sidebar-accent-foreground)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)',
             outline: 'none', boxSizing: 'border-box',
           }}
           onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
           onBlur={e => e.target.style.borderColor = 'color-mix(in srgb, white 8%, transparent)'}
         />
         <button type="button" onClick={() => setShow(s => !s)}
-          style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--kc-4b5563)', fontSize: 11, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
+          style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', fontSize: 11, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>
           {show ? 'Hide' : 'Show'}
         </button>
       </div>
@@ -176,7 +176,7 @@ function Chip({ label, selected, onClick }) {
       padding: '8px 14px', borderRadius: 10, fontSize: 13, fontWeight: 500, cursor: 'pointer',
       background: selected ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
       border: `1.5px solid ${selected ? 'color-mix(in srgb, var(--tc-primary) 55%, transparent)' : 'color-mix(in srgb, white 7%, transparent)'}`,
-      color: selected ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+      color: selected ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
       transition: 'all 0.15s',
     }}>
       {label}
@@ -191,7 +191,7 @@ function CTAButton({ label, onClick, disabled }) {
         width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
         background: disabled ? 'color-mix(in srgb, white 6%, transparent)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
         boxShadow: disabled ? 'none' : '0 0 28px color-mix(in srgb, var(--tc-primary) 30%, transparent)',
-        color: disabled ? 'var(--kc-444444)' : 'var(--tc-card)',
+        color: disabled ? 'var(--kc-444444)' : 'var(--tc-primary-foreground)',
         border: 'none', cursor: disabled ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s',
       }}>
@@ -206,7 +206,7 @@ function Welcome({ onNext, onSkip }) {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--kc-0f0f1a)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 24px 48px', textAlign: 'center', position: 'relative' }}>
       <div style={{ position: 'absolute', top: 20, right: 20 }}>
-        <button onClick={onSkip} style={{ color: 'var(--kc-4b5563)', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button onClick={onSkip} style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer' }}>
           Skip setup
         </button>
       </div>
@@ -216,7 +216,7 @@ function Welcome({ onNext, onSkip }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ color: 'var(--tc-primary)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>KOACH AI</div>
-          <h1 style={{ color: 'var(--tc-card)', fontSize: 32, fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', margin: 0 }}>
+          <h1 style={{ color: 'var(--tc-primary-foreground)', fontSize: 32, fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', margin: 0 }}>
             Build your coaching<br />business with AI.
           </h1>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 15, lineHeight: 1.6, margin: 0 }}>
@@ -229,7 +229,7 @@ function Welcome({ onNext, onSkip }) {
             width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
             background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
             boxShadow: '0 0 28px color-mix(in srgb, var(--tc-primary) 35%, transparent)',
-            color: 'var(--tc-card)', border: 'none', cursor: 'pointer',
+            color: 'var(--tc-primary-foreground)', border: 'none', cursor: 'pointer',
           }}>
             Get Started →
           </button>
@@ -250,7 +250,7 @@ function Step1({ data, set, onNext, onBack, onSkip }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
           <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 1 of 5</div>
-          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Create your account</h2>
+          <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Create your account</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Get started — it only takes a minute</p>
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1 }}><Input label="First Name" value={data.first_name} onChange={v => set('first_name', v)} placeholder="Alex" required /></div>
@@ -279,7 +279,7 @@ function Step2({ data, set, onNext, onBack, onSkip }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
           <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 2 of 5</div>
-          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching business</h2>
+          <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching business</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Tell us about your practice</p>
           <Input label="Business / Coaching Name" value={data.business_name} onChange={v => set('business_name', v)} placeholder="e.g. Myles Harris Fitness" required />
           <div style={{ marginBottom: 14 }}>
@@ -324,7 +324,7 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
           <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 3 of 5</div>
-          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching profile</h2>
+          <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching profile</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Clients will see this on your profile</p>
           <div style={{ marginBottom: 16 }}>
             <Label>Profile Photo (optional)</Label>
@@ -363,25 +363,25 @@ function Step4({ data, set, onNext, onBack, onSkip, saving }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
           <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 4 of 5</div>
-          <h2 style={{ color: 'var(--tc-card)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Set up your business</h2>
+          <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Set up your business</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Payments and packages</p>
 
           <div style={{ marginBottom: 14 }}>
             <Label>Monthly Rate per Client</Label>
             <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--kc-4b5563)', fontSize: 14, fontWeight: 600 }}>$</span>
+              <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', fontSize: 14, fontWeight: 600 }}>$</span>
               <input type="number" value={data.monthly_rate || ''} onChange={e => set('monthly_rate', e.target.value)} placeholder="150"
-                style={{ width: '100%', padding: '12px 48px 12px 32px', borderRadius: 12, fontSize: 14, background: 'var(--tc-foreground)', color: 'var(--tc-card)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)', outline: 'none', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: '12px 48px 12px 32px', borderRadius: 12, fontSize: 14, background: 'var(--tc-foreground)', color: 'var(--tc-sidebar-accent-foreground)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)', outline: 'none', boxSizing: 'border-box' }}
                 onFocus={e => e.target.style.borderColor = 'color-mix(in srgb, var(--tc-primary) 60%, transparent)'}
                 onBlur={e => e.target.style.borderColor = 'color-mix(in srgb, white 8%, transparent)'} />
-              <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--kc-4b5563)', fontSize: 12 }}>/mo</span>
+              <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--tc-muted-foreground)', fontSize: 12 }}>/mo</span>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 12, background: 'color-mix(in srgb, white 3%, transparent)', border: '1.5px solid color-mix(in srgb, white 6%, transparent)', marginBottom: 16 }}>
             <div>
-              <div style={{ color: 'var(--tc-card)', fontSize: 14, fontWeight: 600 }}>Offer different packages?</div>
-              <div style={{ color: 'var(--kc-4b5563)', fontSize: 11 }}>E.g. 1-month, 3-month, custom</div>
+              <div style={{ color: 'var(--tc-primary-foreground)', fontSize: 14, fontWeight: 600 }}>Offer different packages?</div>
+              <div style={{ color: 'var(--tc-muted-foreground)', fontSize: 11 }}>E.g. 1-month, 3-month, custom</div>
             </div>
             <button type="button" onClick={() => set('has_packages', !data.has_packages)}
               style={{ width: 44, height: 24, borderRadius: 9999, background: data.has_packages ? 'var(--tc-primary)' : 'color-mix(in srgb, white 10%, transparent)', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
@@ -404,8 +404,8 @@ function Step4({ data, set, onNext, onBack, onSkip, saving }) {
                 {paymentMethod === opt.value && <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--tc-card)' }} />}
               </div>
               <div>
-                <div style={{ color: 'var(--tc-card)', fontSize: 14, fontWeight: 600 }}>{opt.label}</div>
-                <div style={{ color: 'var(--kc-4b5563)', fontSize: 11, marginTop: 2 }}>{opt.sub}</div>
+                <div style={{ color: 'var(--tc-primary-foreground)', fontSize: 14, fontWeight: 600 }}>{opt.label}</div>
+                <div style={{ color: 'var(--tc-muted-foreground)', fontSize: 11, marginTop: 2 }}>{opt.sub}</div>
               </div>
             </button>
           ))}
@@ -440,7 +440,7 @@ function Step5({ firstName }) {
 
         <div>
           <div style={{ color: 'var(--tc-success)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Welcome aboard 🎉</div>
-          <h2 style={{ color: 'var(--tc-card)', fontSize: 32, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 8px' }}>
+          <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 32, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 8px' }}>
             Welcome to KOACH AI,<br />{firstName || 'Coach'}!
           </h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
@@ -450,7 +450,7 @@ function Step5({ firstName }) {
 
         <div style={{ width: '100%', borderRadius: 16, overflow: 'hidden', background: 'color-mix(in srgb, white 3%, transparent)', border: '1.5px solid color-mix(in srgb, white 8%, transparent)', textAlign: 'left' }}>
           <div style={{ padding: '12px 16px', borderBottom: '1px solid color-mix(in srgb, white 5%, transparent)' }}>
-            <div style={{ color: 'var(--tc-card)', fontSize: 12, fontWeight: 700 }}>Quick start checklist</div>
+            <div style={{ color: 'var(--tc-primary-foreground)', fontSize: 12, fontWeight: 700 }}>Quick start checklist</div>
           </div>
           <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             {checklist.map(({ label, done }) => (
@@ -460,7 +460,7 @@ function Step5({ firstName }) {
                     ? <svg viewBox="0 0 12 12" fill="none" style={{ width: 12, height: 12 }}><path d="M2 6L5 9L10 3" stroke="var(--tc-success)" strokeWidth="2" strokeLinecap="round" /></svg>
                     : <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'color-mix(in srgb, white 20%, transparent)' }} />}
                 </div>
-                <span style={{ fontSize: 14, color: done ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}>{label}</span>
+                <span style={{ fontSize: 14, color: done ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)' }}>{label}</span>
               </div>
             ))}
           </div>
@@ -471,7 +471,7 @@ function Step5({ firstName }) {
             width: '100%', padding: '16px', borderRadius: 16, fontSize: 16, fontWeight: 700,
             background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))',
             boxShadow: '0 0 32px color-mix(in srgb, var(--tc-primary) 35%, transparent)',
-            color: 'var(--tc-card)', border: 'none', cursor: 'pointer',
+            color: 'var(--tc-primary-foreground)', border: 'none', cursor: 'pointer',
           }}>
             Go to Dashboard →
           </button>

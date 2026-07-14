@@ -81,7 +81,7 @@ Categories: revenue, retention, pricing, efficiency, growth`,
           <p className="text-xs text-muted-foreground mt-0.5">AI-generated recommendations based on your data</p>
         </div>
         <button onClick={generateInsights} disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-xl text-xs font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60">
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-xl text-xs font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60">
           {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
           {insights ? 'Refresh' : 'Generate Insights'}
         </button>

@@ -167,7 +167,7 @@ export default function InvoiceFormModal({ invoice, onClose, onSave, existingInv
             Cancel
           </button>
           <button onClick={handleSave} disabled={!form.client_id || !form.amount}
-            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.client_id || !form.amount) ? 'var(--tc-border)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: (!form.client_id || !form.amount) ? 'var(--tc-muted-foreground)' : 'var(--tc-card)', border: 'none', cursor: (!form.client_id || !form.amount) ? 'not-allowed' : 'pointer' }}>
+            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.client_id || !form.amount) ? 'var(--tc-border)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: (!form.client_id || !form.amount) ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: (!form.client_id || !form.amount) ? 'not-allowed' : 'pointer' }}>
             {isEdit ? 'Save Changes' : 'Create Invoice'}
           </button>
         </div>

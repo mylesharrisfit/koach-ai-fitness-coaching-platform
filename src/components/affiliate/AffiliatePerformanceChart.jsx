@@ -33,7 +33,7 @@ export default function AffiliatePerformanceChart({ profile }) {
               <button key={r} onClick={() => setTimeRange(r)}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   timeRange === r
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-border'
                 }`}>
                 {r === '7d' ? '7D' : r === '30d' ? '30D' : r === '90d' ? '90D' : r === '1y' ? '1Y' : 'All'}

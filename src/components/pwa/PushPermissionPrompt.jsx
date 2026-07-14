@@ -78,7 +78,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
           </div>
           <button
             onClick={handleSettings}
-            className="mt-3 w-full py-2 rounded-lg font-bold text-sm text-white"
+            className="mt-3 w-full py-2 rounded-lg font-bold text-sm text-primary-foreground"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Go to Settings
           </button>
@@ -113,7 +113,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
             </p>
             <button
               onClick={handleSettings}
-              className="w-full py-3 rounded-xl font-bold text-white mb-2"
+              className="w-full py-3 rounded-xl font-bold text-primary-foreground mb-2"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               Open Device Settings
             </button>
@@ -175,7 +175,7 @@ export default function PushPermissionPrompt({ onDismiss }) {
         <button
           onClick={handleEnable}
           disabled={step === 'processing'}
-          className="w-full py-4 rounded-2xl font-black text-white text-base mb-2 transition-opacity disabled:opacity-50"
+          className="w-full py-4 rounded-2xl font-black text-primary-foreground text-base mb-2 transition-opacity disabled:opacity-50"
           style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
           {step === 'processing' ? 'Enabling...' : 'Enable Notifications'}
         </button>

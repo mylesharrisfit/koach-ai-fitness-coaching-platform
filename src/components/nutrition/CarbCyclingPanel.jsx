@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 const DAY_TYPES = [
   { key: 'high', label: 'High Carb', color: 'bg-warning text-white border-warning', badge: 'bg-warning/10 text-warning border-warning' },
-  { key: 'medium', label: 'Medium Carb', color: 'bg-primary text-white border-primary', badge: 'bg-accent text-primary border-primary' },
+  { key: 'medium', label: 'Medium Carb', color: 'bg-primary text-primary-foreground border-primary', badge: 'bg-accent text-primary border-primary' },
   { key: 'low', label: 'Low Carb', color: 'bg-success text-white border-success', badge: 'bg-success/10 text-success border-success' },
   { key: 'none', label: 'Not Set', color: 'bg-secondary text-muted-foreground border-border', badge: 'bg-secondary text-muted-foreground border-border' },
 ];

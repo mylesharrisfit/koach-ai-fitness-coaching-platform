@@ -107,7 +107,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
               <div className="flex items-center gap-2 pt-1">
                 <button
                   onClick={() => onInsert(result.response)}
-                  className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors shadow-sm"
                 >
                   <Check className="w-3 h-3" /> Use This
                 </button>

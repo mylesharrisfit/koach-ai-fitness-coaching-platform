@@ -16,7 +16,7 @@ function PickRow({ label, options, value, onChange }) {
             style={{
               background: value === o.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
               border: value === o.id ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-              color: value === o.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+              color: value === o.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
               boxShadow: value === o.id ? '0 0 20px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
             }}
           >{o.label}</motion.button>

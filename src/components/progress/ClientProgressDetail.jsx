@@ -55,7 +55,7 @@ export default function ClientProgressDetail({ client, checkIns, sessions, allCl
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-border flex items-center gap-4 flex-shrink-0"
           style={{ background: 'var(--tc-sidebar)' }}>
-          <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+          <div className="w-12 h-12 rounded-full flex items-center justify-center text-primary-foreground font-bold flex-shrink-0"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {client.avatar_url
               ? <img src={client.avatar_url} alt={client.name} className="w-12 h-12 rounded-full object-cover" />

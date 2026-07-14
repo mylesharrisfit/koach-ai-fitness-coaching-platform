@@ -41,7 +41,7 @@ const TIER_TAB_STYLES = {
   silver:   { active: 'background:var(--kc-c0c0c0); color:var(--tc-foreground); border-color:var(--kc-c0c0c0)', dot: 'var(--kc-c0c0c0)' },
   gold:     { active: 'background:var(--kc-ffd700); color:var(--kc-1a1000); border-color:var(--kc-ffd700)', dot: 'var(--kc-ffd700)' },
   platinum: { active: 'background:var(--kc-62d7ff); color:var(--kc-03111a); border-color:var(--kc-62d7ff)', dot: 'var(--kc-62d7ff)' },
-  elite:    { active: 'background:linear-gradient(135deg,var(--tc-primary),var(--tc-ai)); color:var(--tc-card); border-color:var(--tc-primary)', dot: 'var(--tc-primary)' },
+  elite:    { active: 'background:linear-gradient(135deg,var(--tc-primary),var(--tc-ai)); color:var(--tc-primary-foreground); border-color:var(--tc-primary)', dot: 'var(--tc-primary)' },
 };
 
 const BADGE_PROGRESS_HINT = {
@@ -376,8 +376,8 @@ export default function Adherence() {
               <button key={t} onClick={() => setTierFilter(t)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all"
                 style={isActive
-                  ? (t === 'All' ? { background: 'var(--tc-sidebar)', color: 'var(--tc-card)', borderColor: 'var(--tc-foreground)' }
-                    : t === 'elite' ? { background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-card)', borderColor: 'var(--tc-primary)', boxShadow: '0 0 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }
+                  ? (t === 'All' ? { background: 'var(--tc-sidebar)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'var(--tc-foreground)' }
+                    : t === 'elite' ? { background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-primary-foreground)', borderColor: 'var(--tc-primary)', boxShadow: '0 0 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }
                     : { background: TIER_STYLES[t]?.accent, color: 'var(--tc-foreground)', borderColor: TIER_STYLES[t]?.accent, boxShadow: `0 0 10px ${TIER_STYLES[t]?.glow}` })
                   : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }
                 }
@@ -393,7 +393,7 @@ export default function Adherence() {
           {CATEGORY_FILTERS.map(cat => (
             <button key={cat} onClick={() => setCategoryFilter(cat)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all"
-              style={categoryFilter === cat ? { background: 'var(--tc-sidebar)', color: 'var(--tc-card)', borderColor: 'var(--tc-foreground)' } : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }}>
+              style={categoryFilter === cat ? { background: 'var(--tc-sidebar)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'var(--tc-foreground)' } : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }}>
               {cat}<span className={categoryFilter === cat ? 'opacity-60' : 'opacity-40'}>({categoryBadgeCounts[cat]})</span>
             </button>
           ))}

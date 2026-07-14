@@ -418,7 +418,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                         className={cn(
                           'flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors',
                           assignTo === key
-                            ? 'bg-primary text-white border-primary'
+                            ? 'bg-primary text-primary-foreground border-primary'
                             : 'bg-card text-foreground border-border hover:border-primary/30'
                         )}
                       >

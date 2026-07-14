@@ -170,7 +170,7 @@ export default function CoachGenerationScreen({ onNext }) {
               >
                 <span className="text-xl w-7 flex-shrink-0 text-center">{item.icon}</span>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-333333)' : 'var(--tc-card)' }}>
+                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-333333)' : 'var(--tc-primary-foreground)' }}>
                     {item.label}
                   </p>
                   <p className="text-[11px] mt-0.5" style={{

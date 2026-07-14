@@ -132,7 +132,7 @@ function PasswordForm({ onClose }) {
           className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:border-primary bg-card" />
         <div className="flex gap-2 pt-1">
           <button onClick={handleSubmit}
-            className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white"
+            className="flex-1 py-2.5 rounded-xl text-sm font-bold text-primary-foreground"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Update Password
           </button>
@@ -177,7 +177,7 @@ function EmailForm({ onClose }) {
         </p>
         <div className="flex gap-2">
           <button onClick={handleSubmit}
-            className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white"
+            className="flex-1 py-2.5 rounded-xl text-sm font-bold text-primary-foreground"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             Update Email
           </button>

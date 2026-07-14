@@ -93,7 +93,7 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${view === v ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}
+              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${view === v ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}
             >
               {v}
             </button>
@@ -227,7 +227,7 @@ Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
         ) : (
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">Generate an AI-powered progress summary for this client.</p>
-            <Button size="sm" onClick={fetchAiSummary} className="bg-primary text-white hover:bg-primary ml-4 flex-shrink-0">
+            <Button size="sm" onClick={fetchAiSummary} className="bg-primary text-primary-foreground hover:bg-primary ml-4 flex-shrink-0">
               Generate
             </Button>
           </div>

@@ -74,7 +74,7 @@ export default function ClientAllergiesScreen({ onNext, onBack, data }) {
             onChange={e => setDisliked(e.target.value)}
             placeholder="e.g. broccoli, tuna, cottage cheese..."
             className="w-full px-4 py-3.5 rounded-xl text-white text-base focus:outline-none transition-all"
-            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-card)' }}
+            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-sidebar-accent-foreground)' }}
             onFocus={e => { e.target.style.border = '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
             onBlur={e => { e.target.style.border = '1px solid color-mix(in srgb, white 6%, transparent)'; }}
           />

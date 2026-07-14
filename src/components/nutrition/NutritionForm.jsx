@@ -455,7 +455,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
                     onClick={() => set('tracking_mode', opt.id)}
                     className={cn(
                       'px-4 py-2 transition-colors',
-                      form.tracking_mode === opt.id ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-secondary'
+                      form.tracking_mode === opt.id ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-secondary'
                     )}
                   >
                     {opt.label}

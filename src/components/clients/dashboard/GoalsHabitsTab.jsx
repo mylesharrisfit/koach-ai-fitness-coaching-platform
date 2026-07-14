@@ -115,7 +115,7 @@ export default function GoalsHabitsTab({ client }) {
                 </button>
                 <button
                   onClick={handleAdd}
-                  className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors"
                 >
                   <Plus className="w-4 h-4" /> Add Goal
                 </button>
@@ -141,7 +141,7 @@ export default function GoalsHabitsTab({ client }) {
                 <div className="flex items-center justify-center gap-3">
                   <button
                     onClick={handleAdd}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-5 py-2.5 rounded-xl transition-colors"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-5 py-2.5 rounded-xl transition-colors"
                   >
                     <Plus className="w-4 h-4" /> Add First Goal
                   </button>

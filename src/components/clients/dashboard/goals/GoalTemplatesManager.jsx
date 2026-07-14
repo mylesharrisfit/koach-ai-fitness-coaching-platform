@@ -98,7 +98,7 @@ function TemplateEditForm({ template, onSaved, onCancel }) {
       <div className="flex gap-2 justify-end">
         <button onClick={onCancel} className="text-xs font-semibold text-muted-foreground px-3 py-1.5 rounded-lg border border-border bg-card">Cancel</button>
         <button onClick={handleSave} disabled={saving}
-          className="text-xs font-semibold text-white bg-primary hover:bg-primary px-3 py-1.5 rounded-lg disabled:opacity-50">
+          className="text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary px-3 py-1.5 rounded-lg disabled:opacity-50">
           {saving ? 'Saving…' : template?.id ? 'Update' : 'Create'}
         </button>
       </div>

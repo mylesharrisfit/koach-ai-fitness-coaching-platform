@@ -206,7 +206,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
             <button
               onClick={handleBuyNow}
               disabled={buyingOut}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-primary-foreground transition-all disabled:opacity-60"
               style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))' }}
             >
               {buyingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ShoppingCart className="w-4 h-4" /> Buy Now — ${listing.price}</>}

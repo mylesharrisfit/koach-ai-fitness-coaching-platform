@@ -58,7 +58,7 @@ export default function AffiliateReferralTable({ profile }) {
             <button key={s} onClick={() => setFilterStatus(s)}
               className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                 filterStatus === s
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-border text-foreground hover:bg-border'
               }`}>
               {s.charAt(0).toUpperCase() + s.slice(1)}

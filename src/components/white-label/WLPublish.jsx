@@ -23,7 +23,7 @@ export default function WLPublish({ s, onPublish, onSaveDraft, onRollback, onPre
 
         <div className="flex flex-col sm:flex-row gap-3">
           <button onClick={onPublish} disabled={publishing}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white text-sm disabled:opacity-60"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-primary-foreground text-sm disabled:opacity-60"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
             {publishing
               ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

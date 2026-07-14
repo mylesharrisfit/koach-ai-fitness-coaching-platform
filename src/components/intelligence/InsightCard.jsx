@@ -66,7 +66,7 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: cfg.iconBg }}>
-            <Icon style={{ width: 18, height: 18, color: 'var(--tc-card)' }} />
+            <Icon style={{ width: 18, height: 18, color: 'var(--tc-primary-foreground)' }} />
           </div>
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: cfg.iconBg }}>
@@ -102,7 +102,7 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
         <button
           onClick={() => navigate(insight.actionPath)}
           className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg transition-all hover:opacity-90 active:scale-95"
-          style={{ background: cfg.iconBg, color: 'var(--tc-card)' }}>
+          style={{ background: cfg.iconBg, color: 'var(--tc-primary-foreground)' }}>
           {insight.actionLabel}
           <ArrowRight className="w-3.5 h-3.5" />
         </button>

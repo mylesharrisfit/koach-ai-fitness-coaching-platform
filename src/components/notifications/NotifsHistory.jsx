@@ -50,7 +50,7 @@ export default function NotifsHistory({ onClose }) {
             <Bell className="w-4 h-4 text-muted-foreground" />
             <h3 className="font-bold text-foreground">Notification History</h3>
             {unreadCount > 0 && (
-              <span className="text-xs font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
+              <span className="text-xs font-bold text-primary-foreground px-2 py-0.5 rounded-full" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                 {unreadCount}
               </span>
             )}

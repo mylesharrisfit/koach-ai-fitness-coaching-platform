@@ -9,7 +9,7 @@ import { Zap } from 'lucide-react';
 
 const FieldLabel = ({ children, optional }) => (
   <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
-    {children} {optional && <span className="normal-case tracking-normal font-normal text-[var(--kc-c4c9d4)]">— optional</span>}
+    {children} {optional && <span className="normal-case tracking-normal font-normal text-[var(--tc-muted-foreground)]">— optional</span>}
   </p>
 );
 
@@ -97,7 +97,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
                   background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
-                  color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                   border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
                 }}
               >
@@ -112,7 +112,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
             style={{
               background: isCustomDuration ? 'var(--tc-primary)' : 'var(--tc-muted)',
-              color: isCustomDuration ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+              color: isCustomDuration ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
               border: isCustomDuration ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
             }}
           >
@@ -150,7 +150,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
                   background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
-                  color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                   border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
                 }}
               >
@@ -210,7 +210,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
                     className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-all"
                     style={{
                       background: active ? 'var(--tc-primary)' : 'var(--tc-card)',
-                      color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                      color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                       border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-muted-foreground)',
                     }}
                   >

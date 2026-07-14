@@ -205,7 +205,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
               <div className="space-y-2.5">
                 {steps.map((step, i) => (
                   <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted" style={{ border: '0.5px solid var(--tc-border)' }}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-bold"
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-primary-foreground text-xs font-bold"
                       style={{ background: 'var(--tc-primary)', minWidth: 24 }}>
                       {i + 1}
                     </div>

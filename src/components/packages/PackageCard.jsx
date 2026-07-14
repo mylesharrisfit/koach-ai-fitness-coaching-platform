@@ -160,7 +160,7 @@ export default function PackageCard({ pkg, onEdit, onDuplicate, onArchive, onDel
 
         {/* Share button */}
         <button onClick={onShare}
-          style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, padding: '7px 14px', borderRadius: 8, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', border: 'none', cursor: 'pointer' }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, padding: '7px 14px', borderRadius: 8, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-primary-foreground)', border: 'none', cursor: 'pointer' }}>
           <ExternalLink size={12} /> Share
         </button>
       </div>

@@ -33,7 +33,7 @@ export function SelectionCard({ label, description, icon: Icon, selected, onClic
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-base" style={{ color: selected ? 'var(--tc-card)' : 'var(--kc-b3b3b3)' }}>
+          <p className="font-semibold text-base" style={{ color: selected ? 'var(--tc-primary-foreground)' : 'var(--kc-b3b3b3)' }}>
             {label}
           </p>
           {description && (
@@ -66,7 +66,7 @@ export function ChipSelect({ label, selected, onClick }) {
       style={{
         background: selected ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
         border: selected ? '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)' : '1px solid color-mix(in srgb, white 6%, transparent)',
-        color: selected ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+        color: selected ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
         boxShadow: selected ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
       }}
     >

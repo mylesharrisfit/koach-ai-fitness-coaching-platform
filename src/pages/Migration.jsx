@@ -31,7 +31,7 @@ export default function Migration() {
         <p className="text-muted-foreground text-sm max-w-sm">
           Your clients, workouts, and meal plans have been imported. Your clients have been invited and are ready to go.
         </p>
-        <a href="/clients" className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+        <a href="/clients" className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors">
           Go to Clients <ArrowRight className="w-4 h-4" />
         </a>
       </div>

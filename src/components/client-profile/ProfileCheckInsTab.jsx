@@ -197,7 +197,7 @@ export default function ProfileCheckInsTab({ client, checkIns }) {
             className={cn(
               'text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors',
               filter === f.key
-                ? 'bg-primary text-white border-transparent'
+                ? 'bg-primary text-primary-foreground border-transparent'
                 : 'bg-card text-foreground border-border hover:bg-muted'
             )}
           >

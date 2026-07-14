@@ -308,7 +308,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                       className={cn(
                         'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                         duration === d.mins && duration !== null
-                          ? 'bg-primary text-white'
+                          ? 'bg-primary text-primary-foreground'
                           : 'bg-muted text-foreground hover:bg-border'
                       )}
                     >
@@ -320,7 +320,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                     className={cn(
                       'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                       duration === null
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-foreground hover:bg-border'
                     )}
                   >

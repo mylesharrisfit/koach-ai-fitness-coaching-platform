@@ -225,7 +225,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
             <button
               onClick={handleConfirm}
               disabled={loading}
-              className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
+              className="w-full py-3 rounded-xl text-sm font-bold text-primary-foreground transition-all disabled:opacity-50"
               style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 30%, transparent)' }}
             >
               {loading ? 'Processing...' : `Start ${toTier.name} Plan →`}

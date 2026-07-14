@@ -137,7 +137,7 @@ export default function ClientRevealDashboard({ data }) {
               ))}
             </div>
             <button
-              className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all"
+              className="w-full py-3 rounded-xl text-sm font-semibold text-primary-foreground transition-all"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))' }}
             >
               Start Workout →

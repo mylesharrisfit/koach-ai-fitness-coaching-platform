@@ -22,7 +22,7 @@ const COLOR_STYLES = {
   purple: {
     wrapper: 'bg-ai/8 border-ai/25',
     icon: 'bg-ai/15 text-ai',
-    cta: 'bg-ai hover:bg-ai text-white',
+    cta: 'bg-ai hover:bg-ai text-ai-foreground',
     title: 'text-ai dark:text-ai',
   },
 };

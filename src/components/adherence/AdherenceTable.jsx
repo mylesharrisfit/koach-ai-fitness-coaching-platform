@@ -129,14 +129,14 @@ export default function AdherenceTable({ clients, checkIns, rangeWeeks, onSelect
           {FILTER_CHIPS.map(c => (
             <button key={c} onClick={() => setChip(c)}
               className={cn('flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition-all',
-                chip === c ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-border')}>
+                chip === c ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground hover:bg-border')}>
               {c}
             </button>
           ))}
         </div>
         <div className="flex gap-2 sm:ml-auto">
           <input placeholder="Search clients..." value={search} onChange={e => setSearch(e.target.value)}
-            className="border border-border rounded-lg px-3 py-1.5 text-xs w-40 focus:outline-none focus:ring-1 focus:ring-primary" />
+            className="border border-border rounded-lg px-3 py-1.5 text-xs w-40 bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
           <button onClick={exportCSV}
             className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background whitespace-nowrap">
             Export CSV
@@ -182,7 +182,7 @@ export default function AdherenceTable({ clients, checkIns, rangeWeeks, onSelect
                 {/* Client */}
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-xs"
+                    <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-primary-foreground font-bold text-xs"
                       style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                       {client.name?.[0]?.toUpperCase()}
                     </div>

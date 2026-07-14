@@ -297,7 +297,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
                     onClick={() => setTrainingCompliance(v)}
                     className={cn(
                       'px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
-                      trainingCompliance === v ? 'bg-primary text-white border-primary' : 'border-border text-muted-foreground'
+                      trainingCompliance === v ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground'
                     )}>
                     {v}%
                   </button>
@@ -320,7 +320,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
                     onClick={() => setNutritionCompliance(v)}
                     className={cn(
                       'px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
-                      nutritionCompliance === v ? 'bg-primary text-white border-primary' : 'border-border text-muted-foreground'
+                      nutritionCompliance === v ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground'
                     )}>
                     {v}%
                   </button>

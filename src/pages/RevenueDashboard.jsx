@@ -38,7 +38,7 @@ export default function RevenueDashboard() {
           <button
             onClick={() => refetch()}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
           >
             <RefreshCw className="w-3.5 h-3.5" /> Refresh
           </button>

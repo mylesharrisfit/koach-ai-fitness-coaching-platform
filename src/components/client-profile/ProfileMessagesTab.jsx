@@ -98,7 +98,7 @@ export default function ProfileMessagesTab({ client, messages }) {
                 <div className={cn(
                   'max-w-[85%] rounded-2xl px-4 py-3 border',
                   isCoach
-                    ? 'bg-primary text-white border-transparent rounded-tr-md'
+                    ? 'bg-primary text-primary-foreground border-transparent rounded-tr-md'
                     : 'bg-card text-foreground border-border rounded-tl-md'
                 )}>
                   <div className="flex items-center justify-between gap-3 mb-1">
@@ -114,7 +114,7 @@ export default function ProfileMessagesTab({ client, messages }) {
                           {msg.tag}
                         </span>
                       )}
-                      <span className={cn('text-[10px]', isCoach ? 'text-white/60' : 'text-[var(--kc-c4c9d4)]')}>
+                      <span className={cn('text-[10px]', isCoach ? 'text-white/60' : 'text-[var(--tc-muted-foreground)]')}>
                         {msgDate(msg.created_date)}
                       </span>
                     </div>

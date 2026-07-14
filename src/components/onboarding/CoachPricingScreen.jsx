@@ -154,13 +154,13 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold transition-all"
                 style={{
                   background: billing === b.key ? 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))' : 'transparent',
-                  color: billing === b.key ? 'var(--tc-card)' : 'var(--kc-666666)',
+                  color: billing === b.key ? 'var(--tc-primary-foreground)' : 'var(--kc-666666)',
                 }}
               >
                 {b.label}
                 {b.badge && (
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-                    style={{ background: billing === b.key ? 'color-mix(in srgb, white 20%, transparent)' : 'color-mix(in srgb, var(--tc-success) 15%, transparent)', color: billing === b.key ? 'var(--tc-card)' : 'var(--tc-success)' }}>
+                    style={{ background: billing === b.key ? 'color-mix(in srgb, white 20%, transparent)' : 'color-mix(in srgb, var(--tc-success) 15%, transparent)', color: billing === b.key ? 'var(--tc-sidebar-accent-foreground)' : 'var(--tc-success)' }}>
                     {b.badge}
                   </span>
                 )}
@@ -202,7 +202,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
                       )}
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-bold" style={{ color: isSelected ? plan.color : 'var(--tc-card)' }}>${price}</span>
+                      <span className="text-2xl font-bold" style={{ color: isSelected ? plan.color : 'var(--tc-primary-foreground)' }}>${price}</span>
                       <span className="text-xs" style={{ color: 'var(--kc-555555)' }}>/mo{billing === 'annual' ? ' billed annually' : ''} after trial</span>
                     </div>
                     <p className="text-[11px] mt-0.5" style={{ color: 'var(--kc-555555)' }}>{plan.clientCap}</p>

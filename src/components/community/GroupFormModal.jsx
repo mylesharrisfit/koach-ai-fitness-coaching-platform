@@ -172,7 +172,7 @@ export default function GroupFormModal({ open, onOpenChange, group, currentUser 
               Cancel
             </button>
             <button type="submit" disabled={saveMutation.isPending || !name.trim()}
-              className="px-4 py-2 text-sm font-semibold text-white rounded-lg transition-colors disabled:opacity-40"
+              className="px-4 py-2 text-sm font-semibold text-primary-foreground rounded-lg transition-colors disabled:opacity-40"
               style={{ background: 'var(--tc-primary)' }}>
               {saveMutation.isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Group'}
             </button>

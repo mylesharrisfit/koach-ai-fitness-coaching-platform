@@ -47,7 +47,7 @@ export default function CoachTypeScreen({ onNext, onBack, data }) {
               }}
             >
               <span className="text-xl flex-shrink-0">{f.emoji}</span>
-              <span className="text-sm font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-9a9a9a)' }}>
+              <span className="text-sm font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-primary-foreground)' : 'var(--kc-9a9a9a)' }}>
                 {f.label}
               </span>
             </motion.button>

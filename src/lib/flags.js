@@ -5,8 +5,10 @@
 
 /**
  * Coach-facing dark mode. The theme system (theme.js, the .dark token block,
- * the Settings Appearance tab) is fully built, but most pages still hardcode
- * light colors, so exposing the switch would break them. Flip to `true` only
- * once the tokenization sweep is complete and dark mode reads correctly app-wide.
+ * the Settings Appearance tab) is fully built, and the Step 4.4 token remap
+ * closed out the hardcoded light colors: the axe-core dark-mode audit
+ * (npm run audit:darkmode) reports ZERO dark-only contrast violations across
+ * all nine audited pages. Fixed-dark surfaces (onboarding flow, landing pages)
+ * and brand/integration colors are intentionally theme-invariant.
  */
-export const darkModeEnabled = false;
+export const darkModeEnabled = true;

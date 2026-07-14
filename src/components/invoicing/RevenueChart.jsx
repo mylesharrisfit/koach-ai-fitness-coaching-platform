@@ -7,7 +7,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return (
     <div style={{ background: 'var(--tc-foreground)', borderRadius: 10, padding: '10px 14px', border: '1px solid color-mix(in srgb, white 10%, transparent)' }}>
       <div style={{ color: 'color-mix(in srgb, white 60%, transparent)', fontSize: 11, marginBottom: 4 }}>{label}</div>
-      <div style={{ color: 'var(--tc-card)', fontSize: 16, fontWeight: 700 }}>${Number(payload[0]?.value || 0).toLocaleString()}</div>
+      <div style={{ color: 'var(--tc-primary-foreground)', fontSize: 16, fontWeight: 700 }}>${Number(payload[0]?.value || 0).toLocaleString()}</div>
     </div>
   );
 };

@@ -372,7 +372,7 @@ export default function PackageFormModal({ pkg, onClose, onSave }) {
             Cancel
           </button>
           <button onClick={handleSave} disabled={!form.name || !form.price}
-            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.name || !form.price) ? 'var(--tc-border)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: (!form.name || !form.price) ? 'var(--tc-muted-foreground)' : 'var(--tc-card)', border: 'none', cursor: (!form.name || !form.price) ? 'not-allowed' : 'pointer' }}>
+            style={{ padding: '10px 24px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: (!form.name || !form.price) ? 'var(--tc-border)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: (!form.name || !form.price) ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: (!form.name || !form.price) ? 'not-allowed' : 'pointer' }}>
             {isEdit ? 'Save Changes' : 'Create Package'}
           </button>
         </div>

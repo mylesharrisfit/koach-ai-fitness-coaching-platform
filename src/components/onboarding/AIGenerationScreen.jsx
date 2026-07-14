@@ -47,7 +47,7 @@ function GenerationCard({ item }) {
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-3a3a3a)' : 'var(--tc-card)' }}>
+        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-3a3a3a)' : 'var(--tc-primary-foreground)' }}>
           {item.label}
         </p>
         <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 80%, transparent)' : 'var(--kc-5a5a5a)' }}>

@@ -56,7 +56,7 @@ function Pill({ icon: Icon, label, onClick, variant = 'ghost' }) {
       onClick={e => { e.stopPropagation(); onClick(); }}
       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all shrink-0"
       style={variant === 'primary'
-        ? { background: 'var(--tc-primary)', color: 'var(--tc-card)' }
+        ? { background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)' }
         : { background: 'var(--tc-muted)', color: 'var(--tc-foreground)', border: '1px solid var(--tc-border)' }
       }
     >

@@ -42,7 +42,7 @@ export default function CalendarHeader({ title, onPrev, onNext, onToday, view, o
               className={cn(
                 'text-xs font-semibold px-3 py-1.5 rounded-lg transition-all min-h-[36px]',
                 view === v.toLowerCase()
-                  ? 'bg-primary text-white shadow-sm'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >

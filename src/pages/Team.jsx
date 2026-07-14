@@ -132,10 +132,10 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
         const htmlBody = `
           <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
             <h2 style="color:var(--tc-foreground);margin-bottom:8px">You've been invited to KOACH AI</h2>
-            <p style="color:var(--kc-4b5563)">Hi ${name.trim()},</p>
-            <p style="color:var(--kc-4b5563)">You've been invited to join a coaching team on KOACH AI.</p>
+            <p style="color:var(--tc-muted-foreground)">Hi ${name.trim()},</p>
+            <p style="color:var(--tc-muted-foreground)">You've been invited to join a coaching team on KOACH AI.</p>
             <p style="margin:24px 0">
-              <a href="https://app.base44.com" style="background:var(--tc-primary);color:var(--tc-card);padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
+              <a href="https://app.base44.com" style="background:var(--tc-primary);color:var(--tc-primary-foreground);padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">
                 Accept Invite &rarr;
               </a>
             </p>
@@ -214,7 +214,7 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
               Cancel
             </button>
             <button type="submit" disabled={loading}
-              className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 rounded-xl text-sm font-bold text-primary-foreground disabled:opacity-50 flex items-center justify-center gap-2"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</> : <><Mail className="w-4 h-4" /> Send Invite</>}
             </button>
@@ -317,7 +317,7 @@ export default function Team() {
         {team && isOwner && (
           <button
             onClick={() => setShowInvite(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-primary-foreground"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             <UserPlus className="w-4 h-4" /> Invite Coach
           </button>
@@ -333,7 +333,7 @@ export default function Team() {
           <p className="text-sm font-semibold text-foreground mb-1">No team set up yet</p>
           <p className="text-xs text-muted-foreground mb-5">Set up your team to start adding coaches.</p>
           <button onClick={handleSeedTeam}
-            className="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
+            className="px-5 py-2.5 rounded-xl text-sm font-bold text-primary-foreground"
             style={{ background: 'var(--tc-primary)' }}>
             Set Up My Team
           </button>
@@ -392,7 +392,7 @@ export default function Team() {
               'Use the "Change role" control to promote a coach to owner.',
             ].map((step, i) => (
               <div key={i} className="flex items-start gap-2">
-                <span className="w-4 h-4 rounded-full bg-primary text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
                 <p className="text-xs text-primary leading-relaxed">{step}</p>
               </div>
             ))}

@@ -115,7 +115,7 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
             <input value={newTag} onChange={e => setNewTag(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addTag()}
               placeholder="Add a tag..." className="flex-1 px-3 py-2 rounded-xl border border-border text-sm focus:outline-none focus:border-primary" />
-            <button onClick={addTag} className="px-4 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>Add</button>
+            <button onClick={addTag} className="px-4 py-2 rounded-xl text-sm font-semibold text-primary-foreground" style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>Add</button>
           </div>
         </div>
       </BSRow>

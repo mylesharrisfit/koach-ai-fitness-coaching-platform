@@ -153,7 +153,7 @@ export default function ProgramAssignmentModal({
                   onClick={() => setCurrentStep(step.id)}
                   className={`w-8 h-8 rounded-full text-xs font-semibold transition-all ${
                     currentStep === step.id
-                      ? 'bg-primary text-white'
+                      ? 'bg-primary text-primary-foreground'
                       : currentStep > step.id
                       ? 'bg-success/10 text-success'
                       : 'bg-secondary text-muted-foreground'

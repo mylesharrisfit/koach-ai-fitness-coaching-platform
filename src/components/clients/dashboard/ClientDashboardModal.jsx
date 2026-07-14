@@ -264,7 +264,7 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
                   key={g.key}
                   onClick={() => handleGroupClick(g.key)}
                   className="relative px-4 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors flex-shrink-0"
-                  style={{ color: isActive ? 'var(--tc-card)' : 'var(--tc-muted-foreground)' }}
+                  style={{ color: isActive ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)' }}
                 >
                   {g.label}
                   {isActive && (

@@ -127,7 +127,7 @@ function TemplatesDrawer({ onSelect, onClose }) {
           {TEMPLATE_CATEGORIES.map(c => (
             <button key={c.key} onClick={() => setActiveCategory(c.key)}
               className={cn('flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap transition-all',
-                activeCategory === c.key ? 'bg-primary text-white' : 'bg-muted text-muted-foreground hover:bg-accent/10 hover:text-primary'
+                activeCategory === c.key ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-accent/10 hover:text-primary'
               )}>
               <span>{c.emoji}</span> {c.label}
             </button>
@@ -140,7 +140,7 @@ function TemplatesDrawer({ onSelect, onClose }) {
                 <div className="p-3">
                   <textarea className="w-full text-xs rounded-lg border border-primary/30 p-2 resize-none outline-none focus:ring-1 focus:ring-primary bg-card" rows={4} value={editText} onChange={e => setEditText(e.target.value)} />
                   <div className="flex gap-2 mt-2">
-                    <button onClick={() => { onSelect(editText, 'general'); onClose(); }} className="text-[11px] font-semibold px-3 py-1 bg-primary text-white rounded-full">Send This</button>
+                    <button onClick={() => { onSelect(editText, 'general'); onClose(); }} className="text-[11px] font-semibold px-3 py-1 bg-primary text-primary-foreground rounded-full">Send This</button>
                     <button onClick={() => setEditingIdx(null)} className="text-[11px] text-muted-foreground underline">Cancel</button>
                   </div>
                 </div>
@@ -149,7 +149,7 @@ function TemplatesDrawer({ onSelect, onClose }) {
                   <p className="text-xs font-semibold text-foreground mb-1">{t.label}</p>
                   <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">{t.text}</p>
                   <div className="flex gap-2 mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => { onSelect(t.text, 'general'); onClose(); }} className="text-[11px] font-semibold px-2.5 py-1 bg-primary text-white rounded-full hover:bg-primary/90">Use</button>
+                    <button onClick={() => { onSelect(t.text, 'general'); onClose(); }} className="text-[11px] font-semibold px-2.5 py-1 bg-primary text-primary-foreground rounded-full hover:bg-primary/90">Use</button>
                     <button onClick={() => { setEditingIdx(i); setEditText(t.text); }} className="text-[11px] font-semibold px-2.5 py-1 border border-primary/30 text-primary bg-card rounded-full hover:bg-primary/5">Edit</button>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ function TemplatesDrawer({ onSelect, onClose }) {
             <div className="space-y-2">
               <textarea className="w-full text-xs rounded-lg border border-border p-2 resize-none outline-none focus:ring-1 focus:ring-primary" placeholder="Type your custom template…" rows={3} value={saveText} onChange={e => setSaveText(e.target.value)} />
               <div className="flex gap-2">
-                <button onClick={() => { if (saveText.trim()) { setCustomTemplates(prev => [...prev, { label: 'My Template', text: saveText.trim(), category: activeCategory }]); setSaveText(''); setShowSaveInput(false); } }} className="text-[11px] font-semibold px-3 py-1 bg-primary text-white rounded-full">Save</button>
+                <button onClick={() => { if (saveText.trim()) { setCustomTemplates(prev => [...prev, { label: 'My Template', text: saveText.trim(), category: activeCategory }]); setSaveText(''); setShowSaveInput(false); } }} className="text-[11px] font-semibold px-3 py-1 bg-primary text-primary-foreground rounded-full">Save</button>
                 <button onClick={() => setShowSaveInput(false)} className="text-[11px] text-muted-foreground underline">Cancel</button>
               </div>
             </div>
@@ -265,7 +265,7 @@ function VoiceRecorderPreview({ audioUrl, uploadState, seconds, onDiscard, onRet
         className={cn(
           'w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-all',
           canSend
-            ? 'bg-primary text-white hover:bg-primary/90 shadow-sm'
+            ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
             : 'bg-border text-muted-foreground cursor-not-allowed'
         )}
       >
@@ -293,7 +293,7 @@ function VideoLinkPopover({ clientName, onInsert, onClose }) {
         </button>
       </div>
       <div className="flex gap-2">
-        <button onClick={() => { onInsert(`📹 Join our video call: ${link}`); onClose(); }} className="flex-1 text-[11px] font-semibold py-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+        <button onClick={() => { onInsert(`📹 Join our video call: ${link}`); onClose(); }} className="flex-1 text-[11px] font-semibold py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
           Send Link
         </button>
         <a href={link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[11px] font-semibold py-1.5 px-2 border border-border text-foreground rounded-lg hover:bg-muted transition-colors">
@@ -528,7 +528,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         <div className="flex gap-1.5 flex-wrap px-4 pt-3 pb-1">
           {chips.map((r, i) => (
             <button key={i} onClick={() => { onChange(r.text); setShowQuickReplies(false); textareaRef.current?.focus(); }}
-              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-accent/10 border border-[var(--kc-d6e2ff)] text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors whitespace-nowrap">
+              className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-accent/10 border border-[var(--kc-d6e2ff)] text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors whitespace-nowrap">
               {r.label}
             </button>
           ))}
@@ -634,7 +634,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
         {recordingState === 'idle' && (
           <button onClick={onSend} disabled={isEmpty}
             className={cn('w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full transition-all',
-              isEmpty ? 'bg-border text-muted-foreground cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90 shadow-sm hover:shadow-md')}>
+              isEmpty ? 'bg-border text-muted-foreground cursor-not-allowed' : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md')}>
             <Send className="w-4 h-4" />
           </button>
         )}

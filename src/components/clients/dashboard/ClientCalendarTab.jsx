@@ -94,12 +94,12 @@ function DayCell({ day, events, onDayClick }) {
       {/* Day number */}
       <div className="flex items-center justify-between mb-1">
         <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full
-          ${isT ? 'bg-primary text-white' : 'text-foreground'}`}>
+          ${isT ? 'bg-primary text-primary-foreground' : 'text-foreground'}`}>
           {format(day, 'd')}
         </span>
         <button
           onClick={e => { e.stopPropagation(); onDayClick(day); }}
-          className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded flex items-center justify-center bg-primary text-white transition-opacity"
+          className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded flex items-center justify-center bg-primary text-primary-foreground transition-opacity"
         >
           <Plus className="w-3 h-3" />
         </button>
@@ -178,7 +178,7 @@ function RepeatModal({ repeat, onChange, onClose }) {
                     className="w-9 h-9 rounded-full text-xs font-bold transition-all"
                     style={{
                       background: days.includes(i) ? 'var(--tc-primary)' : 'var(--tc-muted)',
-                      color: days.includes(i) ? 'var(--tc-card)' : 'var(--tc-foreground)',
+                      color: days.includes(i) ? 'var(--tc-primary-foreground)' : 'var(--tc-foreground)',
                     }}>
                     {d}
                   </button>
@@ -205,7 +205,7 @@ function RepeatModal({ repeat, onChange, onClose }) {
         </div>
 
         <button onClick={apply}
-          className="w-full mt-5 py-2.5 rounded-xl text-sm font-bold text-white"
+          className="w-full mt-5 py-2.5 rounded-xl text-sm font-bold text-primary-foreground"
           style={{ background: 'var(--tc-primary)' }}>
           Apply
         </button>
@@ -565,7 +565,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
               {DAY_LABELS.map((d, i) => (
                 <button key={i} onClick={() => toggleDay(i)}
                   className="w-8 h-8 rounded-full text-xs font-bold transition-all"
-                  style={{ background: daysOfWeek.includes(i) ? 'var(--tc-ai)' : 'var(--tc-muted)', color: daysOfWeek.includes(i) ? 'var(--tc-card)' : 'var(--tc-foreground)' }}>
+                  style={{ background: daysOfWeek.includes(i) ? 'var(--tc-ai)' : 'var(--tc-muted)', color: daysOfWeek.includes(i) ? 'var(--tc-primary-foreground)' : 'var(--tc-foreground)' }}>
                   {d}
                 </button>
               ))}
@@ -795,7 +795,7 @@ function CheckInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
       </div>
 
       <button onClick={save} disabled={saving}
-        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-50"
         style={{ background: 'var(--tc-primary)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} check-ins)` : 'Schedule Check-in'}
@@ -859,7 +859,7 @@ function WeighInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
       </div>
 
       <button onClick={save} disabled={saving}
-        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+        className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-50"
         style={{ background: 'var(--tc-primary)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Scheduling…' : repeat ? `Schedule (${generateRepeatDates(parseISO(dateStr), repeat).length} prompts)` : 'Schedule Weigh-in'}
@@ -917,7 +917,7 @@ function AddEventModal({ day, client, onClose }) {
                 onClick={() => {
                   // trigger save from content (handled by individual content components)
                 }}
-                className="px-4 py-1.5 rounded-lg text-sm font-bold text-white"
+                className="px-4 py-1.5 rounded-lg text-sm font-bold text-primary-foreground"
                 style={{ background: 'var(--tc-primary)', opacity: 0.9 }}
               >
                 ADD
@@ -1104,7 +1104,7 @@ export default function ClientCalendarTab({ client }) {
         </div>
 
         <button onClick={() => setActiveDay(new Date())}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-primary-foreground"
           style={{ background: 'var(--tc-primary)' }}>
           <Plus className="w-3.5 h-3.5" /> Add Event
         </button>

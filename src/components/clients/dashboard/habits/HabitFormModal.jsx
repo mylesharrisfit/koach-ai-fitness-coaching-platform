@@ -156,7 +156,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
                     <button key={idx} onClick={() => toggleDay(idx)}
                       className={`w-9 h-9 rounded-full text-xs font-bold border-2 transition-all ${
                         active
-                          ? 'border-ai bg-ai text-white'
+                          ? 'border-ai bg-ai text-ai-foreground'
                           : 'border-border bg-card text-muted-foreground hover:border-ai'
                       }`}>
                       {label}

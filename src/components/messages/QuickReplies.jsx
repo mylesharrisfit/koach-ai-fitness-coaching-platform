@@ -16,7 +16,7 @@ export default function QuickReplies({ onSelect }) {
         <button
           key={i}
           onClick={() => onSelect(r.text)}
-          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-accent/10 border border-[var(--kc-d6e2ff)] text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors whitespace-nowrap"
+          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-accent/10 border border-[var(--kc-d6e2ff)] text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors whitespace-nowrap"
         >
           {r.label}
         </button>

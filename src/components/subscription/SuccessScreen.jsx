@@ -61,7 +61,7 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
         <div className="space-y-3">
           <button
             onClick={() => navigate('/')}
-            className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
+            className="w-full py-3 rounded-xl text-sm font-bold text-primary-foreground transition-all"
             style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 30%, transparent)' }}
           >
             Explore New Features →

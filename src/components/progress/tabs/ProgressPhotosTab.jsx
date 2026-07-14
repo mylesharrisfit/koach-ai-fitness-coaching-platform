@@ -82,11 +82,11 @@ export default function ProgressPhotosTab({ client, checkIns }) {
         </div>
         <button onClick={() => { setCompareMode(!compareMode); setCompareA(null); setCompareB(null); }}
           className={cn('flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-all',
-            compareMode ? 'bg-primary text-white border-primary' : 'border-border text-foreground')}>
+            compareMode ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-foreground')}>
           <ArrowLeftRight className="w-3.5 h-3.5" /> Compare
         </button>
         <button onClick={() => setShowUpload(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90">
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
           <ImagePlus className="w-3.5 h-3.5" /> Add Photos
         </button>
       </div>
@@ -142,7 +142,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
           <ImagePlus className="w-10 h-10 text-muted-foreground" />
           <p className="text-sm text-foreground font-medium">No progress photos yet</p>
           <p className="text-xs text-muted-foreground">Upload photos to start tracking visual transformation</p>
-          <button onClick={() => setShowUpload(true)} className="mt-2 px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-white">
+          <button onClick={() => setShowUpload(true)} className="mt-2 px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground">
             Add First Photo
           </button>
         </div>
@@ -180,7 +180,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
                   )}
                   {(selA || selB) && (
                     <div className={cn('absolute top-1 right-1 text-[9px] font-bold px-1.5 py-0.5 rounded',
-                      selA ? 'bg-primary text-white' : 'bg-ai text-white')}>
+                      selA ? 'bg-primary text-primary-foreground' : 'bg-ai text-ai-foreground')}>
                       {selA ? 'Before' : 'After'}
                     </div>
                   )}

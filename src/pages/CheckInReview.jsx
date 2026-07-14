@@ -157,13 +157,13 @@ export default function CheckInReview() {
         <div className="flex gap-2 flex-wrap">
           <button
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors"
-            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => navigate(`/messages?message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
           >
             <Bell className="w-3.5 h-3.5" /> Send Bulk Reminder
           </button>
           <button
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-white transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold text-primary-foreground transition-colors"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
             onClick={() => setMainTab('form_builder')}
           >
@@ -210,7 +210,7 @@ export default function CheckInReview() {
                   className={cn(
                     'flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all',
                     filter === f.key
-                      ? 'bg-primary text-white'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-card border border-border text-foreground hover:border-muted-foreground'
                   )}>
                   {f.label}
@@ -263,7 +263,7 @@ export default function CheckInReview() {
                     <div className="flex gap-1.5 flex-shrink-0">
                       <button
                         onClick={() => navigate(`/messages?clientId=${client.id}&message=${encodeURIComponent("Hey! Just a reminder to submit your weekly check-in 📋")}`)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors min-h-[36px]">
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors min-h-[36px]">
                         <Send className="w-3 h-3" /> <span className="hidden sm:inline">Remind</span>
                       </button>
                       <button

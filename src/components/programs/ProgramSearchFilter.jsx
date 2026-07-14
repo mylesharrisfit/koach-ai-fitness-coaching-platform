@@ -126,7 +126,7 @@ export default function ProgramSearchFilter({
               className={cn(
                 'text-xs font-medium px-3 py-1.5 rounded-lg border transition-all whitespace-nowrap',
                 categories.includes(cat.value)
-                  ? 'bg-primary text-white border-primary'
+                  ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border hover:border-primary hover:text-primary'
               )}
             >
@@ -193,7 +193,7 @@ export default function ProgramSearchFilter({
               className={cn(
                 'text-xs font-medium px-2.5 py-1 rounded-lg border transition-all whitespace-nowrap',
                 status === st.value
-                  ? 'bg-primary text-white border-primary'
+                  ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-card text-muted-foreground border-border hover:border-primary hover:text-primary'
               )}
             >
@@ -247,7 +247,7 @@ export default function ProgramSearchFilter({
             className={cn(
               'flex items-center justify-center w-8 h-8 rounded-md transition-all',
               layout === 'grid'
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
             title="Grid view"
@@ -259,7 +259,7 @@ export default function ProgramSearchFilter({
             className={cn(
               'flex items-center justify-center w-8 h-8 rounded-md transition-all',
               layout === 'list'
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
             title="List view"

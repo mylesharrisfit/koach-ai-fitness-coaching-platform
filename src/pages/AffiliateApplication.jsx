@@ -119,7 +119,7 @@ export default function AffiliateApplication() {
           <p className={`text-center ${config.color.replace('text-', 'text-opacity-70')}`}>{config.msg}</p>
           {app.status === 'approved' && (
             <a href="/affiliate-dashboard"
-              className="block mt-6 py-3 rounded-xl font-bold text-white text-center"
+              className="block mt-6 py-3 rounded-xl font-bold text-primary-foreground text-center"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               Go to Dashboard →
             </a>
@@ -272,7 +272,7 @@ export default function AffiliateApplication() {
           <button
             type="submit"
             disabled={appMutation.isPending}
-            className="w-full py-3 rounded-xl font-black text-white flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3 rounded-xl font-black text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
             {appMutation.isPending ? 'Submitting...' : 'Submit Application'}
           </button>

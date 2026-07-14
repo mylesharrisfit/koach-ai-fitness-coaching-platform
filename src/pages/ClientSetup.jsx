@@ -185,7 +185,7 @@ export default function ClientSetup() {
               <button
                 type="submit"
                 disabled={submitting || !password || !confirmPassword}
-                className="w-full py-4 rounded-xl font-bold text-base text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-xl font-bold text-base text-primary-foreground transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
                   background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))',
                   boxShadow: '0 0 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)',

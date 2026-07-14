@@ -255,7 +255,7 @@ function ClientProgressRow({ row, onViewProgress }) {
     <div className="bg-card border border-border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
       {/* Row 1: Avatar + Score + CTA */}
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-sm"
+        <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-primary-foreground font-bold text-sm"
           style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
           {client.avatar_url
             ? <img src={client.avatar_url} alt={client.name} className="w-10 h-10 rounded-full object-cover" />
@@ -272,7 +272,7 @@ function ClientProgressRow({ row, onViewProgress }) {
           </div>
         )}
         <button onClick={onViewProgress}
-          className="px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors whitespace-nowrap min-h-[36px] flex-shrink-0">
+          className="px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap min-h-[36px] flex-shrink-0">
           View →
         </button>
       </div>

@@ -88,7 +88,7 @@ export default function QuickCheckInPanel({ client, onClose }) {
                   className={cn(
                     'px-3 py-1.5 rounded-lg text-xs font-medium border transition-all',
                     mood === m.key
-                      ? 'bg-primary text-white border-primary'
+                      ? 'bg-primary text-primary-foreground border-primary'
                       : 'bg-card text-foreground border-border hover:border-primary/40'
                   )}
                 >

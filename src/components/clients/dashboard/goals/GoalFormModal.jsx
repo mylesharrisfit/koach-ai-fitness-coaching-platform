@@ -314,7 +314,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-primary hover:bg-primary disabled:opacity-50"
+                className="text-sm font-semibold text-primary-foreground px-5 py-2 rounded-lg bg-primary hover:bg-primary disabled:opacity-50"
               >
                 {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Goal'}
               </button>

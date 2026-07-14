@@ -155,7 +155,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
             {/* Keep current — prominent */}
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
+              className="w-full py-3 rounded-xl text-sm font-bold text-primary-foreground transition-all"
               style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 25%, transparent)' }}
             >
               Keep {fromTier.name} Plan

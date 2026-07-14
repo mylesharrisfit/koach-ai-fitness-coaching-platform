@@ -69,7 +69,7 @@ function MiniRecRow({ rec, checkIn, client }) {
         {stage === 'confirm' && (
           <div className="flex gap-1.5 flex-shrink-0">
             <button onClick={handleConfirm}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-semibold">
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-semibold">
               <Check className="w-3 h-3" /> Yes
             </button>
             <button onClick={handleCancel}

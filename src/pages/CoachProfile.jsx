@@ -387,7 +387,7 @@ export default function CoachProfile() {
           </AnimatePresence>
           <button onClick={() => save()}
             disabled={saving}
-            className="px-5 py-2.5 rounded-xl font-bold text-white text-sm flex items-center gap-2 disabled:opacity-60 transition-opacity"
+            className="px-5 py-2.5 rounded-xl font-bold text-primary-foreground text-sm flex items-center gap-2 disabled:opacity-60 transition-opacity"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes
@@ -402,7 +402,7 @@ export default function CoachProfile() {
             {/* Avatar */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative mb-4">
-                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center text-3xl font-black text-white"
+                <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center text-3xl font-black text-primary-foreground"
                   style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 0 4px white, 0 0 0 6px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
                   {profile.avatar_url
                     ? <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
@@ -410,7 +410,7 @@ export default function CoachProfile() {
                   }
                 </div>
                 <button onClick={() => fileRef.current?.click()}
-                  className="absolute bottom-0 right-0 w-9 h-9 rounded-full flex items-center justify-center text-white"
+                  className="absolute bottom-0 right-0 w-9 h-9 rounded-full flex items-center justify-center text-primary-foreground"
                   style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 2px 8px color-mix(in srgb, var(--tc-primary) 40%, transparent), 0 0 0 3px white' }}>
                   <Camera className="w-4 h-4" />
                 </button>
@@ -545,7 +545,7 @@ export default function CoachProfile() {
         <div className="flex justify-end pb-8">
           <button onClick={() => save()}
             disabled={saving}
-            className="px-8 py-3 rounded-xl font-bold text-white flex items-center gap-2 disabled:opacity-60"
+            className="px-8 py-3 rounded-xl font-bold text-primary-foreground flex items-center gap-2 disabled:opacity-60"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
             {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
             Save Changes

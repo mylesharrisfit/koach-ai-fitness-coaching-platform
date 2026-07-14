@@ -109,7 +109,7 @@ export default function MigrationWorkouts({ onComplete, onSkip }) {
       <div className="flex flex-col items-center py-6 gap-3">
         <CheckCircle2 className="w-10 h-10 text-success" />
         <p className="font-semibold text-foreground">{selected.size} programs imported!</p>
-        <button onClick={onComplete} className="px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+        <button onClick={onComplete} className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
           Continue →
         </button>
       </div>
@@ -167,7 +167,7 @@ export default function MigrationWorkouts({ onComplete, onSkip }) {
           <button
             onClick={importSelected}
             disabled={importing}
-            className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {importing
               ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Importing...</>

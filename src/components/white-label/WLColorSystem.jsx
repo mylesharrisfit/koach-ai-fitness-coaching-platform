@@ -56,7 +56,7 @@ export default function WLColorSystem({ s, set, locked }) {
       <WLRow label="Primary brand color" hint="Buttons, active states, links, highlights">
         <WLColorPicker value={s.primary_color} onChange={v => set('primary_color', v)} />
         <div className="mt-3 flex gap-2 flex-wrap">
-          <button className="px-4 py-1.5 rounded-lg text-sm font-bold text-white" style={{ background: s.primary_color || 'var(--tc-primary)' }}>Button</button>
+          <button className="px-4 py-1.5 rounded-lg text-sm font-bold text-primary-foreground" style={{ background: s.primary_color || 'var(--tc-primary)' }}>Button</button>
           <span className="px-2 py-1.5 text-sm font-semibold" style={{ color: s.primary_color || 'var(--tc-primary)' }}>Link text</span>
           <div className="w-6 h-6 rounded-full" style={{ background: s.primary_color || 'var(--tc-primary)' }} />
         </div>

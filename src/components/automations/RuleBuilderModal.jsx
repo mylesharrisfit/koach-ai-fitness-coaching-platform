@@ -107,7 +107,7 @@ export default function RuleBuilderModal({ open, onClose, onSave, initial }) {
           <div className="flex gap-1">
             {['Trigger', 'Actions', 'Settings'].map((s, i) => (
               <button key={s} onClick={() => setStep(i + 1)}
-                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-colors ${step === i + 1 ? 'bg-primary text-white' : 'bg-secondary text-muted-foreground hover:bg-border'}`}>
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-colors ${step === i + 1 ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-border'}`}>
                 {i + 1}. {s}
               </button>
             ))}

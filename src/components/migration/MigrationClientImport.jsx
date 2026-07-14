@@ -93,7 +93,7 @@ export default function MigrationClientImport({ onComplete, onSkip }) {
             {results.fail.length > 0 && <p className="text-xs text-success mt-0.5">{results.fail.length} failed (duplicate emails)</p>}
           </div>
         </div>
-        <button onClick={() => onComplete(results.ok)} className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+        <button onClick={() => onComplete(results.ok)} className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
           Continue to Workouts →
         </button>
       </div>
@@ -182,7 +182,7 @@ export default function MigrationClientImport({ onComplete, onSkip }) {
           <button
             onClick={doImport}
             disabled={importing}
-            className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {importing ? (
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Importing...</>

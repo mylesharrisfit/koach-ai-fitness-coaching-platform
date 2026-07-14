@@ -121,7 +121,7 @@ function InvoicePreview({ form, lineItems, coachName }) {
 
       {/* Pay button preview */}
       <div style={{ marginTop: 20, textAlign: 'center' }}>
-        <div style={{ display: 'inline-block', padding: '10px 28px', borderRadius: 10, background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-card)', fontSize: 13, fontWeight: 700 }}>
+        <div style={{ display: 'inline-block', padding: '10px 28px', borderRadius: 10, background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-primary-foreground)', fontSize: 13, fontWeight: 700 }}>
           Pay ${total.toFixed(2)} →
         </div>
       </div>
@@ -481,7 +481,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             Save as Draft
           </button>
           <button onClick={handleSend} disabled={saving || !form.client_id}
-            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'var(--tc-border)' : 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: (!form.client_id || saving) ? 'var(--tc-muted-foreground)' : 'var(--tc-card)', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
+            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'var(--tc-border)' : 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: (!form.client_id || saving) ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
             {saving ? 'Saving…' : 'Send Invoice →'}
           </button>
         </div>

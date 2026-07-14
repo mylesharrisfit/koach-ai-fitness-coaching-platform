@@ -79,7 +79,7 @@ export default function WelcomeScreen({ onNext }) {
             onClick={onNext}
             whileHover={{ scale: 1.02, boxShadow: '0 0 40px color-mix(in srgb, var(--tc-primary) 50%, transparent)' }}
             whileTap={{ scale: 0.97 }}
-            className="w-full py-4 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2.5"
+            className="w-full py-4 rounded-2xl text-primary-foreground font-bold text-base flex items-center justify-center gap-2.5"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))', boxShadow: '0 0 28px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}
           >
             Start Free Trial

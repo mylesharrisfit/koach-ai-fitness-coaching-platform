@@ -116,7 +116,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
                       style={{ background: 'linear-gradient(90deg, color-mix(in srgb, var(--tc-primary) 50%, transparent), color-mix(in srgb, var(--tc-primary) 10%, transparent))' }} />
                   )}
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative z-10 mb-2"
-                    style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)' }}>
+                    style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-primary-foreground)' }}>
                     {s.n}
                   </div>
                   <p className="text-[11px] font-semibold text-white leading-tight px-1">{s.label}</p>
@@ -132,7 +132,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
           {canUse ? (
             <button
               onClick={onGetStarted}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
             >
               <Sparkles className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
             <>
               <button
                 onClick={onUpgrade}
-                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
                 style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
               >
                 <Zap className="w-4 h-4" />

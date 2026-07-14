@@ -298,7 +298,7 @@ export default function Clients() {
           <button
             onClick={() => setShowImport(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
-            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', border: '1px solid color-mix(in srgb, white 15%, transparent)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', border: '1px solid color-mix(in srgb, white 15%, transparent)' }}
             title="Import clients from CSV"
           >
             <Upload className="w-4 h-4" />
@@ -308,7 +308,7 @@ export default function Clients() {
           {false && <button
             onClick={() => { if (atLimit) { setUpgradeOpen(true); return; } setEditingClient(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-colors min-h-[44px]"
-            style={{ background: atLimit ? 'color-mix(in srgb, white 10%, transparent)' : 'var(--tc-card)', color: atLimit ? 'var(--tc-card)' : 'var(--tc-foreground)' }}
+            style={{ background: atLimit ? 'color-mix(in srgb, white 10%, transparent)' : 'var(--tc-card)', color: atLimit ? 'var(--tc-sidebar-accent-foreground)' : 'var(--tc-foreground)' }}
           >
             {atLimit ? <Lock className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             {atLimit ? 'Limit' : 'Add Client'}
@@ -342,11 +342,11 @@ export default function Clients() {
         <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide flex-nowrap">
           {[
             { key: 'all',       label: 'All',       active: 'bg-sidebar text-white border-foreground',        count: 'bg-[var(--kc-w-20)] text-white' },
-            { key: 'lead',      label: 'Lead',      active: 'bg-primary text-white border-primary',           count: 'bg-[var(--kc-w-20)] text-white' },
+            { key: 'lead',      label: 'Lead',      active: 'bg-primary text-primary-foreground border-primary',           count: 'bg-[var(--kc-w-20)] text-white' },
             { key: 'active',    label: 'Active',    active: 'bg-success text-white border-success',     count: 'bg-[var(--kc-w-20)] text-white' },
             { key: 'at_risk',   label: 'At Risk',   active: 'bg-orange-500 text-white border-orange-500',       count: 'bg-[var(--kc-w-20)] text-white' },
             { key: 'completed', label: 'Completed', active: 'bg-muted-foreground text-white border-border',           count: 'bg-[var(--kc-w-20)] text-white' },
-            { key: 'alumni',    label: 'Alumni',    active: 'bg-ai text-white border-ai',       count: 'bg-[var(--kc-w-20)] text-white' },
+            { key: 'alumni',    label: 'Alumni',    active: 'bg-ai text-ai-foreground border-ai',       count: 'bg-[var(--kc-w-20)] text-white' },
           ].map(({ key, label, active, count }) => (
             <button
               key={key}
@@ -415,7 +415,7 @@ export default function Clients() {
             className={cn(
               'h-8 w-8 flex items-center justify-center rounded-lg border text-xs transition-all flex-shrink-0',
               showFilters || activeFiltersCount > 0
-                ? 'bg-primary text-white border-primary'
+                ? 'bg-primary text-primary-foreground border-primary'
                 : 'bg-muted text-muted-foreground border-border hover:text-foreground'
             )}
           >
