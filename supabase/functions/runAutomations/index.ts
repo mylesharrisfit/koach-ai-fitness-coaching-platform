@@ -16,8 +16,11 @@
 //   AUTOMATION_WINDOW ('day' default | 'hour') controlling the dedup window.
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import {
-  evaluateRule, resolveActions, isEligibleClient, renderMessage,
+  evaluateRule, resolveActions, isEligibleClient,
 } from '../_shared/automationRunner.js';
+// Action executors extracted to _shared in Step 5c so the entity-event
+// trigger function (onEntityEvent) reuses the SAME write paths.
+import { executeAction } from '../_shared/automationActions.js';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -116,57 +119,3 @@ Deno.serve(async (req) => {
     return json({ ok: false, error: 'Server error' }, 500);
   }
 });
-
-// Faithful port of Automations.jsx executeAction, with legacy action-type
-// synonyms unified (flag_client≡flag_at_risk, update_status).
-async function executeAction(
-  admin: ReturnType<typeof createClient>, action: any, client: any,
-  lastCheckIn: any, clientCheckIns: any[], plans: any[], badges: any[],
-) {
-  const msg = renderMessage(action.message, client, lastCheckIn, clientCheckIns);
-  switch (action.type) {
-    case 'send_message':
-    case 'send_template':
-      if (msg) await admin.from('messages').insert({ client_id: client.id, content: msg, sender: 'coach' });
-      break;
-    case 'notify_coach':
-    case 'suggest_adjustment': {
-      // recipient is the owning coach (clients.user_id / created_by); notifications.recipient_id → auth.users
-      const recipient = client.user_id ?? client.created_by;
-      if (recipient) {
-        await admin.from('notifications').insert({
-          recipient_id: recipient, category: 'ai', type: 'automation',
-          title: `Automation: ${client.name}`, body: msg || `Rule triggered for ${client.name}`,
-          related_client_id: client.id,
-        });
-      }
-      break;
-    }
-    case 'award_badge': {
-      if (!action.value) break;
-      const already = badges.some((b) => b.client_id === client.id && b.badge_key === action.value);
-      if (!already) {
-        await admin.from('client_badges').insert({
-          client_id: client.id, client_name: client.name, badge_key: action.value,
-          earned_date: new Date().toISOString().split('T')[0], notes: 'Auto-awarded by automation',
-        });
-      }
-      break;
-    }
-    case 'update_status':
-      if (action.value) await admin.from('clients').update({ lifecycle_status: action.value }).eq('id', client.id);
-      break;
-    case 'adjust_calories': {
-      const plan = plans.find((p) => p.id === client.assigned_nutrition_id);
-      if (plan) {
-        const delta = Number(action.value) || 0;
-        await admin.from('nutrition_plans').update({ calories: (plan.calories || 2000) + delta }).eq('id', plan.id);
-      }
-      break;
-    }
-    case 'flag_client':
-    case 'flag_at_risk':
-      await admin.from('clients').update({ lifecycle_status: 'at_risk' }).eq('id', client.id);
-      break;
-  }
-}

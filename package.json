@@ -17,6 +17,7 @@
     "verify:risk-parity": "node --loader ./scripts/.ext-resolver.mjs scripts/verify-risk-parity.mjs",
     "verify:stripe": "node scripts/verify-stripe-idempotency.mjs",
     "verify:digest": "node scripts/verify-digest.mjs",
+    "verify:events": "node scripts/verify-entity-events.mjs",
     "audit:darkmode": "node darkmode-audit/run-audit.mjs"
   },
   "dependencies": {

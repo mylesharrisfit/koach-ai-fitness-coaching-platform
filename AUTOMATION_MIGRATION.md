@@ -273,9 +273,77 @@ redundant — reconcile to one when porting.
 | processReferralReward | credit a referral (money-adjacent → idempotency needed) | med | — | **P2** |
 
 ### Suggested continuation order
-1. **sendEmailNotification** (unblocks 5a/5b email + all trigger fns).
-2. **validateSubscription** (Clients cutover already depends on it).
+1. **sendEmailNotification** (unblocks 5a/5b email + all trigger fns). ✅ DONE
+2. **validateSubscription** (Clients cutover already depends on it). ✅ DONE
 3. **submitOnboardingIntake** + the 5 **DB-trigger** functions (data-integrity
-   path; reuse automationRunner executors).
+   path; reuse automationRunner executors). ✅ DONE
 4. AI functions behind a shared `_shared/anthropic.js`.
 5. import/referral/integration/seed utilities.
+
+## Step 5c (first tranche) — DELIVERED
+
+Rehearsal: `npm run verify:events` against a throwaway Postgres with ALL
+migrations + `scripts/fixtures/auth-shim.sql` applied — **31/31 checks pass**.
+`verify:facade` (Clients cutover) and `verify:automation` (runAutomations)
+re-run green as regressions.
+
+### Ported functions
+- **sendEmailNotification** — Resend mailer (`_shared/resendEmail.js` owns the
+  API envelope; env `RESEND_API_KEY`, `FROM_NAME`/`FROM_EMAIL` with the
+  Base44-era `VITE_*` names still honored). Accepts a verified user session OR
+  the service-role key (the defensive `svc.functions.invoke(...)` paths in
+  stripeWebhook / weeklyDigest / sendClientInvite now reach a live function —
+  the rehearsal proves their `{to, subject, html}` body parses and produces the
+  Base44-shape Resend envelope).
+- **validateSubscription** — tier tables + gate expressions in
+  `_shared/subscriptionTiers.js` (rehearsed against real row counts: starter
+  blocks at max_clients=10, enterprise never blocks). Counts run RLS-scoped as
+  the caller, matching Base44's user-scoped `entities.Client.list()`; the tier
+  itself comes from the caller's `profiles.subscription_tier`, which the
+  privileged-columns trigger keeps service-role-only.
+- **submitOnboardingIntake** — public endpoint (deploy `--no-verify-jwt`),
+  service-role insert. Row mapping in `_shared/intakeMapping.js`; the form's
+  `intermediate` experience maps to `experienced` (the new CHECK constraint
+  has no such value; Base44 was schema-less), unknown values fold into
+  `schedule_preferences` instead of failing the insert. Unknown `coachId`s are
+  validated against profiles so the FK can't 500 the intake.
+
+### The 5 DB-trigger equivalents (migration 20260714000100)
+`AFTER INSERT/UPDATE` triggers → `app.notify_entity_event()` →
+`pg_net.http_post` → **onEntityEvent** edge function (same pattern as the
+pg_cron automation runner). Six triggers (workout-completed needs an
+INSERT + UPDATE pair since WHEN can't branch on TG_OP);
+`checkin.responded` is gated `WHEN (new.coach_responded AND NOT
+old.coach_responded)` — the verbatim Base44 transition guard.
+
+- **Executor reuse, not reimplementation**: the action executors moved from
+  runAutomations into `_shared/automationActions.js`
+  (sendMessage/notifyCoach/awardBadge + the executeAction dispatcher);
+  runAutomations imports them, and the event handlers
+  (`_shared/entityEvents.js`) call the SAME primitives for every message/
+  notification write. Emails go through `_shared/resendEmail.js` with the
+  original Base44 HTML templates (`_shared/entityEventEmails.js`, verbatim).
+- **Idempotency (Step 5a discipline)**: every trigger firing carries a unique
+  `event_key`; onEntityEvent claims it in `processed_entity_events` before any
+  work (PK = atomic claim), releases the claim if processing fails so a retry
+  can succeed. Rehearsed: duplicate delivery → skipped with zero extra
+  side effects; failure → claim released → retry processes.
+- **Fire-and-forget**: the trigger reads the endpoint URL + service key from
+  Vault (`project_url` / `service_role_key` — set once per environment with
+  `vault.create_secret`) and swallows every error with a WARNING, so business
+  writes are never blocked (rehearsed with pg_net/Vault absent).
+
+### Documented deviations from the single-tenant Base44 originals
+- "notify all role=admin users" fallbacks → notify the client's **owning
+  coach** (`clients.user_id ?? created_by`); no global-admin broadcast in a
+  multi-tenant deployment.
+- onCheckInResponded's client-facing **in-app** notification is dropped:
+  `notifications.recipient_id` references `auth.users`, and portal clients
+  have no auth identity (portal JWT only). The client-facing **email** — the
+  primary channel — is preserved.
+- `notifications.category` values outside the schema CHECK are mapped:
+  `client_activity` → `client` (workout), `intake` → `client` (intake).
+- CoachDefaults: Base44 read the single tenant-wide row; now scoped to the
+  owning coach's `coach_defaults` row.
+- The Base44 files hard-coded conflicting APP_URLs (app.koachai.com vs
+  koachai.net); all templates now use env `APP_URL`.
