@@ -18,6 +18,7 @@
     "verify:stripe": "node scripts/verify-stripe-idempotency.mjs",
     "verify:digest": "node scripts/verify-digest.mjs",
     "verify:events": "node scripts/verify-entity-events.mjs",
+    "verify:rbac": "node scripts/verify-rbac.mjs",
     "audit:darkmode": "node darkmode-audit/run-audit.mjs"
   },
   "dependencies": {

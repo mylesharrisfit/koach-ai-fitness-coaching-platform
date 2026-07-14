@@ -561,12 +561,26 @@ terminology). `User` → `profiles` (Supabase convention, 1:1 with
 9. **Settings singletons**: unique on `coach_id` (where not null). Legacy
    data with multiple rows per coach (keyed only by `created_by`) would need
    dedup during data migration.
-10. **Base44 `role: 'admin'` migrates verbatim into `profiles.role`** — in
-    Base44 the app owner/coach was 'admin'; in the new RLS model 'admin'
-    means PLATFORM admin with cross-tenant access. Correct for the current
-    single-owner app, but before onboarding more coaches, decide the Step 6
-    RBAC mapping (likely: only platform staff keep 'admin', coaches become
-    'user').
+10. ~~**Base44 `role: 'admin'` migrates verbatim into `profiles.role`**~~
+    **RESOLVED in Step 6** (migration `20260714000200_rbac.sql` + the
+    migration script): `profiles.role='admin'` is PLATFORM STAFF ONLY —
+    `app.is_admin()` grants cross-tenant read and is never handed to a
+    customer. The migration script now maps Base44 `role:'admin'` (which
+    meant "the coach" in the single-tenant app) to `'user'`; platform admin
+    is granted deliberately post-migration. Team authority lives in
+    `team_members.role_label` + `teams.owner_coach_id`, entirely separate
+    from `profiles.role`:
+    - `owner` — manage members/settings/billing; the founding owner
+      (`owner_coach_id`) plus any accepted `role_label='owner'` co-owner
+      (the Team page's "promote to owner" now grants what it displays via
+      `app.is_team_owner()`).
+    - `coach` — team-scoped client work via `app.is_team_member()`; no
+      member management, no team settings, no billing (server-gated in the
+      stripe* functions, not just hidden UI).
+    A narrower `assistant` tier was consciously NOT added: no UI surface
+    distinguishes one (the invite flow only creates 'coach'). Adding it
+    later is a `role_label` CHECK + `app.team_role()` tweak.
+    Verified by `npm run verify:rbac` (real RLS, three identities).
 11. **Rows created by Base44 service functions** (`created_by_id:
     "service_..."` — 2 nutrition plans, 2 messages in real data) migrate
     with `created_by = null`; coaches reach them via client/team paths

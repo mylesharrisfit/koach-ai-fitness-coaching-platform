@@ -7,12 +7,21 @@
 // from env only; none logged.
 import Stripe from 'npm:stripe@14.21.0';
 import { getCaller, serviceClient, ownsClient, jsonResponse, cors } from '../_shared/edgeClients.js';
+import { billingDeniedFor } from '../_shared/teamRole.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   try {
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
+
+    // Step 6 RBAC: coach-tier team members don't manage anything money-shaped;
+    // billing rides on the team owner's profile. Server-side mirror of the
+    // frontend's useTeamRole gate (CoachBillingBlock).
+    {
+      const denied = await billingDeniedFor(serviceClient(), caller.auth.id);
+      if (denied) return jsonResponse(denied, 403);
+    }
     const user = caller.profile;
     const svc = serviceClient();
 

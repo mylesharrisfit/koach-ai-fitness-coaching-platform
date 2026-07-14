@@ -5,7 +5,8 @@
 // can only cancel their own subscription. The "already gone" handling that lets
 // account deletion proceed safely is preserved verbatim. Secrets from env only.
 import Stripe from 'npm:stripe@14.21.0';
-import { getCaller, jsonResponse, cors } from '../_shared/edgeClients.js';
+import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
+import { billingDeniedFor } from '../_shared/teamRole.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
@@ -13,6 +14,14 @@ Deno.serve(async (req) => {
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
+
+    // Step 6 RBAC: coach-tier team members don't manage anything money-shaped;
+    // billing rides on the team owner's profile. Server-side mirror of the
+    // frontend's useTeamRole gate (CoachBillingBlock).
+    {
+      const denied = await billingDeniedFor(serviceClient(), caller.auth.id);
+      if (denied) return jsonResponse(denied, 403);
+    }
 
     // Never trust a client-supplied id — use the caller's stored subscription.
     const subscriptionId = caller.profile.stripe_subscription_id;

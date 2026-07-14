@@ -490,6 +490,14 @@ for (const spec of SPECS) {
       if (!uid) continue;
       const profile = { ...u };
       delete profile.invite_token;
+      // Step 6 (open question 10): Base44's single-tenant role='admin' meant
+      // "the coach", but profiles.role='admin' is PLATFORM STAFF here —
+      // app.is_admin() grants cross-tenant read. Never import it; platform
+      // admin is granted deliberately after migration.
+      if (profile.role === 'admin') {
+        profile.role = 'user';
+        console.log(`  note: ${u.email}: Base44 role='admin' imported as 'user' (platform admin is never imported)`);
+      }
       const row = await transformRow({ ...spec, special: undefined }, profile);
       row.id = uid; // profiles pk = auth user id, not uuidv5
       try {
