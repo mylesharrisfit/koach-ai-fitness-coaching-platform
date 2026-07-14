@@ -20,6 +20,7 @@
 // authenticity is established by the Stripe signature, not by GoTrue.
 import Stripe from 'npm:stripe@14.21.0';
 import { serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
+import { renewalDateFromSubscription } from '../_shared/stripePeriod.js';
 
 function getTierFromPriceId(priceId) {
   const map = {};
@@ -38,7 +39,10 @@ async function syncSubscriptionToUser(svc, subscription) {
 
   const priceId = subscription.items?.data?.[0]?.price?.id;
   const tier = getTierFromPriceId(priceId) || subscription.metadata?.tier || 'starter';
-  const renewalDate = new Date(subscription.current_period_end * 1000).toISOString().split('T')[0];
+  // Post-basil API versions carry current_period_end on the ITEMS, not the
+  // subscription — the helper resolves both shapes (null if truly absent, in
+  // which case we keep the previously stored renewal date rather than throw).
+  const renewalDate = renewalDateFromSubscription(subscription);
 
   let tierToSet = tier;
   let billingStatus = subscription.status;
@@ -57,7 +61,7 @@ async function syncSubscriptionToUser(svc, subscription) {
     stripe_subscription_id: subscription.id,
     stripe_customer_id: subscription.customer,
     stripe_price_id: priceId || '',
-    subscription_renewal_date: renewalDate,
+    ...(renewalDate ? { subscription_renewal_date: renewalDate } : {}),
     subscription_cancel_at_period_end: subscription.cancel_at_period_end || false,
     had_trial: true,
   }).eq('id', userId);

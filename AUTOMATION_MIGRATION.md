@@ -143,6 +143,42 @@ billing columns via the service role scoped to the caller's id. Rehearsed:
 `npm run verify:stripe` (redelivered event processed exactly once; failed
 processing releases the claim for retry).
 
+### 5a follow-up — validated against the connected Stripe account
+
+When Stripe was connected it was initially **live mode** — no writes were made
+and validation was halted until a **test-mode** key was swapped in
+(`livemode:false` confirmed before any object creation). Against test mode:
+
+- **Validated for real:** customer creation with the port's exact
+  `metadata.user_id` shape; price creation with inline `product_data` (the
+  `stripeCreateSubscription` pattern); and the Search API round-trip with the
+  exact `email:'…'` query syntax used by stripeCheckout /
+  stripeCreateSubscription / stripeClientProxy. (The MCP surface doesn't
+  expose subscription/checkout-session creation, so those couldn't be created
+  live; leftover test objects: `cus_Usw6eh99jEDycC`,
+  `price_1TtAENHg1hDIdJpYB0pQAp7e` — deletable from the test dashboard.)
+- **Bug found and FIXED:** Stripe API ≥ 2025-03-31.basil moved
+  `current_period_end` from the Subscription object to `items.data[]`
+  (confirmed via the account's API docs). The pinned SDK (`stripe@14.21.0`,
+  Stripe-Version 2023-10-16) still returns the top-level field on its own
+  requests, but **webhook payloads follow the endpoint's API version** — on
+  this new account, `customer.subscription.*` events would arrive without the
+  top-level field and the verbatim Base44 logic
+  (`new Date(undefined * 1000).toISOString()`) would **throw on every
+  subscription event**, releasing the idempotency claim → 500 → endless
+  Stripe retries, with tier/billing updates never landing. Fix:
+  `_shared/stripePeriod.js` (`subscriptionPeriodEnd` /
+  `renewalDateFromSubscription`) resolves **both shapes** (null-safe: keeps
+  the stored renewal date when absent) and is now used by stripeWebhook,
+  stripeCheckout (cancel + upgrade paths), and stripeGetDashboard.
+- `verify:stripe` extended to **13 checks** covering both payload shapes: the
+  basil-shape event (items-level period end) processes exactly once and
+  writes the correct renewal date; helper resolves old/new/absent shapes
+  without throwing.
+- **Still needs a deployed endpoint:** live signature verification and the
+  real event delivery path (webhook endpoint creation pins the API version;
+  the code is now correct for either).
+
 ## Step 5b — Digest wired to shared risk scoring (done)
 
 weeklyDigest re-platformed to call `_shared/weeklyDigest.js` →

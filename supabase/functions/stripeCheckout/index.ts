@@ -8,6 +8,7 @@
 // writes to those columns). Secrets come only from env; none are logged.
 import Stripe from 'npm:stripe@14.21.0';
 import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
+import { subscriptionPeriodEnd, renewalDateFromSubscription } from '../_shared/stripePeriod.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
@@ -63,11 +64,12 @@ Deno.serve(async (req) => {
       const sub = await stripe.subscriptions.retrieve(user.stripe_subscription_id);
       if (sub.status === 'canceled') return jsonResponse({ error: 'Subscription already canceled' }, 400);
       const updated = await stripe.subscriptions.update(user.stripe_subscription_id, { cancel_at_period_end: true });
+      const cancelRenewal = renewalDateFromSubscription(updated);
       await updateSelf({
         subscription_cancel_at_period_end: true,
-        subscription_renewal_date: new Date(updated.current_period_end * 1000).toISOString().split('T')[0],
+        ...(cancelRenewal ? { subscription_renewal_date: cancelRenewal } : {}),
       });
-      return jsonResponse({ canceled: true, ends_at: updated.current_period_end });
+      return jsonResponse({ canceled: true, ends_at: subscriptionPeriodEnd(updated) });
     }
 
     if (action === 'reactivate') {
@@ -97,12 +99,13 @@ Deno.serve(async (req) => {
           proration_behavior: 'always_invoice',
           metadata: { user_id: user.id, tier },
         });
+        const upgradeRenewal = renewalDateFromSubscription(updated);
         await updateSelf({
           subscription_tier: tier,
           billing_cycle: billing_cycle || 'monthly',
           stripe_price_id: priceId,
           billing_status: updated.status,
-          subscription_renewal_date: new Date(updated.current_period_end * 1000).toISOString().split('T')[0],
+          ...(upgradeRenewal ? { subscription_renewal_date: upgradeRenewal } : {}),
           subscription_cancel_at_period_end: false,
         });
         return jsonResponse({ upgraded: true, tier });

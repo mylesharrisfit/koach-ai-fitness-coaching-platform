@@ -1,21 +1,30 @@
 #!/usr/bin/env node
 /**
- * Step 5a idempotency rehearsal (no live Stripe). Replays the webhook's
+ * Step 5a idempotency + payload-shape rehearsal. Replays the webhook's
  * claim-then-process logic against real Postgres to prove a redelivered event
- * is processed exactly once.
- *
- * We cannot run the Deno edge function or verify a real Stripe signature here
- * (no test keys). What we CAN prove for real is the part that closes the audit
- * gap: the processed_stripe_events claim. This harness runs the SAME
- * claim/release control flow the webhook uses (insert-first; on duplicate skip;
- * on processing error release), with the "process" step being a real
- * subscription-sync write to profiles — so we can assert it happened once.
+ * is processed exactly once, for BOTH Stripe payload shapes:
+ *   - pre-basil: subscription.current_period_end at top level
+ *     (what the pinned stripe@14.21.0 SDK returns on its own requests), and
+ *   - post-2025-03-31.basil: current_period_end on items.data[] (what a newly
+ *     created webhook endpoint delivers for customer.subscription.* events —
+ *     validated against the connected test-mode Stripe account + API docs).
+ * The "process" step uses the REAL _shared/stripePeriod.js helper the fixed
+ * webhook uses, with a real subscription-sync write to profiles, so we can
+ * assert it happened exactly once and wrote the right renewal date.
+ * (Signature verification itself still needs a deployed endpoint — it can't
+ * be exercised from this harness.)
  *
  * Usage: POSTGRES_URL=postgresql://postgres@127.0.0.1:55432/striptest \
  *          node scripts/verify-stripe-idempotency.mjs
  */
 import pg from 'pg';
+// Return DATE/TIMESTAMP columns as strings (as PostgREST would) — same as the
+// other harnesses.
+pg.types.setTypeParser(1082, (v) => v);
+pg.types.setTypeParser(1184, (v) => v);
+pg.types.setTypeParser(1114, (v) => v);
 import { readFileSync } from 'node:fs';
+import { renewalDateFromSubscription, subscriptionPeriodEnd } from '../supabase/functions/_shared/stripePeriod.js';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -55,10 +64,13 @@ await db.query('insert into _process_calls values (0)');
 
 async function processEvent(sub) {
   await db.query('update _process_calls set n = n + 1');
-  const renewal = new Date(sub.current_period_end * 1000).toISOString().slice(0, 10);
+  // Same resolution as the fixed webhook (_shared/stripePeriod.js): works for
+  // pre-basil (top-level) and post-basil (items-level) payload shapes.
+  const renewal = renewalDateFromSubscription(sub);
   await db.query(
     `update public.profiles set subscription_tier=$1, billing_status=$2, stripe_subscription_id=$3,
-       stripe_customer_id=$4, subscription_renewal_date=$5, had_trial=true where id=$6`,
+       stripe_customer_id=$4, subscription_renewal_date=coalesce($5, subscription_renewal_date),
+       had_trial=true where id=$6`,
     [sub.metadata.tier, sub.status, sub.id, sub.customer, renewal, sub.metadata.user_id],
   );
 }
@@ -97,6 +109,27 @@ check('exactly one ledger row for the event id', ledger === 1);
 
 const prof = (await db.query('select subscription_tier, billing_status, stripe_subscription_id from public.profiles where id=$1', [userId])).rows[0];
 check('subscription state provisioned once (tier upgraded)', prof.subscription_tier === fixture.subscription.metadata.tier && prof.stripe_subscription_id === fixture.subscription.id, `${prof.subscription_tier}/${prof.billing_status}`);
+
+// ── payload-shape coverage: pre-basil vs post-basil current_period_end ───────
+const basil = JSON.parse(readFileSync(path.join(__dirname, 'fixtures', 'stripe-event-basil.json'), 'utf8'));
+check('helper resolves OLD shape (top-level current_period_end)',
+  subscriptionPeriodEnd(fixture.subscription) === fixture.subscription.current_period_end);
+check('helper resolves NEW basil shape (items-level current_period_end)',
+  subscriptionPeriodEnd(basil.subscription) === basil.subscription.items.data[0].current_period_end);
+check('helper returns null when absent in both places (no throw)',
+  subscriptionPeriodEnd({ id: 'sub_x', items: { data: [{}] } }) === null &&
+  renewalDateFromSubscription({ id: 'sub_x' }) === null);
+
+// deliver the basil-shape event twice — must process once and land the renewal date
+const b1 = await handleWebhook(basil);
+const b2 = await handleWebhook(basil);
+check('basil-shape event processes on first delivery', b1.received === true && !b1.duplicate);
+check('basil-shape redelivery skipped as duplicate', b2.duplicate === true);
+const basilProf = (await db.query('select subscription_tier, subscription_renewal_date from public.profiles where id=$1', [userId])).rows[0];
+const expectedDate = new Date(basil.subscription.items.data[0].current_period_end * 1000).toISOString().slice(0, 10);
+check('basil-shape event writes the renewal date from the ITEM period end',
+  String(basilProf.subscription_renewal_date).slice(0, 10) === expectedDate && basilProf.subscription_tier === 'elite',
+  `${basilProf.subscription_renewal_date} / ${basilProf.subscription_tier}`);
 
 // ── failure path: processing throws → claim released → retry succeeds ────────
 const evt2 = { ...fixture, id: 'evt_fail_then_ok', subscription: { ...fixture.subscription } };

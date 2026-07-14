@@ -7,6 +7,7 @@
 // Secrets from env only; none logged.
 import Stripe from 'npm:stripe@14.21.0';
 import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
+import { subscriptionPeriodEnd } from '../_shared/stripePeriod.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
@@ -64,7 +65,7 @@ Deno.serve(async (req) => {
         id: s.id, status: s.status,
         amount: (s.items.data[0]?.price?.unit_amount || 0) / 100,
         interval: s.items.data[0]?.price?.recurring?.interval,
-        current_period_end: s.current_period_end,
+        current_period_end: subscriptionPeriodEnd(s),
         customer_email: s.customer_email,
         metadata: s.metadata,
       })),
