@@ -17,6 +17,7 @@
 import { serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
 import { handleEntityEvent } from '../_shared/entityEvents.js';
 import { sendResendEmail } from '../_shared/resendEmail.js';
+import { getAppUrl } from '../_shared/appUrl.js';
 
 function isServiceRoleCall(req: Request) {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
@@ -59,7 +60,7 @@ Deno.serve(async (req) => {
           if (!r.ok) console.error(`onEntityEvent ${event_type} email failed:`, r.error);
           return r;
         },
-        appUrl: Deno.env.get('APP_URL') || 'https://app.koach.ai',
+        appUrl: getAppUrl(),
       });
       return jsonResponse({ received: true, ...result });
     } catch (e) {

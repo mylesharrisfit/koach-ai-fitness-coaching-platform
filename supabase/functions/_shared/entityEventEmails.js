@@ -3,8 +3,8 @@
  * VERBATIM from the five Base44 trigger functions (onCheckInCreated,
  * onCheckInResponded, onClientCreated, onIntakeSubmitted, onWorkoutCompleted).
  * Only the hard-coded APP_URL constants (which disagreed across the Base44
- * files: app.koachai.com vs koachai.net) are unified behind the appUrl
- * argument (env APP_URL, same convention as weeklyDigest).
+ * files) are unified behind the appUrl argument (env APP_URL via getAppUrl,
+ * same convention as weeklyDigest).
  */
 
 // ── onCheckInCreated ─────────────────────────────────────────────────────────

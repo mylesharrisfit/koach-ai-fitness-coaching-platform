@@ -30,11 +30,11 @@ export default function MarketingLinksSection({ coachId }) {
   const createMutation = useMutation({
     mutationFn: (data) => {
       const slug = data.link_name.toLowerCase().replace(/\s+/g, '-');
-      const fullUrl = `koachai.com/coach/${coachId}/${slug}?utm_source=${data.utm_source || 'direct'}&utm_campaign=${data.utm_campaign || 'default'}`;
+      const fullUrl = `koachai.net/coach/${coachId}/${slug}?utm_source=${data.utm_source || 'direct'}&utm_campaign=${data.utm_campaign || 'default'}`;
       return base44.entities.MarketingLink.create({
         ...data,
         coach_id: coachId,
-        destination_url: `https://koachai.com/coach/${coachId}`,
+        destination_url: `https://koachai.net/coach/${coachId}`,
         full_url: fullUrl,
       });
     },

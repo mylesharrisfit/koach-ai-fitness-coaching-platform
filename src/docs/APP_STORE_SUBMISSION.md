@@ -81,12 +81,12 @@ fitness coach,workout tracker,nutrition log,personal training,online coaching,ch
 
 **Support URL:**
 ```
-https://support.koachai.com
+https://support.koachai.net
 ```
 
 **Privacy Policy URL:**
 ```
-https://koachai.com/privacy
+https://koachai.net/privacy
 ```
 
 **Copyright:**
@@ -417,7 +417,7 @@ Complete Google Play's Content Rating Questionnaire:
 
 - [ ] **Functionality:** All features in screenshots are actually functional
 - [ ] **Placeholder text:** No Lorem Ipsum, no "TODO" text anywhere
-- [ ] **Demo account:** demo@koachai.com / DemoCoach123! is set up and works
+- [ ] **Demo account:** demo@koachai.net / DemoCoach123! is set up and works
 - [ ] **Privacy policy:** URL is live, accessible, and relevant
 - [ ] **Permissions:** All permission requests explained and necessary
 - [ ] **Links:** All external links (support, privacy, terms) are live
@@ -467,7 +467,7 @@ App Store Connect > TestFlight > Internal Testing
 2. Invite 100+ external testers for wider feedback
 3. Create feedback form:
    - "Tap here to send beta feedback"
-   - Users can email: feedback@koachai.com
+   - Users can email: feedback@koachai.net
 4. Monitor crash logs weekly
 5. Check ratings in TestFlight (separate from App Store)
 

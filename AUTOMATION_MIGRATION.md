@@ -345,8 +345,19 @@ old.coach_responded)` — the verbatim Base44 transition guard.
   `client_activity` → `client` (workout), `intake` → `client` (intake).
 - CoachDefaults: Base44 read the single tenant-wide row; now scoped to the
   owning coach's `coach_defaults` row.
-- The Base44 files hard-coded conflicting APP_URLs (app.koachai.com vs
-  koachai.net); all templates now use env `APP_URL`.
+- The Base44 files hard-coded conflicting APP_URLs (three different domains
+  across the functions); all templates now use env `APP_URL`. The six Edge
+  Functions that each carried their own drifting fallback string
+  (`stripeWebhook` ×2, `onEntityEvent`, `sendCheckInReminders`, `weeklyDigest`,
+  `initializeReferralProgram`) now import `getAppUrl()` from
+  `_shared/appUrl.js` — one function, one fallback (`https://koachai.net`),
+  defined in one place.
+  - **Deploy requirement (Step 7 — when these functions are actually deployed):**
+    set the `APP_URL` secret explicitly so the fallback is never relied on in
+    production — `supabase secrets set APP_URL=https://app.koachai.net` (or via
+    the Supabase dashboard). The `getAppUrl()` fallback exists only to keep
+    local/rehearsal runs working when the secret is unset; production must not
+    depend on it.
 
 
 ## Step 5d — AI functions — DELIVERED

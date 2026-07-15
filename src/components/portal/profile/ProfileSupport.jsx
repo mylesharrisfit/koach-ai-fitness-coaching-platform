@@ -5,10 +5,10 @@ import { toast } from 'sonner';
 
 export default function ProfileSupport() {
   const rows = [
-    { icon: <ExternalLink className="w-4 h-4 text-white/40" />, label: 'Help & FAQ', action: () => window.open('https://koach.ai/help', '_blank') },
-    { icon: <Mail className="w-4 h-4 text-white/40" />, label: 'Contact Support', action: () => window.open('mailto:support@koach.ai') },
+    { icon: <ExternalLink className="w-4 h-4 text-white/40" />, label: 'Help & FAQ', action: () => window.open('https://koachai.net/help', '_blank') },
+    { icon: <Mail className="w-4 h-4 text-white/40" />, label: 'Contact Support', action: () => window.open('mailto:support@koachai.net') },
     { icon: <Star className="w-4 h-4 text-white/40" />, label: 'Rate the App', action: () => toast('Thanks! Redirecting to App Store...') },
-    { icon: <Share2 className="w-4 h-4 text-white/40" />, label: 'Share KOACH AI', action: () => { navigator.share?.({ title: 'KOACH AI', url: 'https://koach.ai' }) || toast.success('Link copied!'); } },
+    { icon: <Share2 className="w-4 h-4 text-white/40" />, label: 'Share KOACH AI', action: () => { navigator.share?.({ title: 'KOACH AI', url: 'https://koachai.net' }) || toast.success('Link copied!'); } },
   ];
 
   return (

@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
       data: { url: '/portal' },
     }, {
       vapidDetails: {
-        subject: 'mailto:noreply@koachai.com',
+        subject: 'mailto:noreply@koachai.net',
         publicKey,
         privateKey,
       },

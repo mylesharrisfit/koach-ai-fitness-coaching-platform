@@ -10,6 +10,7 @@
 // builder, and sends the email.
 import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
 import { buildWeeklyDigest, renderDigestEmail } from '../_shared/weeklyDigest.js';
+import { getAppUrl } from '../_shared/appUrl.js';
 
 const COACH_TIPS = [
   'Send a voice message instead of text this week — clients love the personal touch.',
@@ -46,7 +47,7 @@ Deno.serve(async (req) => {
     const now = new Date();
     const digest = buildWeeklyDigest(clients ?? [], checkIns ?? [], now);
     const tip = COACH_TIPS[now.getDay() % COACH_TIPS.length];
-    const appUrl = Deno.env.get('APP_URL') || 'https://app.koach.ai';
+    const appUrl = getAppUrl();
     const emailHtml = renderDigestEmail(digest, { tip, appUrl });
 
     if (caller.profile.email) {

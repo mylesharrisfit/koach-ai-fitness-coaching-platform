@@ -153,7 +153,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
         )}
         {tierKey === 'enterprise' && (
           <p className="text-center text-[11px] text-muted-foreground">
-            <a href="mailto:support@koach.ai" className="hover:text-warning transition-colors">Talk to Sales →</a>
+            <a href="mailto:support@koachai.net" className="hover:text-warning transition-colors">Talk to Sales →</a>
           </p>
         )}
       </div>

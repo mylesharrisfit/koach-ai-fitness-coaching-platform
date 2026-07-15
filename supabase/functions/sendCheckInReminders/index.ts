@@ -19,6 +19,7 @@
 import { serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
 import { runCheckinReminders } from '../_shared/checkinReminders.js';
 import { sendResendEmail } from '../_shared/resendEmail.js';
+import { getAppUrl } from '../_shared/appUrl.js';
 
 function isServiceRoleCall(req: Request) {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
@@ -31,7 +32,7 @@ Deno.serve(async (req) => {
   try {
     if (!isServiceRoleCall(req)) return jsonResponse({ error: 'Unauthorized' }, 401);
 
-    const appUrl = Deno.env.get('APP_URL') || 'https://app.koach.ai';
+    const appUrl = getAppUrl();
     const result = await runCheckinReminders(serviceClient(), {
       sendEmail: sendResendEmail,
       appUrl,
