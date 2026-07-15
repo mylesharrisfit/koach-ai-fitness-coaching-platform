@@ -4,11 +4,11 @@
  */
 
 /**
- * Coach-facing dark mode. The theme system (theme.js, the .dark token block,
- * the Settings Appearance tab) is fully built, and the Step 4.4 token remap
- * closed out the hardcoded light colors: the axe-core dark-mode audit
- * (npm run audit:darkmode) reports ZERO dark-only contrast violations across
- * all nine audited pages. Fixed-dark surfaces (onboarding flow, landing pages)
- * and brand/integration colors are intentionally theme-invariant.
+ * Coach-facing dark mode. ROLLED BACK to false: the Step 4.4 audit only
+ * covered the INITIAL RENDER of the nine audited pages — dozens of --kc-*
+ * tokens without .dark overrides remain in tabs, modals, and drill-down
+ * states (ExerciseLibrary, Sales/Kanban, Settings, Adherence detail views,
+ * …), so dark mode is still broken beyond the first paint. Re-enable only
+ * after the extended audit (nested UI states, not just page loads) is clean.
  */
-export const darkModeEnabled = true;
+export const darkModeEnabled = false;
