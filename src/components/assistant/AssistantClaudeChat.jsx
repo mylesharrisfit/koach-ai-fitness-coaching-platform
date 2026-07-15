@@ -53,8 +53,8 @@ function MessageBubble({ message, onFollowUp, onSaveNote, isLast }) {
   return (
     <div className={cn('flex gap-3 group', isUser && 'flex-row-reverse')}>
       <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5',
-        isUser ? 'bg-[var(--kc-1f2937)]' : 'bg-primary/10')}>
-        {isUser ? <User className="w-3.5 h-3.5 text-white" /> : <Sparkles className="w-3.5 h-3.5 text-primary" />}
+        isUser ? 'bg-foreground' : 'bg-primary/10')}>
+        {isUser ? <User className="w-3.5 h-3.5 text-background" /> : <Sparkles className="w-3.5 h-3.5 text-primary" />}
       </div>
 
       <div className={cn('flex flex-col gap-2', isUser ? 'items-end max-w-[80%]' : 'items-start max-w-[85%]')}>

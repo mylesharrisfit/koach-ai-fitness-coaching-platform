@@ -177,6 +177,7 @@ input[type='range']::-moz-range-thumb {
     --tc-primary: rgb(var(--primary));
     --tc-primary-foreground: rgb(var(--primary-foreground));
     --tc-sidebar: rgb(var(--sidebar-background));
+    --tc-sidebar-accent: rgb(var(--sidebar-accent));
     --tc-sidebar-accent-foreground: rgb(var(--sidebar-accent-foreground));
     --tc-sidebar-background: rgb(var(--sidebar-background));
     --tc-sidebar-border: rgb(var(--sidebar-border));
@@ -193,11 +194,13 @@ input[type='range']::-moz-range-thumb {
            Slack #4a154b, Strava #fc4c02, PayPal #003087, ...),
          - the fixed-dark onboarding/landing palette (#0f0f1a surfaces with
            #333333..#b3b3b3 gray ramp) — that flow renders dark in BOTH themes,
-         - award/medal colors (gold #ffd700/#b8860b + #1a1000 text, silver
-           #c0c0c0, bronze #cd7f32, platinum #62d7ff + #03111a text),
+         - award/medal FILLS (gold #ffd700, silver #c0c0c0, bronze #cd7f32);
+           their paired text/gradient tokens (#1a1000/#1a0f00/#03111a,
+           #62d7ff, #b8860b) and the adherence podium surfaces
+           (#161820/#2c2414/#1a1608) carry EXPLICIT same-value entries in the
+           :root.dark block below — evaluated, not merely exempted,
          - fixed-dark hero/pill/panel surfaces that always carry light text:
-           #1f2937 (dark pills + bg-sidebar hovers), #161820/#18191f/#2c2414/
-           #1a1608 (adherence podium + badge cards), #0a0a0a/#0d0d0d (logo tile,
+           #18191f (badge cards), #0a0a0a/#0d0d0d (logo tile,
            bell dot ring), #1a2744/#1e1a3a (OnboardingManager hero gradients,
            anchored on --tc-sidebar), #1e2d45/#2d3a55 (buttons on dark modal
            headers), #0f1117/#120c35/#1a1040 (pricing cards), #222222 (black
@@ -247,7 +250,6 @@ input[type='range']::-moz-range-thumb {
     --kc-1a82e2: #1a82e2;
     --kc-1e1a3a: #1e1a3a;
     --kc-1e2d45: #1e2d45;
-    --kc-1f2937: #1f2937;
     --kc-222222: #222222;
     --kc-25d366: #25d366;
     --kc-262627: #262627;
@@ -366,6 +368,25 @@ input[type='range']::-moz-range-thumb {
 @layer base {
   :root.dark {
     /* kc raw-token dark values: hue-coded tint backgrounds (Step 4.4) */
+    /* Adherence medal/podium tokens — EXPLICIT same-value dark entries: each
+       pairs with a fill or panel that intentionally does not flip, so the
+       correct dark value is the light value (evaluated per usage in
+       Adherence.jsx, incident Part A):
+         03111a = text on the platinum #62d7ff tier chip
+         1a0f00 = text on the bronze  #cd7f32 tier chip
+         1a1000 = text on the gold    #ffd700 chip/avatar/award button
+         62d7ff = platinum tier fill/border/dot
+         b8860b = dark-gold endpoint of the 1st-place avatar gradient
+         161820 = podium runner-up card + award-dialog surface (fixed dark)
+         2c2414/1a1608 = 1st-place gold-tinted radial gradient (fixed dark) */
+    --kc-03111a: #03111a;
+    --kc-161820: #161820;
+    --kc-1a0f00: #1a0f00;
+    --kc-1a1000: #1a1000;
+    --kc-1a1608: #1a1608;
+    --kc-2c2414: #2c2414;
+    --kc-62d7ff: #62d7ff;
+    --kc-b8860b: #b8860b;
     --kc-fff5f5: #2a1518;
     --kc-fffdf0: #262114;
     /* hue-coded dark values for light tint chips + their saturated chip text

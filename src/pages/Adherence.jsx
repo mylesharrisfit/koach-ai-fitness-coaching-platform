@@ -83,7 +83,7 @@ function LeaderCard({ client, score, streak, rank, badgeCount }) {
       {isFirst && <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--kc-ffd700) 8%, transparent) 0%, transparent 70%)' }} />}
       {medal && <span className="text-lg leading-none">{medal}</span>}
       <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
-        style={{ background: isFirst ? 'linear-gradient(135deg,var(--kc-ffd700),var(--kc-b8860b))' : 'var(--kc-1f2937)', color: isFirst ? 'var(--kc-1a1000)' : 'var(--tc-muted-foreground)' }}>
+        style={{ background: isFirst ? 'linear-gradient(135deg,var(--kc-ffd700),var(--kc-b8860b))' : 'var(--tc-sidebar-accent)', color: isFirst ? 'var(--kc-1a1000)' : 'var(--tc-muted-foreground)' }}>
         {client.name?.[0]}
       </div>
       <p className="text-xs font-semibold text-white leading-tight">{client.name}</p>
@@ -470,14 +470,14 @@ export default function Adherence() {
             <div>
               <Label className="text-muted-foreground text-xs">Client</Label>
               <Select value={awardForm.client_id} onValueChange={v => setAwardForm({ ...awardForm, client_id: v })}>
-                <SelectTrigger className="bg-[var(--kc-1f2937)] border-white/10 text-white"><SelectValue placeholder="Select client" /></SelectTrigger>
+                <SelectTrigger className="bg-sidebar-accent border-white/10 text-white"><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>{clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-muted-foreground text-xs">Badge</Label>
               <Select value={awardForm.badge_key} onValueChange={v => setAwardForm({ ...awardForm, badge_key: v })}>
-                <SelectTrigger className="bg-[var(--kc-1f2937)] border-white/10 text-white"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-sidebar-accent border-white/10 text-white"><SelectValue /></SelectTrigger>
                 <SelectContent>{Object.entries(BADGE_CONFIG).map(([k, v]) => <SelectItem key={k} value={k}>{v.emoji} {v.label} · {TIER_STYLES[v.tier]?.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
@@ -493,7 +493,7 @@ export default function Adherence() {
             })()}
             <div>
               <Label className="text-muted-foreground text-xs">Date</Label>
-              <Input type="date" value={awardForm.earned_date} onChange={e => setAwardForm({ ...awardForm, earned_date: e.target.value })} className="bg-[var(--kc-1f2937)] border-white/10 text-white" />
+              <Input type="date" value={awardForm.earned_date} onChange={e => setAwardForm({ ...awardForm, earned_date: e.target.value })} className="bg-sidebar-accent border-white/10 text-white" />
             </div>
             <div className="flex justify-end gap-3 pt-1">
               <Button type="button" variant="outline" onClick={() => setAwardOpen(false)} className="border-white/10 text-muted-foreground hover:bg-[var(--kc-w-5)]">Cancel</Button>

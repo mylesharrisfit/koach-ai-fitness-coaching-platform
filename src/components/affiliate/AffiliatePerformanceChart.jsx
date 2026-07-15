@@ -46,7 +46,7 @@ export default function AffiliatePerformanceChart({ profile }) {
             <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
             <XAxis dataKey="date" stroke="var(--tc-muted-foreground)" />
             <YAxis stroke="var(--tc-muted-foreground)" />
-            <Tooltip contentStyle={{ background: 'var(--kc-1f2937)', border: 'none', borderRadius: 8 }} />
+            <Tooltip contentStyle={{ background: 'var(--tc-foreground)', border: 'none', borderRadius: 8 }} labelStyle={{ color: 'var(--tc-background)' }} />
             <Line type="monotone" dataKey="earnings" stroke="var(--tc-primary)" strokeWidth={3} dot={{ fill: 'var(--tc-primary)', r: 5 }} />
           </LineChart>
         </ResponsiveContainer>

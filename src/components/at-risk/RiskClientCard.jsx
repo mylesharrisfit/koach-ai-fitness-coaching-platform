@@ -128,7 +128,7 @@ Generate a personalized intervention plan as JSON:
           {/* Avatar with pulsing dot */}
           <div className="relative flex-shrink-0">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg, var(--tc-sidebar), var(--kc-1f2937))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-sidebar), var(--tc-sidebar-accent))' }}>
               {client.name?.[0]?.toUpperCase()}
             </div>
             <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white animate-pulse', styles.dot)} />

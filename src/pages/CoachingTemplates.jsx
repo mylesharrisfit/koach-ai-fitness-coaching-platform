@@ -118,7 +118,7 @@ function TemplateCard({ template, onApply }) {
         <div className="mt-auto pt-2">
           <button
             onClick={() => onApply(template)}
-            className="w-full h-10 rounded-lg bg-sidebar text-white text-sm font-semibold hover:bg-[var(--kc-1f2937)] transition-colors"
+            className="w-full h-10 rounded-lg bg-sidebar text-white text-sm font-semibold hover:bg-sidebar-accent transition-colors"
           >
             Apply to Client
           </button>

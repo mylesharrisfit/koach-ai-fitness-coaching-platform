@@ -152,7 +152,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Progress ring for unearned */}
       {showProgress && (
         <div className="flex flex-col items-center gap-0.5 mt-0.5">
-          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-border' : 'bg-[var(--kc-1f2937)]'}`}>
+          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-border' : 'bg-sidebar-accent'}`}>
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}

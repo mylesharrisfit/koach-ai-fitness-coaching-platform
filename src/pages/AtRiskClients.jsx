@@ -179,7 +179,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
           {/* Avatar with pulse dot */}
           <div className="relative flex-shrink-0">
             <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white"
-              style={{ background: 'linear-gradient(135deg, var(--tc-sidebar), var(--kc-1f2937))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-sidebar), var(--tc-sidebar-accent))' }}>
               {client.name?.[0]?.toUpperCase()}
             </div>
             <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white', riskInfo.dot,
