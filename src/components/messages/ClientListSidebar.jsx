@@ -116,7 +116,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
             {chip.label}
             {chip.key === 'unread' && (() => {
               const total = clients.reduce((s, c) => s + (clientMeta[c.id]?.unread || 0), 0);
-              return total > 0 ? <span className="ml-1 bg-primary text-white text-[9px] font-bold rounded-full px-1">{total}</span> : null;
+              return total > 0 ? <span className="ml-1 bg-primary text-primary-foreground text-[9px] font-bold rounded-full px-1">{total}</span> : null;
             })()}
           </button>
         ))}
@@ -169,7 +169,7 @@ export default function ClientListSidebar({ clients, allMessages, checkIns = [],
                 </p>
               </div>
               {hasUnread && (
-                <div className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center px-1">
+                <div className="flex-shrink-0 min-w-[18px] h-[18px] rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center px-1">
                   {unread > 99 ? '99+' : unread}
                 </div>
               )}

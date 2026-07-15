@@ -130,7 +130,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
             {RANGES.map(r => (
               <button key={r.label} onClick={() => setRange(r.label)}
                 className={cn('px-2.5 py-1 text-[11px] rounded-lg font-medium transition-all',
-                  range === r.label ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:border-primary')}>
+                  range === r.label ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-muted-foreground hover:border-primary')}>
                 {r.label}
               </button>
             ))}
@@ -198,7 +198,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       {/* Coach Tools */}
       <div className="flex flex-wrap gap-2">
         <button onClick={() => setShowLogWeight(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors">
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
           + Log Weight
         </button>
         <button onClick={() => setShowNoteModal(true)}
@@ -252,7 +252,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
               <button onClick={() => setShowNoteModal(false)} className="px-4 py-2 text-xs rounded-lg border border-border text-foreground">Cancel</button>
               <button onClick={() => noteMutation.mutate({ client_id: client.id, client_name: client.name, date: noteDate, internal_notes: noteText })}
                 disabled={!noteText.trim() || noteMutation.isPending}
-                className="px-4 py-2 text-xs rounded-lg bg-primary text-white font-semibold disabled:opacity-50">
+                className="px-4 py-2 text-xs rounded-lg bg-primary text-primary-foreground font-semibold disabled:opacity-50">
                 {noteMutation.isPending ? 'Saving...' : 'Save Note'}
               </button>
             </div>

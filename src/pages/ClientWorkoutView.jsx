@@ -55,7 +55,7 @@ function RestTimer({ seconds, onDone }) {
       </div>
       <div className="flex gap-1.5">
         <button onClick={() => setRunning(r => !r)}
-          className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
+          className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground">
           {running ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" fill="currentColor" />}
         </button>
         <button onClick={reset} className="w-9 h-9 rounded-xl bg-[var(--kc-w-10)] flex items-center justify-center text-white/60">
@@ -217,7 +217,7 @@ function CompleteModal({ open, onClose, onSubmit }) {
             {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
               <button key={n} onClick={() => setRating(n)}
                 className={cn('w-9 h-9 rounded-xl text-sm font-bold border transition-all',
-                  n === rating ? 'bg-primary text-white border-primary' :
+                  n === rating ? 'bg-primary text-primary-foreground border-primary' :
                   n <= 3 ? 'border-success text-success hover:bg-success/10' :
                   n <= 7 ? 'border-warning text-warning hover:bg-warning/10' :
                   'border-destructive text-destructive hover:bg-destructive/10')}>
@@ -339,7 +339,7 @@ export default function ClientWorkoutView() {
           </div>
           <button onClick={() => setShowComplete(true)}
             className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all',
-              progress === 1 ? 'bg-success text-white' : 'bg-primary text-white')}>
+              progress === 1 ? 'bg-success text-white' : 'bg-primary text-primary-foreground')}>
             <CheckCircle2 className="w-3.5 h-3.5" />
             {progress === 1 ? 'Finish!' : 'Complete'}
           </button>

@@ -23,25 +23,25 @@ function RationaleCard({ rationale }) {
       </div>
       {rationale.split && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--kc-4b5563)] mb-0.5">Split</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Split</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.split}</p>
         </div>
       )}
       {rationale.weekly_volume && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--kc-4b5563)] mb-0.5">Weekly Volume</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Weekly Volume</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.weekly_volume}</p>
         </div>
       )}
       {rationale.rep_range_rationale && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--kc-4b5563)] mb-0.5">Rep Ranges</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Rep Ranges</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.rep_range_rationale}</p>
         </div>
       )}
       {rationale.progression_approach && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--kc-4b5563)] mb-0.5">Progression</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Progression</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.progression_approach}</p>
         </div>
       )}
@@ -72,7 +72,7 @@ function DayCard({ workout }) {
           )}
         </div>
         <span className="text-[11px] text-muted-foreground flex-shrink-0">{exCount} exercises</span>
-        {open ? <ChevronUp className="w-3.5 h-3.5 text-[var(--kc-c4c9d4)]" /> : <ChevronDown className="w-3.5 h-3.5 text-[var(--kc-c4c9d4)]" />}
+        {open ? <ChevronUp className="w-3.5 h-3.5 text-[var(--tc-muted-foreground)]" /> : <ChevronDown className="w-3.5 h-3.5 text-[var(--tc-muted-foreground)]" />}
       </button>
 
       {open && (
@@ -194,7 +194,7 @@ export default function AIReviewStep({
         <p className="text-xs font-semibold text-muted-foreground">Rate this output:</p>
         <button
           onClick={() => onRating('up')}
-          className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', currentRating === 'up' ? 'text-white' : 'border border-border hover:border-primary')}
+          className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all', currentRating === 'up' ? 'text-primary-foreground' : 'border border-border hover:border-primary')}
           style={currentRating === 'up' ? { background: 'var(--tc-primary)' } : {}}
         >
           <ThumbsUp className="w-3.5 h-3.5" /> Good

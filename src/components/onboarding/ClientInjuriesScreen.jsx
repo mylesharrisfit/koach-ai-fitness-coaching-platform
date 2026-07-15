@@ -52,7 +52,7 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
               style={{
                 background: selected.includes(inj.id) ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                 border: selected.includes(inj.id) ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                color: selected.includes(inj.id) ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                color: selected.includes(inj.id) ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                 boxShadow: selected.includes(inj.id) ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
               }}
             >
@@ -72,7 +72,7 @@ export default function ClientInjuriesScreen({ onNext, onBack, data }) {
             style={{
               background: 'color-mix(in srgb, white 4%, transparent)',
               border: '1.5px solid color-mix(in srgb, white 7%, transparent)',
-              color: 'var(--tc-card)',
+              color: 'var(--tc-primary-foreground)',
             }}
             onFocus={e => { e.target.style.border = '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
             onBlur={e => { e.target.style.border = '1.5px solid color-mix(in srgb, white 7%, transparent)'; }}

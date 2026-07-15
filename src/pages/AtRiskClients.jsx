@@ -80,7 +80,7 @@ Respond with JSON only:
       </div>
       {!plan && (
         <button onClick={generate} disabled={loading}
-          className="w-full py-2.5 rounded-lg bg-ai text-white text-sm font-semibold hover:bg-ai disabled:opacity-60">
+          className="w-full py-2.5 rounded-lg bg-ai text-ai-foreground text-sm font-semibold hover:bg-ai disabled:opacity-60">
           {loading ? 'Generating plan...' : '✨ Generate Personalized Plan'}
         </button>
       )}
@@ -95,7 +95,7 @@ Respond with JSON only:
             <textarea rows={3} value={message} onChange={e => setMessage(e.target.value)}
               className="w-full text-xs text-foreground border border-ai rounded-lg p-2 resize-none focus:outline-none focus:ring-1 focus:ring-ai" />
             <button onClick={() => onSend(message)}
-              className="w-full py-2 rounded-lg bg-ai text-white text-xs font-semibold hover:bg-ai">
+              className="w-full py-2 rounded-lg bg-ai text-ai-foreground text-xs font-semibold hover:bg-ai">
               Send Message
             </button>
           </div>
@@ -179,7 +179,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
           {/* Avatar with pulse dot */}
           <div className="relative flex-shrink-0">
             <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white"
-              style={{ background: 'linear-gradient(135deg, var(--tc-foreground), var(--kc-1f2937))' }}>
+              style={{ background: 'linear-gradient(135deg, var(--tc-sidebar), var(--tc-sidebar-accent))' }}>
               {client.name?.[0]?.toUpperCase()}
             </div>
             <div className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white', riskInfo.dot,

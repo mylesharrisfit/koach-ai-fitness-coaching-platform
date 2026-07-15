@@ -141,7 +141,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
           {/* Action buttons */}
           <div className="space-y-2 pt-2">
             <button onClick={handleAdd}
-              className="w-full h-14 rounded-2xl font-black text-base text-white"
+              className="w-full h-14 rounded-2xl font-black text-base text-primary-foreground"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', boxShadow: '0 4px 16px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
               Add to {mealName || 'Meal'}
             </button>

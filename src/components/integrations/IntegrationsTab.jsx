@@ -59,7 +59,7 @@ function IntegrationCard({ logo, name, tag, description, connected, onConnect, o
         ) : (
           <button
             onClick={onConnect}
-            className="bg-sidebar text-white text-xs px-4 py-2 rounded-lg hover:bg-[var(--kc-1f2937)] transition-colors"
+            className="bg-sidebar text-white text-xs px-4 py-2 rounded-lg hover:bg-sidebar-accent transition-colors"
           >
             Connect
           </button>
@@ -212,7 +212,7 @@ function ResendModal({ open, onClose, settings }) {
               {testing ? <><Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> Testing...</> : 'Test Connection'}
             </Button>
             <Button
-              className="flex-1 bg-sidebar hover:bg-[var(--kc-1f2937)]"
+              className="flex-1 bg-sidebar hover:bg-sidebar-accent"
               onClick={() => saveMutation.mutate({
                 resend_connected: true,
                 resend_from_email: fromEmail,

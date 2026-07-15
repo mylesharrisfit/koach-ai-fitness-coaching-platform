@@ -20,7 +20,7 @@ export default function CoachMessageCard({ message, coachName, onReply }) {
         style={{ boxShadow: '0 0 0 1px rgb(var(--primary) / 0.3)', animationDuration: '2s' }} />
 
       <div className="flex items-center gap-3 mb-2.5">
-        <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm flex-shrink-0">
           {coachName?.[0]?.toUpperCase() || 'C'}
         </div>
         <div>

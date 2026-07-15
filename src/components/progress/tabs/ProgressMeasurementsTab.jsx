@@ -71,7 +71,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <h3 className="text-sm font-semibold text-foreground">Body Measurements</h3>
           <button onClick={() => setShowModal(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90">
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
             <Plus className="w-3 h-3" /> Log Measurements
           </button>
         </div>
@@ -160,7 +160,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
             <div className="flex gap-2 justify-end">
               <button onClick={() => setShowModal(false)} className="px-4 py-2 text-xs rounded-lg border border-border text-foreground">Cancel</button>
               <button onClick={handleSave} disabled={logMutation.isPending}
-                className="px-4 py-2 text-xs rounded-lg bg-primary text-white font-semibold disabled:opacity-50">
+                className="px-4 py-2 text-xs rounded-lg bg-primary text-primary-foreground font-semibold disabled:opacity-50">
                 {logMutation.isPending ? 'Saving...' : 'Save'}
               </button>
             </div>

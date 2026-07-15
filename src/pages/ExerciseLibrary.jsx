@@ -186,7 +186,7 @@ export default function ExerciseLibrary() {
         <div className="flex items-center gap-2 flex-wrap">
 <button onClick={() => { setEditingExercise(null); setShowForm(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', boxShadow: '0 2px 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-primary-foreground)', boxShadow: '0 2px 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }}>
             <Plus className="w-4 h-4" /> Add Exercise
           </button>
         </div>
@@ -247,7 +247,7 @@ export default function ExerciseLibrary() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Search by name, muscle group, or equipment..."
-              className="w-full pl-9 pr-9 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary" />
+              className="w-full pl-9 pr-9 py-2 text-sm border border-border rounded-lg bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
             {search && <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X className="w-3.5 h-3.5 text-muted-foreground" /></button>}
           </div>
           {/* Sort */}
@@ -260,10 +260,10 @@ export default function ExerciseLibrary() {
           </div>
           {/* View toggle */}
           <div className="flex border border-border rounded-lg overflow-hidden">
-            <button onClick={() => setViewMode('grid')} className={cn('p-2 transition-colors', viewMode === 'grid' ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-background')}>
+            <button onClick={() => setViewMode('grid')} className={cn('p-2 transition-colors', viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-background')}>
               <LayoutGrid className="w-4 h-4" />
             </button>
-            <button onClick={() => setViewMode('list')} className={cn('p-2 transition-colors', viewMode === 'list' ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-background')}>
+            <button onClick={() => setViewMode('list')} className={cn('p-2 transition-colors', viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-background')}>
               <List className="w-4 h-4" />
             </button>
           </div>
@@ -276,7 +276,7 @@ export default function ExerciseLibrary() {
             {MUSCLE_GROUPS.map(mg => (
               <button key={mg.value} onClick={() => { setMuscleFilter(muscleFilter === mg.value ? 'all' : mg.value); setActiveShortcut(null); }}
                 className={cn('flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all',
-                  muscleFilter === mg.value ? 'bg-primary text-white border-primary' : 'bg-background text-foreground border-border hover:border-primary/30')}>
+                  muscleFilter === mg.value ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-foreground border-border hover:border-primary/30')}>
                 {mg.label}
               </button>
             ))}

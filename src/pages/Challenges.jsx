@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { isCoachRole } from '@/lib/useRoleGuard';
 import ChallengesHub from '@/components/community/ChallengesHub';
 
 export default function Challenges() {
@@ -9,7 +10,9 @@ export default function Challenges() {
   useEffect(() => {
     base44.auth.me().then(user => {
       setCurrentUser(user);
-      setIsCoach(user?.role === 'admin');
+      // Step 6: 'admin' is platform staff; coaches carry role='user'. In the
+      // coach app, any non-client session is the coach.
+      setIsCoach(isCoachRole(user));
     }).catch(() => {});
   }, []);
 

@@ -134,7 +134,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
           <p className="text-xs text-muted-foreground mb-4">This client doesn't have a meal plan yet.</p>
           <button
             onClick={() => navigate('/nutrition')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-primary-foreground transition-all"
             style={{ background: 'var(--tc-primary)' }}
           >
             <ExternalLink className="w-3.5 h-3.5" />

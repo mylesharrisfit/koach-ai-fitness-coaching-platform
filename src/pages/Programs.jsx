@@ -70,7 +70,7 @@ function FiltersPanel({ filters, onChange }) {
       className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors"
       style={{
         background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
-        color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+        color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
         border: active ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
       }}
     >
@@ -281,7 +281,7 @@ export default function Programs() {
               if (atLimit) { openUpgradeModal('clients'); return; }
               openCreateModal('ai');
             }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             style={{ background: 'var(--tc-primary)' }}
           >
             <Sparkles className="w-4 h-4" />
@@ -316,11 +316,11 @@ export default function Programs() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search programs..."
-              className="w-full h-9 pl-8 pr-3 text-sm rounded-xl bg-card focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-[var(--kc-c4c9d4)]"
+              className="w-full h-9 pl-8 pr-3 text-sm rounded-xl bg-card focus:outline-none focus:ring-1 focus:ring-primary text-foreground placeholder:text-[var(--tc-muted-foreground)]"
               style={{ border: '0.5px solid var(--tc-border)' }}
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--kc-c4c9d4)] hover:text-foreground">
+              <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--tc-muted-foreground)] hover:text-foreground">
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
@@ -340,7 +340,7 @@ export default function Programs() {
                 <SlidersHorizontal className="w-3.5 h-3.5" />
                 Filters
                 {activeFilterCount > 0 && (
-                  <span className="w-4 h-4 rounded-full text-[9px] font-bold bg-primary text-white flex items-center justify-center">
+                  <span className="w-4 h-4 rounded-full text-[9px] font-bold bg-primary text-primary-foreground flex items-center justify-center">
                     {activeFilterCount}
                   </span>
                 )}
@@ -390,7 +390,7 @@ export default function Programs() {
                 className="w-9 h-9 flex items-center justify-center transition-colors"
                 style={{
                   background: layout === v ? 'var(--tc-foreground)' : 'var(--tc-card)',
-                  color: layout === v ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  color: layout === v ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                 }}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -438,7 +438,7 @@ export default function Programs() {
               <div className="flex items-center justify-center gap-3">
                 <button
                   onClick={() => openCreateModal('ai')}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                   style={{ background: 'var(--tc-primary)' }}
                 >
                   <Sparkles className="w-4 h-4" /> Build with AI
@@ -491,7 +491,7 @@ export default function Programs() {
                 <p className="text-xs font-semibold text-muted-foreground">New program</p>
                 <button
                   onClick={() => openCreateModal('ai')}
-                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
                   style={{ background: 'var(--tc-primary)' }}
                 >
                   <Sparkles className="w-3.5 h-3.5" /> Build with AI

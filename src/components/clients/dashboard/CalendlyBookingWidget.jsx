@@ -121,7 +121,7 @@ export default function CalendlyBookingWidget({ client }) {
         {!showSelector ? (
           <Button
             size="sm"
-            className="flex-1 bg-sidebar hover:bg-[var(--kc-1f2937)] text-xs h-8"
+            className="flex-1 bg-sidebar hover:bg-sidebar-accent text-xs h-8"
             onClick={() => { setShowSelector(true); setSelectedEventUri(eventTypes[0]?.uri || ''); }}
             disabled={etLoading || eventTypes.length === 0}
           >

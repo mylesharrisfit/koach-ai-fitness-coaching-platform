@@ -62,7 +62,7 @@ export default function ProgramCard({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--kc-c4c9d4)] hover:text-foreground hover:bg-muted transition-colors">
+              <button className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--tc-muted-foreground)] hover:text-foreground hover:bg-muted transition-colors">
                 <MoreVertical className="w-3.5 h-3.5" />
               </button>
             </DropdownMenuTrigger>
@@ -169,7 +169,7 @@ export default function ProgramCard({
           {/* Assign button */}
           <button
             onClick={onAssign}
-            className="flex items-center gap-1 text-[11px] font-semibold text-white px-3 py-1.5 rounded-lg transition-opacity hover:opacity-90 flex-shrink-0"
+            className="flex items-center gap-1 text-[11px] font-semibold text-primary-foreground px-3 py-1.5 rounded-lg transition-opacity hover:opacity-90 flex-shrink-0"
             style={{ background: 'var(--tc-primary)' }}
           >
             <Users className="w-3 h-3" /> Assign

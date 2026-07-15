@@ -390,7 +390,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
             <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-10 text-center">
               <Ruler className="w-8 h-8 text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No measurement data yet</p>
-              <p className="text-xs text-[var(--kc-c4c9d4)] mt-0.5">Add measurements in check-ins to see trends</p>
+              <p className="text-xs text-[var(--tc-muted-foreground)] mt-0.5">Add measurements in check-ins to see trends</p>
             </div>
           )}
         </div>
@@ -403,7 +403,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
             <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center">
               <Camera className="w-8 h-8 text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No progress photos yet</p>
-              <p className="text-xs text-[var(--kc-c4c9d4)] mt-0.5">Photos submitted with check-ins will appear here</p>
+              <p className="text-xs text-[var(--tc-muted-foreground)] mt-0.5">Photos submitted with check-ins will appear here</p>
             </div>
           ) : (
             checkIns.filter(ci => ci.photo_urls?.length).map(ci => (

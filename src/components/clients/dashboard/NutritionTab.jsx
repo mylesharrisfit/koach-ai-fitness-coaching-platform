@@ -107,7 +107,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
           <button
             onClick={assign}
             disabled={!selected || saving}
-            className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-white disabled:opacity-40"
+            className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-primary-foreground disabled:opacity-40"
             style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))' }}
           >
             {saving ? 'Assigning...' : 'Assign Plan'}
@@ -164,7 +164,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
         <div className="flex gap-2 flex-wrap justify-center">
           <button
             onClick={() => setShowDialog(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-primary-foreground"
             style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
@@ -239,7 +239,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
       <div className="flex items-center gap-2 mt-3">
         <button
           onClick={() => setShowPlanDetail(true)}
-          className="flex-1 py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary/90 transition-colors"
+          className="flex-1 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
         >
           View Full Plan
         </button>

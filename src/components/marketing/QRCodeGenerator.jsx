@@ -71,7 +71,7 @@ export default function QRCodeGenerator({ coachId }) {
                 <button key={s} onClick={() => setSize(s)}
                   className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                     size === s
-                      ? 'bg-primary text-white'
+                      ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-foreground hover:bg-border'
                   }`}>
                   {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -100,7 +100,7 @@ export default function QRCodeGenerator({ coachId }) {
               </div>
               <div className="flex gap-2">
                 <a href={qrUrl} download="qr-code.png"
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary">
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary">
                   <Download className="w-4 h-4" /> Download PNG
                 </a>
               </div>

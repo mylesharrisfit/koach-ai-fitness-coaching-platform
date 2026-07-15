@@ -85,7 +85,7 @@ export default function ProgramBuilderHeader({
           onClick={onSave}
           disabled={isSaving}
           className="h-8 text-xs font-semibold px-4 gap-1.5"
-          style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)', border: 'none' }}
+          style={{ background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)', border: 'none' }}
         >
           <Save className="w-3.5 h-3.5" />
           {isSaving ? 'Saving...' : 'Save Program'}

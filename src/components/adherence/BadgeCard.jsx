@@ -109,7 +109,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Name */}
       <p
         className="text-[11px] font-bold leading-tight"
-        style={{ color: earned ? tier.text : (light ? 'var(--tc-foreground)' : 'var(--kc-4b5563)') }}
+        style={{ color: earned ? tier.text : (light ? 'var(--tc-foreground)' : 'var(--tc-muted-foreground)') }}
       >
         {cfg.label}
       </p>
@@ -121,7 +121,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
           ? { background: `${tier.accent}22`, color: tier.accent, border: `1px solid ${tier.accent}55` }
           : light
             ? { background: 'var(--tc-muted)', color: 'var(--tc-muted-foreground)', border: '1px solid var(--tc-border)' }
-            : { background: 'color-mix(in srgb, white 4%, transparent)', color: 'var(--kc-4b5563)', border: '1px solid color-mix(in srgb, white 8%, transparent)' }
+            : { background: 'color-mix(in srgb, white 4%, transparent)', color: 'var(--tc-muted-foreground)', border: '1px solid color-mix(in srgb, white 8%, transparent)' }
         }
       >
         {tier.label}
@@ -152,13 +152,13 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
       {/* Progress ring for unearned */}
       {showProgress && (
         <div className="flex flex-col items-center gap-0.5 mt-0.5">
-          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-border' : 'bg-[var(--kc-1f2937)]'}`}>
+          <div className={`w-full rounded-full h-1 overflow-hidden ${light ? 'bg-border' : 'bg-sidebar-accent'}`}>
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
             />
           </div>
-          <span className="text-[9px] text-[var(--kc-4b5563)]">{progress}/{progressMax}</span>
+          <span className="text-[9px] text-[var(--tc-muted-foreground)]">{progress}/{progressMax}</span>
         </div>
       )}
     </motion.button>

@@ -61,14 +61,14 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
         <div className="space-y-3">
           <button
             onClick={() => navigate('/')}
-            className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
+            className="w-full py-3 rounded-xl text-sm font-bold text-primary-foreground transition-all"
             style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 30%, transparent)' }}
           >
             Explore New Features →
           </button>
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-border hover:bg-[var(--kc-w-5)] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-sidebar-foreground hover:bg-[var(--kc-w-5)] transition-colors flex items-center justify-center gap-2"
           >
             <ExternalLink className="w-3.5 h-3.5" /> View Receipt
           </button>

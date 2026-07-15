@@ -217,7 +217,7 @@ export default function ExerciseCard({ exercise, onView, onEdit, onDelete, compa
               <button
                 onClick={handleAddVideo}
                 disabled={updateVideoMutation.isPending}
-                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary/90 disabled:opacity-60"
+                className="flex-1 px-4 py-2 rounded-lg text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 disabled:opacity-60"
               >
                 {updateVideoMutation.isPending ? 'Saving...' : 'Save'}
               </button>

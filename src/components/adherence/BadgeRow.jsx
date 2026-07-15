@@ -36,7 +36,7 @@ export default function BadgeRow({ earnedKeys = [], max = 5, onAdd }) {
           );
         })}
         {overflow > 0 && (
-          <span className="text-xs text-muted-foreground font-medium px-2 py-0.5 bg-[var(--kc-1f2937)] rounded-full border border-white/10">
+          <span className="text-xs text-muted-foreground font-medium px-2 py-0.5 bg-sidebar-accent rounded-full border border-white/10">
             +{overflow} more
           </span>
         )}
@@ -49,7 +49,7 @@ export default function BadgeRow({ earnedKeys = [], max = 5, onAdd }) {
           </button>
         )}
         {earnedKeys.length === 0 && (
-          <span className="text-xs text-[var(--kc-4b5563)] italic">No achievements yet</span>
+          <span className="text-xs text-[var(--tc-muted-foreground)] italic">No achievements yet</span>
         )}
       </div>
     </TooltipProvider>

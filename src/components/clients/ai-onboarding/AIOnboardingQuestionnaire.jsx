@@ -113,7 +113,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
                 {[2,3,4,5,6].map(d => (
                   <button key={d} onClick={() => set('days_per_week', d)}
                     className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all ${
-                      form.days_per_week === d ? 'border-primary bg-primary text-white' : 'border-border bg-card text-muted-foreground hover:border-primary'
+                      form.days_per_week === d ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card text-muted-foreground hover:border-primary'
                     }`}>{d}</button>
                 ))}
               </div>
@@ -123,7 +123,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
                 {[30, 45, 60, 75, 90].map(m => (
                   <button key={m} onClick={() => set('session_length', m)}
                     className={`px-2 h-9 rounded-lg text-xs font-bold border-2 transition-all ${
-                      form.session_length === m ? 'border-primary bg-primary text-white' : 'border-border bg-card text-muted-foreground hover:border-primary'
+                      form.session_length === m ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card text-muted-foreground hover:border-primary'
                     }`}>{m}</button>
                 ))}
               </div>
@@ -210,7 +210,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
               {[3,4,5,6].map(n => (
                 <button key={n} onClick={() => set('meals_per_day', n)}
                   className={`w-10 h-10 rounded-lg text-sm font-bold border-2 transition-all ${
-                    form.meals_per_day === n ? 'border-primary bg-primary text-white' : 'border-border bg-card text-muted-foreground hover:border-primary'
+                    form.meals_per_day === n ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card text-muted-foreground hover:border-primary'
                   }`}>{n}</button>
               ))}
             </div>
@@ -242,7 +242,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 text-sm font-bold text-white py-3.5 rounded-xl transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 text-sm font-bold text-primary-foreground py-3.5 rounded-xl transition-all disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
           >
             <Sparkles className="w-4 h-4" />

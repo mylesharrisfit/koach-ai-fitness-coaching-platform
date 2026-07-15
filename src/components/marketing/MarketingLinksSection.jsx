@@ -75,7 +75,7 @@ export default function MarketingLinksSection({ coachId }) {
           <h2 className="text-lg font-black text-foreground">Smart Link Builder</h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary">
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:bg-primary">
             <Plus className="w-4 h-4" /> Create Link
           </button>
         </div>
@@ -118,7 +118,7 @@ export default function MarketingLinksSection({ coachId }) {
 
             <div className="flex gap-2">
               <button type="submit" disabled={createMutation.isPending}
-                className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary disabled:opacity-50">
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:bg-primary disabled:opacity-50">
                 Create
               </button>
               <button type="button" onClick={() => setShowCreateForm(false)}

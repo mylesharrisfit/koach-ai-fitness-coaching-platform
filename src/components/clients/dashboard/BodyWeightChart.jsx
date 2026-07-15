@@ -162,7 +162,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
             className="text-[10px] font-semibold px-2 py-0.5 rounded-md transition-colors"
             style={{
               background: range === r.key ? BLUE : 'var(--tc-muted)',
-              color: range === r.key ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+              color: range === r.key ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
             }}
           >
             {r.label}

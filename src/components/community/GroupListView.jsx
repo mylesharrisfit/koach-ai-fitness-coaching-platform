@@ -122,7 +122,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
                   </div>
 
                   <button onClick={() => onSelect(group)}
-                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold text-primary-foreground transition-colors"
                     style={{ background: 'var(--tc-primary)' }}>
                     Open Group <ChevronRight className="w-4 h-4" />
                   </button>

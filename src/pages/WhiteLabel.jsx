@@ -19,7 +19,7 @@ const EMPTY = {
   logo_primary_url: '', logo_dark_url: '', logo_light_url: '', favicon_url: '', app_icon_url: '',
   app_icon_bg_color: 'var(--tc-primary)',
   primary_color: 'var(--tc-primary)', secondary_color: 'var(--tc-ai)', gradient_direction: '135deg', gradient_angle: 135,
-  bg_color: 'var(--tc-muted)', card_color: 'var(--tc-card)', nav_color: 'var(--tc-card)',
+  bg_color: 'var(--tc-muted)', card_color: 'var(--tc-primary-foreground)', nav_color: 'var(--tc-primary-foreground)',
   text_primary: 'var(--tc-foreground)', text_secondary: 'var(--tc-muted-foreground)', link_color: 'var(--tc-primary)',
   font_primary: 'Inter', font_heading_weight: '700',
   portal_show_logo: true, portal_hide_koach_badge: false, portal_nav_style: 'bottom', portal_nav_bg: 'white',

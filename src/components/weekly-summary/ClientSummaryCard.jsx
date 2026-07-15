@@ -159,7 +159,7 @@ export default function ClientSummaryCard({ client, checkIns, sessions }) {
       <div className="flex gap-2 pt-1">
         <button
           onClick={() => navigate(`/checkin-review`)}
-          className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
         >
           <Clock className="w-3 h-3" /> Review Check-in
         </button>

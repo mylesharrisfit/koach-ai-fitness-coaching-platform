@@ -273,7 +273,7 @@ function SecurityTab() {
                   placeholder="Confirm new password"
                   className="w-full px-3 py-2.5 rounded-xl border border-border text-sm focus:outline-none focus:border-primary bg-muted" />
                 <button onClick={handlePasswordSubmit}
-                  className="w-full py-2.5 rounded-xl text-sm font-bold text-white"
+                  className="w-full py-2.5 rounded-xl text-sm font-bold text-primary-foreground"
                   style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                   Update Password
                 </button>

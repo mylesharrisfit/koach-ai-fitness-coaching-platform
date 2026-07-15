@@ -7,13 +7,13 @@ import { cn } from '@/lib/utils';
 import SessionDetailPopover from './SessionDetailPopover';
 
 const typeColors = {
-  video_call: 'bg-primary text-white',
+  video_call: 'bg-primary text-primary-foreground',
   in_person: 'bg-success text-white',
-  check_in: 'bg-primary text-white',
-  program_review: 'bg-ai text-white',
+  check_in: 'bg-primary text-primary-foreground',
+  program_review: 'bg-ai text-ai-foreground',
   onboarding: 'bg-success text-white',
   progress_review: 'bg-warning text-white',
-  consultation: 'bg-muted-foreground text-white',
+  consultation: 'bg-muted-foreground text-background',
 };
 
 export default function MonthView({ currentDate, sessions, onDayClick, onEditSession, clients = [] }) {
@@ -70,7 +70,7 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
                   {/* Date number */}
                   <div className={cn(
                     'w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold mb-1',
-                    isToday ? 'bg-primary text-white' : inMonth ? 'text-foreground' : 'text-muted-foreground'
+                    isToday ? 'bg-primary text-primary-foreground' : inMonth ? 'text-foreground' : 'text-muted-foreground'
                   )}>
                     {format(day, 'd')}
                   </div>
@@ -86,7 +86,7 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
                           onClick={e => { e.stopPropagation(); setSelectedSession(s); }}
                           className={cn(
                             'w-full text-left text-[10px] font-medium px-1.5 py-0.5 rounded truncate cursor-pointer hover:opacity-90 transition-opacity',
-                            typeColors[s.type] || 'bg-primary text-white',
+                            typeColors[s.type] || 'bg-primary text-primary-foreground',
                             isCancelled && 'bg-destructive text-white line-through'
                           )}
                         >

@@ -325,7 +325,7 @@ function UnitToggle({ options, value, onChange }) {
     <div className="flex border border-input rounded-lg overflow-hidden text-xs font-semibold h-9 shrink-0">
       {options.map(u => (
         <button key={u} type="button" onClick={() => onChange(u)}
-          className={cn('px-3 transition-colors', value === u ? 'bg-primary text-white' : 'bg-background text-muted-foreground hover:bg-secondary')}
+          className={cn('px-3 transition-colors', value === u ? 'bg-primary text-primary-foreground' : 'bg-background text-muted-foreground hover:bg-secondary')}
         >
           {u}
         </button>
@@ -339,7 +339,7 @@ function YesNoToggle({ value, onChange }) {
     <div className="flex border border-input rounded-lg overflow-hidden text-xs font-semibold h-8 w-20 shrink-0">
       {[true, false].map(v => (
         <button key={String(v)} type="button" onClick={() => onChange(v)}
-          className={cn('flex-1 transition-colors', value === v ? 'bg-primary text-white' : 'bg-background text-muted-foreground hover:bg-secondary')}
+          className={cn('flex-1 transition-colors', value === v ? 'bg-primary text-primary-foreground' : 'bg-background text-muted-foreground hover:bg-secondary')}
         >
           {v ? 'Yes' : 'No'}
         </button>
@@ -435,7 +435,7 @@ function WeightLossRateSelector({ value, onChange }) {
             </div>
             <span className="text-[10px] text-muted-foreground mt-0.5">{rate.desc}</span>
             {rate.recommended && (
-              <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white">
+              <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
                 Recommended
               </span>
             )}
@@ -580,7 +580,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                     onClick={() => u('sex', s)}
                     className={cn(
                       'flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize',
-                      details.sex === s ? 'bg-primary text-white' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
+                      details.sex === s ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
                     )}
                   >
                     {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -787,7 +787,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                       <span>{opt.emoji}</span>
                       <span className={`font-bold ${labelColor}`}>{opt.label}</span>
                       {opt.popular && (
-                        <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-white">Popular</span>
+                        <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">Popular</span>
                       )}
                     </div>
                     <span className="text-[10px] text-muted-foreground mt-0.5">{opt.desc}</span>
@@ -1004,7 +1004,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                 onClick={() => setMacroApproach(opt.id)}
                 className={cn(
                   'px-4 py-2 transition-colors',
-                  macroApproach === opt.id ? 'bg-primary text-white' : 'bg-card text-muted-foreground hover:bg-secondary'
+                  macroApproach === opt.id ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-secondary'
                 )}
               >
                 {opt.label}

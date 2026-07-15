@@ -97,7 +97,7 @@ export default function RefundModal({ payment, onClose, onConfirm }) {
           </button>
           <button onClick={() => valid && onConfirm({ type, amount: refundAmt, reason: reason === 'Other' ? otherReason : reason, note })}
             disabled={!valid}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: valid ? 'var(--tc-destructive)' : 'var(--tc-border)', color: valid ? 'var(--tc-card)' : 'var(--tc-muted-foreground)', border: 'none', cursor: valid ? 'pointer' : 'not-allowed' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', borderRadius: 10, fontSize: 14, fontWeight: 700, background: valid ? 'var(--tc-destructive)' : 'var(--tc-border)', color: valid ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)', border: 'none', cursor: valid ? 'pointer' : 'not-allowed' }}>
             <RefreshCcw size={14} /> Process Refund
           </button>
         </div>

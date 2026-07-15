@@ -219,7 +219,7 @@ export default function SessionFormDialog({
                     className={cn(
                       'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-all',
                       form.location_type === lt.value
-                        ? 'border-primary bg-primary text-white'
+                        ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border text-foreground hover:border-primary/40'
                     )}
                   >

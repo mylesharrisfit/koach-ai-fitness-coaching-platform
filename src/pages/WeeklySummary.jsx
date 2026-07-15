@@ -147,7 +147,7 @@ export default function WeeklySummary() {
               className={cn(
                 'flex-shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all',
                 filter === f.key
-                  ? 'bg-primary text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-card border border-border text-muted-foreground hover:border-border'
               )}>
               {f.label}

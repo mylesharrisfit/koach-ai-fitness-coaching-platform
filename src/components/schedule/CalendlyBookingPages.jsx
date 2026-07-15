@@ -84,7 +84,7 @@ export default function CalendlyBookingPages() {
                     href={event.scheduling_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 py-1.5 bg-sidebar text-white rounded-lg text-xs font-semibold text-center hover:bg-[var(--kc-1f2937)] transition-colors flex items-center justify-center gap-1"
+                    className="flex-1 py-1.5 bg-sidebar text-white rounded-lg text-xs font-semibold text-center hover:bg-sidebar-accent transition-colors flex items-center justify-center gap-1"
                   >
                     <ExternalLink className="w-3 h-3" /> Preview
                   </a>

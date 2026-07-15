@@ -75,7 +75,7 @@ export default function ClientScheduleScreen({ onNext, onBack, data }) {
                 style={{
                   background: duration === d.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'var(--kc-161616)',
                   border: duration === d.id ? '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)' : '1px solid color-mix(in srgb, white 6%, transparent)',
-                  color: duration === d.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  color: duration === d.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                   boxShadow: duration === d.id ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                 }}
               >{d.label}</motion.button>

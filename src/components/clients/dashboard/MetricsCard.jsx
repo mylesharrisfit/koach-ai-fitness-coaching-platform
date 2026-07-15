@@ -115,7 +115,7 @@ export default function MetricsCard({ client, onUpdated }) {
             <button
               onClick={save}
               disabled={saving}
-              className="flex items-center gap-1.5 text-sm font-semibold text-white bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
             >
               <Check className="w-4 h-4" /> {saving ? 'Saving…' : 'Save Metrics'}
             </button>

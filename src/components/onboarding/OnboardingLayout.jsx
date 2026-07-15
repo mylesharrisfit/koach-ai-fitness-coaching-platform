@@ -100,7 +100,7 @@ export default function OnboardingLayout({
               style={{
                 background: nextDisabled ? 'color-mix(in srgb, white 6%, transparent)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))',
                 boxShadow: nextDisabled ? 'none' : '0 0 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)',
-                color: nextDisabled ? 'var(--kc-555555)' : 'var(--tc-card)',
+                color: nextDisabled ? 'var(--kc-555555)' : 'var(--tc-primary-foreground)',
               }}
             >
               {nextLabel}

@@ -41,7 +41,7 @@ const TIER_TAB_STYLES = {
   silver:   { active: 'background:var(--kc-c0c0c0); color:var(--tc-foreground); border-color:var(--kc-c0c0c0)', dot: 'var(--kc-c0c0c0)' },
   gold:     { active: 'background:var(--kc-ffd700); color:var(--kc-1a1000); border-color:var(--kc-ffd700)', dot: 'var(--kc-ffd700)' },
   platinum: { active: 'background:var(--kc-62d7ff); color:var(--kc-03111a); border-color:var(--kc-62d7ff)', dot: 'var(--kc-62d7ff)' },
-  elite:    { active: 'background:linear-gradient(135deg,var(--tc-primary),var(--tc-ai)); color:var(--tc-card); border-color:var(--tc-primary)', dot: 'var(--tc-primary)' },
+  elite:    { active: 'background:linear-gradient(135deg,var(--tc-primary),var(--tc-ai)); color:var(--tc-primary-foreground); border-color:var(--tc-primary)', dot: 'var(--tc-primary)' },
 };
 
 const BADGE_PROGRESS_HINT = {
@@ -83,7 +83,7 @@ function LeaderCard({ client, score, streak, rank, badgeCount }) {
       {isFirst && <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--kc-ffd700) 8%, transparent) 0%, transparent 70%)' }} />}
       {medal && <span className="text-lg leading-none">{medal}</span>}
       <div className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm"
-        style={{ background: isFirst ? 'linear-gradient(135deg,var(--kc-ffd700),var(--kc-b8860b))' : 'var(--kc-1f2937)', color: isFirst ? 'var(--kc-1a1000)' : 'var(--tc-muted-foreground)' }}>
+        style={{ background: isFirst ? 'linear-gradient(135deg,var(--kc-ffd700),var(--kc-b8860b))' : 'var(--tc-sidebar-accent)', color: isFirst ? 'var(--kc-1a1000)' : 'var(--tc-muted-foreground)' }}>
         {client.name?.[0]}
       </div>
       <p className="text-xs font-semibold text-white leading-tight">{client.name}</p>
@@ -376,8 +376,8 @@ export default function Adherence() {
               <button key={t} onClick={() => setTierFilter(t)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all"
                 style={isActive
-                  ? (t === 'All' ? { background: 'var(--tc-sidebar)', color: 'var(--tc-card)', borderColor: 'var(--tc-foreground)' }
-                    : t === 'elite' ? { background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-card)', borderColor: 'var(--tc-primary)', boxShadow: '0 0 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }
+                  ? (t === 'All' ? { background: 'var(--tc-sidebar)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'var(--tc-foreground)' }
+                    : t === 'elite' ? { background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-primary-foreground)', borderColor: 'var(--tc-primary)', boxShadow: '0 0 12px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }
                     : { background: TIER_STYLES[t]?.accent, color: 'var(--tc-foreground)', borderColor: TIER_STYLES[t]?.accent, boxShadow: `0 0 10px ${TIER_STYLES[t]?.glow}` })
                   : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }
                 }
@@ -393,7 +393,7 @@ export default function Adherence() {
           {CATEGORY_FILTERS.map(cat => (
             <button key={cat} onClick={() => setCategoryFilter(cat)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all"
-              style={categoryFilter === cat ? { background: 'var(--tc-sidebar)', color: 'var(--tc-card)', borderColor: 'var(--tc-foreground)' } : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }}>
+              style={categoryFilter === cat ? { background: 'var(--tc-sidebar)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'var(--tc-foreground)' } : { background: 'var(--tc-card)', color: 'var(--tc-muted-foreground)', borderColor: 'var(--tc-border)' }}>
               {cat}<span className={categoryFilter === cat ? 'opacity-60' : 'opacity-40'}>({categoryBadgeCounts[cat]})</span>
             </button>
           ))}
@@ -470,14 +470,14 @@ export default function Adherence() {
             <div>
               <Label className="text-muted-foreground text-xs">Client</Label>
               <Select value={awardForm.client_id} onValueChange={v => setAwardForm({ ...awardForm, client_id: v })}>
-                <SelectTrigger className="bg-[var(--kc-1f2937)] border-white/10 text-white"><SelectValue placeholder="Select client" /></SelectTrigger>
+                <SelectTrigger className="bg-sidebar-accent border-white/10 text-white"><SelectValue placeholder="Select client" /></SelectTrigger>
                 <SelectContent>{clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-muted-foreground text-xs">Badge</Label>
               <Select value={awardForm.badge_key} onValueChange={v => setAwardForm({ ...awardForm, badge_key: v })}>
-                <SelectTrigger className="bg-[var(--kc-1f2937)] border-white/10 text-white"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="bg-sidebar-accent border-white/10 text-white"><SelectValue /></SelectTrigger>
                 <SelectContent>{Object.entries(BADGE_CONFIG).map(([k, v]) => <SelectItem key={k} value={k}>{v.emoji} {v.label} · {TIER_STYLES[v.tier]?.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
@@ -493,7 +493,7 @@ export default function Adherence() {
             })()}
             <div>
               <Label className="text-muted-foreground text-xs">Date</Label>
-              <Input type="date" value={awardForm.earned_date} onChange={e => setAwardForm({ ...awardForm, earned_date: e.target.value })} className="bg-[var(--kc-1f2937)] border-white/10 text-white" />
+              <Input type="date" value={awardForm.earned_date} onChange={e => setAwardForm({ ...awardForm, earned_date: e.target.value })} className="bg-sidebar-accent border-white/10 text-white" />
             </div>
             <div className="flex justify-end gap-3 pt-1">
               <Button type="button" variant="outline" onClick={() => setAwardOpen(false)} className="border-white/10 text-muted-foreground hover:bg-[var(--kc-w-5)]">Cancel</Button>

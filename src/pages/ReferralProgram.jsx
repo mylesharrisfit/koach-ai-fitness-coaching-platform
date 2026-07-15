@@ -84,7 +84,7 @@ export default function ReferralProgram({ user }) {
     <div className="pb-20 bg-gradient-to-b from-card to-muted">
       {/* Hero Banner */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
-        className="px-4 pt-6 pb-8 rounded-b-3xl text-white text-center"
+        className="px-4 pt-6 pb-8 rounded-b-3xl text-primary-foreground text-center"
         style={{ background: 'linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-ai) 100%)', boxShadow: '0 4px 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
         <p className="text-white/70 text-xs font-bold uppercase tracking-wider mb-2">Earn Passive Income</p>
         <h1 className="text-3xl font-black mb-2">Earn with every coach you refer 💰</h1>

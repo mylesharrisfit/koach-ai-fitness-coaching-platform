@@ -28,7 +28,7 @@ function FilterChip({ label, active, onClick }) {
       className="text-[10px] font-semibold px-2 py-1 rounded-full whitespace-nowrap transition-all flex-shrink-0 capitalize"
       style={{
         background: active ? 'var(--tc-primary)' : 'var(--tc-muted)',
-        color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+        color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
       }}
     >
       {label.replace(/_/g, ' ')}
@@ -48,7 +48,7 @@ function ExerciseCard({ ex, onAdd }) {
           <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Dumbbell className="w-4 h-4 text-[var(--kc-4b5563)]" />
+            <Dumbbell className="w-4 h-4 text-[var(--tc-muted-foreground)]" />
           </div>
         )}
       </div>
@@ -72,7 +72,7 @@ function ExerciseCard({ ex, onAdd }) {
       {onAdd && (
         <button
           onClick={e => { e.stopPropagation(); onAdd(ex); }}
-          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all text-white text-sm font-bold"
+          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all text-primary-foreground text-sm font-bold"
           style={{ background: 'var(--tc-primary)' }}
           title="Add to selected day"
         >+</button>
@@ -131,7 +131,7 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
             placeholder="Search..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full h-7 text-xs pl-7 pr-2 rounded-lg border border-border bg-muted focus:outline-none focus:border-primary placeholder:text-[var(--kc-c4c9d4)]"
+            className="w-full h-7 text-xs pl-7 pr-2 rounded-lg border border-border bg-muted focus:outline-none focus:border-primary placeholder:text-[var(--tc-muted-foreground)]"
           />
         </div>
 
@@ -236,7 +236,7 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
 
       {/* Footer */}
       <div className="px-3 py-2 flex-shrink-0" style={{ borderTop: '0.5px solid var(--tc-muted)' }}>
-        <p className="text-[9px] text-[var(--kc-c4c9d4)] text-center">
+        <p className="text-[9px] text-[var(--tc-muted-foreground)] text-center">
           {filtered.length} of {exercises.length} exercises
         </p>
       </div>

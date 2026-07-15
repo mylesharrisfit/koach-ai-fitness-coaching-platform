@@ -106,7 +106,7 @@ export default function NotificationCenter({ notifications, unreadCount, loading
           <Bell className="w-4 h-4 text-muted-foreground flex-shrink-0" />
           <span className="font-black text-foreground text-[15px]">Notifications</span>
           {unreadCount > 0 && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black text-white"
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black text-primary-foreground"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
               {unreadCount > 99 ? '99+' : unreadCount} unread
             </span>

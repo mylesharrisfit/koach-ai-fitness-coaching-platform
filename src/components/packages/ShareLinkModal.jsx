@@ -54,7 +54,7 @@ export default function ShareLinkModal({ pkg, onClose }) {
 
           <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
             <a href={url} target="_blank" rel="noreferrer"
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-card)', textDecoration: 'none' }}>
+              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-primary-foreground)', textDecoration: 'none' }}>
               <ExternalLink size={14} /> Preview Landing Page
             </a>
           </div>

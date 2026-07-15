@@ -99,7 +99,7 @@ function CTABtn({ label = 'Continue', onClick, disabled }) {
         style={{
           background: disabled ? 'color-mix(in srgb, white 6%, transparent)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))',
           boxShadow: disabled ? 'none' : '0 0 24px color-mix(in srgb, var(--tc-primary) 28%, transparent)',
-          color: disabled ? 'var(--kc-444444)' : 'var(--tc-card)',
+          color: disabled ? 'var(--kc-444444)' : 'var(--tc-primary-foreground)',
           cursor: disabled ? 'not-allowed' : 'pointer',
         }}
       >
@@ -118,7 +118,7 @@ function Chip({ label, selected, onClick, emoji }) {
       style={{
         background: selected ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
         border: selected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-        color: selected ? 'var(--tc-card)' : 'var(--kc-6a6a6a)',
+        color: selected ? 'var(--tc-primary-foreground)' : 'var(--kc-6a6a6a)',
         boxShadow: selected ? '0 0 18px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
       }}
     >
@@ -142,7 +142,7 @@ function BigCard({ emoji, label, sublabel, selected, onClick }) {
       <div className="flex items-center gap-4">
         <span className="text-2xl flex-shrink-0">{emoji}</span>
         <div className="flex-1 text-left">
-          <p className="font-semibold text-sm" style={{ color: selected ? 'var(--tc-card)' : 'var(--kc-b3b3b3)' }}>{label}</p>
+          <p className="font-semibold text-sm" style={{ color: selected ? 'var(--tc-primary-foreground)' : 'var(--kc-b3b3b3)' }}>{label}</p>
           {sublabel && <p className="text-xs mt-0.5" style={{ color: 'var(--kc-4a4a4a)' }}>{sublabel}</p>}
         </div>
         <div
@@ -319,7 +319,7 @@ function WelcomeStep({ onNext }) {
               onClick={onNext}
               whileHover={{ scale: 1.03, boxShadow: '0 0 48px color-mix(in srgb, var(--tc-primary) 50%, transparent)' }}
               whileTap={{ scale: 0.97 }}
-              className="w-full py-4 rounded-2xl text-white font-bold text-lg"
+              className="w-full py-4 rounded-2xl text-primary-foreground font-bold text-lg"
               style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))', boxShadow: '0 0 28px color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}
             >
               Let's Go →
@@ -603,7 +603,7 @@ function TrainingPrefsStep({ data, set, onNext, onBack }) {
                   style={{
                     background: data.training_days_per_week === d ? 'color-mix(in srgb, var(--tc-primary) 14%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                     border: data.training_days_per_week === d ? '1.5px solid color-mix(in srgb, var(--tc-primary) 55%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-                    color: data.training_days_per_week === d ? 'var(--tc-card)' : 'var(--kc-4a4a4a)',
+                    color: data.training_days_per_week === d ? 'var(--tc-primary-foreground)' : 'var(--kc-4a4a4a)',
                     boxShadow: data.training_days_per_week === d ? '0 0 14px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                   }}
                 >
@@ -801,7 +801,7 @@ function MedicalStep({ data, set, onNext, onBack }) {
                     border: data.parq_answer === ans
                       ? (ans === 'Yes' ? '1.5px solid color-mix(in srgb, var(--tc-destructive) 55%, transparent)' : '1.5px solid color-mix(in srgb, var(--tc-success) 55%, transparent)')
                       : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-                    color: data.parq_answer === ans ? 'var(--tc-card)' : 'var(--kc-4a4a4a)',
+                    color: data.parq_answer === ans ? 'var(--tc-primary-foreground)' : 'var(--kc-4a4a4a)',
                   }}
                 >
                   {ans === 'Yes' ? '⚠️ Yes' : '✅ No'}
@@ -903,7 +903,7 @@ function ConsentStep({ data, set, onNext, onBack }) {
                 </svg>
               )}
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? 'var(--tc-card)' : 'var(--kc-7a7a7a)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: consentChecked ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)' }}>
               I confirm I am cleared to exercise, I understand that coaching is not medical advice, and I take full responsibility for my own health and safety during this program. <span style={{ color: 'var(--tc-success)' }}>*Required</span>
             </p>
           </motion.button>
@@ -1010,7 +1010,7 @@ function ObstaclesStep({ data, set, onNext, onBack }) {
                 }}
               >
                 <div className="text-xl mb-1.5">{o.emoji}</div>
-                <p className="text-sm font-semibold" style={{ color: selected.includes(o.id) ? 'var(--tc-card)' : 'var(--kc-7a7a7a)' }}>{o.label}</p>
+                <p className="text-sm font-semibold" style={{ color: selected.includes(o.id) ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)' }}>{o.label}</p>
               </motion.button>
             ))}
           </div>
@@ -1061,7 +1061,7 @@ function CommitmentStep({ data, set, onNext, onBack }) {
                     }}
                   >
                     <div className="text-3xl mb-2">{c.emoji}</div>
-                    <p className="font-bold text-sm" style={{ color: sel ? 'var(--tc-card)' : 'var(--kc-9a9a9a)' }}>{c.label}</p>
+                    <p className="font-bold text-sm" style={{ color: sel ? 'var(--tc-primary-foreground)' : 'var(--kc-9a9a9a)' }}>{c.label}</p>
                     <p className="text-xs mt-1" style={{ color: 'var(--kc-4a4a4a)' }}>{c.sub}</p>
                   </motion.button>
                 );
@@ -1121,7 +1121,7 @@ function GenItemCard({ item }) {
     >
       <span className="text-xl">{item.icon}</span>
       <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-2e2e2e)' : 'var(--tc-card)' }}>{item.label}</p>
+        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-2e2e2e)' : 'var(--tc-primary-foreground)' }}>{item.label}</p>
         <p className="text-[11px] mt-0.5" style={{
           color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 80%, transparent)' : status === 'loading' ? 'color-mix(in srgb, var(--tc-primary) 80%, transparent)' : 'var(--kc-2e2e2e)',
         }}>
@@ -1234,7 +1234,7 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
               </p>
               <button
                 onClick={onRetry}
-                className="w-full py-3 rounded-xl font-bold text-sm text-white"
+                className="w-full py-3 rounded-xl font-bold text-sm text-primary-foreground"
                 style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))' }}
               >
                 Try Again

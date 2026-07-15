@@ -131,7 +131,7 @@ export default function PaymentTracking() {
             <div style={{ display: 'flex', gap: 4 }}>
               {STATUS_OPTS.map(s => (
                 <button key={s} onClick={() => setStatusFilter(s)}
-                  style={{ padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer', background: statusFilter === s ? 'var(--tc-primary)' : 'var(--tc-muted)', color: statusFilter === s ? 'var(--tc-card)' : 'var(--tc-muted-foreground)', textTransform: 'capitalize' }}>
+                  style={{ padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer', background: statusFilter === s ? 'var(--tc-primary)' : 'var(--tc-muted)', color: statusFilter === s ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)', textTransform: 'capitalize' }}>
                   {s}
                 </button>
               ))}
@@ -206,7 +206,7 @@ export default function PaymentTracking() {
               Download your annual transaction history for tax reporting. Consult a tax professional for specific advice.
             </p>
             <button onClick={exportCSV}
-              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 9, fontSize: 12, fontWeight: 600, background: 'var(--tc-ai)', color: 'var(--tc-card)', border: 'none', cursor: 'pointer' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 9, fontSize: 12, fontWeight: 600, background: 'var(--tc-ai)', color: 'var(--tc-primary-foreground)', border: 'none', cursor: 'pointer' }}>
               <Download size={12} /> Export for Accountant
             </button>
           </div>

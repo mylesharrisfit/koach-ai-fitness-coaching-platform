@@ -30,7 +30,9 @@ export const CLIENT_PORTAL_ROUTES = [
 
 export function isCoachRole(user) {
   if (!user) return false;
-  return !user.role || user.role === 'admin' || user.role === 'coach';
+  // Post-migration coaches carry profiles.role='user'; 'admin' is platform
+  // staff (Step 6). Anything that isn't a portal client uses the coach app.
+  return user.role !== 'client';
 }
 
 export function isClientRole(user) {

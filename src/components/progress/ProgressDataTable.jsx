@@ -25,7 +25,7 @@ export default function ProgressDataTable({ data, metric, selectedClient, onLog 
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <h3 className="text-sm font-semibold text-foreground">History</h3>
         <Button size="sm" onClick={() => setShowLog(true)} disabled={!selectedClient}
-          className="bg-primary text-white hover:bg-primary gap-1.5 h-7 text-xs">
+          className="bg-primary text-primary-foreground hover:bg-primary gap-1.5 h-7 text-xs">
           <Plus className="w-3.5 h-3.5" /> Log Entry
         </Button>
       </div>
@@ -80,7 +80,7 @@ export default function ProgressDataTable({ data, metric, selectedClient, onLog 
             </div>
             <div className="flex justify-end gap-2 pt-1">
               <Button type="button" variant="outline" onClick={() => setShowLog(false)}>Cancel</Button>
-              <Button type="submit" className="bg-primary text-white hover:bg-primary">Save</Button>
+              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary">Save</Button>
             </div>
           </form>
         </DialogContent>

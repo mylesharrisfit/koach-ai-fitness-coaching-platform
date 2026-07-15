@@ -129,7 +129,7 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
         {CHART_TABS.map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={cn('px-3 py-1 rounded-lg text-xs font-semibold transition-all',
-              tab === t ? 'bg-primary text-white' : 'bg-muted text-foreground hover:bg-border')}>
+              tab === t ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground hover:bg-border')}>
             {t}
           </button>
         ))}

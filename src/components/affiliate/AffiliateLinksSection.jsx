@@ -62,7 +62,7 @@ export default function AffiliateLinksSection({ profile }) {
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-foreground">Custom Tracking Links</h3>
           <button onClick={() => setShowCreateForm(!showCreateForm)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary">
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:bg-primary">
             <Plus className="w-4 h-4" /> Create Link
           </button>
         </div>
@@ -95,7 +95,7 @@ export default function AffiliateLinksSection({ profile }) {
               className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <div className="flex gap-2">
-              <button type="submit" className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary">
+              <button type="submit" className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-bold hover:bg-primary">
                 Create
               </button>
               <button type="button" onClick={() => setShowCreateForm(false)}

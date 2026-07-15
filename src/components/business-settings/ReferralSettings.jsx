@@ -208,7 +208,7 @@ export default function ReferralSettings({ coachId }) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
+          className="w-full py-3 rounded-xl font-bold text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-50"
           style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
           <Save className="w-4 h-4" />
           {saving ? 'Saving...' : 'Save Settings'}

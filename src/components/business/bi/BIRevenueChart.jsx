@@ -71,7 +71,7 @@ export default function BIRevenueChart({ clients, payments }) {
         <div className="flex gap-1">
           {RANGES.map(r => (
             <button key={r.label} onClick={() => setRange(r.months)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${range === r.months ? 'bg-primary text-white' : 'bg-muted text-muted-foreground hover:bg-border'}`}>
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${range === r.months ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-border'}`}>
               {r.label}
             </button>
           ))}

@@ -359,7 +359,7 @@ export default function AIProgressAnalyzer({
         {hasEnoughData && !generated && !loading && (
           <div className="text-center py-4">
             <p className="text-white/30 text-xs mb-3">Get personalized AI insights based on your data</p>
-            <button onClick={generate} className="px-5 py-2 rounded-xl text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, var(--tc-ai), var(--tc-primary))' }}>
+            <button onClick={generate} className="px-5 py-2 rounded-xl text-xs font-bold text-primary-foreground" style={{ background: 'linear-gradient(135deg, var(--tc-ai), var(--tc-primary))' }}>
               ✨ Get My Insights
             </button>
           </div>
@@ -422,7 +422,7 @@ export default function AIProgressAnalyzer({
                 <div className="text-center py-4">
                   <p className="text-xs text-muted-foreground mb-3">Generate an intelligent analysis of this client's full progress data</p>
                   <button onClick={generate}
-                    className="flex items-center gap-2 mx-auto px-4 py-2 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+                    className="flex items-center gap-2 mx-auto px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
                     <Sparkles className="w-4 h-4" /> Analyze Progress
                   </button>
                 </div>

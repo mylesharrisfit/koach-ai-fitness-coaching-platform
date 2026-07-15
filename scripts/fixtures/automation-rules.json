@@ -1,0 +1,76 @@
+{
+  "_comment": "Automation rehearsal fixture (Step 4.3). Covers BOTH rule shapes plus edge cases. Dates are relative offsets (days ago) resolved by the harness against a fixed `now`, so the rehearsal is deterministic.",
+  "rules": [
+    {
+      "key": "legacy_missed_checkin",
+      "shape": "condition",
+      "name": "Legacy: Missed check-in",
+      "is_active": true,
+      "condition_type": "missed_checkin",
+      "condition_threshold": 10,
+      "action_type": "notify_coach",
+      "action_message": "Legacy rule: {client_name} hasn't checked in."
+    },
+    {
+      "key": "legacy_low_adherence",
+      "shape": "condition",
+      "name": "Legacy: Low adherence",
+      "is_active": true,
+      "condition_type": "low_adherence",
+      "condition_threshold": 60,
+      "action_type": "send_message",
+      "action_message": "Legacy: {client_name}, let's talk adherence."
+    },
+    {
+      "key": "new_no_checkin",
+      "shape": "trigger",
+      "name": "New: No check-in nudge",
+      "is_active": true,
+      "trigger_type": "no_checkin",
+      "trigger_value": 10,
+      "actions": [
+        { "type": "send_message", "message": "Hey {client_name}, missing your check-ins!" },
+        { "type": "flag_at_risk" }
+      ]
+    },
+    {
+      "key": "new_streak_badge",
+      "shape": "trigger",
+      "name": "New: Streak badge",
+      "is_active": true,
+      "trigger_type": "streak",
+      "trigger_value": 3,
+      "actions": [
+        { "type": "award_badge", "value": "streak_7" },
+        { "type": "send_message", "message": "{streak}-check-in streak, {client_name}!" }
+      ]
+    },
+    {
+      "key": "inactive_rule",
+      "shape": "trigger",
+      "name": "Inactive rule (must never run)",
+      "is_active": false,
+      "trigger_type": "no_checkin",
+      "trigger_value": 1,
+      "actions": [{ "type": "send_message", "message": "should not send" }]
+    }
+  ],
+  "clients": [
+    { "key": "stale", "name": "Stale Steve", "email": "steve@fx.io", "lifecycle_status": "active", "goal": "weight_loss", "last_checkin_days_ago": 20 },
+    { "key": "lowadh", "name": "Lowadh Lisa", "email": "lisa@fx.io", "lifecycle_status": "active", "goal": "muscle_gain", "last_checkin_days_ago": 2 },
+    { "key": "streaker", "name": "Streak Sam", "email": "sam@fx.io", "lifecycle_status": "active", "goal": "general_fitness", "last_checkin_days_ago": 1 },
+    { "key": "lead", "name": "Lead Larry", "email": "larry@fx.io", "lifecycle_status": "lead", "goal": "general_fitness", "last_checkin_days_ago": 30 }
+  ],
+  "checkins": {
+    "lowadh": [
+      { "days_ago": 2,  "compliance_training": 40, "compliance_nutrition": 45, "sleep_hours": 5 },
+      { "days_ago": 9,  "compliance_training": 45, "compliance_nutrition": 50, "sleep_hours": 6 },
+      { "days_ago": 16, "compliance_training": 50, "compliance_nutrition": 48, "sleep_hours": 6 }
+    ],
+    "streaker": [
+      { "days_ago": 1,  "compliance_training": 95, "compliance_nutrition": 92, "sleep_hours": 8 },
+      { "days_ago": 8,  "compliance_training": 90, "compliance_nutrition": 88, "sleep_hours": 8 },
+      { "days_ago": 15, "compliance_training": 93, "compliance_nutrition": 90, "sleep_hours": 7 }
+    ]
+  }
+}

@@ -174,7 +174,7 @@ export default function ProgramSettingsPanel({ meta, onMetaChange }) {
               className={cn(
                 'px-2 py-1.5 rounded-lg text-xs font-medium transition-all border',
                 (meta.equipment || []).includes(eq)
-                  ? 'bg-primary text-white border-primary'
+                  ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-muted text-muted-foreground border-border hover:border-muted-foreground'
               )}
             >

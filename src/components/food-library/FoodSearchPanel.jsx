@@ -154,7 +154,7 @@ export default function FoodSearchPanel({ onSave, isSaved }) {
                 className={cn(
                   'px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border',
                   activeCategory === cat
-                    ? 'bg-primary text-white border-primary'
+                    ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-card border-border text-muted-foreground hover:border-primary/40'
                 )}
               >

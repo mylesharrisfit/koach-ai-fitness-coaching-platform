@@ -51,7 +51,7 @@ export default function ProgramAssignedClientsPanel({
             size="sm"
             onClick={onAssign}
             className="w-full gap-1.5 text-xs"
-            style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)' }}
+            style={{ background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Client
           </Button>

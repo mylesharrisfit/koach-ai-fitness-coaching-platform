@@ -160,7 +160,7 @@ export default function EmailTemplateLibrary({ coachId }) {
 
               <div className="flex gap-2">
                 <button onClick={handleSaveTemplate} disabled={saveMutation.isPending}
-                  className="px-6 py-2 rounded-lg bg-primary text-white font-bold hover:bg-primary disabled:opacity-50">
+                  className="px-6 py-2 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary disabled:opacity-50">
                   Save Template
                 </button>
                 <button onClick={() => setEditMode(false)}
@@ -183,7 +183,7 @@ export default function EmailTemplateLibrary({ coachId }) {
                   <Copy className="w-4 h-4" /> Copy HTML
                 </button>
                 <button onClick={() => setEditMode(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-bold hover:bg-primary">
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary">
                   <Eye className="w-4 h-4" /> Edit Template
                 </button>
               </div>

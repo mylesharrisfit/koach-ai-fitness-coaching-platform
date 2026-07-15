@@ -51,7 +51,7 @@ export default function CoachSoftwareScreen({ onNext, onBack, data }) {
               }}
             >
               <span className="text-lg flex-shrink-0">{s.emoji}</span>
-              <span className="text-sm font-semibold" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-9a9a9a)' }}>
+              <span className="text-sm font-semibold" style={{ color: isSelected ? 'var(--tc-primary-foreground)' : 'var(--kc-9a9a9a)' }}>
                 {s.label}
               </span>
             </motion.button>

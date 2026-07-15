@@ -346,7 +346,7 @@ export default function EmailCenter() {
           <div className="flex-1 overflow-auto bg-muted p-3" style={{ minHeight: 400 }}>
             <div className={cn('mx-auto transition-all', previewDevice === 'mobile' ? 'max-w-[375px]' : 'max-w-full')}>
               <iframe
-                srcDoc={rendered.html || '<p style="padding:20px;color:var(--kc-999999);">Select a template to preview</p>'}
+                srcDoc={rendered.html || '<p style="padding:20px;color:#999999;">Select a template to preview</p>'}
                 className="w-full border-0 rounded-xl shadow-sm"
                 style={{ minHeight: 520, background: 'var(--tc-card)' }}
                 title="Email Preview"

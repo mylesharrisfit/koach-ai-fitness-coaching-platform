@@ -4,9 +4,12 @@
  */
 
 /**
- * Coach-facing dark mode. The theme system (theme.js, the .dark token block,
- * the Settings Appearance tab) is fully built, but most pages still hardcode
- * light colors, so exposing the switch would break them. Flip to `true` only
- * once the tokenization sweep is complete and dark mode reads correctly app-wide.
+ * Coach-facing dark mode. Re-enabled after the extended audit v2
+ * (npm run audit:darkmode): 25 pages — every page hosting a --kc-* token —
+ * crawled through tabs/modals/drill-downs (205 UI states, not just initial
+ * renders) with ZERO dark-only color-contrast violations. Remaining
+ * un-overridden --kc-* tokens are documented theme-invariant groups
+ * (brand/integration colors, fixed-dark onboarding + hero/pill surfaces,
+ * medals) — see the token comment in src/index.css.
  */
-export const darkModeEnabled = false;
+export const darkModeEnabled = true;

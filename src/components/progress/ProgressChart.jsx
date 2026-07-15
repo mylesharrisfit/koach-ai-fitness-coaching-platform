@@ -18,7 +18,7 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
       <div className="bg-card border border-border rounded-xl flex flex-col items-center justify-center py-16 gap-3">
         <BarChart2 className="w-10 h-10 text-muted-foreground" />
         <p className="text-muted-foreground text-sm">Not enough data for this metric.</p>
-        <p className="text-[var(--kc-c4c9d4)] text-xs">Log at least 2 check-ins to see a chart.</p>
+        <p className="text-[var(--tc-muted-foreground)] text-xs">Log at least 2 check-ins to see a chart.</p>
       </div>
     );
   }
@@ -82,7 +82,7 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
             onClick={() => onTimeRangeChange(r)}
             className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${
               timeRange === r
-                ? 'bg-primary text-white'
+                ? 'bg-primary text-primary-foreground'
                 : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'
             }`}
           >

@@ -34,7 +34,7 @@ export default function LogWeightModal({ client, onSave, onClose, loading }) {
           <button
             onClick={() => weight && onSave(parseFloat(weight), date, notes)}
             disabled={!weight || loading}
-            className="px-4 py-2 text-xs rounded-lg bg-primary text-white font-semibold disabled:opacity-50">
+            className="px-4 py-2 text-xs rounded-lg bg-primary text-primary-foreground font-semibold disabled:opacity-50">
             {loading ? 'Saving...' : 'Save'}
           </button>
         </div>

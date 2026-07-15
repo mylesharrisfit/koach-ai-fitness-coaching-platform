@@ -58,7 +58,7 @@ function FAQItem({ q, a }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between py-4 text-left group"
       >
-        <span className="text-sm font-semibold text-border group-hover:text-white transition-colors">{q}</span>
+        <span className="text-sm font-semibold text-sidebar-foreground group-hover:text-white transition-colors">{q}</span>
         <ChevronDown className={cn('w-4 h-4 text-muted-foreground transition-transform duration-200 flex-shrink-0 ml-4', open && 'rotate-180')} />
       </button>
       {open && (
@@ -173,11 +173,11 @@ export default function Subscription() {
         {/* Page Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Button variant="ghost" size="sm" onClick={refreshUser} className="text-muted-foreground hover:text-border text-xs">
+            <Button variant="ghost" size="sm" onClick={refreshUser} className="text-muted-foreground hover:text-sidebar-foreground text-xs">
               <RefreshCw className="w-3 h-3 mr-1" /> Refresh
             </Button>
             {user?.stripe_subscription_id && (
-              <Button variant="ghost" size="sm" onClick={handleOpenPortal} disabled={openingPortal} className="text-muted-foreground hover:text-border text-xs">
+              <Button variant="ghost" size="sm" onClick={handleOpenPortal} disabled={openingPortal} className="text-muted-foreground hover:text-sidebar-foreground text-xs">
                 <ExternalLink className="w-3 h-3 mr-1" />
                 {openingPortal ? 'Opening...' : 'Billing Portal'}
               </Button>

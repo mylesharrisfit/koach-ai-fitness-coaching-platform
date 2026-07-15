@@ -150,7 +150,7 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
           </p>
           <div className="flex items-center gap-2 flex-wrap">
             <button onClick={() => { onUse(suggestion); setVisible(false); setSuggestion(null); }}
-              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors">
+              className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
               <Check className="w-3 h-3" /> Use This
             </button>
             <button onClick={() => { onEditFirst(suggestion); setVisible(false); setSuggestion(null); }}

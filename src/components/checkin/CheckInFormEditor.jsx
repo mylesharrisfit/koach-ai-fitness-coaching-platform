@@ -263,7 +263,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
                   <BookOpen className="w-3.5 h-3.5" /> Presets
                 </button>
                 <button onClick={() => addQuestion()}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-white px-3 py-1.5 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-primary-foreground px-3 py-1.5 rounded-lg transition-colors"
                   style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
                   <Plus className="w-3.5 h-3.5" /> Add
                 </button>

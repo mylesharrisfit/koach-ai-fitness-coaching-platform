@@ -72,7 +72,7 @@ export default function StepGoal({ steps = 0, goal = 10000, onChange }) {
             placeholder="Steps to add..."
             className="flex-1 h-10 px-3 text-sm border border-border rounded-xl outline-none focus:border-primary text-foreground"
           />
-          <button onClick={handleAdd} className="px-4 h-10 bg-sidebar text-white text-sm font-bold rounded-xl hover:bg-[var(--kc-1f2937)] transition-colors">Add</button>
+          <button onClick={handleAdd} className="px-4 h-10 bg-sidebar text-white text-sm font-bold rounded-xl hover:bg-sidebar-accent transition-colors">Add</button>
           <button onClick={() => setAdding(false)} className="px-3 h-10 border border-border text-sm text-muted-foreground rounded-xl hover:bg-background transition-colors">✕</button>
         </div>
       ) : (

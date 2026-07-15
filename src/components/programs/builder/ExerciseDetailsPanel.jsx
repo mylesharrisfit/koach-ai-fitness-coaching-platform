@@ -108,7 +108,7 @@ export default function ExerciseDetailsPanel({ exercise, onChange, onClose }) {
                 className="text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors"
                 style={{
                   background: exercise.set_type === st.value ? 'var(--tc-primary)' : 'var(--tc-muted)',
-                  color: exercise.set_type === st.value ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                  color: exercise.set_type === st.value ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                 }}
               >
                 {st.label}

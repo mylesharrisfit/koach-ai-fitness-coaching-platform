@@ -147,7 +147,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
           {lead.stage !== 'closed_won' && (
             <button
               onClick={convertToClient}
-              className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-white flex items-center justify-center gap-2"
+              className="mt-3 w-full py-2.5 rounded-xl font-bold text-sm text-primary-foreground flex items-center justify-center gap-2"
               style={{ background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))' }}
             >
               <UserCheck className="w-4 h-4" /> Convert to Client →

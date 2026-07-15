@@ -85,7 +85,7 @@ export default function ClientMetricsScreen({ onNext, onBack, data }) {
                 style={{
                   background: form.activity_level === a.id ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                   border: form.activity_level === a.id ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                  color: form.activity_level === a.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  color: form.activity_level === a.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                   boxShadow: form.activity_level === a.id ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
                 }}>{a.label}</motion.button>
             ))}

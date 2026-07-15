@@ -134,7 +134,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
               value={draft.description || ''}
               onChange={e => u('description', e.target.value)}
               placeholder="What's this program about?"
-              className="w-full text-sm px-3 py-2.5 rounded-xl resize-none focus:outline-none transition-colors placeholder:text-[var(--kc-c4c9d4)] text-foreground"
+              className="w-full text-sm px-3 py-2.5 rounded-xl resize-none focus:outline-none transition-colors placeholder:text-[var(--tc-muted-foreground)] text-foreground"
               style={{ border: '0.5px solid var(--tc-border)', background: 'var(--tc-muted)' }}
             />
           </div>
@@ -158,7 +158,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
                     className="flex-1 py-2 text-xs font-semibold capitalize transition-colors"
                     style={{
                       background: active ? 'var(--tc-primary)' : 'var(--tc-card)',
-                      color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                      color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                       borderRight: idx < DIFFICULTIES.length - 1 ? '0.5px solid var(--tc-border)' : 'none',
                     }}
                   >
@@ -208,7 +208,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                     style={{
                       background: on ? 'var(--tc-primary)' : 'var(--tc-muted)',
-                      color: on ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                      color: on ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                       border: on ? '1px solid var(--tc-primary)' : '0.5px solid var(--tc-border)',
                     }}
                   >
@@ -283,7 +283,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90"
+              className="px-5 py-2 rounded-xl text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               style={{ background: 'var(--tc-primary)' }}
             >
               Save
@@ -387,7 +387,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
           <img src={thumb} alt={ex.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Dumbbell className="w-4 h-4 text-[var(--kc-4b5563)]" />
+            <Dumbbell className="w-4 h-4 text-[var(--tc-muted-foreground)]" />
           </div>
         )}
         {hasVideo && (
@@ -399,7 +399,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
 
       {/* Name */}
       <p className="w-28 flex-shrink-0 text-sm font-medium text-foreground truncate">
-        {ex.name || <span className="text-[var(--kc-c4c9d4)] font-normal">Unnamed</span>}
+        {ex.name || <span className="text-[var(--tc-muted-foreground)] font-normal">Unnamed</span>}
       </p>
 
       {/* Free-text prescription */}
@@ -409,7 +409,7 @@ function ExerciseRow({ ex, exLibMap, dragProvided, isDragging, isSelected, onCli
         onClick={e => e.stopPropagation()}
         onChange={e => onPrescriptionChange(e.target.value)}
         placeholder="3 × 8–12 reps"
-        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-border bg-muted text-foreground placeholder:text-[var(--kc-c4c9d4)] focus:outline-none focus:border-primary focus:bg-card transition-colors"
+        className="flex-1 min-w-0 text-xs px-2 py-1.5 rounded-lg border border-border bg-muted text-foreground placeholder:text-[var(--tc-muted-foreground)] focus:outline-none focus:border-primary focus:bg-card transition-colors"
       />
 
       {/* Remove */}
@@ -633,7 +633,7 @@ function DayCard({
             ) : (
               <button onClick={() => setEditingTitle(true)} className="text-left group/title flex items-center gap-1">
                 <span className="text-sm font-bold text-foreground">{day.day_name || 'Untitled Day'}</span>
-                <span className="text-[10px] text-[var(--kc-c4c9d4)] opacity-0 group-hover/title:opacity-100 transition-opacity ml-1">edit</span>
+                <span className="text-[10px] text-[var(--tc-muted-foreground)] opacity-0 group-hover/title:opacity-100 transition-opacity ml-1">edit</span>
               </button>
             )}
 
@@ -667,10 +667,10 @@ function DayCard({
           </div>
 
           <div className="flex items-center gap-1 flex-shrink-0">
-            <button onClick={onDuplicateDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--kc-c4c9d4)] hover:text-foreground hover:bg-muted transition-colors">
+            <button onClick={onDuplicateDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--tc-muted-foreground)] hover:text-foreground hover:bg-muted transition-colors">
               <Copy className="w-3.5 h-3.5" />
             </button>
-            <button onClick={onRemoveDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--kc-c4c9d4)] hover:text-destructive hover:bg-destructive/10 transition-colors">
+            <button onClick={onRemoveDay} className="w-7 h-7 flex items-center justify-center rounded-lg text-[var(--tc-muted-foreground)] hover:text-destructive hover:bg-destructive/10 transition-colors">
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -687,7 +687,7 @@ function DayCard({
               value={day.workout_notes || ''}
               onChange={e => onUpdateDay({ workout_notes: e.target.value })}
               placeholder="Workout notes / bio — warmup intent, focus, coaching cues for the client..."
-              className="w-full text-xs px-3 py-2.5 rounded-xl border border-border bg-muted text-foreground placeholder:text-[var(--kc-c4c9d4)] focus:outline-none focus:border-primary resize-none transition-colors"
+              className="w-full text-xs px-3 py-2.5 rounded-xl border border-border bg-muted text-foreground placeholder:text-[var(--tc-muted-foreground)] focus:outline-none focus:border-primary resize-none transition-colors"
             />
           </div>
 
@@ -696,7 +696,7 @@ function DayCard({
             {(prov) => (
               <div ref={prov.innerRef} {...prov.droppableProps} className="space-y-1.5">
                 {allItems.length === 0 ? (
-                  <p className="text-xs text-[var(--kc-c4c9d4)] text-center py-4">No exercises yet — add one below</p>
+                  <p className="text-xs text-[var(--tc-muted-foreground)] text-center py-4">No exercises yet — add one below</p>
                 ) : renderItems(allItems)}
                 {prov.placeholder}
               </div>
@@ -1082,7 +1082,7 @@ export default function ProgramBuilder() {
               value={meta.title}
               onChange={e => { setMeta(m => ({ ...m, title: e.target.value })); trackChange(); }}
               placeholder="Program name..."
-              className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-foreground font-semibold placeholder:text-[var(--kc-c4c9d4)]"
+              className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-foreground font-semibold placeholder:text-[var(--tc-muted-foreground)]"
               style={{ fontSize: 18 }}
             />
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -1105,7 +1105,7 @@ export default function ProgramBuilder() {
             <button
               onClick={handleSave}
               disabled={saveMutation.isPending}
-              className="flex items-center gap-1.5 text-xs font-semibold text-white px-4 py-1.5 rounded-lg transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="flex items-center gap-1.5 text-xs font-semibold text-primary-foreground px-4 py-1.5 rounded-lg transition-opacity hover:opacity-90 disabled:opacity-60"
               style={{ background: 'var(--tc-primary)' }}
             >
               <Save className="w-3.5 h-3.5" />
@@ -1159,7 +1159,7 @@ export default function ProgramBuilder() {
                   className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold transition-colors"
                   style={{
                     background: active ? 'var(--tc-primary)' : 'var(--tc-card)',
-                    color: active ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                    color: active ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                     borderRight: mode === 'repeat' ? '0.5px solid var(--tc-border)' : 'none',
                   }}
                 >
@@ -1200,7 +1200,7 @@ export default function ProgramBuilder() {
                   className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all"
                   style={{
                     background: safeWeek === i ? 'var(--tc-foreground)' : 'var(--tc-muted)',
-                    color: safeWeek === i ? 'var(--tc-card)' : 'var(--tc-muted-foreground)',
+                    color: safeWeek === i ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
                   }}
                 >
                   Week {w.weekNum}
@@ -1213,7 +1213,7 @@ export default function ProgramBuilder() {
                   <PopoverTrigger asChild>
                     <button
                       onClick={e => e.stopPropagation()}
-                      className="ml-0.5 w-5 h-5 flex items-center justify-center rounded-full text-[var(--kc-c4c9d4)] hover:text-foreground hover:bg-muted transition-colors"
+                      className="ml-0.5 w-5 h-5 flex items-center justify-center rounded-full text-[var(--tc-muted-foreground)] hover:text-foreground hover:bg-muted transition-colors"
                       title="Copy week to…"
                     >
                       <Copy className="w-2.5 h-2.5" />
@@ -1266,7 +1266,7 @@ export default function ProgramBuilder() {
                       <button
                         onClick={() => copyWeekToTargets(i, copyTargets)}
                         disabled={copyTargets.length === 0}
-                        className="w-full py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity disabled:opacity-40"
+                        className="w-full py-1.5 rounded-lg text-xs font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
                         style={{ background: 'var(--tc-primary)' }}
                       >
                         Copy to {copyTargets.length > 0 ? `${copyTargets.length} week${copyTargets.length !== 1 ? 's' : ''}` : 'weeks'}
@@ -1342,7 +1342,7 @@ export default function ProgramBuilder() {
                     addWeek();
                   }
                 }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground"
                 style={{ background: 'var(--tc-primary)' }}>
                 <Plus className="w-4 h-4" /> {scheduleMode === 'repeat' ? 'Build template' : 'Add Week 1'}
               </button>

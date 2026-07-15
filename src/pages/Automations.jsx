@@ -344,7 +344,7 @@ export default function Automations() {
             {running ? 'Running...' : 'Run Now'}
           </button>
           <button onClick={() => { setEditingRule(null); setModalOpen(true); }}
-            className="flex items-center gap-1.5 text-xs font-bold bg-primary hover:bg-primary/90 text-white px-3 py-1.5 rounded-lg transition-colors">
+            className="flex items-center gap-1.5 text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-lg transition-colors">
             <Plus className="w-3.5 h-3.5" /> New Rule
           </button>
         </div>

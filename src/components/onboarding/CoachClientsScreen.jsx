@@ -50,7 +50,7 @@ export default function CoachClientsScreen({ onNext, onBack, data }) {
                 {o.label}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold" style={{ color: isSelected ? 'var(--tc-card)' : 'var(--kc-b3b3b3)' }}>
+                <p className="text-sm font-semibold" style={{ color: isSelected ? 'var(--tc-primary-foreground)' : 'var(--kc-b3b3b3)' }}>
                   {o.sub}
                 </p>
               </div>

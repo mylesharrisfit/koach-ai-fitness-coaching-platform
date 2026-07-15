@@ -51,7 +51,7 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
               style={{
                 background: favFoods.includes(f) ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                 border: favFoods.includes(f) ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                color: favFoods.includes(f) ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                color: favFoods.includes(f) ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                 boxShadow: favFoods.includes(f) ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
               }}
             >
@@ -71,7 +71,7 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
                 style={{
                   background: diet === d.id ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                   border: diet === d.id ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                  color: diet === d.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  color: diet === d.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                 }}>{d.label}</motion.button>
             ))}
           </div>
@@ -88,7 +88,7 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
                 style={{
                   background: meals === m.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
                   border: meals === m.id ? '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-                  color: meals === m.id ? 'var(--tc-card)' : 'var(--kc-7a7a7a)',
+                  color: meals === m.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
                   boxShadow: meals === m.id ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
                 }}>{m.label}</motion.button>
             ))}

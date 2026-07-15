@@ -65,8 +65,8 @@
     --card-foreground: 237 238 240;
     --popover: 24 25 28;
     --popover-foreground: 237 238 240;
-    --primary: 59 130 246;
-    --primary-foreground: 255 255 255;
+    --primary: 96 165 250;
+    --primary-foreground: 23 37 84;
     --secondary: 33 35 40;
     --secondary-foreground: 237 238 240;
     --muted: 33 35 40;
@@ -81,7 +81,9 @@
     --success: 52 211 153;
     --warning: 251 191 36;
     --ai: 167 139 250;
-    --ai-foreground: 255 255 255;
+    /* dark navy-violet text on the lighter dark-mode --ai fill (same treatment
+       as --primary-foreground): white on #a78bfa is only 2.8:1 */
+    --ai-foreground: 46 16 101;
   }
 }
 
@@ -163,6 +165,7 @@ input[type='range']::-moz-range-thumb {
   /* @companion-tokens: color values for inline styles (kept out of JSX). */
   :root {
     --tc-accent: rgb(var(--accent));
+    --tc-accent-foreground: rgb(var(--accent-foreground));
     --tc-ai: rgb(var(--ai));
     --tc-background: rgb(var(--background));
     --tc-border: rgb(var(--border));
@@ -172,13 +175,43 @@ input[type='range']::-moz-range-thumb {
     --tc-muted: rgb(var(--muted));
     --tc-muted-foreground: rgb(var(--muted-foreground));
     --tc-primary: rgb(var(--primary));
+    --tc-primary-foreground: rgb(var(--primary-foreground));
     --tc-sidebar: rgb(var(--sidebar-background));
+    --tc-sidebar-accent: rgb(var(--sidebar-accent));
     --tc-sidebar-accent-foreground: rgb(var(--sidebar-accent-foreground));
     --tc-sidebar-background: rgb(var(--sidebar-background));
     --tc-sidebar-border: rgb(var(--sidebar-border));
     --tc-sidebar-primary: rgb(var(--sidebar-primary));
     --tc-success: rgb(var(--success));
     --tc-warning: rgb(var(--warning));
+    /* --kc-* raw-hex tokens (Step 4.4 close-out). Everything remappable to a
+       semantic token has been remapped at the call sites (gray text ->
+       tc-muted-foreground / tc-foreground, white-on-primary ->
+       text-primary-foreground, etc.). What remains here is intentionally
+       theme-INVARIANT and stays identical in dark mode:
+         - integration/brand colors (Stripe #635bff, Google #4285f4/#ea4335/
+           #fbbc05/#34a853, Zoom #2d8cff, Zapier #ff4a00, WhatsApp #25d366,
+           Slack #4a154b, Strava #fc4c02, PayPal #003087, ...),
+         - the fixed-dark onboarding/landing palette (#0f0f1a surfaces with
+           #333333..#b3b3b3 gray ramp) — that flow renders dark in BOTH themes,
+         - award/medal FILLS (gold #ffd700, silver #c0c0c0, bronze #cd7f32);
+           their paired text/gradient tokens (#1a1000/#1a0f00/#03111a,
+           #62d7ff, #b8860b) and the adherence podium surfaces
+           (#161820/#2c2414/#1a1608) carry EXPLICIT same-value entries in the
+           :root.dark block below — evaluated, not merely exempted,
+         - fixed-dark hero/pill/panel surfaces that always carry light text:
+           #18191f (badge cards), #0a0a0a/#0d0d0d (logo tile,
+           bell dot ring), #1a2744/#1e1a3a (OnboardingManager hero gradients,
+           anchored on --tc-sidebar), #1e2d45/#2d3a55 (buttons on dark modal
+           headers), #0f1117/#120c35/#1a1040 (pricing cards), #222222 (black
+           button hover), #141414/#161616/#0f0f1a/#1a2a4a/#2e2e2e (onboarding
+           and error panels).
+       EVERYTHING ELSE flips in dark mode via the :root.dark block after this
+       one: light tint chips, saturated chip text/icons, and (incident
+       follow-up) chart/series/avatar accents. Invariant enforced by audit v2
+       (darkmode-audit/run-audit.mjs — initial render PLUS tabs/modals/
+       drill-downs on 25 pages): a token without a .dark override must belong
+       to one of the exempt groups above. */
     --kc-000000: #000000;
     --kc-003087: #003087;
     --kc-0057d0: #0057d0;
@@ -217,7 +250,6 @@ input[type='range']::-moz-range-thumb {
     --kc-1a82e2: #1a82e2;
     --kc-1e1a3a: #1e1a3a;
     --kc-1e2d45: #1e2d45;
-    --kc-1f2937: #1f2937;
     --kc-222222: #222222;
     --kc-25d366: #25d366;
     --kc-262627: #262627;
@@ -238,7 +270,6 @@ input[type='range']::-moz-range-thumb {
     --kc-444444: #444444;
     --kc-4a154b: #4a154b;
     --kc-4a4a4a: #4a4a4a;
-    --kc-4b5563: #4b5563;
     --kc-4f46e5: #4f46e5;
     --kc-4f8ef7: #4f8ef7;
     --kc-555555: #555555;
@@ -268,8 +299,6 @@ input[type='range']::-moz-range-thumb {
     --kc-c0c0c0: #c0c0c0;
     --kc-c2410c: #c2410c;
     --kc-c3c3c3: #c3c3c3;
-    --kc-c4c4c4: #c4c4c4;
-    --kc-c4c9d4: #c4c9d4;
     --kc-ca8a04: #ca8a04;
     --kc-cccccc: #cccccc;
     --kc-cd7f32: #cd7f32;
@@ -313,7 +342,7 @@ input[type='range']::-moz-range-thumb {
     --kc-ff3b30: #ff3b30;
     --kc-ff4a00: #ff4a00;
     --kc-ffd700: #ffd700;
-    --kc-fff5f5: #fff5f5;
+    --kc-fff5f5: #fff5f5;    /* .dark override below */
     --kc-fffdf0: #fffdf0;
     --kc-w-5: rgba(255,255,255,0.05);
     --kc-w-10: rgba(255,255,255,0.10);
@@ -330,3 +359,100 @@ input[type='range']::-moz-range-thumb {
   }
 }
 /* @companion-tokens-end */
+
+/* kc raw-token DARK values (Step 4.4). These must OUTRANK the :root
+   definitions in the @companion-tokens block above: `:root` and `.dark`
+   tie at (0,1,0) specificity, so a plain `.dark` block earlier in the file
+   loses to the later :root block. `:root.dark` (0,2,0) wins regardless of
+   source order. */
+@layer base {
+  :root.dark {
+    /* kc raw-token dark values: hue-coded tint backgrounds (Step 4.4) */
+    /* Adherence medal/podium tokens — EXPLICIT same-value dark entries: each
+       pairs with a fill or panel that intentionally does not flip, so the
+       correct dark value is the light value (evaluated per usage in
+       Adherence.jsx, incident Part A):
+         03111a = text on the platinum #62d7ff tier chip
+         1a0f00 = text on the bronze  #cd7f32 tier chip
+         1a1000 = text on the gold    #ffd700 chip/avatar/award button
+         62d7ff = platinum tier fill/border/dot
+         b8860b = dark-gold endpoint of the 1st-place avatar gradient
+         161820 = podium runner-up card + award-dialog surface (fixed dark)
+         2c2414/1a1608 = 1st-place gold-tinted radial gradient (fixed dark) */
+    --kc-03111a: #03111a;
+    --kc-161820: #161820;
+    --kc-1a0f00: #1a0f00;
+    --kc-1a1000: #1a1000;
+    --kc-1a1608: #1a1608;
+    --kc-2c2414: #2c2414;
+    --kc-62d7ff: #62d7ff;
+    --kc-b8860b: #b8860b;
+    --kc-fff5f5: #2a1518;
+    --kc-fffdf0: #262114;
+    /* hue-coded dark values for light tint chips + their saturated chip text
+       (generated: same hue, surface L=0.15 / text L=0.70) */
+    --kc-f0f9ff: #152a37;
+    --kc-f0f8ff: #152737;
+    --kc-f1f4fa: #162137;
+    --kc-f5f7fb: #172135;
+    --kc-fce7f3: #371529;
+    --kc-fdf2f8: #371528;
+    --kc-fef08a: #373315;
+    --kc-e6f1fb: #152737;
+    --kc-e6fbf3: #15372a;
+    --kc-eceef5: #1c2031;
+    --kc-eaecf5: #1a1e32;
+    --kc-ece5ff: #1e1537;
+    --kc-eeedfe: #171537;
+    --kc-f0fbe6: #253715;
+    --kc-f0fdfa: #153730;
+    --kc-faece7: #371e15;
+    --kc-d6e2ff: #151f37;
+    --kc-bae6fd: #152c37;
+    --kc-a7f3d0: #153728;
+    --kc-d8d0ff: #1b1537;
+    --kc-3730a3: #8e89dc;
+    --kc-9a3412: #ef9476;
+    --kc-c2410c: #f49771;
+    --kc-854f0b: #f3ba72;
+    --kc-9d174d: #eb7aa7;
+    --kc-993c1d: #e7987e;
+    --kc-1a6b4a: #84e1bb;
+    --kc-3a6b1a: #a9e184;
+    --kc-4f46e5: #7f79ec;
+    /* Incident follow-up (audit v2): accent/series/avatar colors keep their hue
+       with lightness floored at 0.55 on dark surfaces; colored icon/text-on-tint
+       tokens lightened to L=0.70 (same standard as the chip-text set above) */
+    --kc-0891b2: #71daf4;
+    --kc-0d9488: #72f3e7;
+    --kc-185fa5: #79b3ec;
+    --kc-3c3489: #9790d5;
+    --kc-ca8a04: #f4c971;
+    --kc-db2777: #e97cac;
+    --kc-ea580c: #f49e71;
+    --kc-0078ff: #1a85ff;
+    --kc-00d4ff: #1ad8ff;
+    --kc-00ff88: #1aff94;
+    --kc-06b6d4: #20d9f9;
+    --kc-14b8a6: #30e9d4;
+    --kc-3dbd8a: #51c798;
+    --kc-4f8ef7: #4f8ef7;
+    --kc-783cff: #783cff;
+    --kc-84cc16: #a0e930;
+    --kc-888888: #8c8c8c;
+    --kc-999999: #999999;
+    --kc-a875e8: #a875e8;
+    --kc-cccccc: #cccccc;
+    --kc-e1306c: #e23771;
+    --kc-eab308: #f7c321;
+    --kc-ec4899: #ec4899;
+    --kc-f45b5b: #f45b5b;
+    --kc-f472b6: #f472b6;
+    --kc-f5a623: #f5a623;
+    --kc-f97316: #f9791f;
+    --kc-fac775: #fac775;
+    --kc-fb923c: #fb923c;
+    --kc-ff0000: #ff1a1a;
+  }
+}
+

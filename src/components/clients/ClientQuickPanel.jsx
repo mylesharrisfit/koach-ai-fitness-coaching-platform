@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+// Step 2 cutover: Clients/CRM surface runs on Supabase via the base44-shaped
+// facade — call sites unchanged. Other pages remain on base44Client for now.
+import { supabase as base44 } from '@/api/supabaseClient';
 import {
   X, Edit, ExternalLink, Dumbbell, Salad, ClipboardCheck, MessageSquare,
   Phone, Target, Calendar, TrendingUp, Users, Plus, Send, CheckCircle2,
@@ -511,7 +513,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   </div>
                 ) : messages.map(msg => (
                   <div key={msg.id} className={cn('flex', msg.sender === 'coach' ? 'justify-end' : 'justify-start')}>
-                    <div className={cn('max-w-[75%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed', msg.sender === 'coach' ? 'bg-primary text-white rounded-br-sm' : 'bg-muted text-foreground rounded-bl-sm')}>
+                    <div className={cn('max-w-[75%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed', msg.sender === 'coach' ? 'bg-primary text-primary-foreground rounded-br-sm' : 'bg-muted text-foreground rounded-bl-sm')}>
                       <p>{msg.content}</p>
                       <p className={cn('text-[10px] mt-1', msg.sender === 'coach' ? 'text-white/60' : 'text-muted-foreground')}>
                         {formatDistanceToNow(new Date(msg.created_date), { addSuffix: true })}

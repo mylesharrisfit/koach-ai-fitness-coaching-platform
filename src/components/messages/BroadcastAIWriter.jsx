@@ -99,7 +99,7 @@ export default function BroadcastAIWriter({ clients, selectedClientIds, filter, 
                   onClick={() => setPreviewClient(c)}
                   className={cn(
                     'text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all',
-                    previewClient?.id === c.id ? 'bg-primary text-white border-primary' : 'bg-card border-border text-muted-foreground hover:border-primary/40'
+                    previewClient?.id === c.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-muted-foreground hover:border-primary/40'
                   )}
                 >
                   {c.name?.split(' ')[0]}
@@ -123,7 +123,7 @@ export default function BroadcastAIWriter({ clients, selectedClientIds, filter, 
                 </p>
                 <button
                   onClick={() => { onUseVersion(v.message); setOpen(false); }}
-                  className="flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors"
+                  className="flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
                 >
                   <Check className="w-3 h-3" /> Use This Version
                 </button>

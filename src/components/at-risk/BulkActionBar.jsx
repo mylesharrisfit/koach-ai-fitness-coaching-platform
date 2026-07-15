@@ -52,7 +52,7 @@ export default function BulkActionBar({ selectedIds, clients, allEntries, onClea
             <div className="flex gap-2 justify-end">
               <button onClick={() => setComposing(false)} className="px-4 py-2 text-sm border border-border rounded-lg text-foreground">Cancel</button>
               <button onClick={() => sendMutation.mutate(message)} disabled={!message.trim() || sendMutation.isPending}
-                className="px-4 py-2 text-sm bg-primary text-white rounded-lg font-semibold disabled:opacity-50">
+                className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg font-semibold disabled:opacity-50">
                 {sendMutation.isPending ? 'Sending...' : 'Send'}
               </button>
             </div>
@@ -62,7 +62,7 @@ export default function BulkActionBar({ selectedIds, clients, allEntries, onClea
             <span className="text-sm font-bold text-foreground">{selectedIds.length} selected</span>
             <div className="flex gap-2 flex-wrap">
               <button onClick={() => setComposing(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-white hover:bg-primary/90">
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
                 <MessageSquare className="w-3.5 h-3.5" /> Bulk Message
               </button>
               <button onClick={handleExport}

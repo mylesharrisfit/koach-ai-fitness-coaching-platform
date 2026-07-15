@@ -33,7 +33,7 @@ function GoalCard({ goal, selected, onClick }) {
       <div className="relative z-10 flex items-center gap-4">
         <span className="text-2xl leading-none">{goal.emoji}</span>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-base" style={{ color: selected ? 'var(--tc-card)' : 'var(--kc-b3b3b3)' }}>{goal.label}</p>
+          <p className="font-semibold text-base" style={{ color: selected ? 'var(--tc-primary-foreground)' : 'var(--kc-b3b3b3)' }}>{goal.label}</p>
           <p className="text-xs mt-0.5 leading-relaxed" style={{ color: 'var(--kc-5a5a5a)' }}>{goal.sublabel}</p>
         </div>
         <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition-all"

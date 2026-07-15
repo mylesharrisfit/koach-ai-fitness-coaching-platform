@@ -29,4 +29,6 @@ dist-ssr
 
 .env
 .vite
+migration-logs/
+darkmode-audit/out/
 base44/.app.jsonc

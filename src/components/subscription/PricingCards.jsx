@@ -39,8 +39,8 @@ const TIER_FEATURES = {
 };
 
 const CARD_CONFIG = {
-  starter:    { accentColor: 'var(--tc-muted-foreground)', checkColor: 'text-muted-foreground', btnClass: 'border-border text-border hover:bg-foreground/50 bg-transparent', badge: null },
-  pro:        { accentColor: 'var(--tc-primary)', checkColor: 'text-primary',  btnClass: 'bg-primary hover:bg-primary text-white border-0', badge: { label: 'MOST POPULAR', cls: 'bg-primary/20 text-primary border border-primary/30' } },
+  starter:    { accentColor: 'var(--tc-muted-foreground)', checkColor: 'text-muted-foreground', btnClass: 'border-border text-sidebar-foreground hover:bg-foreground/50 bg-transparent', badge: null },
+  pro:        { accentColor: 'var(--tc-primary)', checkColor: 'text-primary',  btnClass: 'bg-primary hover:bg-primary text-primary-foreground border-0', badge: { label: 'MOST POPULAR', cls: 'bg-primary/20 text-primary border border-primary/30' } },
   elite:      { accentColor: 'var(--tc-ai)', checkColor: 'text-ai', btnClass: '', badge: { label: '⭐ RECOMMENDED', cls: 'bg-gradient-to-r from-primary/20 to-ai/20 text-ai border border-ai/30' } },
   enterprise: { accentColor: 'var(--tc-warning)', checkColor: 'text-warning', btnClass: 'border-warning/50 text-warning hover:bg-warning/10 bg-transparent', badge: { label: 'ENTERPRISE', cls: 'bg-warning/10 text-warning border border-warning/30' } },
 };
@@ -124,7 +124,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
         {features.unique.map(f => (
           <div key={f} className="flex items-start gap-2">
             <Check className={cn('w-3.5 h-3.5 flex-shrink-0 mt-0.5', config.checkColor)} />
-            <span className="text-[12px] text-border font-medium leading-snug">{f}</span>
+            <span className="text-[12px] text-sidebar-foreground font-medium leading-snug">{f}</span>
           </div>
         ))}
       </div>
@@ -138,7 +138,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, onSelect }) {
         ) : isElite ? (
           <button
             onClick={() => onSelect(tierKey)}
-            className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
+            className="w-full py-2.5 rounded-xl text-sm font-bold text-primary-foreground transition-all hover:opacity-90"
             style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 40%, transparent)' }}
           >
             {isUpgrade ? `Upgrade to ${tier.name} →` : `Switch to ${tier.name}`}

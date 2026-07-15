@@ -198,7 +198,7 @@ function InlineRec({ rec, checkIn, client }) {
         {stage === 'done' && <span className="flex items-center gap-1 text-[11px] font-bold text-success flex-shrink-0"><Check className="w-3 h-3" /> Done</span>}
         {stage === 'confirm' && (
           <div className="flex gap-1.5 flex-shrink-0">
-            <button onClick={handleConfirm} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold active:scale-95">
+            <button onClick={handleConfirm} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-[11px] font-bold active:scale-95">
               <Check className="w-3 h-3" /> Apply
             </button>
             <button onClick={() => setStage('idle')} className="w-7 h-7 flex items-center justify-center rounded-lg bg-card border border-border active:scale-95">
@@ -278,7 +278,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
       <div className="flex items-center justify-between">
         <span className="text-[11px] text-muted-foreground">{text.length} chars</span>
         <button onClick={send} disabled={sending || !text.trim()}
-          className="flex items-center gap-1.5 h-9 px-5 rounded-xl bg-primary text-white text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all hover:bg-primary/90">
+          className="flex items-center gap-1.5 h-9 px-5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all hover:bg-primary/90">
           {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
           Send Feedback
         </button>
@@ -753,7 +753,7 @@ export default function FastReview() {
               </p>
             </div>
             <Link to="/"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors">
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors">
               <Home className="w-4 h-4" /> Back to Dashboard
             </Link>
           </div>
@@ -786,7 +786,7 @@ export default function FastReview() {
                 'flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-sm font-bold transition-all active:scale-95',
                 safeIdx >= activeQueue.length - 1
                   ? 'bg-success/10 border border-success text-success cursor-default'
-                  : 'bg-primary text-white hover:bg-primary/90 shadow-sm'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
               )}>
               {safeIdx >= activeQueue.length - 1
                 ? <><CheckCircle2 className="w-4 h-4" /> Last Client</>

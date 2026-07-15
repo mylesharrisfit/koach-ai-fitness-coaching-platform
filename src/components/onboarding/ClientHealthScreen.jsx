@@ -48,7 +48,7 @@ export default function ClientHealthScreen({ onNext, onBack, data }) {
             placeholder="Add any relevant medical history, medications, or concerns..."
             rows={4}
             className="w-full px-4 py-4 rounded-2xl text-white text-sm leading-relaxed resize-none focus:outline-none transition-all"
-            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-card)' }}
+            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-sidebar-accent-foreground)' }}
             onFocus={e => { e.target.style.border = '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
             onBlur={e => { e.target.style.border = '1px solid color-mix(in srgb, white 6%, transparent)'; }}
           />

@@ -135,7 +135,7 @@ export default function ProgramDetailModal({
                 onClick={onAssign}
                 size="sm"
                 className="h-8 px-3 text-xs font-semibold gap-1.5"
-                style={{ background: 'var(--tc-primary)', color: 'var(--tc-card)', border: 'none' }}
+                style={{ background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)', border: 'none' }}
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 Assign

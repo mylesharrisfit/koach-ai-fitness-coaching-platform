@@ -213,7 +213,7 @@ function InsightCard({ insight, onDismiss }) {
         <button
           onClick={() => navigate(insight.actionPath)}
           className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-lg transition-all hover:opacity-90 active:scale-95"
-          style={{ background: cfg.iconBg, color: 'var(--tc-card)' }}
+          style={{ background: cfg.iconBg, color: 'var(--tc-primary-foreground)' }}
         >
           {insight.actionLabel}
           <ArrowRight className="w-3.5 h-3.5" />

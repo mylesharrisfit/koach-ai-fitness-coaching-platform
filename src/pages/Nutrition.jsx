@@ -149,7 +149,7 @@ export default function Nutrition() {
         <div className="flex items-center gap-2 flex-wrap">
            <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => setShowAIModal(true)}
           >
             <Sparkles className="w-4 h-4" />
@@ -157,7 +157,7 @@ export default function Nutrition() {
           </button>
           <button
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold border transition-colors"
-            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-card)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
+            style={{ background: 'color-mix(in srgb, white 10%, transparent)', color: 'var(--tc-sidebar-accent-foreground)', borderColor: 'color-mix(in srgb, white 20%, transparent)' }}
             onClick={() => setShowPDFModal(true)}
           >
             📄 Upload PDF

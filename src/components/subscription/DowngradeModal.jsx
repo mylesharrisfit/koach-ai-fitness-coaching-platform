@@ -139,12 +139,12 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
 
           {/* Features being lost */}
           <div>
-            <p className="text-sm font-semibold text-border mb-3">Features you'll lose</p>
+            <p className="text-sm font-semibold text-sidebar-foreground mb-3">Features you'll lose</p>
             <div className="space-y-2">
               {losingFeatures.map(f => (
                 <div key={f} className="flex items-center gap-2 bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2">
                   <span className="text-destructive text-sm flex-shrink-0">❌</span>
-                  <span className="text-xs text-border">{f}</span>
+                  <span className="text-xs text-sidebar-foreground">{f}</span>
                 </div>
               ))}
             </div>
@@ -155,7 +155,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
             {/* Keep current — prominent */}
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all"
+              className="w-full py-3 rounded-xl text-sm font-bold text-primary-foreground transition-all"
               style={{ background: 'linear-gradient(to right, var(--tc-primary), var(--tc-ai))', boxShadow: '0 0 20px color-mix(in srgb, var(--tc-ai) 25%, transparent)' }}
             >
               Keep {fromTier.name} Plan

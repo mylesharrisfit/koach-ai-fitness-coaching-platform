@@ -29,7 +29,7 @@ export default function ClientWhyScreen({ onNext, onBack, data }) {
             style={{
               background: 'color-mix(in srgb, white 4%, transparent)',
               border: '1.5px solid color-mix(in srgb, white 7%, transparent)',
-              color: 'var(--tc-card)',
+              color: 'var(--tc-primary-foreground)',
             }}
             onFocus={e => { e.target.style.border = '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; e.target.style.boxShadow = '0 0 30px color-mix(in srgb, var(--tc-primary) 8%, transparent)'; }}
             onBlur={e => { e.target.style.border = '1.5px solid color-mix(in srgb, white 7%, transparent)'; e.target.style.boxShadow = 'none'; }}

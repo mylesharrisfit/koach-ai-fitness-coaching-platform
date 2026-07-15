@@ -74,7 +74,7 @@ export default function AIReplyPanel({
               {/* Use This */}
               <button
                 onClick={() => onUse(suggestion.message)}
-                className="flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-sm"
+                className="flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors shadow-sm"
               >
                 <Check className="w-3 h-3" /> Use This
               </button>

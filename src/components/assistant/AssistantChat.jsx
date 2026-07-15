@@ -127,7 +127,7 @@ function MessageBubble({ message }) {
       </div>
       <div className={cn(
         'max-w-[85%] rounded-2xl px-4 py-3 text-sm',
-        isUser ? 'bg-primary text-white' : 'bg-card border border-border text-foreground'
+        isUser ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-foreground'
       )}>
         {isUser ? (
           <p className="leading-relaxed">{message.content}</p>
