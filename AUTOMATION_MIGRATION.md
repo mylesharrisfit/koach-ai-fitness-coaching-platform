@@ -277,7 +277,7 @@ redundant — reconcile to one when porting.
 2. **validateSubscription** (Clients cutover already depends on it). ✅ DONE
 3. **submitOnboardingIntake** + the 5 **DB-trigger** functions (data-integrity
    path; reuse automationRunner executors). ✅ DONE
-4. AI functions behind a shared `_shared/anthropic.js`.
+4. AI functions behind a shared `_shared/anthropic.js`. ✅ DONE (5d)
 5. import/referral/integration/seed utilities.
 
 ## Step 5c (first tranche) — DELIVERED
@@ -347,3 +347,48 @@ old.coach_responded)` — the verbatim Base44 transition guard.
   owning coach's `coach_defaults` row.
 - The Base44 files hard-coded conflicting APP_URLs (app.koachai.com vs
   koachai.net); all templates now use env `APP_URL`.
+
+
+## Step 5d — AI functions — DELIVERED
+
+Seven AI functions ported behind shared plumbing; rehearsal
+`npm run verify:ai` (26/26 checks, Anthropic API stubbed, real Postgres):
+
+| shared module | owns |
+|---|---|
+| `_shared/anthropic.js` | messages-API envelope, model default (`ANTHROPIC_MODEL`, falls back to the latest Sonnet), tolerant JSON extraction (raw / fenced / prose) — replaces Base44's `Core.InvokeLLM` |
+| `_shared/aiMetering.js` | the monthly tier limit gate Base44 inlined three times (verbatim 402 payload, month rollover, counter on profiles) |
+| `_shared/assistantTools.js` | claudeAssistant's 10 `<action>` tools |
+| `_shared/importMapping.js` | mapImportColumns' deterministic mapper + AI-merge policy (AI fills nulls only) |
+| `_shared/ownership.js` | `ownsClient` split out of edgeClients so node rehearsals can import it (edgeClients re-exports) |
+
+Functions: claudeAssistant (agentic loop verbatim), aiMessageAssistant
+(4 prompt-only actions), generateAIProgram (metered; caller-scoped exercise
+library grounding + enrichment verbatim), generateMealPlan (metered),
+generateSmartMeals (metered; parallel batch strategy verbatim),
+generateExerciseLibrary (AI seed of the caller's library),
+mapImportColumns (deterministic + haiku-class best-effort enhancement).
+
+**SECURITY (multi-tenant corrections vs Base44):**
+- claudeAssistant executed EVERY tool `asServiceRole` with no ownership
+  checks — any coach could read/write any tenant's clients, plans,
+  check-ins, messages, and badges by asking the assistant. Every tool is now
+  ownership-scoped (rehearsed: foreign coach denied on all ten tools).
+- generateSmartMeals' `nutrition_plan_id` update path updated any
+  client-supplied id via service role — now verified against the caller.
+- Message/badge writes reuse the shared automation executors.
+
+**BUGFIX:** the import mapper's short abbreviation patterns ('ht', 'wt',
+'bw') substring-matched, so a plain "Weight" column mapped to `height`
+("weig**ht**") and imports corrupted. Short patterns now require exact match.
+
+**Deferred: analyzeProgress** — dead code today: nothing in the frontend
+invokes it, its `ProgressAnalysis` entity was deliberately not given a table
+in Step 1, and the only reader (`portal/progress/AIInsightsCard`) is an
+orphaned component. Porting it needs a product decision + a new
+`progress_analyses` table; revisit with the remaining utilities.
+
+Still pending (tranche 5): searchFoods, sendInvoiceReminder,
+sendCheckInReminders, commitClientImport, seedTeam/seedExerciseLibrary,
+push trio (getPushPublicKey/savePushSubscription/storePushSubscription),
+googleCalendarProxy, zoomProxy, referral pair, verifyProgramWorkoutCount.

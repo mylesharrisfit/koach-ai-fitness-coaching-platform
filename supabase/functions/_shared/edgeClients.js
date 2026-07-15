@@ -49,19 +49,9 @@ export async function getCaller(req) {
   return { auth: user, profile: profile ?? { id: user.id, email: user.email } };
 }
 
-/**
- * Verify a client row belongs to the caller (owning coach). Base44 checked
- * Client.created_by_id === user.id; the ported schema's owning-coach field is
- * clients.user_id (created_by is the creator) — accept either, via service role.
- * Returns the client row or null.
- */
-export async function ownsClient(svc, userId, clientId) {
-  if (!clientId) return null;
-  const { data: client } = await svc.from('clients').select('*').eq('id', clientId).maybeSingle();
-  if (!client) return null;
-  if (client.user_id !== userId && client.created_by !== userId) return null;
-  return client;
-}
+// ownsClient moved to _shared/ownership.js (dependency-free so node-based
+// rehearsals can import it); re-exported here for existing importers.
+export { ownsClient } from './ownership.js';
 
 export const cors = {
   'Access-Control-Allow-Origin': '*',
