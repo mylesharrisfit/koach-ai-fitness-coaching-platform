@@ -118,7 +118,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Current</p>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full" style={{ background: CARD_ACCENT[fromTierKey] }} />
-                <span className="font-bold text-border">{fromTier.name}</span>
+                <span className="font-bold text-sidebar-foreground">{fromTier.name}</span>
               </div>
               <div className="text-3xl font-bold text-muted-foreground">${fromPrice}<span className="text-sm font-normal text-muted-foreground">/mo</span></div>
             </div>
@@ -144,7 +144,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
 
           {/* Billing toggle */}
           <div>
-            <p className="text-sm font-semibold text-border mb-3">Billing cycle</p>
+            <p className="text-sm font-semibold text-sidebar-foreground mb-3">Billing cycle</p>
             <div className="flex items-center bg-[var(--kc-w-5)] rounded-full p-1 border border-white/10 w-fit">
               {['monthly', 'annual'].map(b => (
                 <button
@@ -164,14 +164,14 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
 
           {/* New features you're gaining */}
           <div>
-            <p className="text-sm font-semibold text-border mb-3 flex items-center gap-2">
+            <p className="text-sm font-semibold text-sidebar-foreground mb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-ai" /> What you're gaining
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {newFeatures.map(f => (
                 <div key={f} className="flex items-center gap-2 bg-success/5 border border-success/20 rounded-lg px-3 py-2">
                   <Check className="w-3.5 h-3.5 text-success flex-shrink-0" />
-                  <span className="text-xs text-border">{f}</span>
+                  <span className="text-xs text-sidebar-foreground">{f}</span>
                   <span className="ml-auto text-[9px] font-bold uppercase bg-success/20 text-success px-1.5 py-0.5 rounded-full">NEW</span>
                 </div>
               ))}
@@ -180,7 +180,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
 
           {/* Coupon */}
           <div>
-            <p className="text-sm font-semibold text-border mb-2">Promo code</p>
+            <p className="text-sm font-semibold text-sidebar-foreground mb-2">Promo code</p>
             <div className="flex gap-2">
               <input
                 value={coupon}
@@ -190,7 +190,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
               />
               <button
                 onClick={handleApplyCoupon}
-                className="px-4 py-2 rounded-xl border border-white/10 text-sm text-border hover:bg-[var(--kc-w-5)] transition-colors"
+                className="px-4 py-2 rounded-xl border border-white/10 text-sm text-sidebar-foreground hover:bg-[var(--kc-w-5)] transition-colors"
               >
                 Apply
               </button>
@@ -233,7 +233,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
             <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
               <Lock className="w-3 h-3" /> Secured by Stripe · SSL Encrypted
             </p>
-            <button onClick={onClose} className="w-full text-center text-xs text-muted-foreground hover:text-border transition-colors py-1">
+            <button onClick={onClose} className="w-full text-center text-xs text-muted-foreground hover:text-sidebar-foreground transition-colors py-1">
               Maybe Later
             </button>
           </div>

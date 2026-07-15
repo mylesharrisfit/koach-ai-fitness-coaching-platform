@@ -61,7 +61,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
 
         {/* ── HEADER (fixed) ── */}
         <div className="relative px-7 pt-8 pb-6 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--kc-1a2744) 100%)', flexShrink: 0 }}>
+          style={{ background: 'linear-gradient(135deg, var(--tc-sidebar) 0%, var(--kc-1a2744) 100%)', flexShrink: 0 }}>
           {/* Decorative glow */}
           <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full opacity-20"
             style={{ background: 'radial-gradient(circle, var(--tc-ai), transparent 70%)' }} />

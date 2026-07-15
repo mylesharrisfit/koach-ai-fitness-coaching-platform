@@ -15,7 +15,8 @@ export function WLSection({ title, emoji, description, locked, children }) {
         </div>
         {locked && <Lock className="w-4 h-4 text-muted-foreground" />}
       </div>
-      <div className={`p-6 space-y-5 ${locked ? 'pointer-events-none select-none' : ''}`}>{children}</div>
+      <div className={`p-6 space-y-5 ${locked ? 'pointer-events-none select-none' : ''}`}
+        {...(locked ? { inert: '', 'aria-hidden': true } : {})}>{children}</div>
     </div>
   );
 }

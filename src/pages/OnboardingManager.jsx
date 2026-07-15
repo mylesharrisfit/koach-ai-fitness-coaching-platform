@@ -291,7 +291,7 @@ export default function OnboardingManager() {
       <button
         onClick={() => setShowOverview(true)}
         className="w-full text-left rounded-2xl overflow-hidden shadow-lg transition-all hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] relative"
-        style={{ background: 'linear-gradient(135deg, var(--tc-foreground) 0%, var(--kc-1a2744) 60%, var(--kc-1e1a3a) 100%)' }}
+        style={{ background: 'linear-gradient(135deg, var(--tc-sidebar) 0%, var(--kc-1a2744) 60%, var(--kc-1e1a3a) 100%)' }}
       >
         {/* Decorative glows */}
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-25 pointer-events-none"
@@ -374,7 +374,7 @@ export default function OnboardingManager() {
       {canAIOnboard && showAIPicker && (
         <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
           <div className="px-5 py-3.5 flex items-center justify-between"
-            style={{ background: 'linear-gradient(135deg, var(--tc-foreground), var(--kc-1a2744))' }}>
+            style={{ background: 'linear-gradient(135deg, var(--tc-sidebar), var(--kc-1a2744))' }}>
             <div className="flex items-center gap-2.5">
               <Sparkles className="w-4 h-4" style={{ color: 'var(--tc-ai)' }} />
               <p className="text-sm font-bold text-white">AI Onboarding — Select a Client</p>

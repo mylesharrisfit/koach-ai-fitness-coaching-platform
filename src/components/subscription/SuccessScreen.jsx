@@ -68,7 +68,7 @@ export default function SuccessScreen({ tier, price, billing, nextDate, email, o
           </button>
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-border hover:bg-[var(--kc-w-5)] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl text-sm font-semibold border border-white/10 text-sidebar-foreground hover:bg-[var(--kc-w-5)] transition-colors flex items-center justify-center gap-2"
           >
             <ExternalLink className="w-3.5 h-3.5" /> View Receipt
           </button>

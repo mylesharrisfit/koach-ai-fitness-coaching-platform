@@ -230,21 +230,21 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
               <button onClick={onEdit} title="Edit client"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
                 style={{ color: 'var(--tc-muted-foreground)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-sidebar-accent-foreground)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <Edit className="w-4 h-4" />
               </button>
               <button onClick={() => navigate(`/client-profile?id=${client.id}`)} title="Full Profile"
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
                 style={{ color: 'var(--tc-muted-foreground)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-sidebar-accent-foreground)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <ExternalLink className="w-4 h-4" />
               </button>
               <button onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors ml-1"
                 style={{ color: 'var(--tc-muted-foreground)' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-card)'; }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'color-mix(in srgb, white 8%, transparent)'; e.currentTarget.style.color = 'var(--tc-sidebar-accent-foreground)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--tc-muted-foreground)'; }}>
                 <X className="w-4 h-4" />
               </button>

@@ -13,7 +13,7 @@ const typeColors = {
   program_review: 'bg-ai text-ai-foreground',
   onboarding: 'bg-success text-white',
   progress_review: 'bg-warning text-white',
-  consultation: 'bg-muted-foreground text-white',
+  consultation: 'bg-muted-foreground text-background',
 };
 
 export default function MonthView({ currentDate, sessions, onDayClick, onEditSession, clients = [] }) {

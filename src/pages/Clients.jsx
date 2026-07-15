@@ -345,7 +345,7 @@ export default function Clients() {
             { key: 'lead',      label: 'Lead',      active: 'bg-primary text-primary-foreground border-primary',           count: 'bg-[var(--kc-w-20)] text-white' },
             { key: 'active',    label: 'Active',    active: 'bg-success text-white border-success',     count: 'bg-[var(--kc-w-20)] text-white' },
             { key: 'at_risk',   label: 'At Risk',   active: 'bg-orange-500 text-white border-orange-500',       count: 'bg-[var(--kc-w-20)] text-white' },
-            { key: 'completed', label: 'Completed', active: 'bg-muted-foreground text-white border-border',           count: 'bg-[var(--kc-w-20)] text-white' },
+            { key: 'completed', label: 'Completed', active: 'bg-muted-foreground text-background border-border',           count: 'bg-[var(--kc-w-20)] text-white' },
             { key: 'alumni',    label: 'Alumni',    active: 'bg-ai text-ai-foreground border-ai',       count: 'bg-[var(--kc-w-20)] text-white' },
           ].map(({ key, label, active, count }) => (
             <button

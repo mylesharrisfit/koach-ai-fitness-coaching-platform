@@ -162,7 +162,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
           <button key={sc.id} onClick={() => setScreen(sc.id)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0 transition-all"
             style={{
-              background: screen === sc.id ? 'var(--tc-foreground)' : 'var(--tc-muted)',
+              background: screen === sc.id ? 'var(--tc-sidebar)' : 'var(--tc-muted)',
               color: screen === sc.id ? 'white' : 'var(--tc-muted-foreground)',
               border: screen === sc.id ? 'none' : '1px solid var(--tc-border)',
             }}>

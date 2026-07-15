@@ -109,7 +109,7 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
         {insight.actionAlt && (
           <button
             onClick={() => navigate(insight.actionAltPath)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg border border-border bg-[var(--kc-w-60)] text-muted-foreground hover:bg-card transition-all">
+            className="text-xs font-semibold px-3 py-2 rounded-lg border border-border bg-card/60 text-muted-foreground hover:bg-card transition-all">
             {insight.actionAlt}
           </button>
         )}

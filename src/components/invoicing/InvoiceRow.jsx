@@ -54,7 +54,7 @@ export default function InvoiceRow({ invoice, onView, onMarkPaid, onDuplicate, o
       {/* Dates */}
       <div style={{ flexShrink: 0, minWidth: 100, display: 'none' }} className="md-flex">
         <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)' }}>Due {fmt(invoice.due_date)}</div>
-        <div style={{ fontSize: 11, color: 'var(--kc-c4c4c4)', marginTop: 2 }}>Issued {fmt(invoice.issue_date)}</div>
+        <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 2 }}>Issued {fmt(invoice.issue_date)}</div>
       </div>
 
       {/* Status */}

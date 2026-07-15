@@ -195,10 +195,20 @@ input[type='range']::-moz-range-thumb {
            #333333..#b3b3b3 gray ramp) — that flow renders dark in BOTH themes,
          - award/medal colors (gold #ffd700/#b8860b + #1a1000 text, silver
            #c0c0c0, bronze #cd7f32, platinum #62d7ff + #03111a text),
-         - fixed-dark hero/pill surfaces (#1f2937 & friends) that always carry
-           light text.
-       Light tint chips + their saturated chip text DO flip: see the generated
-       --kc-* overrides in the :root.dark block after this one. */
+         - fixed-dark hero/pill/panel surfaces that always carry light text:
+           #1f2937 (dark pills + bg-sidebar hovers), #161820/#18191f/#2c2414/
+           #1a1608 (adherence podium + badge cards), #0a0a0a/#0d0d0d (logo tile,
+           bell dot ring), #1a2744/#1e1a3a (OnboardingManager hero gradients,
+           anchored on --tc-sidebar), #1e2d45/#2d3a55 (buttons on dark modal
+           headers), #0f1117/#120c35/#1a1040 (pricing cards), #222222 (black
+           button hover), #141414/#161616/#0f0f1a/#1a2a4a/#2e2e2e (onboarding
+           and error panels).
+       EVERYTHING ELSE flips in dark mode via the :root.dark block after this
+       one: light tint chips, saturated chip text/icons, and (incident
+       follow-up) chart/series/avatar accents. Invariant enforced by audit v2
+       (darkmode-audit/run-audit.mjs — initial render PLUS tabs/modals/
+       drill-downs on 25 pages): a token without a .dark override must belong
+       to one of the exempt groups above. */
     --kc-000000: #000000;
     --kc-003087: #003087;
     --kc-0057d0: #0057d0;
@@ -287,7 +297,6 @@ input[type='range']::-moz-range-thumb {
     --kc-c0c0c0: #c0c0c0;
     --kc-c2410c: #c2410c;
     --kc-c3c3c3: #c3c3c3;
-    --kc-c4c4c4: #c4c4c4;
     --kc-ca8a04: #ca8a04;
     --kc-cccccc: #cccccc;
     --kc-cd7f32: #cd7f32;
@@ -390,6 +399,39 @@ input[type='range']::-moz-range-thumb {
     --kc-1a6b4a: #84e1bb;
     --kc-3a6b1a: #a9e184;
     --kc-4f46e5: #7f79ec;
+    /* Incident follow-up (audit v2): accent/series/avatar colors keep their hue
+       with lightness floored at 0.55 on dark surfaces; colored icon/text-on-tint
+       tokens lightened to L=0.70 (same standard as the chip-text set above) */
+    --kc-0891b2: #71daf4;
+    --kc-0d9488: #72f3e7;
+    --kc-185fa5: #79b3ec;
+    --kc-3c3489: #9790d5;
+    --kc-ca8a04: #f4c971;
+    --kc-db2777: #e97cac;
+    --kc-ea580c: #f49e71;
+    --kc-0078ff: #1a85ff;
+    --kc-00d4ff: #1ad8ff;
+    --kc-00ff88: #1aff94;
+    --kc-06b6d4: #20d9f9;
+    --kc-14b8a6: #30e9d4;
+    --kc-3dbd8a: #51c798;
+    --kc-4f8ef7: #4f8ef7;
+    --kc-783cff: #783cff;
+    --kc-84cc16: #a0e930;
+    --kc-888888: #8c8c8c;
+    --kc-999999: #999999;
+    --kc-a875e8: #a875e8;
+    --kc-cccccc: #cccccc;
+    --kc-e1306c: #e23771;
+    --kc-eab308: #f7c321;
+    --kc-ec4899: #ec4899;
+    --kc-f45b5b: #f45b5b;
+    --kc-f472b6: #f472b6;
+    --kc-f5a623: #f5a623;
+    --kc-f97316: #f9791f;
+    --kc-fac775: #fac775;
+    --kc-fb923c: #fb923c;
+    --kc-ff0000: #ff1a1a;
   }
 }
 

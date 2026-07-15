@@ -56,7 +56,7 @@ export default function NextCheckIn({ daysUntil, nextDate, lastCheckIn, clientId
         </div>
 
         {lastCheckIn && (
-          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl bg-[var(--kc-w-60)] border border-white">
+          <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-xl bg-card/60 border border-border">
             <p className="text-xs text-muted-foreground">
               Last check-in: <span className="font-semibold text-foreground">{format(new Date(lastCheckIn.date), 'MMM d')}</span>
               {lastCheckIn.weight ? <span className="text-muted-foreground"> · {lastCheckIn.weight} lbs</span> : ''}

@@ -4,11 +4,12 @@
  */
 
 /**
- * Coach-facing dark mode. ROLLED BACK to false: the Step 4.4 audit only
- * covered the INITIAL RENDER of the nine audited pages — dozens of --kc-*
- * tokens without .dark overrides remain in tabs, modals, and drill-down
- * states (ExerciseLibrary, Sales/Kanban, Settings, Adherence detail views,
- * …), so dark mode is still broken beyond the first paint. Re-enable only
- * after the extended audit (nested UI states, not just page loads) is clean.
+ * Coach-facing dark mode. Re-enabled after the extended audit v2
+ * (npm run audit:darkmode): 25 pages — every page hosting a --kc-* token —
+ * crawled through tabs/modals/drill-downs (205 UI states, not just initial
+ * renders) with ZERO dark-only color-contrast violations. Remaining
+ * un-overridden --kc-* tokens are documented theme-invariant groups
+ * (brand/integration colors, fixed-dark onboarding + hero/pill surfaces,
+ * medals) — see the token comment in src/index.css.
  */
-export const darkModeEnabled = false;
+export const darkModeEnabled = true;

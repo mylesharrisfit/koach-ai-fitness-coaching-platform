@@ -97,7 +97,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-all ${
                       selectedReason === r.id
                         ? 'border-primary/50 bg-primary/10 text-white'
-                        : 'border-white/10 bg-card/[0.03] text-border hover:border-white/20'
+                        : 'border-white/10 bg-card/[0.03] text-sidebar-foreground hover:border-white/20'
                     }`}
                   >
                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
@@ -148,7 +148,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                 <button
                   onClick={handleCancelAnyway}
                   disabled={loading}
-                  className="w-full text-center text-xs text-muted-foreground hover:text-border transition-colors py-2"
+                  className="w-full text-center text-xs text-muted-foreground hover:text-sidebar-foreground transition-colors py-2"
                 >
                   {loading ? 'Cancelling...' : 'Cancel anyway'}
                 </button>
@@ -160,7 +160,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
           {step === 'done' && (
             <div className="space-y-5 text-center">
               <div className="w-12 h-12 rounded-full bg-sidebar border border-white/10 flex items-center justify-center mx-auto">
-                <Check className="w-6 h-6 text-border" />
+                <Check className="w-6 h-6 text-sidebar-foreground" />
               </div>
               <div>
                 <p className="text-white font-semibold mb-1">Your account remains active until</p>
@@ -175,7 +175,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
                 >
                   {loading ? 'Reactivating...' : 'Reactivate subscription'}
                 </button>
-                <button onClick={onClose} className="w-full text-xs text-muted-foreground hover:text-border py-2 transition-colors">
+                <button onClick={onClose} className="w-full text-xs text-muted-foreground hover:text-sidebar-foreground py-2 transition-colors">
                   Close
                 </button>
               </div>
