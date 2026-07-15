@@ -2,8 +2,10 @@
 //
 // Port of base44/functions/weeklyDigest. The inline 0–10 priorityScore + churn
 // logic is REMOVED and replaced by the shared source-of-truth risk model
-// (_shared/weeklyDigest.js → getAtRiskClients, 0–100). Admin-only. The email
-// language was updated for the new scale ("Risk score: N/100", not "N/10").
+// (_shared/weeklyDigest.js → getAtRiskClients, 0–100). Any authenticated coach
+// gets a digest of THEIR OWN clients (Step 6 replaced Base44's single-tenant
+// 'admin' gate with per-coach scoping). The email language was updated for the
+// new scale ("Risk score: N/100", not "N/10").
 // No scoring logic lives in this file — it only loads data, calls the shared
 // builder, and sends the email.
 import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
@@ -21,13 +23,25 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   try {
     const caller = await getCaller(req);
-    if (caller?.profile?.role !== 'admin') return jsonResponse({ error: 'Admin only' }, 403);
+    if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
 
+    // Step 6 follow-up: Base44's 'admin' gate meant "the coach" in the
+    // single-tenant app. Under the RBAC split ('admin' = platform staff,
+    // coaches = 'user') that gate made the digest unreachable for every
+    // coach — and the service-role read below pulled ALL clients, so a
+    // staff caller would have been emailed a CROSS-TENANT digest. Every
+    // coach now gets a digest of THEIR OWN clients only.
     const svc = serviceClient();
-    const [{ data: clients }, { data: checkIns }] = await Promise.all([
-      svc.from('clients').select('*').order('created_at', { ascending: false }),
-      svc.from('check_ins').select('*').order('date', { ascending: false }).limit(200),
-    ]);
+    const uid = caller.profile.id;
+    const { data: clients } = await svc.from('clients').select('*')
+      .or(`user_id.eq.${uid},created_by.eq.${uid}`)
+      .order('created_at', { ascending: false });
+    const clientIds = (clients ?? []).map((c) => c.id);
+    const { data: checkIns } = clientIds.length
+      ? await svc.from('check_ins').select('*')
+          .in('client_id', clientIds)
+          .order('date', { ascending: false }).limit(200)
+      : { data: [] };
 
     const now = new Date();
     const digest = buildWeeklyDigest(clients ?? [], checkIns ?? [], now);

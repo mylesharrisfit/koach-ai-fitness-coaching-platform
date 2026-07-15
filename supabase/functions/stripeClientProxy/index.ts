@@ -1,6 +1,6 @@
 // Supabase Edge Function: stripeClientProxy  (Migration Step 5a)
 //
-// Faithful port of base44/functions/stripeClientProxy. Admin-only. A
+// Faithful port of base44/functions/stripeClientProxy. Coach-facing. A
 // multi-action proxy for client billing; EVERY action that touches a specific
 // client verifies ownership (ownsClient) and, where a customer id is supplied,
 // checks it matches the client's stored stripe_customer_id — a client-supplied
@@ -14,7 +14,11 @@ Deno.serve(async (req) => {
   try {
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
-    if (caller.profile.role !== 'admin') return jsonResponse({ error: 'Forbidden: admin only' }, 403);
+    // Step 6 follow-up: Base44's 'admin' gate meant "the coach" in the
+    // single-tenant app; under the RBAC split it would have locked every
+    // coach out of client billing. This proxy is CLIENT billing (client
+    // work), so any authenticated coach may use it — every client-touching
+    // action below is already ownsClient-scoped to the caller.
     const userId = caller.profile.id;
     const svc = serviceClient();
 
