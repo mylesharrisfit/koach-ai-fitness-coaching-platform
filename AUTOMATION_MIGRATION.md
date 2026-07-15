@@ -278,7 +278,7 @@ redundant — reconcile to one when porting.
 3. **submitOnboardingIntake** + the 5 **DB-trigger** functions (data-integrity
    path; reuse automationRunner executors). ✅ DONE
 4. AI functions behind a shared `_shared/anthropic.js`. ✅ DONE (5d)
-5. import/referral/integration/seed utilities.
+5. import/referral/integration/seed utilities. ✅ DONE (5e)
 
 ## Step 5c (first tranche) — DELIVERED
 
@@ -392,3 +392,57 @@ Still pending (tranche 5): searchFoods, sendInvoiceReminder,
 sendCheckInReminders, commitClientImport, seedTeam/seedExerciseLibrary,
 push trio (getPushPublicKey/savePushSubscription/storePushSubscription),
 googleCalendarProxy, zoomProxy, referral pair, verifyProgramWorkoutCount.
+
+
+## Step 5e — utilities & integrations — DELIVERED (final tranche)
+
+Thirteen functions ported (rehearsal `npm run verify:utils` — 14/14 against
+real Postgres with migration 20260715000100 applied): searchFoods,
+sendInvoiceReminder, sendCheckInReminders, commitClientImport, seedTeam,
+seedExerciseLibrary, verifyProgramWorkoutCount, initializeReferralProgram,
+getPushPublicKey, savePushSubscription, storePushSubscription, zoomProxy,
+googleCalendarProxy.
+
+Decisions & corrections:
+- **commitClientImport** — normalizers/row-builder extracted verbatim to
+  `_shared/importCommit.js` with a documented BUGFIX: Base44 computed
+  "extra columns" by comparing CSV header names against KOACH field names,
+  so every mapped column's raw value was duplicated into the client's notes
+  on every import. Job ownership, duplicate detection, and created rows are
+  caller-scoped. Rows without an email get flagged with a clear error (the
+  ported clients table requires email; Base44 was schemaless).
+- **sendCheckInReminders** — logic in `_shared/checkinReminders.js`;
+  per-coach scoping replaces Base44's all-clients/all-admins blast; client
+  in-app copy targets `portal_user_id`; NEW per-week idempotency (either
+  reminder notification type marks the client handled) so at-least-once
+  scheduling can't double-email; entrypoint is SERVICE-ROLE ONLY and meant
+  for pg_cron (schedule template in the file header — Base44 left it open).
+- **Push pair reconciled** — savePushSubscription stored only
+  {endpoint, timestamp} (dropping the p256dh/auth keys any sender needs);
+  storePushSubscription stored NOTHING. Both names now serve one shared
+  handler upserting the full subscription into the new `push_subscriptions`
+  table (migration 13).
+- **zoomProxy** — server-to-server OAuth env creds verbatim; meeting
+  ownership still verified through coaching_sessions; Base44's single-tenant
+  'admin' gate replaced by any-authenticated-coach (Step 6 model).
+- **googleCalendarProxy** — Base44 read tokens from its managed platform
+  connector, which has no Supabase equivalent. Adapter: per-coach OAuth
+  tokens on coach_settings (google_access_token / google_refresh_token /
+  google_token_expires_at, migration 13), refreshed via GOOGLE_CLIENT_ID /
+  GOOGLE_CLIENT_SECRET. **Follow-up required:** the consent flow that
+  populates those columns (OAuth redirect + token exchange) still needs to
+  be built; until then the proxy returns `google_not_connected`.
+- **searchFoods** — USDA mapping verbatim; the module-level throw on a
+  missing USDA_API_KEY (which bricked the function at boot) is now a
+  per-request 500.
+- **initializeReferralProgram** — idempotent per coach against
+  referral_programs. **processReferralReward stays deferred**: its
+  ClientReferral / ReferralConfiguration / ClientReferralReward entities
+  were never given tables in Step 1, nothing invokes it from the frontend,
+  and it calls a `sendClientNotification` function that doesn't exist even
+  in the Base44 export — dead code pending a product decision (same bucket
+  as analyzeProgress).
+
+**Step 5 status: complete.** All 42 Base44 functions are either ported (40)
+or explicitly deferred as dead code with rationale (analyzeProgress,
+processReferralReward).

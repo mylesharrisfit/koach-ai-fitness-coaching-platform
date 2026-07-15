@@ -20,7 +20,8 @@
     "verify:events": "node scripts/verify-entity-events.mjs",
     "verify:rbac": "node scripts/verify-rbac.mjs",
     "audit:darkmode": "node darkmode-audit/run-audit.mjs",
-    "verify:ai": "node scripts/verify-ai-functions.mjs"
+    "verify:ai": "node scripts/verify-ai-functions.mjs",
+    "verify:utils": "node scripts/verify-utils.mjs"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.37",
