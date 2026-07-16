@@ -1,0 +1,7 @@
+# Cloudflare Pages SPA fallback.
+# The app uses react-router BrowserRouter (src/App.jsx), so deep links like
+# app.koachai.net/clients are client-side routes with no matching static file.
+# Pages serves real static assets first (e.g. /assets/*, /sw.js, /manifest.json),
+# then falls back to index.html for everything else with a 200 so the router can
+# handle the path. Without this, a hard refresh on any non-root route 404s.
+/*    /index.html    200
