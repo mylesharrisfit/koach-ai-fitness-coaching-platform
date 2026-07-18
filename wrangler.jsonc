@@ -1,0 +1,19 @@
+{
+  // Cloudflare Workers static-assets config for the Koach AI SPA.
+  // Deployed with `wrangler deploy` (Workers static assets), NOT the legacy
+  // Pages build-command-only flow. See DEPLOYMENT.md.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "koach-ai-fitness-coaching-platform",
+  "compatibility_date": "2026-07-18",
+  "assets": {
+    // Vite build output. `npm run build` emits the SPA here.
+    "directory": "./dist",
+    // Serve index.html (200 OK) for any path that doesn't match a static
+    // asset, so client-side routing works. This is the native Workers-assets
+    // replacement for the old public/_redirects SPA-fallback rule.
+    "not_found_handling": "single-page-application"
+  }
+  // No "main": this is a pure static SPA with no Worker-side logic. Workers
+  // static assets supports assets-only deployment without a script entry.
+  // (An "assets.binding" would only be valid alongside "main", so it's omitted.)
+}
