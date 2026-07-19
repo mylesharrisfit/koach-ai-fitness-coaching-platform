@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { format, subDays, isAfter } from 'date-fns';
 import { Sparkles, Loader2, RefreshCw, ChevronLeft, ChevronRight, BarChart2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 const TOOLTIP_STYLE = {
   contentStyle: { background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: 12 },
@@ -64,14 +64,10 @@ export default function ClientAnalyticsView({ client, checkIns }) {
         training: ci.compliance_training, nutrition: ci.compliance_nutrition,
         notes: ci.notes,
       }));
-      const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are an expert fitness coach AI. Analyze this client's recent check-in data and write a 2–3 sentence progress summary. Be specific, encouraging but honest. Mention what's working, what's limiting progress, and one actionable recommendation.
-
-Client: ${client.name}
-Goal: ${client.goal}
-Recent check-ins: ${JSON.stringify(recent, null, 2)}`,
+      const res = await base44.functions.invoke('aiProgressInsights', {
+        action: 'clientSummary', client, recent,
       });
-      setAiSummary(res);
+      setAiSummary(res.data?.text || '');
     } finally {
       setAiLoading(false);
     }
