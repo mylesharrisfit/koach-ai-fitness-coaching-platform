@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RefreshCw, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 import AIProfileStep from './steps/AIProfileStep';
 import AIPreferencesStep from './steps/AIPreferencesStep';
