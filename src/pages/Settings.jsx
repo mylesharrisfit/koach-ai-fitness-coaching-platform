@@ -3,7 +3,8 @@ import { User, Plug, Bell, Shield, Zap, ChevronRight, Briefcase, Gift, Share2, L
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Auth } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import IntegrationsTab from '../components/integrations/IntegrationsTab';
@@ -125,7 +126,7 @@ function DeleteAccountModal({ user, onClose }) {
         });
       }
       // Delete the account
-      await base44.auth.logout('/start');
+      await base44Auth.auth.logout('/start');
     } catch (e) {
       toast.error(e?.message || 'Failed to delete account. Please contact support.');
       setLoading(false);
@@ -182,7 +183,7 @@ function DeleteAccountModal({ user, onClose }) {
 }
 
 function SecurityTab() {
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44Auth.auth.me() });
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [current, setCurrent] = useState('');

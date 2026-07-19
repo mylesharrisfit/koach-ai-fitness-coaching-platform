@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Auth } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { Users, UserPlus, Mail, Crown, Check, Clock, X, Loader2, ChevronDown, ShieldAlert } from 'lucide-react';
 import { useTeamRole } from '@/lib/useTeamRole';
@@ -232,7 +233,7 @@ export default function Team() {
 
   const { data: user } = useQuery({
     queryKey: ['me'],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => base44Auth.auth.me(),
   });
 
   // Find or create the owner's team

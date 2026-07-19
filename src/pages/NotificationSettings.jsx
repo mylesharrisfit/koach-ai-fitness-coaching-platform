@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Auth } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bell, BellOff, Check, Clock, Mail, Smartphone, Monitor, History } from 'lucide-react';
@@ -50,7 +51,7 @@ export default function NotificationSettings() {
   const [showHistory, setShowHistory] = useState(false);
   const saveTimer = useRef(null);
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44Auth.auth.me() });
 
   const { data: existing = [] } = useQuery({
     queryKey: ['notif-settings', user?.email],
