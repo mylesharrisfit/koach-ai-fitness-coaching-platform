@@ -84,9 +84,45 @@ select cron.schedule(
 Requires `ANTHROPIC_API_KEY` in the function env (already used by the other AI
 functions).
 
+## Frontend (Supabase-forward)
+
+The live app still runs on the Base44 data/function layer (`src/api/base44Client.js`);
+the Supabase cutover is in progress (`VITE_AUTH_PROVIDER`, `src/api/supabaseClient.js`).
+These surfaces are built against the **Supabase facade** so they light up at cutover
+and don't touch Base44:
+
+- **`src/pages/PlanApprovals.jsx`** (route `/plan-approvals`) — reads
+  `plan_versions` (status `pending_approval`) via `supabase.entities.PlanVersion`
+  and approves/rejects via `supabase.functions.invoke('planMutations', …)`. The
+  sidebar link (`Plan Approvals`, AI group) is gated by `isSupabaseAuth()` so it
+  stays hidden on the Base44 shell.
+- **Auto-apply toggle** — added to `src/components/settings/DefaultAssignmentSettings.jsx`
+  (writes `coach_defaults.auto_apply_ai_adaptations`); activates when that
+  component is on the Supabase facade.
+- **Coach chat** needs no change: it already renders `actions` and invalidates
+  `nutrition-plans`/`programs`/`clients`. Added chat icons for the new tools.
+- Added `PlanVersion: 'plan_versions'` to the facade's `ENTITY_TABLES`.
+
+## Direct plan writers NOT yet routed (known, deferred by decision)
+
+The single-write-path currently covers the closed-loop paths (coach chat + AI
+adaptation) and the two folded writers. These other **content mutations of
+assigned plans** still write the plan tables directly and are intentionally left
+for a later consolidation pass (they're coach-initiated edits; routing them
+changes check-in/automation/bulk UX):
+
+- Nutrition calorie/edit sites: `src/pages/Nutrition.jsx:69`, `Automations.jsx:92`,
+  `FastReview.jsx:304`, `CheckInDetail.jsx:186`,
+  `components/automations/AutomationResultsPanel.jsx:51`, `lib/applyRecommendation.js:15`,
+  `components/checkin/CheckInQuickActions.jsx:51`, `components/clients/BulkActionBar.jsx:19`,
+  and `supabase/functions/generateSmartMeals/index.ts:103` (overwrites `meals[]`).
+- Workout content: `src/pages/ProgramBuilder.jsx:807`.
+
+(CREATE / ASSIGN / template sites are not closed-loop mutations and are out of scope.)
+
 ## Follow-ups (not in this pass)
 
-- Approval-queue UI — lists `plan_versions where status='pending_approval'`
-  (plain RLS-scoped select) with a diff view + approve/reject calling
-  `planMutations`.
-- Per-coach auto-apply toggle UI — writes `coach_defaults.auto_apply_ai_adaptations`.
+- Deploy the functions: `supabase functions deploy claudeAssistant planMutations
+  adaptationEvaluator`, then schedule the pg_cron snippet above (once per env).
+- Consolidate the direct writers above through `planMutationService` if/when you
+  want every plan edit audited + copy-on-write-protected.

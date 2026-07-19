@@ -6,7 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Dumbbell, Utensils, MessageSquare, CheckCircle2, Loader2 } from 'lucide-react';
+import { Dumbbell, Utensils, MessageSquare, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 
 export default function DefaultAssignmentSettings() {
   const qc = useQueryClient();
@@ -17,6 +17,7 @@ export default function DefaultAssignmentSettings() {
     send_welcome_message: true,
     welcome_message: "Welcome! I'm excited to start this journey with you. Your program and nutrition plan have been assigned. Let's crush your goals! 💪",
     checkin_frequency: 'weekly',
+    auto_apply_ai_adaptations: false,
   });
 
   const { data: programs = [] } = useQuery({
@@ -44,6 +45,7 @@ export default function DefaultAssignmentSettings() {
         send_welcome_message: d.send_welcome_message ?? true,
         welcome_message: d.welcome_message || "Welcome! I'm excited to start this journey with you. Your program and nutrition plan have been assigned. Let's crush your goals! 💪",
         checkin_frequency: d.checkin_frequency || 'weekly',
+        auto_apply_ai_adaptations: d.auto_apply_ai_adaptations ?? false,
       });
     }
   }, [defaults]);
@@ -57,6 +59,7 @@ export default function DefaultAssignmentSettings() {
         send_welcome_message: form.send_welcome_message,
         welcome_message: form.welcome_message,
         checkin_frequency: form.checkin_frequency,
+        auto_apply_ai_adaptations: form.auto_apply_ai_adaptations,
       };
       if (defaults.length > 0) {
         return base44.entities.CoachDefaults.update(defaults[0].id, payload);
@@ -201,6 +204,25 @@ export default function DefaultAssignmentSettings() {
       </div>
 
       </div>{/* end dimmed wrapper */}
+
+      {/* AI auto-apply (independent of auto-assign) */}
+      <div className="bg-card border border-border rounded-2xl p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-ai/10 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 text-ai" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">Auto-apply AI plan adaptations</p>
+              <p className="text-xs text-muted-foreground">
+                When on, KOACH AI applies plan changes from client activity automatically. When off,
+                they wait for your approval in Plan Approvals.
+              </p>
+            </div>
+          </div>
+          <Switch checked={form.auto_apply_ai_adaptations} onCheckedChange={v => set('auto_apply_ai_adaptations', v)} />
+        </div>
+      </div>
 
       <Button
         className="w-full"

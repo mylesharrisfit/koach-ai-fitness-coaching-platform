@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
               recipient_id: coachId, category: 'ai', type: 'plan_adapted',
               title: `AI updated ${client.name}'s ${dev.plan_kind} plan`,
               body: `${dev.detail} — ${llm.parsed.rationale || 'plan adjusted'}`,
-              related_client_id: client.id, action_label: 'View plan', link: `/clients/${client.id}`,
+              related_client_id: client.id, action_label: 'View plan', link: `/client-profile?id=${client.id}`,
             });
             await sendMessage(svc, {
               client_id: client.id, client_name: client.name, sender: 'coach',
@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
               recipient_id: coachId, category: 'ai', type: 'plan_adaptation_pending',
               title: `AI suggested a change to ${client.name}'s ${dev.plan_kind} plan`,
               body: `${dev.detail} — ${llm.parsed.rationale || 'review suggested change'}`,
-              related_client_id: client.id, action_label: 'Review', link: `/clients/${client.id}`, priority: 'normal',
+              related_client_id: client.id, action_label: 'Review', link: `/client-profile?id=${client.id}`, priority: 'normal',
             });
           }
         }

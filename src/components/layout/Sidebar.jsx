@@ -10,10 +10,11 @@ import {
   Dumbbell, Salad, ClipboardList,
   Sparkles, Bot, BarChart3,
   CreditCard, Settings, LogOut, ChevronLeft, ChevronRight,
-  Lock, UserPlus, Trophy, ShoppingBag, Search,
+  Lock, UserPlus, Trophy, ShoppingBag, Search, ClipboardCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
+import { isSupabaseAuth } from '@/lib/authConfig';
 import { hasFeature } from '@/lib/subscription';
 import { useTeamRole } from '@/lib/useTeamRole';
 import { useCommandPalette } from '@/components/command/CommandPalette';
@@ -78,6 +79,9 @@ const NAV_GROUPS = [
     items: [
       { icon: Sparkles, label: 'Assistant', path: '/assistant', feature: 'assistant' },
       { icon: Bot, label: 'Automations', path: '/automations' },
+      // Closed-loop plan approvals live on Supabase; hidden until the app is on
+      // the Supabase data/auth layer so it never shows a dead link on Base44.
+      { icon: ClipboardCheck, label: 'Plan Approvals', path: '/plan-approvals', supabaseOnly: true },
     ],
   },
 ];
@@ -173,7 +177,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               </p>
             )}
             <div className="space-y-0.5">
-              {group.items.map(item => (
+              {group.items.filter(it => !it.supabaseOnly || isSupabaseAuth()).map(item => (
                 <div key={item.path} onClick={onNavClick}>
                   <NavItem item={item} collapsed={false} onUpgrade={onUpgrade} user={user} />
                 </div>
@@ -245,7 +249,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
               </p>
             )}
             <div className="space-y-0.5">
-              {group.items.map(item => (
+              {group.items.filter(it => !it.supabaseOnly || isSupabaseAuth()).map(item => (
                 <NavItem key={item.path} item={item} collapsed={collapsed} onUpgrade={onUpgrade} user={user} />
               ))}
             </div>

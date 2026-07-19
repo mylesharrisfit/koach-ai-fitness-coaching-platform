@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 const TOOL_ICONS = {
   create_nutrition_plan: '🥗',
   update_nutrition_plan: '📊',
+  update_workout_plan: '🏋️',
   create_program: '💪',
   update_client: '👤',
   flag_client_at_risk: '⚠️',
@@ -18,6 +19,8 @@ const TOOL_ICONS = {
   create_checkin_response: '✅',
   award_badge: '🏆',
   get_client_data: '🔍',
+  get_client_plan: '📄',
+  resolve_client: '🔎',
   list_clients: '📋',
 };
 

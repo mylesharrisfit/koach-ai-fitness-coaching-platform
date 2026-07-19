@@ -73,6 +73,7 @@ const ENTITY_TABLES = {
   OnboardingResponse: 'onboarding_responses',
   Payment: 'payments',
   PlanListing: 'plan_listings',
+  PlanVersion: 'plan_versions',
   PostComment: 'post_comments',
   Referral: 'referrals',
   ReferralPayout: 'referral_payouts',
