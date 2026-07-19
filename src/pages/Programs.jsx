@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { Dumbbell, Search, SlidersHorizontal,
   LayoutGrid, List, X, Sparkles, PenLine,
 } from 'lucide-react';
@@ -117,6 +117,7 @@ function FiltersPanel({ filters, onChange }) {
 
 /* ── Main Page ── */
 export default function Programs() {
+  const { me } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createModalMode, setCreateModalMode] = useState(null);
 
@@ -139,7 +140,7 @@ export default function Programs() {
   const { openUpgradeModal } = useUpgradeModal();
   const navigate = useNavigate();
 
-  useEffect(() => { base44Legacy.auth.me().then(setCurrentUser).catch(() => {}); }, []);
+  useEffect(() => { me().then(setCurrentUser).catch(() => {}); }, []);
 
   const canUseTemplates = hasFeature(currentUser, 'program_templates');
 

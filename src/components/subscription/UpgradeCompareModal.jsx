@@ -3,7 +3,7 @@ import { X, Check, Sparkles, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TIERS, TIER_ORDER } from '@/lib/subscription';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import SuccessScreen from './SuccessScreen';
 
@@ -29,6 +29,7 @@ const CARD_ACCENT = {
 };
 
 export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: initialBilling, clientCount = 0, user, onClose, onUserUpdate }) {
+  const { me } = useAuth();
   const [billing, setBilling] = useState(initialBilling || 'monthly');
   const [loading, setLoading] = useState(false);
   const [coupon, setCoupon] = useState('');
@@ -84,7 +85,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
     if (res.data?.url) {
       window.location.href = res.data.url;
     } else if (res.data?.upgraded) {
-      const updated = await base44Legacy.auth.me();
+      const updated = await me();
       if (onUserUpdate) onUserUpdate(updated);
       setSuccessData({ tier: toTierKey, price: discountedPrice, billing, nextDate: nextBillingDate(), email: user?.email });
       setShowSuccess(true);

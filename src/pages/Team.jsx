@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Auth } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import { Users, UserPlus, Mail, Crown, Check, Clock, X, Loader2, ChevronDown, ShieldAlert } from 'lucide-react';
 import { useTeamRole } from '@/lib/useTeamRole';
@@ -227,13 +227,14 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
 }
 
 export default function Team() {
+  const { me } = useAuth();
   const qc = useQueryClient();
   const [showInvite, setShowInvite] = useState(false);
   const { isOwner } = useTeamRole();
 
   const { data: user } = useQuery({
     queryKey: ['me'],
-    queryFn: () => base44Auth.auth.me(),
+    queryFn: () => me(),
   });
 
   // Find or create the owner's team

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { useTeamRole } from '@/lib/useTeamRole';
 import { ShieldAlert } from 'lucide-react';
 import { getUserTier, getLimit } from '@/lib/subscription';
@@ -88,18 +88,19 @@ function CoachBillingBlock() {
 }
 
 export default function Subscription() {
+  const { me } = useAuth();
   const [user, setUser] = useState(null);
   const [openingPortal, setOpeningPortal] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const { isOwner, isLoading: loadingRole } = useTeamRole();
 
-  useEffect(() => { base44Legacy.auth.me().then(setUser).catch(() => {}); }, []);
+  useEffect(() => { me().then(setUser).catch(() => {}); }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('success')) {
       setTimeout(() => {
-        base44Legacy.auth.me().then(u => { setUser(u); toast.success('Subscription updated!'); });
+        me().then(u => { setUser(u); toast.success('Subscription updated!'); });
       }, 2000);
     }
   }, []);
@@ -138,7 +139,7 @@ export default function Subscription() {
   };
 
   const refreshUser = async () => {
-    const u = await base44Legacy.auth.me();
+    const u = await me();
     setUser(u);
     toast.success('Subscription status refreshed');
   };

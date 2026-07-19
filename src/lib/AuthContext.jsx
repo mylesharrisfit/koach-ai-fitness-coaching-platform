@@ -188,6 +188,12 @@ export const AuthProvider = ({ children }) => {
     base44Legacy.auth.redirectToLogin(window.location.href);
   };
 
+  // Flag-aware imperative auth helpers so pages/components never import the
+  // auth client directly. `base44Legacy` is the VITE_AUTH_PROVIDER-aware proxy
+  // (base44 SDK auth by default; Supabase facade auth when the flag is flipped).
+  const me = () => base44Legacy.auth.me();
+  const updateMe = (data) => base44Legacy.auth.updateMe(data);
+
   return (
     <AuthContext.Provider value={{ 
       user,
@@ -200,6 +206,8 @@ export const AuthProvider = ({ children }) => {
       authChecked,
       logout,
       navigateToLogin,
+      me,
+      updateMe,
       checkUserAuth,
       checkAppState
     }}>

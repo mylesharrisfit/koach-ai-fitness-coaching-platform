@@ -5,7 +5,7 @@ import { TIERS, TIER_ORDER, getUserTier } from '@/lib/subscription';
 import { Check, X, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 
 // Exact pricing
@@ -88,6 +88,7 @@ const TIER_FEATURES = {
 };
 
 export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }) {
+  const { me } = useAuth();
   const [billing, setBilling] = useState('monthly');
   const [loading, setLoading] = useState(null);
 
@@ -115,7 +116,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
     if (res.data?.url) {
       window.location.href = res.data.url;
     } else if (res.data?.upgraded) {
-      const updated = await base44Legacy.auth.me();
+      const updated = await me();
       if (onUserUpdate) onUserUpdate(updated);
       toast.success(`Upgraded to ${TIERS[tierKey].name}!`);
       onClose();

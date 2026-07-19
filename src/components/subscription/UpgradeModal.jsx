@@ -6,7 +6,7 @@ import { Check, X, Zap, ArrowRight, Sparkles, TrendingUp, Trophy, ShoppingBag,
   ClipboardList, DollarSign, Globe, Smartphone, Users, Palette, Code } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 
 const ICON_MAP = {
@@ -25,6 +25,7 @@ const TIER_SELLING_POINTS = {
 const YEARLY_DISCOUNT = 0.20; // 20% off yearly
 
 export default function UpgradeModal({ open, onClose, featureKey, user, onUserUpdate }) {
+  const { me } = useAuth();
   const [billing, setBilling] = useState('monthly');
   const [saving, setSaving] = useState(null);
 
@@ -64,7 +65,7 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
 
       // Existing subscriber → server applied a prorated plan change in Stripe.
       if (data.upgraded) {
-        const updated = await base44Legacy.auth.me();
+        const updated = await me();
         if (onUserUpdate) onUserUpdate(updated);
         const tier = TIERS[tierKey];
         const isUpgrade = TIER_ORDER.indexOf(tierKey) > currentTierIndex;

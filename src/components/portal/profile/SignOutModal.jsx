@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { LogOut } from 'lucide-react';
 
 export default function SignOutModal({ onCancel }) {
+  const { logout } = useAuth();
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -29,7 +30,7 @@ export default function SignOutModal({ onCancel }) {
           <button onClick={onCancel}
             className="flex-1 py-3.5 rounded-2xl font-semibold text-sm text-white/60"
             style={{ background: 'rgba(255,255,255,0.07)' }}>Cancel</button>
-          <button onClick={() => base44.auth.logout()}
+          <button onClick={() => logout()}
             className="flex-1 py-3.5 rounded-2xl font-bold text-sm text-white"
             style={{ background: 'rgb(var(--destructive) / 0.7)' }}>Sign Out</button>
         </div>

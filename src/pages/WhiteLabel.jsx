@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Auth } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Check, Lock, Eye, Download, QrCode, RefreshCw } from 'lucide-react';
@@ -45,6 +45,7 @@ function getPlanLevel(user) {
 }
 
 export default function WhiteLabel() {
+  const { me } = useAuth();
   const queryClient = useQueryClient();
   const [s, setS] = useState(EMPTY);
   const [settingsId, setSettingsId] = useState(null);
@@ -54,7 +55,7 @@ export default function WhiteLabel() {
   const [showPreview, setShowPreview] = useState(false);
   const saveTimer = useRef(null);
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44Auth.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => me() });
   const planLevel = getPlanLevel(user);
   const isLocked = planLevel === 'starter' || planLevel === 'pro';
   const isEliteLocked = planLevel === 'starter' || planLevel === 'pro';

@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { SubscriptionContext } from './AppLayout';
 
 export default function FocusLayout() {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useAuth();
   const [upgradeFeature, setUpgradeFeature] = useState(null);
-
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-  }, []);
 
   return (
     <SubscriptionContext.Provider value={{ user, setUser, openUpgradeModal: setUpgradeFeature }}>

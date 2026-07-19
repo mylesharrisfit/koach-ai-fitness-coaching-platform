@@ -13,7 +13,6 @@ import CoachPricingScreen from '@/components/onboarding/CoachPricingScreen';
 import CoachAccountScreen from '@/components/onboarding/CoachAccountScreen';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { base44 } from '@/api/base44Client';
 
 // Step 1–6: onboarding, Step 7: create account, Step 8: pricing (→ Stripe)
 const FLOW = [
@@ -36,7 +35,7 @@ const LS_RESUME_PRICING  = 'koach_resume_pricing';
 
 export default function PremiumOnboarding() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, user, checkUserAuth } = useAuth();
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, user, checkUserAuth, navigateToLogin, updateMe } = useAuth();
   const [step, setStep] = useState('splash');
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState(() => {
@@ -95,7 +94,7 @@ export default function PremiumOnboarding() {
         if (onboardingData[key] !== undefined) profileUpdate[key] = onboardingData[key];
       });
       if (Object.keys(profileUpdate).length > 0) {
-        await base44.auth.updateMe(profileUpdate);
+        await updateMe(profileUpdate);
       }
       localStorage.removeItem(LS_ONBOARDING_DATA);
     } catch (e) {
@@ -123,7 +122,7 @@ export default function PremiumOnboarding() {
       localStorage.setItem(LS_ONBOARDING_DATA, JSON.stringify(merged));
       localStorage.setItem(LS_RESUME_PRICING, '1');
       // Redirect to Base44 signup; on return, we'll land back at /start?resume=checkout
-      base44.auth.redirectToLogin(`${window.location.origin}/start?resume=checkout`);
+      navigateToLogin();
       return;
     }
 

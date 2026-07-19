@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Zap, Users, TrendingUp } from 'lucide-react';
 import KoachLogo from '@/components/brand/KoachLogo';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 
 const features = [
   { icon: Users, label: 'Client Management' },
@@ -11,6 +11,7 @@ const features = [
 ];
 
 export default function WelcomeScreen({ onNext }) {
+  const { navigateToLogin } = useAuth();
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden" style={{ background: 'var(--tc-sidebar)' }}>
       {/* Cinematic ambient */}
@@ -89,7 +90,7 @@ export default function WelcomeScreen({ onNext }) {
             Card required · No charge for 30 days · Cancel anytime
           </p>
           <button
-            onClick={() => base44.auth.redirectToLogin(`${window.location.origin}/`)}
+            onClick={() => navigateToLogin()}
             className="w-full py-3 rounded-2xl text-sm font-semibold transition-all"
             style={{ background: 'transparent', border: '1.5px solid color-mix(in srgb, white 8%, transparent)', color: 'var(--kc-666666)' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = 'color-mix(in srgb, white 20%, transparent)'; e.currentTarget.style.color = 'var(--kc-999999)'; }}

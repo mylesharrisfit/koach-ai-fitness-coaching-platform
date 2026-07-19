@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Auth } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { ClipboardList, Loader2 } from 'lucide-react';
 import CheckInSubmitForm from '@/components/checkin/CheckInSubmitForm';
 
 export default function SubmitCheckIn() {
+  const { me } = useAuth();
   const [user, setUser] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState('');
 
   useEffect(() => {
-    base44Auth.auth.me().then(setUser).catch(() => {});
+    me().then(setUser).catch(() => {});
   }, []);
 
   const { data: clients = [], isLoading } = useQuery({

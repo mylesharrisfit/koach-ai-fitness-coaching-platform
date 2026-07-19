@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { format, differenceInDays, parseISO, addDays } from 'date-fns';
 import DashboardHeader from '@/components/client-dashboard/DashboardHeader';
 import TodayProgressCard from '@/components/client-dashboard/TodayProgressCard';
@@ -20,6 +20,7 @@ const defaultLog = {
 };
 
 export default function ClientDashboard() {
+  const { me } = useAuth();
   const [log, setLog] = useState(defaultLog);
   const [logId, setLogId] = useState(null);
   const [user, setUser] = useState(null);
@@ -27,7 +28,7 @@ export default function ClientDashboard() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    base44Legacy.auth.me().then(setUser).catch(() => {});
+    me().then(setUser).catch(() => {});
   }, []);
 
   const { data: existingLog } = useQuery({

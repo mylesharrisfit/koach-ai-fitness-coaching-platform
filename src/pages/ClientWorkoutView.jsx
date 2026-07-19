@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -252,6 +252,7 @@ function CompleteModal({ open, onClose, onSubmit }) {
 
 /* ── Main client workout page ── */
 export default function ClientWorkoutView() {
+  const { me } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
@@ -263,7 +264,7 @@ export default function ClientWorkoutView() {
   const [startTime] = useState(Date.now());
   const [showComplete, setShowComplete] = useState(false);
 
-  useEffect(() => { base44Legacy.auth.me().then(setUser).catch(() => {}); }, []);
+  useEffect(() => { me().then(setUser).catch(() => {}); }, []);
 
   const { data: program } = useQuery({
     queryKey: ['program', programId],

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
 import { isClientRole } from '@/lib/useRoleGuard';
 import { Menu, X } from 'lucide-react';
@@ -38,13 +38,9 @@ export function useUpgradeModal() {
 }
 
 export default function AppLayout() {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useAuth();
   const [upgradeFeature, setUpgradeFeature] = useState(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-  }, []);
 
   // Apply the coach's white-label brand color across the app (light + dark).
   useBrandColor();

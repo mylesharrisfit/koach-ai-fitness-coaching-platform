@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Plus, Bell, Dumbbell, Salad, Sparkles, Lock } from 'lucide-react';
 import GoalsSummarySection from './GoalsSummarySection';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import { hasFeature } from '@/lib/subscription';
 import AIOnboardingModal from '@/components/clients/ai-onboarding/AIOnboardingModal';
@@ -117,12 +117,13 @@ const TAG_STYLES = {
 
 // ─────────────────────────────────────────────────────────
 export default function SummaryTab({ client, checkIns, messages, program, nutritionPlan, workoutSessions, earnedBadges = [], onAwardBadge, onClientUpdated }) {
+  const { me } = useAuth();
   const [newTag, setNewTag] = useState('');
   const [addingTag, setAddingTag] = useState(false);
   const [showAIOnboarding, setShowAIOnboarding] = useState(false);
 
   const [user, setUser] = useState(null);
-  useEffect(() => { base44Legacy.auth.me().then(setUser).catch(() => {}); }, []);
+  useEffect(() => { me().then(setUser).catch(() => {}); }, []);
   const canAIOnboard = hasFeature(user, 'ai_onboarding');
 
   const score = compositeAdherenceScore(checkIns);

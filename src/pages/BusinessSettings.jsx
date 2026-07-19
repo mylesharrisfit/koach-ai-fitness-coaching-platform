@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Auth } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Download, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -34,6 +34,7 @@ const EMPTY = {
 };
 
 export default function BusinessSettings() {
+  const { me } = useAuth();
   const queryClient = useQueryClient();
   const [s, setS] = useState(EMPTY);
   const [settingsId, setSettingsId] = useState(null);
@@ -41,7 +42,7 @@ export default function BusinessSettings() {
   const [savedAt, setSavedAt] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44Auth.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => me() });
 
   const { data: existing = [] } = useQuery({
     queryKey: ['business-settings', user?.email],
