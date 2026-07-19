@@ -39,9 +39,16 @@ export function extractJson(text) {
  *   { ok: true, text, parsed }   — parsed only meaningful when expectJson
  *   { ok: false, error, status } — API/config errors (never throws)
  */
-export async function invokeClaude({ prompt, system, model, maxTokens = 4096, expectJson = false }) {
+export async function invokeClaude({ prompt, system, model, maxTokens = 4096, expectJson = false, imageUrls }) {
   const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
   if (!apiKey) return { ok: false, error: 'ANTHROPIC_API_KEY not configured', status: 500 };
+
+  // Vision: when imageUrls are supplied, the user message becomes a content
+  // array of image blocks + the text prompt (the Base44 InvokeLLM `file_urls`
+  // equivalent). Text-only calls keep the plain-string content unchanged.
+  const content = (Array.isArray(imageUrls) && imageUrls.length)
+    ? [...imageUrls.map((url) => ({ type: 'image', source: { type: 'url', url } })), { type: 'text', text: prompt }]
+    : prompt;
 
   let response;
   try {
@@ -56,7 +63,7 @@ export async function invokeClaude({ prompt, system, model, maxTokens = 4096, ex
         model: model || anthropicModel(),
         max_tokens: maxTokens,
         ...(system ? { system } : {}),
-        messages: [{ role: 'user', content: prompt }],
+        messages: [{ role: 'user', content }],
       }),
     });
   } catch (e) {
