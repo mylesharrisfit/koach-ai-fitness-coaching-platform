@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, TrendingUp, Plus, Loader2 } from 'lucide-react';
 import { getRecentFoods } from '@/lib/nutritionUtils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 export default function RecentFoodsSection({ onAdd }) {
   const [recent, setRecent] = useState([]);

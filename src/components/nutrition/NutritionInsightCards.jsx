@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingDown, AlertTriangle, TrendingUp, Bell, CheckCircle2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 function buildInsights(plans, clients) {

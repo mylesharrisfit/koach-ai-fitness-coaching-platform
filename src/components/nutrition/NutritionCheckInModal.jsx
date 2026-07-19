@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { CheckCircle2, Salad } from 'lucide-react';

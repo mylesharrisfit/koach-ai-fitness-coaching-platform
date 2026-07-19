@@ -2,7 +2,7 @@ import React from 'react';
 import { Users, UserPlus, BarChart2, Scale, UtensilsCrossed, Pill, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format } from 'date-fns';
 
 const LIFECYCLE_COLORS = {
