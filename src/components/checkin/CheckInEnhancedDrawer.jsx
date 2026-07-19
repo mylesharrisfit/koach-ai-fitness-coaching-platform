@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, Moon, Zap, Heart, Smile, Dumbbell,
@@ -60,7 +61,7 @@ function AIAnalysis({ checkIn, clientName }) {
         checkIn.notes && `client notes: "${checkIn.notes}"`,
       ].filter(Boolean).join(', ');
 
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await base44Legacy.integrations.Core.InvokeLLM({
         prompt: `You are a coach reviewing ${clientName}'s weekly check-in. Data: ${facts}. 
         
         Respond with JSON only:

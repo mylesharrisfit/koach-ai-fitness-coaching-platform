@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Sparkles, Loader2, BookOpen, Check, ChevronDown, Send, RefreshCw, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 
 const TEMPLATES = [
   { label: 'Great Check-in', text: "Awesome check-in this week! Your consistency is really showing. Keep up the great work and let's build on this momentum! 💪" },
@@ -87,7 +88,7 @@ export default function CheckInResponseBox({ checkIn, client, allClientCIs = [],
       setAiDraft(res.data?.message || '');
     } catch (e) {
       // fallback to built-in LLM
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await base44Legacy.integrations.Core.InvokeLLM({
         prompt: buildPrompt(client, checkIn, allClientCIs),
       });
       setAiDraft(result);

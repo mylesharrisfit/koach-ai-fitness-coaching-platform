@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import {
@@ -67,7 +68,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
     setLoadingAI(true);
     try {
       const factStr = flags.map(f => f.label + (f.detail ? ': ' + f.detail : '')).join('; ');
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await base44Legacy.integrations.Core.InvokeLLM({
         prompt: `You are a fitness coach AI advisor. Client "${client.name}" has these risk factors: ${factStr}. 
 Their avg adherence is ${avgScore ?? 'unknown'}%. Goal: ${client.goal?.replace(/_/g, ' ') || 'general fitness'}.
 

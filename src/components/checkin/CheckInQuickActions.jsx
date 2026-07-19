@@ -4,7 +4,8 @@ import {
   Sparkles, Check, Loader2, ChevronUp, ChevronDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 /* ── Tiny inline confirmation pill ── */
@@ -163,7 +164,7 @@ export default function CheckInQuickActions({
     const avgT = allClientCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_training || 0), 0) / Math.min(allClientCIs.length || 1, 4);
     const avgN = allClientCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_nutrition || 0), 0) / Math.min(allClientCIs.length || 1, 4);
 
-    const result = await base44.integrations.Core.InvokeLLM({
+    const result = await base44Legacy.integrations.Core.InvokeLLM({
       prompt: `You are an elite fitness coach writing a brief, specific response to your client's check-in.
 Write 2–3 sentences MAX. Be warm, direct, and cite at least one specific number or data point.
 Start with a positive acknowledgement then give one clear, actionable adjustment.

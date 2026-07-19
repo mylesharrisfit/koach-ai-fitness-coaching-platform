@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import {
   ChevronLeft, CheckCircle2, Sparkles, MessageSquare,
@@ -228,7 +229,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
 
   const generateAI = async () => {
     setAiLoading(true);
-    const result = await base44.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, allCIs) });
+    const result = await base44Legacy.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, allCIs) });
     setText(result);
     setAiLoading(false);
   };
@@ -416,7 +417,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
   const sendAI = async () => {
     if (aiSending || aiDone || feedbackSent) return;
     setAiSending(true);
-    const result = await base44.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, clientCIs) });
+    const result = await base44Legacy.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, clientCIs) });
     await Promise.all([
       base44.entities.CheckIn.update(checkIn.id, { coach_notes: result, coach_responded: true, review_status: 'reviewed' }),
       base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: result, tag: 'check_in', is_read: false }),

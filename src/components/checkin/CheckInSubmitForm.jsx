@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -139,7 +140,7 @@ export default function CheckInSubmitForm({ clientId, clientName, lastCheckIn, o
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingSlot(slot);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
     setPhotos(p => ({ ...p, [slot]: file_url }));
     setUploadingSlot(null);
   };

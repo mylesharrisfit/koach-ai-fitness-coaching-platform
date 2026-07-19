@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   AlertTriangle, ChevronDown, ChevronUp, MessageSquare, Settings, ArrowRight,
@@ -41,7 +42,7 @@ function AIInterventionPanel({ entry, client, onClose, onSend }) {
     setLoading(true);
     const flagSummary = entry.flags.map(f => f.label + (f.detail ? `: ${f.detail}` : '')).join(', ');
     try {
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await base44Legacy.integrations.Core.InvokeLLM({
         prompt: `You are a fitness coach AI assistant. Generate an intervention plan for a client named ${client.name}.
         
 Risk factors: ${flagSummary}

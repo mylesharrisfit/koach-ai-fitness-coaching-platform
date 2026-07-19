@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, CheckCircle2, ArrowLeftRight, ScanLine, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -288,7 +289,7 @@ Return null for any field not found in the scan.`,
         ];
       } else {
         // PDF — upload first then describe via text
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
         messageContent = [
           {
             type: 'text',
@@ -321,8 +322,8 @@ Please extract all metrics and return ONLY this JSON with no markdown:
       // Use base44 InvokeLLM with file_urls for image extraction
       let extracted;
       if (isImage) {
-        const { file_url: uploadedUrl } = await base44.integrations.Core.UploadFile({ file });
-        const res = await base44.integrations.Core.InvokeLLM({
+        const { file_url: uploadedUrl } = await base44Legacy.integrations.Core.UploadFile({ file });
+        const res = await base44Legacy.integrations.Core.InvokeLLM({
           prompt: `Extract all metrics from this InBody scan image and return ONLY a JSON object with no markdown fences:
 {
   "scan_date": "YYYY-MM-DD or null",

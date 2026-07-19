@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import {
   ArrowLeft, Plus, GripVertical, Trash2, ChevronDown, ChevronUp, BookOpen, Calendar, Search
 } from 'lucide-react';

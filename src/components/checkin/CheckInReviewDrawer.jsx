@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, X, CheckCircle2, AlertTriangle, Flag,
@@ -64,7 +65,7 @@ Training compliance: ${checkIn.compliance_training ? checkIn.compliance_training
 Nutrition compliance: ${checkIn.compliance_nutrition ? checkIn.compliance_nutrition + '%' : 'not provided'}
 Client notes: ${checkIn.notes || 'none'}`;
 
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await base44Legacy.integrations.Core.InvokeLLM({
         prompt,
         response_json_schema: {
           type: 'object',
