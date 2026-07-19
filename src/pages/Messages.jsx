@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Send, ArrowDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { isToday, isYesterday, format } from 'date-fns';

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Sparkles, X, Check, Edit3, RotateCw, ChevronDown, Zap } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 const TONES = [

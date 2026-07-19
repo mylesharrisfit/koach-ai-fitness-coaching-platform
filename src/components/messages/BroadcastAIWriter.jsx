@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Loader2, Check, RotateCw } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 const TONE_COLORS = {
