@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Check } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { getUserTier } from '@/lib/subscription';
 
@@ -52,7 +53,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
     setLoading(false);
 
     if (res.data?.canceled) {
-      const updated = await base44.auth.me();
+      const updated = await base44Legacy.auth.me();
       if (onUserUpdate) onUserUpdate(updated);
       setStep('done');
     } else {
@@ -64,7 +65,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
     setLoading(true);
     await base44.functions.invoke('stripeCheckout', { action: 'reactivate' });
     setLoading(false);
-    const updated = await base44.auth.me();
+    const updated = await base44Legacy.auth.me();
     if (onUserUpdate) onUserUpdate(updated);
     toast.success('Subscription reactivated!');
     onClose();

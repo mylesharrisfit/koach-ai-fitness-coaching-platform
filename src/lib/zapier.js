@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 export const sendZapierEvent = async (eventType, data) => {
   const settings = await base44.entities.CoachSettings.list();

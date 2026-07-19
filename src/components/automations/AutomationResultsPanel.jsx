@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Zap, Send, Flag, Flame, Check, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ACTION_META, CONDITION_META } from '@/lib/automationEngine';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 /* Execute the rule action for one client */

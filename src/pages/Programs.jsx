@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { Dumbbell, Search, SlidersHorizontal,
   LayoutGrid, List, X, Sparkles, PenLine,
 } from 'lucide-react';
@@ -138,7 +139,7 @@ export default function Programs() {
   const { openUpgradeModal } = useUpgradeModal();
   const navigate = useNavigate();
 
-  useEffect(() => { base44.auth.me().then(setCurrentUser).catch(() => {}); }, []);
+  useEffect(() => { base44Legacy.auth.me().then(setCurrentUser).catch(() => {}); }, []);
 
   const canUseTemplates = hasFeature(currentUser, 'program_templates');
 

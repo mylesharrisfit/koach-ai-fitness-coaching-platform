@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 const PERMISSION_KEY = 'koach_notification_permission';
 const DENIED_TIME_KEY = 'koach_notification_denied_at';

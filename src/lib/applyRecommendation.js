@@ -2,7 +2,7 @@
  * Shared utility to execute a recommendation action against the database.
  * Returns a human-readable success message.
  */
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 export async function applyRecommendation(rec, checkIn, client) {
   if (rec.action === 'adjust_calories') {

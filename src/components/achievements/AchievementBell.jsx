@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Bell } from 'lucide-react';
 import { BADGE_CONFIG, TIER_STYLES } from '@/lib/badges';
 import { formatDistanceToNow } from 'date-fns';

@@ -8,7 +8,8 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { X, Plus, Upload, Loader2 } from 'lucide-react';
 import ProductImageUpload from './ProductImageUpload';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const TYPE_CATEGORY_MAP = {
@@ -110,7 +111,7 @@ export default function ProductFormModal({ open, onClose, editing, onCreate, onU
     const file = e.target.files[0];
     if (!file) return;
     setFileUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
     set('download_file_url', file_url);
     setFileUploading(false);
   };

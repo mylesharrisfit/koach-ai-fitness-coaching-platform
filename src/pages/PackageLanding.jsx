@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { Check, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 
@@ -44,7 +45,7 @@ export default function PackageLanding() {
         setLoading(false);
       })
       .catch(() => { setNotFound(true); setLoading(false); });
-    base44.auth.me().then(setCoach).catch(() => {});
+    base44Legacy.auth.me().then(setCoach).catch(() => {});
   }, [slug]);
 
   if (loading) return (
@@ -75,7 +76,7 @@ export default function PackageLanding() {
     : pkg.billing_type === 'annual' ? '/year' : '';
 
   const handleEnroll = () => {
-    base44.auth.redirectToLogin(`/packages/${slug}?enroll=1`);
+    base44Legacy.auth.redirectToLogin(`/packages/${slug}?enroll=1`);
   };
 
   return (

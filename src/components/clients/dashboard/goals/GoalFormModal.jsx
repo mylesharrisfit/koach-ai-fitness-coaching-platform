@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { X, BookmarkPlus } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import SaveTemplateModal from './SaveTemplateModal';

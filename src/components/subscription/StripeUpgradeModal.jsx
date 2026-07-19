@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { TIERS, TIER_ORDER, getUserTier } from '@/lib/subscription';
 import { Check, X, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 // Exact pricing
@@ -114,7 +115,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
     if (res.data?.url) {
       window.location.href = res.data.url;
     } else if (res.data?.upgraded) {
-      const updated = await base44.auth.me();
+      const updated = await base44Legacy.auth.me();
       if (onUserUpdate) onUserUpdate(updated);
       toast.success(`Upgraded to ${TIERS[tierKey].name}!`);
       onClose();

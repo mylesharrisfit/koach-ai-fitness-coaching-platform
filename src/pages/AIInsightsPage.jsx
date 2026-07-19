@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RefreshCw, History, Settings } from 'lucide-react';
 import { generateInsights, dismissInsight, markNotRelevant, getNotRelevantTypes } from '@/lib/insightEngine';

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { Link as LinkIcon, Mail, MessageSquare, TrendingUp, Zap } from 'lucide-react';
 import MarketingLinksSection from '@/components/marketing/MarketingLinksSection';
 import QRCodeGenerator from '@/components/marketing/QRCodeGenerator';
@@ -14,7 +15,7 @@ export default function MarketingTools() {
 
   const { data: user } = useQuery({
     queryKey: ['current-user'],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => base44Legacy.auth.me(),
   });
 
   const { data: marketingStats } = useQuery({

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 
@@ -313,7 +314,7 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
     set('avatar_url', file_url);
     setUploading(false);
   };
@@ -502,7 +503,7 @@ export default function ClientInviteJoin() {
   const handleFinish = async () => {
     setSaving(true);
     try {
-      await base44.auth.updateMe({
+      await base44Legacy.auth.updateMe({
         onboarding_complete: true,
         business_name: data.business_name,
         coaching_specialties: data.specialties,

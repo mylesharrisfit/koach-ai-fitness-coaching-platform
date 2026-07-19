@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Camera, Plus, X, Check,
@@ -285,7 +286,7 @@ export default function CoachProfile() {
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44Legacy.auth.me() });
 
   const { data: existing = [] } = useQuery({
     queryKey: ['coach-profile', user?.email],
@@ -352,7 +353,7 @@ export default function CoachProfile() {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
     set('avatar_url', file_url);
   };
 

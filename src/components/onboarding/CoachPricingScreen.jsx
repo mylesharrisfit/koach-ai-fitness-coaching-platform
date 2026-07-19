@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Zap, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const PLANS = [
@@ -270,7 +271,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
           <p className="text-center text-xs mt-3" style={{ color: 'var(--kc-444444)' }}>
             Already have an account?{' '}
             <button
-              onClick={() => base44.auth.redirectToLogin(window.location.origin + '/')}
+              onClick={() => base44Legacy.auth.redirectToLogin(window.location.origin + '/')}
               className="underline transition-colors"
               style={{ color: 'var(--tc-primary)' }}
             >

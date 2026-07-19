@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { Home, Dumbbell, BarChart2, MessageSquare, Users, CalendarDays } from 'lucide-react';
 import { addDays, parseISO, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
@@ -129,7 +130,7 @@ export default function ClientPortal() {
   const [activeWorkoutMode, setActiveWorkoutMode] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44Legacy.auth.me().then(setUser).catch(() => {});
   }, []);
 
   // Track portal visits and show prompts

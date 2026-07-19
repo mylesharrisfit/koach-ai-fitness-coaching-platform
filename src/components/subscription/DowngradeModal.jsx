@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { X, AlertTriangle, Check } from 'lucide-react';
 import { TIERS, TIER_ORDER } from '@/lib/subscription';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const PLAN_PRICES = {
@@ -56,7 +57,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
     if (res.data?.url) {
       window.location.href = res.data.url;
     } else if (res.data?.upgraded) {
-      const updated = await base44.auth.me();
+      const updated = await base44Legacy.auth.me();
       if (onUserUpdate) onUserUpdate(updated);
       setConfirmed(true);
     } else {
@@ -68,7 +69,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
     setLoading(true);
     await base44.functions.invoke('stripeCheckout', { action: 'reactivate' });
     setLoading(false);
-    const updated = await base44.auth.me();
+    const updated = await base44Legacy.auth.me();
     if (onUserUpdate) onUserUpdate(updated);
     toast.success('Downgrade cancelled — your plan is unchanged.');
     onClose();

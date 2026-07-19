@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState([]);
@@ -31,7 +32,7 @@ export function useNotifications() {
   }, []);
 
   useEffect(() => {
-    base44.auth.me().then(u => {
+    base44Legacy.auth.me().then(u => {
       setUser(u);
       Promise.all([fetchNotifications(u, true), fetchBadges()]).finally(() => setLoading(false));
     }).catch(() => setLoading(false));

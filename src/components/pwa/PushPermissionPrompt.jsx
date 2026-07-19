@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Bell } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 export default function PushPermissionPrompt({ onDismiss }) {
   const [step, setStep] = useState('initial'); // initial | denied | processing
