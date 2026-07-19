@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Loader2, ArrowLeftRight } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 function gramsToOz(g) {
   return g ? `${(g * 0.03527).toFixed(1)}oz` : null;
@@ -23,25 +23,10 @@ function FoodSwapButton({ food, mealName }) {
     if (swaps.length > 0 && !loading) { setOpen(o => !o); return; }
     setOpen(true);
     setLoading(true);
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Suggest exactly 3 food swap alternatives for "${food.food_name}" (${food.portion || ''}) in a ${mealName} meal. Each swap should have similar macros: ~${food.calories || 0} kcal, ~${food.protein || 0}g protein, ~${food.carbs || 0}g carbs, ~${food.fats || 0}g fats. Be brief and practical.`,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          swaps: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                name: { type: 'string' },
-                portion: { type: 'string' },
-                note: { type: 'string' },
-              },
-            },
-          },
-        },
-      },
+    const res = await base44.functions.invoke('aiNutritionInsights', {
+      action: 'foodSwaps', food, mealName,
     });
+    const result = res.data;
     if (result?.swaps) setSwaps(result.swaps.map(s => `${s.name} · ${s.portion}${s.note ? ` (${s.note})` : ''}`));
     setLoading(false);
   };

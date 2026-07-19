@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Send, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 
 const QUICK_PROMPTS = [
   "What can I eat for breakfast that fits my macros?",
@@ -24,10 +24,10 @@ export default function AIAssistant({ plan, todayLogged }) {
     setMessages(m => [...m, { role: 'user', content: text }]);
     setQuery('');
     setLoading(true);
-    const answer = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a helpful nutrition coach assistant. Context: ${macroContext}\n\nClient question: ${text}\n\nGive a concise, practical answer in 2-4 sentences. Be warm and encouraging.`,
+    const res = await base44.functions.invoke('aiNutritionInsights', {
+      action: 'nutritionQA', macroContext, question: text,
     });
-    setMessages(m => [...m, { role: 'ai', content: answer }]);
+    setMessages(m => [...m, { role: 'ai', content: res.data?.text || '' }]);
     setLoading(false);
   };
 

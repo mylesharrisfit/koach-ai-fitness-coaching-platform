@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
 
@@ -487,6 +487,7 @@ function Step5({ firstName }) {
 
 // ── MAIN ──
 export default function ClientInviteJoin() {
+  const { updateMe } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState({});
@@ -503,7 +504,7 @@ export default function ClientInviteJoin() {
   const handleFinish = async () => {
     setSaving(true);
     try {
-      await base44Legacy.auth.updateMe({
+      await updateMe({
         onboarding_complete: true,
         business_name: data.business_name,
         coaching_specialties: data.specialties,

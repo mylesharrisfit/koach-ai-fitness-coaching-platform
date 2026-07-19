@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Camera, Plus, X, Check,
@@ -276,6 +276,7 @@ function CompletionBar({ profile, onJump }) {
 
 /* ── MAIN PAGE ── */
 export default function CoachProfile() {
+  const { me } = useAuth();
   const queryClient = useQueryClient();
   const fileRef = useRef();
   const sectionRefs = { photo: useRef(), business: useRef(), about: useRef(), preview: useRef() };
@@ -286,7 +287,7 @@ export default function CoachProfile() {
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44Legacy.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => me() });
 
   const { data: existing = [] } = useQuery({
     queryKey: ['coach-profile', user?.email],

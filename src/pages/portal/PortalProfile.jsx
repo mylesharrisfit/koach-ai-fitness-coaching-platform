@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -12,6 +12,7 @@ import { format, parseISO } from 'date-fns';
 
 /* ── Sign Out Confirmation Modal ── */
 function SignOutModal({ onCancel }) {
+  const { logout } = useAuth();
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-end justify-center"
@@ -29,7 +30,7 @@ function SignOutModal({ onCancel }) {
           <p className="text-muted-foreground text-sm mt-1">You'll need to sign in again to access your account.</p>
         </div>
         <button
-          onClick={() => base44Legacy.auth.logout('/')}
+          onClick={() => logout('/')}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-3"
           style={{ background: 'linear-gradient(135deg, rgb(var(--destructive)), rgb(var(--destructive)))' }}>
           Yes, Sign Out
