@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Sparkles, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -11,16 +11,12 @@ export default function AISuggestions({ clientName, recentMessages, onSelect, on
   const generate = async () => {
     setLoading(true);
     const context = recentMessages.slice(-6).map(m => `${m.sender === 'coach' ? 'Coach' : clientName}: ${m.content}`).join('\n');
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a fitness coach assistant. Based on this recent conversation with client "${clientName}", generate 3 short, friendly reply suggestions the coach might send next. Keep each under 40 words.\n\nConversation:\n${context || 'No messages yet.'}\n\nReturn exactly 3 suggestions.`,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          suggestions: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 3 }
-        }
-      }
+    const res = await base44.functions.invoke('aiMessageAssistant', {
+      action: 'replySuggestions',
+      clientName,
+      context,
     });
-    setSuggestions(result.suggestions || []);
+    setSuggestions(res.data?.suggestions || []);
     setFetched(true);
     setLoading(false);
   };

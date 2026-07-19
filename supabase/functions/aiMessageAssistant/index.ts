@@ -153,6 +153,24 @@ Return ONLY valid JSON: { "message": "..." }`,
       return jsonResponse(result.parsed);
     }
 
+    // ── ACTION: replySuggestions ── (ported from components/messages/AISuggestions)
+    if (action === 'replySuggestions') {
+      const clientName = body.clientName || client?.name || 'your client';
+      const convoContext = body.context;
+      const result = await invokeClaude({
+        expectJson: true,
+        prompt: `You are a fitness coach assistant. Based on this recent conversation with client "${clientName}", generate 3 short, friendly reply suggestions the coach might send next. Keep each under 40 words.
+
+Conversation:
+${convoContext || 'No messages yet.'}
+
+Return exactly 3 suggestions.
+Return ONLY valid JSON: { "suggestions": ["...", "...", "..."] }`,
+      });
+      if (!result.ok) return jsonResponse({ error: result.error }, result.status ?? 500);
+      return jsonResponse(result.parsed);
+    }
+
     return jsonResponse({ error: 'Unknown action' }, 400);
   } catch (error) {
     return jsonResponse({ error: (error as Error).message }, 500);

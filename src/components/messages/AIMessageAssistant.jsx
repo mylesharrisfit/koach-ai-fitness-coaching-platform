@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
-import { differenceInDays, parseISO } from 'date-fns';
+import { supabase as base44 } from '@/api/supabaseClient';
 import {
   Sparkles, Loader2, RefreshCw, Check, Edit3, X, ChevronDown
 } from 'lucide-react';
@@ -21,55 +20,6 @@ const TONE_LABELS = {
   professional: 'Professional',
 };
 
-function buildAIPrompt(client, messages, checkIns, tone) {
-  const clientMsgs = messages.filter(m => m.client_id === client?.id);
-  const recent = [...clientMsgs].sort((a, b) => new Date(a.created_date) - new Date(b.created_date)).slice(-8);
-  const convo = recent.map(m => `${m.sender === 'coach' ? 'Coach' : client.name}: ${m.content}`).join('\n');
-
-  const sorted = [...checkIns].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const lastCI = sorted[0];
-  const prevCI = sorted[1];
-
-  // Detect context
-  const lastClientMsg = [...clientMsgs].reverse().find(m => m.sender === 'client');
-  const daysSinceLastMsg = lastClientMsg ? differenceInDays(new Date(), new Date(lastClientMsg.created_date)) : 999;
-  const daysSinceCI = lastCI ? differenceInDays(new Date(), parseISO(lastCI.date)) : 999;
-  const isNewClient = client?.start_date && differenceInDays(new Date(), parseISO(client.start_date)) <= 7;
-  const weightDelta = lastCI?.weight && prevCI?.weight ? (lastCI.weight - prevCI.weight).toFixed(1) : null;
-  const lowMood = lastCI?.mood && ['tired', 'stressed'].includes(lastCI.mood);
-  const missedWorkouts = lastCI?.compliance_training != null && lastCI.compliance_training < 60;
-  const noNutritionLogs = lastCI?.compliance_nutrition != null && lastCI.compliance_nutrition < 40;
-
-  let contextNote = '';
-  if (daysSinceCI <= 1 && lastCI) contextNote = `Client just submitted a check-in. Mood: ${lastCI.mood}, energy: ${lastCI.energy_level}/10, training: ${lastCI.compliance_training}%, nutrition: ${lastCI.compliance_nutrition}%${weightDelta ? `, weight change: ${weightDelta} lbs` : ''}.`;
-  else if (lowMood) contextNote = `Client's last check-in showed low mood (${lastCI.mood}) - be extra empathetic.`;
-  else if (missedWorkouts) contextNote = `Client missed workouts this week (${lastCI.compliance_training}% training compliance).`;
-  else if (noNutritionLogs) contextNote = `Client has low nutrition tracking (${lastCI.compliance_nutrition}% compliance).`;
-  else if (isNewClient) contextNote = `Client is brand new (started ${client.start_date}). Focus on welcome and encouragement.`;
-  else if (daysSinceLastMsg > 5) contextNote = `Client has been quiet for ${daysSinceLastMsg} days - check in warmly.`;
-
-  const toneInstruction = {
-    motivational: 'Be high-energy, celebratory, use fire emojis, pump them up.',
-    empathetic: 'Be warm, understanding, validate their feelings, lead with compassion.',
-    direct: 'Be concise and action-oriented. Give clear next steps. No fluff.',
-    casual: 'Be friendly and conversational, like texting a friend. Light tone.',
-    professional: 'Be structured and professional. No emojis. Clear and composed.',
-  }[tone] || 'Be warm, supportive, and human. Match the energy of the conversation.';
-
-  return `You are an elite personal fitness coach. Write ONE short, human, contextual reply to your client.
-
-CLIENT: ${client?.name?.split(' ')[0] || 'Client'}
-GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-${contextNote ? `CONTEXT: ${contextNote}` : ''}
-
-Recent conversation:
-${convo || '(No messages yet — write a warm opening)'}
-
-TONE INSTRUCTION: ${toneInstruction}
-LENGTH: Under 70 words. Conversational.
-RULES: Use client's first name. Sound human. Return ONLY the message text — no labels or quotes.`;
-}
-
 export default function AIMessageAssistant({ client, allMessages = [], checkIns = [], onUse, onEditFirst }) {
   const [suggestion, setSuggestion] = useState(null);
   const [tone, setTone] = useState(null); // null = auto
@@ -84,18 +34,15 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
     setLoading(true);
     setSuggestion(null);
     const useTone = overrideTone ?? tone;
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: buildAIPrompt(client, allMessages, checkIns, useTone),
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-          detected_tone: { type: 'string' },
-        }
-      }
+    const res = await base44.functions.invoke('aiMessageAssistant', {
+      action: 'generateReply',
+      client,
+      tone: useTone,
+      conversationMessages: allMessages,
+      checkIn: checkIns?.[0],
     });
-    setSuggestion(result?.message || '');
-    if (result?.detected_tone) setToneLabel(result.detected_tone);
+    setSuggestion(res.data?.message || '');
+    if (res.data?.tone) setToneLabel(res.data.tone);
     setLoading(false);
   }, [client, allMessages, checkIns, tone]);
 
