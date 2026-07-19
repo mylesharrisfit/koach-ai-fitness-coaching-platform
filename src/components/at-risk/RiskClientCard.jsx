@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import {
@@ -68,28 +67,14 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
     setLoadingAI(true);
     try {
       const factStr = flags.map(f => f.label + (f.detail ? ': ' + f.detail : '')).join('; ');
-      const result = await base44Legacy.integrations.Core.InvokeLLM({
-        prompt: `You are a fitness coach AI advisor. Client "${client.name}" has these risk factors: ${factStr}. 
-Their avg adherence is ${avgScore ?? 'unknown'}%. Goal: ${client.goal?.replace(/_/g, ' ') || 'general fitness'}.
-
-Generate a personalized intervention plan as JSON:
-{
-  "immediate_action": "specific action to take today (1 sentence)",
-  "message_script": "personalized message to send the client (2-3 sentences, warm and motivating)",
-  "program_adjustment": "program change to consider (1 sentence or null)",
-  "followup": "follow-up timeline and action (1 sentence)"
-}`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            immediate_action: { type: 'string' },
-            message_script: { type: 'string' },
-            program_adjustment: { type: 'string' },
-            followup: { type: 'string' },
-          }
-        }
+      const res = await base44.functions.invoke('aiBusinessInsights', {
+        action: 'interventionPlan',
+        clientName: client.name,
+        riskFactors: factStr,
+        goal: client.goal,
+        avgAdherence: avgScore,
       });
-      setAiSuggestion(result);
+      setAiSuggestion(res.data);
     } catch { toast.error('AI suggestion failed'); }
     setLoadingAI(false);
   };

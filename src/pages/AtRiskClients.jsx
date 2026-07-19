@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   AlertTriangle, ChevronDown, ChevronUp, MessageSquare, Settings, ArrowRight,
@@ -42,32 +41,15 @@ function AIInterventionPanel({ entry, client, onClose, onSend }) {
     setLoading(true);
     const flagSummary = entry.flags.map(f => f.label + (f.detail ? `: ${f.detail}` : '')).join(', ');
     try {
-      const result = await base44Legacy.integrations.Core.InvokeLLM({
-        prompt: `You are a fitness coach AI assistant. Generate an intervention plan for a client named ${client.name}.
-        
-Risk factors: ${flagSummary}
-Goal: ${client.goal?.replace(/_/g, ' ')}
-Risk score: ${entry.riskScore}/100
-
-Respond with JSON only:
-{
-  "immediate_action": "1-sentence recommended immediate action",
-  "message_script": "A warm, personalized 2-3 sentence message to send to the client",
-  "program_adjustment": "Suggested program change (1 sentence, e.g. reduce frequency)",
-  "follow_up_timeline": "When to follow up (e.g. Check back in 3 days)"
-}`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            immediate_action: { type: 'string' },
-            message_script: { type: 'string' },
-            program_adjustment: { type: 'string' },
-            follow_up_timeline: { type: 'string' },
-          }
-        }
+      const res = await base44.functions.invoke('aiBusinessInsights', {
+        action: 'interventionPlan',
+        clientName: client.name,
+        riskFactors: flagSummary,
+        goal: client.goal,
+        riskScore: entry.riskScore,
       });
-      setPlan(result);
-      setMessage(result.message_script);
+      setPlan(res.data);
+      setMessage(res.data?.message_script || '');
     } catch { toast.error('AI generation failed'); }
     setLoading(false);
   };

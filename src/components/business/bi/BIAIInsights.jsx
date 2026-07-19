@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Sparkles, Loader2, TrendingUp, Users, DollarSign, Clock, Target, RefreshCw } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { differenceInDays, parseISO, startOfMonth } from 'date-fns';
 
 const INSIGHT_ICONS = { revenue: DollarSign, retention: Users, pricing: TrendingUp, efficiency: Clock, growth: Target };
@@ -31,43 +31,23 @@ export default function BIAIInsights({ clients, checkIns, leads, payments }) {
       return sd && sd >= startOfMonth(new Date());
     }).length;
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are an expert business intelligence analyst for a fitness coaching business. Analyze this data and generate 4-5 specific, actionable business insights.
-
-Business Data:
-- MRR: $${mrr}
-- Active Clients: ${activeClients.length}
-- Average Monthly Rate: $${avgRate}
-- At-Risk Clients: ${atRiskClients.length}
-- Pipeline Leads: ${pipelineLeads.length} (${staleLeads.length} stale 14+ days)
-- Lead Conversion Rate: ${convRate}%
-- Average Adherence: ${avgAdherence}%
-- Check-in Review Rate: ${reviewedPct}%
-- New Clients This Month: ${newThisMonth}
-- Stale pipeline value: $${staleLeads.reduce((s, l) => s + (l.deal_value || avgRate || 0), 0)}/mo potential
-
-Generate 4-5 insights. Each must be actionable and specific. Include dollar amounts when relevant.
-Categories: revenue, retention, pricing, efficiency, growth`,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          insights: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                category: { type: 'string' },
-                headline: { type: 'string' },
-                body: { type: 'string' },
-                action: { type: 'string' },
-                impact: { type: 'string' },
-              }
-            }
-          }
-        }
-      }
+    const res = await base44.functions.invoke('aiBusinessInsights', {
+      action: 'businessInsights',
+      metrics: {
+        mrr,
+        activeClients: activeClients.length,
+        avgRate,
+        atRiskClients: atRiskClients.length,
+        pipelineLeads: pipelineLeads.length,
+        staleLeads: staleLeads.length,
+        convRate,
+        avgAdherence,
+        reviewedPct,
+        newThisMonth,
+        staleValue: staleLeads.reduce((s, l) => s + (l.deal_value || avgRate || 0), 0),
+      },
     });
-    setInsights(result.insights || []);
+    setInsights(res.data?.insights || []);
     setLoading(false);
   };
 

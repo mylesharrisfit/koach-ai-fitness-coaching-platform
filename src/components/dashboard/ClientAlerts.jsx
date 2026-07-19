@@ -1,35 +1,8 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Sparkles, Loader2, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-function generatePrompt(clients, checkIns) {
-  const data = clients
-    .filter(c => c.status === 'active')
-    .map(c => {
-      const cis = checkIns.filter(ci => ci.client_id === c.id).slice(0, 3);
-      return {
-        name: c.name,
-        goal: c.goal,
-        checkIns: cis.map(ci => ({
-          date: ci.date,
-          weight: ci.weight,
-          compliance_training: ci.compliance_training,
-          compliance_nutrition: ci.compliance_nutrition,
-          mood: ci.mood,
-          sleep: ci.sleep_hours,
-        }))
-      };
-    });
-
-  return `You are an AI fitness coach assistant. Analyze the following client data and identify any alerts or issues.
-Look for: weight plateaus, weight spikes, missed check-ins, declining compliance, poor sleep trends.
-Return a JSON array of up to 5 alerts, each with: { client_name, alert_type, message, severity ("high"|"medium"|"low") }.
-Keep each message under 15 words. Be direct and actionable.
-
-Client data:
-${JSON.stringify(data, null, 2)}`;
-}
 
 export default function ClientAlerts({ clients, checkIns }) {
   const [alerts, setAlerts] = useState(null);
@@ -39,27 +12,10 @@ export default function ClientAlerts({ clients, checkIns }) {
   const fetchAlerts = async () => {
     setLoading(true);
     try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: generatePrompt(clients, checkIns),
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            alerts: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  client_name: { type: 'string' },
-                  alert_type: { type: 'string' },
-                  message: { type: 'string' },
-                  severity: { type: 'string' }
-                }
-              }
-            }
-          }
-        }
+      const res = await base44.functions.invoke('aiBusinessInsights', {
+        action: 'clientAlerts', clients, checkIns,
       });
-      setAlerts(result?.alerts || []);
+      setAlerts(res.data?.alerts || []);
     } finally {
       setLoading(false);
     }
