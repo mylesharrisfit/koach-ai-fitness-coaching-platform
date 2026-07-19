@@ -15,6 +15,7 @@
  * same .from().insert/.update API).
  */
 import { renderMessage } from './automationRunner.js';
+import { proposeMutation } from './planMutationService.js';
 
 /** Strip undefined values so inserts only carry the columns the caller set. */
 function compact(obj) {
@@ -114,7 +115,21 @@ async function executeActionStrict(admin, action, client, lastCheckIn, clientChe
       const plan = plans.find((p) => p.id === client.assigned_nutrition_id);
       if (plan) {
         const delta = Number(action.value) || 0;
-        await admin.from('nutrition_plans').update({ calories: (plan.calories || 2000) + delta }).eq('id', plan.id);
+        const before = plan.calories ?? null;
+        const after = (plan.calories || 2000) + delta;
+        // Route through the single write path so the change is audited in
+        // plan_versions (and copy-on-write protects shared/template plans).
+        // The coach authored this automation rule, so it applies immediately.
+        const coachId = client.user_id ?? client.created_by;
+        const res = await proposeMutation({
+          svc: admin, coachId, clientId: client.id,
+          planKind: 'nutrition', planId: plan.id,
+          diff: { fields: { calories: { before, after } } },
+          rationale: `Automation rule adjusted calories by ${delta}`,
+          source: 'ai_adaptation', triggerType: 'automation_calorie_adjustment',
+          autoApply: true,
+        });
+        if (res.error) throw new Error(`adjust_calories: ${res.error}`);
       }
       break;
     }
