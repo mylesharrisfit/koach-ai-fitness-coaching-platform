@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { format, subDays } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf, Download } from 'lucide-react';

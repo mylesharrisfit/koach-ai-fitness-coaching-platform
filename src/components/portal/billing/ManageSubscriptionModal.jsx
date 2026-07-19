@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, AlertTriangle, PauseCircle, XCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 const CANCEL_REASONS = [

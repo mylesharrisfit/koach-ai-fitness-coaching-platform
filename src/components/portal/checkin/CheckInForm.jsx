@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { AnimatePresence } from 'framer-motion';
 import CheckInFormScreen from './CheckInFormScreen';
 import CheckInReview from './CheckInReview';

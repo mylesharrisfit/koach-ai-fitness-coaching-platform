@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, MessageSquare, Trophy, ChevronRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';

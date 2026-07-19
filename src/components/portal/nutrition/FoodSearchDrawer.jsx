@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Search, X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 
 const UNITS = ['g', 'oz', 'cup', 'tbsp', 'tsp', 'piece', 'serving', 'ml'];
 

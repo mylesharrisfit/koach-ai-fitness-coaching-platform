@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Trophy } from 'lucide-react';
 

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, parseISO, differenceInWeeks } from 'date-fns';
 import { Scale, Plus, X

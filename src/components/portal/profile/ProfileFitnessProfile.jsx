@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import ProfileSectionCard from './ProfileSectionCard';

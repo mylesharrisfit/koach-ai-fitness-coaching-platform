@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -28,7 +29,7 @@ function SignOutModal({ onCancel }) {
           <p className="text-muted-foreground text-sm mt-1">You'll need to sign in again to access your account.</p>
         </div>
         <button
-          onClick={() => base44.auth.logout('/')}
+          onClick={() => base44Legacy.auth.logout('/')}
           className="w-full py-4 rounded-2xl font-black text-white text-base mb-3"
           style={{ background: 'linear-gradient(135deg, rgb(var(--destructive)), rgb(var(--destructive)))' }}>
           Yes, Sign Out
@@ -180,7 +181,7 @@ export default function PortalProfile({ user }) {
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !myClient?.id) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
     await base44.entities.Client.update(myClient.id, { avatar_url: file_url });
     queryClient.invalidateQueries({ queryKey: ['portal-client-profile'] });
   };

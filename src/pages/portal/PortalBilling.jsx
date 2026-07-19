@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { AnimatePresence } from 'framer-motion';
 import { ChevronLeft, CreditCard, FileText, Receipt, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
