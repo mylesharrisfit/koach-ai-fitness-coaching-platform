@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import {
   ChevronLeft, CheckCircle2, Sparkles, MessageSquare,
@@ -73,23 +72,6 @@ function buildQueue(checkIns, clients) {
 }
 
 /* ─── AI prompt builder ─── */
-function buildAIPrompt(client, checkIn, allCIs) {
-  const weights = allCIs.filter(c => c.weight).slice(0, 4).map(c => c.weight);
-  const avgT = allCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_training || 0), 0) / Math.min(allCIs.length || 1, 4);
-  const avgN = allCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_nutrition || 0), 0) / Math.min(allCIs.length || 1, 4);
-  const weightTrend = weights.length >= 2
-    ? (weights[0] < weights[weights.length - 1] ? 'trending down' : 'trending up or flat')
-    : 'not enough data';
-  return `You are an elite fitness coach writing a brief, specific check-in response.
-Write 2–3 sentences MAX. Warm, direct, cite at least one specific data point. Start positive then give one actionable adjustment.
-Client goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-Weight trend: ${weightTrend}
-Training compliance: ${checkIn.compliance_training ?? 'N/A'}% (4-week avg: ${Math.round(avgT)}%)
-Nutrition compliance: ${checkIn.compliance_nutrition ?? 'N/A'}% (4-week avg: ${Math.round(avgN)}%)
-Sleep: ${checkIn.sleep_hours ?? 'N/A'} hrs | Energy: ${checkIn.energy_level ?? 'N/A'}/10 | Stress: ${checkIn.stress_level ?? 'N/A'}/10
-Client notes: ${checkIn.notes || 'none'}
-Write directly to the client ("you"). No bullet points.`;
-}
 
 /* ─── Mini weight sparkline ─── */
 function WeightSparkline({ clientCIs }) {
@@ -229,7 +211,7 @@ function FeedbackComposer({ checkIn, client, allCIs, onSent }) {
 
   const generateAI = async () => {
     setAiLoading(true);
-    const result = await base44Legacy.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, allCIs) });
+    const result = (await base44.functions.invoke('aiMessageAssistant', { action: 'generateCheckInResponse', client, checkIn, recentCheckIns: allCIs })).data?.message || '';
     setText(result);
     setAiLoading(false);
   };
@@ -417,7 +399,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
   const sendAI = async () => {
     if (aiSending || aiDone || feedbackSent) return;
     setAiSending(true);
-    const result = await base44Legacy.integrations.Core.InvokeLLM({ prompt: buildAIPrompt(client, checkIn, clientCIs) });
+    const result = (await base44.functions.invoke('aiMessageAssistant', { action: 'generateCheckInResponse', client, checkIn, recentCheckIns: clientCIs })).data?.message || '';
     await Promise.all([
       base44.entities.CheckIn.update(checkIn.id, { coach_notes: result, coach_responded: true, review_status: 'reviewed' }),
       base44.entities.Message.create({ client_id: checkIn.client_id, client_name: checkIn.client_name, sender: 'coach', content: result, tag: 'check_in', is_read: false }),
