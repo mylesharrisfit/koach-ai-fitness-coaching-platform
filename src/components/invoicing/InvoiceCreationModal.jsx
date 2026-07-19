@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Auth } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { format, addDays } from 'date-fns';
 import { X, Plus, Trash2, ChevronDown } from 'lucide-react';
@@ -148,7 +149,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
   const [coachName, setCoachName] = useState('');
 
   useEffect(() => {
-    base44.auth.me().then(u => setCoachName(u?.full_name || '')).catch(() => {});
+    base44Auth.auth.me().then(u => setCoachName(u?.full_name || '')).catch(() => {});
   }, []);
 
   const { data: clients = [] } = useQuery({

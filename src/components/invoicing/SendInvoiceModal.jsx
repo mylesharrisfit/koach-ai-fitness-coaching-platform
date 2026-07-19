@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { X, Send, Mail, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -23,7 +24,7 @@ export default function SendInvoiceModal({ invoice, coachUser, onClose, onSent }
 
       // Send email if applicable
       if ((sendVia === 'email' || sendVia === 'both') && invoice.client_email) {
-        await base44.integrations.Core.SendEmail({
+        await base44Legacy.integrations.Core.SendEmail({
           to: invoice.client_email,
           subject: `Invoice ${invoice.invoice_number} — ${invoice.description || 'Coaching Services'} — $${Number(invoice.amount).toFixed(2)}`,
           body: `${message}\n\n---\nInvoice #: ${invoice.invoice_number}\nAmount Due: $${Number(invoice.amount).toFixed(2)}\nDue Date: ${invoice.due_date || '—'}\n\nView & pay your invoice by logging into your coaching portal.`,

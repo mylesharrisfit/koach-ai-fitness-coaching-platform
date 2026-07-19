@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { RefreshCw, Plus } from 'lucide-react';
 import StripeRevenueSummary from '@/components/stripe/StripeRevenueSummary';

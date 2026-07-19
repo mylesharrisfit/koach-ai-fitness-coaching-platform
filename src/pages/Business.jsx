@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Auth } from '@/api/base44Client';
 import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -413,7 +414,7 @@ export default function Business() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    base44Auth.auth.me().then(setUser).catch(() => {});
   }, []);
 
   const handleTabChange = (key) => {

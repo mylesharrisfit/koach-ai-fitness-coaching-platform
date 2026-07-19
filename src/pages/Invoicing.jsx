@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format, parseISO, isPast } from 'date-fns';
 import { Plus, Package, Search, Download, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
