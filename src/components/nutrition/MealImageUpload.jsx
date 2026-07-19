@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Camera, X, Loader2, UtensilsCrossed } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -31,7 +31,7 @@ export default function MealImageUpload({ imageUrl, onChange, className }) {
     try {
       // Compress: draw onto canvas at max 800px wide, export as jpeg 0.75
       const compressed = await compressImage(file, 800, 0.75);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: compressed });
+      const { file_url } = await base44.uploadFile({ file: compressed });
       onChange(file_url);
     } catch (err) {
       toast.error('Upload failed — try again');

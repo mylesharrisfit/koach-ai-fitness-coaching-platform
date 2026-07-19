@@ -181,7 +181,7 @@ export default function PortalProfile({ user }) {
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !myClient?.id) return;
-    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     await base44.entities.Client.update(myClient.id, { avatar_url: file_url });
     queryClient.invalidateQueries({ queryKey: ['portal-client-profile'] });
   };

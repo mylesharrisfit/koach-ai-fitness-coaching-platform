@@ -314,7 +314,7 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     set('avatar_url', file_url);
     setUploading(false);
   };

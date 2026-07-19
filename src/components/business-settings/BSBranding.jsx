@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Palette, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { BSSection, BSRow, BSInput, BSTextarea, BSDivider } from './BSSection';
 
 const BRAND_COLORS = ['var(--tc-primary)', 'var(--tc-ai)', 'var(--tc-destructive)', 'var(--tc-success)', 'var(--tc-warning)', 'var(--kc-0891b2)', 'var(--kc-db2777)', 'var(--tc-foreground)'];
@@ -17,7 +17,7 @@ export default function BSBranding({ s, set }) {
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     set('logo_url', file_url);
   };
 

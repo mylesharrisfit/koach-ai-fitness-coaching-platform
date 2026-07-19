@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Camera } from 'lucide-react';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 
 function ProgressRing({ pct = 0, size = 64, stroke = 5 }) {
@@ -50,7 +49,7 @@ export default function ProfileHeader({ user, client, program, checkIns }) {
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     if (client?.id) {
       await base44.entities.Client.update(client.id, { avatar_url: file_url });
     }

@@ -353,7 +353,7 @@ export default function CoachProfile() {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     set('avatar_url', file_url);
   };
 

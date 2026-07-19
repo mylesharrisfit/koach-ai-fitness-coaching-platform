@@ -289,7 +289,7 @@ Return null for any field not found in the scan.`,
         ];
       } else {
         // PDF — upload first then describe via text
-        const { file_url } = await base44Legacy.integrations.Core.UploadFile({ file });
+        const { file_url } = await base44.uploadFile({ file });
         messageContent = [
           {
             type: 'text',
@@ -322,7 +322,7 @@ Please extract all metrics and return ONLY this JSON with no markdown:
       // Use base44 InvokeLLM with file_urls for image extraction
       let extracted;
       if (isImage) {
-        const { file_url: uploadedUrl } = await base44Legacy.integrations.Core.UploadFile({ file });
+        const { file_url: uploadedUrl } = await base44.uploadFile({ file });
         const res = await base44Legacy.integrations.Core.InvokeLLM({
           prompt: `Extract all metrics from this InBody scan image and return ONLY a JSON object with no markdown fences:
 {

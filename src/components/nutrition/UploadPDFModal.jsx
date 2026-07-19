@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,7 +82,7 @@ export default function UploadPDFModal({ open, onOpenChange, onSubmit }) {
     setUploading(true);
     try {
       // Upload PDF file
-      const uploadResult = await base44Legacy.integrations.Core.UploadFile({ file });
+      const uploadResult = await base44.uploadFile({ file });
       const pdfUrl = uploadResult.file_url;
 
       // Create plan
