@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { getUserTier, getLimit } from '@/lib/subscription';
 import { cn } from '@/lib/utils';
 import { Users, Dumbbell, Utensils, TrendingUp } from 'lucide-react';

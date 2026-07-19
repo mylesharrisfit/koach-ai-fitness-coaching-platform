@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { differenceInDays, parseISO } from 'date-fns';
 import { Zap, X, AlertTriangle, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 export default function TrialBanner({ user }) {
   const navigate = useNavigate();
