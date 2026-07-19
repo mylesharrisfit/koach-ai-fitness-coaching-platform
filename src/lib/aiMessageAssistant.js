@@ -2,7 +2,7 @@
  * AI Message Assistant — core context builder & generation engine
  * Used by ComposeBar, BroadcastModal, CheckInResponseGenerator
  */
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { differenceInDays, format } from 'date-fns';
 
 export const TONES = [
@@ -146,63 +146,17 @@ export async function generateAIReply(client, messages, checkIns, tone = 'auto',
   const detectedCtx = detectContext(client, messages, checkIns);
   const firstName = client?.name?.split(' ')[0] || client?.name || 'there';
 
-  const toneInstruction = {
-    motivational: 'Be highly energetic, positive, and use motivating language. Use 1-2 fire or muscle emojis.',
-    empathetic:   'Be warm, understanding, and emotionally supportive. Acknowledge feelings first.',
-    direct:       'Be concise and action-oriented. Get straight to the point. No fluff.',
-    casual:       'Be friendly and conversational, like texting a friend. Use casual language.',
-    professional: 'Be polished and professional. Minimal emojis. Clear and structured.',
-    auto:         'Match the coach\'s established tone from their message history. Be natural and consistent.',
-  }[tone] || 'Be natural and coach-like.';
-
-  const situationalHint = {
-    low_mood_checkin:      `Client submitted a check-in with LOW MOOD. Acknowledge it empathetically before coaching.`,
-    low_training:          `Client has LOW TRAINING COMPLIANCE this week. Gently explore why and offer support.`,
-    high_performance:      `Client had EXCEPTIONAL PERFORMANCE. Celebrate it genuinely and specifically.`,
-    recent_checkin:        `Client recently submitted a check-in. Respond to their progress specifically.`,
-    inactive:              `Client has been QUIET/INACTIVE for several days. Reach out warmly to re-engage.`,
-    quiet:                 `Client hasn't messaged in a few days. Check in casually.`,
-    injury_concern:        `Client may have mentioned pain/injury. Address safety first, offer modification.`,
-    modification_request:  `Client is asking about exercise modifications. Give a helpful, specific answer.`,
-    pr_achieved:           `Client hit a personal best! Celebrate enthusiastically and specifically.`,
-    new_client:            `This is a new client with no history. Warmly introduce yourself and set expectations.`,
-    general:               `Write a helpful, contextual reply based on the conversation.`,
-  }[detectedCtx] || '';
-
-  const retryVariant = retryCount > 0
-    ? `\n\nIMPORTANT: This is retry #${retryCount} — generate a DIFFERENT style/angle reply than before. Change the opener and approach.`
-    : '';
-
-  const result = await base44.integrations.Core.InvokeLLM({
-    prompt: `You are an elite personal fitness coach with a warm, results-driven communication style.
-
-SITUATION: ${situationalHint}
-
-TONE INSTRUCTION: ${toneInstruction}
-
-${context}
-
-YOUR TASK:
-Write ONE reply message to ${firstName}. Rules:
-- Under 80 words
-- Use first name naturally
-- Sound genuinely human, not robotic
-- No generic filler phrases like "I hope you're well"
-- Be specific to the client's actual data above
-- Do NOT start with "I" as the first word${retryVariant}
-
-Also detect the tone of your reply from: Motivational, Empathetic, Informative, Celebratory, Direct, Supportive.
-
-Return JSON only.`,
-    response_json_schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string' },
-        tone_label: { type: 'string' },
-        context_reason: { type: 'string' },
-      }
-    }
+  // Prompt template + tone/situational maps live in the aiMessageAssistant Edge
+  // Function (action: richReply); the pure context builders above run here.
+  const res = await base44.functions.invoke('aiMessageAssistant', {
+    action: 'richReply',
+    context,
+    tone,
+    detectedCtx,
+    firstName,
+    retryCount,
   });
+  const result = res.data || {};
 
   return {
     message: result.message || '',
@@ -223,49 +177,17 @@ export async function generateBroadcastMessage(selectedClients, allClients, filt
     return `- ${c.name}: goal=${c.goal?.replace(/_/g, ' ')}, status=${c.lifecycle_status || 'active'}, last check-in=${lastCI?.date || 'none'}, training=${lastCI?.compliance_training ?? '?'}%`;
   }).join('\n');
 
-  const filterCtx = {
-    all:        'all active coaching clients',
-    active:     'all active clients who are progressing',
-    at_risk:    'clients who are at-risk of churning or falling off track',
-    no_program: 'clients who don\'t have a workout program assigned yet',
-    lead:       'potential leads who haven\'t started yet',
-  }[filter] || 'selected clients';
-
   const today = format(new Date(), 'EEEE, MMMM d');
 
-  const result = await base44.integrations.Core.InvokeLLM({
-    prompt: `You are a personal fitness coach writing a broadcast message to ${filterCtx} (${selectedClients.length} people) on ${today}.
-
-Sample of recipients:
-${summaries}
-
-Generate 3 DIFFERENT versions of a broadcast message. Each version should:
-- Use [First Name] as a personalization token
-- Be under 100 words
-- Be appropriate for the recipient group context (${filterCtx})
-- Have a different tone/angle
-- Sound warm and personal, not mass-marketing
-
-Return JSON only.`,
-    response_json_schema: {
-      type: 'object',
-      properties: {
-        versions: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              message: { type: 'string' },
-              tone_label: { type: 'string' },
-              description: { type: 'string' },
-            }
-          }
-        }
-      }
-    }
+  const res = await base44.functions.invoke('aiMessageAssistant', {
+    action: 'richBroadcast',
+    summaries,
+    filter,
+    count: selectedClients.length,
+    today,
   });
 
-  return result.versions || [];
+  return res.data?.versions || [];
 }
 
 /**
@@ -282,41 +204,14 @@ export async function generateCheckInResponse(client, checkIn, previousCheckIns 
     ? (checkIn.compliance_training || 0) - prevCI.compliance_training
     : null;
 
-  const result = await base44.integrations.Core.InvokeLLM({
-    prompt: `You are an elite fitness coach writing a personalized check-in response to ${firstName}.
-
-CHECK-IN DATA (submitted ${checkIn.date}):
-- Mood: ${checkIn.mood || 'not provided'}
-- Energy: ${checkIn.energy_level || '—'}/10
-- Stress: ${checkIn.stress_level || '—'}/10
-- Sleep: ${checkIn.sleep_hours || '—'} hrs
-- Training compliance: ${checkIn.compliance_training ?? '—'}%${trainingTrend !== null ? ` (${trainingTrend >= 0 ? '+' : ''}${trainingTrend}% vs last week)` : ''}
-- Nutrition compliance: ${checkIn.compliance_nutrition ?? '—'}%
-- Weight: ${checkIn.weight || '—'} lbs${weightDelta !== null ? ` (${parseFloat(weightDelta) >= 0 ? '+' : ''}${weightDelta} lbs vs last)` : ''}
-- Client notes: "${checkIn.notes || 'none'}"
-
-CLIENT CONTEXT:
-- Goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-- Status: ${client?.lifecycle_status || 'active'}
-
-Write a personalized check-in response that:
-1. Opens with genuine acknowledgment of their week (specific to their data)
-2. Highlights 1-2 specific things that went well
-3. Gives 1-2 clear coaching points for improvement
-4. Ends with a motivating close
-
-Tone: warm, specific, professional coach. 100-150 words. Use first name.
-
-Return JSON only.`,
-    response_json_schema: {
-      type: 'object',
-      properties: {
-        response: { type: 'string' },
-        highlights: { type: 'array', items: { type: 'string' } },
-        coaching_points: { type: 'array', items: { type: 'string' } },
-      }
-    }
+  const res = await base44.functions.invoke('aiMessageAssistant', {
+    action: 'richCheckInResponse',
+    checkIn,
+    client,
+    firstName,
+    weightDelta,
+    trainingTrend,
   });
 
-  return result;
+  return res.data;
 }
