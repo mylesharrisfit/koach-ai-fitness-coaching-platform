@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { differenceInDays, parseISO, format, startOfWeek, endOfWeek } from 'date-fns';
 import {
   Users, AlertTriangle, CheckCircle2,

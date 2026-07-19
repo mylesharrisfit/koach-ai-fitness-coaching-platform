@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 
 const ANGLES = [
   { key: 'front', label: 'Front', icon: '🧍' },
@@ -16,7 +16,7 @@ export default function CheckInQuestionPhoto({ value, onChange }) {
   const handleFile = async (key, file) => {
     if (!file) return;
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await base44.uploadFile({ file });
       onChange({ ...photos, [key]: file_url });
     } catch (e) {
       console.error(e);

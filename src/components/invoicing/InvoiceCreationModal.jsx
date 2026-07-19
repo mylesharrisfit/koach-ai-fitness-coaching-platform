@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { format, addDays } from 'date-fns';
 import { X, Plus, Trash2, ChevronDown } from 'lucide-react';
@@ -144,11 +145,12 @@ function Row({ label, value, color }) {
 }
 
 export default function InvoiceCreationModal({ invoice, onClose, onSave, existingInvoices = [] }) {
+  const { me } = useAuth();
   const isEdit = !!invoice?.id;
   const [coachName, setCoachName] = useState('');
 
   useEffect(() => {
-    base44.auth.me().then(u => setCoachName(u?.full_name || '')).catch(() => {});
+    me().then(u => setCoachName(u?.full_name || '')).catch(() => {});
   }, []);
 
   const { data: clients = [] } = useQuery({

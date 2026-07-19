@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 
 const TABS = [
   { id: 'weight', label: 'Weight' },
@@ -33,7 +33,7 @@ export default function LogUpdateModal({ open, defaultTab = 'weight', onClose, o
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     setPhotoUrls(prev => [...prev, file_url]);
     setUploading(false);
   };

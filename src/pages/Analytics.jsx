@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { TrendingDown, TrendingUp, Activity, Weight, BarChart3, UserCheck, ArrowUp, ArrowDown, Minus, AlertTriangle, Zap, Shield } from 'lucide-react';
 import AnalyticsStatCard from '@/components/analytics/AnalyticsStatCard';
 import AnalyticsTrendCard from '@/components/analytics/AnalyticsTrendCard';

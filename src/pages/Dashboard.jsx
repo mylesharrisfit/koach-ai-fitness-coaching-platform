@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import TodayView from '@/components/dashboard/TodayView';
 import TrialBanner from '@/components/dashboard/TrialBanner';
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
@@ -8,6 +9,7 @@ import ErrorState from '@/components/shared/ErrorState';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
+  const { me } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -16,7 +18,7 @@ export default function Dashboard() {
     const justFinishedOnboarding = localStorage.getItem('koach_onboarding_complete') === '1';
     if (justFinishedOnboarding) return; // already done — stay on dashboard
 
-    base44.auth.me().then(user => {
+    me().then(user => {
       if (user && !user.onboarding_complete) {
         navigate('/start');
       }
@@ -66,7 +68,7 @@ export default function Dashboard() {
   });
 
   const [dashUser, setDashUser] = useState(null);
-  useEffect(() => { base44.auth.me().then(setDashUser).catch(() => {}); }, []);
+  useEffect(() => { me().then(setDashUser).catch(() => {}); }, []);
 
   return (
     <>

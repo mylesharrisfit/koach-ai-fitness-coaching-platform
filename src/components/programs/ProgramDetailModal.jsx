@@ -3,7 +3,7 @@ import { X, Target, Flame, BarChart3, Clock, UserPlus, Pencil } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 import ProgramOverviewTab from './tabs/ProgramOverviewTab';
 import ProgramWeeklyScheduleTab from './tabs/ProgramWeeklyScheduleTab';

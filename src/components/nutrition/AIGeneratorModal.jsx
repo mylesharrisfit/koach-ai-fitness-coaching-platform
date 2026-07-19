@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import Step4Assign from './Step4Assign';
 import MacroSplitControl from './MacroSplitControl';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { UtensilsCrossed } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 import { addRecentFood } from '@/lib/nutritionUtils';
 import { useFoodSearch } from '@/components/nutrition/usda/useFoodSearch';

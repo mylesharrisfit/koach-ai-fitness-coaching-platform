@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { X, BookmarkPlus, Loader2 } from 'lucide-react';
 import { scaleMacros, gramsFromServing } from '@/lib/nutritionUtils';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 const UNITS = ['g', 'oz', 'cup', 'tbsp', 'tsp', 'piece', 'serving'];
 

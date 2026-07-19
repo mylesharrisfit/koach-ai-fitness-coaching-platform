@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { Sparkles, BookOpen, Users, Search, SlidersHorizontal, Salad, Pill, FlaskConical, Droplets, Leaf } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -31,6 +32,7 @@ const MAIN_TABS = [
 ];
 
 export default function Nutrition() {
+  const { me } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [showLaunchModal, setShowLaunchModal] = useState(false);
@@ -45,7 +47,7 @@ export default function Nutrition() {
   const { openUpgradeModal } = useUpgradeModal();
 
   useEffect(() => {
-    base44.auth.me().then(setCurrentUser).catch(() => {});
+    me().then(setCurrentUser).catch(() => {});
   }, []);
 
   const { data: plans = [], isLoading } = useQuery({

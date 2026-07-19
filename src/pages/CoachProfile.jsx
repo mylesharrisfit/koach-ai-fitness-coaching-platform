@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Camera, Plus, X, Check,
@@ -275,6 +276,7 @@ function CompletionBar({ profile, onJump }) {
 
 /* ── MAIN PAGE ── */
 export default function CoachProfile() {
+  const { me } = useAuth();
   const queryClient = useQueryClient();
   const fileRef = useRef();
   const sectionRefs = { photo: useRef(), business: useRef(), about: useRef(), preview: useRef() };
@@ -285,7 +287,7 @@ export default function CoachProfile() {
   const [saving, setSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => me() });
 
   const { data: existing = [] } = useQuery({
     queryKey: ['coach-profile', user?.email],
@@ -352,7 +354,7 @@ export default function CoachProfile() {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     set('avatar_url', file_url);
   };
 

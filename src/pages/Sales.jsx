@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Plus, TrendingUp, DollarSign, Target, Users, LayoutGrid, List, BarChart2, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import FunnelView from '../components/sales/FunnelView';

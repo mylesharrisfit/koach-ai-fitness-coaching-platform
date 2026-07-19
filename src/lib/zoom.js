@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 const invoke = (action, payload = {}) =>
   base44.functions.invoke('zoomProxy', { action, payload }).then(r => r.data);

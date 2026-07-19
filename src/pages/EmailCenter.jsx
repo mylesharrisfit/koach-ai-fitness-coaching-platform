@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { templates, TEMPLATE_OPTIONS } from '@/lib/emailTemplates';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';

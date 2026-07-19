@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -297,6 +297,7 @@ function DeviceIcon({ type }) {
 
 /* ── MAIN PAGE ── */
 export default function AccountSettings() {
+  const { me } = useAuth();
   const navigate = useNavigate();
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -304,7 +305,7 @@ export default function AccountSettings() {
   const [sessions, setSessions] = useState(MOCK_SESSIONS);
   const [privacy, setPrivacy] = useState({ publicProfile: true, searchIndex: true, analytics: true, marketing: true });
 
-  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: () => me() });
 
   const signOutSession = (id) => {
     setSessions(prev => prev.filter(s => s.id !== id));

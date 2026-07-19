@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, LayoutTemplate } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 /**

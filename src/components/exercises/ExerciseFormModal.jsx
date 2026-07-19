@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,7 +33,7 @@ export default function ExerciseFormModal({ open, onOpenChange, exercise, onSucc
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     setForm(f => ({ ...f, video_url: file_url }));
     setUploading(false);
   };
@@ -42,7 +42,7 @@ export default function ExerciseFormModal({ open, onOpenChange, exercise, onSucc
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     setForm(f => ({ ...f, thumbnail_url: file_url }));
     setUploading(false);
   };

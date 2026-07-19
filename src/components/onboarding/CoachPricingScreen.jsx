@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Zap, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 
 const PLANS = [
@@ -81,6 +82,7 @@ const PLANS = [
 ];
 
 export default function CoachPricingScreen({ onNext, onBack, resuming }) {
+  const { navigateToLogin } = useAuth();
   const [selected, setSelected] = useState('pro');
   const [billing, setBilling] = useState('monthly');
   const [loading, setLoading] = useState(false);
@@ -270,7 +272,7 @@ export default function CoachPricingScreen({ onNext, onBack, resuming }) {
           <p className="text-center text-xs mt-3" style={{ color: 'var(--kc-444444)' }}>
             Already have an account?{' '}
             <button
-              onClick={() => base44.auth.redirectToLogin(window.location.origin + '/')}
+              onClick={() => navigateToLogin()}
               className="underline transition-colors"
               style={{ color: 'var(--tc-primary)' }}
             >

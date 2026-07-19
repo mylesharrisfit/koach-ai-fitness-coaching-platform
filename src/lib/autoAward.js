@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { calculateStreak, checkInScore } from '@/lib/adherence';
 import { format } from 'date-fns';
 

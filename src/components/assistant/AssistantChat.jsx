@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Send, Bot, User, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,53 +7,45 @@ import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 
 export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
-  const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-
-  // Init conversation once
-  useEffect(() => {
-    const init = async () => {
-      const conv = await base44.agents.createConversation({
-        agent_name: 'coach_assistant',
-        metadata: { name: 'Coach Session' },
-      });
-      setConversation(conv);
-    };
-    init();
-  }, []);
-
-  // Subscribe to conversation updates
-  useEffect(() => {
-    if (!conversation?.id) return;
-    const unsub = base44.agents.subscribeToConversation(conversation.id, (data) => {
-      setMessages(data.messages || []);
-    });
-    return unsub;
-  }, [conversation?.id]);
 
   // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // The ported claudeAssistant is a request/response Edge Function (the Base44
+  // realtime agents conversation is not part of the Supabase backend), so the
+  // transcript lives in React state and each turn invokes the function with the
+  // prior history.
+  const sendMessage = async (text) => {
+    if (!text?.trim() || isLoading) return;
+    setIsLoading(true);
+    setInput('');
+    const history = messages;
+    setMessages(prev => [...prev, { role: 'user', content: text }]);
+    try {
+      const res = await base44.functions.invoke('claudeAssistant', {
+        userMessage: text,
+        conversationHistory: history,
+      });
+      setMessages(prev => [...prev, { role: 'assistant', content: res.data?.response || '' }]);
+    } catch (e) {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry — I hit a problem. Please try again.' }]);
+    }
+    setIsLoading(false);
+  };
+
   // Handle initial prompt from quick actions
   useEffect(() => {
-    if (initialPrompt && conversation && !isLoading) {
+    if (initialPrompt && !isLoading) {
       sendMessage(initialPrompt);
       onPromptConsumed?.();
     }
-  }, [initialPrompt, conversation]);
-
-  const sendMessage = async (text) => {
-    if (!text?.trim() || !conversation || isLoading) return;
-    setIsLoading(true);
-    setInput('');
-    await base44.agents.addMessage(conversation, { role: 'user', content: text });
-    setIsLoading(false);
-  };
+  }, [initialPrompt]);
 
   const handleSend = () => sendMessage(input);
   const handleKey = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
@@ -104,9 +96,9 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
             onKeyDown={handleKey}
             placeholder="Ask about a client, request an analysis..."
             className="flex-1"
-            disabled={isLoading || !conversation}
+            disabled={isLoading }
           />
-          <Button onClick={handleSend} disabled={isLoading || !input.trim() || !conversation} size="icon">
+          <Button onClick={handleSend} disabled={isLoading || !input.trim() } size="icon">
             <Send className="w-4 h-4" />
           </Button>
         </div>

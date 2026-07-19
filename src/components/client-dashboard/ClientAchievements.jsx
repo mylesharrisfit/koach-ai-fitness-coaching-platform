@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { BADGE_CONFIG } from '@/lib/badges';
 import { format } from 'date-fns';
 import { Trophy, ChevronRight } from 'lucide-react';

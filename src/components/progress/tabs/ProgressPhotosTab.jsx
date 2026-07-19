@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format, parseISO } from 'date-fns';
 import { ImagePlus, ArrowLeftRight, X, ZoomIn } from 'lucide-react';
 import { toast } from 'sonner';
@@ -40,7 +40,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await base44.uploadFile({ file });
       // Add to most recent check-in or create new
       const sorted = [...checkIns].sort((a, b) => new Date(b.date) - new Date(a.date));
       const recent = sorted[0];

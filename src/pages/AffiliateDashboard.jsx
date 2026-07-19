@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { TrendingUp, Users, Clock, Zap, Target } from 'lucide-react';
 import AffiliateEarningsOverview from '@/components/affiliate/AffiliateEarningsOverview';
 import AffiliateCommissionStructure from '@/components/affiliate/AffiliateCommissionStructure';
@@ -18,11 +19,12 @@ const TIERS = {
 };
 
 export default function AffiliateDashboard() {
+  const { me } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
   const { data: user } = useQuery({
     queryKey: ['current-user'],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => me(),
   });
 
   const { data: affiliateProfile } = useQuery({

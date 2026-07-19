@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { Flame, Plus, Loader2, CheckCircle2 } from 'lucide-react';

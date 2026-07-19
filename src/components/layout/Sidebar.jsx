@@ -13,7 +13,8 @@ import {
   Lock, UserPlus, Trophy, ShoppingBag, Search,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { hasFeature } from '@/lib/subscription';
 import { useTeamRole } from '@/lib/useTeamRole';
 import { useCommandPalette } from '@/components/command/CommandPalette';
@@ -159,6 +160,7 @@ function NavItem({ item, collapsed, onUpgrade, user }) {
 export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClick }) {
   const [collapsed, setCollapsed] = useState(false);
   const { isOwner } = useTeamRole();
+  const { logout } = useAuth();
 
   // Mobile mode: render just the nav content (no fixed positioning, shown inside overlay)
   if (mobileMode) {
@@ -195,7 +197,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
             </div>
           ))}
           <button
-            onClick={() => base44.auth.logout()}
+            onClick={() => logout()}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all w-full min-h-[44px]"
             style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}
           >
@@ -273,7 +275,7 @@ export default function Sidebar({ user, onUpgrade, mobileMode = false, onNavClic
         })}
 
         <button
-          onClick={() => base44.auth.logout()}
+          onClick={() => logout()}
           title={collapsed ? 'Logout' : undefined}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all w-full"
           style={{ color: 'color-mix(in srgb, white 25%, transparent)' }}

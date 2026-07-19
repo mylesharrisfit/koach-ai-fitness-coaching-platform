@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import {
   Send, LayoutTemplate, Tag, ChevronDown, Plus, X,
   Paperclip, Image, ClipboardList, Salad, CheckSquare, BarChart2,
@@ -351,7 +351,7 @@ export default function ComposeBar({ client, allMessages, checkIns = [], onSend,
       const ext = blob.type.includes('ogg') ? 'ogg' : blob.type.includes('mp4') ? 'mp4' : 'webm';
       // Convert blob to File so UploadFile gets the correct filename/content-type
       const file = new File([blob], `voice-message-${Date.now()}.${ext}`, { type: blob.type });
-      const result = await base44.integrations.Core.UploadFile({ file });
+      const result = await base44.uploadFile({ file });
       // Replace blob URL with persistent CDN URL
       URL.revokeObjectURL(blobUrl);
       setAudioUrl(result.file_url);

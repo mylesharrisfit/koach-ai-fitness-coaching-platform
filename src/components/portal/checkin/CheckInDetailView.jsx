@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { format, parseISO } from 'date-fns';
 import { ArrowLeft, MessageSquare, Send } from 'lucide-react';
 

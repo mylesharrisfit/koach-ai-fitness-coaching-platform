@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { X, Pencil, Trash2, LayoutTemplate } from 'lucide-react';
 import { toast } from 'sonner';
 

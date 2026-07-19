@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MessageSquare, ClipboardCheck, Flame, X, Loader2, Dumbbell, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 

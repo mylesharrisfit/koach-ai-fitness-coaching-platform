@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format, parseISO } from 'date-fns';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { Plus, X } from 'lucide-react';

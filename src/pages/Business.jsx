@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -402,6 +403,7 @@ function AnalyticsTab({ clients, checkIns, payments, leads, user }) {
 const TAB_STORAGE_KEY = 'business_active_tab';
 
 export default function Business() {
+  const { me } = useAuth();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(() => {
     // Check URL param first, then localStorage
@@ -413,7 +415,7 @@ export default function Business() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    me().then(setUser).catch(() => {});
   }, []);
 
   const handleTabChange = (key) => {

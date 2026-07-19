@@ -4,7 +4,7 @@ import {
   Sparkles, Check, Loader2, ChevronUp, ChevronDown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 /* ── Tiny inline confirmation pill ── */
@@ -156,27 +156,9 @@ export default function CheckInQuickActions({
   const handleApplyAI = async () => {
     if (aiDone || aiSaving) return;
     setAiSaving(true);
-    const weights = allClientCIs.filter(c => c.weight).slice(0, 4).map(c => c.weight);
-    const weightTrend = weights.length >= 2
-      ? (weights[0] < weights[weights.length - 1] ? 'trending down' : 'trending up or flat')
-      : 'not enough data';
-    const avgT = allClientCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_training || 0), 0) / Math.min(allClientCIs.length || 1, 4);
-    const avgN = allClientCIs.slice(0, 4).reduce((s, c) => s + (c.compliance_nutrition || 0), 0) / Math.min(allClientCIs.length || 1, 4);
-
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are an elite fitness coach writing a brief, specific response to your client's check-in.
-Write 2–3 sentences MAX. Be warm, direct, and cite at least one specific number or data point.
-Start with a positive acknowledgement then give one clear, actionable adjustment.
-
-Client goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-Weight trend: ${weightTrend}
-Training compliance this week: ${checkIn.compliance_training ?? 'N/A'}% (4-week avg: ${Math.round(avgT)}%)
-Nutrition compliance this week: ${checkIn.compliance_nutrition ?? 'N/A'}% (4-week avg: ${Math.round(avgN)}%)
-Sleep: ${checkIn.sleep_hours ?? 'N/A'} hrs | Energy: ${checkIn.energy_level ?? 'N/A'}/10 | Stress: ${checkIn.stress_level ?? 'N/A'}/10
-Client notes: ${checkIn.notes || 'none'}
-
-Write the message directly to the client (use "you"). Do NOT use bullet points.`,
-    });
+    const result = (await base44.functions.invoke('aiMessageAssistant', {
+      action: 'generateCheckInResponse', client, checkIn, recentCheckIns: allClientCIs,
+    })).data?.message || '';
 
     // Optimistic: mark done immediately, fire-and-forget saves
     setAiDone(true);

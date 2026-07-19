@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { base44 as base44Legacy } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 import { isSupabaseAuth } from '@/lib/authConfig';
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     if (isSupabaseAuth()) {
       checkSupabaseAuth();
       // Reflect login/logout/token-refresh across the shell.
-      const unsub = base44.auth.onAuthStateChange?.(() => checkSupabaseAuth());
+      const unsub = base44Legacy.auth.onAuthStateChange?.(() => checkSupabaseAuth());
       return () => { if (typeof unsub === 'function') unsub(); };
     }
     checkAppState();
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoadingPublicSettings(false);
     setAppPublicSettings(null);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await base44Legacy.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
       setAuthError(null);
@@ -146,7 +147,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
-      const currentUser = await base44.auth.me();
+      const currentUser = await base44Legacy.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
@@ -175,17 +176,23 @@ export const AuthProvider = ({ children }) => {
     
     if (shouldRedirect) {
       // Use the SDK's logout method which handles token cleanup and redirect
-      base44.auth.logout(window.location.href);
+      base44Legacy.auth.logout(window.location.href);
     } else {
       // Just remove the token without redirect
-      base44.auth.logout();
+      base44Legacy.auth.logout();
     }
   };
 
   const navigateToLogin = () => {
     // Use the SDK's redirectToLogin method
-    base44.auth.redirectToLogin(window.location.href);
+    base44Legacy.auth.redirectToLogin(window.location.href);
   };
+
+  // Flag-aware imperative auth helpers so pages/components never import the
+  // auth client directly. `base44Legacy` is the VITE_AUTH_PROVIDER-aware proxy
+  // (base44 SDK auth by default; Supabase facade auth when the flag is flipped).
+  const me = () => base44Legacy.auth.me();
+  const updateMe = (data) => base44Legacy.auth.updateMe(data);
 
   return (
     <AuthContext.Provider value={{ 
@@ -199,6 +206,8 @@ export const AuthProvider = ({ children }) => {
       authChecked,
       logout,
       navigateToLogin,
+      me,
+      updateMe,
       checkUserAuth,
       checkAppState
     }}>

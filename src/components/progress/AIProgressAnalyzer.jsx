@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { differenceInWeeks, differenceInDays, parseISO } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -72,73 +72,6 @@ function buildContext(client, checkIns, workoutSessions, program) {
   };
 }
 
-function buildPrompt(client, ctx, isClientFacing) {
-  if (isClientFacing) {
-    return `You are a motivational AI fitness coach. Generate encouraging, positive insights for a client viewing their own progress.
-NEVER show risk data, churn probability, or negative predictions to the client. Be uplifting and celebratory.
-
-Client: ${client?.name?.split(' ')[0] || 'there'}
-Goal: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-Weeks active: ${ctx.weeks}
-Total check-ins: ${ctx.checkInCount}
-Weight change: ${ctx.weightChange ? `${ctx.weightChange} lbs` : 'not tracked'}
-Weekly rate: ${ctx.weeklyWeightRate ? `${ctx.weeklyWeightRate} lbs/wk` : 'n/a'}
-Avg training: ${ctx.avgTraining ?? 'n/a'}%
-Avg nutrition: ${ctx.avgNutrition ?? 'n/a'}%
-Workouts this week: ${ctx.workoutsThisWeek}
-Pace to goal: ${ctx.paceStatus || 'not set'}
-Weeks to goal: ${ctx.weeksToGoal ?? 'calculating'}
-
-Generate a JSON response with:
-{
-  "headline": "short celebratory headline (1 line)",
-  "summary": "2-3 sentence positive progress summary, data-driven",
-  "insights": ["insight 1 (specific, encouraging)", "insight 2", "insight 3"],
-  "prediction": "positive goal achievement message",
-  "tip": "one actionable tip for next week"
-}`;
-  }
-
-  return `You are an elite fitness coach AI generating an intelligent progress analysis for a coach dashboard.
-Be specific, data-driven, and clinically insightful. Surface patterns the coach might miss.
-
-CLIENT: ${client?.name || 'Client'}
-GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-START WEIGHT: ${ctx.startWeight ?? 'unknown'} lbs | CURRENT: ${ctx.currentWeight ?? 'unknown'} lbs
-WEIGHT CHANGE: ${ctx.weightChange ?? 'n/a'} lbs over ${ctx.weeks} weeks (${ctx.weeklyWeightRate ?? 'n/a'} lbs/wk)
-WEIGHT TREND: ${ctx.weightTrend}
-TARGET WEIGHT: ${client?.target_weight ?? 'not set'} lbs | WEEKS TO GOAL: ${ctx.weeksToGoal ?? 'n/a'} | PACE: ${ctx.paceStatus ?? 'n/a'}
-PLATEAU DETECTED: ${ctx.isWeightPlateau ? 'YES' : 'no'}
-
-RECENT AVERAGES (last 8 check-ins):
-- Training compliance: ${ctx.avgTraining ?? 'n/a'}%
-- Nutrition compliance: ${ctx.avgNutrition ?? 'n/a'}%
-- Energy: ${ctx.avgEnergy ?? 'n/a'}/10
-- Stress: ${ctx.avgStress ?? 'n/a'}/10
-- Sleep: ${ctx.avgSleep ?? 'n/a'} hrs
-- Mood: ${ctx.avgMood ?? 'n/a'}/5
-
-PROGRAM: ${ctx.programTitle ?? 'none'} | Phase: ${ctx.programPhase} | ${ctx.weeks} weeks in
-WORKOUTS THIS WEEK: ${ctx.workoutsThisWeek}
-DAYS SINCE LAST CHECK-IN: ${ctx.daysSinceLastCI}
-CHURN RISK: ${ctx.churnRisk}
-
-Generate a JSON response with exactly this structure:
-{
-  "summary": "3-4 sentence plain English coaching summary covering key metrics, trends, and what stands out",
-  "coaching_priority": "One sentence: the single most important coaching focus this week",
-  "trends": [
-    {"type": "positive|negative|neutral", "text": "specific trend observation"},
-    {"type": "positive|negative|neutral", "text": "another trend"}
-  ],
-  "pace_analysis": "1-2 sentences on goal pace and whether client is ahead/on track/behind",
-  "recommendations": ["recommendation 1", "recommendation 2", "recommendation 3"],
-  "readiness": "progress|maintain|deload|switch_program",
-  "readiness_reason": "why you chose that readiness status",
-  "churn_insight": "insight about engagement risk if relevant, or empty string",
-  "plateau_warning": "plateau prediction or warning, or empty string"
-}`;
-}
 
 /* ── Trend Badge ── */
 function TrendBadge({ type, text }) {
@@ -308,30 +241,10 @@ export default function AIProgressAnalyzer({
     if (!hasEnoughData) return;
     setLoading(true);
     setAnalysis(null);
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: buildPrompt(client, ctx, isClientFacing),
-      response_json_schema: {
-        type: 'object',
-        properties: isClientFacing ? {
-          headline: { type: 'string' },
-          summary: { type: 'string' },
-          insights: { type: 'array', items: { type: 'string' } },
-          prediction: { type: 'string' },
-          tip: { type: 'string' },
-        } : {
-          summary: { type: 'string' },
-          coaching_priority: { type: 'string' },
-          trends: { type: 'array', items: { type: 'object', properties: { type: { type: 'string' }, text: { type: 'string' } } } },
-          pace_analysis: { type: 'string' },
-          recommendations: { type: 'array', items: { type: 'string' } },
-          readiness: { type: 'string' },
-          readiness_reason: { type: 'string' },
-          churn_insight: { type: 'string' },
-          plateau_warning: { type: 'string' },
-        }
-      },
+    const res = await base44.functions.invoke('aiProgressInsights', {
+      action: 'progressAnalysis', client, ctx, isClientFacing,
     });
-    setAnalysis(result);
+    setAnalysis(res.data);
     setGenerated(true);
     setLoading(false);
   }, [client, checkIns, workoutSessions, program, isClientFacing]);

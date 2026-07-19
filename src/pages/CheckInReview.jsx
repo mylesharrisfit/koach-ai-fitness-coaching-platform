@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { differenceInDays, parseISO, format } from 'date-fns';
 import { ClipboardList, Search, X, Plus, Bell, Send, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';

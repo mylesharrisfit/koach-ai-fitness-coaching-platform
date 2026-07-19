@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, X, Image as ImageIcon, EyeOff, Megaphone
@@ -22,7 +22,7 @@ function PostComposer({ user, myClient, onPost, onClose, groupId }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     setMediaUrl(file_url);
     setUploading(false);
   };

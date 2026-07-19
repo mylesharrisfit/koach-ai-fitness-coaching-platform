@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 import { CheckCircle2, Flag, Clock, ChevronDown } from 'lucide-react';
 

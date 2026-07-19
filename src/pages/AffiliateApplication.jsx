@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -33,6 +34,7 @@ const CONTENT_OUTPUT = [
 ];
 
 export default function AffiliateApplication() {
+  const { me } = useAuth();
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [formData, setFormData] = useState({
     website_url: '',
@@ -44,7 +46,7 @@ export default function AffiliateApplication() {
 
   const { data: user } = useQuery({
     queryKey: ['current-user'],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => me(),
   });
 
   const { data: existingApp } = useQuery({

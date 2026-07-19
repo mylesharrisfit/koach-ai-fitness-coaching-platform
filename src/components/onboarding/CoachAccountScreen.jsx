@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function CoachAccountScreen({ onNext, onBack, data }) {
+  const { navigateToLogin } = useAuth();
   const [form, setForm] = useState({
     full_name: data?.business_name || '',
     email: data?.email || '',
@@ -258,7 +259,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
           <p className="text-center text-xs mt-2" style={{ color: 'var(--kc-333333)' }}>
             Already have an account?{' '}
             <button
-              onClick={() => base44.auth.redirectToLogin(`${window.location.origin}/`)}
+              onClick={() => navigateToLogin()}
               className="underline"
               style={{ color: 'var(--tc-primary)', background: 'none', border: 'none', cursor: 'pointer' }}
             >

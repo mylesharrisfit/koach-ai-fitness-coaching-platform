@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format, subDays, parseISO, isSameDay } from 'date-fns';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -34,9 +34,9 @@ export default function WeeklySnapshot({ recentLogs, checkIns, program }) {
   useEffect(() => {
     if (!insight && doneCount > 0) {
       setLoadingInsight(true);
-      base44.integrations.Core.InvokeLLM({
-        prompt: `A fitness client completed ${doneCount} of 7 workouts this week (${adherence}% adherence). Write a 1-sentence motivational insight for their dashboard. Be specific, warm, and emoji-friendly. Max 15 words.`,
-      }).then(res => { setInsight(res); setLoadingInsight(false); }).catch(() => setLoadingInsight(false));
+      base44.functions.invoke('aiNutritionInsights', {
+        action: 'weeklyInsight', doneCount, adherence,
+      }).then(res => { setInsight(res.data?.text || ''); setLoadingInsight(false); }).catch(() => setLoadingInsight(false));
     }
   }, [doneCount]);
 

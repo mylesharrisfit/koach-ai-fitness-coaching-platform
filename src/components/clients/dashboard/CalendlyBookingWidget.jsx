@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { getEventTypes, createSingleUseLink, getScheduledEvents } from '@/lib/calendly';
 import { Calendar, Send, ChevronDown, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

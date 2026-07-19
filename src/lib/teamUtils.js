@@ -3,7 +3,7 @@
  * Looks up the Team owned by the user; returns null if none found.
  * Used to tag new Client records with the correct team_id at creation time.
  */
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 export async function getMyTeamId(userId) {
   if (!userId) return null;

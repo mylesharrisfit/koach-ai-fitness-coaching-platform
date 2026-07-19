@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format, parseISO } from 'date-fns';
 import { Eye, CheckCircle2, Trash2, Copy, Bell } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 import InvoiceStatusBadge from './InvoiceStatusBadge';
 

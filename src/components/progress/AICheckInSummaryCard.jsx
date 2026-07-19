@@ -1,52 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { Sparkles, Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /* Generates a fast post-check-in summary card for the coach review panel */
-function buildPrompt(client, checkIn, prevCheckIn, allCIs) {
-  const weightDelta = checkIn.weight && prevCheckIn?.weight
-    ? (checkIn.weight - prevCheckIn.weight).toFixed(1)
-    : null;
-  const totalLost = allCIs.length >= 2
-    ? (allCIs[allCIs.length - 1].weight - allCIs[0].weight).toFixed(1)
-    : null;
-
-  const moodTrend = allCIs.slice(-3).map(ci => ({ great: 5, good: 4, okay: 3, tired: 2, stressed: 1 }[ci.mood] || 3));
-  const moodDirection = moodTrend.length >= 2
-    ? (moodTrend[moodTrend.length - 1] > moodTrend[0] ? 'improving' : moodTrend[moodTrend.length - 1] < moodTrend[0] ? 'declining' : 'stable')
-    : 'insufficient data';
-
-  return `You are an AI fitness coach generating a quick check-in summary for a coach dashboard.
-Be concise, specific, and data-driven. Write like a smart colleague briefing a coach.
-
-CLIENT: ${client?.name || 'Client'}
-GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-TOTAL CHECK-INS: ${allCIs.length}
-
-THIS CHECK-IN (${checkIn.date}):
-- Weight: ${checkIn.weight ? `${checkIn.weight} lbs` : 'not recorded'}${weightDelta ? ` (${weightDelta > 0 ? '+' : ''}${weightDelta} from last week)` : ''}
-- Total weight change: ${totalLost ? `${totalLost} lbs` : 'n/a'}
-- Training compliance: ${checkIn.compliance_training ?? 'n/a'}%
-- Nutrition compliance: ${checkIn.compliance_nutrition ?? 'n/a'}%
-- Mood: ${checkIn.mood || 'not recorded'} (trend: ${moodDirection})
-- Energy: ${checkIn.energy_level ?? 'n/a'}/10
-- Stress: ${checkIn.stress_level ?? 'n/a'}/10
-- Sleep: ${checkIn.sleep_hours ?? 'n/a'} hrs
-- Client notes: ${checkIn.notes || 'none'}
-
-${prevCheckIn ? `PREVIOUS CHECK-IN: weight ${prevCheckIn.weight ?? 'n/a'} lbs, training ${prevCheckIn.compliance_training ?? 'n/a'}%, nutrition ${prevCheckIn.compliance_nutrition ?? 'n/a'}%` : 'FIRST CHECK-IN'}
-
-Generate JSON:
-{
-  "summary": "3-4 sentence plain English summary of this check-in for the coach. Name the client. Note the most important data points, any positive changes, and one concern if present.",
-  "week_vs_prev": "one sentence comparing this week to last week (or note it's the first)",
-  "coaching_focus": "One sentence: the single most important thing for the coach to address this week",
-  "sentiment": "great|good|okay|concerning",
-  "key_wins": ["win 1", "win 2"],
-  "red_flags": ["flag 1 if present, else leave empty array"]
-}`;
-}
 
 const SENTIMENT_CONFIG = {
   great: { border: 'border-success', bg: 'bg-success/10', dot: 'bg-success', label: '🟢 Strong week' },
@@ -66,21 +23,10 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
     if (!checkIn || allClientCIs.length < 1) return;
     setLoading(true);
     setSummary(null);
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: buildPrompt(client, checkIn, prevCheckIn, sorted),
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          summary: { type: 'string' },
-          week_vs_prev: { type: 'string' },
-          coaching_focus: { type: 'string' },
-          sentiment: { type: 'string' },
-          key_wins: { type: 'array', items: { type: 'string' } },
-          red_flags: { type: 'array', items: { type: 'string' } },
-        }
-      }
+    const res = await base44.functions.invoke('aiProgressInsights', {
+      action: 'checkInSummary', client, checkIn, prevCheckIn, recentCheckIns: sorted,
     });
-    setSummary(result);
+    setSummary(res.data);
     setLoading(false);
   };
 

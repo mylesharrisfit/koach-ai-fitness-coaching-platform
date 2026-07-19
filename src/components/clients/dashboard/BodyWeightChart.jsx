@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import { format, parseISO, subWeeks, subMonths, subYears } from 'date-fns';
 import { Plus, Scale, Trash2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 const BLUE = 'var(--tc-primary)';

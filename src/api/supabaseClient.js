@@ -233,13 +233,44 @@ function makeEntity(name, { table, readOnly = false }) {
       throwIf(error);
       return { id };
     },
-    // Base44 realtime subscribe — not ported yet (Supabase Realtime lands
-    // with a later step). No-op unsubscribe keeps call sites harmless.
-    subscribe() {
-      if (import.meta.env?.DEV) {
-        console.warn(`[supabaseClient] ${name}.subscribe() is not ported yet (no-op).`);
+    /**
+     * Base44-compatible realtime subscription, backed by Supabase Realtime.
+     * Emits `{ type: 'create'|'update'|'delete', id, data }` (the shape Base44's
+     * subscribe() callers expect), mapping INSERT/UPDATE/DELETE accordingly.
+     * Returns an unsubscribe function. Requires the table to be in the
+     * `supabase_realtime` publication (see migration 20260716000200) and RLS to
+     * permit the subscriber. Degrades to a harmless no-op if Realtime isn't
+     * available (e.g. the injected test driver, or Supabase unconfigured).
+     */
+    subscribe(callback) {
+      let client;
+      try {
+        client = getSupabase();
+      } catch {
+        client = null;
       }
-      return () => {};
+      if (!client || typeof client.channel !== 'function') {
+        if (import.meta.env?.DEV) {
+          console.warn(`[supabaseClient] ${name}.subscribe(): Realtime unavailable — no-op.`);
+        }
+        return () => {};
+      }
+      const TYPE = { INSERT: 'create', UPDATE: 'update', DELETE: 'delete' };
+      const rand = Math.random().toString(36).slice(2);
+      const channel = client
+        .channel(`realtime:${table}:${rand}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table }, (payload) => {
+          const row = payload?.new && Object.keys(payload.new).length ? payload.new : payload?.old;
+          callback?.({
+            type: TYPE[payload?.eventType] || 'update',
+            id: row?.id,
+            data: aliasRow(row ? { ...row } : null),
+          });
+        })
+        .subscribe();
+      return () => {
+        try { client.removeChannel(channel); } catch { /* already torn down */ }
+      };
     },
   };
 }
@@ -375,10 +406,35 @@ const functions = {
   },
 };
 
+// Supabase-native replacement for Base44's `integrations.Core.UploadFile`.
+// Deliberately NOT named `integrations.Core.*` — the Base44 integrations surface
+// is fully retired from the frontend (LLM/email calls go to ported Edge
+// Functions; file upload goes here). Call sites use `base44.uploadFile({ file })`.
+const STORAGE_BUCKET = 'uploads';
+/**
+ * base44.uploadFile({ file }) -> { file_url }. Uploads to the public `uploads`
+ * Supabase Storage bucket (provisioned by migration 20260716000100) under a
+ * collision-resistant key and returns the public URL. Same call/return shape as
+ * the old Base44 Core.UploadFile so call sites only change the method name.
+ */
+async function uploadFile({ file }) {
+  const sb = getSupabase();
+  const safeName = (file?.name || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
+  const rand = Math.random().toString(36).slice(2);
+  const path = `${Date.now()}-${rand}-${safeName}`;
+  const { data, error } = await sb.storage
+    .from(STORAGE_BUCKET)
+    .upload(path, file, { cacheControl: '3600', upsert: false });
+  throwIf(error);
+  const { data: pub } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(data.path);
+  return { file_url: pub.publicUrl };
+}
+
 export const supabase = {
   entities: buildEntities(),
   auth,
   functions,
+  uploadFile,
 };
 
 // Client-portal variant — see header. Portal pages ONLY.
@@ -386,4 +442,5 @@ export const supabasePortal = {
   entities: buildEntities(PORTAL_OVERRIDES),
   auth,
   functions,
+  uploadFile,
 };

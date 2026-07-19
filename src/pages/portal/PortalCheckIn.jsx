@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { motion } from 'framer-motion';
 import { format, parseISO, differenceInDays, addDays } from 'date-fns';
 import { useNavigate } from 'react-router-dom';

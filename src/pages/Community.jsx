@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { isCoachRole } from '@/lib/useRoleGuard';
 import GroupListView from '../components/community/GroupListView';
 import GroupDetailView from '../components/community/GroupDetailView';
 import GroupFormModal from '../components/community/GroupFormModal';
 
 export default function Community() {
+  const { me } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
   const [isCoach, setIsCoach] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -14,7 +16,7 @@ export default function Community() {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(user => {
+    me().then(user => {
       setCurrentUser(user);
       // Step 6: 'admin' is platform staff; coaches carry role='user'. In the
       // coach app, any non-client session is the coach.

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { X, Sparkles, Loader2, CheckCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 import AIOnboardingQuestionnaire from './AIOnboardingQuestionnaire';
 import AIOnboardingReview from './AIOnboardingReview';

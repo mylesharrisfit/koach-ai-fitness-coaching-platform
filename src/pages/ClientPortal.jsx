@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { Home, Dumbbell, BarChart2, MessageSquare, Users, CalendarDays } from 'lucide-react';
 import { addDays, parseISO, differenceInDays } from 'date-fns';
 import PortalHome from '@/components/portal/PortalHome';
@@ -123,13 +124,14 @@ function BottomNav({ user, hideForActiveWorkout }) {
 }
 
 export default function ClientPortal() {
+  const { me } = useAuth();
   const [user, setUser] = useState(null);
   const [showNotifPrompt, setShowNotifPrompt] = useState(false);
   const [showAddToHomePrompt, setShowAddToHomePrompt] = useState(false);
   const [activeWorkoutMode, setActiveWorkoutMode] = useState(false);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    me().then(setUser).catch(() => {});
   }, []);
 
   // Track portal visits and show prompts

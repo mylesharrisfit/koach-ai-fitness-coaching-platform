@@ -6,7 +6,7 @@ import {
 import { cn } from '@/lib/utils';
 import MoreSheet from './MoreSheet';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 function useUnreadMessages() {
   const { data: messages = [] } = useQuery({

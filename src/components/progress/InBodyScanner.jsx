@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, CheckCircle2, ArrowLeftRight, ScanLine, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -288,7 +288,7 @@ Return null for any field not found in the scan.`,
         ];
       } else {
         // PDF — upload first then describe via text
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        const { file_url } = await base44.uploadFile({ file });
         messageContent = [
           {
             type: 'text',
@@ -317,74 +317,13 @@ Please extract all metrics and return ONLY this JSON with no markdown:
         ];
       }
 
-      const apiKey = 'ANTHROPIC_API_KEY'; // resolved server-side via backend — use InvokeLLM instead
-      // Use base44 InvokeLLM with file_urls for image extraction
+      // Vision extraction runs server-side (aiInBodyScan Edge Function); the
+      // ANTHROPIC_API_KEY never reaches the browser.
       let extracted;
       if (isImage) {
-        const { file_url: uploadedUrl } = await base44.integrations.Core.UploadFile({ file });
-        const res = await base44.integrations.Core.InvokeLLM({
-          prompt: `Extract all metrics from this InBody scan image and return ONLY a JSON object with no markdown fences:
-{
-  "scan_date": "YYYY-MM-DD or null",
-  "weight_lbs": number or null,
-  "weight_kg": number or null,
-  "body_fat_percent": number or null,
-  "fat_mass_lbs": number or null,
-  "lean_mass_lbs": number or null,
-  "muscle_mass_lbs": number or null,
-  "bmi": number or null,
-  "bmr": number or null,
-  "visceral_fat_level": number or null,
-  "total_body_water": number or null,
-  "protein_kg": number or null,
-  "minerals_kg": number or null,
-  "right_arm_muscle": number or null,
-  "left_arm_muscle": number or null,
-  "trunk_muscle": number or null,
-  "right_leg_muscle": number or null,
-  "left_leg_muscle": number or null,
-  "right_arm_fat": number or null,
-  "left_arm_fat": number or null,
-  "trunk_fat": number or null,
-  "right_leg_fat": number or null,
-  "left_leg_fat": number or null,
-  "inbody_score": number or null,
-  "raw_text": "brief 1-sentence summary of what was found on the scan"
-}
-Return null for any field not visible in the scan. Do not include markdown or code fences.`,
-          file_urls: [uploadedUrl],
-          response_json_schema: {
-            type: 'object',
-            properties: {
-              scan_date: { type: 'string' },
-              weight_lbs: { type: 'number' },
-              weight_kg: { type: 'number' },
-              body_fat_percent: { type: 'number' },
-              fat_mass_lbs: { type: 'number' },
-              lean_mass_lbs: { type: 'number' },
-              muscle_mass_lbs: { type: 'number' },
-              bmi: { type: 'number' },
-              bmr: { type: 'number' },
-              visceral_fat_level: { type: 'number' },
-              total_body_water: { type: 'number' },
-              protein_kg: { type: 'number' },
-              minerals_kg: { type: 'number' },
-              right_arm_muscle: { type: 'number' },
-              left_arm_muscle: { type: 'number' },
-              trunk_muscle: { type: 'number' },
-              right_leg_muscle: { type: 'number' },
-              left_leg_muscle: { type: 'number' },
-              right_arm_fat: { type: 'number' },
-              left_arm_fat: { type: 'number' },
-              trunk_fat: { type: 'number' },
-              right_leg_fat: { type: 'number' },
-              left_leg_fat: { type: 'number' },
-              inbody_score: { type: 'number' },
-              raw_text: { type: 'string' },
-            },
-          },
-        });
-        extracted = res;
+        const { file_url: uploadedUrl } = await base44.uploadFile({ file });
+        const res = await base44.functions.invoke('aiInBodyScan', { fileUrl: uploadedUrl });
+        extracted = res.data;
       } else {
         // PDF fallback
         extracted = {

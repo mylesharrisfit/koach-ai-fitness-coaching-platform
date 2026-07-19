@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Sparkles, Loader2, BookOpen, Check, ChevronDown, Send, RefreshCw, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 const TEMPLATES = [
   { label: 'Great Check-in', text: "Awesome check-in this week! Your consistency is really showing. Keep up the great work and let's build on this momentum! 💪" },
@@ -13,58 +14,6 @@ const TEMPLATES = [
   { label: 'Weekly Win', text: "You crushed it this week! I saw real progress in your numbers. Let's keep that energy going into next week 🙌" },
 ];
 
-function buildPrompt(client, checkIn, allClientCIs) {
-  // Weight trend analysis
-  const weights = allClientCIs
-    .filter(c => c.weight)
-    .slice(0, 4)
-    .map(c => c.weight);
-  
-  let weightTrend = 'insufficient data';
-  if (weights.length >= 2) {
-    const diff = weights[0] - weights[weights.length - 1];
-    if (Math.abs(diff) < 0.5) weightTrend = 'weight is stable';
-    else if (diff < 0) weightTrend = `weight is up ${Math.abs(diff).toFixed(1)} lbs recently`;
-    else weightTrend = `weight is down ${diff.toFixed(1)} lbs recently`;
-  }
-
-  const avgTraining = allClientCIs.length
-    ? Math.round(allClientCIs.reduce((s, c) => s + (c.compliance_training || 0), 0) / allClientCIs.length)
-    : null;
-  const avgNutrition = allClientCIs.length
-    ? Math.round(allClientCIs.reduce((s, c) => s + (c.compliance_nutrition || 0), 0) / allClientCIs.length)
-    : null;
-
-  return `You are an elite, high-ticket fitness coach writing a personal check-in response for a client.
-
-CLIENT: ${client?.name || 'this client'}
-GOAL: ${client?.goal?.replace(/_/g, ' ') || 'general fitness'}
-
-THIS WEEK'S CHECK-IN:
-- Weight: ${checkIn.weight ? `${checkIn.weight} lbs` : 'not recorded'}
-- Body fat: ${checkIn.body_fat_pct ? `${checkIn.body_fat_pct}%` : 'not recorded'}
-- Sleep: ${checkIn.sleep_hours ? `${checkIn.sleep_hours} hrs/night` : 'not recorded'}
-- Energy level: ${checkIn.energy_level ? `${checkIn.energy_level}/5` : 'not recorded'}
-- Stress level: ${checkIn.stress_level ? `${checkIn.stress_level}/5` : 'not recorded'}
-- Mood: ${checkIn.mood || 'not recorded'}
-- Training compliance: ${checkIn.compliance_training != null ? `${checkIn.compliance_training}%` : 'not recorded'}
-- Nutrition compliance: ${checkIn.compliance_nutrition != null ? `${checkIn.compliance_nutrition}%` : 'not recorded'}
-- Client notes: ${checkIn.notes || 'None'}
-
-TRENDS (last ${allClientCIs.length} check-ins):
-- Weight trend: ${weightTrend}
-- Average training compliance: ${avgTraining != null ? `${avgTraining}%` : 'N/A'}
-- Average nutrition compliance: ${avgNutrition != null ? `${avgNutrition}%` : 'N/A'}
-
-INSTRUCTIONS:
-Write a short (60-90 word), direct coaching response. You are a high-ticket coach — be supportive but results-focused and no-nonsense.
-- Acknowledge 1-2 specific data points from this check-in
-- If something is off (low sleep, low compliance, stress), address it directly with empathy but keep it forward-focused
-- Give exactly ONE clear, actionable priority for next week
-- End with brief encouragement
-- Tone: warm, confident, direct. NOT generic or fluffy. First name only, no "Hi [name]" opener.
-- Do NOT use em-dashes. Do NOT use bullet points. Plain paragraph only.`;
-}
 
 export default function CheckInResponseBox({ checkIn, client, allClientCIs = [], onSave, saving }) {
   const [reply, setReply] = useState(checkIn.coach_notes || '');
@@ -86,11 +35,7 @@ export default function CheckInResponseBox({ checkIn, client, allClientCIs = [],
       });
       setAiDraft(res.data?.message || '');
     } catch (e) {
-      // fallback to built-in LLM
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: buildPrompt(client, checkIn, allClientCIs),
-      });
-      setAiDraft(result);
+      toast.error('Could not generate a draft. Please try again.');
     }
     setAiLoading(false);
   };

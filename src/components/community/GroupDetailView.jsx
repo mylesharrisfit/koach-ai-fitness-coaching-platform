@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { ArrowLeft, Settings2, Users, MessageSquare, Trophy, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CommunityFeed from './CommunityFeed';

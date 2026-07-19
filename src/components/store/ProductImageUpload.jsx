@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { X, ImageIcon } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 export default function ProductImageUpload({ value, onChange, className, label = 'Product Image', tip = 'Recommended: 1200×675px (16:9)' }) {
@@ -11,7 +11,7 @@ export default function ProductImageUpload({ value, onChange, className, label =
   const handleFile = async (file) => {
     if (!file || !file.type.match(/^image\/(jpeg|png|webp)$/)) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await base44.uploadFile({ file });
     onChange(file_url);
     setUploading(false);
   };

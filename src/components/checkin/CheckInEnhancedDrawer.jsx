@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format, parseISO } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, Moon, Zap, Heart, Smile, Dumbbell,
@@ -49,35 +49,10 @@ function AIAnalysis({ checkIn, clientName }) {
   const generate = async () => {
     setLoading(true);
     try {
-      const facts = [
-        checkIn.weight && `weight ${checkIn.weight}lbs`,
-        checkIn.energy_level != null && `energy ${checkIn.energy_level}/10`,
-        checkIn.sleep_hours != null && `sleep ${checkIn.sleep_hours}hrs`,
-        checkIn.stress_level != null && `stress ${checkIn.stress_level}/10`,
-        checkIn.compliance_training != null && `training ${checkIn.compliance_training}%`,
-        checkIn.compliance_nutrition != null && `nutrition ${checkIn.compliance_nutrition}%`,
-        checkIn.mood && `mood: ${checkIn.mood}`,
-        checkIn.notes && `client notes: "${checkIn.notes}"`,
-      ].filter(Boolean).join(', ');
-
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a coach reviewing ${clientName}'s weekly check-in. Data: ${facts}. 
-        
-        Respond with JSON only:
-        {
-          "summary": "2-3 sentence coach-facing summary of the week",
-          "suggested_response": "A warm, motivating coach response to send to the client (2-3 sentences)",
-          "flags": ["list any concerns e.g. stress score dropped, missed workouts etc - keep empty array if none"]
-        }`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            summary: { type: 'string' },
-            suggested_response: { type: 'string' },
-            flags: { type: 'array', items: { type: 'string' } }
-          }
-        }
+      const res = await base44.functions.invoke('aiCheckInInsights', {
+        action: 'reviewCheckIn', checkIn, clientName,
       });
+      const result = res.data;
       setAnalysis(result);
       await base44.entities.CheckIn.update(checkIn.id, { ai_summary: result });
     } catch (e) {

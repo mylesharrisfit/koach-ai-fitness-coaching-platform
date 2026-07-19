@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Check } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import { getUserTier } from '@/lib/subscription';
 
@@ -23,6 +24,7 @@ const RETENTION_OFFERS = {
 };
 
 export default function CancellationModal({ user, onClose, onUserUpdate }) {
+  const { me } = useAuth();
   const [step, setStep] = useState('reason'); // reason | offer | done
   const [selectedReason, setSelectedReason] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -52,7 +54,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
     setLoading(false);
 
     if (res.data?.canceled) {
-      const updated = await base44.auth.me();
+      const updated = await me();
       if (onUserUpdate) onUserUpdate(updated);
       setStep('done');
     } else {
@@ -64,7 +66,7 @@ export default function CancellationModal({ user, onClose, onUserUpdate }) {
     setLoading(true);
     await base44.functions.invoke('stripeCheckout', { action: 'reactivate' });
     setLoading(false);
-    const updated = await base44.auth.me();
+    const updated = await me();
     if (onUserUpdate) onUserUpdate(updated);
     toast.success('Subscription reactivated!');
     onClose();

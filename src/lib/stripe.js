@@ -2,7 +2,7 @@
  * Frontend Stripe helpers — all calls go through the stripeClientProxy backend function
  * so the secret key is never exposed in the browser.
  */
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 
 const invoke = (action, payload = {}) =>
   base44.functions.invoke('stripeClientProxy', { action, payload }).then(r => r.data);

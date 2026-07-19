@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -141,13 +142,14 @@ function StatCard({ icon: Icon, value, label, color }) {
 
 /* ─── Main ─── */
 export default function OnboardingManager() {
+  const { me } = useAuth();
   const qc = useQueryClient();
   const [copied, setCopied] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
 
   const { data: user } = useQuery({
     queryKey: ['me'],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => me(),
   });
 
   const { data: responses = [], isLoading } = useQuery({

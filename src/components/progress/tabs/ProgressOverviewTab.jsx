@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import { format, parseISO, subWeeks } from 'date-fns';
 import {
   AreaChart, Area, Line, ReferenceLine,
@@ -212,7 +212,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
         </button>
         <button
           onClick={() => {
-            base44.integrations.Core.SendEmail({ to: client.email, subject: '🎉 You\'re crushing it!', body: `Hi ${client.name}! Your coach wants to celebrate your progress. Keep up the amazing work! 💪` }).then(() => toast.success('Celebration message sent!')).catch(() => toast.error('Could not send message'));
+            base44.functions.invoke('sendEmailNotification', { to: client.email, subject: '🎉 You\'re crushing it!', html: `Hi ${client.name}! Your coach wants to celebrate your progress. Keep up the amazing work! 💪` }).then(() => toast.success('Celebration message sent!')).catch(() => toast.error('Could not send message'));
           }}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-success bg-success/10 text-success hover:bg-success/10 transition-colors">
           <Trophy className="w-3.5 h-3.5" /> Celebrate Win

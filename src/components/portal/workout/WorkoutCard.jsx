@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabasePortal as base44 } from '@/api/supabaseClient';
 import { Play, ChevronDown, ChevronUp, Check, Info } from 'lucide-react';
 import ExerciseInfoSheet from './ExerciseInfoSheet';
 

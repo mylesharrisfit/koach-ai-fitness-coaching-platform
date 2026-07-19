@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase as base44 } from '@/api/supabaseClient';
 import {
   Trophy, Plus, Target, Flame, Dumbbell, Footprints, TrendingDown, Users, Calendar, Zap,
   ChevronRight, Star, Clock
