@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Legacy } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 import {
   ChevronLeft, ChevronRight, X, CheckCircle2, AlertTriangle, Flag,
@@ -50,33 +49,10 @@ function AIAnalysisBlock({ checkIn, client }) {
     setLoading(true);
     try {
       const clientName = client?.name || checkIn.client_name || 'the client';
-      const prompt = `You are a professional fitness coach AI assistant. Analyze this weekly check-in data and provide:
-1. A 2-3 sentence summary for the coach (what went well, what needs attention)
-2. A suggested coach response (2-3 sentences, encouraging and actionable)
-3. Any flags or concerns (1 short sentence each, max 2)
-
-Client: ${clientName}
-Weight: ${checkIn.weight ? checkIn.weight + ' lbs' : 'not provided'}
-Mood: ${checkIn.mood || 'not provided'}
-Sleep: ${checkIn.sleep_hours ? checkIn.sleep_hours + ' hrs' : 'not provided'}
-Energy: ${checkIn.energy_level ? checkIn.energy_level + '/10' : 'not provided'}
-Stress: ${checkIn.stress_level ? checkIn.stress_level + '/10' : 'not provided'}
-Training compliance: ${checkIn.compliance_training ? checkIn.compliance_training + '%' : 'not provided'}
-Nutrition compliance: ${checkIn.compliance_nutrition ? checkIn.compliance_nutrition + '%' : 'not provided'}
-Client notes: ${checkIn.notes || 'none'}`;
-
-      const result = await base44Legacy.integrations.Core.InvokeLLM({
-        prompt,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            summary: { type: 'string' },
-            suggested_response: { type: 'string' },
-            flags: { type: 'array', items: { type: 'string' } },
-          },
-        },
+      const res = await base44.functions.invoke('aiCheckInInsights', {
+        action: 'reviewCheckIn', client, checkIn, clientName,
       });
-      setSummary(result);
+      setSummary(res.data);
       setGenerated(true);
     } catch {
       toast.error('AI analysis failed');
