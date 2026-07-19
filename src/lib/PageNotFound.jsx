@@ -1,17 +1,18 @@
 import { useLocation } from 'react-router-dom';
 import KoachLogo from '@/components/brand/KoachLogo.jsx';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 
 export default function PageNotFound() {
   const location = useLocation();
+  const { me } = useAuth();
   const pageName = location.pathname.substring(1);
 
   const { data: authData, isFetched } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await me();
         return { user, isAuthenticated: true };
       } catch {
         return { user: null, isAuthenticated: false };

@@ -7,12 +7,13 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
-import { base44 as base44Auth } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 
 export function useTeamRole() {
+  const { me } = useAuth();
   const { data: user, isLoading: loadingUser } = useQuery({
     queryKey: ['me'],
-    queryFn: () => base44Auth.auth.me(),
+    queryFn: () => me(),
   });
 
   // Look for a TeamMember record where this user is the member (by user_id or email)
