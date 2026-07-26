@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
           if (!r.ok) console.error(`onEntityEvent ${event_type} email failed:`, r.error);
           return r;
         },
-        appUrl: Deno.env.get('APP_URL') || 'https://app.koach.ai',
+        appUrl: Deno.env.get('APP_URL') || 'https://app.koachai.net',
       });
       return jsonResponse({ received: true, ...result });
     } catch (e) {

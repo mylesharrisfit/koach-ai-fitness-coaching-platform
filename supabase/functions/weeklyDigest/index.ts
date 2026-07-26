@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     const now = new Date();
     const digest = buildWeeklyDigest(clients ?? [], checkIns ?? [], now);
     const tip = COACH_TIPS[now.getDay() % COACH_TIPS.length];
-    const appUrl = Deno.env.get('APP_URL') || 'https://app.koach.ai';
+    const appUrl = Deno.env.get('APP_URL') || 'https://app.koachai.net';
     const emailHtml = renderDigestEmail(digest, { tip, appUrl });
 
     if (caller.profile.email) {
