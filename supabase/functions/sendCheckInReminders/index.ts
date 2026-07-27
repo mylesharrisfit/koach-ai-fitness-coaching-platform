@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
   try {
     if (!isServiceRoleCall(req)) return jsonResponse({ error: 'Unauthorized' }, 401);
 
-    const appUrl = Deno.env.get('APP_URL') || 'https://app.koach.ai';
+    const appUrl = Deno.env.get('APP_URL') || 'https://app.koachai.net';
     const result = await runCheckinReminders(serviceClient(), {
       sendEmail: sendResendEmail,
       appUrl,

@@ -15,7 +15,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { generateInviteToken } from '../_shared/portalToken.js';
 
-const APP_URL = Deno.env.get('APP_URL') ?? 'https://koachai.net';
+const APP_URL = Deno.env.get('APP_URL') ?? 'https://app.koachai.net';
 const INVITE_TTL_DAYS = 7;
 
 const cors = {

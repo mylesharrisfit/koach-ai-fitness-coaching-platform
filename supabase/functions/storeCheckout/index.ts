@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     const { data: listing } = await svc.from('plan_listings').select('*').eq('id', listing_id).maybeSingle();
     if (!listing) return jsonResponse({ error: 'Listing not found' }, 404);
 
-    const origin = 'https://koachai.net';
+    const origin = Deno.env.get('APP_URL') ?? 'https://app.koachai.net';
     const successUrl = success_url || `${origin}/store/success?listing_id=${listing_id}`;
     const cancelUrl = cancel_url || `${origin}/store`;
 

@@ -254,7 +254,8 @@ export default function OnboardingManager() {
     c.email?.toLowerCase().includes(clientSearch.toLowerCase())
   );
 
-  const onboardingUrl = `https://koachai.net/client-onboarding${user?.email ? `?coach=${encodeURIComponent(user.email)}` : ''}`;
+  // Served from the app origin (app.koachai.net) — never the marketing site.
+  const onboardingUrl = `${window.location.origin}/client-onboarding${user?.email ? `?coach=${encodeURIComponent(user.email)}` : ''}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(onboardingUrl);
