@@ -53,7 +53,13 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
         assigned_clients: [...existing, clientId],
       });
     }
+    // The client dashboard/portal resolve the active plan via
+    // clients.assigned_nutrition_id, so set it here too — otherwise a plan
+    // assigned from this modal never reaches the client's view.
+    await base44.entities.Client.update(clientId, { assigned_nutrition_id: selected });
     qc.invalidateQueries({ queryKey: ['nutrition-plans-all'] });
+    qc.invalidateQueries({ queryKey: ['client', clientId] });
+    qc.invalidateQueries({ queryKey: ['clients'] });
     onAssigned();
     onClose();
   };

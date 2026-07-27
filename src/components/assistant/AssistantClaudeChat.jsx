@@ -9,6 +9,7 @@ import { averageAdherenceScore, calculateStreak } from '@/lib/adherence';
 import { format } from 'date-fns';
 
 const TOOL_ICONS = {
+  create_client: '🧑‍🤝‍🧑',
   create_nutrition_plan: '🥗',
   update_nutrition_plan: '📊',
   create_program: '💪',
@@ -185,6 +186,9 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
       goal: selectedClient.goal,
       current_weight: selectedClient.current_weight,
       target_weight: selectedClient.target_weight,
+      height: selectedClient.height,
+      sex: selectedClient.sex,
+      date_of_birth: selectedClient.date_of_birth,
       assigned_nutrition_id: selectedClient.assigned_nutrition_id,
       assigned_program_id: selectedClient.assigned_program_id,
       lifecycle_status: selectedClient.lifecycle_status,
@@ -214,11 +218,16 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
       };
       setMessages(prev => [...prev, aiMsg]);
 
-      // Invalidate relevant queries so UI reflects changes
+      // Invalidate relevant queries so UI reflects changes. Keys must match the
+      // ones the client-profile tabs use (nutrition-plans-all / workout-programs
+      // / client) or a coach viewing a profile won't see the assistant's writes.
       if (data.actions?.length > 0) {
         queryClient.invalidateQueries({ queryKey: ['clients'] });
+        queryClient.invalidateQueries({ queryKey: ['client'] });
         queryClient.invalidateQueries({ queryKey: ['nutrition-plans'] });
+        queryClient.invalidateQueries({ queryKey: ['nutrition-plans-all'] });
         queryClient.invalidateQueries({ queryKey: ['programs'] });
+        queryClient.invalidateQueries({ queryKey: ['workout-programs'] });
         queryClient.invalidateQueries({ queryKey: ['messages'] });
         queryClient.invalidateQueries({ queryKey: ['checkins-review'] });
         queryClient.invalidateQueries({ queryKey: ['checkins-chat'] });

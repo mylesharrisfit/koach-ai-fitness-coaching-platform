@@ -26,34 +26,45 @@ AVAILABLE TOOLS:
 2. list_clients - List all clients
    <action>{"tool":"list_clients","filter":"all"}</action>
 
-3. create_nutrition_plan - Create a nutrition plan and assign to client
-   <action>{"tool":"create_nutrition_plan","client_id":"ID","title":"Title","calories":2200,"protein_g":180,"carbs_g":220,"fats_g":70,"tracking_mode":"macros","description":"optional"}</action>
+3. create_client - Add a brand-new client to the roster
+   <action>{"tool":"create_client","name":"Jane Doe","email":"optional","sex":"female","current_weight":165,"target_weight":145,"height":"5'6\"","date_of_birth":"1994-03-12","goal":"weight_loss","notes":"optional"}</action>
+   - goal must be one of: weight_loss, muscle_gain, strength, endurance, flexibility, general_fitness
+   - BMI is computed automatically from height + current_weight (or pass "bmi"); it is saved to the client's notes
+   - After creating, use the returned client_id to build their program and nutrition plan
 
-4. update_nutrition_plan - Update existing nutrition plan
+4. create_nutrition_plan - Create a STRUCTURED nutrition plan (real meals) and assign to client
+   <action>{"tool":"create_nutrition_plan","client_id":"ID","title":"Title","calories":2200,"protein_g":180,"carbs_g":220,"fats_g":70,"tracking_mode":"macros","goal":"weight_loss","meals_per_day":4,"diet":"optional","allergies":"optional"}</action>
+   - The system auto-generates the meal-by-meal breakdown from your macro targets — just provide the targets. Set tracking_mode:"habits" for a macro-free habit plan.
+
+5. update_nutrition_plan - Update an existing nutrition plan's macros
    <action>{"tool":"update_nutrition_plan","plan_id":"ID","calories":2000,"protein_g":160,"carbs_g":200,"fats_g":65}</action>
 
-5. create_program - Create a workout program for a client
-   <action>{"tool":"create_program","title":"Title","client_id":"ID","duration_weeks":8,"days_per_week":4,"difficulty":"intermediate","description":"optional"}</action>
+6. create_program - Create a STRUCTURED workout program (real days + exercises) and assign to client
+   <action>{"tool":"create_program","title":"Title","client_id":"ID","duration_weeks":8,"days_per_week":4,"difficulty":"intermediate","category":"custom","goal":"muscle_gain","equipment":"full gym"}</action>
+   - The system auto-generates the day-by-day workouts from these parameters — just provide the high-level program shape.
+   - difficulty: beginner|intermediate|advanced|elite. category: strength|hypertrophy|fat_loss|athletic|mobility|custom
 
-6. update_client - Update client profile
-   <action>{"tool":"update_client","client_id":"ID","goal":"weight_loss","lifecycle_status":"active","notes":"optional"}</action>
+7. update_client - Update client profile
+   <action>{"tool":"update_client","client_id":"ID","goal":"weight_loss","current_weight":160,"target_weight":150,"lifecycle_status":"active","notes":"optional"}</action>
 
-7. flag_client_at_risk - Flag a client as at-risk
+8. flag_client_at_risk - Flag a client as at-risk
    <action>{"tool":"flag_client_at_risk","client_id":"ID","reason":"reason text","urgency":"medium"}</action>
 
-8. send_message - Send a message to a client
+9. send_message - Send a message to a client
    <action>{"tool":"send_message","client_id":"ID","message":"Your message here"}</action>
 
-9. create_checkin_response - Respond to a client check-in
-   <action>{"tool":"create_checkin_response","checkin_id":"ID","response":"Your coaching response","review_status":"reviewed"}</action>
+10. create_checkin_response - Respond to a client check-in
+    <action>{"tool":"create_checkin_response","checkin_id":"ID","response":"Your coaching response","review_status":"reviewed"}</action>
 
-10. award_badge - Award an achievement badge
+11. award_badge - Award an achievement badge
     <action>{"tool":"award_badge","client_id":"ID","badge_key":"streak_7","notes":"optional"}</action>
 
 IMPORTANT RULES:
 - When asked to DO something, ALWAYS use the appropriate tool - do not just give advice
 - Use list_clients or get_client_data first if you need IDs or more context
+- To onboard someone new end-to-end: create_client first, then use the returned client_id for create_program and create_nutrition_plan
 - You can chain multiple actions in sequence
+- create_program and create_nutrition_plan build the full structured content for you — do NOT paste large workout/meal JSON yourself; just pass the parameters
 - After taking actions, give a clear summary of what you did
 - Be proactive: fully handle requests without asking for unnecessary confirmation
 - For nutrition plans, calculate sensible macros based on goals if not specified`;
@@ -80,6 +91,9 @@ Deno.serve(async (req) => {
         '- Goal: ' + (clientContext.goal || 'general fitness').replace(/_/g, ' ') + '\n' +
         '- Current weight: ' + (clientContext.current_weight || 'unknown') + ' lbs\n' +
         '- Target weight: ' + (clientContext.target_weight || 'not set') + ' lbs\n' +
+        '- Height: ' + (clientContext.height || 'unknown') + '\n' +
+        '- Sex: ' + (clientContext.sex || 'unknown') + '\n' +
+        '- Date of birth: ' + (clientContext.date_of_birth || 'unknown') + '\n' +
         '- Assigned nutrition plan ID: ' + (clientContext.assigned_nutrition_id || 'none') + '\n' +
         '- Assigned program ID: ' + (clientContext.assigned_program_id || 'none') + '\n' +
         '- Lifecycle status: ' + (clientContext.lifecycle_status || 'active') + '\n' +
@@ -108,7 +122,7 @@ Deno.serve(async (req) => {
 
       const prompt = systemPrompt + '\n\n' + fullContext + 'Coach: ' + currentInput + '\n\nAssistant:';
 
-      const llm = await invokeClaude({ prompt, maxTokens: 2048 });
+      const llm = await invokeClaude({ prompt, maxTokens: 3072 });
       if (!llm.ok) return jsonResponse({ error: llm.error }, llm.status ?? 500);
       const responseText = llm.text;
 
@@ -128,7 +142,7 @@ Deno.serve(async (req) => {
 
       const results = [];
       for (const action of actionsFound) {
-        const result = await executeAssistantTool(svc, userId, action.tool as string, action);
+        const result = await executeAssistantTool(svc, userId, action.tool as string, action, { profile: caller.profile });
         results.push({ tool: action.tool, input: action, result });
         actionLog.push({ tool: action.tool, input: action, result });
       }

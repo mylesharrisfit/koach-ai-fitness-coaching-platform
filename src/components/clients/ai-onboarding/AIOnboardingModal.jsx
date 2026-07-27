@@ -105,15 +105,33 @@ export default function AIOnboardingModal({ client, onClose, onSaved }) {
       is_template: false,
     });
 
-    // Save nutrition plan
+    // Save nutrition plan. Map the generated plan onto real schema columns —
+    // `plan_data` is not a column, so writing macros/rest-day meals/hydration
+    // there silently dropped them (the client dashboard reads protein_g etc).
     const trainingMeals = finalMealPlan?.training_day?.meals || finalMealPlan?.meals || [];
-    const totalCals = trainingMeals.reduce((s, m) => s + (m.calories || 0), 0) || 2000;
+    const restMeals = finalMealPlan?.rest_day?.meals || [];
+    const sumMacro = (meals, key) => Math.round(meals.reduce((s, m) => s + (Number(m[key]) || 0), 0));
+    const totalCals = sumMacro(trainingMeals, 'calories') || 2000;
+    const shopping = Array.isArray(finalMealPlan?.shopping_list)
+      ? finalMealPlan.shopping_list.map(String).filter(Boolean)
+      : [];
     const nutritionRecord = await base44.entities.NutritionPlan.create({
       title: `${client.name} — AI Nutrition Plan`,
       description: finalMealPlan?.coach_notes?.why_these_calories || 'AI-generated nutrition plan',
       calories: totalCals,
+      protein_g: sumMacro(trainingMeals, 'protein') || undefined,
+      carbs_g: sumMacro(trainingMeals, 'carbs') || undefined,
+      fats_g: sumMacro(trainingMeals, 'fats') || undefined,
       meals: trainingMeals,
-      plan_data: finalMealPlan,
+      rest_day_meals: restMeals,
+      hydration: finalMealPlan?.hydration || undefined,
+      coach_notes: finalMealPlan?.coach_notes || undefined,
+      client_notes: finalMealPlan?.client_notes || undefined,
+      shopping_list: shopping,
+      tracking_mode: 'macros',
+      client_id: client.id,
+      status: 'active',
+      ai_generated: true,
       is_template: false,
     });
 
