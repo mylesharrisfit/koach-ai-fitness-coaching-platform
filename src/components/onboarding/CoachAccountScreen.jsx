@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { supabase } from '@/api/supabaseClient';
+import { isSupabaseAuth } from '@/lib/authConfig';
+import { stashOnboardingData } from '@/lib/onboardingStorage';
 
 export default function CoachAccountScreen({ onNext, onBack, data }) {
   const { navigateToLogin } = useAuth();
@@ -14,6 +17,7 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -30,15 +34,49 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
     const err = validate();
     if (err) { setError(err); return; }
     setError('');
+    setNotice('');
     setLoading(true);
     try {
-      onNext({
-        account_email: form.email.trim(),
-        account_name: form.full_name.trim(),
-        account_password: form.password,
+      if (!isSupabaseAuth()) {
+        // Legacy Base44 hosted-redirect signup: the parent stashes the
+        // onboarding answers and redirects to the hosted auth page. Never pass
+        // the password up — it must not be persisted to localStorage.
+        onNext({
+          account_email: form.email.trim(),
+          account_name: form.full_name.trim(),
+        });
+        return;
+      }
+
+      // Supabase mode: actually create the account here. (Previously the
+      // collected credentials were discarded and the user was bounced to
+      // /login for an account that never existed — the signup could not
+      // complete.) Persist onboarding answers first so they survive an email
+      // confirmation round trip.
+      stashOnboardingData(data);
+      const { needsConfirmation } = await supabase.auth.signup({
+        email: form.email.trim(),
+        password: form.password,
+        full_name: form.full_name.trim(),
       });
+
+      if (needsConfirmation) {
+        // No session yet — the project requires email confirmation. Hold here
+        // with a notice; the resume flag routes them to plan selection after
+        // they confirm and sign in.
+        setNotice('Account created. Check your email to confirm, then sign in to choose your plan.');
+        setLoading(false);
+        return;
+      }
+
+      // Session is live. AuthContext's auth-state listener picks it up and
+      // advances the flow to plan selection; keep the spinner until then.
     } catch (e) {
-      setError(e?.message || 'Something went wrong. Please try again.');
+      const raw = e?.message || '';
+      const msg = /already registered|already exists|registered/i.test(raw)
+        ? 'An account with this email already exists. Please sign in instead.'
+        : (raw || 'Something went wrong. Please try again.');
+      setError(msg);
       setLoading(false);
     }
   };
@@ -214,6 +252,18 @@ export default function CoachAccountScreen({ onNext, onBack, data }) {
               style={{ color: 'var(--tc-destructive)', background: 'color-mix(in srgb, var(--tc-destructive) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 20%, transparent)' }}
             >
               {error}
+            </motion.p>
+          )}
+
+          {/* Notice (e.g. email-confirmation required) */}
+          {notice && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-center py-2 px-4 rounded-xl"
+              style={{ color: 'var(--tc-success)', background: 'color-mix(in srgb, var(--tc-success) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-success) 20%, transparent)' }}
+            >
+              {notice}
             </motion.p>
           )}
         </motion.div>

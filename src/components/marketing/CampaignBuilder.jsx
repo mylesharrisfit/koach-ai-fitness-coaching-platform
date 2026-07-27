@@ -37,7 +37,7 @@ export default function CampaignBuilder({ coachId }) {
         ...data,
         coach_id: coachId,
         campaign_slug: slug,
-        campaign_url: `koachai.com/campaign/${slug}`,
+        campaign_url: `koachai.net/campaign/${slug}`,
         status: 'draft',
       });
     },

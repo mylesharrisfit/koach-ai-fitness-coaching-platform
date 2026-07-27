@@ -13,6 +13,8 @@ import CoachPricingScreen from '@/components/onboarding/CoachPricingScreen';
 import CoachAccountScreen from '@/components/onboarding/CoachAccountScreen';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import { isSupabaseAuth } from '@/lib/authConfig';
+import { LS_ONBOARDING_DATA, LS_RESUME_PRICING, stashOnboardingData } from '@/lib/onboardingStorage';
 
 // Step 1–6: onboarding, Step 7: create account, Step 8: pricing (→ Stripe)
 const FLOW = [
@@ -29,9 +31,9 @@ const FLOW = [
 
 const NO_PROGRESS = new Set(['splash', 'welcome', 'coach_account', 'coach_pricing']);
 
-// localStorage key for carrying onboarding data across the account-creation redirect
-const LS_ONBOARDING_DATA = 'koach_pending_onboarding_data';
-const LS_RESUME_PRICING  = 'koach_resume_pricing';
+// localStorage keys for carrying onboarding data across account creation live
+// in src/lib/onboardingStorage.js (imported above) so the account screen and
+// this page agree on the contract — and the password is never persisted.
 
 export default function PremiumOnboarding() {
   const navigate = useNavigate();
@@ -118,11 +120,24 @@ export default function PremiumOnboarding() {
     setData(merged);
 
     if (step === 'coach_account') {
-      // Stash onboarding data to localStorage before redirecting for account creation
-      localStorage.setItem(LS_ONBOARDING_DATA, JSON.stringify(merged));
-      localStorage.setItem(LS_RESUME_PRICING, '1');
-      // Redirect to Base44 signup; on return, we'll land back at /start?resume=checkout
-      navigateToLogin();
+      // Persist onboarding answers (never the password) so they survive the
+      // account-creation round trip / email confirmation.
+      stashOnboardingData(merged);
+
+      if (!isSupabaseAuth()) {
+        // Legacy Base44 hosted-redirect signup; on return we land back at
+        // /start?resume=checkout.
+        navigateToLogin();
+        return;
+      }
+
+      // Supabase mode: CoachAccountScreen creates the account in-app and only
+      // advances here once a live session exists (no email-confirmation gate),
+      // so move straight to plan selection. When confirmation IS required the
+      // account screen holds the user with a notice instead of calling onNext,
+      // and the resume flag routes them back here after they sign in.
+      setDirection(1);
+      setStep('coach_pricing');
       return;
     }
 

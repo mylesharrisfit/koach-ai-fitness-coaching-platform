@@ -1,4 +1,4 @@
-const CACHE_NAME = 'koach-v1';
+const CACHE_NAME = 'koach-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -53,7 +53,29 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Assets — cache first
+  // Navigation / HTML documents — network first. A cache-first document meant
+  // that after a deploy the SW kept serving a stale index.html that referenced
+  // hashed JS chunks no longer on the CDN, producing chunk-load failures and
+  // white-screen/refresh loops until the cache was manually cleared. Always
+  // try the network for navigations, falling back to the cached shell offline.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put('/index.html', clone));
+          return response;
+        })
+        .catch(() =>
+          caches.match(request)
+            .then(r => r || caches.match('/index.html'))
+            .then(r => r || caches.match('/offline.html'))
+        )
+    );
+    return;
+  }
+
+  // Static assets (hashed JS/CSS/images) — cache first
   event.respondWith(
     caches.match(request).then(response => {
       if (response) return response;
