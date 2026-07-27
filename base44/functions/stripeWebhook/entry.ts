@@ -124,7 +124,7 @@ Deno.serve(async (req) => {
             await sendEmail(base44, {
               to: email,
               subject: '⚠️ Payment failed — action required to keep your KOACH AI account active',
-              body: `Hi,\n\nYour recent payment for KOACH AI failed. Please update your billing information within 7 days to avoid service interruption.\n\nUpdate billing: ${Deno.env.get('APP_URL') || 'https://app.koach.ai'}/subscription\n\nIf you have questions, reply to this email.\n\nKOACH AI Team`,
+              body: `Hi,\n\nYour recent payment for KOACH AI failed. Please update your billing information within 7 days to avoid service interruption.\n\nUpdate billing: ${Deno.env.get('APP_URL') || 'https://app.koachai.net'}/subscription\n\nIf you have questions, reply to this email.\n\nKOACH AI Team`,
             });
           }
         }
@@ -150,7 +150,7 @@ Deno.serve(async (req) => {
           await sendEmail(base44, {
             to: email,
             subject: '🔔 Your KOACH AI trial ends in 3 days',
-            body: `Hi,\n\nYour free trial of KOACH AI Pro ends on ${formattedDate}.\n\nTo keep access to all your coaching tools, add a payment method before your trial ends:\n\n${Deno.env.get('APP_URL') || 'https://app.koach.ai'}/subscription\n\nIf you don't add a payment method, your account will be moved to the free Starter plan.\n\nKOACH AI Team`,
+            body: `Hi,\n\nYour free trial of KOACH AI Pro ends on ${formattedDate}.\n\nTo keep access to all your coaching tools, add a payment method before your trial ends:\n\n${Deno.env.get('APP_URL') || 'https://app.koachai.net'}/subscription\n\nIf you don't add a payment method, your account will be moved to the free Starter plan.\n\nKOACH AI Team`,
           });
         }
       }
