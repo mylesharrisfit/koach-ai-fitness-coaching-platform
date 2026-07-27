@@ -123,7 +123,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
                 <div className="bg-card border border-border rounded-lg p-2 mt-1">
                   <p><span className="text-primary">Type:</span> CNAME</p>
                   <p><span className="text-primary">Name:</span> {s.custom_domain.split('.')[0]}</p>
-                  <p><span className="text-primary">Value:</span> portal.koach.ai</p>
+                  <p><span className="text-primary">Value:</span> portal.koachai.net</p>
                   <p><span className="text-primary">TTL:</span> 300</p>
                 </div>
               </div>

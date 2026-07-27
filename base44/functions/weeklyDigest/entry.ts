@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
 
         <div style="text-align:center;padding:16px;background:#f9fafb;border-radius:10px;">
           <p style="margin:0 0 8px;color:#6b7280;font-size:12px;">${activeCount} active clients · $${mrr.toLocaleString()}/mo MRR</p>
-          <a href="${Deno.env.get('APP_URL') || 'https://app.koach.ai'}/ai-insights"
+          <a href="${Deno.env.get('APP_URL') || 'https://app.koachai.net'}/ai-insights"
             style="display:inline-block;background:#111827;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">
             View Full Digest →
           </a>
