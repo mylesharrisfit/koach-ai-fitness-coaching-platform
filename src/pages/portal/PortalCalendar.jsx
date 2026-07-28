@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   format, startOfMonth, endOfMonth, eachDayOfInterval,
@@ -290,7 +291,7 @@ export default function PortalCalendar({ user }) {
   // Fetch client
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-cal-client', user?.id],
-    queryFn: () => base44.entities.Client.filter({ user_id: user.id }, '-created_date', 1),
+    queryFn: () => resolvePortalClient(base44, user),
     enabled: !!user?.id,
   });
   const myClient = clients[0];

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { format, subDays } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Copy, Loader2, Salad, Pill, FlaskConical, Droplets, Leaf, Download } from 'lucide-react';
@@ -50,7 +51,9 @@ export default function PortalNutrition({ user }) {
   // Fetch nutrition plan for targets
   useEffect(() => {
     if (!clientId) return;
-    base44.entities.Client.filter({ user_id: clientId }).then(clients => {
+    // Resolve the client row canonically (portal_user_id); the old
+    // { user_id: clientId } filter matched the coach, so targets never loaded.
+    resolvePortalClient(base44, user).then(clients => {
       const client = clients[0];
       if (client?.assigned_nutrition_id) {
         base44.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id }).then(plans => {

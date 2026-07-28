@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { useAuth } from '@/lib/AuthContext';
 import { format, differenceInDays, parseISO, addDays } from 'date-fns';
 import DashboardHeader from '@/components/client-dashboard/DashboardHeader';
@@ -78,9 +79,9 @@ export default function ClientDashboard() {
   })();
 
   const { data: clients = [] } = useQuery({
-    queryKey: ['my-client-profile'],
-    queryFn: () => base44.entities.Client.filter({ email: user?.email }, '-created_date', 1),
-    enabled: !!user?.email,
+    queryKey: ['my-client-profile', user?.id],
+    queryFn: () => resolvePortalClient(base44, user),
+    enabled: !!user?.id,
   });
   const myClient = clients[0];
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { motion } from 'framer-motion';
 import { Copy, Share2, MessageSquare, Mail, Instagram, Twitter, Award, Gift } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,8 +14,8 @@ export default function PortalReferral({ user }) {
   // Get client
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-client-ref', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user?.email }, '-created_date', 1),
-    enabled: !!user?.email,
+    queryFn: () => resolvePortalClient(base44, user),
+    enabled: !!user?.id,
   });
   const myClient = clients[0];
 

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { ArrowLeft, CheckCheck, Settings, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow, isToday, isYesterday, isThisWeek, format } from 'date-fns';
 
@@ -237,8 +238,8 @@ export default function PortalNotifications({ user }) {
 
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-client-notif', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
+    queryFn: () => resolvePortalClient(base44, user),
+    enabled: !!user?.id,
   });
   const myClient = clients[0];
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, isToday, isYesterday } from 'date-fns';
 import {
@@ -334,8 +335,8 @@ export default function PortalMessages({ user }) {
 
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-client-msgs', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
+    queryFn: () => resolvePortalClient(base44, user),
+    enabled: !!user?.id,
   });
   const myClient = clients[0];
 

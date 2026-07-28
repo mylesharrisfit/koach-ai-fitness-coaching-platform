@@ -3,6 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { supabase as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { useAuth } from '@/lib/AuthContext';
 import { Home, Dumbbell, BarChart2, MessageSquare, Users, CalendarDays } from 'lucide-react';
 import { addDays, parseISO, differenceInDays } from 'date-fns';
@@ -35,7 +36,7 @@ function BottomNav({ user, hideForActiveWorkout }) {
 
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-client-nav', user?.id],
-    queryFn: () => base44.entities.Client.filter({ user_id: user.id }, '-created_date', 1),
+    queryFn: () => resolvePortalClient(base44, user),
     enabled: !!user?.id,
   });
   const myClient = clients[0];

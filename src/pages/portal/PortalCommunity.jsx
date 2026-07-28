@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabasePortal as base44 } from '@/api/supabaseClient';
+import { resolvePortalClient } from '@/lib/portalClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, MessageSquare, Trophy, ChevronRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -96,8 +97,8 @@ export default function PortalCommunity({ user }) {
 
   const { data: clients = [] } = useQuery({
     queryKey: ['portal-community-client', user?.email],
-    queryFn: () => base44.entities.Client.filter({ email: user.email }, '-created_date', 1),
-    enabled: !!user?.email,
+    queryFn: () => resolvePortalClient(base44, user),
+    enabled: !!user?.id,
   });
   const myClient = clients[0];
 
