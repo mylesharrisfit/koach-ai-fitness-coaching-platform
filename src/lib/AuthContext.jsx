@@ -19,8 +19,20 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (isSupabaseAuth()) {
       checkSupabaseAuth();
-      // Reflect login/logout/token-refresh across the shell.
-      const unsub = base44Legacy.auth.onAuthStateChange?.(() => checkSupabaseAuth());
+      // Reflect login/logout/token-refresh across the shell. Guard the
+      // subscription: getSupabase() throws synchronously when the Supabase env
+      // is missing/misconfigured, and an unguarded throw here would take down
+      // the whole shell (there is no error boundary above AuthProvider). Treat
+      // it as signed-out instead so the app still renders the auth pages.
+      let unsub;
+      try {
+        unsub = base44Legacy.auth.onAuthStateChange?.(() => checkSupabaseAuth());
+      } catch (e) {
+        console.error('Auth state subscription unavailable:', e?.message || e);
+        setIsLoadingAuth(false);
+        setIsLoadingPublicSettings(false);
+        setAuthChecked(true);
+      }
       return () => { if (typeof unsub === 'function') unsub(); };
     }
     checkAppState();
