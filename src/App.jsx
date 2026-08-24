@@ -51,6 +51,7 @@ import ClientPortal from './pages/ClientPortal';
 import ClientWorkoutView from './pages/ClientWorkoutView';
 import ClientInviteJoin from './pages/ClientInviteJoin';
 import ClientSetup from './pages/ClientSetup';
+import Unsubscribe from './pages/Unsubscribe';
 import EmailCenter from './pages/EmailCenter';
 import AIInsightsPage from './pages/AIInsightsPage';
 import Invoicing from './pages/Invoicing';
@@ -160,7 +161,7 @@ const AuthenticatedApp = () => {
   // the entire coach shell (/clients, /revenue, …). Confidentiality was held
   // only by RLS with no redirect. Now: anyone without a session on a non-public
   // path is sent to login. Public/onboarding/portal/auth paths stay open.
-  const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup'];
+  const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup', '/unsubscribe'];
   const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
   if (!isAuthenticated && !isPublicPath) {
     navigateToLogin();
@@ -233,6 +234,7 @@ const AuthenticatedApp = () => {
       <Route path="/client-onboarding" element={<ClientOnboarding />} />
       <Route path="/join/:code" element={<ClientInviteJoin />} />
       <Route path="/client-setup/:token" element={<ClientSetup />} />
+      <Route path="/unsubscribe" element={<Unsubscribe />} />
       <Route path="/join" element={<ClientInviteJoin />} />
       <Route path="/workout" element={<ClientWorkoutView />} />
 
