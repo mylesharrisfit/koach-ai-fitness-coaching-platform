@@ -98,6 +98,11 @@ const PORTAL_OVERRIDES = {
   CheckIn: { table: 'check_ins_portal_view' },
   Session: { table: 'coaching_sessions_portal_view', readOnly: true },
   CoachingSession: { table: 'coaching_sessions_portal_view', readOnly: true },
+  // S6: portal client reads go through the column-restricted view (no
+  // notes/lifecycle_notes/monthly_rate/stripe_customer_id/invite token). The
+  // base `clients` table no longer grants portal SELECT (migration
+  // 20260823000400). Read-only: portal clients don't create/update client rows.
+  Client: { table: 'clients_portal_view', readOnly: true },
 };
 
 const FIELD_RENAMES = {
