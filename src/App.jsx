@@ -138,7 +138,7 @@ const AuthGuardedDashboard = () => {
 };
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
@@ -151,18 +151,20 @@ const AuthenticatedApp = () => {
     );
   }
 
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Don't redirect public routes (/start, /join, /client-onboarding, /packages) to login
-      const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup'];
-      const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
-      if (!isPublicPath) {
-        navigateToLogin();
-        return null;
-      }
-    }
+  if (authError && authError.type === 'user_not_registered') {
+    return <UserNotRegisteredError />;
+  }
+
+  // Route-level auth guard. In Supabase mode `authError` is never set, so the
+  // old authError-based redirect was dead and unauthenticated users could reach
+  // the entire coach shell (/clients, /revenue, …). Confidentiality was held
+  // only by RLS with no redirect. Now: anyone without a session on a non-public
+  // path is sent to login. Public/onboarding/portal/auth paths stay open.
+  const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup'];
+  const isPublicPath = publicPaths.some(p => window.location.pathname.startsWith(p));
+  if (!isAuthenticated && !isPublicPath) {
+    navigateToLogin();
+    return null;
   }
 
   return (
