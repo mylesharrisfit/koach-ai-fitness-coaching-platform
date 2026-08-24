@@ -218,14 +218,23 @@ function makeEntity(name, { table, readOnly = false }) {
     },
     async update(id, payload) {
       assertWritable('update');
+      // Use .select() (array) and assert a row came back. Previously this used
+      // .maybeSingle(), which returns null with NO error when an UPDATE matches
+      // zero rows (record missing, or RLS/validation denied the write) — so the
+      // caller's onSuccess fired and the UI reported "Saved!" while nothing was
+      // written (the phantom-save class of bugs). Surface it instead.
       const { data, error } = await getSupabase()
         .from(table)
         .update(renameKeys(payload))
         .eq('id', id)
-        .select()
-        .maybeSingle();
+        .select();
       throwIf(error);
-      return aliasRow(data);
+      if (!data || data.length === 0) {
+        throw new Error(
+          `${name}.update(${id}) affected no rows — the record is missing or the write was not permitted.`,
+        );
+      }
+      return aliasRow(data[0]);
     },
     async delete(id) {
       assertWritable('delete');
