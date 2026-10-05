@@ -29,7 +29,7 @@ Mode: **test and report only.** No code was changed, no paywall/RLS/subscription
 | Smoke Client One (invite sent, never delivered) | ansh102104@icloud.com | no auth user |
 
 Plus-aliases were used because `ansh.patel102104@gmail.com` is a pre-existing real account (confirmed July 2026, starter/active), left untouched.
-Passwords: coaches `SmokeTest!2026a`, clients `SmokeClient!2026`.
+Passwords: not recorded in this file (shared in the chat session only).
 
 ### Paywall source of truth (as requested)
 `public.profiles.subscription_tier` (`starter|pro|elite|enterprise`) and `public.profiles.billing_status` (`active|trialing|past_due|...`). The UI treats `active|trialing|past_due` as subscribed (`src/App.jsx:119`, `src/pages/Settings.jsx:117`). Users cannot write those columns (trigger in `supabase/migrations/20260823000200_protect_trial_and_ai_quota.sql`). Tier/limit tables: `src/lib/subscription.js` (client) and `supabase/functions/_shared/subscriptionTiers.js` (server).
