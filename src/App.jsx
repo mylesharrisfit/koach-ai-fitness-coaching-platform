@@ -149,8 +149,8 @@ const AuthenticatedApp = () => {
   // old authError-based redirect was dead and unauthenticated users could reach
   // the entire coach shell (/clients, /revenue, …). Confidentiality was held
   // only by RLS with no redirect. Now: anyone without a session on a non-public
-  // path is sent to login. Public/onboarding/portal/auth paths stay open.
-  const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/portal', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup', '/unsubscribe'];
+  // path is sent to login. Public/onboarding/auth/invite paths stay open; /portal/* is NOT public.
+  const publicPaths = ['/start', '/join', '/client-onboarding', '/packages', '/login', '/signup', '/forgot-password', '/reset-password', '/client-setup', '/unsubscribe'];
   const isPublicPath = publicPaths.some(p => location.pathname.startsWith(p));
   if (!isAuthenticated && !isPublicPath) {
     const here = location.pathname + location.search;
