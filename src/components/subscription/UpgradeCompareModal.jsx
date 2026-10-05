@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PLAN_PRICES } from '@/lib/planPricing';
 import { X, Check, Sparkles, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TIERS, TIER_ORDER } from '@/lib/subscription';
@@ -7,12 +8,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import SuccessScreen from './SuccessScreen';
 
-const PLAN_PRICES = {
-  starter:    { monthly: 29,  annual: 23,  annualSave: 72 },
-  pro:        { monthly: 79,  annual: 63,  annualSave: 192 },
-  elite:      { monthly: 149, annual: 119, annualSave: 360 },
-  enterprise: { monthly: 299, annual: 239, annualSave: 720 },
-};
 
 const TIER_FEATURES = {
   starter: ['Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],

@@ -133,7 +133,8 @@ const { rows: [ci] } = await db.query(
 // ── 1. metering (shared guard, real profile writes) ─────────────────────────
 {
   const NOW = new Date('2026-07-15T12:00:00Z');
-  await db.query(`update public.profiles set ai_generation_count=14, ai_generation_month='2026-07' where id=$1`, [COACH_A]);
+  // Metering sits behind the billing gate: a coach needs access (here: active).
+  await db.query(`update public.profiles set billing_status='active', ai_generation_count=14, ai_generation_month='2026-07' where id=$1`, [COACH_A]);
   let prof = (await db.query('select * from public.profiles where id=$1', [COACH_A])).rows[0];
   const m1 = await meterAiGeneration(svc, prof, NOW);
   prof = (await db.query('select ai_generation_count, ai_generation_month from public.profiles where id=$1', [COACH_A])).rows[0];
@@ -151,8 +152,14 @@ const { rows: [ci] } = await db.query(
   check('metering: month rollover resets the counter',
     m3.allowed === true && prof.ai_generation_count === 1 && prof.ai_generation_month === '2026-08');
 
-  const m4 = await meterAiGeneration(svc, { id: COACH_A, subscription_tier: 'enterprise' }, NOW);
+  const m4 = await meterAiGeneration(svc, { id: COACH_A, subscription_tier: 'enterprise', billing_status: 'active' }, NOW);
   check('metering: enterprise is unmetered', m4.allowed === true && m4.limit === -1 && TIER_AI_LIMITS.enterprise === -1);
+
+  // Billing gate: no subscription / trial => 402 billing_required, counter untouched.
+  const m5 = await meterAiGeneration(svc, { id: COACH_A, subscription_tier: 'pro', billing_status: 'none' }, NOW);
+  check('metering: no billing access -> 402 billing_required', m5.allowed === false && m5.status === 402 && m5.body.error === 'billing_required');
+  const m6 = await meterAiGeneration(svc, { id: COACH_A, subscription_tier: 'enterprise', billing_status: 'none', is_comped: true }, NOW);
+  check('metering: comped account passes the billing gate', m6.allowed === true);
 }
 
 // ── 2. assistant tools: ownership scoping (the legacy hole, closed) ────────

@@ -42,12 +42,12 @@ export function takePendingPlan() {
 
 /** Create a Stripe checkout session (30-day trial, card required — server side) and go there. */
 export async function startCheckout(db, plan, interval) {
-  const origin = window.location.origin;
+  // Paths only: the server pins success/cancel URLs to https://app.koachai.net.
   const res = await db.functions.invoke('stripeCheckout', {
     tier: plan,
     billing_cycle: interval,
-    success_url: `${origin}/?checkout=success`,
-    cancel_url: `${origin}/subscription`,
+    success_url: '/?checkout=success',
+    cancel_url: '/subscription',
   });
   if (!res.data?.url) throw new Error(res.data?.error || 'Could not start checkout. Please try again.');
   window.location.href = res.data.url;

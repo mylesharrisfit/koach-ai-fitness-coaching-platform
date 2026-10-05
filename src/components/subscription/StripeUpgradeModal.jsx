@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PLAN_PRICES } from '@/lib/planPricing';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { TIERS, TIER_ORDER, getUserTier } from '@/lib/subscription';
@@ -9,12 +10,6 @@ import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 
 // Exact pricing
-const PLAN_PRICES = {
-  starter:    { monthly: 29,  annual: 23,  annualSave: 72 },
-  pro:        { monthly: 79,  annual: 63,  annualSave: 192 },
-  elite:      { monthly: 149, annual: 119, annualSave: 360 },
-  enterprise: { monthly: 299, annual: 239, annualSave: 720 },
-};
 
 const CLIENT_LIMIT = {
   starter: 'Up to 20 clients',
@@ -107,6 +102,7 @@ export default function StripeUpgradeModal({ open, onClose, user, onUserUpdate }
     const res = await db.functions.invoke('stripeCheckout', {
       action: 'checkout',
       tier: tierKey,
+      billing_cycle: billing,
       success_url: `${window.location.origin}/subscription?success=1`,
       cancel_url: `${window.location.origin}/subscription`,
     });

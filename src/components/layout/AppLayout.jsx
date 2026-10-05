@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 import { useAuth } from '@/lib/AuthContext';
 import UpgradeModal from '@/components/subscription/UpgradeModal';
+import BillingBanners from '@/components/subscription/BillingBanners';
 import { isClientRole } from '@/lib/useRoleGuard';
 import { Menu, X } from 'lucide-react';
 import KoachLogo from '@/components/brand/KoachLogo';
@@ -116,6 +117,7 @@ export default function AppLayout() {
         <main
           className="md:ml-[210px] min-h-screen pb-24 md:pb-0 pt-14 md:pt-0 transition-all duration-200 bg-background overflow-x-hidden"
         >
+          <BillingBanners user={user} />
           <Outlet />
         </main>
 

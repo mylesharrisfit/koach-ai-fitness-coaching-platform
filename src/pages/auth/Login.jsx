@@ -28,7 +28,7 @@ export default function Login() {
       const me = await supabase.auth.login({ email, password });
       // Signed up with a plan but had to confirm their email first → resume checkout.
       const pending = takePendingPlan();
-      const subscribed = ['active', 'trialing', 'past_due'].includes(me?.billing_status) || !!me?.stripe_subscription_id;
+      const subscribed = ['active', 'trialing', 'past_due'].includes(me?.billing_status);
       if (pending && !subscribed) {
         try { await startCheckout(db, pending.plan, pending.interval); return; } catch { /* fall through to /subscription */ }
       }

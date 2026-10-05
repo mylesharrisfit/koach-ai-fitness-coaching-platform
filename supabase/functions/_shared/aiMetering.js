@@ -15,6 +15,9 @@
  * unmetered. The ports keep that behavior.
  */
 
+import { billingAccess, effectiveTier } from './billingAccess.js';
+import { resolveTeamRole } from './teamRole.js';
+
 export const TIER_AI_LIMITS = { starter: 15, pro: 50, elite: 150, enterprise: -1 };
 
 /**
@@ -23,7 +26,17 @@ export const TIER_AI_LIMITS = { starter: 15, pro: 50, elite: 150, enterprise: -1
  * Base44-shaped upgrade message.
  */
 export async function meterAiGeneration(svc, profile, now = new Date()) {
-  const tier = profile.subscription_tier || 'starter';
+  // Billing gate: no subscription / trial / grace => no AI. Team coaches ride on
+  // their owner's billing and are not gated on their own (empty) profile state.
+  if (!billingAccess(profile, now).hasAccess && (await resolveTeamRole(svc, profile.id)) !== 'coach') {
+    return {
+      allowed: false,
+      status: 402,
+      body: { error: 'billing_required', message: 'Your subscription is not active. Subscribe on the billing page to use AI features.' },
+    };
+  }
+
+  const tier = effectiveTier(profile);
   const aiLimit = TIER_AI_LIMITS[tier] ?? 15;
   if (aiLimit === -1) return { allowed: true, used: null, limit: -1 };
 

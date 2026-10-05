@@ -4,15 +4,8 @@ import { TIERS, TIER_ORDER } from '@/lib/subscription';
 import { db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
+import { openBillingPortal } from '@/lib/billing';
 
-const PLAN_PRICES = {
-  starter: { monthly: 29 },
-  pro:     { monthly: 79 },
-  elite:   { monthly: 149 },
-  enterprise: { monthly: 299 },
-};
-
-const CLIENT_LIMITS = { starter: 20, pro: 75, elite: -1, enterprise: -1 };
 
 const TIER_FEATURES = {
   starter: ['Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Basic progress tracking', 'Email support'],
@@ -36,7 +29,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
     .slice(toIdx + 1, fromIdx + 1)
     .flatMap(k => TIER_FEATURES[k]);
 
-  const newClientLimit = CLIENT_LIMITS[toTierKey];
+  const newClientLimit = toTier.limits.max_clients;
   const clientOverLimit = newClientLimit !== -1 && clientCount > newClientLimit;
 
   const effectiveDate = renewalDate || (() => {
@@ -45,24 +38,15 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
     return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   })();
 
+  // Downgrades are made in the Stripe customer portal, which is configured to
+  // apply them at the end of the billing period (and handles monthly/yearly).
   const handleDowngrade = async () => {
     setLoading(true);
-    const res = await db.functions.invoke('stripeCheckout', {
-      action: 'checkout',
-      tier: toTierKey,
-      success_url: `${window.location.origin}/subscription?success=1`,
-      cancel_url: `${window.location.origin}/subscription`,
-    });
-    setLoading(false);
-
-    if (res.data?.url) {
-      window.location.href = res.data.url;
-    } else if (res.data?.upgraded) {
-      const updated = await me();
-      if (onUserUpdate) onUserUpdate(updated);
-      setConfirmed(true);
-    } else {
-      toast.error(res.data?.error || 'Something went wrong.');
+    try {
+      await openBillingPortal(db);
+    } catch (e) {
+      setLoading(false);
+      toast.error(e.message || 'Something went wrong.');
     }
   };
 
@@ -126,7 +110,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
               <div>
                 <p className="text-sm font-semibold text-warning">Client limit exceeded</p>
                 <p className="text-xs text-warning/80 mt-0.5">
-                  You have {clientCount} clients but {toTier.name} only allows {newClientLimit}. You'll need to reduce your client count before the downgrade takes effect.
+                  You have {clientCount} clients but {toTier.name} only allows {newClientLimit}. Your existing clients stay (nothing is deleted), but they become read-only and you can't add new clients until you're back under the limit.
                 </p>
               </div>
             </div>
@@ -136,7 +120,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
           <div className="bg-card/[0.03] border border-white/10 rounded-xl p-4">
             <p className="text-xs text-muted-foreground">Effective date</p>
             <p className="text-white font-semibold mt-0.5">{effectiveDate}</p>
-            <p className="text-xs text-muted-foreground mt-1">You keep all {fromTier.name} features until then.</p>
+            <p className="text-xs text-muted-foreground mt-1">You keep all {fromTier.name} features until the end of your billing period.</p>
           </div>
 
           {/* Features being lost */}
@@ -168,7 +152,7 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
               disabled={loading}
               className="w-full py-2.5 rounded-xl text-sm font-semibold border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Processing...' : `Confirm Downgrade to ${toTier.name}`}
+              {loading ? 'Opening portal...' : `Continue to billing portal`}
             </button>
           </div>
         </div>

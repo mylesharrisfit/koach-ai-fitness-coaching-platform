@@ -7,7 +7,7 @@ export const TIERS = {
   starter: {
     key: 'starter',
     name: 'Starter',
-    price: 29,
+    price: 49,
     color: 'text-slate-400',
     borderColor: 'border-slate-400/30',
     bgColor: 'bg-slate-400/10',
@@ -58,7 +58,7 @@ export const TIERS = {
   pro: {
     key: 'pro',
     name: 'Pro',
-    price: 79,
+    price: 89,
     color: 'text-primary',
     borderColor: 'border-primary/30',
     bgColor: 'bg-primary/10',
@@ -414,10 +414,10 @@ export const FEATURE_INFO = {
 
 /**
  * Get the tier config for a user. Defaults to 'starter'.
- * Admin users (app builders/owners) always get Enterprise-level access.
+ * Admin and comped (owner/staff) users always get Enterprise-level access.
  */
 export function getUserTier(user) {
-  if (user?.role === 'admin') return TIERS.enterprise;
+  if (user?.role === 'admin' || user?.is_comped) return TIERS.enterprise;
   const tierKey = user?.subscription_tier || 'starter';
   return TIERS[tierKey] || TIERS.starter;
 }
