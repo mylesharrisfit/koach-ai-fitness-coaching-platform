@@ -107,8 +107,8 @@ set search_path = public, pg_temp
 as $$
   select case p_tier
     when 'starter' then 10
-    when 'pro' then 25
-    when 'elite' then 75
+    when 'pro' then 75
+    when 'elite' then -1
     when 'enterprise' then -1
     else 10
   end;

@@ -5,11 +5,12 @@ import { db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
 import { openBillingPortal } from '@/lib/billing';
+import { clientLimitLabel, aiLimitLabel } from '@/lib/planPricing';
 
 
 const TIER_FEATURES = {
   starter: ['Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Basic progress tracking', 'Email support'],
-  pro:     ['Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)'],
+  pro:     ['AI onboarding', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'Custom branding (logo)'],
   elite:   ['Full AI assistant', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations'],
   enterprise: ['API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts', 'Custom contract & invoicing'],
 };
@@ -25,9 +26,10 @@ export default function DowngradeModal({ fromTierKey, toTierKey, clientCount = 0
   // Features being lost (from tiers between toTierKey and fromTierKey)
   const fromIdx = TIER_ORDER.indexOf(fromTierKey);
   const toIdx = TIER_ORDER.indexOf(toTierKey);
-  const losingFeatures = TIER_ORDER
-    .slice(toIdx + 1, fromIdx + 1)
-    .flatMap(k => TIER_FEATURES[k]);
+  const losingFeatures = [
+    `Limits become: ${clientLimitLabel(toTierKey)}, ${aiLimitLabel(toTierKey)}`,
+    ...TIER_ORDER.slice(toIdx + 1, fromIdx + 1).flatMap(k => TIER_FEATURES[k]),
+  ];
 
   const newClientLimit = toTier.limits.max_clients;
   const clientOverLimit = newClientLimit !== -1 && clientCount > newClientLimit;

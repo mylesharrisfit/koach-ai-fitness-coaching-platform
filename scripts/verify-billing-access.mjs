@@ -8,6 +8,11 @@
  * Usage: node scripts/verify-billing-access.mjs
  */
 import { readFileSync } from 'node:fs';
+import { TIERS } from '../src/lib/subscription.js';
+import { PLAN_PRICES, clientLimitLabel, aiLimitLabel } from '../src/lib/planPricing.js';
+import { COUNTED_AI_FUNCTIONS as CLIENT_COUNTED, aiUsage, aiResetDate as clientReset } from '../src/lib/aiPolicy.js';
+import { TIER_LIMITS, TIER_FEATURES, featureAllowed } from '../supabase/functions/_shared/subscriptionTiers.js';
+import { AI_POLICY, COUNTED_AI_FUNCTIONS, aiResetDate } from '../supabase/functions/_shared/aiPolicy.js';
 import { billingAccess, effectiveTier, PAST_DUE_GRACE_MS } from '../supabase/functions/_shared/billingAccess.js';
 import {
   lookupKeyFor, planFromLookupKey, planFromPrice, billingStatusFromStripe, appUrl, APP_ORIGIN,
@@ -68,6 +73,54 @@ check('marketing origin discarded', appUrl('https://koachai.net/pricing', '/x') 
 check('relative path kept', appUrl('/?checkout=success', '/x') === 'https://app.koachai.net/?checkout=success');
 check('protocol-relative tricks stay on app origin', appUrl('//evil.example/x', '/subscription').startsWith('https://app.koachai.net/'));
 check('missing -> fallback', appUrl(undefined, '/subscription') === 'https://app.koachai.net/subscription');
+
+// --- plan limits: server JS == client JS == SQL ---------------------------------
+const EXPECTED = {
+  starter:    { clients: 10, ai: 15 },
+  pro:        { clients: 75, ai: 100 },
+  elite:      { clients: -1, ai: 300 },
+  enterprise: { clients: -1, ai: -1 },
+};
+const sql = readFileSync('supabase/migrations/20261006000100_stripe_production_billing.sql', 'utf8');
+const capFn = sql.slice(sql.indexOf('function app.tier_client_cap'), sql.indexOf('$$;', sql.indexOf('function app.tier_client_cap') + 120));
+const sqlCaps = Object.fromEntries([...capFn.matchAll(/when '(\w+)' then (-?\d+)/g)].map((m) => [m[1], Number(m[2])]));
+for (const [tier, want] of Object.entries(EXPECTED)) {
+  check(`${tier}: client cap — server JS, client JS and SQL all = ${want.clients}`,
+    TIER_LIMITS[tier].max_clients === want.clients && TIERS[tier].limits.max_clients === want.clients && sqlCaps[tier] === want.clients,
+    `server ${TIER_LIMITS[tier].max_clients} / client ${TIERS[tier].limits.max_clients} / sql ${sqlCaps[tier]}`);
+  check(`${tier}: AI generations/month — server JS and client JS = ${want.ai}`,
+    TIER_LIMITS[tier].max_ai_generations_per_month === want.ai && TIERS[tier].limits.max_ai_generations_per_month === want.ai);
+}
+check('SQL cap function covers exactly the four plans', Object.keys(sqlCaps).sort().join() === 'elite,enterprise,pro,starter');
+check('programs / nutrition plans stay unlimited on every plan', Object.values(TIER_LIMITS).every((l) => l.max_programs === -1 && l.max_nutrition_plans === -1)
+  && Object.values(TIERS).every((t) => t.limits.max_programs === -1 && t.limits.max_nutrition_plans === -1));
+
+// AI feature flags agree between server and client for every plan
+const AI_KEYS = ['ai_program_builder', 'ai_meal_plan_builder', 'ai_onboarding', 'ai_assistant_full', 'ai_team_access',
+  'ai_suggestions', 'ai_features', 'ai_calorie_suggestions', 'ai_workout_progression', 'ai_checkin_responses', 'auto_progression_rules', 'api_access'];
+for (const tier of Object.keys(EXPECTED)) {
+  const diff = AI_KEYS.filter((k) => featureAllowed(tier, k) !== (TIERS[tier].features[k] === true));
+  check(`${tier}: AI feature flags agree (server vs client)`, diff.length === 0, diff.join(','));
+}
+check('Starter: builders only', featureAllowed('starter', 'ai_program_builder') && featureAllowed('starter', 'ai_meal_plan_builder') && !featureAllowed('starter', 'ai_onboarding') && !featureAllowed('starter', 'ai_assistant_full'));
+check('Pro: builders + onboarding, no full assistant', featureAllowed('pro', 'ai_onboarding') && !featureAllowed('pro', 'ai_assistant_full') && !TIERS.pro.features.assistant);
+check('Elite: full assistant', featureAllowed('elite', 'ai_assistant_full') && featureAllowed('elite', 'ai_checkin_responses') && featureAllowed('elite', 'ai_calorie_suggestions') && featureAllowed('elite', 'auto_progression_rules') && !featureAllowed('elite', 'ai_team_access') && !featureAllowed('elite', 'api_access'));
+check('Enterprise: team AI + API access', featureAllowed('enterprise', 'ai_team_access') && featureAllowed('enterprise', 'api_access'));
+
+// AI generation definition: one place, mirrored on the client
+check('counted generations = program, meal plan, smart meals', COUNTED_AI_FUNCTIONS.slice().sort().join() === 'generateAIProgram,generateMealPlan,generateSmartMeals');
+check('client counted list == server counted list', CLIENT_COUNTED.slice().sort().join() === COUNTED_AI_FUNCTIONS.slice().sort().join());
+check('summaries, draft replies, assistant are NOT counted', ['aiCheckInInsights', 'checkin.analyze', 'aiMessageAssistant', 'claudeAssistant'].every((k) => AI_POLICY[k] && !AI_POLICY[k].counted));
+check('every gated AI feature is a known server feature', Object.values(AI_POLICY).every((p) => !p.feature || Object.values(TIER_FEATURES).some((l) => l.includes(p.feature))));
+check('reset date = first of next month (server == client)', aiResetDate(new Date('2026-10-17T10:00:00Z')) === '2026-11-01' && clientReset(new Date('2026-12-31T23:59:00Z')) === '2027-01-01');
+check('usage resets on a new month', aiUsage({ ai_generation_month: '2026-09', ai_generation_count: 14 }, 15, new Date('2026-10-05T00:00:00Z')).used === 0
+  && aiUsage({ ai_generation_month: '2026-10', ai_generation_count: 12 }, 100, new Date('2026-10-05T00:00:00Z')).used === 12);
+
+// displayed prices / limits come from the single constants
+check('price table: $49/$89/$149/$299 monthly, $468/$852/$1,428/$2,868 yearly',
+  PLAN_PRICES.starter.monthly === 49 && PLAN_PRICES.pro.monthly === 89 && PLAN_PRICES.elite.monthly === 149 && PLAN_PRICES.enterprise.monthly === 299
+  && PLAN_PRICES.starter.yearly === 468 && PLAN_PRICES.pro.yearly === 852 && PLAN_PRICES.elite.yearly === 1428 && PLAN_PRICES.enterprise.yearly === 2868);
+check('limit labels are generated from limits', clientLimitLabel('pro') === 'Up to 75 clients' && clientLimitLabel('elite') === 'Unlimited clients' && aiLimitLabel('elite') === '300 AI generations/month' && aiLimitLabel('enterprise') === 'Unlimited AI generations');
 
 console.log(failures ? `\n${failures} FAILED` : '\nall passed');
 process.exit(failures ? 1 : 0);

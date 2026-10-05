@@ -37,7 +37,7 @@ globalThis.fetch = async (url, opts) => {
   };
 };
 
-const { meterAiGeneration, TIER_AI_LIMITS } = await import('../supabase/functions/_shared/aiMetering.js');
+const { meterAiGeneration, guardAiUse, TIER_AI_LIMITS } = await import('../supabase/functions/_shared/aiMetering.js');
 const { executeAssistantTool } = await import('../supabase/functions/_shared/assistantTools.js');
 const { deterministicMap, mergeResults } = await import('../supabase/functions/_shared/importMapping.js');
 const { invokeClaude, extractJson } = await import('../supabase/functions/_shared/anthropic.js');
@@ -160,6 +160,51 @@ const { rows: [ci] } = await db.query(
   check('metering: no billing access -> 402 billing_required', m5.allowed === false && m5.status === 402 && m5.body.error === 'billing_required');
   const m6 = await meterAiGeneration(svc, { id: COACH_A, subscription_tier: 'enterprise', billing_status: 'none', is_comped: true }, NOW);
   check('metering: comped account passes the billing gate', m6.allowed === true);
+}
+
+// ── 1b. guardAiUse: one guard for every AI function (aiPolicy.js) ───────────
+{
+  const NOW = new Date('2026-10-15T12:00:00Z');
+  const setCoach = (fields) => db.query(
+    `update public.profiles set subscription_tier=$2, billing_status=$3, is_comped=$4, ai_generation_count=$5, ai_generation_month=$6 where id=$1`,
+    [COACH_A, fields.tier, fields.status ?? 'active', fields.comped ?? false, fields.count ?? 0, fields.month ?? '2026-10']);
+  const run = async (key, opts) => {
+    const profile = (await db.query('select * from public.profiles where id=$1', [COACH_A])).rows[0];
+    return guardAiUse(svc, { auth: { id: COACH_A }, profile }, key, { now: NOW, ...opts });
+  };
+  const used = async () => (await db.query('select ai_generation_count c from public.profiles where id=$1', [COACH_A])).rows[0].c;
+
+  await setCoach({ tier: 'pro', count: 12 });
+  check('counted: program generation counts 1 (12 -> 13)', (await run('generateAIProgram')) === null && await used() === 13);
+  check('counted: regenerating counts again (13 -> 14)', (await run('generateAIProgram')) === null && await used() === 14);
+  check('counted: meal plan counts 1', (await run('generateMealPlan')) === null && await used() === 15);
+  check('counted: smart meals counts 1', (await run('generateSmartMeals')) === null && await used() === 16);
+  check('check-in summary not counted (Pro lacks it -> 403, counter untouched)', (await run('aiCheckInInsights'))?.status === 403 && await used() === 16);
+
+  await setCoach({ tier: 'elite', count: 40 });
+  check('Elite: check-in summary allowed and NOT counted', (await run('aiCheckInInsights')) === null && (await run('checkin.analyze')) === null && await used() === 40);
+  check('Elite: draft replies + full assistant allowed, NOT counted', (await run('aiMessageAssistant')) === null && (await run('claudeAssistant')) === null && await used() === 40);
+
+  await setCoach({ tier: 'starter', count: 3 });
+  const a = await run('claudeAssistant');
+  check('Starter: full assistant -> 403 feature_not_in_plan with upgrade + required tier', a?.status === 403 && a.body.error === 'feature_not_in_plan' && a.body.required_tier === 'elite' && a.body.upgrade_required === true, JSON.stringify(a?.body));
+  check('Starter: AI onboarding refused (Pro+), counter untouched', (await run('generateAIProgram', { purpose: 'onboarding' }))?.body?.error === 'feature_not_in_plan' && await used() === 3);
+  await setCoach({ tier: 'pro', count: 3 });
+  check('Pro: AI onboarding allowed and counted', (await run('generateMealPlan', { purpose: 'onboarding' })) === null && await used() === 4);
+
+  await setCoach({ tier: 'pro', count: 100 });
+  const lim = await run('generateAIProgram');
+  check('Pro at 100/100: 402 with message, resets_on, upgrade button flag',
+    lim?.status === 402 && lim.body.error === 'monthly_ai_limit_reached' && lim.body.limit === 100 && lim.body.resets_on === '2026-11-01'
+    && lim.body.upgrade_required === true && /resets on 2026-11-01/.test(lim.body.message), lim?.body?.message);
+
+  await setCoach({ tier: 'starter', count: 15, comped: true, status: 'none' });
+  check('Comped: Enterprise limits (unlimited, assistant allowed) without a subscription',
+    (await run('generateAIProgram')) === null && (await run('claudeAssistant')) === null);
+
+  await setCoach({ tier: 'elite', status: 'none' });
+  check('No subscription: billing_required, even for an Elite plan row', (await run('aiMessageAssistant'))?.body?.error === 'billing_required');
+  await setCoach({ tier: 'starter', status: 'active', count: 0 });
 }
 
 // ── 2. assistant tools: ownership scoping (the legacy hole, closed) ────────

@@ -16,6 +16,7 @@ import PricingCards from '@/components/subscription/PricingCards';
 import { openBillingPortal } from '@/lib/billing';
 import { billingAccess } from '@/lib/billingAccess';
 import { PLAN_PRICES, formatMoney } from '@/lib/planPricing';
+import AiUsageMeter from '@/components/subscription/AiUsageMeter';
 import CancellationModal from '@/components/subscription/CancellationModal';
 
 const BILLING_STATUS_CONFIG = {
@@ -28,13 +29,6 @@ const BILLING_STATUS_CONFIG = {
   canceled:   { label: 'Canceled',    cls: 'bg-[var(--kc-w-5)] text-muted-foreground border-white/10',               icon: XCircle },
 };
 
-
-const TIER_HIGHLIGHTS = {
-  starter:    ['Up to 10 clients', '15 AI generations/month (programs + meal plans)', 'Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
-  pro:        ['Up to 25 clients', 'Everything in Starter', '50 AI generations/month — program & meal plan builder', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
-  elite:      ['Up to 75 clients', 'Everything in Pro', '150 AI generations/month — program & meal plan builder', 'Full AI Assistant — auto progression, check-in analysis & coaching automation', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
-  enterprise: ['Unlimited clients', 'Everything in Elite', 'Team-wide AI access for multiple coaches', 'AI API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts (multiple coaches)', 'Custom contract & invoicing', 'Priority phone support', 'Custom onboarding & training'],
-};
 
 const TRUST_ITEMS = [
   { icon: Lock, text: 'Payments securely processed by Stripe' },
@@ -263,6 +257,11 @@ export default function Subscription({ gated = false, accessReason = undefined }
                 </Button>
               )}
             </div>
+          </div>
+
+          <div className="bg-card/[0.03] border border-white/10 rounded-xl p-4 mb-3">
+            <p className="text-xs font-semibold text-muted-foreground mb-2">AI generations</p>
+            <AiUsageMeter bar />
           </div>
 
           {/* Usage Meters */}

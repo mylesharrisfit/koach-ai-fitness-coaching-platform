@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PLAN_PRICES } from '@/lib/planPricing';
+import { PLAN_PRICES, clientLimitLabel, aiLimitLabel } from '@/lib/planPricing';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TIERS, TIER_ORDER, getUserTier } from '@/lib/subscription';
@@ -10,29 +10,22 @@ import { startCheckout } from '@/lib/authRedirect';
 import { toast } from 'sonner';
 
 
-const CLIENT_LIMIT = {
-  starter: 'Up to 10 clients',
-  pro: 'Up to 25 clients',
-  elite: 'Up to 75 clients',
-  enterprise: 'Unlimited clients',
-};
-
 const TIER_FEATURES = {
   starter: {
     inherited: [],
-    unique: ['✨ 15 AI generations/month (programs + meal plans)', 'Unlimited workout programs', 'Unlimited nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
+    unique: [`✨ ${aiLimitLabel('starter')} — program & meal plan builders`, 'Unlimited workout programs', 'Unlimited nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Client mobile app access', 'Basic progress tracking', 'Email support'],
   },
   pro: {
     inherited: ['Everything in Starter'],
-    unique: ['✨ 50 AI generations/month — program & meal plan builder', '✨ AI Onboarding — auto-generate a starting program & meal plan for any client', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'AI reply suggestions', 'Custom branding (logo)', 'Priority email support'],
+    unique: [`✨ ${aiLimitLabel('pro')} — program & meal plan builders`, '✨ AI Onboarding — auto-generate a starting program & meal plan for any client', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'Custom branding (logo)', 'Priority email support'],
   },
   elite: {
     inherited: ['Everything in Pro'],
-    unique: ['✨ 150 AI generations/month — program & meal plan builder', '🤖 Full AI Assistant — auto progression, check-in analysis & coaching automation', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
+    unique: [`✨ ${aiLimitLabel('elite')} — program & meal plan builders`, '🤖 Full AI Assistant — auto progression, check-in analysis, AI check-in responses & calorie suggestions', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations', 'Chat support'],
   },
   enterprise: {
     inherited: ['Everything in Elite'],
-    unique: ['🤖 Full AI Assistant, AI program & meal-plan builder (unlimited)', '🤖 AI Onboarding — auto-generate plans for every new client', '✨ AI reply suggestions & follow-up tools', 'White-label branding & custom domain', '🏢 Team accounts for multi-coach businesses (coming soon)', '👥 Team-wide AI access for all your coaches (coming soon)', 'Early access to all new features', 'Priority email & chat support'],
+    unique: [`✨ ${aiLimitLabel('enterprise')}`, '🤖 Everything in Elite, including the Full AI Assistant', '🤖 Team-wide AI access for all your coaches', '🔌 API access', 'White-label branding & custom domain', '🏢 Team accounts for multi-coach businesses (coming soon)', 'Early access to all new features', 'Priority email & chat support'],
   },
 };
 
@@ -83,7 +76,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, noPlan, busy, onSele
       <div className="p-6 pb-4">
         <p className="font-bold text-sm mb-3" style={{ color: config.accentColor }}>{tier.name}</p>
         <p className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--kc-w-5)] text-muted-foreground border border-white/10 mb-4">
-          {CLIENT_LIMIT[tierKey]}
+          {clientLimitLabel(tierKey)}
         </p>
         <div className="flex items-end gap-2 mb-2">
           {billing === 'annual' && (

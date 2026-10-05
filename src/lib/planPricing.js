@@ -9,6 +9,8 @@
  * `annual` is the per-month equivalent of the yearly price (yearly / 12) and
  * `annualSave` the yearly saving vs 12 monthly payments.
  */
+import { TIERS } from './subscription.js';
+
 const YEARLY = { starter: 468, pro: 852, elite: 1428, enterprise: 2868 };
 const MONTHLY = { starter: 49, pro: 89, elite: 149, enterprise: 299 };
 
@@ -22,3 +24,15 @@ export const PLAN_PRICES = Object.fromEntries(
 );
 
 export const formatMoney = (n) => `$${Number(n).toLocaleString('en-US')}`;
+
+/** "Up to 75 clients" / "Unlimited clients" — generated from TIERS limits, never typed by hand. */
+export const clientLimitLabel = (tierKey) => {
+  const n = TIERS[tierKey].limits.max_clients;
+  return n === -1 ? 'Unlimited clients' : `Up to ${n} clients`;
+};
+
+/** "100 AI generations/month" / "Unlimited AI generations" */
+export const aiLimitLabel = (tierKey) => {
+  const n = TIERS[tierKey].limits.max_ai_generations_per_month;
+  return n === -1 ? 'Unlimited AI generations' : `${n} AI generations/month`;
+};
