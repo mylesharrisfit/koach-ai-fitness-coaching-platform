@@ -22,6 +22,11 @@
 --   94f04fb2-ec42-4889-a7f3-7d7dfaa8bb75  smoke-client-a2@example.invalid     (portal login for client A2)
 --   03488a50-01c7-47ba-9b22-63801b658fd2  smoke-client-b1@example.invalid     (portal login for client B1)
 --
+-- ALSO: coach B is currently an ACCEPTED role=coach member of coach A's team
+-- (team_members id dcf61801-4a34-4704-8410-e3128c6dcc48, left in place after the RBAC test);
+-- the team_members delete in Section 2 removes it.
+-- The anonymous intake row 4f36446b-7988-4f51-860d-12ab64f821d6 is covered by the onboarding_responses delete.
+--
 -- NOTE: the message that cut off your request said "...and reverts coach";
 -- this script assumes "coach A's Enterprise grant". Section 1 covers that.
 -- =============================================================================
@@ -141,6 +146,8 @@ delete from public.referral_programs where coach_id   in (select id from _smoke_
 delete from public.automation_rules  where created_by in (select id from _smoke_users);   -- 2 rows created by client logins
 delete from public.onboarding_responses
   where coach_id in (select id from _smoke_users) or name = 'B-intake-probe';              -- anonymous intake probe row
+delete from public.leads             where created_by in (select id from _smoke_users);            -- 'Smoke Lead'
+delete from public.client_import_jobs where coach_id in (select id from _smoke_users) or created_by in (select id from _smoke_users);  -- smoke5.csv job
 delete from public.notifications     where recipient_id in (select id from _smoke_users) or created_by in (select id from _smoke_users);
 delete from public.push_subscriptions where user_id in (select id from _smoke_users);
 
@@ -177,14 +184,18 @@ rollback;   -- <<< change to COMMIT; after reviewing the verification output
 
 
 -- -----------------------------------------------------------------------------
--- SECTION 3: STORAGE OBJECTS (3 objects at time of writing)
---   uploads/779f4ff8-a676-4380-92f0-5759ff215c77/smoke-secret.png   (70 bytes, coach A)
---   branding/779f4ff8-a676-4380-92f0-5759ff215c77/logo.png           (70 bytes, coach A)
---   uploads/2e0b6a06-d60b-4ed5-8363-71c9b81219a9/own-control.png     (70 bytes, coach B)
+-- SECTION 3: STORAGE OBJECTS (5 objects at time of writing)
+--   uploads/779f4ff8-a676-4380-92f0-5759ff215c77/smoke-secret.png      (coach A)
+--   uploads/779f4ff8-a676-4380-92f0-5759ff215c77/inbody-sample.png     (coach A, aiInBodyScan test)
+--   branding/779f4ff8-a676-4380-92f0-5759ff215c77/logo.png              (coach A)
+--   uploads/2e0b6a06-d60b-4ed5-8363-71c9b81219a9/own-control.png        (coach B)
+--   uploads/94f04fb2-ec42-4889-a7f3-7d7dfaa8bb75/progress/photo1.png    (client A2 progress photo)
 --
 -- Preferred: delete through the Storage API / dashboard so the blobs are removed:
 --   supabase.storage.from('uploads').remove([
 --     '779f4ff8-a676-4380-92f0-5759ff215c77/smoke-secret.png',
+--     '779f4ff8-a676-4380-92f0-5759ff215c77/inbody-sample.png',
+--     '94f04fb2-ec42-4889-a7f3-7d7dfaa8bb75/progress/photo1.png',
 --     '2e0b6a06-d60b-4ed5-8363-71c9b81219a9/own-control.png' ]);
 --   supabase.storage.from('branding').remove(['779f4ff8-a676-4380-92f0-5759ff215c77/logo.png']);
 --   (run with the service-role key, or as the owning user's session)
