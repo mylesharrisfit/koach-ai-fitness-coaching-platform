@@ -39,6 +39,7 @@ export const TIERS = {
       client_dashboard: false,
       // Granular feature flags
       ai_suggestions: false,
+      ai_checkin_summary: false,       // AI check-in summary — Pro+ (not counted)
       analytics: false,
       custom_branding: false,
       api_access: false,
@@ -89,7 +90,8 @@ export const TIERS = {
       challenges: true,
       client_dashboard: true,
       // Granular
-      ai_suggestions: false,
+      ai_suggestions: true,        // AI-drafted replies — Pro+
+      ai_checkin_summary: true,       // AI check-in summary — Pro+ (not counted)
       analytics: true,
       custom_branding: false,
       api_access: false,
@@ -140,6 +142,7 @@ export const TIERS = {
       client_dashboard: true,
       // Granular — all Pro features
       ai_suggestions: true,
+      ai_checkin_summary: true,       // AI check-in summary — Pro+ (not counted)
       analytics: true,
       custom_branding: true,
       api_access: false,
@@ -195,6 +198,7 @@ export const TIERS = {
       challenges: true,
       client_dashboard: true,
       ai_suggestions: true,
+      ai_checkin_summary: true,       // AI check-in summary — Pro+ (not counted)
       analytics: true,
       custom_branding: true,
       api_access: true,
@@ -344,9 +348,15 @@ export const FEATURE_INFO = {
   },
   ai_suggestions: {
     name: 'AI Message Suggestions',
-    description: 'Get AI-powered reply suggestions when messaging clients.',
+    description: 'Get AI-drafted replies when messaging clients and responding to check-ins.',
     icon: 'Sparkles',
-    minTier: 'elite',
+    minTier: 'pro',
+  },
+  ai_checkin_summary: {
+    name: 'AI Check-in Summary',
+    description: 'An AI summary of each client check-in with a suggested reply.',
+    icon: 'Sparkles',
+    minTier: 'pro',
   },
   ai_calorie_suggestions: {
     name: 'AI Calorie Adjustments',

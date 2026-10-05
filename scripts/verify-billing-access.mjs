@@ -97,12 +97,18 @@ check('programs / nutrition plans stay unlimited on every plan', Object.values(T
 
 // AI feature flags agree between server and client for every plan
 const AI_KEYS = ['ai_program_builder', 'ai_meal_plan_builder', 'ai_onboarding', 'ai_assistant_full', 'ai_team_access',
-  'ai_suggestions', 'ai_features', 'ai_calorie_suggestions', 'ai_workout_progression', 'ai_checkin_responses', 'auto_progression_rules', 'api_access'];
+  'ai_suggestions', 'ai_checkin_summary', 'ai_features', 'ai_calorie_suggestions', 'ai_workout_progression', 'ai_checkin_responses', 'auto_progression_rules', 'api_access'];
 for (const tier of Object.keys(EXPECTED)) {
   const diff = AI_KEYS.filter((k) => featureAllowed(tier, k) !== (TIERS[tier].features[k] === true));
   check(`${tier}: AI feature flags agree (server vs client)`, diff.length === 0, diff.join(','));
 }
 check('Starter: builders only', featureAllowed('starter', 'ai_program_builder') && featureAllowed('starter', 'ai_meal_plan_builder') && !featureAllowed('starter', 'ai_onboarding') && !featureAllowed('starter', 'ai_assistant_full'));
+check('Pro: check-in summary + AI-drafted replies (uncounted), still no full assistant / check-in responses / calorie suggestions',
+  featureAllowed('pro', 'ai_checkin_summary') && featureAllowed('pro', 'ai_suggestions') && !featureAllowed('pro', 'ai_checkin_responses') && !featureAllowed('pro', 'ai_calorie_suggestions') && !featureAllowed('pro', 'ai_assistant_full')
+  && !featureAllowed('starter', 'ai_checkin_summary') && !featureAllowed('starter', 'ai_suggestions'));
+check('policy: summaries + draft replies gated at Pro, not counted',
+  ['checkin.analyze', 'aiCheckInInsights'].every((k) => AI_POLICY[k].feature === 'ai_checkin_summary' && !AI_POLICY[k].counted)
+  && AI_POLICY.aiMessageAssistant.feature === 'ai_suggestions' && !AI_POLICY.aiMessageAssistant.counted);
 check('Pro: builders + onboarding, no full assistant', featureAllowed('pro', 'ai_onboarding') && !featureAllowed('pro', 'ai_assistant_full') && !TIERS.pro.features.assistant);
 check('Elite: full assistant', featureAllowed('elite', 'ai_assistant_full') && featureAllowed('elite', 'ai_checkin_responses') && featureAllowed('elite', 'ai_calorie_suggestions') && featureAllowed('elite', 'auto_progression_rules') && !featureAllowed('elite', 'ai_team_access') && !featureAllowed('elite', 'api_access'));
 check('Enterprise: team AI + API access', featureAllowed('enterprise', 'ai_team_access') && featureAllowed('enterprise', 'api_access'));

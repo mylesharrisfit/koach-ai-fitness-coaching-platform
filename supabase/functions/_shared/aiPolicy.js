@@ -22,9 +22,9 @@ export const AI_POLICY = {
   generateMealPlan:    { counted: true,  feature: 'ai_meal_plan_builder' },
   generateSmartMeals:  { counted: true,  feature: 'ai_meal_plan_builder' },
   // not counted, plan-gated
-  'checkin.analyze':   { counted: false, feature: 'ai_checkin_responses' }, // auto check-in summary
-  aiCheckInInsights:   { counted: false, feature: 'ai_checkin_responses' }, // check-in summary + suggested reply
-  aiMessageAssistant:  { counted: false, feature: 'ai_suggestions' },       // draft replies / message writing
+  'checkin.analyze':   { counted: false, feature: 'ai_checkin_summary' },   // auto check-in summary (Pro+)
+  aiCheckInInsights:   { counted: false, feature: 'ai_checkin_summary' },   // check-in summary + suggested reply (Pro+)
+  aiMessageAssistant:  { counted: false, feature: 'ai_suggestions' },       // AI-drafted replies / message writing (Pro+)
   claudeAssistant:     { counted: false, feature: 'ai_assistant_full' },    // full AI assistant
   aiNutritionInsights: { counted: false, feature: 'ai_calorie_suggestions' },
   aiProgressInsights:  { counted: false, feature: 'ai_features' },

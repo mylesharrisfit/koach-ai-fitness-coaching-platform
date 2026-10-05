@@ -179,13 +179,16 @@ const { rows: [ci] } = await db.query(
   check('counted: regenerating counts again (13 -> 14)', (await run('generateAIProgram')) === null && await used() === 14);
   check('counted: meal plan counts 1', (await run('generateMealPlan')) === null && await used() === 15);
   check('counted: smart meals counts 1', (await run('generateSmartMeals')) === null && await used() === 16);
-  check('check-in summary not counted (Pro lacks it -> 403, counter untouched)', (await run('aiCheckInInsights'))?.status === 403 && await used() === 16);
+  check('Pro: check-in summary, auto summary and AI-drafted replies allowed and NOT counted',
+    (await run('aiCheckInInsights')) === null && (await run('checkin.analyze')) === null && (await run('aiMessageAssistant')) === null && await used() === 16);
+  check('Pro: full assistant still refused (Elite+)', (await run('claudeAssistant'))?.status === 403 && (await run('aiNutritionInsights'))?.status === 403 && await used() === 16);
 
   await setCoach({ tier: 'elite', count: 40 });
   check('Elite: check-in summary allowed and NOT counted', (await run('aiCheckInInsights')) === null && (await run('checkin.analyze')) === null && await used() === 40);
   check('Elite: draft replies + full assistant allowed, NOT counted', (await run('aiMessageAssistant')) === null && (await run('claudeAssistant')) === null && await used() === 40);
 
   await setCoach({ tier: 'starter', count: 3 });
+  check('Starter: check-in summary and draft replies refused', (await run('aiCheckInInsights'))?.body?.required_tier === 'pro' && (await run('aiMessageAssistant'))?.status === 403);
   const a = await run('claudeAssistant');
   check('Starter: full assistant -> 403 feature_not_in_plan with upgrade + required tier', a?.status === 403 && a.body.error === 'feature_not_in_plan' && a.body.required_tier === 'elite' && a.body.upgrade_required === true, JSON.stringify(a?.body));
   check('Starter: AI onboarding refused (Pro+), counter untouched', (await run('generateAIProgram', { purpose: 'onboarding' }))?.body?.error === 'feature_not_in_plan' && await used() === 3);

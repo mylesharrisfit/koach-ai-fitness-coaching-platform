@@ -10,7 +10,7 @@ import { clientLimitLabel, aiLimitLabel } from '@/lib/planPricing';
 
 const TIER_FEATURES = {
   starter: ['Workout program builder', 'Basic nutrition plans', 'Scheduling & calendar', 'In-app messaging', 'Basic progress tracking', 'Email support'],
-  pro:     ['AI onboarding', 'Progress analytics & graphs', 'Check-in review system', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'Custom branding (logo)'],
+  pro:     ['AI onboarding', 'Progress analytics & graphs', 'Check-in review system', 'AI check-in summaries & AI-drafted replies', 'Adherence scoring', 'Voice & video messages', 'Client mobile dashboard', 'Custom branding (logo)'],
   elite:   ['Full AI assistant', 'Auto progression rules', 'Sales pipeline CRM', 'Revenue dashboard', 'White-label branding', 'Community module', 'Zapier integrations'],
   enterprise: ['API access', 'Custom integrations', 'Dedicated account manager', 'Team accounts', 'Custom contract & invoicing'],
 };

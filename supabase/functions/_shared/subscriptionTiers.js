@@ -26,6 +26,7 @@ const ELITE_FEATURES = [
   'ai_calorie_suggestions', 'ai_workout_progression', 'ai_checkin_responses',
   'auto_progression_rules', 'trigger_notifications', 'revenue_dashboard',
   'ai_program_builder', 'ai_meal_plan_builder', 'ai_onboarding', 'ai_assistant_full',
+  'ai_checkin_summary',
 ];
 
 export const TIER_FEATURES = {
@@ -36,6 +37,7 @@ export const TIER_FEATURES = {
   pro: [
     'clients', 'programs', 'nutrition', 'schedule', 'messages',
     'ai_program_builder', 'ai_meal_plan_builder', 'ai_onboarding',
+    'ai_checkin_summary', 'ai_suggestions',
     'progress', 'adherence', 'checkin_review', 'client_dashboard',
     'analytics', 'voice_video_messages', 'program_templates',
     'analytics_graphs', 'adherence_scoring', 'checkin_automation', 'basic_notifications',
