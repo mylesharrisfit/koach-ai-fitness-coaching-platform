@@ -97,6 +97,9 @@ for (const [id, email, name] of [
   );
 }
 await admin.query(`update public.profiles set role='admin' where id=$1`, [P]);
+// The team owner pays (server-side paywall, migration 20261006210000); team
+// coaches write under the owner's subscription.
+await admin.query(`update public.profiles set billing_status='active' where id=$1`, [O]);
 
 const { rows: [team] } = await admin.query(
   `insert into public.teams (name, owner_coach_id, created_by) values ('RBAC Team', $1, $1) returning id`, [O]);

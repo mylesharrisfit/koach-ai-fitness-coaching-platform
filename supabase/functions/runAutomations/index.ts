@@ -81,6 +81,18 @@ Deno.serve(async (req) => {
         admin.from('client_badges').select('*'),
       ]);
 
+    // Paywall: rules only run for coaches who currently have billing access
+    // (same rule as the RLS write gate, migration 20261006210000). A lapsed
+    // coach's rules stay stored and resume when they resubscribe.
+    const owners = [...new Set((rules ?? []).map((r) => r.created_by).filter(Boolean))];
+    const { data: paid, error: paidErr } = owners.length
+      ? await admin.rpc('coaches_with_billing_access', { p_ids: owners })
+      : { data: [], error: null };
+    if (paidErr) throw new Error(`coaches_with_billing_access: ${paidErr.message}`);
+    const paidOwners = new Set((paid ?? []).map((r: { id: string }) => r.id));
+    const activeRules = (rules ?? []).filter((r) => paidOwners.has(r.created_by));
+    const skippedUnpaid = (rules ?? []).length - activeRules.length;
+
     // Idempotency: which (rule_id, client_id) pairs were already evaluated in
     // this window? One query, built into a Set.
     const { data: priorLogs } = await admin
@@ -99,7 +111,7 @@ Deno.serve(async (req) => {
     const logRows: Record<string, unknown>[] = [];
     let evaluated = 0, fired = 0, skipped = 0;
 
-    for (const rule of rules ?? []) {
+    for (const rule of activeRules) {
       for (const client of clients ?? []) {
         if (!isEligibleClient(client)) continue;
         if (!ruleOwnsClient(rule, client)) continue; // tenant scoping (B-AUTOSEC)
@@ -140,7 +152,7 @@ Deno.serve(async (req) => {
 
     if (logRows.length) await admin.from('automation_logs').insert(logRows);
 
-    return json({ ok: true, window: winStart, evaluated, fired, skipped_idempotent: skipped, logged: logRows.length });
+    return json({ ok: true, window: winStart, evaluated, fired, skipped_idempotent: skipped, skipped_rules_no_billing: skippedUnpaid, logged: logRows.length });
   } catch (err) {
     console.error('runAutomations error:', (err as Error)?.message ?? err);
     return json({ ok: false, error: 'Server error' }, 500);

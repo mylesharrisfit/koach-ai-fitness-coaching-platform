@@ -78,6 +78,9 @@ await admin.query(
 }
 
 // --- 2. coach session RLS via a real session identity ----------------------
+// Coach writes need billing access (server-side paywall, migration
+// 20261006210000); Stripe sets this via the webhook in production.
+await admin.query(`update public.profiles set billing_status='active' where id=$1`, [coachId]);
 await asSession({ sub: coachId, email: 'coach@newauth.io', role: 'authenticated' });
 const clientId = '00000000-0000-0000-0000-0000000000d1';
 await sess.query(
