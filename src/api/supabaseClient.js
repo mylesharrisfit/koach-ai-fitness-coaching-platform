@@ -425,7 +425,7 @@ const auth = {
   },
 };
 
-const PLAN_BLOCK_ERRORS = new Set(['monthly_ai_limit_reached', 'feature_not_in_plan', 'billing_required']);
+const PLAN_BLOCK_ERRORS = new Set(['monthly_ai_limit_reached', 'daily_ai_limit_reached', 'feature_not_in_plan', 'billing_required']);
 
 const functions = {
   /**

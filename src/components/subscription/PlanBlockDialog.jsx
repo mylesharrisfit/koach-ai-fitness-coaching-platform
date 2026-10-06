@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 
 const TITLES = {
   monthly_ai_limit_reached: 'AI generation limit reached',
+  daily_ai_limit_reached: "Today's AI limit reached",
   feature_not_in_plan: 'Not included in your plan',
   billing_required: 'Subscription needed',
 };
 
 /**
  * Never a silent failure: when the server refuses an AI call (monthly limit,
- * feature not in the plan, no active subscription) the API facade emits
+ * daily cap, feature not in the plan, no active subscription) the API facade emits
  * `koach:plan-block`; this dialog explains why and offers the upgrade.
  */
 export default function PlanBlockDialog() {
