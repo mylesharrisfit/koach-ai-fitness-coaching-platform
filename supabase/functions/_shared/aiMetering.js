@@ -10,14 +10,13 @@
  * the caller's own id, matching every other self-write in the ported
  * functions.
  *
- * Faithful scope note: Base44 metered only the three generators —
- * claudeAssistant / aiMessageAssistant / generateExerciseLibrary were
- * unmetered. The ports keep that behavior.
+ * Only the three generators count against the MONTHLY allowance. Every other
+ * AI function is held to the per-account daily cap instead (meterAiDaily).
  */
 
 import { billingAccess, effectiveTier } from './billingAccess.js';
 import { TIER_LIMITS, featureAllowed } from './subscriptionTiers.js';
-import { AI_POLICY, ONBOARDING_FEATURE, aiResetDate } from './aiPolicy.js';
+import { AI_POLICY, ONBOARDING_FEATURE, aiResetDate, aiDailyCallCap } from './aiPolicy.js';
 import { resolveTeamRole } from './teamRole.js';
 
 // Derived from the one limits table — never a second copy.
@@ -84,6 +83,36 @@ export async function meterAiGeneration(svc, profile, now = new Date()) {
 }
 
 /**
+ * Daily spend backstop for the NOT COUNTED AI functions (aiPolicy.js
+ * AI_DAILY_CALL_CAP). Check + increment in one statement via
+ * public.meter_ai_daily (migration 20261006200000). Returns null when the call
+ * may proceed, else { status: 429, body }.
+ */
+export async function meterAiDaily(svc, payer, { now = new Date(), isPortalClient = false } = {}) {
+  const cap = aiDailyCallCap();
+  if (cap === -1) return null;
+  const day = now.toISOString().slice(0, 10);
+  const { data, error } = await svc.rpc('meter_ai_daily', { p_profile: payer.id, p_limit: cap, p_day: day });
+  if (error) throw new Error(`meterAiDaily: ${error.message}`);
+  const row = Array.isArray(data) ? data[0] : data;
+  if (row?.allowed) return null;
+  const resetsAt = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1)).toISOString();
+  return {
+    status: 429,
+    body: {
+      error: 'daily_ai_limit_reached',
+      message: isPortalClient
+        ? "Your coach's AI features have reached today's limit. Please try again tomorrow."
+        : `Your account has reached today's limit of ${cap} AI requests (assistant, drafts, insights, scans). It resets at midnight UTC.`,
+      used: row?.used ?? cap,
+      limit: cap,
+      resets_at: resetsAt,
+      upgrade_required: false,
+    },
+  };
+}
+
+/**
  * Who pays for an AI call. Coach sessions pay from their own quota. A client
  * portal session (a real auth user linked via clients.portal_user_id) draws on
  * the OWNING COACH's quota — the portal user's own profile row is a bare
@@ -114,12 +143,14 @@ function minTierFor(feature) {
  *   1. resolve the payer (the coach; a portal client's coach)
  *   2. active subscription / trial / grace required
  *   3. the plan must include the feature (comped/admin = Enterprise)
- *   4. counted functions consume 1 generation from the monthly allowance
+ *   4. counted functions consume 1 generation from the monthly allowance;
+ *      every other AI function consumes 1 call from the daily cap
+ *      (pass meterDaily: false for a request that makes no AI call)
  * Returns null when the call may proceed, else { status, body } to send.
  * Never silent: every refusal carries `error`, a human `message` and, when an
  * upgrade would help, `upgrade_required: true`.
  */
-export async function guardAiUse(svc, caller, fnKey, { purpose, now = new Date() } = {}) {
+export async function guardAiUse(svc, caller, fnKey, { purpose, now = new Date(), meterDaily = true } = {}) {
   const policy = AI_POLICY[fnKey];
   if (!policy) throw new Error(`guardAiUse: unknown AI function "${fnKey}"`);
 
@@ -163,6 +194,9 @@ export async function guardAiUse(svc, caller, fnKey, { purpose, now = new Date()
   if (policy.counted) {
     const m = await meterAiGeneration(svc, payer, now);
     if (!m.allowed) return { status: m.status, body: m.body };
+  } else if (meterDaily) {
+    const d = await meterAiDaily(svc, payer, { now, isPortalClient });
+    if (d) return d;
   }
   return null;
 }

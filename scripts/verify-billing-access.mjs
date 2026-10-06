@@ -8,7 +8,7 @@
  * Usage: node scripts/verify-billing-access.mjs
  */
 import { readFileSync } from 'node:fs';
-import { TIERS } from '../src/lib/subscription.js';
+import { TIERS, getUserTier } from '../src/lib/subscription.js';
 import { PLAN_PRICES, clientLimitLabel, aiLimitLabel } from '../src/lib/planPricing.js';
 import { COUNTED_AI_FUNCTIONS as CLIENT_COUNTED, aiUsage, aiResetDate as clientReset } from '../src/lib/aiPolicy.js';
 import { TIER_LIMITS, TIER_FEATURES, featureAllowed } from '../supabase/functions/_shared/subscriptionTiers.js';
@@ -101,6 +101,14 @@ const AI_KEYS = ['ai_program_builder', 'ai_meal_plan_builder', 'ai_onboarding', 
 for (const tier of Object.keys(EXPECTED)) {
   const diff = AI_KEYS.filter((k) => featureAllowed(tier, k) !== (TIERS[tier].features[k] === true));
   check(`${tier}: AI feature flags agree (server vs client)`, diff.length === 0, diff.join(','));
+}
+{
+  const policyFeatures = [...new Set([...Object.values(AI_POLICY).map((p) => p.feature).filter(Boolean), 'ai_onboarding'])];
+  const missing = policyFeatures.filter((f) => !AI_KEYS.includes(f));
+  check('every feature an AI edge function is gated on is in the server/client parity list', missing.length === 0, missing.join(','));
+  const users = [{ role: 'admin' }, { is_comped: true, subscription_tier: 'starter' }, { subscription_tier: 'pro' }, { subscription_tier: 'elite' }, {}];
+  check('admin / comped / plan rows resolve to the same tier on client (getUserTier) and server (effectiveTier)',
+    users.every((u) => getUserTier(u).key === effectiveTier(u)));
 }
 check('Starter: builders only', featureAllowed('starter', 'ai_program_builder') && featureAllowed('starter', 'ai_meal_plan_builder') && !featureAllowed('starter', 'ai_onboarding') && !featureAllowed('starter', 'ai_assistant_full'));
 check('Pro: check-in summary + AI-drafted replies (uncounted), still no full assistant / check-in responses / calorie suggestions',

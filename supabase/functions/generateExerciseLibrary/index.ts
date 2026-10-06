@@ -2,8 +2,9 @@
 //
 // Re-platform of base44/functions/generateExerciseLibrary — one-shot AI seed
 // of ~50 exercises into the CALLER's exercise_library (rows created with
-// created_by = caller; Base44 used the user context). Unmetered, as in
-// Base44. Direct Anthropic call → shared client.
+// created_by = caller; Base44 used the user context). Admin-only: no UI calls
+// it, and each run is a 16k-token Claude request, so a coach session must not
+// be able to loop it. Direct Anthropic call → shared client.
 import { getCaller, serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
 import { guardAiUse } from '../_shared/aiMetering.js';
 import { invokeClaude, anthropicConfigured } from '../_shared/anthropic.js';
@@ -51,6 +52,7 @@ Deno.serve(async (req) => {
   try {
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
+    if (caller.profile?.role !== 'admin') return jsonResponse({ error: 'Admin only' }, 403);
     // Access check BEFORE the paid Claude call: no subscription, no AI request.
     const svc = serviceClient();
     const blocked = await guardAiUse(svc, caller, 'generateExerciseLibrary');

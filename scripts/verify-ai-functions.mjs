@@ -107,9 +107,10 @@ class Q {
 }
 const svc = {
   from: (t) => new Q(t),
-  // Mirrors supabase-js .rpc for the atomic quota function.
+  // Mirrors supabase-js .rpc (named args) for the atomic quota functions.
   rpc: async (fn, a) => {
-    const r = await db.query(`select * from public.${fn}($1,$2,$3)`, [a.p_profile, a.p_limit, a.p_month]);
+    const keys = Object.keys(a);
+    const r = await db.query(`select * from public.${fn}(${keys.map((k, i) => `${k} => $${i + 1}`).join(', ')})`, keys.map((k) => a[k]));
     return { data: r.rows, error: null };
   },
 };
@@ -208,6 +209,98 @@ const { rows: [ci] } = await db.query(
   await setCoach({ tier: 'elite', status: 'none' });
   check('No subscription: billing_required, even for an Elite plan row', (await run('aiMessageAssistant'))?.body?.error === 'billing_required');
   await setCoach({ tier: 'starter', status: 'active', count: 0 });
+}
+
+// ── 1b2. daily cap on the NOT COUNTED functions (aiPolicy AI_DAILY_CALL_CAP) ─
+{
+  const { AI_POLICY, AI_DAILY_CALL_CAP } = await import('../supabase/functions/_shared/aiPolicy.js');
+  const NOW = new Date('2026-10-15T12:00:00Z');
+  const daily = async (id = COACH_A, day = '2026-10-15') =>
+    (await db.query('select calls from public.ai_daily_usage where profile_id=$1 and day=$2', [id, day])).rows[0]?.calls ?? 0;
+  const prof = async (id) => (await db.query('select * from public.profiles where id=$1', [id])).rows[0];
+  const run = async (key, opts) => guardAiUse(svc, { auth: { id: COACH_A }, profile: await prof(COACH_A) }, key, { now: NOW, ...opts });
+  await db.query('delete from public.ai_daily_usage');
+  await db.query(`update public.profiles set subscription_tier='enterprise', billing_status='active', is_comped=false, ai_generation_count=0, ai_generation_month='2026-10' where id in ($1,$2)`, [COACH_A, COACH_B]);
+
+  check('daily cap: every NOT COUNTED policy entry is subject to it (no exemptions list)',
+    Object.values(AI_POLICY).some((p) => !p.counted) && AI_DAILY_CALL_CAP > 0);
+  check('daily cap: an uncounted call consumes 1 daily call', (await run('claudeAssistant')) === null && await daily() === 1);
+  check('daily cap: insights / drafts / scans / mapping / auto summary all consume it',
+    (await run('aiMessageAssistant')) === null && (await run('aiBusinessInsights')) === null && (await run('aiInBodyScan')) === null
+    && (await run('mapImportColumns')) === null && (await run('checkin.analyze')) === null && await daily() === 6);
+  check('daily cap: counted generators do NOT consume it (monthly meter instead)', (await run('generateAIProgram')) === null && await daily() === 6);
+  check('daily cap: meterDaily:false (claudeAssistant confirm, no AI call) does not consume it',
+    (await run('claudeAssistant', { meterDaily: false })) === null && await daily() === 6);
+
+  // Fill to the cap, then the next call is refused, even on Enterprise.
+  await db.query('update public.ai_daily_usage set calls=$2 where profile_id=$1', [COACH_A, AI_DAILY_CALL_CAP - 1]);
+  check('daily cap: the last allowed call succeeds', (await run('aiMessageAssistant')) === null && await daily() === AI_DAILY_CALL_CAP);
+  const capped = await run('aiMessageAssistant');
+  check('daily cap: over the cap -> 429 daily_ai_limit_reached, no upgrade prompt, reset time',
+    capped?.status === 429 && capped.body.error === 'daily_ai_limit_reached' && capped.body.limit === AI_DAILY_CALL_CAP
+    && capped.body.upgrade_required === false && capped.body.resets_at === '2026-10-16T00:00:00.000Z', JSON.stringify(capped?.body));
+  check('daily cap: a refused call does not move the counter', await daily() === AI_DAILY_CALL_CAP);
+  check('daily cap: auto check-in summary is skipped when capped (aiFeatureAllowed -> false)',
+    (await (await import('../supabase/functions/_shared/aiMetering.js')).aiFeatureAllowed(svc, await prof(COACH_A), 'checkin.analyze', NOW)).allowed === false);
+  check('daily cap: counted generators still work when the daily cap is hit', (await run('generateMealPlan')) === null);
+  check('daily cap: per tenant — coach B is unaffected',
+    (await guardAiUse(svc, { auth: { id: COACH_B }, profile: await prof(COACH_B) }, 'aiMessageAssistant', { now: NOW })) === null && await daily(COACH_B) === 1);
+  check('daily cap: resets the next UTC day',
+    (await run('aiMessageAssistant', { now: new Date('2026-10-16T00:00:01Z') })) === null && await daily(COACH_A, '2026-10-16') === 1);
+
+  // Portal client: draws on the coach's daily cap, message names the coach.
+  const PORTAL = '00000000-0000-0000-0000-0000000000e9';
+  await db.query(`insert into auth.users (id, email) values ($1,'portal.cap@ai.io') on conflict do nothing`, [PORTAL]);
+  const { rows: [pc] } = await db.query(`insert into public.clients (name, email, user_id, created_by) values ('Cap Portal','portal.cap@ai.io',$1,$1) returning id`, [COACH_A]);
+  await db.query('update public.clients set portal_user_id=$1 where id=$2', [PORTAL, pc.id]);
+  const portalRes = await guardAiUse(svc, { auth: { id: PORTAL }, profile: await prof(PORTAL) }, 'aiProgressInsights', { now: NOW });
+  check('daily cap: portal client call counts against the coach and is refused when the coach is capped',
+    portalRes?.status === 429 && /coach/i.test(portalRes.body.message) && await daily(PORTAL) === 0);
+  await db.query('delete from public.clients where id=$1', [pc.id]);
+
+  // Concurrency: N parallel calls at cap-3 -> exactly 3 succeed.
+  await db.query('update public.ai_daily_usage set calls=$2 where profile_id=$1 and day=$3', [COACH_B, AI_DAILY_CALL_CAP - 3, '2026-10-15']);
+  const pool = new pg.Pool({ connectionString: POSTGRES_URL, max: 8 });
+  const results = await Promise.all(Array.from({ length: 8 }, () =>
+    pool.query('select * from public.meter_ai_daily($1, $2, $3)', [COACH_B, AI_DAILY_CALL_CAP, '2026-10-15'])));
+  await pool.end();
+  check('daily cap: 8 parallel calls with 3 left -> exactly 3 allowed (atomic)',
+    results.filter((r) => r.rows[0].allowed).length === 3 && await daily(COACH_B) === AI_DAILY_CALL_CAP);
+  const zero = (await db.query('select * from public.meter_ai_daily($1, 0, $2)', [COACH_B, '2026-12-01'])).rows[0];
+  check('daily cap: a cap of 0 refuses the first call of a day', zero.allowed === false);
+
+  // Browser roles can't touch the counter.
+  await db.query('begin; set local role authenticated');
+  let denied = false;
+  try { await db.query('select * from public.ai_daily_usage'); } catch { denied = true; }
+  await db.query('rollback');
+  await db.query('begin; set local role authenticated');
+  let rpcDenied = false;
+  try { await db.query('select * from public.meter_ai_daily($1, -1, $2)', [COACH_A, '2026-10-15']); } catch { rpcDenied = true; }
+  await db.query('rollback');
+  check('daily cap: authenticated role cannot read the counter table or call meter_ai_daily', denied && rpcDenied);
+
+  // AI_DAILY_CALL_CAP env override (-1 = uncapped).
+  const { aiDailyCallCap } = await import('../supabase/functions/_shared/aiPolicy.js');
+  ENV.AI_DAILY_CALL_CAP = '-1';
+  const unc = aiDailyCallCap();
+  ENV.AI_DAILY_CALL_CAP = 'nonsense';
+  const bad = aiDailyCallCap();
+  delete ENV.AI_DAILY_CALL_CAP;
+  check('daily cap: AI_DAILY_CALL_CAP secret overrides (-1 uncapped), junk falls back to the default', unc === -1 && bad === AI_DAILY_CALL_CAP);
+
+  await db.query('delete from public.ai_daily_usage');
+  await db.query(`update public.profiles set subscription_tier='starter', billing_status='active', ai_generation_count=0 where id in ($1,$2)`, [COACH_A, COACH_B]);
+}
+
+// ── 1b3. generateExerciseLibrary is admin-only ──────────────────────────────
+{
+  const { readFileSync } = await import('node:fs');
+  const src = readFileSync(new URL('../supabase/functions/generateExerciseLibrary/index.ts', import.meta.url), 'utf8');
+  const handler = src.slice(src.indexOf('Deno.serve('));
+  const adminAt = handler.search(/caller\.profile\?\.role !== 'admin'\) return jsonResponse\(\{ error: 'Admin only' \}, 403\)/);
+  check('generateExerciseLibrary: non-admin refused with 403 before the guard and the Claude call',
+    adminAt !== -1 && adminAt < handler.search(/\bguardAiUse\s*\(/) && adminAt < handler.search(/\binvokeClaude\s*\(/));
 }
 
 // ── 1c. every AI edge function guards BEFORE its first Claude call ──────────

@@ -85,12 +85,13 @@ Deno.serve(async (req) => {
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
     const svc = serviceClient();
-    // Full AI assistant: not counted, Elite+ (see aiPolicy.js).
-    const blocked = await guardAiUse(svc, caller, 'claudeAssistant');
+    const body = await req.json();
+    // Full AI assistant: not counted, Elite+ (see aiPolicy.js). A confirm makes
+    // no Claude call, so it is gated but does not use up the daily AI cap.
+    const blocked = await guardAiUse(svc, caller, 'claudeAssistant', { meterDaily: !body.confirm });
     if (blocked) return jsonResponse(blocked.body, blocked.status);
     const userId = caller.auth.id;
 
-    const body = await req.json();
     const { userMessage, conversationHistory = [], clientContext = null } = body;
 
     // ── confirm path: the coach approved a proposed write in the UI ──────────
