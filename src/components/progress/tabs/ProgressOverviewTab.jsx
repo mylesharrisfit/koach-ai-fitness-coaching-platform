@@ -197,19 +197,19 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
         </button>
         <button onClick={() => setShowNoteModal(true)}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background transition-colors">
-          <NotebookPen className="w-3.5 h-3.5" /> Add Progress Note
+          <NotebookPen className="w-3.5 h-3.5" /> Add progress note
         </button>
         <button
           onClick={() => toast.success('Progress report generation coming soon')}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-border text-foreground hover:bg-background transition-colors">
-          <FileText className="w-3.5 h-3.5" /> Generate Report
+          <FileText className="w-3.5 h-3.5" /> Generate report
         </button>
         <button
           onClick={() => {
             db.functions.invoke('sendEmailNotification', { to: client.email, subject: 'You\'re crushing it', html: `Hi ${client.name}! Your coach wants to celebrate your progress. Keep up the amazing work! ` }).then(() => toast.success('Celebration message sent')).catch(() => toast.error('Could not send message'));
           }}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-success bg-success/10 text-success hover:bg-success/10 transition-colors">
-          <Trophy className="w-3.5 h-3.5" /> Celebrate Win
+          <Trophy className="w-3.5 h-3.5" /> Celebrate win
         </button>
       </div>
 
@@ -247,7 +247,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
               <button onClick={() => noteMutation.mutate({ client_id: client.id, client_name: client.name, date: noteDate, internal_notes: noteText })}
                 disabled={!noteText.trim() || noteMutation.isPending}
                 className="px-4 py-2 text-xs rounded-lg bg-primary text-primary-foreground font-semibold disabled:opacity-50">
-                {noteMutation.isPending ? 'Saving...' : 'Save Note'}
+                {noteMutation.isPending ? 'Saving...' : 'Save note'}
               </button>
             </div>
           </div>

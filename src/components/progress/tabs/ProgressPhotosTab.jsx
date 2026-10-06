@@ -88,7 +88,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
         </button>
         <button onClick={() => setShowUpload(true)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
-          <ImagePlus className="w-3.5 h-3.5" /> Add Photos
+          <ImagePlus className="w-3.5 h-3.5" /> Add photos
         </button>
       </div>
 
@@ -144,7 +144,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
           <p className="text-sm text-foreground font-medium">No progress photos yet</p>
           <p className="text-xs text-muted-foreground">Upload photos to start tracking visual transformation</p>
           <button onClick={() => setShowUpload(true)} className="mt-2 px-4 py-2 rounded-lg text-xs font-semibold bg-primary text-primary-foreground">
-            Add First Photo
+            Add first photo
           </button>
         </div>
       ) : (

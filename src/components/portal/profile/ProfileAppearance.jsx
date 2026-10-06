@@ -16,7 +16,7 @@ export default function ProfileAppearance() {
             className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
               background: value === o.value ? 'rgb(var(--primary))' : 'transparent',
-              color: value === o.value ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+              color: value === o.value ? 'rgb(var(--primary-foreground))' : 'rgb(var(--muted-foreground))',
             }}>
             {o.label}
           </button>

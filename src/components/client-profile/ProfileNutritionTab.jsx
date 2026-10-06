@@ -80,7 +80,7 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{plan.title}</p>
                 <p className="text-[11px] text-muted-foreground">
-                  {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
+                  {plan.tracking_mode === 'habits' ? 'Habit mode' : 'Macro tracking'}
                   {plan.calories ? ` · ${plan.calories} kcal` : ''}
                 </p>
               </div>
@@ -123,7 +123,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
       </div>
       <div className="flex gap-2 flex-wrap justify-center">
         <Button size="sm" onClick={onOpenAssign} className="gap-1.5 h-8 text-xs">
-          <Plus className="w-3 h-3" /> Assign Plan
+          <Plus className="w-3 h-3" /> Assign plan
         </Button>
         <Button
           size="sm"
@@ -131,7 +131,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
           className="gap-1.5 h-8 text-xs border-border"
           onClick={() => navigate(`/nutrition?client=${client.id}`)}
         >
-          <Plus className="w-3 h-3" /> Create New Plan
+          <Plus className="w-3 h-3" /> Create new plan
         </Button>
       </div>
     </div>
@@ -160,7 +160,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
             ? 'bg-ai/10 text-ai border-ai'
             : 'bg-success/10 text-success border-success'
         )}>
-          {isHabits ? 'Habit Mode' : 'Macro Tracking'}
+          {isHabits ? 'Habit mode' : 'Macro tracking'}
         </span>
       </div>
 
@@ -196,7 +196,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
           className="flex-1 text-xs h-8 border-border"
           onClick={onOpenAssign}
         >
-          Change Plan
+          Change plan
         </Button>
       </div>
     </div>
@@ -418,7 +418,7 @@ function PlanHistory({ client, allPlans }) {
                 <div>
                   <p className="text-xs font-semibold text-foreground">{plan.title}</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
+                    {plan.tracking_mode === 'habits' ? 'Habit mode' : 'Macro tracking'}
                     {plan.calories ? ` · ${plan.calories} kcal` : ''}
                   </p>
                 </div>

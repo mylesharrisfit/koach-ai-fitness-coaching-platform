@@ -42,9 +42,9 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
                 onClick={() => { setValues(p => ({ ...p, goal: g })); setDirty(true); }}
                 className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
                 style={{
-                  background: values.goal === g ? 'rgb(var(--primary) / 0.25)' : 'rgb(var(--secondary))',
-                  color: values.goal === g ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
-                  border: `1px solid ${values.goal === g ? 'rgb(var(--primary) / 0.4)' : 'transparent'}`,
+                  background: values.goal === g ? 'rgb(var(--primary))' : 'rgb(var(--secondary))',
+                  color: values.goal === g ? 'rgb(var(--primary-foreground))' : 'rgb(var(--muted-foreground))',
+                  border: `1px solid ${values.goal === g ? 'rgb(var(--primary))' : 'transparent'}`,
                 }}>
                 {g.replace('_', ' ')}
               </button>
@@ -67,9 +67,9 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
 
       <AnimatePresence>
         {dirty && (
-          <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+          <motion.button exit={{ opacity: 0 }}
             onClick={save}
-            className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-foreground"
+            className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-primary-foreground"
             style={{ background: 'rgb(var(--primary))' }}>
             {saved ? 'Saved' : 'Save & Notify Coach'}
           </motion.button>

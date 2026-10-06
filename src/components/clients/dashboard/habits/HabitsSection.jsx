@@ -100,7 +100,7 @@ export default function HabitsSection({ client }) {
             onClick={handleAdd}
             className="flex items-center gap-1.5 text-sm font-semibold text-ai-foreground bg-ai hover:bg-ai px-4 py-2 rounded-lg transition-colors"
           >
-            <Plus className="w-4 h-4" /> Add Habit
+            <Plus className="w-4 h-4" /> Add habit
           </button>
         </div>
 
@@ -124,7 +124,7 @@ export default function HabitsSection({ client }) {
               onClick={handleAdd}
               className="flex items-center gap-1.5 text-sm font-semibold text-ai-foreground bg-ai hover:bg-ai px-5 py-2.5 rounded-xl transition-colors mx-auto"
             >
-              <Plus className="w-4 h-4" /> Add First Habit
+              <Plus className="w-4 h-4" /> Add first habit
             </button>
           </div>
         )}

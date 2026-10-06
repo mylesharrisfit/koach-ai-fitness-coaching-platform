@@ -79,7 +79,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{plan.title}</p>
                 <p className="text-[11px] text-muted-foreground">
-                  {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
+                  {plan.tracking_mode === 'habits' ? 'Habit mode' : 'Macro tracking'}
                   {plan.calories ? ` · ${plan.calories} kcal` : ''}
                 </p>
               </div>
@@ -101,7 +101,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
             className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-primary-foreground disabled:opacity-40"
             style={{ background: 'var(--tc-brand)' }}
           >
-            {saving ? 'Assigning...' : 'Assign Plan'}
+            {saving ? 'Assigning...' : 'Assign plan'}
           </button>
         </div>
       </div>
@@ -155,14 +155,14 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-primary-foreground"
             style={{ background: 'var(--tc-brand)' }}
           >
-            <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
+            <Plus className="w-3.5 h-3.5" /> Assign existing plan
           </button>
           <button
             onClick={createPlan}
             disabled={creating}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-muted-foreground border border-border hover:bg-muted disabled:opacity-50"
           >
-            <Plus className="w-3.5 h-3.5" /> {creating ? 'Creating...' : 'Create New Plan'}
+            <Plus className="w-3.5 h-3.5" /> {creating ? 'Creating...' : 'Create new plan'}
           </button>
         </div>
       </div>
@@ -197,7 +197,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
           'text-[11px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
           isHabits ? 'bg-ai/10 text-ai border-ai' : 'bg-success/10 text-success border-success'
         )}>
-          {isHabits ? 'Habit Mode' : 'Macro Tracking'}
+          {isHabits ? 'Habit mode' : 'Macro tracking'}
         </span>
       </div>
 
@@ -229,13 +229,13 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
           onClick={() => setShowPlanDetail(true)}
           className="flex-1 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
         >
-          View Full Plan
+          View full plan
         </button>
         <button
           onClick={() => setShowDialog(true)}
           className="flex-1 py-2 rounded-xl bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80 transition-colors"
         >
-          Edit Plan
+          Edit plan
         </button>
       </div>
 

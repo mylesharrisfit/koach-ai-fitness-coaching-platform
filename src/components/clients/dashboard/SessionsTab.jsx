@@ -100,7 +100,7 @@ function SessionRow({ session }) {
                 rel="noreferrer"
                 className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-brand text-brand-foreground rounded-lg hover:bg-[var(--tc-brand)] transition-colors"
               >
-                <Video className="w-3 h-3" /> Start Meeting
+                <Video className="w-3 h-3" /> Start meeting
               </a>
               <CopyButton text={session.zoom_join_url} label="Copy client link" />
               {session.zoom_password && (
@@ -139,7 +139,7 @@ function SessionRow({ session }) {
             <Button size="sm" variant="outline" onClick={() => setShowNotes(false)}>Cancel</Button>
             <Button size="sm" onClick={() => updateMutation.mutate({ notes: notesValue })}
               disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? 'Saving...' : 'Save Notes'}
+              {updateMutation.isPending ? 'Saving...' : 'Save notes'}
             </Button>
           </div>
         </div>

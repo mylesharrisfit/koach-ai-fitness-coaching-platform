@@ -114,11 +114,11 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
             <h2 className="text-[24px] text-foreground">{nutritionPlan.title}</h2>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-secondary text-foreground">
-                {nutritionPlan.plan_type === 'pdf' ? 'PDF Plan' : 'Structured Plan'}
+                {nutritionPlan.plan_type === 'pdf' ? 'PDF plan' : 'Structured plan'}
               </span>
               {nutritionPlan.tracking_mode && (
                 <span className="text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-card border border-border">
-                  {nutritionPlan.tracking_mode === 'macros' ? 'Macro Tracking' : 'Habit Mode'}
+                  {nutritionPlan.tracking_mode === 'macros' ? 'Macro tracking' : 'Habit mode'}
                 </span>
               )}
             </div>

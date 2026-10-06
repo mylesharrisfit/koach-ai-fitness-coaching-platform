@@ -72,7 +72,7 @@ export default function ProfileSecurity() {
         ))}
 
         <button onClick={handleUpdate}
-          className="w-full py-3 rounded-xl font-bold text-sm text-foreground"
+          className="w-full py-3 rounded-xl font-bold text-sm text-primary-foreground"
           style={{ background: 'rgb(var(--primary))' }}>
           Update Password
         </button>

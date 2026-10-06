@@ -77,7 +77,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h3 className="text-base font-bold text-foreground">{isEdit ? 'Edit Habit' : 'Add Habit'}</h3>
+          <h3 className="text-base font-bold text-foreground">{isEdit ? 'Edit habit' : 'Add habit'}</h3>
           <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
             <X className="w-4 h-4" />
           </button>
@@ -188,7 +188,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
           </button>
           <button onClick={handleSave} disabled={saving}
             className="text-sm font-semibold text-primary-foreground px-5 py-2 rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-50">
-            {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Habit'}
+            {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Add habit'}
           </button>
         </div>
       </div>

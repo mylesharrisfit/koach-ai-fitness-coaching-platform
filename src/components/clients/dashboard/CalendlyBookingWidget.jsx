@@ -125,7 +125,7 @@ export default function CalendlyBookingWidget({ client }) {
             onClick={() => { setShowSelector(true); setSelectedEventUri(eventTypes[0]?.uri || ''); }}
             disabled={etLoading || eventTypes.length === 0}
           >
-            <Send className="w-3 h-3 mr-1.5" /> Send Booking Link
+            <Send className="w-3 h-3 mr-1.5" /> Send booking link
           </Button>
         ) : (
           <>
@@ -133,7 +133,7 @@ export default function CalendlyBookingWidget({ client }) {
               onClick={() => setShowSelector(false)}>Cancel</Button>
             <Button size="sm" className="flex-1 bg-[var(--tc-brand)] hover:bg-[var(--tc-brand)] text-xs h-8"
               onClick={handleSend} disabled={sending}>
-              {sending ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> Sending...</> : 'Send Link'}
+              {sending ? <><Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> Sending...</> : 'Send link'}
             </Button>
           </>
         )}

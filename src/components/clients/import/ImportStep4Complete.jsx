@@ -57,7 +57,7 @@ export default function ImportStep4Complete({ imported, skipped, flagged, errorL
         onClick={onDone}
         className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
       >
-        View Clients
+        View clients
       </button>
     </div>
   );

@@ -578,7 +578,7 @@ function HabitContent({ dateStr, setDateStr, repeat, setShowRepeat, client, onDo
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-primary-foreground flex items-center justify-center gap-2 disabled:opacity-50"
         style={{ background: 'var(--tc-primary)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-        {saving ? 'Adding…' : repeat ? `Add Habit (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add Habit'}
+        {saving ? 'Adding…' : repeat ? `Add habit (${generateRepeatDates(parseISO(dateStr), repeat).length})` : 'Add habit'}
       </button>
     </div>
   );
@@ -1103,7 +1103,7 @@ export default function ClientCalendarTab({ client }) {
         <button onClick={() => setActiveDay(new Date())}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-primary-foreground"
           style={{ background: 'var(--tc-primary)' }}>
-          <Plus className="w-3.5 h-3.5" /> Add Event
+          <Plus className="w-3.5 h-3.5" /> Add event
         </button>
       </div>
 

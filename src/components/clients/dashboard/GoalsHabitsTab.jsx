@@ -117,7 +117,7 @@ export default function GoalsHabitsTab({ client }) {
                   onClick={handleAdd}
                   className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors"
                 >
-                  <Plus className="w-4 h-4" /> Add Goal
+                  <Plus className="w-4 h-4" /> Add goal
                 </button>
               </div>
             </div>
@@ -140,13 +140,13 @@ export default function GoalsHabitsTab({ client }) {
                     onClick={handleAdd}
                     className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-5 py-2.5 rounded-xl transition-colors"
                   >
-                    <Plus className="w-4 h-4" /> Add First Goal
+                    <Plus className="w-4 h-4" /> Add first goal
                   </button>
                   <button
                     onClick={() => setShowTemplatePicker(true)}
                     className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-primary px-4 py-2.5 rounded-xl border border-border bg-card hover:border-primary transition-colors"
                   >
-                    <LayoutTemplate className="w-4 h-4" /> Browse Templates
+                    <LayoutTemplate className="w-4 h-4" /> Browse templates
                   </button>
                 </div>
               </div>

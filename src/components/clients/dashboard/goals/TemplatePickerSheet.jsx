@@ -4,9 +4,9 @@ import { db } from '@/api/supabaseClient';
 import { X, Search, LayoutTemplate } from 'lucide-react';
 
 const TYPE_META = {
-  numeric:   { label: 'Numeric',   color: 'var(--tc-primary)', bg: 'var(--tc-accent)' },
-  nutrition: { label: 'Nutrition', color: 'var(--tc-success)', bg: 'var(--tc-success)' },
-  simple:    { label: 'Simple',    color: 'var(--tc-ai)', bg: 'var(--tc-ai)' },
+  numeric:   { label: 'Numeric',   color: 'var(--tc-foreground)', bg: 'var(--tc-muted)' },
+  nutrition: { label: 'Nutrition', color: 'var(--tc-foreground)', bg: 'var(--tc-muted)' },
+  simple:    { label: 'Simple',    color: 'var(--tc-foreground)', bg: 'var(--tc-muted)' },
 };
 
 // ── Built-in starter templates ────────────────────────────────────────────────

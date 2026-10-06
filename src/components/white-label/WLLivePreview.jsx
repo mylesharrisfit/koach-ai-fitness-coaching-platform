@@ -64,7 +64,7 @@ function PortalMockup({ s, screen, compact }) {
         {s.portal_show_logo !== false && (
           s.logo_light_url || s.logo_primary_url
             ? <SignedImg src={s.logo_light_url || s.logo_primary_url} alt="logo" className="mb-3 h-6 max-w-[110px] object-contain object-left" />
-            : <span className="mb-3 inline-flex h-6 items-center rounded border border-dashed border-white/40 px-2.5 text-[10px] text-white/80">Your logo</span>
+            : <span className="mb-3 inline-flex h-6 items-center rounded border border-dashed border-white/40 px-2.5 text-xs text-white/80">Your logo</span>
         )}
         <p className="display text-[22px] leading-[1.02] text-white" style={{ fontWeight: Number(s.font_heading_weight) || 800 }}>{headline}</p>
         <span className="mt-3 flex h-9 items-center justify-center rounded-md text-[13px] font-semibold text-white" style={{ background: p.primary }}>

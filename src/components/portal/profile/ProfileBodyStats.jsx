@@ -50,7 +50,7 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
             className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
             style={{
               background: units === u ? 'rgb(var(--primary))' : 'transparent',
-              color: units === u ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
+              color: units === u ? 'rgb(var(--primary-foreground))' : 'rgb(var(--muted-foreground))',
             }}>
             {u === 'imperial' ? 'Imperial' : 'Metric'}
           </button>
@@ -79,9 +79,9 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
 
       <AnimatePresence>
         {dirty && (
-          <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+          <motion.button exit={{ opacity: 0 }}
             onClick={save}
-            className="mt-5 w-full py-3 rounded-xl font-bold text-sm text-foreground"
+            className="mt-5 w-full py-3 rounded-xl font-bold text-sm text-primary-foreground"
             style={{ background: 'rgb(var(--primary))' }}>
             {saved ? 'Saved' : 'Save Body Stats'}
           </motion.button>

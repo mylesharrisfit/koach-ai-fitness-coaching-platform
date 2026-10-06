@@ -70,7 +70,7 @@ export default function MigrationNutrition({ onComplete, onSkip }) {
     return (
       <div className="flex flex-col items-center py-6 gap-3">
         <CheckCircle2 className="w-10 h-10 text-success" />
-        <p className="font-semibold text-foreground">{selected.size} plans imported!</p>
+        <p className="font-semibold text-foreground">{selected.size} plans imported</p>
         <button onClick={onComplete} className="px-6 h-11 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors">Continue</button>
       </div>
     );

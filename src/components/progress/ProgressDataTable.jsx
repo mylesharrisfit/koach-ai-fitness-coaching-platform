@@ -26,7 +26,7 @@ export default function ProgressDataTable({ data, metric, selectedClient, onLog 
         <h3 className="text-[18px] text-foreground">History</h3>
         <Button size="sm" onClick={() => setShowLog(true)} disabled={!selectedClient}
           className="bg-primary text-primary-foreground hover:bg-primary gap-1.5 h-7 text-xs">
-          <Plus className="w-3.5 h-3.5" /> Log Entry
+          <Plus className="w-3.5 h-3.5" /> Log entry
         </Button>
       </div>
 

@@ -169,7 +169,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
 
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-            <h3 className="text-base font-bold text-foreground">{isEdit ? 'Edit Goal' : 'Add Goal'}</h3>
+            <h3 className="text-base font-bold text-foreground">{isEdit ? 'Edit goal' : 'Add goal'}</h3>
             <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
               <X className="w-4 h-4" />
             </button>
@@ -316,7 +316,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                 disabled={saving}
                 className="text-sm font-semibold text-primary-foreground px-5 py-2 rounded-lg bg-primary hover:bg-primary disabled:opacity-50"
               >
-                {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Goal'}
+                {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Add goal'}
               </button>
             </div>
           </div>

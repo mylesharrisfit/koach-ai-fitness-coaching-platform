@@ -143,7 +143,7 @@ export default function OnboardingManager() {
         clientId: client.id,
         clientName: resp.name,
         clientEmail: resp.email,
-        welcomeMessage: `${coachName} approved your application — welcome to your coaching portal!`,
+        welcomeMessage: `${coachName} approved your application. Welcome to your coaching app.`,
       });
 
       return client;

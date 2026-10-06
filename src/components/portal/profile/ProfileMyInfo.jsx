@@ -65,9 +65,9 @@ export default function ProfileMyInfo({ user, client, queryClient }) {
       </div>
       <AnimatePresence>
         {dirty && (
-          <motion.button initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+          <motion.button exit={{ opacity: 0 }}
             onClick={save}
-            className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-foreground"
+            className="mt-4 w-full py-3 rounded-xl font-bold text-sm text-primary-foreground"
             style={{ background: 'rgb(var(--primary))' }}>
             {saved ? 'Saved' : 'Save Changes'}
           </motion.button>

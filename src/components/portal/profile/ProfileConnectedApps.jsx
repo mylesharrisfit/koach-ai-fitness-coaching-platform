@@ -24,7 +24,7 @@ export default function ProfileConnectedApps() {
     <ProfileSectionCard icon={Smartphone} title="Connected Apps & Devices">
       <div className="pt-3 space-y-2">
         {APPS.map(app => (
-          <motion.div key={app.id} whileTap={{ scale: 0.98 }}
+          <motion.div key={app.id}
             className="flex items-center gap-3 py-3 border-b border-border last:border-0">
             <span className="text-xl w-8 text-center flex-shrink-0">{app.emoji}</span>
             <div className="flex-1">
@@ -38,7 +38,7 @@ export default function ProfileConnectedApps() {
             <button onClick={() => toggle(app.id)}
               className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
               style={{
-                background: connected[app.id] ? 'rgb(var(--success) / 0.15)' : 'rgb(var(--primary) / 0.15)',
+                background: connected[app.id] ? 'rgb(var(--success) / 0.15)' : 'rgb(var(--secondary))',
                 color: connected[app.id] ? 'rgb(var(--success))' : 'rgb(var(--primary))',
                 border: `1px solid ${connected[app.id] ? 'rgb(var(--success) / 0.3)' : 'rgb(var(--primary))'}`,
               }}>

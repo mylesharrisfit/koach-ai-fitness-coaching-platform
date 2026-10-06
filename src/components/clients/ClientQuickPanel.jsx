@@ -24,7 +24,7 @@ import {
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
-  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
+  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General fitness'
 };
 
 const moodEmoji = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
@@ -381,7 +381,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   )}
 
                   <Button variant="outline" size="sm" className="w-full gap-2" onClick={onEdit}>
-                    <Plus className="w-3.5 h-3.5" /> Swap Program
+                    <Plus className="w-3.5 h-3.5" /> Swap program
                   </Button>
                 </>
               ) : (

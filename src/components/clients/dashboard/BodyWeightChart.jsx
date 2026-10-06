@@ -209,7 +209,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
               className="flex-1 text-xs font-semibold text-primary-foreground py-1.5 rounded-lg transition-colors disabled:opacity-50"
               style={{ background: BLUE }}
             >
-              {saving ? 'Saving…' : 'Save Entry'}
+              {saving ? 'Saving…' : 'Save entry'}
             </button>
             <button
               onClick={() => setAdding(false)}

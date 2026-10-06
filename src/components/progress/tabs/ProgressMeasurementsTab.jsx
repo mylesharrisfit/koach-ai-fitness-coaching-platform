@@ -72,7 +72,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
           <h3 className="text-[18px] text-foreground">Body measurements</h3>
           <button onClick={() => setShowModal(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus className="w-3 h-3" /> Log Measurements
+            <Plus className="w-3 h-3" /> Log measurements
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">

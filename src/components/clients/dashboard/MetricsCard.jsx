@@ -77,7 +77,7 @@ export default function MetricsCard({ client, onUpdated }) {
             onClick={startEdit}
             className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary transition-colors px-2.5 py-1 rounded-lg bg-accent hover:bg-accent"
           >
-            <Pencil className="w-3 h-3" /> Edit Metrics
+            <Pencil className="w-3 h-3" /> Edit metrics
           </button>
         )}
       </div>
@@ -116,7 +116,7 @@ export default function MetricsCard({ client, onUpdated }) {
               disabled={saving}
               className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
             >
-              <Check className="w-4 h-4" /> {saving ? 'Saving…' : 'Save Metrics'}
+              <Check className="w-4 h-4" /> {saving ? 'Saving…' : 'Save metrics'}
             </button>
             <button onClick={cancel} disabled={saving}
               className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground px-4 py-2 rounded-lg border border-border bg-card transition-colors">

@@ -88,7 +88,7 @@ export default function ImportCleanupModal({ open, onOpenChange, clients = [], o
           <div style={{ flexShrink: 0 }} className="px-6 py-4 border-b border-border">
             <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
               <Trash2 className="w-4 h-4 text-destructive" />
-              Review Imported Clients
+              Review imported clients
             </DialogTitle>
             <p className="text-xs text-muted-foreground mt-1">
               These are the <strong>{importedClients.length}</strong> client records created by the CSV import feature

@@ -150,7 +150,7 @@ export default function ClientForm({ open, onOpenChange, onSubmit, client }) {
 
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit">{client ? 'Update' : sendInvite ? 'Add & Invite Client' : 'Add Client'}</Button>
+            <Button type="submit">{client ? 'Update' : sendInvite ? 'Add and send invite' : 'Add client'}</Button>
           </div>
         </form>
       </DialogContent>

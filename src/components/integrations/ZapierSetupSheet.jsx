@@ -122,7 +122,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
       toast.success('Test event sent! Check your Zapier dashboard.');
     } catch {
       setTestResult('error');
-      toast.error('✗ Failed to reach webhook. Check the URL and try again.');
+      toast.error('Could not reach the webhook. Check the URL and try again.');
     } finally {
       setTesting(false);
     }

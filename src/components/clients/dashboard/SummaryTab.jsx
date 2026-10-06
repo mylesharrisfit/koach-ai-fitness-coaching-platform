@@ -17,7 +17,7 @@ import AIOnboardingModal from '@/components/clients/ai-onboarding/AIOnboardingMo
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
-  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
+  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General fitness'
 };
 
 // Week compliance helpers

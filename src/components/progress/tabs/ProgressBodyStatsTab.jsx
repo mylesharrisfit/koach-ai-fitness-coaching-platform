@@ -66,7 +66,7 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
           <h3 className="text-[18px] text-foreground">Weight history</h3>
           <button onClick={() => setShowLog(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
-            <Plus className="w-3 h-3" /> Log Weight
+            <Plus className="w-3 h-3" /> Log weight
           </button>
         </div>
         {weightData.length >= 2 && (

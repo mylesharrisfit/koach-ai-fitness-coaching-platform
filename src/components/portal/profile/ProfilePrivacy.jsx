@@ -66,7 +66,7 @@ export default function ProfilePrivacy({ client }) {
 
       <AnimatePresence>
         {showDelete && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+          <motion.div exit={{ opacity: 0 }}
             className="mt-4 p-4 rounded-xl" style={{ background: 'rgb(var(--destructive) / 0.1)', border: '1px solid rgb(var(--destructive) / 0.25)' }}>
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="w-4 h-4 text-destructive" />

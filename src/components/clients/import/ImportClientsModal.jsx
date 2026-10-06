@@ -215,7 +215,7 @@ export default function ImportClientsModal({ open, onOpenChange, existingEmails 
                   >
                     {committing
                       ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Importing…</>
-                      : 'Confirm Import'
+                      : 'Confirm import'
                     }
                   </Button>
                 )}

@@ -48,7 +48,7 @@ export default function NotesTab({ client }) {
           disabled={saving || !newNote.trim()}
           className="mt-2 bg-primary text-primary-foreground text-sm font-semibold py-2 px-5 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-40"
         >
-          {saving ? 'Saving…' : 'Save Note'}
+          {saving ? 'Saving…' : 'Save note'}
         </button>
       </div>
 

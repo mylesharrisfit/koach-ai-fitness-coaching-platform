@@ -38,7 +38,7 @@ export default function SendGridConnectModal({ open, onClose }) {
       const result = await sendEmail({
         to: user?.email,
         toName: user?.full_name || 'Coach',
-        subject: 'Resend Test — KOACH AI ✅',
+        subject: 'Resend test from KOACH',
         html: `<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;padding:40px 20px;"><div style="background:#111318;border-radius:12px;padding:32px;text-align:center;"><h1 style="color:white;font-size:24px;margin:0;">Resend is connected</h1><p style="color:#b8bcc6;margin:8px 0 0;">KOACH AI can now send emails to your clients.</p></div></div>`,
       });
       if (!result?.error) {

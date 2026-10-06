@@ -108,10 +108,10 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
         </div>
         <div className="flex gap-2 justify-center">
           <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setPicking(true)}>
-            <Layers className="w-3.5 h-3.5" /> Assign Existing
+            <Layers className="w-3.5 h-3.5" /> Assign existing
           </Button>
           <Button size="sm" className="gap-1.5 text-xs" onClick={() => navigate('/programs')}>
-            <Plus className="w-3.5 h-3.5" /> Create New
+            <Plus className="w-3.5 h-3.5" /> Create new
           </Button>
         </div>
       </div>
@@ -157,7 +157,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
             className="gap-1.5 text-xs flex-1"
             onClick={() => navigate(`/programs`)}
           >
-            <ChevronRight className="w-3.5 h-3.5" /> View Program
+            <ChevronRight className="w-3.5 h-3.5" /> View program
           </Button>
           <Button
             size="sm"

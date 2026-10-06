@@ -34,7 +34,7 @@ export default function ProfileProgramsTab({ client }) {
       <p className="text-sm font-semibold text-foreground mb-1">No program assigned</p>
       <p className="text-xs text-muted-foreground mb-5">Assign a training program to get started</p>
       <Button size="sm" variant="outline" onClick={() => navigate('/programs')} className="gap-1.5">
-        <Dumbbell className="w-3.5 h-3.5" /> Browse Programs
+        <Dumbbell className="w-3.5 h-3.5" /> Browse programs
       </Button>
     </div>
   );
@@ -84,7 +84,7 @@ export default function ProfileProgramsTab({ client }) {
 
           <div className="flex gap-2">
             <Button size="sm" variant="outline" onClick={() => navigate('/programs')} className="flex-1 gap-1.5 text-xs">
-              <Layers className="w-3.5 h-3.5" /> Change Program
+              <Layers className="w-3.5 h-3.5" /> Change program
             </Button>
           </div>
         </div>

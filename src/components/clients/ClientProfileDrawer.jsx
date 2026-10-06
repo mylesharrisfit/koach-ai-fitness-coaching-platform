@@ -9,7 +9,7 @@ import { SignedImg } from '@/components/shared/SignedImage';
 
 const goalLabels = {
   weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
-  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
+  endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General fitness'
 };
 
 const StatPill = ({ label, value }) => (
