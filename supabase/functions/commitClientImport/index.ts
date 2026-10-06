@@ -8,9 +8,15 @@
 // Multi-tenant scoping vs Base44:
 //   - the JOB must belong to the caller (Base44 fetched any id),
 //   - duplicate detection runs against the CALLER's clients,
-//   - created rows carry user_id/created_by = caller (Base44's created_by_id).
-import { getCaller, serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
+//   - created rows carry user_id/created_by = caller (Base44's created_by_id),
+//   - rows are inserted with the CALLER's session, not the service role, so
+//     RLS (incl. the billing paywall, migration 20261006210000) and the plan's
+//     client cap (app.enforce_client_cap, which exempts the service role) apply
+//     exactly as they do for a client added by hand.
+import { getCaller, callerClient, serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
 import { mappingContext, buildClientRow } from '../_shared/importCommit.js';
+import { billingAccess } from '../_shared/billingAccess.js';
+import { resolveTeamRole } from '../_shared/teamRole.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
@@ -19,6 +25,16 @@ Deno.serve(async (req) => {
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
     const svc = serviceClient();
     const userId = caller.auth.id;
+    // Same billing rule as guardAiUse; team coaches ride on their owner's plan
+    // (RLS re-checks the owner on every insert below).
+    if (!billingAccess(caller.profile).hasAccess && (await resolveTeamRole(svc, userId)) !== 'coach') {
+      return jsonResponse({
+        error: 'billing_required',
+        message: 'Your subscription is not active. Subscribe on the billing page to import clients.',
+        upgrade_required: true,
+      }, 402);
+    }
+    const asCaller = callerClient(req);
 
     const { job_id } = await req.json();
     if (!job_id) return jsonResponse({ error: 'job_id required' }, 400);
@@ -63,7 +79,7 @@ Deno.serve(async (req) => {
 
       if (email && existingEmails.has(email.toLowerCase().trim())) { skipped++; continue; }
 
-      const { error } = await svc.from('clients').insert({
+      const { error } = await asCaller.from('clients').insert({
         ...clientData,
         user_id: userId,
         created_by: userId,
