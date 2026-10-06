@@ -192,8 +192,9 @@ await admin.query(
   [FX.coach, FX.admin]
 );
 // handle_new_user() created the profile rows; set the fields the checks read.
+// billing_status 'active': coach writes need billing access server-side.
 await admin.query(
-  `update public.profiles set full_name = 'Coach Alpha', role = 'user', subscription_tier = 'pro' where id = $1`,
+  `update public.profiles set full_name = 'Coach Alpha', role = 'user', subscription_tier = 'pro', billing_status = 'active' where id = $1`,
   [FX.coach]
 );
 await admin.query(`update public.profiles set role = 'admin' where id = $1`, [FX.admin]);
