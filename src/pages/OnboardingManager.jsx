@@ -191,19 +191,28 @@ export default function OnboardingManager() {
       // Generate the (hashed) invite token and send the branded setup email
       // server-side. Single source of truth for invites; no plaintext token in
       // the browser.
-      await db.functions.invoke('sendClientInvite', {
-        clientId: client.id,
-        clientName: resp.name,
-        clientEmail: resp.email,
-        welcomeMessage: `${coachName} approved your application — welcome to your coaching portal!`,
-      });
+      // The client row already exists at this point — an email failure must
+      // not surface as "approve failed" (a retry would create a duplicate).
+      let inviteSent = true;
+      try {
+        await db.functions.invoke('sendClientInvite', {
+          clientId: client.id,
+          clientName: resp.name,
+          clientEmail: resp.email,
+          welcomeMessage: `${coachName} approved your application — welcome to your coaching portal!`,
+        });
+      } catch (err) {
+        console.error('Invite email failed:', err);
+        inviteSent = false;
+      }
 
-      return client;
+      return { ...client, inviteSent };
     },
     onSuccess: (client) => {
       qc.invalidateQueries({ queryKey: ['onboarding-responses'] });
       qc.invalidateQueries({ queryKey: ['clients'] });
-      toast.success(`${client.name} approved! Setup email sent.`);
+      if (client.inviteSent) toast.success(`${client.name} approved! Setup email sent.`);
+      else toast.warning(`${client.name} approved, but the setup email didn't send. Resend the invite from their profile.`);
     },
     onError: () => toast.error('Failed to approve. Please try again.'),
   });

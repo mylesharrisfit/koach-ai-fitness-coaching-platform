@@ -51,20 +51,51 @@ async function sendDigestFor(svc, coach: { id: string; email?: string | null }, 
   const appUrl = Deno.env.get('APP_URL') || 'https://app.koachai.net';
   const emailHtml = renderDigestEmail(digest, { tip, appUrl });
 
+  // Idempotency (smoke test 2026-10-05, item 16d): one digest email per coach
+  // per ISO week, however often the sweep fires or the coach re-requests it.
+  // Claim the key first; release it if the send fails so a retry can deliver.
   let sent = false;
+  let skippedIdempotent = false;
+  let emailError: string | null = null;
   if (coach.email && !dryRun) {
-    try {
-      await svc.functions.invoke('sendEmailNotification', {
-        body: {
-          to: coach.email,
-          subject: `🧠 Your Weekly AI Coaching Digest — ${digest.week_of}`,
-          html: emailHtml,
-        },
-      });
-      sent = true;
-    } catch (_) { /* mailer re-platformed in Step 5c; non-fatal */ }
+    const eventKey = `weekly_digest:${uid}:${weekStartKey(now)}`;
+    const { error: claimErr } = await svc.from('processed_entity_events')
+      .insert({ event_key: eventKey, event_type: 'weekly_digest' });
+    if (claimErr) {
+      // 23505 = already claimed this week. Anything else: don't send blind.
+      if (claimErr.code === '23505') skippedIdempotent = true;
+      else emailError = `idempotency claim failed: ${claimErr.message}`;
+    } else {
+      // functions.invoke returns { error } on a non-2xx reply — it does not
+      // throw — so the old try/catch marked rejected sends as delivered.
+      try {
+        const { error: invokeErr } = await svc.functions.invoke('sendEmailNotification', {
+          body: {
+            to: coach.email,
+            subject: `🧠 Your Weekly AI Coaching Digest — ${digest.week_of}`,
+            html: emailHtml,
+          },
+        });
+        if (invokeErr) emailError = invokeErr.message || 'Email send failed';
+        else sent = true;
+      } catch (e) {
+        emailError = e?.message ?? String(e);
+      }
+      if (!sent) {
+        await svc.from('processed_entity_events').delete().eq('event_key', eventKey);
+      }
+    }
+    if (emailError) console.error(`weeklyDigest: coach ${uid}:`, emailError);
   }
-  return { digest, sent };
+  return { digest, sent, skippedIdempotent, emailError };
+}
+
+/** Monday (UTC) of the week containing `now`, as YYYY-MM-DD. */
+function weekStartKey(now: Date) {
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const offset = (d.getUTCDay() + 6) % 7; // Mon=0 … Sun=6
+  d.setUTCDate(d.getUTCDate() - offset);
+  return d.toISOString().slice(0, 10);
 }
 
 Deno.serve(async (req) => {
@@ -85,12 +116,17 @@ Deno.serve(async (req) => {
         ? await svc.from('profiles').select('id, email').in('id', coachIds)
         : { data: [] };
 
-      let sent = 0;
+      let sent = 0, skippedIdempotent = 0, failed = 0;
       for (const coach of coaches ?? []) {
         const r = await sendDigestFor(svc, coach, now, dryRun);
         if (r.sent) sent++;
+        if (r.skippedIdempotent) skippedIdempotent++;
+        if (r.emailError) failed++;
       }
-      return jsonResponse({ success: true, mode: 'sweep', dry_run: dryRun, coaches: (coaches ?? []).length, sent });
+      return jsonResponse({
+        success: true, mode: 'sweep', dry_run: dryRun,
+        coaches: (coaches ?? []).length, sent, skipped_idempotent: skippedIdempotent, failed,
+      });
     }
 
     // ── Coach-initiated (own digest) ──────────────────────────────────────────

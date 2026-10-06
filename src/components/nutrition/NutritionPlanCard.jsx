@@ -63,11 +63,11 @@ function DropdownMenu({ onEdit, onAssign, onDuplicate, onDelete, onClose }) {
   );
 }
 
-export default function NutritionPlanCard({ plan, index, onEdit, onDuplicate, onDelete, onAssign }) {
+export default function NutritionPlanCard({ plan, index, clientCount: clientCountProp, onEdit, onDuplicate, onDelete, onAssign }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
-  const clientCount = (plan.assigned_clients || []).length;
+  const clientCount = clientCountProp ?? (plan.assigned_clients || []).length;
 
   return (
     <>

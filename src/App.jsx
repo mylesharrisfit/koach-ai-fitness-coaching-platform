@@ -145,13 +145,13 @@ const AuthenticatedApp = () => {
         <Route path="/community" element={<PageGuard feature="community"><Community /></PageGuard>} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/exercises" element={<ExerciseLibrary />} />
-        <Route path="/automations" element={<Automations />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/revenue" element={<RevenueDashboard />} />
+        <Route path="/automations" element={<PageGuard feature="checkin_automation"><Automations /></PageGuard>} />
+        <Route path="/analytics" element={<PageGuard feature="analytics"><Analytics /></PageGuard>} />
+        <Route path="/revenue" element={<PageGuard feature="revenue_dashboard"><RevenueDashboard /></PageGuard>} />
         <Route path="/business" element={<Business />} />
         <Route path="/program-builder" element={<ProgramBuilder />} />
-        <Route path="/white-label" element={<WhiteLabel />} />
-        <Route path="/coaching-templates" element={<CoachingTemplates />} />
+        <Route path="/white-label" element={<PageGuard feature="custom_branding"><WhiteLabel /></PageGuard>} />
+        <Route path="/coaching-templates" element={<PageGuard feature="program_templates"><CoachingTemplates /></PageGuard>} />
         <Route path="/onboarding-manager" element={<OnboardingManager />} />
         <Route path="/migration" element={<Migration />} />
         <Route path="/food-library" element={<FoodLibrary />} />
@@ -169,11 +169,11 @@ const AuthenticatedApp = () => {
         <Route path="/marketing-tools" element={<MarketingTools />} />
         <Route path="/weekly-summary" element={<WeeklySummary />} />
         <Route path="/challenges" element={<Challenges />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/ai-insights" element={<AIInsightsPage />} />
+        <Route path="/team" element={<PageGuard feature="ai_team_access"><Team /></PageGuard>} />
+        <Route path="/ai-insights" element={<PageGuard feature="ai_features"><AIInsightsPage /></PageGuard>} />
         <Route path="/submit-checkin" element={<SubmitCheckIn />} />
         <Route path="/checkin-detail" element={<CheckInDetail />} />
-        <Route path="/at-risk" element={<AtRiskClients />} />
+        <Route path="/at-risk" element={<PageGuard feature="adherence_scoring"><AtRiskClients /></PageGuard>} />
         <Route path="/client-profile" element={<ClientProfile />} />
       </Route>
       <Route element={<BillingGate><FocusLayout /></BillingGate>}>

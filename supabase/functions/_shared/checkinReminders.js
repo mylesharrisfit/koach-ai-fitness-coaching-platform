@@ -95,6 +95,7 @@ export async function runCheckinReminders(admin, { sendEmail, appUrl, now = new 
   const alreadyReminded = new Set((priorReminders ?? []).map((n) => n.related_client_id));
   const remindersSent = [];
   let skippedIdempotent = 0;
+  let emailsFailed = 0;
 
   for (const client of clients ?? []) {
     if (!client.email) continue;
@@ -117,11 +118,20 @@ export async function runCheckinReminders(admin, { sendEmail, appUrl, now = new 
         ? "⏰ Don't forget your weekly check-in"
         : "⏰ You've still got time for a workout this week";
 
-    await sendEmail({
+    // sendEmail never throws (it returns { ok, error }). Ignoring the result
+    // reported rejected sends as delivered (smoke test 2026-10-05, item 16c).
+    // The in-app reminders below still go out — they don't depend on email —
+    // but email failures are counted and logged so they can't hide.
+    const mail = await sendEmail({
       to: client.email, toName: client.name,
       subject,
       html: buildReminderEmail({ clientName: client.name, missedCheckin, missedWorkout }, appUrl),
     });
+    const emailOk = Boolean(mail?.ok);
+    if (!emailOk) {
+      emailsFailed++;
+      console.error(`checkinReminders: email to client ${client.id} failed:`, mail?.error ?? 'unknown error');
+    }
 
     // In-app copy to the client's portal identity (when linked)
     if (client.portal_user_id) {
@@ -158,8 +168,8 @@ export async function runCheckinReminders(admin, { sendEmail, appUrl, now = new 
       });
     }
 
-    remindersSent.push({ name: client.name, missedCheckin, missedWorkout });
+    remindersSent.push({ name: client.name, missedCheckin, missedWorkout, emailOk });
   }
 
-  return { count: remindersSent.length, remindersSent, skippedIdempotent };
+  return { count: remindersSent.length, remindersSent, skippedIdempotent, emailsFailed };
 }

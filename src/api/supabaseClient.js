@@ -385,6 +385,15 @@ const auth = {
       options: { data: { full_name: full_name ?? '', ...(plan ? { signup_plan: plan, signup_interval: interval } : {}) }, emailRedirectTo },
     });
     throwIf(error);
+    // With email confirmation on, Supabase answers a signup for an EXISTING
+    // address with no error, no session and a user whose `identities` is empty
+    // (it won't reveal the account exists). Without this check the page waited
+    // on a confirmation email that never comes (smoke test 2026-10-05, item 1).
+    if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      throw Object.assign(new Error('An account with this email already exists. Sign in instead.'), {
+        code: 'user_already_exists',
+      });
+    }
     return { needsConfirmation: !data.session, user: data.user };
   },
 
