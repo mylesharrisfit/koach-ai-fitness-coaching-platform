@@ -62,7 +62,7 @@ export default function ReferralProgram({ user: userProp }) {
 
   const handleShare = (platform) => {
     const link = program?.referral_link || '';
-    const message = `Hey! I use KOACH AI to run my entire online coaching business. Use my link to get started: ${link}`;
+    const message = `I use KOACH AI to run my online coaching business. Here's my link if you want to try it: ${link}`;
     const urls = {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`,
@@ -87,7 +87,7 @@ export default function ReferralProgram({ user: userProp }) {
     : referrals.filter(r => r.status === filterStatus);
 
   const totalRefs = program?.total_referrals || 0;
-  const shareMessage = `Hey! I use KOACH AI to run my entire online coaching business. Programs, nutrition plans, check-ins, payments — all in one place. Use my link to get started: ${program?.referral_link}`;
+  const shareMessage = `I use KOACH AI to run my online coaching business: programs, nutrition plans, check-ins and payments in one place. Here's my link if you want to try it: ${program?.referral_link}`;
   const SHARE = [
     { label: 'X (Twitter)', key: 'twitter' },
     { label: 'Facebook', key: 'facebook' },

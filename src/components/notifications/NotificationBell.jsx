@@ -99,7 +99,7 @@ export default function NotificationBell({ onDark = false }) {
 
         {displayCount && (
           <span
-            className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-brand px-1 text-[10px] font-bold leading-none text-brand-foreground flex items-center justify-center ring-2 ${onDark ? 'ring-sidebar' : 'ring-card'}`}
+            className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-brand px-1 text-[11px] font-bold leading-none text-brand-foreground flex items-center justify-center ring-2 ${onDark ? 'ring-sidebar' : 'ring-card'}`}
           >
             {displayCount}
           </span>

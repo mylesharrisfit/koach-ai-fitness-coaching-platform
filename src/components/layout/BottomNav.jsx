@@ -37,7 +37,7 @@ function Tab({ icon: Icon, label, active, badge, ...rest }) {
       <span className="relative">
         <Icon className={cn('h-[22px] w-[22px]', active ? 'text-brand' : 'text-muted-foreground')} strokeWidth={active ? 2 : 1.75} />
         {badge > 0 && (
-          <span className="absolute -top-1.5 -right-2.5 min-w-[17px] h-[17px] rounded-full bg-brand px-1 text-[10px] font-bold text-brand-foreground flex items-center justify-center ring-2 ring-card">
+          <span className="absolute -top-1.5 -right-2.5 min-w-[18px] h-[18px] rounded-full bg-brand px-1 text-[11px] font-bold text-brand-foreground flex items-center justify-center ring-2 ring-card">
             {badge > 9 ? '9+' : badge}
           </span>
         )}

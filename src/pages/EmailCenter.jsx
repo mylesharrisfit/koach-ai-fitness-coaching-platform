@@ -97,7 +97,7 @@ export default function EmailCenter() {
       checkInSubmitted: { weight: 185, compliance_training: 88, mood: 'great', energy_level: 8 },
       paymentReceived: { amount: 150, description: 'Monthly Coaching', invoice_number: 'INV-0042', payment_method: 'Card' },
       paymentFailed: { amount: 200, failure_reason: 'Insufficient funds' },
-      badgeEarned: { label: '30-Day Warrior', emoji: '🏆', desc: '30 consecutive days of training' },
+      badgeEarned: { label: '30-day streak', desc: '30 days of training in a row' },
       invoiceReceived: { amount: 150, due_date: 'June 1, 2026', invoice_number: 'INV-0042', description: 'Monthly Coaching' },
       paymentConfirmation: { amount: 150, invoice_number: 'INV-0042', next_billing_date: 'July 1, 2026' },
       paymentFailedClient: { amount: 200, failure_reason: 'Card declined' },

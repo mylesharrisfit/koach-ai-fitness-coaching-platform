@@ -143,7 +143,7 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
                     <td className="px-4 py-2 text-foreground">{Math.round(pb.vol)}</td>
                     <td className="px-4 py-2 text-foreground">{pb.date ? format(parseISO(pb.date.slice(0, 10)), 'MMM d, yyyy') : '—'}</td>
                     <td className="px-4 py-2">
-                      {pb.isNew && <span className="text-xs"><span className="text-warning font-bold">New PR!</span></span>}
+                      {pb.isNew && <span className="text-xs"><span className="text-warning font-bold">New PR</span></span>}
                     </td>
                   </tr>
                 ))}

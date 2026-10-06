@@ -17,10 +17,10 @@ const TEMPLATE_CATEGORIES = [
   {
     label: 'Check-ins',
     templates: [
-      { name: 'Missed check-in alert', description: 'Auto-message clients who miss their weekly check-in', trigger_type: 'no_checkin', trigger_value: 7, actions: [{ type: 'send_message', message: "Hey {client_name}! Just checking in — I noticed you missed your weekly check-in. How has training been going? Drop me a message when you get a chance" }] },
-      { name: 'Low compliance alert', description: 'Flag at-risk + send motivation when compliance drops below 60%', trigger_type: 'low_compliance', trigger_value: 60, actions: [{ type: 'send_message', message: "Hey {client_name}, I noticed your compliance has been a bit low. Life gets busy — let's chat about adjusting things to work better for you!" }, { type: 'flag_at_risk' }] },
-      { name: 'Perfect week reward', description: 'Award badge + send congrats when compliance exceeds 90%', trigger_type: 'high_compliance', trigger_value: 90, actions: [{ type: 'award_badge', value: 'perfect_week' }, { type: 'send_message', message: "{client_name}, you absolutely crushed it this week! Perfect compliance — I'm so proud of you. Keep it up!" }] },
-      { name: 'Check-in streak badge', description: 'Auto-award streak badge when client hits 7-day streak', trigger_type: 'streak', trigger_value: 7, actions: [{ type: 'award_badge', value: 'streak_7' }, { type: 'send_message', message: "{client_name}, 7-day streak achieved! You're on fire. Keep this momentum going!" }] },
+      { name: 'Missed check-in alert', description: 'Auto-message clients who miss their weekly check-in', trigger_type: 'no_checkin', trigger_value: 7, actions: [{ type: 'send_message', message: "Hey {client_name}, your weekly check-in didn't come in. How has training been going? Send me a message when you get a chance." }] },
+      { name: 'Low compliance alert', description: 'Flag as at risk and send a note when compliance drops below 60%', trigger_type: 'low_compliance', trigger_value: 60, actions: [{ type: 'send_message', message: "Hey {client_name}, your compliance has been a bit low lately. Life gets busy, so let's talk about adjusting the plan to fit your week." }, { type: 'flag_at_risk' }] },
+      { name: 'Perfect week reward', description: 'Award a badge and send a note when compliance is above 90%', trigger_type: 'high_compliance', trigger_value: 90, actions: [{ type: 'award_badge', value: 'perfect_week' }, { type: 'send_message', message: "{client_name}, great week. Your compliance was excellent. Keep the same rhythm going." }] },
+      { name: 'Check-in streak badge', description: 'Auto-award streak badge when client hits 7-day streak', trigger_type: 'streak', trigger_value: 7, actions: [{ type: 'award_badge', value: 'streak_7' }, { type: 'send_message', message: "{client_name}, that's a 7-day streak. Nice consistency, keep it going." }] },
     ],
   },
   {
@@ -28,26 +28,26 @@ const TEMPLATE_CATEGORIES = [
     templates: [
       { name: 'Weight plateau calorie adjust', description: 'Reduce calories by 100 when weight stalls for 3 check-ins', trigger_type: 'weight_plateau', trigger_value: 3, actions: [{ type: 'adjust_calories', value: '-100' }, { type: 'notify_coach', message: "{client_name}'s weight has plateaued for 3 check-ins — calories reduced by 100 automatically." }] },
       { name: 'Rapid weight loss adjustment', description: 'Increase calories when losing more than 2 lbs/week', trigger_type: 'weight_loss_fast', trigger_value: 2, actions: [{ type: 'adjust_calories', value: '+150' }, { type: 'notify_coach', message: "{client_name} is losing weight too quickly — calories increased by 150." }] },
-      { name: 'Protein target miss', description: 'Send nutrition tip when nutrition compliance is low', trigger_type: 'low_compliance', trigger_value: 70, actions: [{ type: 'send_message', message: "Hey {client_name}! Quick nutrition tip — hitting your protein targets is the #1 driver of your results. Try adding a protein shake after training" }] },
+      { name: 'Protein target miss', description: 'Send nutrition tip when nutrition compliance is low', trigger_type: 'low_compliance', trigger_value: 70, actions: [{ type: 'send_message', message: "Hey {client_name}, quick nutrition tip: hitting your protein target makes the biggest difference to your results. A protein shake after training is an easy way to close the gap." }] },
       { name: 'Calorie goal streak', description: 'Award badge when nutrition compliance hits 90%+ for 5 days', trigger_type: 'high_compliance', trigger_value: 90, actions: [{ type: 'award_badge', value: 'nutrition_star' }] },
     ],
   },
   {
     label: 'Progress',
     templates: [
-      { name: 'Monthly progress message', description: 'Send a monthly summary message after 30+ days in program', trigger_type: 'streak', trigger_value: 30, actions: [{ type: 'send_message', message: "{client_name} — one month in! You're building incredible habits. Compliance: {compliance}%. Let's review your progress together!" }] },
-      { name: 'PR achievement', description: 'Award PR badge and celebrate personal record', trigger_type: 'high_compliance', trigger_value: 95, actions: [{ type: 'award_badge', value: 'pr_hit' }, { type: 'send_message', message: "{client_name}, new personal record! This is what consistent effort looks like — amazing work!" }] },
-      { name: 'Halfway milestone', description: 'Celebrate when client hits 14-day streak', trigger_type: 'streak', trigger_value: 14, actions: [{ type: 'award_badge', value: 'streak_14' }, { type: 'send_message', message: "Two weeks straight, {client_name}! You're halfway to a full month streak. The habit is forming — keep going!" }] },
+      { name: 'Monthly progress message', description: 'Send a monthly summary message after 30+ days in program', trigger_type: 'streak', trigger_value: 30, actions: [{ type: 'send_message', message: "{client_name}, one month in. Your compliance is {compliance}%. Let's look at your progress together this week." }] },
+      { name: 'PR achievement', description: 'Award PR badge and celebrate personal record', trigger_type: 'high_compliance', trigger_value: 95, actions: [{ type: 'award_badge', value: 'pr_hit' }, { type: 'send_message', message: "{client_name}, new personal record. That's what consistent work looks like." }] },
+      { name: 'Halfway milestone', description: 'Award a badge when a client reaches a 14-day streak', trigger_type: 'streak', trigger_value: 14, actions: [{ type: 'award_badge', value: 'streak_14' }, { type: 'send_message', message: "Two weeks straight, {client_name}. You're halfway to a full month, so keep going." }] },
       { name: 'Momentum builder', description: 'Award 30-day badge for sustained commitment', trigger_type: 'streak', trigger_value: 30, actions: [{ type: 'award_badge', value: 'streak_30' }] },
     ],
   },
   {
     label: 'Engagement',
     templates: [
-      { name: 'Re-engagement nudge', description: 'Send a nudge when client hasn\'t checked in for 14 days', trigger_type: 'no_checkin', trigger_value: 14, actions: [{ type: 'send_message', message: "Hey {client_name}! It's been a while — missing you! How are things going? Let's reconnect and get back on track" }, { type: 'flag_at_risk' }] },
-      { name: 'New client welcome', description: 'Auto-send welcome message when client becomes active', trigger_type: 'new_client', actions: [{ type: 'send_message', message: "Welcome to the team, {client_name}! I'm so excited to start this journey with you. Your first check-in is scheduled — let's crush your goals together!" }] },
-      { name: 'Low mood support', description: 'Send supportive message when client reports low mood', trigger_type: 'no_checkin', trigger_value: 5, actions: [{ type: 'send_message', message: "Hey {client_name}, just thinking about you! Remember — progress isn't always linear. You've got this, and I'm here every step of the way" }] },
-      { name: 'Coach at-risk alert', description: 'Notify yourself when a client needs immediate attention', trigger_type: 'no_checkin', trigger_value: 10, actions: [{ type: 'flag_at_risk' }, { type: 'notify_coach', message: "{client_name} has missed check-ins for 10+ days and needs immediate outreach." }] },
+      { name: 'Re-engagement nudge', description: 'Send a nudge when client hasn\'t checked in for 14 days', trigger_type: 'no_checkin', trigger_value: 14, actions: [{ type: 'send_message', message: "Hey {client_name}, it's been a while since we spoke. How are things going? Let's catch up and get the plan moving again." }, { type: 'flag_at_risk' }] },
+      { name: 'New client welcome', description: 'Auto-send welcome message when client becomes active', trigger_type: 'new_client', actions: [{ type: 'send_message', message: "Welcome, {client_name}. Glad to be working with you. Your first check-in is scheduled, and I'll review it as soon as it comes in." }] },
+      { name: 'Low mood support', description: 'Send supportive message when client reports low mood', trigger_type: 'no_checkin', trigger_value: 5, actions: [{ type: 'send_message', message: "Hey {client_name}, just checking on you. Progress isn't always a straight line, and I'm here if you want to talk anything through." }] },
+      { name: 'Coach at-risk alert', description: 'Notify yourself when a client needs immediate attention', trigger_type: 'no_checkin', trigger_value: 10, actions: [{ type: 'flag_at_risk' }, { type: 'notify_coach', message: "{client_name} hasn't checked in for 10 days or more. Reach out today." }] },
     ],
   },
 ];
