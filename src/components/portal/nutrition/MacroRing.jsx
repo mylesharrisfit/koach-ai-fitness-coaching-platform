@@ -29,19 +29,13 @@ export default function MacroRing({ consumed, target, breakdown }) {
             <circle cx={98} cy={98} r={r} fill="none" strokeWidth={14} stroke="rgb(var(--muted))" />
             <motion.circle
               cx={98} cy={98} r={r} fill="none" strokeWidth={14}
-              stroke="url(#macro-grad)"
+              stroke="rgb(var(--foreground))"
               strokeDasharray={circ}
               initial={{ strokeDashoffset: circ }}
               animate={{ strokeDashoffset: offset }}
               transition={{ duration: 1, ease: 'easeOut' }}
               strokeLinecap="round"
             />
-            <defs>
-              <linearGradient id="macro-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="rgb(var(--primary))" />
-                <stop offset="100%" stopColor="rgb(var(--ai))" />
-              </linearGradient>
-            </defs>
           </svg>
 
           {/* Center content */}

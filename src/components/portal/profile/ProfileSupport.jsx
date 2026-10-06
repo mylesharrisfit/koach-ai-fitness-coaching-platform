@@ -7,7 +7,7 @@ export default function ProfileSupport() {
   const rows = [
     { icon: <ExternalLink className="w-4 h-4 text-muted-foreground" />, label: 'Help & FAQ', action: () => window.open('https://koachai.net/help', '_blank') },
     { icon: <Mail className="w-4 h-4 text-muted-foreground" />, label: 'Contact Support', action: () => window.open('mailto:support@koachai.net') },
-    { icon: <Star className="w-4 h-4 text-muted-foreground" />, label: 'Rate the App', action: () => toast('Thanks! Redirecting to App Store...') },
+    { icon: <Star className="w-4 h-4 text-muted-foreground" />, label: 'Rate the App', action: () => toast('Opening the App Store') },
     { icon: <Share2 className="w-4 h-4 text-muted-foreground" />, label: 'Share KOACH AI', action: () => { navigator.share?.({ title: 'KOACH AI', url: 'https://koachai.net' }) || toast.success('Link copied'); } },
   ];
 

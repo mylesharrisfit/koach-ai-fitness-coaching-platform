@@ -107,7 +107,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="grid lg:h-full lg:min-h-0 lg:grid-cols-[260px_minmax(0,1fr)_280px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] lg:h-full lg:min-h-0 lg:grid-cols-[260px_minmax(0,1fr)_280px]">
 
         {/* ── Left: facts ── */}
         <div className="border-b lg:border-b-0 lg:border-r border-border bg-card lg:overflow-y-auto p-5 space-y-6">

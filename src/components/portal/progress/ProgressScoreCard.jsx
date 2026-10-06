@@ -32,8 +32,8 @@ function calcScore(checkIns, workoutSessions, foodLogs) {
 }
 
 function getMotivationalLabel(score) {
-  if (score >= 80) return "Crushing it! ";
-  if (score >= 60) return "Great momentum! ";
+  if (score >= 80) return "On a roll";
+  if (score >= 60) return "Good momentum";
   if (score >= 40) return "Building habits ";
   return "Every journey starts here ";
 }
@@ -80,8 +80,6 @@ export default function ProgressScoreCard({ checkIns, workoutSessions, foodLogs,
 
   const label = getMotivationalLabel(scores.total);
 
-  const gradientId = 'scoreGrad';
-
   return (
     <div className="rounded-xl p-5" style={{ background: 'rgb(var(--secondary))', border: '1px solid rgb(var(--primary) / 0.2)' }}>
       <p className="text-muted-foreground text-xs font-semibold mb-4">Overall Score</p>
@@ -110,7 +108,7 @@ export default function ProgressScoreCard({ checkIns, workoutSessions, foodLogs,
             <MiniBar label="Fitness" value={scores.fitness} color="rgb(var(--primary))" />
             <MiniBar label="Nutrition" value={scores.nutrition} color="rgb(var(--success))" />
             <MiniBar label="Consistency" value={scores.consistency} color="rgb(var(--warning))" />
-            <MiniBar label="Mindset" value={scores.mindset} color="rgb(var(--ai))" />
+            <MiniBar label="Mindset" value={scores.mindset} color="rgb(var(--foreground))" />
           </div>
         </div>
       </div>

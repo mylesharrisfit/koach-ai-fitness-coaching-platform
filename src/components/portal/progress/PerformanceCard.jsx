@@ -129,7 +129,7 @@ export default function PerformanceCard({ workoutSessions }) {
                   <XAxis dataKey="date" tick={{ fill: 'rgb(var(--muted-foreground))', fontSize: 8 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
                   <YAxis tick={{ fill: 'rgb(var(--muted-foreground))', fontSize: 8 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="weight" stroke="rgb(var(--ai))" strokeWidth={2} dot={false}
+                  <Line type="monotone" dataKey="weight" stroke="rgb(var(--foreground))" strokeWidth={2} dot={false}
                     activeDot={{ r: 4, fill: 'rgb(var(--primary))', stroke: 'rgb(var(--card))', strokeWidth: 2 }} />
                 </LineChart>
               </ResponsiveContainer>

@@ -46,7 +46,7 @@ export default function PortalReferral({ user }) {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
-    toast.success('Link copied! ');
+    toast.success('Link copied');
     setTimeout(() => setCopied(false), 2000);
   };
 

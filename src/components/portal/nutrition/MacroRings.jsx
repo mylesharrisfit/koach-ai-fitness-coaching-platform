@@ -37,15 +37,9 @@ function BigCalorieRing({ consumed, target }) {
     <div className="flex flex-col items-center">
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-          <defs>
-            <linearGradient id="calGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgb(var(--warning))" />
-              <stop offset="100%" stopColor="rgb(var(--destructive))" />
-            </linearGradient>
-          </defs>
           <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke} stroke="rgb(var(--warning))" />
           <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke}
-            stroke={over ? 'rgb(var(--destructive))' : 'url(#calGrad2)'}
+            stroke={over ? 'rgb(var(--destructive))' : 'rgb(var(--foreground))'}
             strokeDasharray={circ} strokeDashoffset={offset}
             strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.7s ease' }} />
         </svg>

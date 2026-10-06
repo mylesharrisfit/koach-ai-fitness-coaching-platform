@@ -66,7 +66,7 @@ export default function WeightJourneyCard({ checkIns, client, onLogWeight }) {
 
       {weightData.length < 2 ? (
         <div className="py-10 text-center">
-          <p className="text-muted-foreground text-xs">Log your starting weight to begin tracking your journey! </p>
+          <p className="text-muted-foreground text-xs">Log your starting weight to start the line.! </p>
           <button onClick={onLogWeight} className="mt-3 px-4 py-2 rounded-xl text-xs font-bold text-primary-foreground"
             style={{ background: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.3)' }}>
             + Log Weight
