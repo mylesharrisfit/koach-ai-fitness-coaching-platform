@@ -85,7 +85,7 @@ function AssignProgram({ selectedClients, onDone }) {
 function AddTag({ selectedClients, onDone }) {
   const [saving, setSaving] = useState(false);
   const [tagVal, setTagVal] = useState('');
-  const QUICK_TAGS = ['VIP', 'Fat Loss', 'Muscle Gain', 'Hybrid Program', 'At Risk', 'New Client'];
+  const QUICK_TAGS = ['VIP', 'Fat Loss', 'Muscle gain', 'Hybrid Program', 'At Risk', 'New Client'];
   const applyTag = async (tag) => {
     const t = tag.trim().toLowerCase().replace(/\s+/g, '-');
     if (!t) return;

@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { SignedImg } from '@/components/shared/SignedImage';
 
 const goalLabels = {
-  weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
+  weight_loss: 'Weight loss', muscle_gain: 'Muscle gain', strength: 'Strength',
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General fitness'
 };
 
@@ -79,7 +79,7 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
           )}
           <div className="flex items-center gap-3 text-sm text-foreground">
             <Target className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-            {goalLabels[client.goal] || 'General Fitness'}
+            {goalLabels[client.goal] || 'General fitness'}
           </div>
           {client.start_date && (
             <div className="flex items-center gap-3 text-sm text-foreground">

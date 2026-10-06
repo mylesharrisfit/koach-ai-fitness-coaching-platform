@@ -97,8 +97,9 @@ export default function PackageLanding() {
         <div className="mx-auto grid w-full max-w-5xl items-end gap-8 md:grid-cols-[minmax(0,1fr)_320px]">
           <div>
             <p className="text-sm text-white/70">
-              {pkg.billing_type === 'one_time' ? 'One-time program' : `${(pkg.billing_type || '').replace(/_/g, ' ')} coaching`}
-              {coach?.full_name ? ` with ${coach.full_name}` : ''}
+              {pkg.billing_type === 'one_time'
+                ? 'One-time program'
+                : `${(pkg.billing_type || '').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase())} coaching`}
             </p>
             <h1 className="mt-2 text-[36px] leading-[1.02] text-white sm:text-[52px]">{pkg.name}</h1>
             {pkg.description && <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75">{pkg.description}</p>}

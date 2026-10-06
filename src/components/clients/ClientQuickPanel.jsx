@@ -23,7 +23,7 @@ import {
 } from 'recharts';
 
 const goalLabels = {
-  weight_loss: 'Weight Loss', muscle_gain: 'Muscle Gain', strength: 'Strength',
+  weight_loss: 'Weight loss', muscle_gain: 'Muscle gain', strength: 'Strength',
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General fitness'
 };
 
