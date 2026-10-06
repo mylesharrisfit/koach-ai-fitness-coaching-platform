@@ -47,6 +47,14 @@ Deno.serve(async (req) => {
       if (!pay?.client_id) return jsonResponse({ error: 'Forbidden: subscription not found for your account' }, 403);
       const client = await ownsClient(svc, caller.auth.id, pay.client_id);
       if (!client) return jsonResponse({ error: 'Forbidden: subscription not owned by you' }, 403);
+      // A coach can insert their own payments row carrying ANY stripe_payment_id,
+      // so the row alone proves nothing. Stripe's own record must tie the
+      // subscription to this client (stripeCreateSubscription tags metadata).
+      let sub = null;
+      try { sub = await stripe.subscriptions.retrieve(requestedId); } catch { /* treated as not owned */ }
+      if (!sub || sub.metadata?.client_id !== client.id) {
+        return jsonResponse({ error: 'Forbidden: subscription not owned by you' }, 403);
+      }
       subscriptionId = requestedId;
     }
 

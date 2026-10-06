@@ -25,12 +25,23 @@ import { sendMessage, awardBadge } from './automationActions.js';
 const NOT_OWNED = (what = 'client') => ({ error: `Forbidden: ${what} not found or not owned by you` });
 
 /** Does this nutrition plan belong to the caller (directly or via its client)? */
+// Service-side mirror of app.is_team_member(team_id): accepted member or owner.
+async function isTeamMember(svc, userId, teamId) {
+  if (!teamId) return false;
+  const [{ data: member }, { data: team }] = await Promise.all([
+    svc.from('team_members').select('id').eq('team_id', teamId).eq('user_id', userId).eq('invite_status', 'accepted').limit(1),
+    svc.from('teams').select('id').eq('id', teamId).eq('owner_coach_id', userId).limit(1),
+  ]);
+  return Boolean(member?.length || team?.length);
+}
+
 async function ownsPlan(svc, userId, planId) {
   if (!planId) return null;
   const { data: plan } = await svc.from('nutrition_plans').select('*').eq('id', planId).maybeSingle();
   if (!plan) return null;
   if (plan.created_by === userId) return plan;
   if (plan.client_id && await ownsClient(svc, userId, plan.client_id)) return plan;
+  if (await isTeamMember(svc, userId, plan.team_id)) return plan;
   return null;
 }
 
@@ -61,13 +72,12 @@ async function ownsProgram(svc, userId, programId) {
   if (!programId) return null;
   const { data: prog } = await svc.from('workout_programs').select('*').eq('id', programId).maybeSingle();
   if (!prog) return null;
+  // Same rule as the workout_programs RLS update policy: the creator or a member
+  // of the program's team. (Inferring ownership from clients.assigned_program_id
+  // let a coach assign another tenant's program to their own client and then
+  // read/edit it — clients.assigned_program_id is coach-writable.)
   if (prog.created_by === userId) return prog;
-  const { data: assignees } = await svc.from('clients').select('id, user_id, created_by')
-    .eq('assigned_program_id', programId);
-  // Someone else's program is only editable when EVERY client it is assigned to
-  // is the caller's — never a shared template that other coaches' clients use.
-  const list = assignees ?? [];
-  if (list.length > 0 && list.every((c) => c.user_id === userId || c.created_by === userId)) return prog;
+  if (await isTeamMember(svc, userId, prog.team_id)) return prog;
   return null;
 }
 
@@ -172,9 +182,8 @@ export async function executeAssistantTool(svc, userId, toolName, input) {
         if (!client) return NOT_OWNED();
         const { data: checkIns } = await svc.from('check_ins').select('*')
           .eq('client_id', client.id).order('date', { ascending: false }).limit(5);
-        const { data: plan } = client.assigned_nutrition_id
-          ? await svc.from('nutrition_plans').select('*').eq('id', client.assigned_nutrition_id).maybeSingle()
-          : { data: null };
+        // assigned_nutrition_id is coach-writable: only return a plan the caller owns.
+        const plan = client.assigned_nutrition_id ? await ownsPlan(svc, userId, client.assigned_nutrition_id) : null;
         return { client, recent_checkins: checkIns ?? [], nutrition_plan: plan };
       }
 

@@ -47,16 +47,22 @@ Deno.serve(async (req) => {
     }
     if (!customerId) {
       const esc = (v) => String(v).replace(/['\\]/g, '');
+      // Identity for the email lookup is the GoTrue-verified auth email, never
+      // profiles.email, and a customer found by email is only adopted when it
+      // isn't tagged to a DIFFERENT user — otherwise a caller could claim
+      // another coach's Stripe customer (and open their Billing Portal).
+      const authEmail = caller.auth.email ?? null;
       let existing = await stripe.customers.search({ query: `metadata['user_id']:'${esc(user.id)}'`, limit: 1 });
-      if (!existing.data.length && user.email) {
-        existing = await stripe.customers.search({ query: `email:'${esc(user.email)}'`, limit: 1 });
+      if (!existing.data.length && authEmail) {
+        const byEmail = await stripe.customers.search({ query: `email:'${esc(authEmail)}'`, limit: 10 });
+        existing = { ...byEmail, data: byEmail.data.filter((c) => !c.metadata?.user_id || c.metadata.user_id === user.id) };
       }
       if (existing.data.length > 0) {
         customerId = existing.data[0].id;
       } else {
         const customer = await stripe.customers.create({
-          email: user.email,
-          name: user.full_name || user.business_name || user.email,
+          email: authEmail ?? user.email,
+          name: user.full_name || user.business_name || authEmail || user.email,
           metadata: { user_id: user.id },
         });
         customerId = customer.id;

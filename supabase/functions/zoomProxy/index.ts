@@ -29,13 +29,16 @@ const getZoomAccessToken = async () => {
   return data.access_token;
 };
 
-// Verify a meeting was created by this coach via our session records
+// Verify a meeting was created by this coach via our session records. EVERY
+// session that references the meeting must be the caller's: a coach can write
+// any zoom_meeting_id onto their own session row, so "one of the rows is
+// mine" would let them read (start_url, password) or delete another coach's
+// meeting on the shared platform Zoom account.
 const verifyMeetingOwnership = async (svc: ReturnType<typeof serviceClient>, userId: string, meetingId: unknown) => {
   const { data: sessions } = await svc.from('coaching_sessions')
-    .select('id, created_by').eq('zoom_meeting_id', String(meetingId)).limit(1);
-  const session = sessions?.[0];
-  if (!session) return false; // meeting not in our DB — deny
-  return session.created_by === userId;
+    .select('id, created_by').eq('zoom_meeting_id', String(meetingId));
+  if (!sessions?.length) return false; // meeting not in our DB — deny
+  return sessions.every((s) => s.created_by === userId);
 };
 
 Deno.serve(async (req) => {
