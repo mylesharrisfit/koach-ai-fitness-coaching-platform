@@ -128,8 +128,7 @@ function TemplateRow({ t, onSelect }) {
   return (
     <button
       onClick={() => onSelect(t)}
-      className="w-full text-left p-3.5 rounded-xl border transition-all hover:border-primary hover:bg-accent/40"
-      style={{ borderColor: t._builtin ? 'var(--tc-ai)' : 'var(--tc-muted)', background: t._builtin ? 'var(--tc-ai)' : 'var(--tc-card)' }}
+      className="w-full text-left p-3.5 rounded-lg border border-border bg-card transition-colors hover:bg-accent/60"
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">

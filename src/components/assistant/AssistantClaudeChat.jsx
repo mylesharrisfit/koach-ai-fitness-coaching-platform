@@ -343,7 +343,7 @@ export default function AssistantClaudeChat({ selectedClient, pendingPrompt, onP
             <p className="text-[15px] text-muted-foreground mt-2">
               {selectedClient
                 ? `It can read ${firstName}'s check-ins, plans and program, and draft changes or messages for you to approve.`
-                : 'Ask about your roster or business, or pick a client on the left so it can use their numbers.'}
+                : 'Ask about your roster or business, or pick a client so it can use their numbers.'}
             </p>
             <div className="flex flex-wrap gap-2 mt-5">
               {STARTER_PROMPTS.map(q => (
