@@ -134,8 +134,12 @@ check('minted JWT TTL is ≤ 1h', minted.expires_in <= 3600 && (payload.exp - pa
 // 3c. a session carrying the minted claims is accepted by app.is_portal_client()
 await asSession(payload); // exactly what PostgREST would set from the bearer JWT
 {
-  const { rows } = await sess.query('select count(*)::int n from public.clients');
-  check('portal JWT session reads its own client row (is_portal_client accepts claim)', rows[0].n === 1);
+  // Portal reads go through clients_portal_view (migration 20260823000400);
+  // the base table's SELECT policy no longer has a portal branch.
+  const { rows } = await sess.query('select count(*)::int n from public.clients_portal_view');
+  check('portal JWT session reads its own client row via clients_portal_view (is_portal_client accepts claim)', rows[0].n === 1);
+  const { rows: base } = await sess.query('select count(*)::int n from public.clients');
+  check('portal JWT session reads ZERO rows from base public.clients (coach-private columns stay hidden)', base[0].n === 0);
   const view = await sess.query('select count(*)::int n from public.check_ins_portal_view');
   check('portal JWT session can use check_ins_portal_view', view.rows[0].n >= 0);
   // insert a check-in through the portal view as this claim-based session
@@ -148,8 +152,8 @@ await asSession(payload); // exactly what PostgREST would set from the bearer JW
 // a JWT for a different client sees nothing
 await asSession({ role: 'authenticated', portal_client_id: '00000000-0000-0000-0000-0000000000ff', aud: 'authenticated' });
 {
-  const { rows } = await sess.query('select count(*)::int n from public.clients');
-  check('portal JWT for a different client sees zero rows', rows[0].n === 0);
+  const { rows } = await sess.query('select count(*)::int n from public.clients_portal_view');
+  check('portal JWT for a different client sees zero rows in clients_portal_view', rows[0].n === 0);
 }
 
 // --- 4. setupPortalAccount: link portal_user_id + single-use the token ------
@@ -169,8 +173,10 @@ await admin.query(
 // durable path: a normal session as the linked portal user resolves is_portal_client via portal_user_id
 await asSession({ sub: portalUserId, email: 'pete@client.io', role: 'authenticated' });
 {
-  const { rows } = await sess.query('select count(*)::int n from public.clients');
-  check('linked portal account reads own client via portal_user_id path', rows[0].n === 1);
+  const { rows } = await sess.query('select count(*)::int n from public.clients_portal_view');
+  check('linked portal account reads own client via clients_portal_view (portal_user_id path)', rows[0].n === 1);
+  const { rows: base } = await sess.query('select count(*)::int n from public.clients');
+  check('linked portal account reads ZERO rows from base public.clients', base[0].n === 0);
   const { rows: ins } = await sess.query(
     "select count(*)::int n from public.check_ins_portal_view");
   check('linked portal account uses the portal view (durable session, no re-exchange)', ins[0].n === 1);

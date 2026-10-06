@@ -13,6 +13,9 @@
  *   POSTGRES_URL=postgresql://postgres@127.0.0.1:55432/migdata \
  *     node scripts/verify-facade.mjs
  *
+ * Creates its own fixture data (see "fixtures" below), so it runs against a
+ * fresh database with only the migrations + scripts/fixtures/auth-shim.sql.
+ *
  * The scenario replays the exact call shapes of the cutover Clients module
  * (Clients.jsx / ClientProfile.jsx / ClientQuickPanel.jsx) plus the portal
  * routing rules.
@@ -77,6 +80,16 @@ function builder(table) {
     eq(col, val) { state.filters.push({ col, op: '=', val }); return api; },
     is(col, val) { state.filters.push({ col, op: 'is', val }); return api; },
     in(col, vals) { state.filters.push({ col, op: 'in', val: vals }); return api; },
+    // PostgREST `or=(a.eq.x,b.eq.y)` — only the eq form the facade uses.
+    or(expr) {
+      const any = expr.split(',').map((part) => {
+        const [col, op, ...rest] = part.split('.');
+        if (op !== 'eq') throw new Error(`driver: unsupported or() operator ${op}`);
+        return { col, val: rest.join('.') };
+      });
+      state.filters.push({ op: 'or', any });
+      return api;
+    },
     order(col, { ascending = true } = {}) { state.order = { col, ascending }; return api; },
     limit(n) { state.limit = n; return api; },
     single() { state.single = true; return api; },
@@ -95,6 +108,9 @@ function builder(table) {
         .map((f) => {
           if (f.op === 'is') return `${q(f.col)} is null`;
           if (f.op === 'in') { params.push(f.val); return `${q(f.col)} = any($${params.length})`; }
+          if (f.op === 'or') {
+            return `(${f.any.map((a) => { params.push(a.val); return `${q(a.col)}::text = $${params.length}`; }).join(' or ')})`;
+          }
           params.push(ser(f.col, f.val));
           return `${q(f.col)} = $${params.length}`;
         })
@@ -155,6 +171,58 @@ const check = (label, cond, extra = '') => {
   console.log(`${cond ? 'PASS' : 'FAIL'}  ${label}${extra ? `  (${extra})` : ''}`);
   if (!cond) failures++;
 };
+
+// -- fixtures ------------------------------------------------------------------
+// The scenario used to depend on seed data from the (since deleted) base44 data
+// migration. It now creates its own: coach A (pro tier) with two clients, one
+// check-in carrying coach-only internal_notes, one message and one coaching
+// session carrying a host-only zoom_password, plus an admin account. Fixed ids
+// + `on conflict do nothing` keep reruns against the same database harmless.
+const FX = {
+  coach: 'f0000000-0000-0000-0000-0000000000a1',
+  admin: 'f0000000-0000-0000-0000-0000000000ad',
+  casey: 'f0000000-0000-0000-0000-0000000000c1',
+  riley: 'f0000000-0000-0000-0000-0000000000c2',
+};
+await admin.query(
+  `insert into auth.users (id, email, raw_user_meta_data) values
+     ($1, 'coach.a@example.com', '{"full_name":"Coach Alpha"}'),
+     ($2, 'admin@example.com',   '{"full_name":"Admin"}')
+   on conflict (id) do nothing`,
+  [FX.coach, FX.admin]
+);
+// handle_new_user() created the profile rows; set the fields the checks read.
+// billing_status 'active': coach writes need billing access server-side.
+await admin.query(
+  `update public.profiles set full_name = 'Coach Alpha', role = 'user', subscription_tier = 'pro', billing_status = 'active' where id = $1`,
+  [FX.coach]
+);
+await admin.query(`update public.profiles set role = 'admin' where id = $1`, [FX.admin]);
+await admin.query(
+  `insert into public.clients (id, user_id, created_by, name, email) values
+     ($1, $3, $3, 'Casey Client', 'casey@example.com'),
+     ($2, $3, $3, 'Riley Client', 'riley@example.com')
+   on conflict (id) do nothing`,
+  [FX.casey, FX.riley, FX.coach]
+);
+await admin.query(
+  `insert into public.check_ins (id, client_id, client_name, date, notes, internal_notes, created_by)
+   values ('f0000000-0000-0000-0000-00000000c4c1', $1, 'Casey Client', '2026-07-01', 'feeling good', 'watch left knee', $2)
+   on conflict (id) do nothing`,
+  [FX.casey, FX.coach]
+);
+await admin.query(
+  `insert into public.messages (id, client_id, client_name, sender, content, created_by)
+   values ('f0000000-0000-0000-0000-0000000035a1', $1, 'Casey Client', 'coach', 'welcome aboard', $2)
+   on conflict (id) do nothing`,
+  [FX.casey, FX.coach]
+);
+await admin.query(
+  `insert into public.coaching_sessions (id, client_id, client_name, title, date, zoom_password, created_by)
+   values ('f0000000-0000-0000-0000-00000000e551', $1, 'Casey Client', 'Kickoff call', '2026-07-10', 'host-secret', $2)
+   on conflict (id) do nothing`,
+  [FX.casey, FX.coach]
+);
 
 const { rows: [coach] } = await admin.query("select id from auth.users where email='coach.a@example.com'");
 const { rows: [casey] } = await admin.query("select id from public.clients where name='Casey Client'");
