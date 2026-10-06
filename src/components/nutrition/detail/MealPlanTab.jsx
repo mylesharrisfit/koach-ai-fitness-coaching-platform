@@ -84,7 +84,7 @@ function MealTotals({ foods }) {
 
   return (
     <div className="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-border">
-      <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Meal total:</span>
+      <span className="text-xs font-semibold text-muted-foreground">Meal total:</span>
       <div className="flex items-center gap-2 text-[11px]">
         <span className="font-bold text-foreground">{totals.calories} kcal</span>
         <span className="text-primary font-semibold">{totals.protein}g P</span>
@@ -157,7 +157,7 @@ function MealCard({ meal, index }) {
           {/* How to prepare */}
           {instructions && (
             <div className="mt-3 p-3 bg-secondary/40 rounded-lg">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">How to prepare</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">How to prepare</p>
               <p className="text-xs text-foreground leading-relaxed">{instructions}</p>
             </div>
           )}
@@ -196,7 +196,7 @@ function DailyTotalBar({ meals, targets }) {
 
   return (
     <div className="sticky bottom-0 bg-[var(--kc-w-95)] backdrop-blur border-t border-border px-4 py-3 mt-4 rounded-b-xl">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2">Daily totals vs target</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-2">Daily totals vs target</p>
       <div className="flex gap-3">
         <StatusBar label="Kcal"    current={totals.calories} target={targets.calories} color="var(--tc-muted-foreground)" />
         <StatusBar label="Protein" current={totals.protein}  target={targets.protein}  color="var(--tc-primary)" />
@@ -214,7 +214,7 @@ export default function MealPlanTab({ plan }) {
   return (
     <div className="space-y-3 pb-4">
       <div className="flex items-center justify-between mb-1">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">{meals.length} meal{meals.length !== 1 ? 's' : ''} configured</p>
+        <p className="text-xs font-semibold text-muted-foreground">{meals.length} meal{meals.length !== 1 ? 's' : ''} configured</p>
       </div>
       {meals.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">

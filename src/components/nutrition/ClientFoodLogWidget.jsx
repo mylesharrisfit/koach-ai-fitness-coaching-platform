@@ -54,7 +54,7 @@ function MacroRing({ label, consumed, target, color }) {
           {target > 0 && <span className="text-[9px] text-muted-foreground leading-none mt-0.5">/ {target}</span>}
         </div>
       </div>
-      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
+      <span className="text-xs font-semibold text-muted-foreground">{label}</span>
     </div>
   );
 }
@@ -218,7 +218,7 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
         >
           {/* Calorie headline */}
           <div className="text-center mb-4">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">Calories Today</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-0.5">Calories Today</p>
             <p className="text-3xl font-bold font-heading leading-none">
               {totCal}
               {tCal > 0 && <span className="text-base font-normal text-muted-foreground ml-1">/ {tCal} kcal</span>}
@@ -258,7 +258,7 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
 
       {/* Meals list */}
       <div className="space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-0.5">Today's Meals</p>
+        <p className="text-xs font-semibold text-muted-foreground px-0.5">Today's Meals</p>
         {logsLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />

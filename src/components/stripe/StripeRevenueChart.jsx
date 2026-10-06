@@ -14,7 +14,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function StripeRevenueChart({ data }) {
   return (
     <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-      <h3 className="text-xs font-bold text-foreground uppercase tracking-widest mb-5">Revenue — Last 6 Months</h3>
+      <h3 className="text-xs font-semibold text-foreground mb-5">Revenue — Last 6 Months</h3>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
           <defs>

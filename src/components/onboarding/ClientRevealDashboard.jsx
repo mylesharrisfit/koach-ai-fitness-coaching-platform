@@ -61,7 +61,7 @@ export default function ClientRevealDashboard({ data }) {
         className="px-5 pt-12 pb-4 flex items-center justify-between"
       >
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] font-semibold mb-1" style={{ color: 'var(--tc-primary)' }}>
+          <p className="text-xs font-semibold mb-1" style={{ color: 'var(--tc-primary)' }}>
             KOACH AI — Live
           </p>
           <h1 className="text-2xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
@@ -121,7 +121,7 @@ export default function ClientRevealDashboard({ data }) {
           <DarkCard>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <p className="text-xs uppercase tracking-widest font-semibold mb-1" style={{ color: 'var(--kc-7a7a7a)' }}>Today's Workout</p>
+                <p className="text-xs font-semibold mb-1" style={{ color: 'var(--kc-7a7a7a)' }}>Today's Workout</p>
                 <p className="text-base font-bold text-white">Upper Body — Push A</p>
               </div>
               <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' }}>
@@ -148,7 +148,7 @@ export default function ClientRevealDashboard({ data }) {
         {/* Macros */}
         <motion.div variants={stagger.item}>
           <DarkCard>
-            <p className="text-xs uppercase tracking-widest font-semibold mb-3" style={{ color: 'var(--kc-7a7a7a)' }}>Nutrition Today</p>
+            <p className="text-xs font-semibold mb-3" style={{ color: 'var(--kc-7a7a7a)' }}>Nutrition Today</p>
             <div className="grid grid-cols-4 gap-2 text-center">
               {[
                 { label: 'Calories', value: '2,400', target: '2,400', color: 'var(--tc-primary)' },
@@ -172,7 +172,7 @@ export default function ClientRevealDashboard({ data }) {
         {/* Habits */}
         <motion.div variants={stagger.item}>
           <DarkCard>
-            <p className="text-xs uppercase tracking-widest font-semibold mb-3" style={{ color: 'var(--kc-7a7a7a)' }}>Daily Habits</p>
+            <p className="text-xs font-semibold mb-3" style={{ color: 'var(--kc-7a7a7a)' }}>Daily Habits</p>
             <div className="space-y-2.5">
               {['Morning workout done', 'Hit protein target', '8 glasses of water', '7+ hours sleep'].map((h, i) => (
                 <div key={i} className="flex items-center gap-3">

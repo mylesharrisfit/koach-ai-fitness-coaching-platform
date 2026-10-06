@@ -108,7 +108,7 @@ export default function AtRiskClients({ clients, checkIns }) {
           <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center', atRisk.length > 0 ? 'bg-destructive/20' : 'bg-secondary')}>
             <AlertTriangle className={cn('w-4 h-4', atRisk.length > 0 ? 'text-destructive' : 'text-muted-foreground')} />
           </div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider">Needs Attention</h2>
+          <h2 className="text-sm font-semibold">Needs Attention</h2>
         </div>
         {atRisk.length > 0 && (
           <span className="text-xs bg-destructive/20 text-destructive px-2 py-0.5 rounded-full font-semibold">

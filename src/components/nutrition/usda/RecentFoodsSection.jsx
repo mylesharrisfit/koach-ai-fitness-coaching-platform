@@ -33,7 +33,7 @@ export default function RecentFoodsSection({ onAdd }) {
         <div>
           <div className="flex items-center gap-1.5 mb-2">
             <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Recently Added</p>
+            <p className="text-xs font-semibold text-muted-foreground">Recently Added</p>
           </div>
           <div className="space-y-0.5">
             {recent.slice(0, 5).map((f, i) => <QuickItem key={i} food={f} />)}
@@ -45,7 +45,7 @@ export default function RecentFoodsSection({ onAdd }) {
       <div>
         <div className="flex items-center gap-1.5 mb-2">
           <TrendingUp className="w-3.5 h-3.5 text-muted-foreground" />
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">My Saved Foods</p>
+          <p className="text-xs font-semibold text-muted-foreground">My Saved Foods</p>
         </div>
         {loadingMy ? (
           <div className="flex justify-center py-4"><Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /></div>

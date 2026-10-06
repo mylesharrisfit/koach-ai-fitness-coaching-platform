@@ -33,7 +33,7 @@ function StatBox({ label, value, sub, color = 'text-foreground' }) {
   return (
     <div className="bg-muted rounded-xl p-3 flex flex-col gap-0.5">
       <span className={`text-base font-bold ${color}`}>{value ?? '—'}</span>
-      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
+      <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       {sub && <span className="text-[10px] text-muted-foreground">{sub}</span>}
     </div>
   );
@@ -286,13 +286,13 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               {/* Activity */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-muted rounded-xl p-3">
-                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Last Check-in</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Last Check-in</p>
                   <p className="text-sm font-bold text-foreground">
                     {lastCheckIn ? formatDistanceToNow(new Date(lastCheckIn.date), { addSuffix: true }) : 'Never'}
                   </p>
                 </div>
                 <div className="bg-muted rounded-xl p-3">
-                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Last Message</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Last Message</p>
                   <p className="text-sm font-bold text-foreground">
                     {lastMsg ? formatDistanceToNow(new Date(lastMsg.created_date), { addSuffix: true }) : 'Never'}
                   </p>
@@ -325,7 +325,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               {/* Notes */}
               {client.notes && (
                 <div className="p-3 bg-muted rounded-xl">
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Coach Notes</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Coach Notes</p>
                   <p className="text-sm text-foreground leading-relaxed">{client.notes}</p>
                 </div>
               )}
@@ -362,7 +362,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   {/* Weekly schedule */}
                   {(program.workouts || []).length > 0 && (
                     <div>
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">Weekly Schedule</p>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">Weekly Schedule</p>
                       <div className="space-y-2">
                         {program.workouts.map((w, i) => (
                           <div key={i} className="flex items-center gap-3 p-3 bg-muted rounded-xl">
@@ -426,7 +426,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   {/* Meals */}
                   {(nutritionPlan.meals || []).length > 0 && (
                     <div>
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">Meal Plan</p>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">Meal Plan</p>
                       <div className="space-y-2">
                         {nutritionPlan.meals.map((m, i) => (
                           <div key={i} className="flex items-center gap-3 p-3 bg-muted rounded-xl">
@@ -462,7 +462,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
           {tab === 'checkins' && (
             <div className="p-5 space-y-3">
               <div className="flex items-center justify-between mb-1">
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">{checkIns.length} total check-ins</p>
+                <p className="text-xs font-semibold text-muted-foreground">{checkIns.length} total check-ins</p>
                 <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => navigate(`/submit-checkin?client_id=${client.id}`)}>
                   <Plus className="w-3 h-3" /> Log Check-in
                 </Button>
@@ -549,7 +549,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
             <div className="p-5 space-y-6">
               {/* Weight chart */}
               <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Weight Over Time</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-3">Weight Over Time</p>
                 {weightData.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={weightData} margin={{ top: 4, right: 8, bottom: 4, left: 0 }}>
@@ -569,7 +569,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
 
               {/* Adherence chart */}
               <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Adherence Over Time</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-3">Adherence Over Time</p>
                 {adherenceData.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={adherenceData} margin={{ top: 4, right: 8, bottom: 4, left: 0 }}>
@@ -591,7 +591,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               {/* Progress photos */}
               {checkIns.some(ci => ci.photo_urls?.length > 0) && (
                 <div>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Progress Photos</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-3">Progress Photos</p>
                   <div className="space-y-4">
                     {checkIns.filter(ci => ci.photo_urls?.length > 0).map(ci => (
                       <div key={ci.id}>

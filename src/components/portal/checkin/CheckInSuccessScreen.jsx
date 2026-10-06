@@ -81,7 +81,7 @@ export default function CheckInSuccessScreen({ streak, onHome, onMessage }) {
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.35 }}
           className="mt-8 rounded-2xl p-6 text-center"
           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', minWidth: 240 }}>
-          <p className="text-white/40 text-xs font-bold uppercase tracking-wider mb-2">Check-in Streak</p>
+          <p className="text-white/40 text-xs font-semibold mb-2">Check-in Streak</p>
           <p className="text-white font-black" style={{ fontSize: 40 }}>🔥 {streak}</p>
           <p className="text-white/50 text-sm mt-1">Week{streak !== 1 ? 's' : ''} in a row!</p>
         </motion.div>

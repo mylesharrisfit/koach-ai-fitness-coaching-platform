@@ -95,7 +95,7 @@ export default function InvoiceDetailModal({ invoice, onClose, onPay }) {
 
         {/* Coach contact */}
         <div className="mx-5 mb-6 p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-white/30 text-xs font-semibold uppercase tracking-wider mb-2">Questions?</p>
+          <p className="text-white/30 text-xs font-semibold mb-2">Questions?</p>
           <p className="text-white/60 text-xs">Contact your coach via the Messages tab in your portal.</p>
         </div>
 

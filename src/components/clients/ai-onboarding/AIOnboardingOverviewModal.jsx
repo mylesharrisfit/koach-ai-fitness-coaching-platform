@@ -72,7 +72,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-4"
             style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-primary) 30%, transparent), color-mix(in srgb, var(--tc-ai) 30%, transparent))', border: '1px solid color-mix(in srgb, var(--tc-ai) 40%, transparent)' }}>
             <Sparkles className="w-3 h-3" style={{ color: 'var(--tc-ai)' }} />
-            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-ai)' }}>Pro &amp; Elite Feature</span>
+            <span className="text-xs font-semibold" style={{ color: 'var(--tc-ai)' }}>Pro &amp; Elite Feature</span>
           </div>
 
           <h2 className="text-2xl font-bold text-white leading-tight mb-2">
@@ -87,7 +87,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
         <div style={{ flex: '1 1 0', overflowY: 'auto', minHeight: 0 }}>
           {/* Benefits */}
           <div className="px-7 py-5 space-y-3" style={{ background: 'var(--tc-sidebar)' }}>
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>What you get</p>
+            <p className="text-xs font-semibold mb-3" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>What you get</p>
             {BENEFITS.map((b, i) => {
               const Icon = b.icon;
               return (
@@ -107,7 +107,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
 
           {/* How it works */}
           <div className="px-7 py-5" style={{ background: 'var(--tc-sidebar)', borderTop: '1px solid color-mix(in srgb, white 6%, transparent)' }}>
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-4" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>How it works</p>
+            <p className="text-xs font-semibold mb-4" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>How it works</p>
             <div className="flex items-start gap-0">
               {STEPS.map((s, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center text-center relative">

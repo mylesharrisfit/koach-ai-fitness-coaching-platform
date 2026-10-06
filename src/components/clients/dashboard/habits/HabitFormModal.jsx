@@ -88,7 +88,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
           {/* Suggested names */}
           {!isEdit && (
             <div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Quick add</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Quick add</p>
               <div className="flex flex-wrap gap-1.5">
                 {SUGGESTED_NAMES.map(n => (
                   <button key={n} onClick={() => set('name', n)}
@@ -102,7 +102,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
           {/* Name + emoji row */}
           <div>
-            <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Habit Name</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Habit Name</label>
             <div className="flex gap-2">
               {/* Emoji picker (just a small input) */}
               <input
@@ -134,7 +134,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
           {/* Frequency */}
           <div>
-            <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Frequency</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-2">Frequency</label>
             <div className="flex gap-2 mb-3">
               {[{ key: 'daily', label: 'Every day' }, { key: 'custom', label: 'Specific days' }].map(f => (
                 <button key={f.key} onClick={() => set('frequency', f.key)}

@@ -100,7 +100,7 @@ export default function CheckInNutritionTab({ clientId, checkInDate, nutritionPl
         {/* Calories headline */}
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Total Calories</p>
+            <p className="text-xs font-semibold text-muted-foreground">Total Calories</p>
             <p className="text-3xl font-bold font-heading leading-none mt-0.5">
               {totCal}
               {tCal > 0 && <span className="text-sm font-normal text-muted-foreground ml-1">/ {tCal} kcal</span>}

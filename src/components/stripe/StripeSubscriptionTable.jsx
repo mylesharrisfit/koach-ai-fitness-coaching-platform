@@ -36,7 +36,7 @@ export default function StripeSubscriptionTable({ subscriptions, clients, onRefr
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
       <div className="px-6 py-4 border-b border-border">
-        <h3 className="text-xs font-bold text-foreground uppercase tracking-widest">Stripe Subscriptions</h3>
+        <h3 className="text-xs font-semibold text-foreground">Stripe Subscriptions</h3>
       </div>
       {subscriptions.length === 0 ? (
         <p className="text-sm text-foreground text-center py-10">No subscriptions found. Create your first one above.</p>

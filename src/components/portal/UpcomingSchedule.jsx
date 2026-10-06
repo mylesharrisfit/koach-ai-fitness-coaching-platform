@@ -29,7 +29,7 @@ export default function UpcomingSchedule({ program }) {
             className="flex items-center gap-3 p-3.5 rounded-2xl"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
             <div className="w-10 text-center flex-shrink-0">
-              <p className="text-white/40 text-[10px] font-semibold uppercase">{dayLabel}</p>
+              <p className="text-white/40 text-xs font-semibold">{dayLabel}</p>
               <p className="text-white font-bold text-sm">{dateLabel.split(' ')[1]}</p>
             </div>
             <div className="w-px h-8 bg-white/10 flex-shrink-0" />

@@ -60,7 +60,7 @@ export default function RuleFormModal({ open, onClose, onSave, initial }) {
 
           {/* IF Block */}
           <div className="rounded-xl border border-border bg-secondary/30 p-4 space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">IF Condition</p>
+            <p className="text-xs font-semibold text-muted-foreground">IF Condition</p>
             <div>
               <Label>Trigger</Label>
               <Select value={form.condition_type} onValueChange={v => {
@@ -104,7 +104,7 @@ export default function RuleFormModal({ open, onClose, onSave, initial }) {
 
           {/* THEN Block */}
           <div className="rounded-xl border border-border bg-secondary/30 p-4 space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">THEN Action</p>
+            <p className="text-xs font-semibold text-muted-foreground">THEN Action</p>
             <div>
               <Label>Action</Label>
               <Select value={form.action_type} onValueChange={v => set('action_type', v)}>

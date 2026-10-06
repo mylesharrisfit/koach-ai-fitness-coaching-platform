@@ -18,7 +18,7 @@ export default function FunnelView({ leads, onStageClick, selectedStage }) {
 
   return (
     <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-      <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-5">Sales Funnel</h2>
+      <h2 className="text-sm font-semibold text-muted-foreground mb-5">Sales Funnel</h2>
       <div className="flex items-stretch gap-1">
         {STAGES.map((stage, idx) => {
           const count = counts[stage.key];
@@ -35,7 +35,7 @@ export default function FunnelView({ leads, onStageClick, selectedStage }) {
               >
                 <div className="flex items-center gap-2 mb-3">
                   <stage.icon className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{stage.label}</span>
+                  <span className="text-xs font-semibold text-muted-foreground">{stage.label}</span>
                 </div>
                 <p className="text-3xl font-heading font-bold text-foreground">{count}</p>
                 <p className="text-xs text-muted-foreground mt-1">{pct}% of total</p>

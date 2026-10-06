@@ -147,14 +147,14 @@ export default function UpgradeModal({ open, onClose, featureKey, user, onUserUp
                 )}>
                   {isRecommended && (
                     <div className="absolute -top-2.5 inset-x-0 flex justify-center">
-                      <span className="text-[9px] font-bold uppercase tracking-widest bg-accent text-accent-foreground px-3 py-0.5 rounded-full">
+                      <span className="text-xs font-semibold bg-accent text-accent-foreground px-3 py-0.5 rounded-full">
                         Recommended
                       </span>
                     </div>
                   )}
                   {isCurrent && (
                     <div className="absolute -top-2.5 inset-x-0 flex justify-center">
-                      <span className="text-[9px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-3 py-0.5 rounded-full">
+                      <span className="text-xs font-semibold bg-primary text-primary-foreground px-3 py-0.5 rounded-full">
                         Current Plan
                       </span>
                     </div>

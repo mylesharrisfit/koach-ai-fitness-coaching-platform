@@ -207,7 +207,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
                 <Sparkles className="w-3 h-3 text-ai" />
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Starter Templates</p>
+                <p className="text-xs font-semibold text-muted-foreground">Starter Templates</p>
               </div>
               {filteredBuiltin.map(t => <TemplateRow key={t.id} t={t} onSelect={onSelect} />)}
             </div>
@@ -218,7 +218,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
                 <LayoutTemplate className="w-3 h-3 text-primary" />
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">My Templates</p>
+                <p className="text-xs font-semibold text-muted-foreground">My Templates</p>
               </div>
               {filteredSaved.map(t => <TemplateRow key={t.id} t={t} onSelect={onSelect} />)}
             </div>

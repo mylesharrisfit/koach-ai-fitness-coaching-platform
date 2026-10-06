@@ -25,7 +25,7 @@ export default function InvoicePreview({ form, coachUser }) {
 
   return (
     <div style={{ height: '100%', overflowY: 'auto', background: 'var(--tc-muted)', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Live Preview</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 10 }}>Live Preview</div>
 
       {/* Invoice Paper */}
       <div style={{ background: 'var(--tc-card)', borderRadius: 16, width: '100%', maxWidth: 480, boxShadow: '0 4px 24px color-mix(in srgb, black 8%, transparent)', overflow: 'hidden' }}>
@@ -55,12 +55,12 @@ export default function InvoicePreview({ form, coachUser }) {
           {/* From / To */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 22 }}>
             <div>
-              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>From</div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 4 }}>From</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--tc-foreground)' }}>{businessName}</div>
               {coachUser?.email && <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 2 }}>{coachUser.email}</div>}
             </div>
             <div>
-              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Bill To</div>
+              <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 4 }}>Bill To</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--tc-foreground)' }}>{form.client_name || <span style={{ color: 'var(--tc-muted-foreground)' }}>Client Name</span>}</div>
               {form.client_email && <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 2 }}>{form.client_email}</div>}
               {form.billing_address && <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 1 }}>{form.billing_address}</div>}
@@ -75,7 +75,7 @@ export default function InvoicePreview({ form, coachUser }) {
               { label: 'Due Date', value: fmt(form.due_date) },
             ].map(({ label, value }) => (
               <div key={label}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{label}</div>
+                <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 3 }}>{label}</div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--tc-foreground)' }}>{value}</div>
               </div>
             ))}
@@ -93,7 +93,7 @@ export default function InvoicePreview({ form, coachUser }) {
             <div style={{ marginBottom: 18 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 48px 70px 70px', gap: 6, padding: '6px 0', borderBottom: '1px solid var(--tc-muted)', marginBottom: 6 }}>
                 {['Description', 'Qty', 'Price', 'Total'].map((h, i) => (
-                  <div key={h} style={{ fontSize: 9, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: i > 0 ? 'right' : 'left' }}>{h}</div>
+                  <div key={h} style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', textAlign: i > 0 ? 'right' : 'left' }}>{h}</div>
                 ))}
               </div>
               {form.line_items.map((item, i) => {
@@ -147,7 +147,7 @@ export default function InvoicePreview({ form, coachUser }) {
           {/* Notes */}
           {form.notes && (
             <div style={{ padding: '10px 14px', background: 'var(--tc-warning)', borderRadius: 10, marginBottom: 12 }}>
-              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--tc-warning)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Notes</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--tc-warning)', marginBottom: 4 }}>Notes</div>
               <div style={{ fontSize: 12, color: 'var(--tc-foreground)', lineHeight: 1.5 }}>{form.notes}</div>
             </div>
           )}

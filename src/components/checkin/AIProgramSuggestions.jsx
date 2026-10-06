@@ -25,7 +25,7 @@ function SuggestionCard({ suggestion, onApply, applied }) {
           <Icon className={cn('w-4 h-4 flex-shrink-0', meta.color)} />
           <p className="text-sm font-semibold leading-snug">{suggestion.title}</p>
         </div>
-        <span className={cn('text-[10px] font-bold uppercase tracking-wide flex-shrink-0', impactColor)}>
+        <span className={cn('text-xs font-semibold flex-shrink-0', impactColor)}>
           {suggestion.impact}
         </span>
       </div>

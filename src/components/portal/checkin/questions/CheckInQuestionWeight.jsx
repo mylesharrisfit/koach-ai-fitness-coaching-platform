@@ -53,7 +53,7 @@ export default function CheckInQuestionWeight({ value, onChange, lastValue }) {
           className="flex items-center justify-center gap-3 p-4 rounded-2xl"
           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="text-center">
-            <p className="text-white/30 text-[10px] uppercase tracking-wide">Last week</p>
+            <p className="text-white/30 text-xs">Last week</p>
             <p className="text-white/60 font-bold text-lg">{lastValue} {unit}</p>
           </div>
           {diff !== null && TrendIcon && (

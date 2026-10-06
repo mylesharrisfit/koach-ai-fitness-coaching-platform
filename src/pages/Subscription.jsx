@@ -228,7 +228,7 @@ export default function Subscription({ gated = false, accessReason = undefined }
                 <Zap className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Current Plan</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-0.5">Current Plan</p>
                 <h2 className="text-xl font-bold text-white">
                   {hasPlan ? `${userTier.name} · ${isYearly ? 'Yearly' : 'Monthly'}` : (access.reason === 'trial' ? `${userTier.name} (free trial)` : access.hasAccess ? `${userTier.name} (complimentary)` : 'No active plan')}
                 </h2>

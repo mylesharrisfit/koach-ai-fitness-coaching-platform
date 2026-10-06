@@ -102,7 +102,7 @@ function ResponseCard({ response, onApprove, isApproving }) {
             ['Schedule', response.schedule_preferences],
           ].filter(([, v]) => v).map(([label, value]) => (
             <div key={label} className="flex gap-2">
-              <span className="text-[10px] font-bold text-muted-foreground w-28 flex-shrink-0 pt-0.5 uppercase tracking-wide">{label}</span>
+              <span className="text-xs font-semibold text-muted-foreground w-28 flex-shrink-0 pt-0.5">{label}</span>
               <span className="text-xs text-foreground leading-relaxed">{value}</span>
             </div>
           ))}
@@ -135,7 +135,7 @@ function StatCard({ icon: Icon, value, label, color }) {
         <Icon className="w-4 h-4" style={{ color }} />
       </div>
       <p className="text-2xl font-bold tabular-nums" style={{ color }}>{value}</p>
-      <p className="text-[10px] text-muted-foreground mt-0.5 font-medium uppercase tracking-wide">{label}</p>
+      <p className="text-xs text-muted-foreground mt-0.5 font-medium">{label}</p>
     </div>
   );
 }
@@ -288,7 +288,7 @@ export default function OnboardingManager() {
                 {/* Badge */}
                 <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full mb-1.5"
                   style={{ background: 'color-mix(in srgb, var(--tc-ai) 18%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-ai) 35%, transparent)' }}>
-                  <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-ai)' }}>Pro &amp; Elite</span>
+                  <span className="text-xs font-semibold" style={{ color: 'var(--tc-ai)' }}>Pro &amp; Elite</span>
                 </div>
                 <p className="text-base font-bold text-white leading-tight">AI Onboarding</p>
                 <p className="text-xs mt-1 leading-relaxed" style={{ color: 'color-mix(in srgb, white 50%, transparent)' }}>
@@ -329,7 +329,7 @@ export default function OnboardingManager() {
           )}
           <div className="flex items-center gap-1">
             <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: canAIOnboard ? 'var(--tc-success)' : 'var(--tc-ai)' }} />
-            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: canAIOnboard ? 'var(--tc-success)' : 'color-mix(in srgb, var(--tc-ai) 70%, transparent)' }}>
+            <span className="text-xs font-semibold" style={{ color: canAIOnboard ? 'var(--tc-success)' : 'color-mix(in srgb, var(--tc-ai) 70%, transparent)' }}>
               {canAIOnboard ? 'Available' : 'Pro+'}
             </span>
           </div>
@@ -363,7 +363,7 @@ export default function OnboardingManager() {
           </div>
           <div className="p-5 space-y-4">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Search Client</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Search Client</p>
               <input
                 autoFocus
                 type="text"
@@ -429,7 +429,7 @@ export default function OnboardingManager() {
 
       {/* How it works */}
       <div className="bg-accent border border-accent rounded-2xl p-4 space-y-2.5">
-        <p className="text-xs font-bold text-primary uppercase tracking-widest">How it works</p>
+        <p className="text-xs font-semibold text-primary">How it works</p>
         <div className="space-y-2">
           {[
             { n: '1', text: 'Copy your unique intake link below.' },

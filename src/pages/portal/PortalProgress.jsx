@@ -325,7 +325,7 @@ export default function PortalProgress({ user }) {
       {/* Header */}
       <div className="bg-card px-5 pt-14 pb-4 flex items-center justify-between" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <div>
-          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Progress</p>
+          <p className="text-muted-foreground text-xs font-semibold">Progress</p>
           <h1 className="text-foreground text-2xl font-black mt-0.5">My Progress</h1>
         </div>
         <button onClick={() => setShowLog(true)}
@@ -339,7 +339,7 @@ export default function PortalProgress({ user }) {
 
       {/* Score Card */}
       <div className="bg-card p-5 rounded-3xl" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
-        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-4">Overall Score</p>
+        <p className="text-muted-foreground text-xs font-semibold mb-4">Overall Score</p>
         <div className="flex items-center justify-between">
           <ScoreRing score={score} />
           <div className="flex-1 ml-6 space-y-2.5">

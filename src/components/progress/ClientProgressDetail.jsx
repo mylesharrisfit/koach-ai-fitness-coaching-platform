@@ -76,7 +76,7 @@ export default function ClientProgressDetail({ client, checkIns, sessions, allCl
               score >= 70 ? 'text-success' : score >= 50 ? 'text-orange-400' : 'text-destructive')}>
               {score}
             </div>
-            <div className="text-[9px] text-white/40 uppercase tracking-wide">Progress Score</div>
+            <div className="text-xs text-white/40">Progress Score</div>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--kc-w-10)] hover:bg-[var(--kc-w-20)] transition-colors">
             <X className="w-4 h-4 text-white" />

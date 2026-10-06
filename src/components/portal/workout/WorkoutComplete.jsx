@@ -109,14 +109,14 @@ export default function WorkoutComplete({ workout, exerciseLogs, durationSeconds
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="w-full rounded-[20px] p-5 mb-5"
             style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <p className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-4 text-center">Summary</p>
+            <p className="text-white/30 text-xs font-semibold mb-4 text-center">Summary</p>
             <div className="grid grid-cols-2 gap-3">
               {stats.map(({ label, value, emoji }) => (
                 <div key={label} className="text-center py-4 px-3 rounded-2xl"
                   style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <p className="text-2xl mb-1">{emoji}</p>
                   <p className="text-white font-black text-xl leading-none">{value}</p>
-                  <p className="text-white/30 text-[10px] mt-1 font-semibold uppercase tracking-wide">{label}</p>
+                  <p className="text-white/30 text-xs mt-1 font-semibold">{label}</p>
                 </div>
               ))}
             </div>

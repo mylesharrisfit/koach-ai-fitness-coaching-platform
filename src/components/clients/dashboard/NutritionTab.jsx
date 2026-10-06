@@ -297,7 +297,7 @@ function TodayFoodLog({ client, assignedPlan }) {
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
         <div className="flex items-center gap-2">
           <Utensils className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-bold text-foreground uppercase tracking-wide">Today's Food Log</span>
+          <span className="text-xs font-semibold text-foreground">Today's Food Log</span>
         </div>
         <span className="text-[10px] text-muted-foreground">{format(new Date(), 'MMM d')}</span>
       </div>
@@ -405,7 +405,7 @@ function WeeklyAdherenceGrid({ client }) {
   return (
     <div className="bg-card rounded-xl border border-border p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-foreground uppercase tracking-wide">7-Day Adherence</span>
+        <span className="text-xs font-semibold text-foreground">7-Day Adherence</span>
         <span className={cn(
           'text-xs font-bold tabular-nums',
           adherencePct >= 80 ? 'text-success' : adherencePct >= 50 ? 'text-warning' : 'text-muted-foreground'

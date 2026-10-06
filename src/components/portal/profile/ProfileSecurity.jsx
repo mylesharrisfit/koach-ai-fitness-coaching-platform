@@ -54,7 +54,7 @@ export default function ProfileSecurity() {
           { label: 'Confirm New Password', value: confirm, onChange: setConfirm, show: showNew, setShow: setShowNew },
         ].map(({ label, value, onChange, show, setShow, showStrength }) => (
           <div key={label}>
-            <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">{label}</p>
+            <p className="text-white/30 text-xs mb-1.5">{label}</p>
             <div className="flex items-center gap-2 border-b border-white/10 pb-1 focus-within:border-primary transition-colors">
               <input
                 type={show ? 'text' : 'password'}

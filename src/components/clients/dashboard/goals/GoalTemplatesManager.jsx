@@ -13,7 +13,7 @@ const TYPE_META = {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">{label}</label>
+      <label className="block text-xs font-semibold text-muted-foreground mb-1">{label}</label>
       {children}
     </div>
   );

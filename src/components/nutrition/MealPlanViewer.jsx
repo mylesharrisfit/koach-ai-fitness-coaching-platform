@@ -136,7 +136,7 @@ export default function MealPlanViewer({ plan }) {
     <div className="space-y-3">
       {/* Daily summary */}
       <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/5 to-accent rounded-xl border border-primary/10 flex-wrap">
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Daily Total</span>
+        <span className="text-xs font-semibold text-muted-foreground">Daily Total</span>
         <MacroChip label="kcal" value={totalCals} unit="" cls="bg-orange-100 text-orange-700" />
         <MacroChip label="Protein" value={totalP} cls="bg-destructive/10 text-destructive" />
         <MacroChip label="Carbs" value={totalC} cls="bg-warning/10 text-warning" />

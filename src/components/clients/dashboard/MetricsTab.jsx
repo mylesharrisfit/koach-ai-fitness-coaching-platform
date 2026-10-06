@@ -121,7 +121,7 @@ export default function MetricsTab({ client, onClientUpdated }) {
       {/* ── LEFT: Category list (Trainerize-style) ── */}
       <div className="w-[220px] flex-shrink-0 bg-card border-r border-border overflow-y-auto">
         <div className="px-4 py-3 border-b border-border">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Metrics</p>
+          <p className="text-xs font-semibold text-muted-foreground">Metrics</p>
         </div>
         <div className="py-2">
           {CATEGORIES.map(cat => {

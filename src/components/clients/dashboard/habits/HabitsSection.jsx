@@ -134,7 +134,7 @@ export default function HabitsSection({ client }) {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-0.5 h-3 rounded-full bg-ai" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Active</p>
+              <p className="text-xs font-semibold text-muted-foreground">Active</p>
               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-ai/10 text-ai">{active.length}</span>
             </div>
             {active.map(h => (
@@ -155,7 +155,7 @@ export default function HabitsSection({ client }) {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-0.5 h-3 rounded-full bg-border" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Inactive</p>
+              <p className="text-xs font-semibold text-muted-foreground">Inactive</p>
             </div>
             {inactive.map(h => (
               <HabitCard

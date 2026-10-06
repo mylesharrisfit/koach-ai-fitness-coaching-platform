@@ -89,7 +89,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">AI Check-in Summary</p>
+          <p className="text-xs font-semibold text-muted-foreground">AI Check-in Summary</p>
         </div>
         <div className="flex items-center gap-2">
           {summary && (

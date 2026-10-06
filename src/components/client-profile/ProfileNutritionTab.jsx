@@ -249,7 +249,7 @@ function TodayFoodLog({ client, assignedPlan }) {
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Utensils className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-bold text-foreground uppercase tracking-wide">Today's Food Log</span>
+          <span className="text-xs font-semibold text-foreground">Today's Food Log</span>
         </div>
         <span className="text-[11px] text-muted-foreground">{format(new Date(), 'MMM d')}</span>
       </div>
@@ -361,7 +361,7 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
-          <span className="text-xs font-bold text-foreground uppercase tracking-wide">7-Day Adherence</span>
+          <span className="text-xs font-semibold text-foreground">7-Day Adherence</span>
         </div>
         <span className={cn(
           'text-xs font-bold tabular-nums',
@@ -411,7 +411,7 @@ function PlanHistory({ client, allPlans }) {
     <div className="bg-card rounded-2xl border border-border p-4">
       <div className="flex items-center gap-2 mb-3">
         <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-        <span className="text-xs font-bold text-foreground uppercase tracking-wide">Plan History</span>
+        <span className="text-xs font-semibold text-foreground">Plan History</span>
       </div>
       <p className="text-xs text-muted-foreground text-center py-4">No previous plans on record</p>
     </div>
@@ -421,7 +421,7 @@ function PlanHistory({ client, allPlans }) {
     <div className="bg-card rounded-2xl border border-border p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-        <span className="text-xs font-bold text-foreground uppercase tracking-wide">Plan History</span>
+        <span className="text-xs font-semibold text-foreground">Plan History</span>
       </div>
       <div className="space-y-3">
         {history.map((plan, i) => (

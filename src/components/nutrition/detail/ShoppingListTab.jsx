@@ -88,7 +88,7 @@ export default function ShoppingListTab({ plan }) {
           .filter(cat => groupedItems[cat]?.length > 0)
           .map(cat => (
             <div key={cat}>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
+              <h4 className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-2">
                 <span>{CATEGORY_ICONS[cat]}</span> {cat}
               </h4>
               <div className="bg-card border border-border rounded-xl overflow-hidden">

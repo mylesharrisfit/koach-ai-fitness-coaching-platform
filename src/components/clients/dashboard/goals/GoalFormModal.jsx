@@ -23,7 +23,7 @@ const EMPTY = {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">{label}</label>
+      <label className="block text-xs font-semibold text-muted-foreground mb-1">{label}</label>
       {children}
     </div>
   );
@@ -238,7 +238,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             {/* ── Nutrition fields ── */}
             {form.goal_type === 'nutrition' && (
               <div className="space-y-4">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Daily Targets</p>
+                <p className="text-xs font-semibold text-muted-foreground">Daily Targets</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Calories (kcal)">
                     <TextInput type="number" value={form.calories_target} onChange={v => set('calories_target', v)} placeholder="e.g. 2200" />
@@ -253,7 +253,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                     <TextInput type="number" value={form.fat_target} onChange={v => set('fat_target', v)} placeholder="e.g. 70" />
                   </Field>
                 </div>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Current Actuals (today)</p>
+                <p className="text-xs font-semibold text-muted-foreground">Current Actuals (today)</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Calories (kcal)">
                     <TextInput type="number" value={form.calories_current} onChange={v => set('calories_current', v)} placeholder="e.g. 1800" />

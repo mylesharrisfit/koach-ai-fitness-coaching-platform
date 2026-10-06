@@ -100,7 +100,7 @@ function QuestionCard({ question, index, onChange, onDelete, onMove, total }) {
 
           {question.type === 'multiple_choice' && (
             <div className="space-y-1.5">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase">Options</p>
+              <p className="text-xs font-semibold text-muted-foreground">Options</p>
               {(question.options || []).map((opt, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <Input
@@ -273,7 +273,7 @@ export default function CheckInFormEditor({ form, clients, onClose }) {
             {/* Preset library */}
             {showPresets && (
               <div className="mb-4 p-4 bg-background border border-border rounded-xl">
-                <p className="text-xs font-bold text-foreground mb-3 uppercase tracking-wide">Preset Question Library</p>
+                <p className="text-xs font-semibold text-foreground mb-3">Preset Question Library</p>
                 <div className="grid sm:grid-cols-2 gap-2">
                   {PRESET_QUESTIONS.map(p => (
                     <button key={p.preset_key} onClick={() => addPreset(p)}

@@ -178,7 +178,7 @@ export default function SessionsTab({ client }) {
         <>
           {upcoming.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
+              <p className="text-xs font-semibold text-muted-foreground mb-3">
                 Upcoming ({upcoming.length})
               </p>
               <div className="space-y-2">
@@ -188,7 +188,7 @@ export default function SessionsTab({ client }) {
           )}
           {past.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
+              <p className="text-xs font-semibold text-muted-foreground mb-3">
                 Past ({past.length})
               </p>
               <div className="space-y-2">

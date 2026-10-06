@@ -55,7 +55,7 @@ function MiniBar({ label, value, color }) {
   return (
     <div className="flex-1">
       <div className="flex items-center justify-between mb-1">
-        <span className="text-white/40 text-[9px] font-semibold uppercase tracking-wider">{label}</span>
+        <span className="text-white/40 text-xs font-semibold">{label}</span>
         <span className="text-white/70 text-[10px] font-bold">{value}</span>
       </div>
       <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
@@ -84,7 +84,7 @@ export default function ProgressScoreCard({ checkIns, workoutSessions, foodLogs,
 
   return (
     <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, rgb(var(--primary) / 0.12), rgb(var(--ai) / 0.12))', border: '1px solid rgb(var(--primary) / 0.2)' }}>
-      <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-4">Overall Score</p>
+      <p className="text-white/40 text-xs font-semibold mb-4">Overall Score</p>
 
       <div className="flex items-center gap-5">
         {/* Big ring */}

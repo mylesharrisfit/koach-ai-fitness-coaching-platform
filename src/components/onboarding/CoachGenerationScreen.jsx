@@ -99,7 +99,7 @@ export default function CoachGenerationScreen({ onNext }) {
           transition={{ duration: 0.6 }}
           className="text-center space-y-2"
         >
-          <p className="text-[11px] uppercase tracking-[0.28em] font-bold" style={{ color: 'var(--tc-primary)' }}>
+          <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
             KOACH AI Engine
           </p>
           <AnimatePresence mode="wait">

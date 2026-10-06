@@ -195,7 +195,7 @@ export default function ClientRow({ client, score, priorityScore, lastCheckIn, c
               <Edit className="w-4 h-4 mr-2" /> Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <div className="px-2 py-1 text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">Move to Stage</div>
+            <div className="px-2 py-1 text-xs text-muted-foreground font-semibold">Move to Stage</div>
             {LIFECYCLE_ORDER.filter(s => s !== (client.lifecycle_status || 'lead')).map(s => (
               <DropdownMenuItem key={s} onClick={() => onStatusChange(s)}>
                 <span className={cn('w-2 h-2 rounded-full mr-2 flex-shrink-0 inline-block', {

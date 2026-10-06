@@ -286,7 +286,7 @@ export default function CoachIntegrations() {
       <div className="space-y-6">
         {filteredGroups.map((group) => (
           <div key={group.label}>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">{group.label}</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">{group.label}</p>
             <div className="space-y-2.5">
               {group.items.map((integration) => {
                 const isConnected = !!connected[integration.id];
@@ -396,7 +396,7 @@ export default function CoachIntegrations() {
       {/* Zapier log panel */}
       {zapierConnected && zapierLogs.length > 0 && (
         <div className="mt-6">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Recent Webhook Events</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Recent Webhook Events</p>
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
             {zapierLogs.slice(0, 10).map((log, i) => (
               <div key={log.id} className={cn('flex items-center gap-3 px-4 py-3', i !== 0 && 'border-t border-muted')}>

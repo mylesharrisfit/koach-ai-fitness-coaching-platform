@@ -150,14 +150,14 @@ export default function ApprovedFoodsSection({ foods }) {
             if (!items.length) return null;
             return (
               <div key={cat.id}>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">{cat.label}</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-2">{cat.label}</p>
                 <div className="space-y-1.5">{items.map(f => <FoodRow key={f.id} food={f} />)}</div>
               </div>
             );
           })}
           {uncategorized.length > 0 && (
             <div>
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">📦 Uncategorized</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">📦 Uncategorized</p>
               <div className="space-y-1.5">{uncategorized.map(f => <FoodRow key={f.id} food={f} />)}</div>
             </div>
           )}
@@ -167,7 +167,7 @@ export default function ApprovedFoodsSection({ foods }) {
       {/* Saved but not yet approved — secondary */}
       {unapproved.length > 0 && (
         <div>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">🕐 Not Yet Reviewed ({unapproved.length})</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">🕐 Not Yet Reviewed ({unapproved.length})</p>
           <p className="text-xs text-muted-foreground mb-2">Click the circle to approve these foods for clients.</p>
           <div className="space-y-1.5">{unapproved.map(f => <FoodRow key={f.id} food={f} />)}</div>
         </div>
@@ -176,7 +176,7 @@ export default function ApprovedFoodsSection({ foods }) {
       {/* Hidden — lowest priority */}
       {hiddenFoods.length > 0 && (
         <div>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2 flex items-center gap-1.5">
+          <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
             <EyeOff className="w-3 h-3" /> Hidden ({hiddenFoods.length})
           </p>
           <div className="space-y-1.5">{hiddenFoods.map(f => <FoodRow key={f.id} food={f} />)}</div>

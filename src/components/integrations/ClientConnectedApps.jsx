@@ -74,7 +74,7 @@ function DataTile({ icon: Icon, label, value, unit, color, trend }) {
         <Icon className="w-3.5 h-3.5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+        <p className="text-xs font-semibold text-muted-foreground">{label}</p>
         <p className="text-sm font-bold text-foreground tabular-nums leading-tight">
           {value != null ? <>{value}<span className="text-xs font-normal text-muted-foreground ml-0.5">{unit}</span></> : <span className="text-muted-foreground text-xs font-normal">—</span>}
         </p>
@@ -141,7 +141,7 @@ function AppDataView({ app }) {
 
       {app.insights?.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Insights</p>
+          <p className="text-xs font-semibold text-muted-foreground">Insights</p>
           {app.insights.map((ins, i) => <InsightRow key={i} insight={ins} />)}
         </div>
       )}
@@ -177,7 +177,7 @@ export default function ClientConnectedApps({ clientId }) {
         }, {});
         return (
           <div className="bg-gradient-to-r from-accent/10 to-[var(--kc-f0f8ff)] border border-accent rounded-2xl p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wide text-primary mb-3">Today's Overview</p>
+            <p className="text-xs font-semibold text-primary mb-3">Today's Overview</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {merged.steps != null && (
                 <div className="text-center">

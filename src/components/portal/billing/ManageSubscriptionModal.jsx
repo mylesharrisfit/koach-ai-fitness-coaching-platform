@@ -71,7 +71,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
           {view === 'main' && (
             <div className="space-y-3">
               <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <p className="text-white/40 text-xs uppercase tracking-wider font-semibold mb-1">Current plan</p>
+                <p className="text-white/40 text-xs font-semibold mb-1">Current plan</p>
                 <p className="text-white font-bold">Coaching Plan</p>
                 <p className="text-white/40 text-sm mt-0.5">${client?.monthly_rate || 0}/month · Active</p>
               </div>
@@ -134,7 +134,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
               </div>
 
               <div className="space-y-2">
-                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider">Reason for cancelling</p>
+                <p className="text-white/50 text-xs font-semibold">Reason for cancelling</p>
                 {CANCEL_REASONS.map(r => (
                   <button key={r} onClick={() => setCancelReason(r)}
                     className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold"
@@ -145,7 +145,7 @@ export default function ManageSubscriptionModal({ client, invoices, onClose }) {
               </div>
 
               <div className="space-y-2">
-                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider">Effective date</p>
+                <p className="text-white/50 text-xs font-semibold">Effective date</p>
                 {[{ val: 'end', label: 'End of billing period', sub: 'Keep access until your paid period ends' }, { val: 'now', label: 'Immediately', sub: 'Lose access right away' }].map(opt => (
                   <button key={opt.val} onClick={() => setCancelWhen(opt.val)}
                     className="w-full text-left p-3 rounded-xl text-sm"

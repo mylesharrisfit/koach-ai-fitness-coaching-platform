@@ -16,7 +16,7 @@ export default function AchievementToast({ badge, clientName }) {
     >
       <span className="text-3xl leading-none flex-shrink-0">{badge.emoji}</span>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: `${tier.accent}99` }}>
+        <p className="text-xs font-semibold" style={{ color: `${tier.accent}99` }}>
           Achievement Unlocked!
         </p>
         <p className="text-sm font-black text-white leading-tight">{badge.label}</p>

@@ -316,7 +316,7 @@ function ApplyChangesPanel({ checkIn, client, onCalDone, onCardioDone }) {
     <div className="space-y-3">
       {/* Calories */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1.5">
+        <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
           <Flame className="w-3 h-3 text-orange-400" /> Adjust Calories
         </p>
         {calResult ? (
@@ -340,7 +340,7 @@ function ApplyChangesPanel({ checkIn, client, onCalDone, onCardioDone }) {
 
       {/* Cardio */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1.5">
+        <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
           <Footprints className="w-3 h-3 text-primary" /> Adjust Cardio
         </p>
         {cardioResult ? (
@@ -489,7 +489,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {clientCIs.filter(c => c.weight).length >= 2 && (
         <div className="flex items-center justify-between bg-muted border border-border rounded-xl px-4 py-3">
           <div>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Weight Trend</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1.5">Weight Trend</p>
             <WeightSparkline clientCIs={clientCIs} />
           </div>
           {client?.target_weight && (
@@ -504,7 +504,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {/* ── Progress photos ── */}
       {photos.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+          <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
             <Camera className="w-3 h-3" /> Progress Photos ({photos.length})
           </p>
           <a href={photos[photoIdx]} target="_blank" rel="noreferrer">
@@ -524,7 +524,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {/* ── Client notes ── */}
       {checkIn.notes && (
         <div className="bg-warning/10 border border-warning rounded-xl p-3.5">
-          <p className="text-[10px] font-bold uppercase tracking-wide text-warning mb-1.5">Client Notes</p>
+          <p className="text-xs font-semibold text-warning mb-1.5">Client Notes</p>
           <p className="text-sm text-foreground leading-relaxed">{checkIn.notes}</p>
         </div>
       )}
@@ -532,7 +532,7 @@ function ClientReviewCard({ item, onMarkReviewed, markSaving }) {
       {/* ── Previous coach response ── */}
       {checkIn.coach_notes && (
         <div className="bg-accent/10 border border-accent rounded-xl p-3.5">
-          <p className="text-[10px] font-bold uppercase tracking-wide text-primary mb-1.5">Your Previous Response</p>
+          <p className="text-xs font-semibold text-primary mb-1.5">Your Previous Response</p>
           <p className="text-sm text-foreground leading-relaxed">{checkIn.coach_notes}</p>
         </div>
       )}

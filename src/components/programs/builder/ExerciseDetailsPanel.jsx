@@ -19,7 +19,7 @@ const SECTION_LABELS = [
 
 function FieldLabel({ children }) {
   return (
-    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">{children}</p>
+    <p className="text-xs font-semibold text-muted-foreground mb-1.5">{children}</p>
   );
 }
 
@@ -43,7 +43,7 @@ export default function ExerciseDetailsPanel({ exercise, onChange, onClose }) {
       <div className="px-4 pt-4 pb-3 flex-shrink-0" style={{ borderBottom: '1px solid var(--tc-muted)' }}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Exercise Details</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1">Exercise Details</p>
             <p className="text-sm font-bold text-foreground truncate">{exercise.name || 'Unnamed exercise'}</p>
           </div>
           <button

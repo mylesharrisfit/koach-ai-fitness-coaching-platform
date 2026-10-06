@@ -123,7 +123,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-2">
           <Scale className="w-4 h-4 text-primary" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Body Weight</p>
+          <p className="text-xs font-semibold text-muted-foreground">Body Weight</p>
         </div>
         <div className="flex items-center gap-3">
           {latestEntry && (

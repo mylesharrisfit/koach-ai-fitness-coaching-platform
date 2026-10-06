@@ -363,7 +363,7 @@ export default function PortalNotifications({ user }) {
             {groups.map(group => (
               <div key={group.label}>
                 <div className="px-4 py-2 bg-muted border-y border-border">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">{group.label}</p>
+                  <p className="text-xs font-semibold text-muted-foreground">{group.label}</p>
                 </div>
                 {group.items.map(n => (
                   <NotifRow key={n.id} n={n}

@@ -22,7 +22,7 @@ function SectionCard({ title, icon: Icon, iconClass, children, className }) {
             <Icon className="w-3.5 h-3.5 text-muted-foreground" />
           </div>
         )}
-        <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">{title}</h3>
+        <h3 className="text-xs font-semibold text-foreground">{title}</h3>
       </div>
       <div className="p-4">{children}</div>
     </div>
@@ -91,7 +91,7 @@ export default function ProfileOverviewTab({ client, checkIns, score }) {
             <div className="w-7 h-7 rounded-lg bg-warning/10 flex items-center justify-center flex-shrink-0">
               <AlertTriangle className="w-3.5 h-3.5 text-warning" />
             </div>
-            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Needs Attention</h3>
+            <h3 className="text-xs font-semibold text-foreground">Needs Attention</h3>
           </div>
           <div className="p-4 space-y-2">
             {pendingCount > 0 && (
@@ -134,7 +134,7 @@ export default function ProfileOverviewTab({ client, checkIns, score }) {
         {(latestWeight || client.target_weight) && (
           <div className="mt-3 border border-border rounded-xl p-3">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Weight Progress</span>
+              <span className="text-xs font-semibold text-muted-foreground">Weight Progress</span>
               {weightDelta !== null && (
                 <span className={cn('flex items-center gap-1 text-[11px] font-bold',
                   weightDelta < 0 ? 'text-success' : weightDelta > 0 ? 'text-destructive' : 'text-muted-foreground')}>
@@ -205,7 +205,7 @@ export default function ProfileOverviewTab({ client, checkIns, score }) {
 
           {lastCI.notes && (
             <div className="mt-3 bg-muted rounded-xl p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Client Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">Client Notes</p>
               <p className="text-xs text-foreground leading-relaxed line-clamp-3">{lastCI.notes}</p>
             </div>
           )}

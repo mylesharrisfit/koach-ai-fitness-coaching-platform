@@ -29,7 +29,7 @@ function MetricTile({ icon: IconComp, label, value, unit, color }) {
     <div className="bg-muted border border-border rounded-xl p-3 flex flex-col gap-1">
       <div className="flex items-center gap-1.5">
         <Icon className={cn('w-3.5 h-3.5', color || 'text-muted-foreground')} />
-        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
+        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
       <p className="text-lg font-bold text-foreground">
         {value ?? '–'}
@@ -79,7 +79,7 @@ function AIAnalysis({ checkIn, clientName }) {
     <div className="rounded-xl border border-ai bg-ai/60 overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2.5 bg-ai/60 border-b border-ai">
         <Sparkles className="w-3.5 h-3.5 text-ai" />
-        <span className="text-xs font-bold text-ai uppercase tracking-wide">AI Analysis</span>
+        <span className="text-xs font-semibold text-ai">AI Analysis</span>
         <button onClick={() => setAnalysis(null)} className="ml-auto text-ai hover:text-ai transition-colors">
           <X className="w-3.5 h-3.5" />
         </button>
@@ -97,7 +97,7 @@ function AIAnalysis({ checkIn, clientName }) {
         )}
         {analysis.suggested_response && (
           <div className="bg-[var(--kc-w-80)] border border-ai rounded-lg p-3">
-            <p className="text-[10px] font-bold text-ai uppercase tracking-wide mb-1">Suggested Response</p>
+            <p className="text-xs font-semibold text-ai mb-1">Suggested Response</p>
             <p className="text-xs text-foreground leading-relaxed italic">"{analysis.suggested_response}"</p>
           </div>
         )}
@@ -219,7 +219,7 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
 
           {/* Metrics */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Metrics</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Metrics</p>
             <div className="grid grid-cols-2 gap-2">
               <MetricTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} unit="hrs"
                 color={checkIn.sleep_hours >= 7 ? 'text-primary' : checkIn.sleep_hours >= 6 ? 'text-warning' : 'text-destructive'} />
@@ -239,7 +239,7 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Progress Photos</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Progress Photos</p>
               <div className="flex gap-2 flex-wrap">
                 {checkIn.photo_urls.map((url, i) => (
                   <SignedLink key={i} href={url} target="_blank" rel="noreferrer">
@@ -253,7 +253,7 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
           {/* Measurements */}
           {checkIn.measurements && Object.values(checkIn.measurements).some(Boolean) && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Measurements</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Measurements</p>
               <div className="grid grid-cols-3 gap-2">
                 {Object.entries(checkIn.measurements).filter(([, v]) => v).map(([k, v]) => (
                   <div key={k} className="bg-muted border border-border rounded-lg p-2.5 text-center">
@@ -268,7 +268,7 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
           {/* Client notes */}
           {checkIn.notes && (
             <div className="bg-muted border border-border rounded-xl p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Client Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
@@ -313,7 +313,7 @@ export default function CheckInEnhancedDrawer({ checkIn, client, allCheckIns, cu
 
                 {/* Quick reactions */}
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Quick Reactions</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">Quick Reactions</p>
                   <div className="grid grid-cols-2 gap-2">
                     {REACTIONS.map(r => (
                       <button key={r.emoji} onClick={() => handleSendReaction(r)}

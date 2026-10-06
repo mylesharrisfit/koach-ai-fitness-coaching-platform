@@ -51,7 +51,7 @@ function TemplateCard({ template, onApply }) {
       <div className="p-5 space-y-4 flex-1 flex flex-col">
         {/* What's included */}
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">What's Included</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">What's Included</p>
           <div className="grid grid-cols-2 gap-2">
             {(['workouts', 'nutrition', 'automations', 'checkins']).map(f => {
               const Icon = FEATURE_ICONS[f];
@@ -78,7 +78,7 @@ function TemplateCard({ template, onApply }) {
 
         {/* Training days */}
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Training Days</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Training Days</p>
           <div className="space-y-1">
             {(template.program.workouts || []).map((w, i) => (
               <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -93,7 +93,7 @@ function TemplateCard({ template, onApply }) {
 
         {/* Daily targets */}
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Daily Targets</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Daily Targets</p>
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             <span><span className="font-bold text-foreground">{template.nutrition.calories}</span> kcal</span>
             <span><span className="font-bold text-foreground">{template.nutrition.protein_g}g</span> protein</span>
@@ -104,7 +104,7 @@ function TemplateCard({ template, onApply }) {
 
         {/* Auto rules */}
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Auto Rules</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Auto Rules</p>
           <div className="space-y-1">
             {template.automationRules.map((r, i) => (
               <div key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">

@@ -347,7 +347,7 @@ function PaymentsTab() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2"><StripeRevenueChart data={dashData?.monthly_revenue || []} /></div>
             <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
-              <h3 className="text-xs font-bold text-foreground uppercase tracking-widest mb-4">Payment Health</h3>
+              <h3 className="text-xs font-semibold text-foreground mb-4">Payment Health</h3>
               <div className="space-y-3">
                 {[
                   { label: 'Active Subscriptions', value: dashData?.active_subscriptions || 0 },

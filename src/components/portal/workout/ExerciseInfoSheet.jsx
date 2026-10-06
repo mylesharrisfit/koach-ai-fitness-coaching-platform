@@ -159,7 +159,7 @@ export default function ExerciseInfoSheet({ exercise, open, onClose }) {
               {/* Secondary muscles */}
               {exercise.secondary_muscles?.length > 0 && (
                 <div className="mb-5">
-                  <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Also Works</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">Also Works</p>
                   <div className="flex flex-wrap gap-1.5">
                     {exercise.secondary_muscles.map(m => (
                       <span key={m} className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{m}</span>
@@ -171,7 +171,7 @@ export default function ExerciseInfoSheet({ exercise, open, onClose }) {
               {/* Step-by-step instructions */}
               {steps.length > 0 && (
                 <div className="mb-5">
-                  <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">How to Perform</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-3">How to Perform</p>
                   <div className="space-y-2.5">
                     {steps.map((step, i) => (
                       <div key={i} className="flex items-start gap-3 p-3.5 rounded-2xl bg-muted">
@@ -213,7 +213,7 @@ export default function ExerciseInfoSheet({ exercise, open, onClose }) {
               {/* Coach notes */}
               {exercise.notes && (
                 <div className="p-4 rounded-2xl bg-accent mb-2">
-                  <p className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">Coach Notes</p>
+                  <p className="text-xs font-semibold text-primary mb-1">Coach Notes</p>
                   <p className="text-sm text-foreground">{exercise.notes}</p>
                 </div>
               )}

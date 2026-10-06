@@ -60,7 +60,7 @@ function DailySummary({ logs, plan }) {
       {/* Calories */}
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Calories</p>
+          <p className="text-xs font-semibold text-muted-foreground">Calories</p>
           <p className="text-3xl font-bold text-foreground leading-none mt-0.5">
             {totCal}
             {tCal > 0 && <span className="text-base font-normal text-muted-foreground ml-1">/ {tCal} kcal</span>}

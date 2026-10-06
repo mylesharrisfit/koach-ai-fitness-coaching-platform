@@ -11,12 +11,12 @@ export default function InvoiceListHeader() {
       borderBottom: '1px solid var(--tc-muted)',
     }}>
       <div />
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Client</div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Description</div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Amount</div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Dates</div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Status</div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Actions</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)',  }}>Client</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)',  }}>Description</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', textAlign: 'right' }}>Amount</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)',  }}>Dates</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)',  }}>Status</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)',  }}>Actions</div>
     </div>
   );
 }

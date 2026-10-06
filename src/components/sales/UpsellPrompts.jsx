@@ -28,7 +28,7 @@ export default function UpsellPrompts({ clients, programs }) {
     <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 rounded-2xl p-6">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-4 h-4 text-primary" />
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-primary">Upsell Opportunities</h2>
+        <h2 className="text-sm font-semibold text-primary">Upsell Opportunities</h2>
         <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full font-medium">{completingClients.length}</span>
       </div>
       <p className="text-xs text-muted-foreground mb-4">These clients are near program completion — great time to offer an upgrade.</p>

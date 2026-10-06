@@ -158,7 +158,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
           {/* Contact details */}
           <div className="space-y-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Contact</p>
+            <p className="text-xs font-semibold text-muted-foreground">Contact</p>
             {lead.email && <div className="flex items-center gap-2.5 text-sm text-foreground"><Mail className="w-4 h-4 text-muted-foreground" />{lead.email}</div>}
             {lead.phone && <div className="flex items-center gap-2.5 text-sm text-foreground"><Phone className="w-4 h-4 text-muted-foreground" />{lead.phone}</div>}
             {lead.instagram && <div className="flex items-center gap-2.5 text-sm text-foreground"><Instagram className="w-4 h-4 text-muted-foreground" />@{lead.instagram}</div>}
@@ -168,7 +168,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
           {/* Goal / notes */}
           {(lead.goal || lead.notes) && (
             <div className="space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground">Notes</p>
               {lead.pinned_note && (
                 <div className="flex items-start gap-2 p-3 bg-warning/10 border border-warning rounded-xl">
                   <Pin className="w-3.5 h-3.5 text-warning flex-shrink-0 mt-0.5" />
@@ -182,7 +182,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
 
           {/* Lead score */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Lead Score</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Lead Score</p>
             <div className="flex items-center gap-3 p-3 bg-background rounded-xl border border-border">
               <div className="text-3xl font-black" style={{ color: scoreColor }}>{score}</div>
               <div className="flex-1">
@@ -206,7 +206,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
 
           {/* Follow-up */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Follow-Up Reminder</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Follow-Up Reminder</p>
             {lead.follow_up_date && (
               <div className={cn(
                 'flex items-center gap-2 p-2 rounded-lg mb-2 text-xs',
@@ -229,7 +229,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
 
           {/* Log activity */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Log Activity</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Log Activity</p>
             <div className="flex gap-1 mb-2">
               {['note', 'call', 'message', 'meeting'].map(t => (
                 <button
@@ -256,7 +256,7 @@ export default function LeadDetailDrawer({ lead, open, onClose, onUpdate, onDele
           {/* Activity timeline */}
           {lead.activity_log?.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Activity Timeline</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Activity Timeline</p>
               <div className="space-y-2">
                 {lead.activity_log.map((entry, i) => (
                   <div key={i} className="flex gap-2.5 text-xs">

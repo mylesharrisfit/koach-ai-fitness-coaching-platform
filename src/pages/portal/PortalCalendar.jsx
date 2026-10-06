@@ -191,7 +191,7 @@ function LogWeightModal({ weighInId, date, coachNote, onClose, onSaved }) {
         )}
 
         <div className="mb-5">
-          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wide block mb-2">Weight (lbs)</label>
+          <label className="text-xs font-semibold text-muted-foreground block mb-2">Weight (lbs)</label>
           <input
             type="number"
             step="0.1"
@@ -355,7 +355,7 @@ export default function PortalCalendar({ user }) {
       <div className="bg-card px-5 pt-14 pb-4" style={{ boxShadow: '0 1px 0 rgb(var(--muted))' }}>
         <div className="flex items-center justify-between mb-1">
           <div>
-            <p className="text-muted-foreground text-xs font-semibold uppercase tracking-widest">My Schedule</p>
+            <p className="text-muted-foreground text-xs font-semibold">My Schedule</p>
             <h1 className="text-foreground font-black text-2xl leading-tight">Calendar</h1>
           </div>
           <Calendar className="w-7 h-7 text-primary" />
@@ -471,7 +471,7 @@ export default function PortalCalendar({ user }) {
       <div className="mx-4 mt-4 mb-4">
         <div className="bg-card rounded-2xl p-4"
           style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
-          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">This Month</p>
+          <p className="text-muted-foreground text-xs font-semibold mb-3">This Month</p>
           <div className="grid grid-cols-3 gap-3">
             {[
               { label: 'Workouts', count: events.filter(e => e.type === 'workout' && isSameMonth(parseISO(e.date), currentMonth)).length, emoji: '💪', color: 'rgb(var(--primary))' },

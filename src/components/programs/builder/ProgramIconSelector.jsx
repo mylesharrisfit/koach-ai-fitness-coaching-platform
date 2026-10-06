@@ -21,7 +21,7 @@ const ICON_OPTIONS = [
 export default function ProgramIconSelector({ selected = 'dumbbell', onChange }) {
   return (
     <div className="p-4 border-b border-border">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2.5">Program Icon</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-2.5">Program Icon</p>
       <div className="grid grid-cols-5 gap-2">
         {ICON_OPTIONS.map(opt => {
           const Icon = opt.icon;

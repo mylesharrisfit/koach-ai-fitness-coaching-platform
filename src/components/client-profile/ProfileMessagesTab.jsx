@@ -47,7 +47,7 @@ export default function ProfileMessagesTab({ client, messages }) {
     <div className="flex flex-col gap-4">
       {/* Compose box */}
       <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
-        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">New Message</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">New Message</p>
         <Textarea
           placeholder={`Write a message to ${client.name}…`}
           value={text}

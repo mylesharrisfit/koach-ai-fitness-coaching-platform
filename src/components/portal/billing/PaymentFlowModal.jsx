@@ -21,7 +21,7 @@ function PaymentSummary({ invoice, onNext, onClose }) {
       <div className="flex-1 overflow-y-auto px-5 space-y-4">
         <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <div className="p-4 border-b border-white/10">
-            <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">Invoice {invoice.invoice_number}</p>
+            <p className="text-white/50 text-xs font-semibold">Invoice {invoice.invoice_number}</p>
           </div>
           <div className="p-4 space-y-3">
             {lineItems.map((item, i) => (
@@ -39,7 +39,7 @@ function PaymentSummary({ invoice, onNext, onClose }) {
 
         {/* Saved card option */}
         <div>
-          <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-2">Pay with</p>
+          <p className="text-white/40 text-xs font-semibold mb-2">Pay with</p>
           <div className="p-4 rounded-2xl" style={{ background: 'rgb(var(--primary) / 0.1)', border: '1px solid rgb(var(--primary) / 0.25)' }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

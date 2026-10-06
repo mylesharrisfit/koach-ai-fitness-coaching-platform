@@ -83,15 +83,15 @@ export default function ExerciseLibraryPicker({ open, onClose, onSelect }) {
           {/* Filter rows */}
           <div className="space-y-2">
             <div className="flex gap-1 overflow-x-auto pb-1">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider self-center flex-shrink-0 mr-1">Muscle</span>
+              <span className="text-xs font-semibold text-muted-foreground self-center flex-shrink-0 mr-1">Muscle</span>
               {MUSCLES.map(m => <FilterPill key={m} value={m} current={muscle} onSet={setMuscle} label={m === 'all' ? 'All' : m.replace('_', ' ')} />)}
             </div>
             <div className="flex gap-1 overflow-x-auto pb-1">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider self-center flex-shrink-0 mr-1">Equip</span>
+              <span className="text-xs font-semibold text-muted-foreground self-center flex-shrink-0 mr-1">Equip</span>
               {EQUIPMENT.map(e => <FilterPill key={e} value={e} current={equipment} onSet={setEquipment} label={e === 'all' ? 'All' : e.replace('_', ' ')} />)}
             </div>
             <div className="flex gap-1 overflow-x-auto pb-1">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider self-center flex-shrink-0 mr-1">Pattern</span>
+              <span className="text-xs font-semibold text-muted-foreground self-center flex-shrink-0 mr-1">Pattern</span>
               {PATTERNS.map(p => <FilterPill key={p} value={p} current={pattern} onSet={setPattern} label={p === 'all' ? 'All' : p} />)}
             </div>
           </div>
@@ -100,7 +100,7 @@ export default function ExerciseLibraryPicker({ open, onClose, onSelect }) {
         {/* Add custom exercise form */}
         {showAdd && (
           <div className="px-5 py-4 border-b border-border bg-muted flex-shrink-0 space-y-3">
-            <p className="text-xs font-bold text-foreground uppercase tracking-wider">New Custom Exercise</p>
+            <p className="text-xs font-semibold text-foreground">New Custom Exercise</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
                 <Input placeholder="Exercise name *" value={newEx.name} onChange={e => setNewEx(p => ({ ...p, name: e.target.value }))}

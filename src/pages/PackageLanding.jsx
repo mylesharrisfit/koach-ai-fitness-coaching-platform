@@ -99,7 +99,7 @@ export default function PackageLanding() {
         )}
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--kc-0f0f1a) 80%, transparent) 60%, var(--kc-0f0f1a) 100%)` }} />
         <div style={{ position: 'relative', maxWidth: 720, margin: '0 auto', width: '100%' }}>
-          <div style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 9999, background: accent + '22', border: `1px solid ${accent}44`, fontSize: 12, fontWeight: 700, color: accent, marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          <div style={{ display: 'inline-block', padding: '4px 14px', borderRadius: 9999, background: accent + '22', border: `1px solid ${accent}44`, fontSize: 12, fontWeight: 700, color: accent, marginBottom: 16,  }}>
             {pkg.billing_type === 'one_time' ? 'One-time Program' : `${pkg.billing_type} coaching`}
           </div>
           <h1 style={{ fontSize: 'clamp(28px,5vw,52px)', fontWeight: 900, color: 'var(--tc-primary-foreground)', margin: '0 0 16px', lineHeight: 1.15, letterSpacing: '-0.03em' }}>{pkg.name}</h1>

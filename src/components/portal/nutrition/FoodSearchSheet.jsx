@@ -205,7 +205,7 @@ export default function FoodSearchSheet({ isOpen, onClose, onSelectFood, mealNam
                     {common.length > 0 && (
                       <>
                         <div className="px-4 py-1.5 bg-muted border-b border-border">
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Common Foods</p>
+                          <p className="text-xs font-semibold text-muted-foreground">Common Foods</p>
                         </div>
                         {common.map(food => (
                           <PortalFoodRow key={food.id} food={food} onTap={setDetailFood} onAdd={handleAdd} />
@@ -216,7 +216,7 @@ export default function FoodSearchSheet({ isOpen, onClose, onSelectFood, mealNam
                     {branded.length > 0 && (
                       <>
                         <div className="px-4 py-1.5 bg-muted border-b border-border">
-                          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Branded Foods</p>
+                          <p className="text-xs font-semibold text-muted-foreground">Branded Foods</p>
                         </div>
                         {branded.map(food => (
                           <PortalFoodRow key={food.id} food={food} onTap={setDetailFood} onAdd={handleAdd} />

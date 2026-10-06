@@ -13,7 +13,7 @@ export default function ProgramStatsPanel({ stats = {} }) {
 
   return (
     <div>
-      <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
+      <h3 className="text-xs font-semibold text-muted-foreground mb-4">
         Program Stats
       </h3>
 

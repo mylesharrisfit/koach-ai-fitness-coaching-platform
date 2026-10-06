@@ -6,7 +6,7 @@ function StatCard({ icon: Icon, label, value, sub, color, bg }) {
   return (
     <div style={{ background: 'var(--tc-card)', border: '1px solid var(--tc-muted)', borderRadius: 14, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</span>
+        <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)',  }}>{label}</span>
         <div style={{ width: 32, height: 32, borderRadius: 9, background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon size={15} color={color} />
         </div>

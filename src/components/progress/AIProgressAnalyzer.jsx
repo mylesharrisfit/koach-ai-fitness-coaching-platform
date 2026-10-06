@@ -111,7 +111,7 @@ function CoachAnalysisPanel({ analysis, ctx }) {
       <div className="bg-card rounded-2xl border border-border p-4">
         <div className="flex items-center gap-2 mb-2">
           <Brain className="w-4 h-4 text-primary" />
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">AI Summary</p>
+          <p className="text-xs font-semibold text-muted-foreground">AI Summary</p>
         </div>
         <p className="text-sm text-foreground leading-relaxed">{analysis.summary}</p>
         {analysis.coaching_priority && (
@@ -125,14 +125,14 @@ function CoachAnalysisPanel({ analysis, ctx }) {
       {/* Readiness + Pace */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-card rounded-2xl border border-border p-4">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-2">Program Readiness</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Program Readiness</p>
           {analysis.readiness && <ReadinessBadge readiness={analysis.readiness} />}
           {analysis.readiness_reason && (
             <p className="text-[11px] text-muted-foreground mt-2 leading-snug">{analysis.readiness_reason}</p>
           )}
         </div>
         <div className="bg-card rounded-2xl border border-border p-4">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-2">Goal Pace</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Goal Pace</p>
           <div className={cn('text-xs font-bold px-2.5 py-1 rounded-full inline-block',
             ctx.paceStatus === 'ahead' ? 'bg-success/10 text-success' :
             ctx.paceStatus === 'on_track' ? 'bg-accent text-primary' :
@@ -149,7 +149,7 @@ function CoachAnalysisPanel({ analysis, ctx }) {
       {/* Trends */}
       {analysis.trends?.length > 0 && (
         <div className="bg-card rounded-2xl border border-border p-4">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Detected Trends</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Detected Trends</p>
           <div className="space-y-2">
             {analysis.trends.map((t, i) => <TrendBadge key={i} type={t.type} text={t.text} />)}
           </div>
@@ -159,7 +159,7 @@ function CoachAnalysisPanel({ analysis, ctx }) {
       {/* Warnings */}
       {(analysis.plateau_warning || analysis.churn_insight) && (
         <div className="bg-warning/10 border border-warning rounded-2xl p-4 space-y-2">
-          <p className="text-xs font-bold text-warning uppercase tracking-wide flex items-center gap-1.5">
+          <p className="text-xs font-semibold text-warning flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5" /> Alerts
           </p>
           {analysis.plateau_warning && <p className="text-xs text-warning">{analysis.plateau_warning}</p>}
@@ -171,7 +171,7 @@ function CoachAnalysisPanel({ analysis, ctx }) {
       {analysis.recommendations?.length > 0 && (
         <div className="bg-card rounded-2xl border border-border p-4">
           <button className="flex items-center justify-between w-full" onClick={() => setShowRecs(s => !s)}>
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Recommendations</p>
+            <p className="text-xs font-semibold text-muted-foreground">Recommendations</p>
             {showRecs ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
           </button>
           <AnimatePresence>

@@ -60,7 +60,7 @@ function MessageBubble({ msg, coachInitial }) {
               : isSystem ? 'rgb(var(--accent))' : 'rgb(var(--muted))',
             border: isSystem ? '1px solid rgb(var(--accent))' : 'none',
           }}>
-          {isSystem && <p className="text-primary text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>}
+          {isSystem && <p className="text-primary text-xs font-semibold mb-1">🤖 KOACH AI</p>}
           {msg.media_type === 'voice' && msg.media_url ? (
             <div className="flex items-center gap-3">
               <button className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
@@ -234,7 +234,7 @@ function ConversationView({ myClient, onBack }) {
         )}
         {grouped.map((item, i) => (
           item.type === 'separator'
-            ? <p key={i} className="text-center text-border text-[9px] font-bold uppercase tracking-wider py-2">{item.label}</p>
+            ? <p key={i} className="text-center text-border text-xs font-semibold py-2">{item.label}</p>
             : <MessageBubble key={item.data.id} msg={item.data} coachInitial={coachInitial} />
         ))}
         <div ref={bottomRef} />
@@ -358,7 +358,7 @@ export default function PortalMessages({ user }) {
     <div className="px-5 pt-12 pb-28 space-y-5">
       {/* Header */}
       <div>
-        <p className="text-white/40 text-xs font-semibold uppercase tracking-wider">Messages</p>
+        <p className="text-white/40 text-xs font-semibold">Messages</p>
         <h1 className="text-white text-xl font-bold mt-0.5">Messages</h1>
       </div>
 
@@ -407,11 +407,11 @@ export default function PortalMessages({ user }) {
       {/* System messages / announcements */}
       {messages.filter(m => m.is_broadcast).length > 0 && (
         <div>
-          <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-3">Announcements</p>
+          <p className="text-white/40 text-xs font-semibold mb-3">Announcements</p>
           <div className="space-y-2">
             {messages.filter(m => m.is_broadcast).slice(0, 3).map(m => (
               <div key={m.id} className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-primary text-[9px] font-bold uppercase tracking-wider mb-1">🤖 KOACH AI</p>
+                <p className="text-primary text-xs font-semibold mb-1">🤖 KOACH AI</p>
                 <p className="text-white/60 text-sm">{m.content}</p>
                 <p className="text-white/20 text-[9px] mt-1">{m.created_date ? format(new Date(m.created_date), 'MMM d') : ''}</p>
               </div>

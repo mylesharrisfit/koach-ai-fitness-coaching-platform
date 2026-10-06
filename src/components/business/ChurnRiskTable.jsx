@@ -26,7 +26,7 @@ export default function ChurnRiskTable({ clients, mrr }) {
     <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Churn Risk Analysis</h3>
+          <h3 className="text-xs font-semibold text-muted-foreground mb-1">Churn Risk Analysis</h3>
           <p className="text-sm text-foreground">
             {clients.length > 0
               ? <><span className="font-semibold text-foreground">{clients.length} clients</span> flagged — <span className="font-semibold text-foreground">${mrrAtRisk.toLocaleString()}</span> MRR at risk ({pctAtRisk}%)</>

@@ -199,7 +199,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
         {aiSuggestion && (
           <div className="mt-3 p-3 rounded-xl border border-ai bg-ai/60 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-ai uppercase tracking-wide">AI Intervention Plan</span>
+              <span className="text-xs font-semibold text-ai">AI Intervention Plan</span>
               <button onClick={() => setAiSuggestion(null)} className="text-[10px] text-ai hover:text-ai">✕</button>
             </div>
             <div className="space-y-1.5 text-[10px] text-foreground">
@@ -232,7 +232,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
         <div className="border-t border-muted px-4 pb-4 pt-3 space-y-4 bg-background">
           {/* All risk flags */}
           <div>
-            <p className="text-[10px] font-bold text-foreground uppercase tracking-wide mb-2">Risk Factors</p>
+            <p className="text-xs font-semibold text-foreground mb-2">Risk Factors</p>
             <div className="space-y-1.5">
               {flags.map(f => (
                 <div key={f.key} className={cn('flex items-start gap-2 px-3 py-2 rounded-lg border text-[10px]', SEVERITY_CONFIG[f.severity].color)}>
@@ -246,7 +246,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
           {/* Recent check-ins */}
           {clientCheckIns.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold text-foreground uppercase tracking-wide mb-2">Recent Check-ins</p>
+              <p className="text-xs font-semibold text-foreground mb-2">Recent Check-ins</p>
               <div className="space-y-1.5">
                 {clientCheckIns.slice(0, 3).map((ci, i) => {
                   const s = checkInScore(ci);
@@ -267,7 +267,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
           {/* Adherence mini chart */}
           {clientCheckIns.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold text-foreground uppercase tracking-wide mb-2">4-Week Trend</p>
+              <p className="text-xs font-semibold text-foreground mb-2">4-Week Trend</p>
               <div className="bg-card border border-border rounded-lg p-3">
                 <MiniAdherenceChart checkIns={clientCheckIns} />
               </div>
@@ -276,7 +276,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
 
           {/* Coach note */}
           <div>
-            <p className="text-[10px] font-bold text-foreground uppercase tracking-wide mb-1.5">Private Notes</p>
+            <p className="text-xs font-semibold text-foreground mb-1.5">Private Notes</p>
             <textarea value={coachNote} onChange={e => setCoachNote(e.target.value)} rows={2}
               placeholder="Add a private coaching note..."
               className="w-full text-xs border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary bg-card" />
@@ -284,7 +284,7 @@ export default function RiskClientCard({ entry, lastMessages, selected, onToggle
 
           {/* Resolution options */}
           <div>
-            <p className="text-[10px] font-bold text-foreground uppercase tracking-wide mb-2">Resolution</p>
+            <p className="text-xs font-semibold text-foreground mb-2">Resolution</p>
             <div className="flex gap-2 flex-wrap">
               <button onClick={handleMarkImproving}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-success/10 border border-success text-success hover:bg-success/10">

@@ -77,7 +77,7 @@ export default function BIForecast({ clients, leads }) {
       <div className="grid grid-cols-3 gap-3 mb-5">
         {forecast.map(f => (
           <div key={f.label} className="text-center p-3 rounded-xl border" style={{ borderColor: `${scenario.color}30`, background: `${scenario.color}08` }}>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-1">{f.label}</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1">{f.label}</p>
             <p className="text-lg font-bold" style={{ color: scenario.color }}>${f.mrr.toLocaleString()}</p>
             <p className="text-[10px]" style={{ color: f.change >= 0 ? 'var(--tc-success)' : 'var(--tc-destructive)' }}>
               {f.change >= 0 ? '+' : ''}{f.change.toLocaleString()}

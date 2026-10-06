@@ -147,7 +147,7 @@ export default function NotificationSettings() {
             <h2 className="font-bold text-foreground text-sm">Global Delivery Preferences</h2>
           </div>
           <div className="p-6 space-y-4">
-            <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">Default delivery for all notifications</p>
+            <p className="text-xs text-muted-foreground font-semibold">Default delivery for all notifications</p>
             <div className="space-y-3">
               {[
                 { key: 'push_enabled', icon: Smartphone, label: 'Push Notifications', desc: 'Sent to your mobile device', color: 'var(--tc-ai)' },

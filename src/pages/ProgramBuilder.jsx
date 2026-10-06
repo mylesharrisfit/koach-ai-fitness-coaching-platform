@@ -83,7 +83,7 @@ function SettingsModal({ open, onClose, meta, onMetaChange }) {
   const handleSave = () => { onMetaChange(draft); onClose(); };
 
   const FieldLabel = ({ children }) => (
-    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">{children}</p>
+    <p className="text-xs font-semibold text-muted-foreground mb-1.5">{children}</p>
   );
 
   const Stepper = ({ label, value, min = 1, max = 99, onChange }) => (
@@ -476,7 +476,7 @@ function DayCard({
                   updated[items[i].__origIdx] = { ...item, title: e.target.value };
                   onUpdateDay({ exercises: updated });
                 }}
-                className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-transparent border-none focus:outline-none text-center w-20"
+                className="text-xs font-semibold text-muted-foreground bg-transparent border-none focus:outline-none text-center w-20"
               />
               <button onClick={() => {
                 const updated = (day.exercises || []).filter((_, idx) => idx !== items[i].__origIdx);
@@ -534,7 +534,7 @@ function DayCard({
           <div key={`ss-${i}`} className="mb-2">
             <div className="flex items-center gap-2 mb-1.5 group/ssh">
               <div className="w-0.5 h-4 rounded-full flex-shrink-0" style={{ background: 'var(--tc-primary)' }} />
-              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--tc-primary)' }}>
+              <span className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
                 Superset {item.label || 'A'}
               </span>
               <input

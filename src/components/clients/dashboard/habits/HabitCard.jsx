@@ -95,12 +95,12 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
               <Flame className={`w-3.5 h-3.5 ${streak > 0 ? 'text-orange-400' : 'text-border'}`} />
               <span className={`text-sm font-bold ${streak > 0 ? 'text-orange-500' : 'text-border'}`}>{streak}</span>
             </div>
-            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wide">Streak</p>
+            <p className="text-xs text-muted-foreground font-semibold">Streak</p>
           </div>
           {/* Adherence */}
           <div className="text-center">
             <p className={`text-sm font-bold ${adherence >= 70 ? 'text-success' : adherence >= 40 ? 'text-warning' : 'text-destructive'}`}>{adherence}%</p>
-            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-wide">7-day</p>
+            <p className="text-xs text-muted-foreground font-semibold">7-day</p>
           </div>
           {/* Actions */}
           <div className="flex items-center gap-0.5 ml-1">
@@ -149,7 +149,7 @@ export default function HabitCard({ habit, completions, onToggleDay, onEdit, onD
                 )}
               </button>
               {today && (
-                <span className="text-[8px] font-bold text-ai uppercase">Today</span>
+                <span className="text-xs font-semibold text-ai">Today</span>
               )}
             </div>
           );

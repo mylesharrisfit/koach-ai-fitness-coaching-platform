@@ -72,7 +72,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
               {/* Highlights */}
               {result.highlights?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                  <p className="text-xs font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
                     <Star className="w-3 h-3 text-warning" /> What went well
                   </p>
                   <div className="space-y-1">
@@ -89,7 +89,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
               {/* Coaching points */}
               {result.coaching_points?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                  <p className="text-xs font-semibold text-muted-foreground mb-1.5 flex items-center gap-1">
                     <Target className="w-3 h-3 text-primary" /> Coaching points
                   </p>
                   <div className="space-y-1">

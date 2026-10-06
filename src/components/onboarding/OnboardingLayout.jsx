@@ -57,7 +57,7 @@ export default function OnboardingLayout({
           {/* Header */}
           <motion.div variants={stagger.item} className="space-y-2">
             {eyebrow && (
-              <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'var(--tc-primary)' }}>
+              <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
                 {eyebrow}
               </p>
             )}

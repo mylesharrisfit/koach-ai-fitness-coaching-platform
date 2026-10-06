@@ -7,7 +7,7 @@ function PasswordInput({ label, value, onChange, placeholder }) {
   const [show, setShow] = useState(false);
   return (
     <div className="space-y-1.5">
-      <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">{label}</label>
+      <label className="block text-xs font-semibold text-muted-foreground">{label}</label>
       <div className="relative">
         <input
           type={show ? 'text' : 'password'}

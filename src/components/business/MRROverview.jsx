@@ -36,7 +36,7 @@ export default function MRROverview({ clients, payments }) {
   return (
     <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">MRR Trend</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground">MRR Trend</h3>
         <div className="flex items-center gap-1.5 text-xs font-semibold">
           {growth !== null && (
             <span className={Number(growth) >= 0 ? 'text-success' : 'text-destructive'}>

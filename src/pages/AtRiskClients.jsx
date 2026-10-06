@@ -58,7 +58,7 @@ function AIInterventionPanel({ entry, client, onClose, onSend }) {
     <div className="mt-3 bg-ai/10 border border-ai rounded-xl p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Sparkles className="w-4 h-4 text-ai" />
-        <span className="text-xs font-bold text-ai uppercase tracking-wide">AI Intervention Plan</span>
+        <span className="text-xs font-semibold text-ai">AI Intervention Plan</span>
         <button onClick={onClose} className="ml-auto text-ai hover:text-ai"><X className="w-3.5 h-3.5" /></button>
       </div>
       {!plan && (
@@ -70,11 +70,11 @@ function AIInterventionPanel({ entry, client, onClose, onSend }) {
       {plan && (
         <div className="space-y-3">
           <div className="bg-card border border-ai rounded-lg p-3 space-y-2">
-            <p className="text-[10px] font-bold text-ai uppercase tracking-wide">Immediate Action</p>
+            <p className="text-xs font-semibold text-ai">Immediate Action</p>
             <p className="text-xs text-foreground">{plan.immediate_action}</p>
           </div>
           <div className="bg-card border border-ai rounded-lg p-3 space-y-2">
-            <p className="text-[10px] font-bold text-ai uppercase tracking-wide">Suggested Message</p>
+            <p className="text-xs font-semibold text-ai">Suggested Message</p>
             <textarea rows={3} value={message} onChange={e => setMessage(e.target.value)}
               className="w-full text-xs text-foreground border border-ai rounded-lg p-2 resize-none focus:outline-none focus:ring-1 focus:ring-ai" />
             <button onClick={() => onSend(message)}
@@ -83,7 +83,7 @@ function AIInterventionPanel({ entry, client, onClose, onSend }) {
             </button>
           </div>
           <div className="bg-card border border-ai rounded-lg p-3 space-y-1">
-            <p className="text-[10px] font-bold text-ai uppercase tracking-wide">Program Adjustment</p>
+            <p className="text-xs font-semibold text-ai">Program Adjustment</p>
             <p className="text-xs text-foreground">{plan.program_adjustment}</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-ai bg-ai/10 rounded-lg px-3 py-2">
@@ -234,7 +234,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
         <div className="border-t border-muted px-4 py-3 space-y-4 bg-background">
           {/* All risk flags */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Risk Factors</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Risk Factors</p>
             <div className="space-y-1.5">
               {flags.map(f => (
                 <div key={f.key} className={cn('flex items-start gap-2 px-3 py-2 rounded-lg border text-xs', SEVERITY_CONFIG[f.severity].color)}>
@@ -243,7 +243,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
                     <p className="font-semibold">{f.label}</p>
                     {f.detail && <p className="opacity-70 text-[10px] mt-0.5">{f.detail}</p>}
                   </div>
-                  <span className="ml-auto text-[9px] uppercase font-bold opacity-60">{f.severity}</span>
+                  <span className="ml-auto text-xs font-semibold opacity-60">{f.severity}</span>
                 </div>
               ))}
             </div>
@@ -251,7 +251,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
 
           {/* Last 3 check-ins + mini chart */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Recent Adherence (4 weeks)</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Recent Adherence (4 weeks)</p>
             <MiniAdherenceChart checkIns={clientCheckIns} />
             <div className="grid grid-cols-3 gap-2 mt-2">
               {clientCheckIns.slice(0, 3).map((ci, i) => {
@@ -283,7 +283,7 @@ function RiskCard({ entry, messages, onSendNudge, onResolve, selected, onSelect 
 
           {/* Private notes */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Private Notes</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1.5">Private Notes</p>
             <textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="Add coaching notes..." className="w-full text-xs border border-border rounded-lg p-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary bg-card" />
           </div>

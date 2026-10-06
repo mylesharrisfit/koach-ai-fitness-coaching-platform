@@ -23,7 +23,7 @@ export default function CheckInMetrics({ checkIn }) {
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {metrics.map(m => (
         <div key={m.label} className="bg-secondary/40 rounded-xl p-3">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">{m.label}</p>
+          <p className="text-xs text-muted-foreground mb-1">{m.label}</p>
           <p className="text-sm font-semibold">{m.value}</p>
           {m.isCompliance && m.val != null && (
             <div className="mt-1.5 h-1 rounded-full bg-border overflow-hidden">

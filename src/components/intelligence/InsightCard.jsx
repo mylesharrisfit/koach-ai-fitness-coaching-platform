@@ -69,7 +69,7 @@ export default function InsightCard({ insight, index = 0, onDismiss, onNotReleva
             <Icon style={{ width: 18, height: 18, color: 'var(--tc-primary-foreground)' }} />
           </div>
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: cfg.iconBg }}>
+            <span className="text-xs font-semibold" style={{ color: cfg.iconBg }}>
               {cfg.tag}
             </span>
             {insight.clientName && (

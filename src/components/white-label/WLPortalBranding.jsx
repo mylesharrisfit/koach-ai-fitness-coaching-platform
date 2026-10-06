@@ -38,7 +38,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
     <WLSection title="Client Portal Branding" emoji="📱"
       description="Customize the look and feel of your client-facing app" locked={locked}>
 
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Header & Navigation</p>
+      <p className="text-xs font-semibold text-muted-foreground">Header & Navigation</p>
       <WLRow label="Show business logo" hint="Display your logo in the portal header">
         <WLToggle value={s.portal_show_logo !== false} onChange={v => set('portal_show_logo', v)} />
       </WLRow>
@@ -54,7 +54,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
       </WLRow>
 
       <WLDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Loading Screen</p>
+      <p className="text-xs font-semibold text-muted-foreground">Loading Screen</p>
       <WLRow label="Custom splash screen">
         <WLToggle value={s.splash_enabled !== false} onChange={v => set('splash_enabled', v)} />
       </WLRow>
@@ -70,7 +70,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
       )}
 
       <WLDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Login Page</p>
+      <p className="text-xs font-semibold text-muted-foreground">Login Page</p>
       <WLRow label="Background type">
         <WLSelect value={s.login_bg_type || 'gradient'} onChange={v => set('login_bg_type', v)} options={LOGIN_BG_TYPES} />
       </WLRow>
@@ -98,7 +98,7 @@ export default function WLPortalBranding({ s, set, locked, eliteLocked, enterpri
       <WLDivider />
       <div className="flex items-start gap-3">
         <div className="flex-1">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+          <p className="text-xs font-semibold text-muted-foreground mb-3 flex items-center gap-2">
             Custom Domain
             {enterpriseLocked && <span className="text-[10px] bg-ai/10 text-ai font-bold px-2 py-0.5 rounded-full">Enterprise only</span>}
           </p>

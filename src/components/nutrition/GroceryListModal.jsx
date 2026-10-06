@@ -101,7 +101,7 @@ export default function GroceryListModal({ open, onOpenChange, plan }) {
             const [textColor, bgColor, borderColor] = cat.color.split(' ');
             return (
               <div key={cat.key}>
-                <p className={`text-xs font-bold uppercase tracking-wider mb-2 ${textColor}`}>{cat.label}</p>
+                <p className={`text-xs font-semibold mb-2${textColor}`}>{cat.label}</p>
                 <div className={`rounded-xl border ${bgColor} ${borderColor} overflow-hidden`}>
                   {items.map((item, i) => {
                     const id = `${cat.key}-${i}`;

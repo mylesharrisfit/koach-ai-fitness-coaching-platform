@@ -20,29 +20,29 @@ function RationaleCard({ rationale }) {
     <div className="rounded-xl p-4 space-y-3 w-full" style={{ background: 'var(--tc-sidebar)', wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}>
       <div className="flex items-center gap-2 mb-1">
         <Zap className="w-4 h-4" style={{ color: 'var(--tc-primary)' }} />
-        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--tc-primary)' }}>AI Coach Rationale</span>
+        <span className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>AI Coach Rationale</span>
       </div>
       {rationale.split && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Split</p>
+          <p className="text-xs font-semibold text-[var(--tc-muted-foreground)] mb-0.5">Split</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.split}</p>
         </div>
       )}
       {rationale.weekly_volume && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Weekly Volume</p>
+          <p className="text-xs font-semibold text-[var(--tc-muted-foreground)] mb-0.5">Weekly Volume</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.weekly_volume}</p>
         </div>
       )}
       {rationale.rep_range_rationale && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Rep Ranges</p>
+          <p className="text-xs font-semibold text-[var(--tc-muted-foreground)] mb-0.5">Rep Ranges</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.rep_range_rationale}</p>
         </div>
       )}
       {rationale.progression_approach && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--tc-muted-foreground)] mb-0.5">Progression</p>
+          <p className="text-xs font-semibold text-[var(--tc-muted-foreground)] mb-0.5">Progression</p>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap break-words">{rationale.progression_approach}</p>
         </div>
       )}
@@ -101,7 +101,7 @@ function DayCard({ workout }) {
                 )}
               </div>
               <span
-                className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full flex-shrink-0 mt-0.5"
+                className="text-xs font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 mt-0.5"
                 style={{
                   background: (SECTION_COLOR[ex.section] || 'var(--tc-muted-foreground)') + '20',
                   color: SECTION_COLOR[ex.section] || 'var(--tc-muted-foreground)',
@@ -151,7 +151,7 @@ export default function AIReviewStep({
         ].map(s => (
           <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: 'var(--tc-muted)', border: '0.5px solid var(--tc-border)' }}>
             <p className="text-lg font-bold text-foreground">{s.value}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
+            <p className="text-xs text-muted-foreground">{s.label}</p>
           </div>
         ))}
       </div>
@@ -162,7 +162,7 @@ export default function AIReviewStep({
       {/* Edit name / description */}
       <div className="space-y-3 pt-1">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Program Name</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-1.5">Program Name</p>
           <Input
             value={title}
             onChange={e => handleChange('title', e.target.value)}
@@ -170,7 +170,7 @@ export default function AIReviewStep({
           />
         </div>
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Description</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-1.5">Description</p>
           <Textarea
             value={description}
             onChange={e => handleChange('description', e.target.value)}
@@ -182,7 +182,7 @@ export default function AIReviewStep({
 
       {/* Schedule preview */}
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Training Schedule</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Training Schedule</p>
         <div className="space-y-2">
           {(program.workouts || []).map((workout, idx) => (
             <DayCard key={idx} workout={workout} />

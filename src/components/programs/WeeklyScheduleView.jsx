@@ -76,14 +76,14 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
           ].map(stat => (
             <div key={stat.label} className="bg-secondary/40 rounded-xl p-3 text-center">
               <p className="text-lg font-heading font-bold">{stat.value}</p>
-              <p className="text-[10px] text-foreground uppercase tracking-wider mt-0.5">{stat.label}</p>
+              <p className="text-xs text-foreground mt-0.5">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Weekly grid */}
         <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-3">Week Structure</p>
+          <p className="text-xs font-semibold text-foreground mb-3">Week Structure</p>
           <div className="grid grid-cols-7 gap-2">
             {DAYS_OF_WEEK.map((day, idx) => {
               const workout = workoutsPerWeek[idx] || null;
@@ -92,7 +92,7 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
                   "rounded-xl border min-h-[100px] p-2 transition-all",
                   workout ? "bg-card border-border" : "bg-secondary/20 border-dashed border-border/40"
                 )}>
-                  <p className={cn("text-[10px] font-bold uppercase tracking-wider mb-2",
+                  <p className={cn("text-xs font-semibold mb-2",
                     workout ? "text-foreground" : "text-foreground/40"
                   )}>{day}</p>
                   {workout ? (
@@ -119,7 +119,7 @@ export default function WeeklyScheduleView({ open, onClose, workouts, meta }) {
 
         {/* Day-by-day breakdown */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-3">Day-by-Day Breakdown</p>
+          <p className="text-xs font-semibold text-foreground mb-3">Day-by-Day Breakdown</p>
           <div className="space-y-3">
             {workouts.map((workout, idx) => (
               <div key={idx} className="bg-card border border-border rounded-xl overflow-hidden">

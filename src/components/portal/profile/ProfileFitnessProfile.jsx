@@ -35,7 +35,7 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
       <div className="pt-3 space-y-5">
         {/* Goal */}
         <div>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Primary Goal</p>
+          <p className="text-white/30 text-xs mb-2">Primary Goal</p>
           <div className="flex flex-wrap gap-2">
             {GOALS.map(g => (
               <button key={g}
@@ -54,7 +54,7 @@ export default function ProfileFitnessProfile({ client, queryClient }) {
 
         {/* Injuries */}
         <div>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Injuries or Limitations</p>
+          <p className="text-white/30 text-xs mb-2">Injuries or Limitations</p>
           <textarea
             className="w-full bg-transparent text-white/70 text-sm outline-none border border-white/10 rounded-xl p-3 focus:border-primary transition-colors resize-none"
             rows={3}

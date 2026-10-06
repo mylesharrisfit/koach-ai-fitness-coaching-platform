@@ -185,7 +185,7 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
             <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-success/10 border border-success">
               <span className="text-success text-lg">🏆</span>
               <div className="min-w-0">
-                <p className="text-[10px] text-success font-semibold uppercase tracking-wide">Best This Period</p>
+                <p className="text-xs text-success font-semibold">Best This Period</p>
                 <p className="text-xs font-bold text-success truncate">{summary.best.client.name}</p>
                 <p className="text-[10px] text-success">{summary.best.val}% adherence</p>
               </div>
@@ -195,7 +195,7 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
             <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-accent border border-accent">
               <span className="text-primary text-lg">📈</span>
               <div className="min-w-0">
-                <p className="text-[10px] text-primary font-semibold uppercase tracking-wide">Most Improved</p>
+                <p className="text-xs text-primary font-semibold">Most Improved</p>
                 <p className="text-xs font-bold text-primary truncate">{summary.mostImproved.client.name}</p>
                 <p className="text-[10px] text-primary">+{summary.mostImproved.improvement}% vs last period</p>
               </div>
@@ -205,7 +205,7 @@ export default function AdherenceTrends({ clients, checkIns, rangeWeeks }) {
             <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-destructive/10 border border-destructive">
               <span className="text-destructive text-lg">⚠️</span>
               <div className="min-w-0">
-                <p className="text-[10px] text-destructive font-semibold uppercase tracking-wide">Needs Attention</p>
+                <p className="text-xs text-destructive font-semibold">Needs Attention</p>
                 <p className="text-xs font-bold text-destructive truncate">{summary.needsAttention.client.name}</p>
                 <p className="text-[10px] text-destructive">{summary.needsAttention.val}% adherence</p>
               </div>

@@ -28,7 +28,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
       <div className="pt-3 space-y-5">
         {/* Dietary */}
         <div>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Dietary Preferences</p>
+          <p className="text-white/30 text-xs mb-2">Dietary Preferences</p>
           <div className="flex flex-wrap gap-2">
             {DIETS.map(d => (
               <button key={d} onClick={() => toggle(d)}
@@ -46,7 +46,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
 
         {/* Allergies */}
         <div>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">Food Allergies</p>
+          <p className="text-white/30 text-xs mb-1.5">Food Allergies</p>
           <input
             className="w-full bg-transparent text-white/70 text-sm outline-none border-b border-white/10 pb-1 focus:border-primary transition-colors"
             placeholder="e.g. peanuts, shellfish, tree nuts..."
@@ -57,7 +57,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
 
         {/* Dislikes */}
         <div>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">Foods I Dislike</p>
+          <p className="text-white/30 text-xs mb-1.5">Foods I Dislike</p>
           <input
             className="w-full bg-transparent text-white/70 text-sm outline-none border-b border-white/10 pb-1 focus:border-primary transition-colors"
             placeholder="e.g. broccoli, fish..."
@@ -68,7 +68,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
 
         {/* Water goal */}
         <div>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">Daily Water Goal (glasses)</p>
+          <p className="text-white/30 text-xs mb-2">Daily Water Goal (glasses)</p>
           <div className="flex items-center gap-3">
             <button onClick={() => { setWaterGoal(w => Math.max(1, w - 1)); setDirty(true); }}
               className="w-9 h-9 rounded-full text-white/60 text-xl flex items-center justify-center"
@@ -82,7 +82,7 @@ export default function ProfileNutritionPrefs({ client, queryClient }) {
 
         {/* Calories — read only */}
         <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)' }}>
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">Daily Calorie Goal</p>
+          <p className="text-white/30 text-xs mb-1">Daily Calorie Goal</p>
           <p className="text-white/60 text-sm">Set by your coach</p>
         </div>
       </div>

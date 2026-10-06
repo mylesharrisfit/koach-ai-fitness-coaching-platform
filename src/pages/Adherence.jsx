@@ -89,7 +89,7 @@ function LeaderCard({ client, score, streak, rank, badgeCount }) {
       <p className="text-xs font-semibold text-white leading-tight">{client.name}</p>
       <div className="flex flex-col items-center">
         <span className="text-2xl font-black" style={{ color: isFirst ? 'var(--kc-ffd700)' : 'var(--tc-primary)' }}>{score}</span>
-        <span className="text-[9px] text-muted-foreground uppercase tracking-wide">score</span>
+        <span className="text-xs text-muted-foreground">score</span>
       </div>
       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
         <span>🔥</span><span className="font-semibold text-white">{streak}</span>
@@ -350,7 +350,7 @@ export default function Adherence() {
       <div className="bg-card border border-border rounded-xl p-5 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Crown size={15} className="text-warning" />
-          <p className="text-sm font-bold text-foreground uppercase tracking-wider">Achievement Leaderboard</p>
+          <p className="text-sm font-semibold text-foreground">Achievement Leaderboard</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {leaderboard.map(({ client, score, streak, badgeCount }, i) => (
@@ -364,7 +364,7 @@ export default function Adherence() {
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
             <Trophy size={15} className="text-foreground" />
-            <p className="text-sm font-bold text-foreground uppercase tracking-wider">Achievements Gallery</p>
+            <p className="text-sm font-semibold text-foreground">Achievements Gallery</p>
           </div>
           <p className="text-xs text-muted-foreground">{Object.keys(BADGE_CONFIG).length} total badges</p>
         </div>
@@ -487,7 +487,7 @@ export default function Adherence() {
               return (
                 <div className="flex items-center gap-3 p-3 rounded-xl" style={{ background: t.bg, border: `1px solid ${t.border}`, boxShadow: `0 0 16px ${t.glow}` }}>
                   <span className="text-3xl">{cfg.emoji}</span>
-                  <div><p className="text-sm font-black" style={{ color: t.text }}>{cfg.label}</p><p className="text-xs mt-0.5" style={{ color: `${t.accent}88` }}>{cfg.desc}</p><span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: t.accent }}>{t.label}</span></div>
+                  <div><p className="text-sm font-black" style={{ color: t.text }}>{cfg.label}</p><p className="text-xs mt-0.5" style={{ color: `${t.accent}88` }}>{cfg.desc}</p><span className="text-xs font-semibold" style={{ color: t.accent }}>{t.label}</span></div>
                 </div>
               );
             })()}

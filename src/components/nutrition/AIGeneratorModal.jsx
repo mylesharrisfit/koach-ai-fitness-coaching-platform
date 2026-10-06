@@ -1212,7 +1212,7 @@ function MealCard({ meal }) {
               {/* Instructions */}
               {meal.instructions && (
                 <div className="mt-2 p-2 bg-secondary/40 rounded-lg">
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-0.5">How to prepare</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-0.5">How to prepare</p>
                   <p className="text-xs text-foreground">{meal.instructions}</p>
                 </div>
               )}
@@ -1292,7 +1292,7 @@ function Step4Result({ result }) {
         </div>
         <div className="text-center">
           <p className="text-4xl font-extrabold text-foreground tracking-tight">{result.calories}</p>
-          <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">calories / day · ~{perMealCal} kcal per meal</p>
+          <p className="text-xs text-muted-foreground font-semibold mt-0.5">calories / day · ~{perMealCal} kcal per meal</p>
           {result.goal === 'fat_loss' && result.weightLossRate && (
             <p className="text-[11px] text-primary font-semibold mt-1">
               Target: lose {result.weightLossRate} lb/week · {result.dailyDeficit} kcal/day deficit
@@ -1316,7 +1316,7 @@ function Step4Result({ result }) {
           ].map(m => (
             <div key={m.label} className="bg-card rounded-xl p-2.5 text-center shadow-sm">
               <p className={cn('text-xl font-extrabold', m.color)}>{m.value}<span className="text-xs font-semibold text-muted-foreground">g</span></p>
-              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wide">{m.label}</p>
+              <p className="text-xs text-muted-foreground font-semibold">{m.label}</p>
             </div>
           ))}
         </div>
@@ -1339,7 +1339,7 @@ function Step4Result({ result }) {
       {/* Meal cards */}
       {displayMeals.length > 0 ? (
         <div className="space-y-2">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+          <p className="text-xs font-semibold text-muted-foreground">
             {dayTab === 'training' ? '🏋️ Training Day' : '😴 Rest Day'} — {displayMeals.length} meals
           </p>
           {displayMeals.map((meal, i) => <MealCard key={i} meal={meal} />)}
@@ -1382,16 +1382,16 @@ function Step4Result({ result }) {
 
         return (
           <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">💊 Supplement Protocol</p>
+            <p className="text-xs font-semibold text-muted-foreground">💊 Supplement Protocol</p>
             {morning.length > 0 && (
               <div>
-                <p className="text-[11px] font-bold text-warning uppercase tracking-wide mb-2">☀️ Morning Stack</p>
+                <p className="text-xs font-semibold text-warning mb-2">☀️ Morning Stack</p>
                 <div className="space-y-2">{morning.map(s => renderRow(s, 'Morning', 'bg-warning/10 text-warning'))}</div>
               </div>
             )}
             {night.length > 0 && (
               <div>
-                <p className="text-[11px] font-bold text-primary uppercase tracking-wide mb-2 mt-3">🌙 Night Stack</p>
+                <p className="text-xs font-semibold text-primary mb-2 mt-3">🌙 Night Stack</p>
                 <div className="space-y-2">{night.map(s => renderRow(s, 'Before Bed', 'bg-accent text-primary'))}</div>
               </div>
             )}
@@ -1408,7 +1408,7 @@ function Step4Result({ result }) {
       {/* Hydration protocol */}
       {result.hydration && (
         <div className="bg-accent border border-accent rounded-2xl p-4 space-y-2">
-          <p className="text-xs font-bold text-primary uppercase tracking-wide">💧 Hydration Protocol</p>
+          <p className="text-xs font-semibold text-primary">💧 Hydration Protocol</p>
           <p className="text-sm font-bold text-primary">Daily Target: {result.hydration.daily_oz} oz / ~{Math.round(result.hydration.daily_oz * 0.0296)} L</p>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             {[['Morning', result.hydration.morning], ['Pre-Workout', result.hydration.pre_workout], ['During', result.hydration.during_workout], ['Post-Workout', result.hydration.post_workout]].map(([label, val]) => val && (
@@ -1427,7 +1427,7 @@ function Step4Result({ result }) {
       {/* Macro flexibility rules */}
       {result.macro_flexibility?.length > 0 && (
         <div className="bg-card border border-border rounded-2xl p-4 space-y-2">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">🔄 Macro Flexibility Rules</p>
+          <p className="text-xs font-semibold text-muted-foreground">🔄 Macro Flexibility Rules</p>
           <div className="space-y-1.5">
             {result.macro_flexibility.map((rule, i) => (
               <div key={i} className="flex items-start gap-2 text-xs">
@@ -1442,7 +1442,7 @@ function Step4Result({ result }) {
       {/* Coach notes */}
       {result.coach_notes && (
         <div className="bg-warning/10 border border-warning rounded-2xl p-4 space-y-3">
-          <p className="text-xs font-bold text-warning uppercase tracking-wide">📋 Coach Notes</p>
+          <p className="text-xs font-semibold text-warning">📋 Coach Notes</p>
           {result.coach_notes.why_these_calories && (
             <div><p className="text-[11px] font-bold text-warning">Why these calories</p><p className="text-xs text-foreground">{result.coach_notes.why_these_calories}</p></div>
           )}
@@ -1461,7 +1461,7 @@ function Step4Result({ result }) {
       {/* Client notes */}
       {result.client_notes && (
         <div className="bg-success/10 border border-success rounded-2xl p-4">
-          <p className="text-xs font-bold text-success uppercase tracking-wide mb-2">💬 Client Summary</p>
+          <p className="text-xs font-semibold text-success mb-2">💬 Client Summary</p>
           <p className="text-xs text-foreground leading-relaxed">{result.client_notes}</p>
         </div>
       )}
@@ -1469,7 +1469,7 @@ function Step4Result({ result }) {
       {/* Shopping list */}
       {result.shopping_list?.length > 0 && (
         <div className="bg-card border border-border rounded-2xl p-4 space-y-2">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">🛒 Shopping List</p>
+          <p className="text-xs font-semibold text-muted-foreground">🛒 Shopping List</p>
           <div className="grid grid-cols-2 gap-1">
             {result.shopping_list.map((item, i) => (
               <div key={i} className="flex items-center gap-1.5 text-xs">
@@ -1484,7 +1484,7 @@ function Step4Result({ result }) {
       {/* Weekly overview */}
       {result.weekly_overview && (
         <div className="bg-secondary/40 border border-border rounded-2xl p-4">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">📅 Weekly Overview</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">📅 Weekly Overview</p>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">{result.weekly_overview.training_days || result.trainingDays || 4}</p>

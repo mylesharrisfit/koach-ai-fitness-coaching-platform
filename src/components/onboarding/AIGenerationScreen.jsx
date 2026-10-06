@@ -120,7 +120,7 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-3"
         >
-          <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'var(--tc-primary)' }}>
+          <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
             KOACH AI Engine
           </p>
           <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>

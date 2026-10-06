@@ -16,7 +16,7 @@ export default function WLCustomContent({ s, set, locked, enterpriseLocked }) {
     <WLSection title="Custom Content" emoji="📄"
       description="Add your own terms, policies, and custom pages" locked={locked}>
 
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Terms & Policies</p>
+      <p className="text-xs font-semibold text-muted-foreground">Terms & Policies</p>
       <WLRow label="Terms of Service" hint="Replaces KOACH AI's default terms">
         <div className="space-y-2">
           <WLInput value={s.terms_url} onChange={v => set('terms_url', v)} placeholder="https://yourdomain.com/terms" />
@@ -41,7 +41,7 @@ export default function WLCustomContent({ s, set, locked, enterpriseLocked }) {
       <WLDivider />
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Custom Pages</p>
+          <p className="text-xs font-semibold text-muted-foreground">Custom Pages</p>
           <p className="text-xs text-muted-foreground mt-0.5">Add up to 3 custom pages to your portal {enterpriseLocked && '· Enterprise only'}</p>
         </div>
         {enterpriseLocked && <span className="text-[10px] bg-ai/10 text-ai font-bold px-2 py-0.5 rounded-full">Enterprise</span>}
@@ -78,7 +78,7 @@ export default function WLCustomContent({ s, set, locked, enterpriseLocked }) {
       )}
 
       <WLDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Onboarding Customization</p>
+      <p className="text-xs font-semibold text-muted-foreground">Onboarding Customization</p>
       <WLRow label="Welcome video" hint="Shown to new clients on first login">
         <WLInput value={s.welcome_video_url} onChange={v => set('welcome_video_url', v)} placeholder="https://youtube.com/..." />
       </WLRow>

@@ -42,7 +42,7 @@ export default function BSScheduling({ s, set }) {
 
   return (
     <BSSection icon={Calendar} title="Scheduling & Availability" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Working Hours</p>
+      <p className="text-xs font-semibold text-muted-foreground">Working Hours</p>
       <BSRow label="Day availability" hint="Set hours for each day">
         <div className="space-y-2">
           {DAYS.map(day => {
@@ -71,7 +71,7 @@ export default function BSScheduling({ s, set }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Response Time</p>
+      <p className="text-xs font-semibold text-muted-foreground">Response Time</p>
       <BSRow label="Expected response time" hint="Shown to clients in their app">
         <BSSelect value={s.response_time} onChange={v => set('response_time', v)} options={RESPONSE_TIMES} />
       </BSRow>
@@ -86,7 +86,7 @@ export default function BSScheduling({ s, set }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Session Booking</p>
+      <p className="text-xs font-semibold text-muted-foreground">Session Booking</p>
       <BSRow label="Allow session requests">
         <BSToggle value={s.allow_session_requests} onChange={v => set('allow_session_requests', v)} />
       </BSRow>

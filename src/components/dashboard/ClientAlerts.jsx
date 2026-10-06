@@ -34,7 +34,7 @@ export default function ClientAlerts({ clients, checkIns }) {
           <div className="w-7 h-7 rounded-lg bg-ai/20 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-ai" />
           </div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-ai">AI Client Alerts</h2>
+          <h2 className="text-sm font-semibold text-ai">AI Client Alerts</h2>
         </div>
         <div className="flex items-center gap-2">
           {alerts !== null && (
@@ -80,7 +80,7 @@ export default function ClientAlerts({ clients, checkIns }) {
                   <p className="text-xs font-semibold mb-0.5">{a.client_name} <span className="font-normal opacity-70">· {a.alert_type}</span></p>
                   <p className="text-xs opacity-90">{a.message}</p>
                 </div>
-                <span className="text-xs opacity-60 uppercase font-medium flex-shrink-0">{a.severity}</span>
+                <span className="text-xs opacity-60 font-medium flex-shrink-0">{a.severity}</span>
               </div>
             ))
           )}

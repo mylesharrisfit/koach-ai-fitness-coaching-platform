@@ -42,7 +42,7 @@ export default function StripeRevenueSummary({ data }) {
           </div>
           <div className="min-w-0">
             <p className="text-xl font-heading font-bold leading-none text-white">{s.value}</p>
-            <p className="text-[11px] mt-1 leading-tight text-white/50 font-semibold uppercase tracking-wide">{s.label}</p>
+            <p className="text-xs mt-1 leading-tight text-white/50 font-semibold">{s.label}</p>
           </div>
         </div>
       ))}

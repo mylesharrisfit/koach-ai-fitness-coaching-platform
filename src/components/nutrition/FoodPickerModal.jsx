@@ -111,7 +111,7 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
                     if (!items.length) return null;
                     return (
                       <div key={cat.id}>
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{cat.label}</p>
+                        <p className="text-xs font-semibold text-muted-foreground mb-2">{cat.label}</p>
                         <div className="space-y-1.5">
                           {items.map(food => <FoodButton key={food.id} food={food} />)}
                         </div>
@@ -120,7 +120,7 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
                   })}
                   {uncategorized.length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Other</p>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">Other</p>
                       <div className="space-y-1.5">
                         {uncategorized.map(food => <FoodButton key={food.id} food={food} />)}
                       </div>

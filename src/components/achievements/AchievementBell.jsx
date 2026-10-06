@@ -53,7 +53,7 @@ export default function AchievementBell() {
           }}
         >
           <div className="px-4 py-3 border-b border-white/8 flex items-center justify-between">
-            <p className="text-xs font-bold text-white uppercase tracking-wider">Recent Achievements</p>
+            <p className="text-xs font-semibold text-white">Recent Achievements</p>
             {hasNew && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--kc-ffd700)]/20 text-[var(--kc-ffd700)]">
                 {recentBadges.length} new

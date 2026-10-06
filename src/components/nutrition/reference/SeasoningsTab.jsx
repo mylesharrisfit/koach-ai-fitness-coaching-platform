@@ -53,7 +53,7 @@ function SeasoningCard({ item, isPortal }) {
             <div className="px-4 py-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">🥩 Best proteins</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">🥩 Best proteins</p>
                   <div className="space-y-0.5">
                     {item.best_proteins.slice(0, 4).map(p => (
                       <p key={p} className="text-xs text-foreground">• {p}</p>
@@ -61,7 +61,7 @@ function SeasoningCard({ item, isPortal }) {
                   </div>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">🌾 Best carbs</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">🌾 Best carbs</p>
                   <div className="space-y-0.5">
                     {item.best_carbs.slice(0, 4).map(c => (
                       <p key={c} className="text-xs text-foreground">• {c}</p>
@@ -70,7 +70,7 @@ function SeasoningCard({ item, isPortal }) {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">💡 Recipe ideas</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">💡 Recipe ideas</p>
                 <div className="space-y-0.5">
                   {item.recipe_ideas.map(r => (
                     <p key={r} className="text-xs text-foreground">• {r}</p>
@@ -78,7 +78,7 @@ function SeasoningCard({ item, isPortal }) {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-success uppercase tracking-wide mb-1">✅ Pairs well with</p>
+                <p className="text-xs font-semibold text-success mb-1">✅ Pairs well with</p>
                 <div className="flex flex-wrap gap-1">
                   {item.pairs_with.map(p => (
                     <span key={p} className="text-[10px] bg-success/10 text-success px-2 py-0.5 rounded-full border border-success">{p}</span>

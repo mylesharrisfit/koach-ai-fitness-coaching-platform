@@ -38,7 +38,7 @@ function ScoreDonut({ workout, nutrition, checkin }) {
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className={cn('text-2xl font-bold', total >= 80 ? 'text-success' : total >= 50 ? 'text-warning' : 'text-destructive')}>{total}</span>
-        <span className="text-[9px] text-muted-foreground uppercase">Score</span>
+        <span className="text-xs text-muted-foreground">Score</span>
       </div>
     </div>
   );

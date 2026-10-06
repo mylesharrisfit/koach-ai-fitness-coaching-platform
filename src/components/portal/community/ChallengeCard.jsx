@@ -31,7 +31,7 @@ export default function ChallengeCard({ challenge, myClient, queryClient }) {
             <Trophy className="w-4.5 h-4.5 text-warning" size={18} />
           </div>
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-warning">Weekly Challenge</p>
+            <p className="text-xs font-semibold text-warning">Weekly Challenge</p>
             <p className="text-foreground font-black text-sm">{challenge.title}</p>
           </div>
         </div>

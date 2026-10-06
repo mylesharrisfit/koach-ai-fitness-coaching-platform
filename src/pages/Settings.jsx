@@ -197,7 +197,7 @@ function SecurityTab() {
 
   const reqs = [
     { label: 'At least 8 characters', met: next.length >= 8 },
-    { label: 'One uppercase letter', met: /[A-Z]/.test(next) },
+    { label: 'One letter', met: /[A-Z]/.test(next) },
     { label: 'One number', met: /[0-9]/.test(next) },
     { label: 'One special character', met: /[^A-Za-z0-9]/.test(next) },
   ];

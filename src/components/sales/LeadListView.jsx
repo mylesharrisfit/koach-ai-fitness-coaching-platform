@@ -75,7 +75,7 @@ export default function LeadListView({ leads, onView, onUpdate, onDelete, search
   const SortHeader = ({ col, label }) => (
     <th
       onClick={() => handleSort(col)}
-      className="text-left text-[10px] font-bold uppercase tracking-wider text-muted-foreground pb-2 px-2 cursor-pointer hover:text-foreground whitespace-nowrap select-none"
+      className="text-left text-xs font-semibold text-muted-foreground pb-2 px-2 cursor-pointer hover:text-foreground whitespace-nowrap select-none"
     >
       <span className="flex items-center gap-1">{label}<ArrowUpDown className="w-2.5 h-2.5 opacity-40" /></span>
     </th>
@@ -120,12 +120,12 @@ export default function LeadListView({ leads, onView, onUpdate, onDelete, search
                 </th>
                 <SortHeader col="name" label="Lead" />
                 <SortHeader col="source" label="Source" />
-                <th className="text-left text-[10px] font-bold uppercase tracking-wider text-muted-foreground pb-2 px-2">Stage</th>
+                <th className="text-left text-xs font-semibold text-muted-foreground pb-2 px-2">Stage</th>
                 <SortHeader col="lead_score" label="Score" />
                 <SortHeader col="deal_value" label="Value" />
                 <SortHeader col="last_contact_date" label="Last Contact" />
                 <SortHeader col="follow_up_date" label="Follow-up" />
-                <th className="text-left text-[10px] font-bold uppercase tracking-wider text-muted-foreground pb-2 px-2">Days</th>
+                <th className="text-left text-xs font-semibold text-muted-foreground pb-2 px-2">Days</th>
                 <th className="pb-2 px-2" />
               </tr>
             </thead>

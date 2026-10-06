@@ -61,7 +61,7 @@ function BackBtn({ onClick }) {
 }
 
 function Label({ children }) {
-  return <div style={{ color: 'var(--tc-muted-foreground)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{children}</div>;
+  return <div style={{ color: 'var(--tc-muted-foreground)', fontSize: 11, fontWeight: 700, marginBottom: 6 }}>{children}</div>;
 }
 
 function Input({ label, value, onChange, type = 'text', placeholder, required, hint }) {
@@ -217,7 +217,7 @@ function Welcome({ onNext, onSkip }) {
         <KoachLogo size={80} rounded="rounded-3xl" glow bg />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ color: 'var(--tc-primary)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>KOACH AI</div>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 11, fontWeight: 700,  }}>KOACH AI</div>
           <h1 style={{ color: 'var(--tc-primary-foreground)', fontSize: 32, fontWeight: 900, lineHeight: 1.2, letterSpacing: '-0.03em', margin: 0 }}>
             Build your coaching<br />business with AI.
           </h1>
@@ -251,7 +251,7 @@ function Step1({ data, set, onNext, onBack, onSkip }) {
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 1 of 5</div>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, marginBottom: 6 }}>Step 1 of 5</div>
           <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Create your account</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Get started — it only takes a minute</p>
           <div style={{ display: 'flex', gap: 12 }}>
@@ -280,7 +280,7 @@ function Step2({ data, set, onNext, onBack, onSkip }) {
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 2 of 5</div>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, marginBottom: 6 }}>Step 2 of 5</div>
           <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching business</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Tell us about your practice</p>
           <Input label="Business / Coaching Name" value={data.business_name} onChange={v => set('business_name', v)} placeholder="e.g. Myles Harris Fitness" required />
@@ -325,7 +325,7 @@ function Step3({ data, set, onNext, onBack, onSkip }) {
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 3 of 5</div>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, marginBottom: 6 }}>Step 3 of 5</div>
           <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Your coaching profile</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Clients will see this on your profile</p>
           <div style={{ marginBottom: 16 }}>
@@ -364,7 +364,7 @@ function Step4({ data, set, onNext, onBack, onSkip, saving }) {
       <BackBtn onClick={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px 0' }}>
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>Step 4 of 5</div>
+          <div style={{ color: 'var(--tc-primary)', fontSize: 10, fontWeight: 700, marginBottom: 6 }}>Step 4 of 5</div>
           <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 24, fontWeight: 900, margin: '0 0 4px', letterSpacing: '-0.02em' }}>Set up your business</h2>
           <p style={{ color: 'var(--tc-muted-foreground)', fontSize: 12, margin: '0 0 20px' }}>Payments and packages</p>
 
@@ -441,7 +441,7 @@ function Step5({ firstName }) {
         <KoachLogo size={72} rounded="rounded-2xl" glow bg />
 
         <div>
-          <div style={{ color: 'var(--tc-success)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Welcome aboard 🎉</div>
+          <div style={{ color: 'var(--tc-success)', fontSize: 11, fontWeight: 700, marginBottom: 8 }}>Welcome aboard 🎉</div>
           <h2 style={{ color: 'var(--tc-primary-foreground)', fontSize: 32, fontWeight: 900, letterSpacing: '-0.03em', margin: '0 0 8px' }}>
             Welcome to KOACH AI,<br />{firstName || 'Coach'}!
           </h2>

@@ -87,44 +87,44 @@ function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibra
         <div className="border-t border-muted bg-muted px-4 py-3 space-y-3">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
-              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Layers className="w-3 h-3" />Set Type</Label>
+              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Layers className="w-3 h-3" />Set Type</Label>
               <select value={ex.set_type || 'straight'} onChange={e => onUpdate('set_type', e.target.value)}
                 className="mt-1 h-8 w-full text-xs rounded-lg border border-border bg-card px-2 focus:outline-none focus:border-primary/40">
                 {SET_TYPES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </div>
             <div>
-              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Tag className="w-3 h-3" />Group</Label>
+              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Tag className="w-3 h-3" />Group</Label>
               <Input className="h-8 text-sm mt-1 border-border font-mono text-center" placeholder="A/B/C"
                 value={ex.superset_group || ''} onChange={e => onUpdate('superset_group', e.target.value)} />
             </div>
             <div>
-              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Timer className="w-3 h-3" />Tempo</Label>
+              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Timer className="w-3 h-3" />Tempo</Label>
               <Input className="h-8 text-sm mt-1 border-border font-mono" placeholder="3-1-2-0"
                 value={ex.tempo || ''} onChange={e => onUpdate('tempo', e.target.value)} />
             </div>
             <div>
-              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Zap className="w-3 h-3" />RPE (1–10)</Label>
+              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Zap className="w-3 h-3" />RPE (1–10)</Label>
               <Input type="number" min="1" max="10" className="h-8 text-sm mt-1 border-border text-center" placeholder="8"
                 value={ex.rpe || ''} onChange={e => onUpdate('rpe', e.target.value)} />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Section</Label>
+              <Label className="text-xs font-semibold text-muted-foreground">Section</Label>
               <select value={ex.section || 'main'} onChange={e => onUpdate('section', e.target.value)}
                 className="mt-1 h-8 w-full text-xs rounded-lg border border-border bg-card px-2 focus:outline-none focus:border-primary/40">
                 {SECTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </div>
             <div>
-              <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1"><Link className="w-3 h-3" />Video / YouTube URL</Label>
+              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Link className="w-3 h-3" />Video / YouTube URL</Label>
               <Input className="h-8 text-xs mt-1 border-border" placeholder="https://youtube.com/..."
                 value={ex.video_url || ''} onChange={e => onUpdate('video_url', e.target.value)} />
             </div>
           </div>
           <div>
-            <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Coaching Notes / Instructions</Label>
+            <Label className="text-xs font-semibold text-muted-foreground">Coaching Notes / Instructions</Label>
             <textarea rows={2}
               className="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-border bg-card resize-none focus:outline-none focus:border-primary/40"
               placeholder="Form cues, modifications, client instructions..."

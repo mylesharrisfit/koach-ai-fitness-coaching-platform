@@ -51,7 +51,7 @@ export default function FoodDetailModal({ food, mealName, isOpen, onClose, onAdd
 
         {/* Serving size input */}
         <div className="bg-muted rounded-2xl p-4 mb-4 border border-border">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Serving Size</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Serving Size</p>
           <div className="flex items-end gap-3">
             <div className="flex-1">
               <input

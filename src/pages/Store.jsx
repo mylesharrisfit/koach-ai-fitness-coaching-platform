@@ -20,7 +20,7 @@ function StatCard({ dark, title, value, icon: Icon, subtitle }) {
     return (
       <div className="bg-sidebar rounded-xl p-5">
         <div className="flex items-start justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wider text-white/50">{title}</p>
+          <p className="text-xs font-semibold text-white/50">{title}</p>
           {Icon && <Icon className="w-4 h-4 text-white/30" />}
         </div>
         <p className="text-3xl font-bold mt-3 text-white leading-none">{value}</p>
@@ -31,7 +31,7 @@ function StatCard({ dark, title, value, icon: Icon, subtitle }) {
   return (
     <div className="bg-card border border-border rounded-xl p-5">
       <div className="flex items-start justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
+        <p className="text-xs font-semibold text-muted-foreground">{title}</p>
         {Icon && <div className="p-2 rounded-lg bg-muted"><Icon className="w-4 h-4 text-foreground" /></div>}
       </div>
       <p className="text-3xl font-bold mt-3 text-foreground leading-none">{value}</p>

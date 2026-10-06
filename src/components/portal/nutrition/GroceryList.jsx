@@ -100,7 +100,7 @@ export default function GroceryList({ nutritionPlan }) {
                   if (!grouped[cat]?.length) return null;
                   return (
                     <div key={cat} className="mb-4">
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">
                         {CATEGORY_EMOJI[cat]} {cat}
                       </p>
                       <div className="space-y-1.5">

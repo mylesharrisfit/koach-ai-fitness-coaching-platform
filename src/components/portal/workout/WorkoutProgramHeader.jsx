@@ -24,7 +24,7 @@ export default function WorkoutProgramHeader({ program, client, sessions = [] })
       style={{ background: 'linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--ai)) 100%)', boxShadow: '0 6px 28px rgb(var(--primary) / 0.3)' }}>
       <div className="p-5" style={{ background: 'rgba(0,0,0,0.1)' }}>
         {/* Program name */}
-        <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1">Current Program</p>
+        <p className="text-white/50 text-xs font-semibold mb-1">Current Program</p>
         <h2 className="text-white font-black text-xl leading-tight">{program.title}</h2>
 
         {/* Week progress */}

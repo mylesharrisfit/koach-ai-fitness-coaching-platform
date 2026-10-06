@@ -415,7 +415,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
 
             {/* Summary */}
             <div className="bg-background rounded-xl p-4 space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">Session Summary</p>
+              <p className="text-xs font-semibold text-muted-foreground">Session Summary</p>
               <div className="space-y-1">
                 {selectedClients.map(id => {
                   const c = clients.find(cl => cl.id === id);

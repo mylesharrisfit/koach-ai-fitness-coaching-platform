@@ -110,7 +110,7 @@ export default function CheckInCard({ checkIn, client, defaultOpen = false }) {
           {/* Progress photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Progress Photos</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Progress Photos</p>
               <div className="flex gap-2 flex-wrap">
                 {checkIn.photo_urls.map((url, i) => (
                   <SignedLink key={i} href={url} target="_blank" rel="noreferrer">
@@ -127,7 +127,7 @@ export default function CheckInCard({ checkIn, client, defaultOpen = false }) {
           {/* Measurements */}
           {checkIn.measurements && Object.values(checkIn.measurements).some(v => v) && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Measurements (in)</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Measurements (in)</p>
               <div className="flex flex-wrap gap-4">
                 {Object.entries(checkIn.measurements).filter(([, v]) => v).map(([k, v]) => (
                   <div key={k} className="text-xs">
@@ -142,7 +142,7 @@ export default function CheckInCard({ checkIn, client, defaultOpen = false }) {
           {/* Client notes */}
           {checkIn.notes && (
             <div className="bg-secondary/30 rounded-xl p-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Client Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Client Notes</p>
               <p className="text-sm">{checkIn.notes}</p>
             </div>
           )}
@@ -150,7 +150,7 @@ export default function CheckInCard({ checkIn, client, defaultOpen = false }) {
           {/* Coach response (read mode) */}
           {checkIn.coach_notes && (
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-3">
-              <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1.5">Coach Response</p>
+              <p className="text-xs font-semibold text-primary mb-1.5">Coach Response</p>
               <p className="text-sm">{checkIn.coach_notes}</p>
             </div>
           )}

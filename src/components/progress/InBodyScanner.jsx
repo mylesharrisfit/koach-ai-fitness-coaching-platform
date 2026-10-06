@@ -61,13 +61,13 @@ function SegmentalDiagram({ data }) {
 
   return (
     <div>
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Segmental Analysis</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-3">Segmental Analysis</p>
       <div className="grid grid-cols-5 gap-2">
         {segments.map(seg => {
           if (seg.muscle == null) return null;
           return (
             <div key={seg.label} className="flex flex-col items-center gap-1 bg-background rounded-lg p-2 text-center">
-              <p className="text-[9px] text-muted-foreground font-semibold uppercase">{seg.label}</p>
+              <p className="text-xs text-muted-foreground font-semibold">{seg.label}</p>
               <p className="text-sm font-bold text-foreground">{seg.muscle} <span className="text-[9px] font-normal text-muted-foreground">lbs</span></p>
               {seg.fat != null && <p className="text-[10px] text-warning">Fat: {seg.fat}</p>}
             </div>
@@ -104,7 +104,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
 
       {/* Body Composition */}
       <div className="bg-card border border-border rounded-xl p-4">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Body Composition</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-3">Body Composition</p>
         {metricRow('Weight', results.weight_lbs, ' lbs')}
         {metricRow('Body Fat %', results.body_fat_percent, '%',
           results.body_fat_percent > 25 ? 'var(--tc-destructive)' : results.body_fat_percent > 20 ? 'var(--tc-warning)' : 'var(--tc-success)')}
@@ -123,7 +123,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
 
       {/* Health Indicators */}
       <div className="bg-card border border-border rounded-xl p-4 space-y-4">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Health Indicators</p>
+        <p className="text-xs font-semibold text-muted-foreground">Health Indicators</p>
         <div className="grid grid-cols-2 gap-4">
           {results.inbody_score != null && (
             <div className="flex flex-col items-center gap-1">

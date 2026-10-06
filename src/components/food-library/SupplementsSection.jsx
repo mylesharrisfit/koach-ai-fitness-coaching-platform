@@ -173,7 +173,7 @@ export default function SupplementsSection() {
             if (!items.length) return null;
             return (
               <div key={cat}>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{cfg.label}</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-2">{cfg.label}</p>
                 <div className="space-y-2">
                   {items.map(s => (
                     <SupplementCard

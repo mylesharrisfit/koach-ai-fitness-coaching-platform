@@ -80,7 +80,7 @@ export default function BillingPaymentMethods({ client }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-white/50 text-xs font-semibold uppercase tracking-wider">Saved Cards</p>
+      <p className="text-white/50 text-xs font-semibold">Saved Cards</p>
 
       {cards.length === 0 ? (
         <div className="py-8 text-center rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>

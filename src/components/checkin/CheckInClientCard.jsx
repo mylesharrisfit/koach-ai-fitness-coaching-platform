@@ -224,7 +224,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2">Progress Photos</p>
+              <p className="text-xs font-semibold text-foreground mb-2">Progress Photos</p>
               <div className="flex gap-2 flex-wrap">
                 {checkIn.photo_urls.map((url, i) => (
                   <SignedLink key={i} href={url} target="_blank" rel="noreferrer">
@@ -238,7 +238,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
           {/* Adherence breakdown */}
           {breakdown && (
             <div className="bg-background border border-border rounded-xl p-3">
-              <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2.5">Adherence Breakdown</p>
+              <p className="text-xs font-semibold text-foreground mb-2.5">Adherence Breakdown</p>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-foreground">Overall</span>
                 <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}%</span>
@@ -253,7 +253,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
           {/* Client notes */}
           {checkIn.notes && (
             <div className="bg-background border border-border rounded-xl p-3">
-              <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-1.5">Client Notes</p>
+              <p className="text-xs font-semibold text-foreground mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
@@ -261,14 +261,14 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
           {/* Existing coach response */}
           {checkIn.coach_notes && (
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-3">
-              <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1.5">Your Response</p>
+              <p className="text-xs font-semibold text-primary mb-1.5">Your Response</p>
               <p className="text-sm leading-relaxed">{checkIn.coach_notes}</p>
             </div>
           )}
 
           {/* ── ⚡ Top Recommendation (prominent) ── */}
           <div>
-            <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
               <span>⚡</span> Coach Recommendation
             </p>
             <TopRecommendationBadge checkIn={checkIn} client={client} allClientCIs={allClientCIs} />

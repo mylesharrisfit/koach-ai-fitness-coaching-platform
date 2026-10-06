@@ -115,7 +115,7 @@ function LineItemRow({ item, index, onChange, onRemove }) {
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 24 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{title}</div>
+      <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 12 }}>{title}</div>
       {children}
     </div>
   );
@@ -272,7 +272,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
       <Section title="Line Items">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 64px 100px 80px 32px', gap: 8, marginBottom: 8 }}>
           {['Description', 'Qty', 'Unit Price', 'Total', ''].map((h, i) => (
-            <div key={i} style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i === 3 ? 'right' : 'left' }}>{h}</div>
+            <div key={i} style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', textAlign: i === 3 ? 'right' : 'left' }}>{h}</div>
           ))}
         </div>
         {(form.line_items || []).map((item, i) => (
@@ -285,7 +285,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
           </button>
           {showPresets && (
             <div style={{ position: 'absolute', top: '100%', left: 0, background: 'var(--tc-card)', border: '1.5px solid var(--tc-border)', borderRadius: 12, boxShadow: '0 8px 24px color-mix(in srgb, black 10%, transparent)', zIndex: 50, marginTop: 4, minWidth: 220, overflow: 'hidden' }}>
-              <div style={{ padding: '8px 12px', fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '1px solid var(--tc-muted)' }}>Quick Add</div>
+              <div style={{ padding: '8px 12px', fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', borderBottom: '1px solid var(--tc-muted)' }}>Quick Add</div>
               {LINE_PRESETS.map(p => (
                 <div key={p.description} onClick={() => addLineItem({ ...p })}
                   style={{ padding: '10px 14px', fontSize: 13, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}

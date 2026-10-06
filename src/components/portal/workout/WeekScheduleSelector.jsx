@@ -27,7 +27,7 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
 
   return (
     <div className="px-4">
-      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 px-1">This Week</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-3 px-1">This Week</p>
       <div ref={scrollRef} className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1"
         style={{ scrollSnapType: 'x mandatory' }}>
         {days.map((day, i) => {
@@ -78,7 +78,6 @@ export default function WeekScheduleSelector({ program, workoutSessions, selecte
                 fontSize: 9,
                 fontWeight: 900,
                 letterSpacing: '0.08em',
-                textTransform: 'uppercase',
                 color: isSelected ? 'rgba(255,255,255,0.7)' : isTodayCard ? 'rgb(var(--primary))' : 'rgb(var(--muted-foreground))',
               }}>
                 {format(day, 'EEE')}

@@ -148,7 +148,7 @@ function SupplementSection({ supplements }) {
 
   return (
     <div>
-      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+      <h4 className="text-xs font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
         <Pill className="w-3.5 h-3.5" /> Supplement Protocol
       </h4>
       <div className="space-y-3">
@@ -218,7 +218,7 @@ export default function OverviewTab({ plan }) {
       {/* Description */}
       {plan.description && (
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">About this plan</h4>
+          <h4 className="text-xs font-semibold text-muted-foreground mb-2">About this plan</h4>
           <p className="text-sm text-foreground leading-relaxed">{plan.description}</p>
         </div>
       )}
@@ -226,7 +226,7 @@ export default function OverviewTab({ plan }) {
       {/* Macro ratio donut */}
       {!isHabits && (plan.protein_g || plan.carbs_g || plan.fats_g) ? (
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Macro Ratio</h4>
+          <h4 className="text-xs font-semibold text-muted-foreground mb-3">Macro Ratio</h4>
           <div className="bg-card border border-border rounded-xl p-4">
             <DonutChart protein={plan.protein_g || 0} carbs={plan.carbs_g || 0} fats={plan.fats_g || 0} />
           </div>
@@ -235,7 +235,7 @@ export default function OverviewTab({ plan }) {
 
       {/* Meal timing */}
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
+        <h4 className="text-xs font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5" /> Meal Timing
         </h4>
         <div className="space-y-2">
@@ -251,7 +251,7 @@ export default function OverviewTab({ plan }) {
       {/* Foods to prioritize / avoid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
+          <h4 className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Prioritize
           </h4>
           <div className="space-y-1.5">
@@ -264,7 +264,7 @@ export default function OverviewTab({ plan }) {
           </div>
         </div>
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
+          <h4 className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
             <XCircle className="w-3.5 h-3.5 text-destructive" /> Avoid
           </h4>
           <div className="space-y-1.5">
@@ -290,7 +290,7 @@ export default function OverviewTab({ plan }) {
       {/* Approved Seasonings */}
       {condiments.length > 0 && (
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">🧂 Approved Seasonings</h4>
+          <h4 className="text-xs font-semibold text-muted-foreground mb-2">🧂 Approved Seasonings</h4>
           <div className="flex flex-wrap gap-2">
             {condiments.map((c, i) => (
               <span key={i} className="px-2.5 py-1 rounded-full bg-secondary border border-border text-xs font-medium text-foreground">{c}</span>

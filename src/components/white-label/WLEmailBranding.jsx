@@ -28,7 +28,7 @@ export default function WLEmailBranding({ s, set, locked, eliteLocked }) {
     <WLSection title="Email Branding" emoji="📧"
       description="Applied to all emails sent from your coaching portal" locked={locked}>
 
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Email Header</p>
+      <p className="text-xs font-semibold text-muted-foreground">Email Header</p>
       <WLRow label="Show logo in emails">
         <WLToggle value={s.email_show_logo !== false} onChange={v => set('email_show_logo', v)} />
       </WLRow>
@@ -40,7 +40,7 @@ export default function WLEmailBranding({ s, set, locked, eliteLocked }) {
       </WLRow>
 
       <WLDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Email Footer</p>
+      <p className="text-xs font-semibold text-muted-foreground">Email Footer</p>
       <WLRow label="Business name" hint="Required for CAN-SPAM compliance">
         <WLInput value={s.email_footer_name} onChange={v => set('email_footer_name', v)}
           placeholder={s.business_name || 'Your Business Name'} />

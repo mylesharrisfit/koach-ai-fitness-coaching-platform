@@ -53,7 +53,7 @@ export default function DailyChecklist({ checkIns, messages, clients }) {
           <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
             <CheckSquare className="w-4 h-4 text-primary" />
           </div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider">Daily Checklist</h2>
+          <h2 className="text-sm font-semibold">Daily Checklist</h2>
         </div>
         <span className="text-xs text-muted-foreground">{doneCount}/{allTasks.length} done</span>
       </div>

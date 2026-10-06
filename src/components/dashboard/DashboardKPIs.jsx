@@ -29,7 +29,7 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'color-mix(in srgb, white 10%, transparent)' }}>
             <Icon className="w-4 h-4 text-white/70" />
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'color-mix(in srgb, white 40%, transparent)' }}>{label}</p>
+          <p className="text-xs font-semibold" style={{ color: 'color-mix(in srgb, white 40%, transparent)' }}>{label}</p>
         </div>
         <div>
           <p className="text-3xl font-extrabold leading-none text-white" style={{ letterSpacing: '-0.03em' }}>{value}</p>
@@ -53,7 +53,7 @@ function KPICard({ icon: Icon, label, value, sub, subColor, color, bgGrad, borde
         <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--tc-background)' }}>
           <Icon className="w-4 h-4 text-muted-foreground" />
         </div>
-        <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className="text-xs font-semibold text-muted-foreground">{label}</p>
       </div>
       <div>
         <p className="text-2xl font-bold leading-none text-foreground" style={{ letterSpacing: '-0.02em' }}>

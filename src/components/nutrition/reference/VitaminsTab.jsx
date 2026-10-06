@@ -52,31 +52,31 @@ function VitaminCard({ item, isPortal }) {
           >
             <div className="px-4 py-4 space-y-3">
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">What it does</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">What it does</p>
                 <p className="text-sm text-foreground leading-relaxed">{item.what_it_does}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {item.upper && (
                   <div>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Upper limit</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-1">Upper limit</p>
                     <p className="text-xs text-foreground">{item.upper}</p>
                   </div>
                 )}
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Best time</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Best time</p>
                   <p className="text-xs text-foreground">{item.timing}</p>
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-destructive uppercase tracking-wide mb-1">⚠️ Deficiency causes</p>
+                <p className="text-xs font-semibold text-destructive mb-1">⚠️ Deficiency causes</p>
                 <p className="text-xs text-foreground">{item.deficiency}</p>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">🍽️ Best food sources</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">🍽️ Best food sources</p>
                 <p className="text-xs text-foreground">{item.sources}</p>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-warning uppercase tracking-wide mb-1">🎯 At risk</p>
+                <p className="text-xs font-semibold text-warning mb-1">🎯 At risk</p>
                 <p className="text-xs text-foreground">{item.at_risk}</p>
               </div>
               <div className="flex items-center gap-2">

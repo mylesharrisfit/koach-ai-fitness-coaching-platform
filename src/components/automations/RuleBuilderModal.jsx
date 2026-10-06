@@ -117,7 +117,7 @@ export default function RuleBuilderModal({ open, onClose, onSave, initial }) {
           {step === 1 && (
             <div className="space-y-4">
               <div className="bg-warning/10 border border-warning rounded-xl p-4 space-y-3">
-                <p className="text-xs font-bold text-warning uppercase tracking-wider">IF Trigger</p>
+                <p className="text-xs font-semibold text-warning">IF Trigger</p>
                 <div>
                   <Label>When this happens...</Label>
                   <Select value={form.trigger_type} onValueChange={v => {
@@ -162,7 +162,7 @@ export default function RuleBuilderModal({ open, onClose, onSave, initial }) {
                   return (
                     <div key={i} className="bg-accent border border-primary rounded-xl p-4 space-y-3">
                       <div className="flex items-center justify-between">
-                        <p className="text-xs font-bold text-primary uppercase tracking-wider">THEN Action {form.actions.length > 1 ? i + 1 : ''}</p>
+                        <p className="text-xs font-semibold text-primary">THEN Action {form.actions.length > 1 ? i + 1 : ''}</p>
                         {form.actions.length > 1 && (
                           <button onClick={() => removeAction(i)} className="text-muted-foreground hover:text-destructive transition-colors">
                             <Trash2 className="w-3.5 h-3.5" />

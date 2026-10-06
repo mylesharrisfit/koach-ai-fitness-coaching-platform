@@ -128,21 +128,21 @@ function CheckInCard({ ci, clientId }) {
 
           {ci.notes && (
             <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Client Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Client Notes</p>
               <p className="text-sm text-foreground leading-relaxed">{ci.notes}</p>
             </div>
           )}
 
           {ci.coach_notes && (
             <div className="bg-accent/10 rounded-xl p-3">
-              <p className="text-[10px] font-bold text-primary uppercase tracking-wide mb-1">Coach Response</p>
+              <p className="text-xs font-semibold text-primary mb-1">Coach Response</p>
               <p className="text-sm text-foreground leading-relaxed">{ci.coach_notes}</p>
             </div>
           )}
 
           {ci.photo_urls?.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1.5">Photos</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Photos</p>
               <div className="grid grid-cols-3 gap-2">
                 {ci.photo_urls.map((url, i) => (
                   <SignedLink key={i} href={url} target="_blank" rel="noreferrer">

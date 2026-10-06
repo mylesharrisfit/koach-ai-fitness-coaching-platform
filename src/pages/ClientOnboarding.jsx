@@ -71,7 +71,7 @@ function Header({ eyebrow, headline, sub }) {
       transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
     >
       {eyebrow && (
-        <p className="text-[11px] uppercase tracking-[0.26em] font-bold mb-2.5" style={{ color: 'var(--tc-primary)' }}>
+        <p className="text-xs font-semibold mb-2.5" style={{ color: 'var(--tc-primary)' }}>
           {eyebrow}
         </p>
       )}
@@ -166,7 +166,7 @@ function BigCard({ emoji, label, sublabel, selected, onClick }) {
 function PremiumField({ label, value, onChange, type = 'text', placeholder, autoFocus }) {
   return (
     <div className="space-y-1.5">
-      <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--kc-4a4a4a)' }}>{label}</p>
+      <p className="text-xs font-semibold" style={{ color: 'var(--kc-4a4a4a)' }}>{label}</p>
       <input
         type={type}
         value={value || ''}
@@ -188,7 +188,7 @@ function NumBox({ label, value, onChange, unit, placeholder }) {
       className="flex-1 flex flex-col items-center gap-2 py-5 px-3 rounded-2xl"
       style={{ background: 'var(--tc-foreground)', border: '1.5px solid color-mix(in srgb, white 7%, transparent)' }}
     >
-      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--kc-4a4a4a)' }}>{label}</p>
+      <p className="text-xs font-semibold" style={{ color: 'var(--kc-4a4a4a)' }}>{label}</p>
       <input
         type="number"
         value={value || ''}
@@ -237,7 +237,7 @@ function SectionDivider({ label }) {
   return (
     <div className="flex items-center gap-3 my-2">
       <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }} />
-      <p className="text-[10px] uppercase tracking-widest font-bold" style={{ color: 'var(--kc-333333)' }}>{label}</p>
+      <p className="text-xs font-semibold" style={{ color: 'var(--kc-333333)' }}>{label}</p>
       <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }} />
     </div>
   );
@@ -473,7 +473,7 @@ function ExperienceStep({ data, set, onNext, onBack }) {
           </div>
           <SectionDivider label="Training History" />
           <div className="space-y-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--kc-4a4a4a)' }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--kc-4a4a4a)' }}>
               Describe your training history (optional)
             </p>
             <PremiumTextarea
@@ -946,7 +946,7 @@ function MindsetStep({ data, set, onNext, onBack }) {
             </span>
           </div>
           <div className="space-y-3">
-            <p className="text-xs uppercase tracking-widest font-bold" style={{ color: 'var(--kc-2e2e2e)' }}>Quick picks</p>
+            <p className="text-xs font-semibold" style={{ color: 'var(--kc-2e2e2e)' }}>Quick picks</p>
             <div className="flex flex-wrap gap-2">
               {WHY_PROMPTS.map(p => (
                 <motion.button
@@ -1179,7 +1179,7 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
       </div>
       <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full px-6 gap-7 relative z-10">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-2">
-          <p className="text-[11px] uppercase tracking-[0.26em] font-bold" style={{ color: 'var(--tc-primary)' }}>KOACH AI Engine</p>
+          <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>KOACH AI Engine</p>
           <AnimatePresence mode="wait">
             {allDone ? (
               <motion.h2 key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -1224,7 +1224,7 @@ function GeneratingStep({ onNext, submitStatus, submitError, onRetry }) {
               <p className="text-sm font-bold text-center" style={{ color: 'var(--tc-destructive)' }}>⚠️ Submission Failed</p>
               <div className="rounded-xl p-3 text-left"
                 style={{ background: 'color-mix(in srgb, black 30%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-destructive) 20%, transparent)' }}>
-                <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--kc-6a6a6a)' }}>Error details</p>
+                <p className="text-xs font-semibold mb-1" style={{ color: 'var(--kc-6a6a6a)' }}>Error details</p>
                 <p className="text-xs leading-relaxed break-words" style={{ color: 'var(--tc-destructive)', fontFamily: 'monospace' }}>
                   {submitError || 'Unknown error — no message received.'}
                 </p>
@@ -1271,7 +1271,7 @@ function DoneStep({ firstName, coachDisplayName, clientEmail }) {
           </motion.div>
 
           <motion.div variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }} className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.22em] font-bold" style={{ color: 'var(--tc-success)' }}>Application received</p>
+            <p className="text-xs font-semibold" style={{ color: 'var(--tc-success)' }}>Application received</p>
             <h2 className="font-bold text-white" style={{ fontSize: 'clamp(2rem, 7vw, 2.8rem)', letterSpacing: '-0.03em' }}>
               Thanks, {name} —<br />your application<br />is in. ✅
             </h2>

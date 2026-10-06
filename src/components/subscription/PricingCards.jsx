@@ -62,11 +62,11 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, noPlan, busy, onSele
       {/* Badge row */}
       <div className="flex justify-center pt-3 min-h-[32px]">
         {isCurrent ? (
-          <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-success/10 text-success border border-success/30">
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-success/10 text-success border border-success/30">
             ✓ Your Current Plan
           </span>
         ) : config.badge ? (
-          <span className={cn('text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full', config.badge.cls)}>
+          <span className={cn('text-xs font-semibold px-3 py-1 rounded-full', config.badge.cls)}>
             {config.badge.label}
           </span>
         ) : null}
@@ -111,7 +111,7 @@ function PlanCard({ tierKey, billing, isCurrent, isUpgrade, noPlan, busy, onSele
             ))}
             <div className="flex items-center gap-2 pt-1 pb-0.5">
               <div className="flex-1 h-px bg-[var(--kc-w-5)]" />
-              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Also includes</span>
+              <span className="text-xs text-muted-foreground">Also includes</span>
               <div className="flex-1 h-px bg-[var(--kc-w-5)]" />
             </div>
           </>

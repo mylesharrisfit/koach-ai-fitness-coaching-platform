@@ -48,7 +48,7 @@ export default function AffiliateEarningsOverview({ profile }) {
           style={{ background: card.lightBg }}>
           <div className="flex items-center justify-between mb-3">
             <span className="text-2xl">{card.icon}</span>
-            <p className="text-xs font-bold text-muted-foreground uppercase">{card.label}</p>
+            <p className="text-xs font-semibold text-muted-foreground">{card.label}</p>
           </div>
           <p className="text-2xl font-black" style={{ color: card.color }}>
             {card.value}

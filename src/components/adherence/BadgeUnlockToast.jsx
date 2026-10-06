@@ -43,7 +43,7 @@ export default function BadgeUnlockToast({ badgeKey, clientName, onClose }) {
           }}
           onClick={onClose}
         >
-          <p className="text-xs font-bold uppercase tracking-[0.2em]" style={{ color: tier.accent }}>
+          <p className="text-xs font-semibold" style={{ color: tier.accent }}>
             Achievement Unlocked
           </p>
           <motion.span
@@ -61,7 +61,7 @@ export default function BadgeUnlockToast({ badgeKey, clientName, onClose }) {
             <p className="text-xs" style={{ color: `${tier.accent}70` }}>Awarded to {clientName}</p>
           )}
           <span
-            className="text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full"
+            className="text-xs font-semibold px-3 py-1 rounded-full"
             style={{ background: `${tier.accent}22`, color: tier.accent, border: `1px solid ${tier.accent}44` }}
           >
             {tier.label}

@@ -30,7 +30,7 @@ function MetricTile({ icon: Icon, label, value, unit, color }) {
     <div className="bg-muted border border-border rounded-xl p-3 flex flex-col gap-1">
       <div className="flex items-center gap-1.5">
         <Icon className={cn('w-3.5 h-3.5', color || 'text-muted-foreground')} />
-        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
+        <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       </div>
       <p className="text-lg font-bold text-foreground">
         {value}
@@ -70,7 +70,7 @@ function AIAnalysisBlock({ checkIn, client }) {
       <div className="bg-gradient-to-br from-ai/10 to-accent border border-ai rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-4 h-4 text-ai" />
-          <span className="text-xs font-bold text-ai uppercase tracking-wide">AI Analysis</span>
+          <span className="text-xs font-semibold text-ai">AI Analysis</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-ai">
           <Loader2 className="w-4 h-4 animate-spin" /> Analyzing check-in...
@@ -85,7 +85,7 @@ function AIAnalysisBlock({ checkIn, client }) {
     <div className="bg-gradient-to-br from-ai/10 to-accent border border-ai rounded-xl p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Sparkles className="w-4 h-4 text-ai" />
-        <span className="text-xs font-bold text-ai uppercase tracking-wide">AI Analysis</span>
+        <span className="text-xs font-semibold text-ai">AI Analysis</span>
       </div>
 
       <p className="text-sm text-foreground leading-relaxed">{summary.summary}</p>
@@ -103,7 +103,7 @@ function AIAnalysisBlock({ checkIn, client }) {
 
       {summary.suggested_response && (
         <div className="bg-[var(--kc-w-70)] rounded-lg p-3 border border-ai">
-          <p className="text-[10px] font-bold text-ai uppercase tracking-wide mb-1">Suggested Response</p>
+          <p className="text-xs font-semibold text-ai mb-1">Suggested Response</p>
           <p className="text-xs text-foreground leading-relaxed italic">"{summary.suggested_response}"</p>
         </div>
       )}
@@ -251,7 +251,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
           {/* Metrics */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">This Week's Metrics</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">This Week's Metrics</p>
             <div className="grid grid-cols-2 gap-2">
               <MetricTile icon={Scale} label="Weight" value={checkIn.weight} unit="lbs" color="text-primary" />
               <MetricTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} unit="hrs"
@@ -270,7 +270,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           {/* Compare to previous */}
           {prevCI && (
             <div className="bg-muted border border-border rounded-xl p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">vs Previous ({format(parseISO(prevCI.date), 'MMM d')})</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">vs Previous ({format(parseISO(prevCI.date), 'MMM d')})</p>
               <div className="grid grid-cols-3 gap-2 text-xs text-center">
                 {[
                   { label: 'Weight', curr: checkIn.weight, prev: prevCI.weight, unit: 'lbs', lower: true },
@@ -298,7 +298,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+              <p className="text-xs font-semibold text-muted-foreground mb-2">
                 <ImageIcon className="w-3 h-3 inline mr-1" />Progress Photos
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -314,7 +314,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           {/* Measurements */}
           {checkIn.measurements && Object.values(checkIn.measurements).some(Boolean) && (
             <div className="bg-muted border border-border rounded-xl p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Measurements (in)</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Measurements (in)</p>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 {Object.entries(checkIn.measurements).filter(([, v]) => v).map(([k, v]) => (
                   <div key={k} className="text-center">
@@ -329,7 +329,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           {/* Client notes */}
           {checkIn.notes && (
             <div className="bg-muted border border-border rounded-xl p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Client Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Client Notes</p>
               <p className="text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
@@ -453,7 +453,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           {/* Existing coach notes display */}
           {checkIn.coach_notes && (
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1.5">Your Previous Response</p>
+              <p className="text-xs font-semibold text-primary mb-1.5">Your Previous Response</p>
               <p className="text-sm leading-relaxed">{checkIn.coach_notes}</p>
             </div>
           )}

@@ -8,7 +8,7 @@ export default function AcquisitionTrends({ data, totalActive }) {
   return (
     <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Client Acquisition</h3>
+        <h3 className="text-xs font-semibold text-muted-foreground">Client Acquisition</h3>
         <span className="text-xs text-muted-foreground">{totalNew} new in 6 months</span>
       </div>
       <p className="stat-number text-3xl font-bold text-foreground mb-5">{totalActive} active</p>

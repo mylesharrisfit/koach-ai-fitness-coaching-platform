@@ -452,7 +452,7 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
 
       {/* Editable plan name */}
       <div>
-        <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-1.5 block">Plan Name</Label>
+        <Label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Plan Name</Label>
         <input
           type="text"
           value={planName}

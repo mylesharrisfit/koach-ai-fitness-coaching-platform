@@ -63,7 +63,7 @@ const BLANK = {
 function SectionHeader({ label }) {
   return (
     <div className="flex items-center gap-3 pt-4 pb-1">
-      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className="text-xs font-semibold text-muted-foreground">{label}</p>
       <div className="flex-1 h-px bg-muted" />
     </div>
   );

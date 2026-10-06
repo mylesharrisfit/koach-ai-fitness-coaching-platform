@@ -79,7 +79,7 @@ export default function BILeadPipeline({ leads }) {
 
       {sourceBreakdown.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Lead Sources</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Lead Sources</p>
           <div className="space-y-1.5">
             {sourceBreakdown.slice(0, 5).map(([src, count]) => {
               const pct = Math.round((count / leads.length) * 100);

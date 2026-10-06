@@ -40,7 +40,7 @@ export default function WelcomeScreen({ onNext }) {
           variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 0.65 } } }}
           className="space-y-4"
         >
-          <p className="text-[11px] uppercase tracking-[0.3em] font-bold" style={{ color: 'var(--tc-primary)' }}>
+          <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
             KOACH AI · Coaching OS
           </p>
           <h1 className="font-bold text-white leading-[1.05]"

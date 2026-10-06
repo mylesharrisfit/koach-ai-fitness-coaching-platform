@@ -119,7 +119,7 @@ export default function IntelligenceBar({ clients = [], checkIns = [] }) {
   return (
     <>
       <div className="px-5 pt-3 flex-shrink-0">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">Insights</p>
+        <p className="text-xs font-medium text-muted-foreground mb-2">Insights</p>
 
         {visible.length === 0 ? (
           <div className="flex items-center gap-2.5 bg-card border border-border rounded-xl px-3.5 py-3">

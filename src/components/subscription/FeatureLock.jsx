@@ -46,7 +46,7 @@ export default function FeatureLock({ feature, children, className }) {
         <div className="relative flex flex-col items-center gap-2 px-5 py-4 rounded-2xl glass-card border border-border/80 shadow-lg group-hover:border-primary/40 transition-all duration-200 group-hover:shadow-glow-sm max-w-[240px] text-center">
           {/* Tier badge */}
           <span className={cn(
-            'text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border',
+            'text-xs font-semibold px-2.5 py-0.5 rounded-full border',
             tierConfig?.badge || 'bg-primary/15 text-primary border-primary/20'
           )}>
             {tierConfig?.name || minTierKey} Feature

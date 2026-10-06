@@ -123,13 +123,13 @@ export default function GroupDetailView({ group, clients, currentUser, isCoach, 
               <div className="space-y-5">
                 {settingsObj.leaderboard_enabled && (
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Leaderboard</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-3">Leaderboard</p>
                     <Leaderboard clients={members} groupId={group.id} />
                   </div>
                 )}
                 {settingsObj.challenges_enabled && (
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Active Challenges</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-3">Active Challenges</p>
                     <WeeklyChallenges isCoach={isCoach} compact groupId={group.id} />
                   </div>
                 )}
@@ -168,7 +168,7 @@ function GroupFeatureToggle({ group }) {
 
   return (
     <div className="bg-card border border-border rounded-xl p-4 space-y-2">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Group Features</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-3">Group Features</p>
       {FEATURES.map(f => {
         const enabled = group[f.key] !== false;
         return (

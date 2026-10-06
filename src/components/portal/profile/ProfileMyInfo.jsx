@@ -6,7 +6,7 @@ import ProfileSectionCard from './ProfileSectionCard';
 function FieldRow({ label, value, field, editValues, setEditValues, editing, setEditing }) {
   return (
     <div className="py-3 border-b border-white/5 last:border-0">
-      <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-white/30 text-xs mb-1">{label}</p>
       {editing === field ? (
         <input
           autoFocus

@@ -79,7 +79,7 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
 
           {/* Stats */}
           <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-2">Stats</p>
+            <p className="text-white/30 text-xs font-semibold mb-2">Stats</p>
             <StatRow label="Weight" value={checkIn.weight ? `${checkIn.weight} lbs` : null} emoji="⚖️" />
             <StatRow label="Energy" value={checkIn.energy_level ? `${checkIn.energy_level}/10` : null} emoji="⚡" />
             <StatRow label="Stress" value={checkIn.stress_level ? `${checkIn.stress_level}/10` : null} emoji="🧠" />
@@ -91,7 +91,7 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
           {/* Notes */}
           {checkIn.notes && (
             <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-2">Your Notes</p>
+              <p className="text-white/30 text-xs font-semibold mb-2">Your Notes</p>
               <p className="text-white/70 text-sm leading-relaxed">{checkIn.notes}</p>
             </div>
           )}
@@ -99,7 +99,7 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
           {/* Photos */}
           {checkIn.photo_urls?.length > 0 && (
             <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-3">Progress Photos</p>
+              <p className="text-white/30 text-xs font-semibold mb-3">Progress Photos</p>
               <div className="grid grid-cols-3 gap-2">
                 {checkIn.photo_urls.map((url, i) => (
                   <SignedImg key={i} src={url} alt="" className="rounded-xl aspect-square object-cover" />
@@ -142,7 +142,7 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
           {/* Reply section */}
           {checkIn.coach_notes && (
             <div className="p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-3">Reply to Coach</p>
+              <p className="text-white/30 text-xs font-semibold mb-3">Reply to Coach</p>
               <div className="flex gap-2">
                 <input
                   value={reply}

@@ -43,7 +43,7 @@ export default function OfferTiers({ leads }) {
     <div className="bg-card border border-border rounded-2xl p-6">
       <div className="flex items-center gap-2 mb-5">
         <TrendingUp className="w-4 h-4 text-muted-foreground" />
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Offer Tiers</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">Offer Tiers</h2>
       </div>
       <div className="space-y-3">
         {TIERS.map(tier => (

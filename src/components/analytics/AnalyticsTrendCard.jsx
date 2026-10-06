@@ -11,7 +11,7 @@ export default function AnalyticsTrendCard({ title, subtitle, data, unit, color,
     <div className={cn('bg-card border border-border rounded-2xl p-5 shadow-sm', className)}>
       <div className="flex items-start justify-between mb-1">
         <div>
-          <p className="text-xs font-semibold tracking-wider uppercase text-foreground">{title}</p>
+          <p className="text-xs font-semibold text-foreground">{title}</p>
           {subtitle && <p className="text-xs text-foreground mt-0.5">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-2">

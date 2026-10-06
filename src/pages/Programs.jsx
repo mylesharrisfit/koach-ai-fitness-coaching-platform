@@ -60,7 +60,7 @@ function FiltersPanel({ filters, onChange }) {
 
   const Section = ({ label, children }) => (
     <div>
-      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{label}</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-2">{label}</p>
       <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
   );

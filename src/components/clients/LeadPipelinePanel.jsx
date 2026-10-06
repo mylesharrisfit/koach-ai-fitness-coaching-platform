@@ -46,7 +46,7 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
     <div className="space-y-4">
       {/* Pipeline stage selector */}
       <div>
-        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">Pipeline Stage</Label>
+        <Label className="text-xs font-semibold text-muted-foreground mb-2 block">Pipeline Stage</Label>
         <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
           {PIPELINE_STAGES.map(s => (
             <button
@@ -66,7 +66,7 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
 
       {/* Follow-up date */}
       <div>
-        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block flex items-center gap-1.5">
+        <Label className="text-xs font-semibold text-muted-foreground mb-2 block flex items-center gap-1.5">
           <CalendarClock className="w-3 h-3" /> Follow-up Reminder
         </Label>
         <Input
@@ -85,7 +85,7 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
 
       {/* Notes */}
       <div>
-        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block flex items-center gap-1.5">
+        <Label className="text-xs font-semibold text-muted-foreground mb-2 block flex items-center gap-1.5">
           <FileText className="w-3 h-3" /> CRM Notes
         </Label>
         <Textarea

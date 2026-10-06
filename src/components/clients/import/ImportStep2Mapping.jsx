@@ -50,7 +50,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
       {/* Mapping table */}
       <div className="border border-border rounded-xl overflow-hidden">
         {/* Table header */}
-        <div className="grid gap-3 px-4 py-2 bg-muted border-b border-border text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+        <div className="grid gap-3 px-4 py-2 bg-muted border-b border-border text-xs font-semibold text-muted-foreground"
           style={{ gridTemplateColumns: '1fr 20px minmax(180px,1.4fr) 90px' }}>
           <div>CSV Column</div>
           <div />

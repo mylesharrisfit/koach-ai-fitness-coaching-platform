@@ -63,7 +63,7 @@ function DailyRings({ workoutDone, mealsLogged, totalMeals, waterGlasses, waterG
     <div className="px-4">
       <div className="bg-card rounded-3xl p-5" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
         <div className="flex items-center justify-between mb-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Daily Goals</p>
+          <p className="text-xs font-semibold text-muted-foreground">Daily Goals</p>
           <p className="text-xs font-semibold text-muted-foreground">{doneCount} of 3 complete</p>
         </div>
         <div className="flex items-center justify-around">
@@ -172,7 +172,7 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
     return (
       <div className="px-4">
         <div className="rounded-3xl p-5" style={{ background: 'linear-gradient(135deg, rgb(var(--muted)), rgb(var(--muted)))', border: '1px solid rgb(var(--border))', boxShadow: '0 2px 20px rgba(0,0,0,0.05)' }}>
-          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">TODAY</p>
+          <p className="text-muted-foreground text-xs font-semibold mb-3">TODAY</p>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-border flex items-center justify-center text-3xl flex-shrink-0">🛌</div>
             <div>
@@ -192,7 +192,7 @@ function TodayFocusCard({ workout, program, workoutDone, onStart }) {
         style={{ background: gradient, boxShadow: '0 8px 32px rgb(var(--primary) / 0.3)' }}>
         <div className="p-5" style={{ background: 'rgba(0,0,0,0.12)' }}>
           <div className="mb-4">
-            <span className="inline-block px-3 py-1 rounded-full text-[10px] font-black text-white/80 uppercase tracking-widest mb-3"
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white/80 mb-3"
               style={{ background: 'rgba(255,255,255,0.18)' }}>
               TODAY'S WORKOUT
             </span>
@@ -505,7 +505,7 @@ export default function PortalHome({ user }) {
 
       <div className="px-4 pb-4">
         <div className="bg-card rounded-2xl p-4" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.05)', border: '1px solid rgb(var(--muted))' }}>
-          <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-2">Daily Motivation</p>
+          <p className="text-muted-foreground text-xs font-semibold mb-2">Daily Motivation</p>
           <p className="text-muted-foreground text-sm leading-relaxed italic">"The pain you feel today will be the strength you feel tomorrow."</p>
         </div>
       </div>

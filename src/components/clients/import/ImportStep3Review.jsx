@@ -67,13 +67,13 @@ export default function ImportStep3Review({ headers, rows, mapping, existingEmai
           <table className="w-full text-xs">
             <thead>
               <tr className="bg-muted border-b border-border">
-                <th className="text-left px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">#</th>
+                <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground whitespace-nowrap">#</th>
                 {DISPLAY_FIELDS.map(f => (
-                  <th key={f.key} className="text-left px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                  <th key={f.key} className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground whitespace-nowrap">
                     {f.label}
                   </th>
                 ))}
-                <th className="text-left px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
+                <th className="text-left px-3 py-2 text-xs font-semibold text-muted-foreground">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-muted">

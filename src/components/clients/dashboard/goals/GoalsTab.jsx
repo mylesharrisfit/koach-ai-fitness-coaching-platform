@@ -138,7 +138,7 @@ export default function GoalsTab({ client }) {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="w-0.5 h-3 rounded-full bg-success" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Completed</p>
+              <p className="text-xs font-semibold text-muted-foreground">Completed</p>
             </div>
             {completed.map(g => (
               <GoalCard

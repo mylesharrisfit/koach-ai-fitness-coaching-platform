@@ -5,7 +5,7 @@ export default function ProfileCoachCard({ client, onMessage }) {
   return (
     <div className="mx-5 mb-2 p-4 rounded-2xl bg-card"
       style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
-      <p className="text-muted-foreground text-[10px] font-black uppercase tracking-wider mb-3">Your Coach</p>
+      <p className="text-muted-foreground text-xs font-semibold mb-3">Your Coach</p>
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-full flex items-center justify-center font-black text-sm text-white flex-shrink-0"
           style={{

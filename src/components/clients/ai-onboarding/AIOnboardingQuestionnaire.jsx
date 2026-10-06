@@ -180,7 +180,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
 
         {/* Divider */}
         <div className="border-t border-border pt-1">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Nutrition</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-4">Nutrition</p>
         </div>
 
         {/* Diet style */}
@@ -269,7 +269,7 @@ function Section({ title, children }) {
 function Field({ label, children }) {
   return (
     <div className="space-y-1.5">
-      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className="text-xs font-semibold text-muted-foreground">{label}</p>
       {children}
     </div>
   );

@@ -144,7 +144,7 @@ export default function GoalsSummarySection({ client }) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-0.5 h-3.5 rounded-full bg-primary" />
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Goals</p>
+            <p className="text-xs font-semibold text-muted-foreground">Goals</p>
             {goals.length > 0 && (
               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-primary">
                 {active.length} active
@@ -182,7 +182,7 @@ export default function GoalsSummarySection({ client }) {
         {/* Completed */}
         {completed.length > 0 && (
           <div className="mt-3 space-y-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-border flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-border flex items-center gap-1.5">
               <span className="w-0.5 h-3 rounded-full bg-success inline-block" />Completed
             </p>
             {completed.map(g => (

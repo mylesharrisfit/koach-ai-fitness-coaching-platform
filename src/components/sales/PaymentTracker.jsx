@@ -51,7 +51,7 @@ export default function PaymentTracker({ clients }) {
     <div className="bg-card border border-border rounded-2xl p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Payment Tracker</h2>
+          <h2 className="text-sm font-semibold text-muted-foreground">Payment Tracker</h2>
           <div className="flex items-center gap-4 mt-2">
             <span className="text-xs text-success font-medium">${totalPaid.toLocaleString()} collected</span>
             <span className="text-xs text-warning font-medium">${totalPending.toLocaleString()} pending</span>

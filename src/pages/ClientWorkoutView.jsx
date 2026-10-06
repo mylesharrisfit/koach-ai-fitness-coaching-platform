@@ -123,7 +123,7 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
           {/* Coaching notes */}
           {ex.notes && (
             <div className="p-3 bg-warning/10 border border-warning rounded-xl">
-              <p className="text-[10px] font-bold text-warning uppercase tracking-wider mb-1">Coach Notes</p>
+              <p className="text-xs font-semibold text-warning mb-1">Coach Notes</p>
               <p className="text-xs text-foreground leading-relaxed">{ex.notes}</p>
             </div>
           )}
@@ -131,10 +131,10 @@ function ExerciseCard({ ex, exIdx, log, onLogSet }) {
           {/* Set logger */}
           <div className="space-y-2">
             <div className="grid grid-cols-4 gap-2 px-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Set</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">Weight</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">Reps</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground text-center">Done</span>
+              <span className="text-xs font-semibold text-muted-foreground">Set</span>
+              <span className="text-xs font-semibold text-muted-foreground text-center">Weight</span>
+              <span className="text-xs font-semibold text-muted-foreground text-center">Reps</span>
+              <span className="text-xs font-semibold text-muted-foreground text-center">Done</span>
             </div>
             {Array.from({ length: ex.sets }).map((_, setIdx) => {
               const setLog = log?.sets_completed?.[setIdx] || {};

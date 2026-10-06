@@ -84,7 +84,7 @@ function StatusCard({ lastCheckIn, todayCheckIn, onStart }) {
         <div className="relative" style={{ background: 'rgba(0,0,0,0.1)', padding: 20, borderRadius: 16 }}>
           <div className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 rounded-full bg-card animate-pulse" />
-            <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider">Due Today</p>
+            <p className="text-white/70 text-xs font-semibold">Due Today</p>
           </div>
           <h2 className="text-white text-2xl font-black">Check-in Due Today! 📋</h2>
           <p className="text-white/60 text-xs mt-1">Takes just 2 minutes</p>
@@ -133,7 +133,7 @@ function CheckInHistoryItem({ checkIn, onTap }) {
       whileTap={{ scale: 0.98 }}>
       {/* Date block */}
       <div className="w-12 text-center flex-shrink-0">
-        <p className="text-muted-foreground text-[9px] uppercase font-bold">{format(parseISO(checkIn.date), 'MMM')}</p>
+        <p className="text-muted-foreground text-xs font-semibold">{format(parseISO(checkIn.date), 'MMM')}</p>
         <p className="text-foreground font-bold text-xl leading-none">{format(parseISO(checkIn.date), 'd')}</p>
       </div>
       {/* Stats */}
@@ -246,7 +246,7 @@ export default function PortalCheckIn({ user }) {
       {/* History */}
       {sorted.length > 0 && (
         <div className="px-5 space-y-3">
-          <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-wider">History</p>
+          <p className="text-muted-foreground text-xs font-semibold">History</p>
           {sorted.map(ci => (
             <CheckInHistoryItem key={ci.id} checkIn={ci} onTap={() => { setSelectedCheckIn(ci); setView('detail'); }} />
           ))}

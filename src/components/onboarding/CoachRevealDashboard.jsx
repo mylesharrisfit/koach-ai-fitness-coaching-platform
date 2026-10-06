@@ -46,7 +46,7 @@ export default function CoachRevealDashboard({ data }) {
 
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="relative px-5 pt-14 pb-6">
-        <p className="text-[11px] uppercase tracking-[0.28em] font-bold mb-2" style={{ color: 'var(--tc-primary)' }}>
+        <p className="text-xs font-semibold mb-2" style={{ color: 'var(--tc-primary)' }}>
           System Live · KOACH AI
         </p>
         <h1 className="text-2xl font-bold text-white mb-1" style={{ letterSpacing: '-0.025em' }}>
@@ -66,7 +66,7 @@ export default function CoachRevealDashboard({ data }) {
         {/* KPI strip */}
         <motion.div variants={stagger.item}>
           <Card glow>
-            <p className="text-[10px] uppercase tracking-widest font-bold mb-3" style={{ color: 'var(--kc-555555)' }}>Dashboard Overview</p>
+            <p className="text-xs font-semibold mb-3" style={{ color: 'var(--kc-555555)' }}>Dashboard Overview</p>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: 'Clients', value: '0', color: 'var(--tc-primary)' },
@@ -76,7 +76,7 @@ export default function CoachRevealDashboard({ data }) {
                 <div key={s.label} className="text-center py-3 rounded-xl"
                   style={{ background: 'color-mix(in srgb, white 2%, transparent)', border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
                   <p className="text-xl font-bold" style={{ color: s.color }}>{s.value}</p>
-                  <p className="text-[10px] mt-0.5 uppercase tracking-widest font-semibold" style={{ color: 'var(--kc-555555)' }}>{s.label}</p>
+                  <p className="text-xs mt-0.5 font-semibold" style={{ color: 'var(--kc-555555)' }}>{s.label}</p>
                 </div>
               ))}
             </div>

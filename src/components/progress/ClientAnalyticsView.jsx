@@ -152,7 +152,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
       {/* Week vs Week */}
       {compData.length > 0 && (
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Week vs. Previous Week</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Week vs. Previous Week</p>
           <div className="grid grid-cols-3 gap-3">
             {compData.map(d => {
               const diff = (Number(d.thisWeek) - Number(d.lastWeek)).toFixed(1);
@@ -176,7 +176,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
       {/* Photo Timeline */}
       {allPhotos.length > 0 && (
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Progress Photos</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Progress Photos</p>
           <div className="relative flex items-center gap-3">
             <button
               onClick={() => setPhotoIndex(Math.max(0, photoIndex - 1))}
@@ -207,7 +207,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-primary" />
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider">AI Coach Summary</p>
+            <p className="text-xs font-semibold text-primary">AI Coach Summary</p>
           </div>
           <button onClick={fetchAiSummary} disabled={aiLoading} className="text-primary hover:text-primary disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${aiLoading ? 'animate-spin' : ''}`} />

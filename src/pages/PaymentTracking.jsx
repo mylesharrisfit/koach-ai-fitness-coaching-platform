@@ -154,7 +154,7 @@ export default function PaymentTracking() {
             {/* Column header */}
             <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr 70px 90px auto', gap: 12, padding: '8px 16px', background: 'var(--tc-background)', borderBottom: '1px solid var(--tc-muted)' }}>
               {['', 'Client / Description', 'Amount', 'Status', 'Actions'].map((h, i) => (
-                <div key={i} style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: i === 2 ? 'right' : 'left' }}>{h}</div>
+                <div key={i} style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', textAlign: i === 2 ? 'right' : 'left' }}>{h}</div>
               ))}
             </div>
             {isLoading ? (

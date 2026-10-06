@@ -61,7 +61,7 @@ function RestTimerOverlay({ seconds, nextSetInfo, onSkip, onDone }) {
       className="fixed inset-0 z-[60] flex flex-col items-center justify-center"
       style={{ background: 'rgba(5,10,20,0.88)', backdropFilter: 'blur(8px)' }}>
 
-      <p className="text-white/50 text-xs font-black uppercase tracking-widest mb-6">Rest Time</p>
+      <p className="text-white/50 text-xs font-semibold mb-6">Rest Time</p>
       <p className="text-white/30 text-sm font-semibold mb-8">{seconds}s prescribed</p>
 
       {/* Ring */}
@@ -90,7 +90,7 @@ function RestTimerOverlay({ seconds, nextSetInfo, onSkip, onDone }) {
       {nextSetInfo && (
         <div className="mb-6 px-5 py-3.5 rounded-2xl text-center"
           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-wider mb-1">Next Up</p>
+          <p className="text-white/40 text-xs font-semibold mb-1">Next Up</p>
           <p className="text-white font-bold text-sm">{nextSetInfo}</p>
         </div>
       )}
@@ -154,7 +154,7 @@ function InputCard({ label, value, onChange, chips, unit, onUnitToggle }) {
   return (
     <div className="flex-1 bg-card rounded-[18px] p-4 flex flex-col items-center gap-1"
       style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '1.5px solid rgb(var(--muted))' }}>
-      <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-1">{label}</p>
+      <p className="text-muted-foreground text-xs font-semibold mb-1">{label}</p>
 
       {/* Value display */}
       <button onClick={() => inputRef.current?.focus()} className="relative">
@@ -298,7 +298,7 @@ function ExercisePanel({ exercise, exIdx, totalEx, exerciseLogs, prevBest, onLog
 
       {/* Exercise header */}
       <div className="px-5 pt-4 pb-3 flex-shrink-0">
-        <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">
+        <p className="text-white/40 text-xs font-semibold mb-1">
           Exercise {exIdx + 1} of {totalEx}
         </p>
         <h2 className="text-white font-black leading-tight" style={{ fontSize: 30 }}>{exercise.name}</h2>
@@ -367,7 +367,7 @@ function ExercisePanel({ exercise, exIdx, totalEx, exerciseLogs, prevBest, onLog
       {/* Scrollable area: set history + notes */}
       <div className="flex-1 overflow-y-auto px-4 space-y-2 pb-4">
         {/* Set history */}
-        <p className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-2">Sets</p>
+        <p className="text-white/30 text-xs font-semibold mb-2">Sets</p>
         {Array.from({ length: totalSets }).map((_, i) => {
           const setLog = log.sets_completed?.[i];
           const isCurrent = !allDone && i === currentSetIdx;

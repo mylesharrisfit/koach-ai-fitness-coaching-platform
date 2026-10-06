@@ -12,7 +12,7 @@ function MacroBox({ label, value, unit = 'g', color, pct }) {
   return (
     <div className="rounded-xl p-3 text-center" style={{ background: color + '10', border: `1px solid ${color}22` }}>
       <p className="text-xl font-black" style={{ color }}>{value}<span className="text-xs font-bold ml-0.5">{unit}</span></p>
-      <p className="text-[10px] text-muted-foreground font-semibold mt-0.5 uppercase tracking-wide">{label}</p>
+      <p className="text-xs text-muted-foreground font-semibold mt-0.5">{label}</p>
       {pct !== undefined && (
         <div className="mt-1.5 h-1 rounded-full bg-border">
           <div className="h-full rounded-full transition-all" style={{ width: `${barPct}%`, background: color }} />
@@ -93,7 +93,7 @@ export default function FoodDetailSheet({ food, mealName, onAdd, onClose, dailyT
 
           {/* Serving adjuster */}
           <div className="bg-secondary/40 rounded-2xl p-4">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Serving Size</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Serving Size</p>
             <div className="flex items-center gap-3">
               <input
                 type="number" min={1} step={unit === 'g' ? 10 : 0.5}

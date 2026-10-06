@@ -44,7 +44,7 @@ export default function MonthlySummaryTable({ invoices = [], payments = [] }) {
   };
 
   const fmt = (n) => `$${Number(n).toFixed(0)}`;
-  const th = { fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '8px 12px', background: 'var(--tc-background)', textAlign: 'right', whiteSpace: 'nowrap' };
+  const th = { fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', padding: '8px 12px', background: 'var(--tc-background)', textAlign: 'right', whiteSpace: 'nowrap' };
   const td = (bold, color) => ({ padding: '10px 12px', fontSize: 13, fontWeight: bold ? 700 : 500, color: color || 'var(--tc-foreground)', textAlign: 'right', borderBottom: '1px solid var(--tc-background)', whiteSpace: 'nowrap' });
 
   return (

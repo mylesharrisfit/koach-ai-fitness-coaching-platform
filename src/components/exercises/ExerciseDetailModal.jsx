@@ -164,7 +164,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {/* Secondary muscles */}
           {exercise.secondary_muscles?.length > 0 && (
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Also Works</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Also Works</p>
               <div className="flex flex-wrap gap-1.5">
                 {exercise.secondary_muscles.map(m => (
                   <span key={m} className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{m}</span>
@@ -180,7 +180,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
                 <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid var(--tc-border)' }}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Timer className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Tempo</span>
+                    <span className="text-xs font-semibold text-muted-foreground">Tempo</span>
                   </div>
                   <p className="font-bold text-lg text-foreground">{exercise.tempo}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">ecc–pause–con–pause</p>
@@ -190,7 +190,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
                 <div className="bg-muted rounded-xl p-3" style={{ border: '0.5px solid var(--tc-border)' }}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Clock className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Rest Time</span>
+                    <span className="text-xs font-semibold text-muted-foreground">Rest Time</span>
                   </div>
                   <p className="font-bold text-lg text-foreground">{exercise.default_rest_seconds}s</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">between sets</p>
@@ -202,7 +202,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {/* Instructions / Form Cues */}
           {steps.length > 0 && (
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">How to Perform</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3">How to Perform</p>
               <div className="space-y-2.5">
                 {steps.map((step, i) => (
                   <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted" style={{ border: '0.5px solid var(--tc-border)' }}>
@@ -220,7 +220,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {/* Common Mistakes */}
           {exercise.common_mistakes?.length > 0 && (
             <div>
-              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-3">Common Mistakes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3">Common Mistakes</p>
               <div className="space-y-2">
                 {exercise.common_mistakes.map((m, i) => (
                   <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-destructive/10" style={{ border: '0.5px solid var(--tc-destructive)' }}>
@@ -235,7 +235,7 @@ export default function ExerciseDetailModal({ exercise, open, onClose, onEdit })
           {/* Coach notes */}
           {exercise.notes && (
             <div className="p-3 rounded-xl bg-accent" style={{ border: '0.5px solid var(--tc-accent)' }}>
-              <p className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">Coach Notes</p>
+              <p className="text-xs font-semibold text-primary mb-1">Coach Notes</p>
               <p className="text-sm text-foreground">{exercise.notes}</p>
             </div>
           )}

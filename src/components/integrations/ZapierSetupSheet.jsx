@@ -190,7 +190,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
             <div className="space-y-4">
               {EVENT_GROUPS.map(group => (
                 <div key={group.label}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">{group.label}</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1.5">{group.label}</p>
                   <div className="space-y-1">
                     {group.events.map(ev => (
                       <label key={ev.key}
@@ -237,7 +237,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Recent logs */}
           {logs.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Recent Events</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Recent Events</p>
               <div className="space-y-1.5">
                 {logs.slice(0, 10).map(log => (
                   <div key={log.id} className="flex items-center gap-3 p-2.5 rounded-xl border border-border bg-card">

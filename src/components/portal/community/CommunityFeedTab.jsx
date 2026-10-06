@@ -178,7 +178,7 @@ export default function CommunityFeedTab({ user, myClient, posts, allClients, qu
               style={{ background: 'linear-gradient(135deg, rgb(var(--primary)), rgb(var(--ai)))', boxShadow: '0 4px 20px rgb(var(--primary) / 0.25)' }}>
               <div className="flex items-start gap-2 mb-2">
                 <Megaphone className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
-                <p className="text-white/70 text-[10px] font-bold uppercase tracking-widest">Announcement</p>
+                <p className="text-white/70 text-xs font-semibold">Announcement</p>
               </div>
               <p className="text-white font-bold text-sm leading-relaxed">{post.content}</p>
               <p className="text-white/50 text-[10px] mt-2">

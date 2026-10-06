@@ -35,7 +35,7 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
   return (
     <BSSection icon={Users} title="Coaching Preferences" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
       {/* Check-in */}
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Management</p>
+      <p className="text-xs font-semibold text-muted-foreground">Client Management</p>
       <BSRow label="Default check-in frequency">
         <BSSelect value={s.checkin_frequency} onChange={v => set('checkin_frequency', v)} options={FREQ_OPTIONS} />
       </BSRow>
@@ -83,7 +83,7 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Limits</p>
+      <p className="text-xs font-semibold text-muted-foreground">Client Limits</p>
       <BSRow label="Maximum active clients">
         <div className="flex items-center gap-3">
           <BSToggle value={s.max_clients_unlimited} onChange={v => set('max_clients_unlimited', v)} label="Unlimited" />
@@ -100,7 +100,7 @@ export default function BSCoachingPrefs({ s, set, forms, programs, mealPlans }) 
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Categorization</p>
+      <p className="text-xs font-semibold text-muted-foreground">Client Categorization</p>
       <BSRow label="Default client tags" hint="Applied to all new clients automatically">
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2 mb-2">

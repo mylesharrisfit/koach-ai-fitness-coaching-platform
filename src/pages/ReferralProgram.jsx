@@ -86,7 +86,7 @@ export default function ReferralProgram({ user }) {
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
         className="px-4 pt-6 pb-8 rounded-b-3xl text-primary-foreground text-center"
         style={{ background: 'linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-ai) 100%)', boxShadow: '0 4px 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
-        <p className="text-white/70 text-xs font-bold uppercase tracking-wider mb-2">Earn Passive Income</p>
+        <p className="text-white/70 text-xs font-semibold mb-2">Earn Passive Income</p>
         <h1 className="text-3xl font-black mb-2">Earn with every coach you refer 💰</h1>
         <p className="text-white/80 text-sm mb-4">Get $50 for every coach who signs up and stays for 30 days</p>
         <div className="flex flex-wrap gap-2 justify-center mb-6">

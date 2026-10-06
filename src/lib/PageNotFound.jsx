@@ -32,7 +32,7 @@ export default function PageNotFound() {
         {/* Logo mark */}
         <div className="flex flex-col items-center gap-3">
           <KoachLogo size={56} rounded="rounded-2xl" glow={true} bg={true} />
-          <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: '#3B82F6' }}>KOACH AI</p>
+          <p className="text-xs font-semibold" style={{ color: '#3B82F6' }}>KOACH AI</p>
         </div>
 
         {/* 404 */}

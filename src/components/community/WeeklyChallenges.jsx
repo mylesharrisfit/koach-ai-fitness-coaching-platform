@@ -142,7 +142,7 @@ export default function WeeklyChallenges({ isCoach, compact, groupId }) {
     <div className="space-y-4">
       {!compact && (
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Active Challenges</p>
+          <p className="text-xs font-semibold text-muted-foreground">Active Challenges</p>
           {isCoach && (
             <button onClick={() => setShowForm(true)} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-sidebar text-white rounded-lg hover:bg-black transition-colors">
               <Plus className="w-3 h-3" /> New Challenge
@@ -169,7 +169,7 @@ export default function WeeklyChallenges({ isCoach, compact, groupId }) {
 
       {!compact && past.length > 0 && (
         <>
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mt-2">Past Challenges</p>
+          <p className="text-xs font-semibold text-muted-foreground mt-2">Past Challenges</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {past.map(c => (
               <ChallengeCard key={c.id} challenge={c} isCoach={isCoach}

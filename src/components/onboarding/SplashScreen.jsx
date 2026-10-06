@@ -51,7 +51,7 @@ export default function SplashScreen({ onDone }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-sm tracking-[0.15em] uppercase"
+            className="text-sm"
             style={{ color: 'var(--kc-7a7a7a)', letterSpacing: '0.2em' }}
           >
             AI Coaching Operating System

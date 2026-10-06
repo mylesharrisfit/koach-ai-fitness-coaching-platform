@@ -25,7 +25,7 @@ export default function HotLeads({ clients }) {
           <div className="w-7 h-7 rounded-lg bg-warning/20 flex items-center justify-center">
             <Flame className="w-4 h-4 text-warning" />
           </div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-warning">Hot Leads</h2>
+          <h2 className="text-sm font-semibold text-warning">Hot Leads</h2>
         </div>
         <span className="text-xs bg-warning/20 text-warning px-2 py-0.5 rounded-full font-medium">{recent.length}</span>
       </div>

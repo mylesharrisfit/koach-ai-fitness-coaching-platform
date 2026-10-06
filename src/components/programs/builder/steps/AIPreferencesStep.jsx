@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Zap } from 'lucide-react';
 
 const FieldLabel = ({ children, optional }) => (
-  <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
+  <p className="text-xs font-semibold text-muted-foreground mb-1.5">
     {children} {optional && <span className="normal-case tracking-normal font-normal text-[var(--tc-muted-foreground)]">— optional</span>}
   </p>
 );
@@ -198,7 +198,7 @@ export default function AIPreferencesStep({ profile, onSubmit, isLoading }) {
         </div>
         {form.include_cardio && (
           <div className="mt-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Select type(s)</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Select type(s)</p>
             <div className="flex flex-wrap gap-1.5">
               {CARDIO_OPTIONS.map(type => {
                 const active = (form.cardio_types || []).includes(type);

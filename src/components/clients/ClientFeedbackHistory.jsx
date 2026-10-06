@@ -94,7 +94,7 @@ export default function ClientFeedbackHistory({ checkIns = [] }) {
                 <div key={ci.id} className="bg-secondary/40 rounded-xl p-3 space-y-1.5">
                   {/* Date + metrics row */}
                   <div className="flex items-center justify-between flex-wrap gap-x-3 gap-y-1">
-                    <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
+                    <span className="text-xs font-semibold text-muted-foreground">
                       {format(parseISO(ci.date), 'MMM d, yyyy')}
                     </span>
                     <div className="flex items-center gap-2.5">

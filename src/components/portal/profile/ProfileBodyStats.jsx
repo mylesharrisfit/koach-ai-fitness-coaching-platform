@@ -63,7 +63,7 @@ export default function ProfileBodyStats({ client, checkIns, queryClient }) {
           { label: `Height (${heightUnit})`, key: 'height' },
         ].map(({ label, key, note }) => (
           <div key={key}>
-            <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">{label}</p>
+            <p className="text-white/30 text-xs mb-1.5">{label}</p>
             <input
               type={key === 'height' ? 'text' : 'number'}
               className="w-full bg-transparent text-white text-base outline-none border-b border-white/10 pb-1 focus:border-primary transition-colors"

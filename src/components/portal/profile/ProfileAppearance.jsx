@@ -8,7 +8,7 @@ export default function ProfileAppearance() {
 
   const Row = ({ label, options, value, onChange }) => (
     <div className="py-3 border-b border-white/5 last:border-0">
-      <p className="text-white/30 text-[10px] uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-white/30 text-xs mb-2">{label}</p>
       <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
         {options.map(o => (
           <button key={o.value} onClick={() => onChange(o.value)}
@@ -35,7 +35,7 @@ export default function ProfileAppearance() {
           options={[{ label: 'Sunday', value: 'sunday' }, { label: 'Monday', value: 'monday' }]} />
 
         <div className="py-3">
-          <p className="text-white/30 text-[10px] uppercase tracking-wider mb-1.5">Language</p>
+          <p className="text-white/30 text-xs mb-1.5">Language</p>
           <div className="flex items-center justify-between">
             <p className="text-white/60 text-sm">English</p>
             <span className="text-[10px] px-2 py-1 rounded-full font-bold"

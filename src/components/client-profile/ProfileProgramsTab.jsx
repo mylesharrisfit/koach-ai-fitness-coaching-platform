@@ -50,7 +50,7 @@ export default function ProfileProgramsTab({ client }) {
           <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
             <Dumbbell className="w-3.5 h-3.5 text-primary" />
           </div>
-          <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Assigned Program</h3>
+          <h3 className="text-xs font-semibold text-foreground">Assigned Program</h3>
         </div>
 
         <div className="p-4">
@@ -103,7 +103,7 @@ export default function ProfileProgramsTab({ client }) {
             <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
               <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
             </div>
-            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Weekly Split</h3>
+            <h3 className="text-xs font-semibold text-foreground">Weekly Split</h3>
           </div>
           <div className="divide-y divide-muted">
             {assigned.workouts.map((w, i) => (

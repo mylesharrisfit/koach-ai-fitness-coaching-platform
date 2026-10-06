@@ -39,7 +39,7 @@ export default function TodayProgressCard({ log, completed, total, pct }) {
 
   return (
     <div className="bg-card rounded-2xl p-5 border border-border shadow-sm">
-      <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Today's Progress</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-4">Today's Progress</p>
 
       <div className="flex items-center gap-5 mb-5">
         {/* Big ring */}

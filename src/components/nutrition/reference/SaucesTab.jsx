@@ -57,7 +57,7 @@ function SauceCard({ item, isPortal }) {
           >
             <div className="px-4 py-4 space-y-3">
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Flavor profile</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">Flavor profile</p>
                 <div className="flex flex-wrap gap-1">
                   {item.flavor.map(f => (
                     <span key={f} className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{f}</span>
@@ -65,7 +65,7 @@ function SauceCard({ item, isPortal }) {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Best used with</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">Best used with</p>
                 <div className="flex flex-wrap gap-1">
                   {item.best_with.map(b => (
                     <span key={b} className="text-[10px] bg-accent text-primary px-2 py-0.5 rounded-full border border-accent">{b}</span>
@@ -74,7 +74,7 @@ function SauceCard({ item, isPortal }) {
               </div>
               {item.recipe && (
                 <div>
-                  <p className="text-[10px] font-bold text-ai uppercase tracking-wide mb-1">👨‍🍳 How to make</p>
+                  <p className="text-xs font-semibold text-ai mb-1">👨‍🍳 How to make</p>
                   <p className="text-xs text-foreground leading-relaxed bg-ai/10 rounded-lg p-3">{item.recipe}</p>
                 </div>
               )}

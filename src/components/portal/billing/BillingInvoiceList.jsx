@@ -30,7 +30,7 @@ export default function BillingInvoiceList({ invoices, onView, onPay }) {
 
   return (
     <div>
-      <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3">Invoices</p>
+      <p className="text-white/50 text-xs font-semibold mb-3">Invoices</p>
       <div className="space-y-2">
         {displayed.map(inv => {
           const cfg = STATUS_CONFIG[inv.status] || STATUS_CONFIG.draft;

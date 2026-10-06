@@ -134,7 +134,7 @@ export default function WLLivePreview({ s, onClose, modal = false }) {
   const previewContent = (
     <div className={`${modal ? 'p-4' : 'p-4'} flex flex-col h-full`}>
       <div className="flex items-center justify-between mb-3 flex-shrink-0">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Live Preview</p>
+        <p className="text-xs font-semibold text-muted-foreground">Live Preview</p>
         {modal && (
           <button onClick={onClose} className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center hover:bg-border transition-colors">
             <X className="w-3.5 h-3.5 text-muted-foreground" />

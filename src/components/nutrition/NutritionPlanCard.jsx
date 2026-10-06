@@ -30,7 +30,7 @@ function MacroRow({ plan }) {
           {i > 0 && <div className="w-px h-4 bg-border" />}
           <div className="flex flex-col items-center">
             <span className="text-xs font-semibold text-foreground">{item.value}{item.unit || ''}</span>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</span>
+            <span className="text-xs text-muted-foreground">{item.label}</span>
           </div>
         </React.Fragment>
       ))}

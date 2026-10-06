@@ -29,7 +29,7 @@ export default function ReviewStep({
     <div className="space-y-4">
       {/* Clients Summary */}
       <Card className="p-4">
-        <p className="text-xs font-semibold text-muted-foreground uppercase mb-3">Clients</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-3">Clients</p>
         <div className="space-y-2">
           {clientData.map((client) => (
             <div key={client.id} className="flex items-center gap-3">
@@ -46,7 +46,7 @@ export default function ReviewStep({
 
       {/* Program & Settings Summary */}
       <Card className="p-4">
-        <p className="text-xs font-semibold text-muted-foreground uppercase mb-3">Program Details</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-3">Program Details</p>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Program</span>
@@ -79,7 +79,7 @@ export default function ReviewStep({
 
       {/* Notifications & Kickoff */}
       <Card className="p-4">
-        <p className="text-xs font-semibold text-muted-foreground uppercase mb-3">Notifications & Kickoff</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-3">Notifications & Kickoff</p>
         <div className="space-y-3">
           {notifyClient ? (
             <div className="flex items-start gap-3">

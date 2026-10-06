@@ -39,7 +39,7 @@ export default function ShareLinkModal({ pkg, onClose }) {
           </div>
 
           {/* URL */}
-          <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8, display: 'block' }}>
+          <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 8, display: 'block' }}>
             Package Link
           </label>
           <div style={{ display: 'flex', gap: 8 }}>

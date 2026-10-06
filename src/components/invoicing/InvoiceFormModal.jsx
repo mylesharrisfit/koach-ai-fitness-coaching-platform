@@ -62,7 +62,7 @@ export default function InvoiceFormModal({ invoice, onClose, onSave, existingInv
     outline: 'none', boxSizing: 'border-box',
   };
 
-  const labelStyle = { fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5, display: 'block' };
+  const labelStyle = { fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 5, display: 'block' };
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, black 50%, transparent)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>

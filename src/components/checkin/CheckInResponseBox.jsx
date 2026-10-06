@@ -71,7 +71,7 @@ export default function CheckInResponseBox({ checkIn, client, allClientCIs = [],
     <div className="space-y-3">
       {/* Header row */}
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Coach Response</p>
+        <p className="text-xs font-semibold text-muted-foreground">Coach Response</p>
         <div className="flex gap-1.5 items-center">
           {/* Templates dropdown */}
           <div className="relative">

@@ -106,7 +106,7 @@ export default function TimeGrid({ days, sessions, onEdit, onNewSession }) {
                 isToday && 'bg-accent/50'
               )}
             >
-              <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+              <p className="text-xs font-medium text-muted-foreground">
                 {format(day, 'EEE')}
               </p>
               <div

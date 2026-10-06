@@ -44,7 +44,7 @@ const ChipSelect = ({ value, onChange, options, single = false }) => (
 );
 
 const FieldLabel = ({ children, optional }) => (
-  <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
+  <p className="text-xs font-semibold text-muted-foreground mb-1.5">
     {children} {optional && <span className="normal-case tracking-normal font-normal text-[var(--tc-muted-foreground)]">— optional</span>}
   </p>
 );

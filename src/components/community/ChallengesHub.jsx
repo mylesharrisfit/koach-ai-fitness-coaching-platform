@@ -554,7 +554,7 @@ export default function ChallengesHub({ isCoach, user }) {
       {view === 'templates' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs font-semibold text-muted-foreground">
               {filteredTemplates.length} Ready-Made Challenges
             </p>
             <div className="flex gap-1.5">

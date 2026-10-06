@@ -24,7 +24,7 @@ export default function BSBranding({ s, set }) {
 
   return (
     <BSSection icon={Palette} title="Branding & Appearance" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Coach Dashboard Branding</p>
+      <p className="text-xs font-semibold text-muted-foreground">Coach Dashboard Branding</p>
       <BSRow label="Business logo">
         <div className="flex items-center gap-4">
           {s.logo_url && (
@@ -58,7 +58,7 @@ export default function BSBranding({ s, set }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Client Portal Branding</p>
+      <p className="text-xs font-semibold text-muted-foreground">Client Portal Branding</p>
       <BSRow label="White label settings" hint="Full branding customization for your client portal">
         <Link to="/white-label"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-primary bg-accent border border-primary hover:bg-accent transition-colors">
@@ -68,7 +68,7 @@ export default function BSBranding({ s, set }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Email Branding</p>
+      <p className="text-xs font-semibold text-muted-foreground">Email Branding</p>
       <BSRow label="Email signature">
         <BSTextarea value={s.email_signature} onChange={v => set('email_signature', v)}
           placeholder="[Coach Name] | [Business Name] | [Website]" rows={3} />

@@ -102,7 +102,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
           <div className="grid grid-cols-2 gap-4">
             {/* Current */}
             <div className="rounded-xl border border-white/10 bg-card/[0.03] p-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Current</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Current</p>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full" style={{ background: CARD_ACCENT[fromTierKey] }} />
                 <span className="font-bold text-sidebar-foreground">{fromTier.name}</span>
@@ -111,7 +111,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
             </div>
             {/* New */}
             <div className="rounded-xl border border-white/20 p-4" style={{ background: `${CARD_ACCENT[toTierKey]}10`, borderColor: `${CARD_ACCENT[toTierKey]}30` }}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Upgrading to</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Upgrading to</p>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full" style={{ background: CARD_ACCENT[toTierKey] }} />
                 <span className="font-bold text-white">{toTier.name}</span>
@@ -159,7 +159,7 @@ export default function UpgradeCompareModal({ fromTierKey, toTierKey, billing: i
                 <div key={f} className="flex items-center gap-2 bg-success/5 border border-success/20 rounded-lg px-3 py-2">
                   <Check className="w-3.5 h-3.5 text-success flex-shrink-0" />
                   <span className="text-xs text-sidebar-foreground">{f}</span>
-                  <span className="ml-auto text-[9px] font-bold uppercase bg-success/20 text-success px-1.5 py-0.5 rounded-full">NEW</span>
+                  <span className="ml-auto text-xs font-semibold bg-success/20 text-success px-1.5 py-0.5 rounded-full">NEW</span>
                 </div>
               ))}
             </div>

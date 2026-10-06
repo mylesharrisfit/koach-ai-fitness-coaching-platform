@@ -75,7 +75,7 @@ export default function MacroSplitControl({ split, onChange, totalCalories, weig
     <div className="space-y-4">
       {/* Presets */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Quick Presets</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Quick Presets</p>
         <div className="flex flex-wrap gap-1.5">
           {PRESETS.map(pr => {
             const active = split.p === pr.p && split.c === pr.c && split.f === pr.f;

@@ -48,7 +48,7 @@ export default function WLPublish({ s, onPublish, onSaveDraft, onRollback, onPre
             <div className="border-t border-border pt-4">
               <div className="flex items-center gap-2 mb-3">
                 <History className="w-4 h-4 text-muted-foreground" />
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Version History</p>
+                <p className="text-xs font-semibold text-muted-foreground">Version History</p>
               </div>
               <div className="space-y-2">
                 {history.slice(0, 5).map((v, i) => (

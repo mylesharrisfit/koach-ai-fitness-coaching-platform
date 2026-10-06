@@ -46,7 +46,7 @@ function MemberModal({ client, posts, onClose }) {
 
         {clientPosts.length > 0 && (
           <div>
-            <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">Recent Posts</p>
+            <p className="text-muted-foreground text-xs font-semibold mb-3">Recent Posts</p>
             <div className="space-y-2">
               {clientPosts.slice(0, 3).map(post => (
                 <div key={post.id} className="p-3 rounded-2xl bg-muted border border-border">
@@ -95,7 +95,7 @@ export default function CommunityMembersTab({ user, myClient, allClients, posts 
   return (
     <div className="px-4 pt-4">
       {/* Coach pinned at top */}
-      <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">Your Coach</p>
+      <p className="text-muted-foreground text-xs font-semibold mb-3">Your Coach</p>
       <div className="bg-card rounded-2xl p-4 flex items-center gap-3 mb-5"
         style={{ boxShadow: '0 2px 12px rgb(var(--primary) / 0.08)', border: '1px solid rgb(var(--accent))' }}>
         <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-base text-white flex-shrink-0"
@@ -116,7 +116,7 @@ export default function CommunityMembersTab({ user, myClient, allClients, posts 
 
       {/* Members grid */}
       <div className="flex items-center justify-between mb-3">
-        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest">Community Members</p>
+        <p className="text-muted-foreground text-xs font-semibold">Community Members</p>
         <p className="text-muted-foreground text-[10px] font-semibold">{allClients.length} total</p>
       </div>
 

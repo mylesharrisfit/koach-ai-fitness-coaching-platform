@@ -110,7 +110,7 @@ export default function ClientInfoSidebar({ client, checkIns = [], badges = [], 
 
       {/* Quick actions */}
       <div className="p-4 border-b border-border space-y-2">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Quick Actions</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Quick Actions</p>
         <button onClick={() => navigate(`/client-profile?clientId=${client.id}`)}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-background hover:bg-accent/10 hover:text-primary transition-colors text-sm text-foreground font-medium">
           <ExternalLink className="w-3.5 h-3.5" /> View Full Profile
@@ -128,7 +128,7 @@ export default function ClientInfoSidebar({ client, checkIns = [], badges = [], 
       {/* Recent badges */}
       {clientBadges.length > 0 && (
         <div className="p-4 border-b border-border">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Recent Achievements</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Recent Achievements</p>
           <div className="space-y-2">
             {clientBadges.map(b => {
               const cfg = BADGE_CONFIG?.[b.badge_key];
@@ -148,7 +148,7 @@ export default function ClientInfoSidebar({ client, checkIns = [], badges = [], 
 
       {/* Coach notes */}
       <div className="p-4 flex-1">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Quick Notes</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Quick Notes</p>
         <textarea
           value={note}
           onChange={e => setNote(e.target.value)}

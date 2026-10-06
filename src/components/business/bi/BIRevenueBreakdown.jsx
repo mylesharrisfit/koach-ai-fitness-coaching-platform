@@ -24,11 +24,11 @@ export default function BIRevenueBreakdown({ clients, payments }) {
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="p-3 rounded-xl bg-accent border border-accent">
-          <p className="text-[10px] text-primary font-semibold uppercase mb-1">Total MRR</p>
+          <p className="text-xs text-primary font-semibold mb-1">Total MRR</p>
           <p className="text-xl font-bold text-primary">${mrr.toLocaleString()}</p>
         </div>
         <div className="p-3 rounded-xl bg-ai/10 border border-ai">
-          <p className="text-[10px] text-ai font-semibold uppercase mb-1">Avg / Client</p>
+          <p className="text-xs text-ai font-semibold mb-1">Avg / Client</p>
           <p className="text-xl font-bold text-ai">${avgRevenue.toLocaleString()}</p>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function BIRevenueBreakdown({ clients, payments }) {
       )}
 
       <div>
-        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Top Revenue Clients</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Top Revenue Clients</p>
         {topClients.length === 0 ? (
           <p className="text-xs text-muted-foreground italic">No billing data yet — add monthly rates to clients</p>
         ) : (

@@ -76,7 +76,7 @@ function PasswordForm({ onClose }) {
 
   const reqs = [
     { label: 'At least 8 characters', met: next.length >= 8 },
-    { label: 'At least one uppercase letter', met: /[A-Z]/.test(next) },
+    { label: 'At least one letter', met: /[A-Z]/.test(next) },
     { label: 'At least one number', met: /[0-9]/.test(next) },
     { label: 'At least one special character', met: /[^A-Za-z0-9]/.test(next) },
   ];
@@ -433,14 +433,14 @@ export default function AccountSettings() {
           <div className="space-y-3">
             <div className="flex items-center justify-between py-2">
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account Email</p>
+                <p className="text-xs font-semibold text-muted-foreground">Account Email</p>
                 <p className="text-sm font-semibold text-foreground mt-0.5">{user?.email || '—'}</p>
               </div>
             </div>
             <Divider />
             <div className="flex items-center justify-between py-2">
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Member Since</p>
+                <p className="text-xs font-semibold text-muted-foreground">Member Since</p>
                 <p className="text-sm font-semibold text-foreground mt-0.5">
                   {user?.created_date ? new Date(user.created_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '—'}
                 </p>
@@ -449,14 +449,14 @@ export default function AccountSettings() {
             <Divider />
             <div className="flex items-center justify-between py-2">
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account ID</p>
+                <p className="text-xs font-semibold text-muted-foreground">Account ID</p>
                 <p className="text-sm font-mono text-muted-foreground mt-0.5">{user?.id ? user.id.slice(0, 16) + '...' : '—'}</p>
               </div>
             </div>
             <Divider />
             <div className="flex items-center justify-between py-2">
               <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Current Plan</p>
+                <p className="text-xs font-semibold text-muted-foreground">Current Plan</p>
                 <p className="text-sm font-semibold text-foreground mt-0.5">{user?.plan || 'Free Plan'}</p>
               </div>
               <Link to="/subscription"
@@ -470,7 +470,7 @@ export default function AccountSettings() {
         {/* SECTION 3 — CONNECTED ACCOUNTS */}
         <SectionCard icon={Globe} title="Connected Accounts" iconBg="var(--tc-success)" iconColor="var(--tc-success)">
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Social Login</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Social Login</p>
             {[
               { name: 'Google', icon: '🔵', desc: 'Sign in with your Google account' },
               { name: 'Apple', icon: '⚫', desc: 'Sign in with your Apple ID' },
@@ -491,7 +491,7 @@ export default function AccountSettings() {
             ))}
 
             <div className="pt-4">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Calendar Integration</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3">Calendar Integration</p>
               {[
                 { name: 'Google Calendar', connected: true, email: user?.email },
                 { name: 'Apple Calendar', connected: false },
@@ -515,7 +515,7 @@ export default function AccountSettings() {
             </div>
 
             <div className="pt-4">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Payment Account</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-3">Payment Account</p>
               <div className="flex items-center justify-between py-2 px-4 rounded-xl bg-muted border border-border">
                 <div className="flex items-center gap-3">
                   <CreditCard className="w-5 h-5 text-muted-foreground" />

@@ -71,7 +71,7 @@ export default function MetricsCard({ client, onUpdated }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-0.5 h-3.5 rounded-full bg-primary" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Body Metrics</p>
+          <p className="text-xs font-semibold text-muted-foreground">Body Metrics</p>
         </div>
         {!editing && (
           <button
@@ -147,7 +147,7 @@ export default function MetricsCard({ client, onUpdated }) {
 function MetricRow({ label, value }) {
   return (
     <div className="flex flex-col gap-0.5 py-1">
-      <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
+      <span className="text-xs font-semibold text-muted-foreground">{label}</span>
       <span className="text-sm font-semibold text-foreground">{value ?? <span className="text-border font-normal">—</span>}</span>
     </div>
   );
@@ -156,7 +156,7 @@ function MetricRow({ label, value }) {
 function MetricInput({ label, value, onChange, type, placeholder }) {
   return (
     <div>
-      <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide block mb-1">{label}</label>
+      <label className="text-xs font-semibold text-muted-foreground block mb-1">{label}</label>
       <input
         type={type}
         value={value}

@@ -42,7 +42,7 @@ export default function MonthView({ currentDate, sessions, onDayClick, onEditSes
         {/* Day labels */}
         <div className="grid grid-cols-7 border-b border-border">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-            <div key={d} className="py-2.5 text-center text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">
+            <div key={d} className="py-2.5 text-center text-xs font-semibold text-muted-foreground">
               {d}
             </div>
           ))}

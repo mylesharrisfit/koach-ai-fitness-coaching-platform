@@ -114,7 +114,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
         ].map(({ label, value, blue, green, color }) => (
           <div key={label} className="bg-background rounded-xl p-3 border border-border">
             <p className={cn('text-base font-bold', blue ? 'text-primary' : green ? 'text-success' : color || 'text-foreground')}>{value}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wide">{label}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
           </div>
         ))}
       </div>

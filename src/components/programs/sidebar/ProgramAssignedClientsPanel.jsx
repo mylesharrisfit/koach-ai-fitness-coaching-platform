@@ -31,7 +31,7 @@ export default function ProgramAssignedClientsPanel({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+        <h3 className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
           <Users className="w-3.5 h-3.5" />
           Assigned Clients
         </h3>

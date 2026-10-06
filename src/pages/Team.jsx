@@ -9,14 +9,14 @@ import { useTeamRole } from '@/lib/useTeamRole';
 function RoleBadge({ role }) {
   if (role === 'owner') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
         style={{ background: 'color-mix(in srgb, var(--tc-warning) 15%, transparent)', color: 'var(--tc-warning)', border: '1px solid color-mix(in srgb, var(--tc-warning) 30%, transparent)' }}>
         <Crown className="w-2.5 h-2.5" /> Owner
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
       style={{ background: 'color-mix(in srgb, var(--tc-primary) 15%, transparent)', color: 'var(--tc-primary)', border: '1px solid color-mix(in srgb, var(--tc-primary) 30%, transparent)' }}>
       Coach
     </span>
@@ -184,7 +184,7 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Full Name</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Full Name</label>
             <input
               autoFocus
               type="text"
@@ -195,7 +195,7 @@ function InviteModal({ teamId, userId, onClose, onInvited }) {
             />
           </div>
           <div>
-            <label className="block text-[11px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Email Address</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Email Address</label>
             <input
               type="email"
               value={email}
@@ -385,7 +385,7 @@ export default function Team() {
       {/* Info card — owner sees how-to, coach sees read-only note */}
       {team && isOwner && (
         <div className="bg-accent border border-accent rounded-2xl p-4">
-          <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">How team invites work</p>
+          <p className="text-xs font-semibold text-primary mb-2">How team invites work</p>
           <div className="space-y-1.5">
             {[
               'Click "Invite Coach" and enter their name and email.',

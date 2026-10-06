@@ -132,14 +132,14 @@ export default function FoodSearchDrawer({ open, mealName, recentFoods, onAdd, o
 
             {results.length > 0 && (
               <div>
-                <p className="text-white/25 text-[10px] font-bold uppercase tracking-wider px-5 py-2">Results</p>
+                <p className="text-white/25 text-xs font-semibold px-5 py-2">Results</p>
                 {results.map((f, i) => <FoodRow key={i} food={f} onSelect={handleSelect} />)}
               </div>
             )}
 
             {!query && recentFoods.length > 0 && (
               <div>
-                <p className="text-white/25 text-[10px] font-bold uppercase tracking-wider px-5 py-2">Recent Foods</p>
+                <p className="text-white/25 text-xs font-semibold px-5 py-2">Recent Foods</p>
                 {recentFoods.slice(0, 8).map((f, i) => <FoodRow key={i} food={f} onSelect={handleSelect} />)}
               </div>
             )}

@@ -217,7 +217,7 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
           >
             {/* Day label */}
             <div className="w-10 text-center flex-shrink-0">
-              <p className={cn('text-[10px] font-bold uppercase', todayFlag ? 'text-primary' : 'text-muted-foreground')}>
+              <p className={cn('text-xs font-semibold', todayFlag ? 'text-primary' : 'text-muted-foreground')}>
                 {format(date, 'EEE')}
               </p>
               <p className={cn('text-sm font-bold', todayFlag ? 'text-primary' : 'text-muted-foreground')}>

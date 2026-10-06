@@ -122,7 +122,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
     <div className="w-full lg:w-[280px] lg:shrink-0 flex flex-col gap-4 overflow-y-auto pr-1">
       {/* Client selector */}
       <div className="bg-card border border-border rounded-xl p-4">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Client Context</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Client Context</p>
         <Select value={selectedClient?.id || ''} onValueChange={id => onSelectClient(clients.find(c => c.id === id) || null)}>
           <SelectTrigger className="text-sm">
             <SelectValue placeholder="Select a client..." />
@@ -165,7 +165,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
 
       {/* Quick Actions */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-4 py-3 border-b border-border">Quick Actions</p>
+        <p className="text-xs font-semibold text-muted-foreground px-4 py-3 border-b border-border">Quick Actions</p>
         {QUICK_ACTIONS.map(cat => (
           <div key={cat.label} className="border-b border-border last:border-0">
             <button
@@ -196,7 +196,7 @@ function AssistantSidebar({ clients, selectedClient, onSelectClient, onQuickActi
       {conversations.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Recent Chats</p>
+            <p className="text-xs font-semibold text-muted-foreground">Recent Chats</p>
             <button onClick={onNewChat} className="text-[10px] text-primary font-semibold hover:underline">+ New</button>
           </div>
           {conversations.slice(0, 5).map(conv => (

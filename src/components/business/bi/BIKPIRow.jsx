@@ -20,7 +20,7 @@ function KPICard({ icon: Icon, label, value, sub, trend, trendLabel, color = 'va
           </span>
         )}
       </div>
-      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-xs text-muted-foreground font-medium mb-1">{label}</p>
       <p className="text-2xl font-bold text-foreground mb-1">{value}</p>
       {trend !== undefined && (
         <div className="flex items-center gap-1">

@@ -80,7 +80,7 @@ function MealSection({ title, meals = [] }) {
 
   return (
     <div className="border-t border-border pt-4">
-      <h4 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
+      <h4 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
         {title}
       </h4>
       <div className="space-y-2">
@@ -187,7 +187,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {/* Daily Macro Targets */}
       {nutritionPlan.plan_type === 'structured' && (
         <div className="bg-card rounded-xl border border-border shadow-sm p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
+          <h3 className="text-xs font-semibold mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
             Daily Targets
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -200,7 +200,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
               <div key={label} className="rounded-lg p-3 bg-gradient-to-br from-card to-muted border border-border">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-lg">{icon}</span>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color }}>
+                  <p className="text-xs font-semibold" style={{ color }}>
                     {label}
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {/* Compliance Trends */}
       <div className="bg-card rounded-xl border border-border shadow-sm p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>
+          <h3 className="text-xs font-semibold" style={{ color: 'var(--tc-muted-foreground)' }}>
             Adherence
           </h3>
           {recentCompliance !== null && (
@@ -247,7 +247,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {/* Meal Plan Overview (Structured Plans) */}
       {nutritionPlan.plan_type === 'structured' && (
         <div className="bg-card rounded-xl border border-border shadow-sm p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
+          <h3 className="text-xs font-semibold mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
             Meal Plan
           </h3>
           {nutritionPlan.meals && nutritionPlan.meals.length > 0 ? (
@@ -269,7 +269,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
           {/* Hydration */}
           {nutritionPlan.hydration && (
             <div className="bg-card rounded-xl border border-border shadow-sm p-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-primary)' }}>
+              <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-primary)' }}>
                 💧 Hydration Protocol
               </h3>
               <div className="text-xs text-foreground space-y-1.5">
@@ -298,7 +298,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
           {/* Supplements */}
           {nutritionPlan.supplements && nutritionPlan.supplements.length > 0 && (
             <div className="bg-card rounded-xl border border-border shadow-sm p-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-ai)' }}>
+              <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-ai)' }}>
                 💊 Supplements
               </h3>
               <ul className="space-y-2">
@@ -318,7 +318,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {/* Shopping List */}
       {nutritionPlan.shopping_list && nutritionPlan.shopping_list.length > 0 && (
         <div className="bg-card rounded-xl border border-border shadow-sm p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
+          <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
             🛒 Shopping List
           </h3>
           <ul className="grid grid-cols-2 gap-2">
@@ -335,7 +335,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {/* Coach Notes */}
       {nutritionPlan.coach_notes && (
         <div className="bg-accent border border-accent rounded-xl p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--tc-primary)' }}>
+          <h3 className="text-xs font-semibold mb-2" style={{ color: 'var(--tc-primary)' }}>
             📝 Coach Notes
           </h3>
           {typeof nutritionPlan.coach_notes === 'string' ? (
@@ -360,7 +360,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {/* Summary for PDF plans */}
       {nutritionPlan.plan_type === 'pdf' && nutritionPlan.client_notes && (
         <div className="bg-warning/10 border border-warning rounded-xl p-4">
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--tc-warning)' }}>
+          <h3 className="text-xs font-semibold mb-2" style={{ color: 'var(--tc-warning)' }}>
             📋 Plan Summary
           </h3>
           <p className="text-xs text-warning leading-relaxed">{nutritionPlan.client_notes}</p>

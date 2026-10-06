@@ -146,7 +146,7 @@ export default function MigrationClientImport({ onComplete, onSkip }) {
           </button>
           {showPreview && (
             <div className="border border-border rounded-xl overflow-hidden">
-              <div className="grid grid-cols-3 bg-secondary/50 px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="grid grid-cols-3 bg-secondary/50 px-4 py-2 text-xs font-semibold text-muted-foreground">
                 <span>Name</span><span>Email</span><span>Phone</span>
               </div>
               <div className="divide-y divide-border max-h-48 overflow-y-auto">

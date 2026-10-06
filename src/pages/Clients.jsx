@@ -432,7 +432,7 @@ export default function Clients() {
           <div className="space-y-2">
             {/* Sort by */}
             <div>
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Sort by</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">Sort by</p>
               <div className="flex flex-wrap gap-1">
                 {[
                   { key: 'created_date', label: 'Newest' },
@@ -454,7 +454,7 @@ export default function Clients() {
 
             {/* Goal */}
             <div>
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Goal</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">Goal</p>
               <div className="flex flex-wrap gap-1">
                 {[
                   { key: 'weight_loss', label: 'Weight Loss' },
@@ -474,7 +474,7 @@ export default function Clients() {
 
             {/* Check-in status */}
             <div>
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide mb-1">Check-in Status</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1">Check-in Status</p>
               <div className="flex flex-wrap gap-1">
                 {[
                   { key: 'this_week', label: 'This week' },
@@ -507,7 +507,7 @@ export default function Clients() {
       </div>
 
       {/* ── Column headers ── */}
-      <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-muted border-b border-border text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex-shrink-0">
+      <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-muted border-b border-border text-xs font-semibold text-muted-foreground flex-shrink-0">
         <div className="w-9 flex-shrink-0" />
         <div className="flex-1">Client</div>
         <div className="hidden sm:block w-24">Status</div>

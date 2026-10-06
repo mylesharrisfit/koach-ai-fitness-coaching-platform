@@ -116,7 +116,7 @@ export default function PaymentsTab({ client }) {
 
       {/* Quick Charge */}
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Quick Charge</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Quick Charge</p>
         <div className="grid grid-cols-2 gap-2">
           {QUICK_CHARGES.map(item => (
             <button
@@ -185,7 +185,7 @@ export default function PaymentsTab({ client }) {
 
       {/* Invoice History */}
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Invoice History</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Invoice History</p>
         {!client?.stripe_customer_id ? (
           <div className="bg-background border border-border rounded-xl p-4 text-center">
             <p className="text-xs text-muted-foreground">No Stripe customer yet. Send an invoice to create one.</p>

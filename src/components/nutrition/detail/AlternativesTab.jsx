@@ -113,7 +113,7 @@ export default function AlternativesTab({ plan }) {
           const colors = CATEGORY_COLORS[category] || CATEGORY_COLORS.Other;
           return (
             <div key={category}>
-              <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${colors.text}`}>{category}</h4>
+              <h4 className={`text-xs font-semibold mb-2${colors.text}`}>{category}</h4>
               <div className="space-y-3">
                 {foods.map((food, fi) => {
                   const swaps = getSwapsForFood(food.name);
@@ -160,7 +160,7 @@ export default function AlternativesTab({ plan }) {
         const colors = CATEGORY_COLORS[category] || CATEGORY_COLORS.Other;
         return (
           <div key={category}>
-            <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 ${colors.text}`}>{category}</h4>
+            <h4 className={`text-xs font-semibold mb-2${colors.text}`}>{category}</h4>
             <div className="space-y-3">
               {swaps.map((swap, si) => (
                 <div key={si} className={`${colors.bg} border ${colors.border} rounded-xl p-3.5`}>

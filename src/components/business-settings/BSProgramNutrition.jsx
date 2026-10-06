@@ -21,14 +21,14 @@ const DEFAULTS = {
 export default function BSProgramNutrition({ s, set }) {
   return (
     <BSSection icon={Dumbbell} title="Program & Nutrition Defaults" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Program Settings</p>
+      <p className="text-xs font-semibold text-muted-foreground">Program Settings</p>
       <BSRow label="Program progression" hint="How clients move to next program">
         <div className="space-y-3">
           <BSSelect value={s.program_progression} onChange={v => set('program_progression', v)}
             options={[{ value: 'manual', label: 'Manual (coach decides)' }, { value: 'auto', label: 'Automatic (AI decides)' }]} />
           {s.program_progression === 'auto' && (
             <div className="space-y-3 p-4 rounded-xl bg-accent border border-accent">
-              <p className="text-xs font-bold text-primary uppercase tracking-wider">Auto-Progression Rules</p>
+              <p className="text-xs font-semibold text-primary">Auto-Progression Rules</p>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground w-40 flex-shrink-0">Progress when</span>
                 <BSInput type="number" value={s.progression_completion_pct} onChange={v => set('progression_completion_pct', v)} min={0} max={100} className="w-20" />
@@ -55,7 +55,7 @@ export default function BSProgramNutrition({ s, set }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Nutrition Settings</p>
+      <p className="text-xs font-semibold text-muted-foreground">Nutrition Settings</p>
       <BSRow label="Macro calculation method">
         <BSSelect value={s.macro_method} onChange={v => set('macro_method', v)} options={MACRO_METHODS} />
       </BSRow>

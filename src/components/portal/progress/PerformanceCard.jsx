@@ -93,7 +93,7 @@ export default function PerformanceCard({ workoutSessions }) {
       {/* Personal Bests */}
       {pbList.length > 0 && (
         <div className="space-y-1.5 mb-4">
-          <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest">Personal Bests</p>
+          <p className="text-white/40 text-xs font-semibold">Personal Bests</p>
           {pbList.map(([name, pb]) => (
             <div key={name} className="flex items-center gap-3 py-2 px-3 rounded-xl"
               style={{ background: 'rgba(255,255,255,0.04)' }}>
@@ -116,7 +116,7 @@ export default function PerformanceCard({ workoutSessions }) {
       {exercises.length > 0 && (
         <>
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest">Strength Progress</p>
+            <p className="text-white/40 text-xs font-semibold">Strength Progress</p>
             <select value={currentEx} onChange={e => setSelectedExercise(e.target.value)}
               className="text-[10px] text-white/60 bg-transparent border border-white/10 rounded-lg px-2 py-1 focus:outline-none">
               {exercises.map(ex => <option key={ex} value={ex} style={{ background: '#0A0F1A' }}>{ex}</option>)}
@@ -142,7 +142,7 @@ export default function PerformanceCard({ workoutSessions }) {
 
       {/* Consistency heatmap */}
       <div className="mt-4">
-        <p className="text-white/40 text-[9px] font-bold uppercase tracking-widest mb-2">Workout Heatmap</p>
+        <p className="text-white/40 text-xs font-semibold mb-2">Workout Heatmap</p>
         <WorkoutHeatmap sessions={workoutSessions} />
       </div>
     </div>

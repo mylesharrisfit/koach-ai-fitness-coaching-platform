@@ -35,12 +35,12 @@ const s = {
   overlay: { position: 'fixed', inset: 0, background: 'color-mix(in srgb, black 55%, transparent)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 },
   modal: { background: 'var(--tc-card)', borderRadius: 20, width: '100%', maxWidth: '90vw', maxHeight: '92vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 80px color-mix(in srgb, black 25%, transparent)' },
   col: { overflowY: 'auto', padding: '20px 24px', flex: 1 },
-  label: { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5 },
+  label: { display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 5 },
   input: { width: '100%', padding: '9px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' },
 };
 
 function SectionTitle({ children }) {
-  return <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--tc-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12, paddingBottom: 6, borderBottom: '1px solid var(--tc-muted)' }}>{children}</div>;
+  return <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--tc-foreground)', marginBottom: 12, paddingBottom: 6, borderBottom: '1px solid var(--tc-muted)' }}>{children}</div>;
 }
 
 function Field({ label, children, half }) {
@@ -76,7 +76,7 @@ function InvoicePreview({ form, lineItems, coachName }) {
       {/* Client + dates */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', marginBottom: 4 }}>Bill To</div>
+          <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 4 }}>Bill To</div>
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--tc-foreground)' }}>{form.client_name || 'Client Name'}</div>
           <div style={{ fontSize: 12, color: 'var(--tc-muted-foreground)' }}>{form.client_email || 'client@email.com'}</div>
         </div>
@@ -91,7 +91,7 @@ function InvoicePreview({ form, lineItems, coachName }) {
         <thead>
           <tr style={{ background: 'var(--tc-muted)' }}>
             {['Description', 'Qty', 'Price', 'Total'].map((h, i) => (
-              <th key={h} style={{ padding: '6px 8px', fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', textAlign: i > 0 ? 'right' : 'left' }}>{h}</th>
+              <th key={h} style={{ padding: '6px 8px', fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', textAlign: i > 0 ? 'right' : 'left' }}>{h}</th>
             ))}
           </tr>
         </thead>
@@ -321,7 +321,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
               <thead>
                 <tr style={{ background: 'var(--tc-background)' }}>
                   {['Description', 'Qty', 'Unit Price', 'Total', ''].map((h, i) => (
-                    <th key={i} style={{ padding: '6px 6px', fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', textAlign: i >= 1 ? 'right' : 'left', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={i} style={{ padding: '6px 6px', fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', textAlign: i >= 1 ? 'right' : 'left', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -468,7 +468,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
 
           {/* RIGHT: Live Preview */}
           <div style={{ ...s.col, background: 'var(--tc-background)' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Live Preview</div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 12 }}>Live Preview</div>
             <InvoicePreview form={form} lineItems={lineItems} coachName={coachName} />
           </div>
         </div>

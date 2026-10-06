@@ -37,7 +37,7 @@ function normalizeSupplements(raw) {
 function StackSection({ title, emoji, items, badgeColor }) {
   return (
     <div className="mb-3">
-      <p className={`text-xs font-bold uppercase tracking-wide mb-2`}>
+      <p className={`text-xs font-semibold mb-2`}>
         {emoji} {title}
       </p>
       {items.map(item => (

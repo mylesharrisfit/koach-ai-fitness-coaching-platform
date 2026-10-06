@@ -269,7 +269,7 @@ function ClientProgressRow({ row, onViewProgress }) {
         {score !== null && (
           <div className="text-center flex-shrink-0">
             <div className={cn('text-base font-bold', score >= 70 ? 'text-success' : score >= 50 ? 'text-orange-500' : 'text-destructive')}>{score}</div>
-            <div className="text-[9px] text-muted-foreground uppercase tracking-wide">Score</div>
+            <div className="text-xs text-muted-foreground">Score</div>
           </div>
         )}
         <button onClick={onViewProgress}
@@ -320,7 +320,7 @@ function WeightPill({ label, value, highlight, goal }) {
         {value ? `${value}` : '—'}
         {value && <span className="text-[9px] font-normal ml-0.5">lbs</span>}
       </div>
-      <div className="text-[9px] text-muted-foreground uppercase tracking-wide">{label}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
     </div>
   );
 }

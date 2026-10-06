@@ -30,7 +30,7 @@ export default function BSOnboarding({ s, set, forms }) {
 
   return (
     <BSSection icon={BookOpen} title="Onboarding Settings" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">New Client Onboarding Flow</p>
+      <p className="text-xs font-semibold text-muted-foreground">New Client Onboarding Flow</p>
       <BSRow label="Onboarding checklist" hint="Toggle steps on/off for new clients">
         <div className="space-y-2">
           {items.map(item => (
@@ -73,7 +73,7 @@ export default function BSOnboarding({ s, set, forms }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Welcome Package</p>
+      <p className="text-xs font-semibold text-muted-foreground">Welcome Package</p>
       <BSRow label="Auto-send welcome email">
         <div className="space-y-2">
           <BSToggle value={s.welcome_email_enabled} onChange={v => set('welcome_email_enabled', v)} />
@@ -93,7 +93,7 @@ export default function BSOnboarding({ s, set, forms }) {
       </BSRow>
 
       <BSDivider />
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Intake Form</p>
+      <p className="text-xs font-semibold text-muted-foreground">Intake Form</p>
       <BSRow label="Default intake form">
         <BSSelect value={s.intake_form_id || ''} onChange={v => set('intake_form_id', v)}
           options={[{ value: '', label: '— None —' }, ...forms.map(f => ({ value: f.id, label: f.name }))]} />

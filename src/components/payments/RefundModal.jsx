@@ -20,7 +20,7 @@ export default function RefundModal({ payment, onClose, onConfirm }) {
   const valid = reason && (type === 'full' || (partialAmt && Number(partialAmt) > 0 && Number(partialAmt) <= Number(payment.amount)));
 
   const inputStyle = { width: '100%', padding: '9px 12px', borderRadius: 9, fontSize: 13, background: 'var(--tc-background)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box', color: 'var(--tc-foreground)' };
-  const labelStyle = { display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 5 };
+  const labelStyle = { display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 5 };
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, black 50%, transparent)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>

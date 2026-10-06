@@ -55,7 +55,7 @@ export default function NotesTab({ client }) {
       {/* Notes list */}
       <div className="flex-1 overflow-y-auto p-5 space-y-3">
         <div className="flex items-center justify-between mb-1">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Past Notes ({notes.length})</p>
+          <p className="text-xs font-semibold text-muted-foreground">Past Notes ({notes.length})</p>
         </div>
         {notes.length === 0 ? (
           <div className="text-center py-16">

@@ -115,7 +115,7 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
         {/* Notes */}
         {client.notes && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">Coach Notes</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1.5">Coach Notes</p>
             <p className="text-sm text-foreground leading-relaxed">{client.notes}</p>
           </div>
         )}
@@ -123,7 +123,7 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
         {/* Feedback History */}
         {checkIns.length > 0 && (
           <div className="px-5 py-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Check-in History</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Check-in History</p>
             <ClientFeedbackHistory checkIns={checkIns} />
           </div>
         )}

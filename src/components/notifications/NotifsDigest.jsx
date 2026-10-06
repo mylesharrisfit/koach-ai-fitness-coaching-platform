@@ -79,7 +79,7 @@ export default function NotifsDigest({ s, setField }) {
                   className="px-2 py-1.5 rounded-lg border border-border text-sm focus:outline-none focus:border-primary font-semibold text-foreground" />
               </div>
               <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Include in digest</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">Include in digest</p>
                 <MultiCheckGrid values={dailyIncludes} onChange={v => setField('daily_digest_includes', v)} options={DAILY_OPTIONS} />
               </div>
             </div>
@@ -114,7 +114,7 @@ export default function NotifsDigest({ s, setField }) {
                   className="px-2 py-1.5 rounded-lg border border-border text-sm focus:outline-none focus:border-primary font-semibold text-foreground" />
               </div>
               <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Include in digest</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">Include in digest</p>
                 <MultiCheckGrid values={weeklyIncludes} onChange={v => setField('weekly_digest_includes', v)} options={WEEKLY_OPTIONS} />
               </div>
             </div>

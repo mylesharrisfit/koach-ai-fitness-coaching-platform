@@ -9,7 +9,7 @@ export default function TodayHeroCard({ program, todayWorkout, workoutDone, onSt
   if (!program) {
     return (
       <div className="mx-5 rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
-        <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-1">Today's Plan</p>
+        <p className="text-white/40 text-xs font-semibold mb-1">Today's Plan</p>
         <p className="text-white font-bold text-lg">Your program is being set up 💪</p>
         <p className="text-white/40 text-sm mt-1">Your coach will assign your training plan soon.</p>
       </div>
@@ -24,7 +24,7 @@ export default function TodayHeroCard({ program, todayWorkout, workoutDone, onSt
       style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, rgb(var(--foreground)) 100%)', border: '1px solid rgb(var(--primary) / 0.25)' }}>
       {/* Program badge */}
       <div className="px-5 pt-4 pb-3">
-        <p className="text-primary text-[10px] font-bold uppercase tracking-widest mb-2">{program.title}</p>
+        <p className="text-primary text-xs font-semibold mb-2">{program.title}</p>
 
         {isRestDay ? (
           <>

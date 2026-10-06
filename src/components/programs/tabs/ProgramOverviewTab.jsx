@@ -54,7 +54,7 @@ export default function ProgramOverviewTab({ program }) {
       {/* Equipment */}
       {allEquipment.size > 0 && (
         <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Equipment Needed</h3>
+          <h3 className="text-xs font-semibold text-muted-foreground mb-3">Equipment Needed</h3>
           <div className="flex flex-wrap gap-2">
             {Array.from(allEquipment).map((equip) => (
               <div

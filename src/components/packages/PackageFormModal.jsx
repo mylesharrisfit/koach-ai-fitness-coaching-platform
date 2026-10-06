@@ -70,7 +70,7 @@ const defaultForm = () => ({
 });
 
 const S = {
-  label: { fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, display: 'block' },
+  label: { fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 6, display: 'block' },
   input: { width: '100%', padding: '10px 14px', borderRadius: 10, fontSize: 14, background: 'var(--tc-background)', color: 'var(--tc-foreground)', border: '1.5px solid var(--tc-border)', outline: 'none', boxSizing: 'border-box' },
   section: { marginBottom: 24 },
   sectionTitle: { fontSize: 13, fontWeight: 800, color: 'var(--tc-foreground)', marginBottom: 14, paddingBottom: 8, borderBottom: '1px solid var(--tc-muted)' },

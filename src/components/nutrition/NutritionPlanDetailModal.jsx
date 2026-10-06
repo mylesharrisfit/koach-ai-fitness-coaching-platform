@@ -70,7 +70,7 @@ export default function NutritionPlanDetailModal({ open, onOpenChange, plan, onE
                 ].filter(m => m.value).map(m => (
                   <div key={m.label} className="text-center">
                     <p className="text-sm font-semibold text-foreground">{m.value}<span className="text-xs text-muted-foreground ml-0.5">{m.unit}</span></p>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{m.label}</p>
+                    <p className="text-xs text-muted-foreground">{m.label}</p>
                   </div>
                 ))}
               </div>

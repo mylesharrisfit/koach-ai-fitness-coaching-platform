@@ -39,7 +39,7 @@ export default function WLTypography({ s, set, locked, enterpriseLocked }) {
 
       <WLRow label="Preview">
         <div className="p-5 rounded-xl bg-muted border border-border">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Font Preview — {s.font_primary || 'Inter'}</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Font Preview — {s.font_primary || 'Inter'}</p>
           <h2 className="text-2xl mb-1" style={{ fontFamily: font, fontWeight: weight }}>
             {s.business_name || 'Your Coaching Business'}
           </h2>

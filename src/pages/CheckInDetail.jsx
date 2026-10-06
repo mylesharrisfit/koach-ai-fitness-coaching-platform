@@ -27,7 +27,7 @@ function PhotoGallery({ urls }) {
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Progress Photos</p>
+      <p className="text-xs font-semibold text-muted-foreground">Progress Photos</p>
       <div className="relative bg-secondary/30 rounded-2xl overflow-hidden aspect-[4/3]">
         <SignedLink href={urls[idx]} target="_blank" rel="noreferrer">
           <SignedImg
@@ -305,7 +305,7 @@ export default function CheckInDetail() {
         {/* ── Weight ── */}
         {checkIn.weight && (
           <div className="bg-card border border-border rounded-2xl p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Weight</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Weight</p>
             <div className="flex items-end gap-3">
               <div>
                 <span className="text-4xl font-bold font-heading tabular-nums">{checkIn.weight}</span>
@@ -341,7 +341,7 @@ export default function CheckInDetail() {
         {/* ── Sleep / Energy / Stress sliders ── */}
         {(checkIn.sleep_hours != null || checkIn.energy_level != null || checkIn.stress_level != null) && (
           <div className="bg-card border border-border rounded-2xl p-4 space-y-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Wellness Scores</p>
+            <p className="text-xs font-semibold text-muted-foreground">Wellness Scores</p>
             <ScoreBar
               label="Sleep"
               value={checkIn.sleep_hours}
@@ -372,7 +372,7 @@ export default function CheckInDetail() {
         {/* ── Compliance ── */}
         {(checkIn.compliance_training != null || checkIn.compliance_nutrition != null) && (
           <div className="bg-card border border-border rounded-2xl p-4 space-y-2.5">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Compliance</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1">Compliance</p>
             <ComplianceRow label="Training" value={checkIn.compliance_training} icon={Dumbbell} />
             <ComplianceRow label="Nutrition" value={checkIn.compliance_nutrition} icon={Utensils} />
           </div>
@@ -381,7 +381,7 @@ export default function CheckInDetail() {
         {/* ── Measurements ── */}
         {checkIn.measurements && Object.values(checkIn.measurements).some(v => v) && (
           <div className="bg-card border border-border rounded-2xl p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Measurements (in)</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Measurements (in)</p>
             <div className="grid grid-cols-3 gap-3">
               {Object.entries(checkIn.measurements).filter(([, v]) => v).map(([k, v]) => (
                 <div key={k} className="bg-secondary/40 rounded-xl p-2.5 text-center">
@@ -404,7 +404,7 @@ export default function CheckInDetail() {
         {/* ── Client Notes ── */}
         {checkIn.notes && (
           <div className="bg-card border border-border rounded-2xl p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Client Notes</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Client Notes</p>
             <p className="text-sm leading-relaxed text-foreground">{checkIn.notes}</p>
           </div>
         )}
@@ -412,7 +412,7 @@ export default function CheckInDetail() {
         {/* ── Existing Coach Response ── */}
         {checkIn.coach_notes && (
           <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4">
-            <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">Your Response</p>
+            <p className="text-xs font-semibold text-primary mb-2">Your Response</p>
             <p className="text-sm leading-relaxed">{checkIn.coach_notes}</p>
           </div>
         )}
@@ -433,7 +433,7 @@ export default function CheckInDetail() {
       </div>
 
       {/* ── Sticky action bar ── */}
-      <div className="fixed bottom-0 left-0 right-0 md:left-[240px] z-20 bg-card/90 backdrop-blur border-t border-border px-4 py-3">
+      <div className="fixed bottom-16 lg:bottom-0 left-0 right-0 lg:left-[248px] z-20 bg-card border-t border-border px-4 py-3">
         <div className="max-w-xl mx-auto grid grid-cols-2 gap-2">
           {/* Send Feedback */}
           <Button

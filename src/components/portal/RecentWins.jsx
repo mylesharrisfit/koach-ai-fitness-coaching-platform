@@ -28,7 +28,7 @@ export default function RecentWins({ badges }) {
                 <p className="text-white font-semibold text-sm">{cfg?.label || badge.badge_key}</p>
                 <p className="text-white/30 text-[10px]">{badge.earned_date ? format(parseISO(badge.earned_date), 'MMM d') : ''}</p>
               </div>
-              {tier && <span className="text-[10px] font-bold uppercase tracking-wide flex-shrink-0" style={{ color: tier.accent }}>{tier.label}</span>}
+              {tier && <span className="text-xs font-semibold flex-shrink-0" style={{ color: tier.accent }}>{tier.label}</span>}
             </motion.div>
           );
         })}

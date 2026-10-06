@@ -58,7 +58,7 @@ export default function CheckInReview({ form, responses, onBack, onSubmit, submi
         )}
 
         {/* All questions */}
-        <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mt-6 mb-2">All Answers</p>
+        <p className="text-white/30 text-xs font-semibold mt-6 mb-2">All Answers</p>
         {form?.questions?.map((q, i) => {
           const val = responses[q.id];
           const hasVal = val !== null && val !== undefined && val !== '';

@@ -85,35 +85,35 @@ export default function SendInvoiceModal({ invoice, coachUser, onClose, onSent }
               {/* Summary card */}
               <div style={{ background: 'var(--tc-background)', borderRadius: 12, padding: '14px 16px', marginBottom: 18, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Client</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 3 }}>Client</div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tc-foreground)' }}>{invoice.client_name}</div>
                   <div style={{ fontSize: 12, color: 'var(--tc-muted-foreground)' }}>{invoice.client_email || 'No email set'}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Invoice</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 3 }}>Invoice</div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tc-foreground)' }}>{invoice.invoice_number}</div>
                   <div style={{ fontSize: 12, color: 'var(--tc-muted-foreground)' }}>{invoice.description}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Amount</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 3 }}>Amount</div>
                   <div style={{ fontSize: 16, fontWeight: 900, color: 'var(--tc-foreground)' }}>${Number(invoice.amount).toFixed(2)}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>Due Date</div>
+                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 3 }}>Due Date</div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tc-foreground)' }}>{fmtDate(invoice.due_date)}</div>
                 </div>
               </div>
 
               {/* Message */}
               <div style={{ marginBottom: 16 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, display: 'block' }}>Message to client</label>
+                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 6, display: 'block' }}>Message to client</label>
                 <textarea value={message} onChange={e => setMessage(e.target.value)} rows={5}
                   style={{ width: '100%', padding: '12px 14px', border: '1.5px solid var(--tc-border)', borderRadius: 10, fontSize: 13, outline: 'none', resize: 'none', lineHeight: 1.6, color: 'var(--tc-foreground)', boxSizing: 'border-box' }} />
               </div>
 
               {/* Send via */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--tc-muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8, display: 'block' }}>Send via</label>
+                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--tc-muted-foreground)', marginBottom: 8, display: 'block' }}>Send via</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   {[
                     { key: 'email', label: 'Email', icon: Mail },

@@ -23,7 +23,7 @@ const AUDIENCE_TABS = [
 function AudienceBadge({ audience }) {
   return (
     <span className={cn(
-      'px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide',
+      'px-2 py-0.5 rounded-full text-xs font-semibold',
       audience === 'client' ? 'bg-accent text-primary' : 'bg-ai/10 text-ai'
     )}>{audience}</span>
   );
@@ -196,7 +196,7 @@ export default function EmailCenter() {
         {/* ── Left: Template Picker ── */}
         <div className="xl:col-span-4 bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
           <div className="px-4 pt-4 pb-3 border-b border-muted">
-            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-3">Templates</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Templates</p>
             {/* Audience tabs */}
             <div className="flex gap-1 mb-3">
               {AUDIENCE_TABS.map(t => (

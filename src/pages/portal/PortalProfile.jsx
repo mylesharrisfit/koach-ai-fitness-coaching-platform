@@ -296,7 +296,7 @@ export default function PortalProfile({ user }) {
       {/* ── SECTION 5: Coach Card ── */}
       <div className="mx-5 mt-4 bg-card rounded-2xl p-4"
         style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgb(var(--muted))' }}>
-        <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-3">Your Coach</p>
+        <p className="text-muted-foreground text-xs font-semibold mb-3">Your Coach</p>
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-base text-white flex-shrink-0"
             style={{

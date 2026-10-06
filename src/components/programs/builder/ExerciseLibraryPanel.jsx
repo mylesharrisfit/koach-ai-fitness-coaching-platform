@@ -116,7 +116,7 @@ export default function ExerciseLibraryPanel({ onAddExercise, targetDayName }) {
       {/* ── HEADER ── */}
       <div className="px-3 pt-3 pb-2 flex-shrink-0" style={{ borderBottom: '0.5px solid var(--tc-muted)' }}>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Exercise Library</p>
+          <p className="text-xs font-semibold text-muted-foreground">Exercise Library</p>
           {activeFilters > 0 && (
             <button onClick={clearFilters} className="flex items-center gap-0.5 text-[10px] font-semibold text-primary hover:text-primary transition-colors">
               <X className="w-2.5 h-2.5" /> Clear

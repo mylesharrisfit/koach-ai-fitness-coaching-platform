@@ -112,7 +112,7 @@ export default function PortalReferral({ user }) {
           {/* Referral link */}
           <div className="mx-5 mt-6 bg-card rounded-2xl p-5 border border-border"
             style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Your referral link</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Your referral link</p>
             
             <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-muted border border-border">
               <input
@@ -146,7 +146,7 @@ export default function PortalReferral({ user }) {
 
           {/* Share options */}
           <div className="mx-5 mt-6">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Share on:</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">Share on:</p>
             <div className="grid grid-cols-4 gap-2">
               {shareOptions.map(opt => (
                 <button key={opt.label}

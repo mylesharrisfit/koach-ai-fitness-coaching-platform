@@ -185,7 +185,7 @@ export default function ProgramDetailModal({
               >
                 <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--tc-primary)' }} />
                 <div>
-                  <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{stat.label}</div>
+                  <div className="text-xs text-muted-foreground font-medium">{stat.label}</div>
                   <div className="text-sm font-semibold" style={{ color: 'var(--tc-foreground)' }}>{stat.value}</div>
                 </div>
               </div>

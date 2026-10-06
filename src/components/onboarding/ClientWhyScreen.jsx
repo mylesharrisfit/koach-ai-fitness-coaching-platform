@@ -41,7 +41,7 @@ export default function ClientWhyScreen({ onNext, onBack, data }) {
 
         {/* Quick picks */}
         <div className="space-y-3">
-          <p className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: 'var(--kc-3a3a3a)' }}>
+          <p className="text-xs font-semibold" style={{ color: 'var(--kc-3a3a3a)' }}>
             Quick picks
           </p>
           <div className="flex flex-wrap gap-2">

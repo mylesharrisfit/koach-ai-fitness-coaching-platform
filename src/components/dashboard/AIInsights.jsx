@@ -189,7 +189,7 @@ function InsightCard({ insight, onDismiss }) {
             style={{ background: cfg.iconBg }}>
             <Icon className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
           </div>
-          <span className="text-[10px] font-bold uppercase tracking-wider"
+          <span className="text-xs font-semibold"
             style={{ color: cfg.iconBg }}>
             {cfg.tag}
           </span>

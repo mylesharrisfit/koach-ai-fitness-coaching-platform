@@ -171,7 +171,7 @@ export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFoo
                     {/* Common foods group */}
                     {common.length > 0 && (
                       <>
-                        <div className="px-4 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider bg-secondary/20 border-b border-border">
+                        <div className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary/20 border-b border-border">
                           Common Foods
                         </div>
                         {common.map(food => (
@@ -184,7 +184,7 @@ export default function FoodSearchModal({ open, onOpenChange, mealName, onAddFoo
                     {/* Branded foods group */}
                     {branded.length > 0 && (
                       <>
-                        <div className="px-4 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider bg-secondary/20 border-b border-border">
+                        <div className="px-4 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary/20 border-b border-border">
                           Branded Foods
                         </div>
                         {branded.map(food => (

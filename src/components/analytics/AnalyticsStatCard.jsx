@@ -11,7 +11,7 @@ export default function AnalyticsStatCard({ title, value, subtitle, icon: Icon, 
     return (
       <div className={cn('bg-sidebar rounded-xl p-5', className)}>
         <div className="flex items-start justify-between">
-          <p className="text-xs font-semibold tracking-wider uppercase text-white/50">{title}</p>
+          <p className="text-xs font-semibold text-white/50">{title}</p>
           {Icon && <Icon className="w-4 h-4 text-white/30" />}
         </div>
         <p className="text-3xl font-heading font-bold mt-3 leading-none text-white">{value}</p>
@@ -35,7 +35,7 @@ export default function AnalyticsStatCard({ title, value, subtitle, icon: Icon, 
   return (
     <div className={cn('bg-card border border-border rounded-2xl p-5 shadow-sm', className)}>
       <div className="flex items-start justify-between">
-        <p className="text-xs font-semibold tracking-wider uppercase text-foreground">{title}</p>
+        <p className="text-xs font-semibold text-foreground">{title}</p>
         {Icon && (
           <div className="p-2 rounded-lg bg-accent/10 text-primary">
             <Icon className="w-4 h-4" />

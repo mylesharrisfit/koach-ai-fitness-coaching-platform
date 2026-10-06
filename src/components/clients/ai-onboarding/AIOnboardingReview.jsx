@@ -76,7 +76,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
               </div>
               {program.coach_rationale && (
                 <div className="mt-4 pt-4 border-t border-border">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">AI Rationale</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">AI Rationale</p>
                   <p className="text-xs text-muted-foreground italic">{program.coach_rationale.split}</p>
                 </div>
               )}
@@ -84,7 +84,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
 
             {/* Workouts */}
             <div className="space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="text-xs font-semibold text-muted-foreground">
                 Training Days ({program.workouts?.length || 0})
               </p>
               {(program.workouts || []).map((workout, di) => (
@@ -113,7 +113,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
                             <div className="flex items-center gap-2">
                               <p className="text-sm font-semibold text-foreground truncate">{ex.name}</p>
                               {ex.section && ex.section !== 'main' && (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase"
+                                <span className="text-xs font-semibold px-1.5 py-0.5 rounded"
                                   style={{ background: 'var(--tc-success)', color: 'var(--tc-success)' }}>{ex.section}</span>
                               )}
                             </div>
@@ -159,7 +159,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
 
             {/* Training day meals */}
             <div className="space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="text-xs font-semibold text-muted-foreground">
                 Training Day Meals ({trainingMeals.length})
               </p>
               {trainingMeals.map((meal, mi) => (
@@ -192,7 +192,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
 
             {coachNotes.first_2_weeks && (
               <div className="bg-accent border border-accent rounded-xl p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">First 2 Weeks</p>
+                <p className="text-xs font-semibold text-primary mb-1">First 2 Weeks</p>
                 <p className="text-xs text-primary">{coachNotes.first_2_weeks}</p>
               </div>
             )}

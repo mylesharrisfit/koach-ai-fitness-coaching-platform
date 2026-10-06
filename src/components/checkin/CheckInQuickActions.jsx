@@ -184,7 +184,7 @@ export default function CheckInQuickActions({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Quick Actions</p>
+      <p className="text-xs font-semibold text-muted-foreground">Quick Actions</p>
 
       {/* ── 4 primary action buttons ── */}
       <div className="grid grid-cols-2 gap-2">

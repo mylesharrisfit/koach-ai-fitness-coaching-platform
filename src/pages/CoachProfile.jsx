@@ -67,7 +67,7 @@ function SectionCard({ icon: Icon, title, children }) {
 function Field({ label, children, hint }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{label}</label>
+      <label className="block text-xs font-semibold text-muted-foreground mb-1.5">{label}</label>
       {children}
       {hint && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
     </div>

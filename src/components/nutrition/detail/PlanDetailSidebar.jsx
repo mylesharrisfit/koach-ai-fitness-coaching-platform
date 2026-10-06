@@ -48,7 +48,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
       {/* ── Assigned Clients ───────────────────────── */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+          <h4 className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5" /> Assigned Clients
           </h4>
           {assignedClients.length > 0 && (
@@ -92,7 +92,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
 
       {/* ── Plan Stats ─────────────────────────────── */}
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 mb-3">
+        <h4 className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mb-3">
           <BarChart2 className="w-3.5 h-3.5" /> Plan Stats
         </h4>
         <div className="space-y-0">
@@ -122,7 +122,7 @@ export default function PlanDetailSidebar({ plan, onAssign }) {
       {/* ── Supplements Chips ──────────────────────── */}
       {supplements.length > 0 && (
         <div>
-          <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 mb-2">
+          <h4 className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mb-2">
             <Pill className="w-3.5 h-3.5" /> Supplements
           </h4>
           <div className="flex flex-wrap gap-1.5">

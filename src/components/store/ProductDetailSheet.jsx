@@ -157,7 +157,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
           {/* Description */}
           {listing.long_description && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Description</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Description</p>
               <p className="text-sm text-foreground leading-relaxed">{listing.long_description}</p>
             </div>
           )}
@@ -165,7 +165,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
           {/* Features */}
           {listing.features?.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">What's Included</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">What's Included</p>
               <div className="space-y-2">
                 {listing.features.map((f, i) => (
                   <div key={i} className="flex items-center gap-2.5">
@@ -182,7 +182,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
           {/* Delivery types */}
           {listing.delivery_types?.length > 0 && (
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Delivery</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">Delivery</p>
               <div className="space-y-1.5">
                 {listing.delivery_types.map(d => (
                   <div key={d} className="text-sm text-foreground px-3 py-1.5 bg-background border border-border rounded-lg">
@@ -216,7 +216,7 @@ export default function ProductDetailSheet({ listing, clients = [], open, onClos
 
           {/* Assign to client */}
           <div className="border border-border rounded-xl p-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Assign to Client</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3">Assign to Client</p>
             <Select value={assignClient} onValueChange={setAssignClient}>
               <SelectTrigger className="mb-2"><SelectValue placeholder="Select a client…" /></SelectTrigger>
               <SelectContent>

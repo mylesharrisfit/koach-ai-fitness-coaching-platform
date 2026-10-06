@@ -285,7 +285,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
           <div className="bg-card rounded-xl border border-border shadow-sm p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--tc-muted-foreground)' }}>Current Program</p>
+                <p className="text-xs font-semibold mb-1" style={{ color: 'var(--tc-muted-foreground)' }}>Current Program</p>
                 {program ? (
                   <>
                     <p className="font-bold text-foreground">{program.title}</p>
@@ -304,7 +304,7 @@ export default function SummaryTab({ client, checkIns, messages, program, nutrit
               <div className="mt-3 pt-3 border-t border-border flex items-center gap-2">
                 <Salad className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--tc-primary)' }} />
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>Meal Plan</p>
+                  <p className="text-xs font-semibold" style={{ color: 'var(--tc-muted-foreground)' }}>Meal Plan</p>
                   <p className="text-xs font-semibold cursor-pointer hover:opacity-70" style={{ color: 'var(--tc-primary)' }}>{nutritionPlan.title}</p>
                 </div>
               </div>
@@ -358,7 +358,7 @@ function Section({ title, children }) {
     <div>
       <div className="flex items-center gap-2 mb-2">
         <div className="w-0.5 h-3 rounded-full" style={{ background: 'var(--tc-primary)' }} />
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>{title}</p>
+        <p className="text-xs font-semibold" style={{ color: 'var(--tc-muted-foreground)' }}>{title}</p>
       </div>
       <div className="space-y-1">{children}</div>
     </div>
@@ -387,7 +387,7 @@ function ComplianceSection({ title, weeks, checkIns, type, planLabel }) {
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--tc-muted-foreground)' }}>
+        <p className="text-xs font-semibold" style={{ color: 'var(--tc-muted-foreground)' }}>
           {title}
         </p>
         {planLabel && <span className="text-[10px] text-muted-foreground font-medium">{planLabel}</span>}
@@ -457,7 +457,7 @@ function NotesColumn({ client }) {
 
       {/* Input area */}
       <div className="px-4 py-3 border-b border-border flex-shrink-0" style={{ background: 'var(--tc-background)' }}>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Add a note</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-1.5">Add a note</p>
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <textarea
             value={newNote}

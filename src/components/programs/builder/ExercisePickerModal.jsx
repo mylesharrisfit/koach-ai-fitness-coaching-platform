@@ -68,7 +68,7 @@ export default function ExercisePickerModal({ open, onClose, onPickExercise, onA
         <div className="flex-shrink-0 px-4 pt-4 pb-3" style={{ background: 'var(--tc-sidebar)' }}>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-0.5">Add Exercise</p>
+              <p className="text-xs font-semibold text-white/40 mb-0.5">Add Exercise</p>
               <h3 className="text-sm font-bold text-white">{dayName ? `→ ${dayName}` : 'Pick from library'}</h3>
             </div>
             <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"

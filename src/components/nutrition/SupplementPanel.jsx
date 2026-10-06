@@ -151,7 +151,7 @@ export default function SupplementPanel({ value = [], onChange }) {
           {totalCount > 0 && (
             <div className="px-4 pb-4 space-y-3">
               {/* Column headers */}
-              <div className="grid grid-cols-12 gap-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wide px-0 pt-1">
+              <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground px-0 pt-1">
                 <div className="col-span-3">Name</div>
                 <div className="col-span-2">Dosage</div>
                 <div className="col-span-3">Timing</div>

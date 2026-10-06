@@ -6,7 +6,7 @@ function StatCard({ emoji, label, value, sub, color = 'rgb(var(--primary))' }) {
       <div className="text-xl mb-1">{emoji}</div>
       <p className="text-white font-bold text-lg leading-none" style={{ color }}>{value ?? '—'}</p>
       {sub && <p className="text-[10px] mt-0.5" style={{ color: sub.startsWith('-') ? 'rgb(var(--success))' : sub.startsWith('+') ? 'rgb(var(--warning))' : 'rgba(255,255,255,0.3)' }}>{sub}</p>}
-      <p className="text-white/30 text-[9px] mt-0.5 font-semibold uppercase tracking-wider">{label}</p>
+      <p className="text-white/30 text-xs mt-0.5 font-semibold">{label}</p>
     </div>
   );
 }

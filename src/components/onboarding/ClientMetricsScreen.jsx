@@ -10,7 +10,7 @@ function MetricBox({ label, value, onChange, unit, placeholder }) {
       className="flex flex-col items-center gap-2 flex-1 p-5 rounded-2xl"
       style={{ background: 'color-mix(in srgb, white 3%, transparent)', border: '1.5px solid color-mix(in srgb, white 7%, transparent)' }}
     >
-      <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--kc-5a5a5a)' }}>{label}</p>
+      <p className="text-xs font-semibold" style={{ color: 'var(--kc-5a5a5a)' }}>{label}</p>
       <input
         type="number"
         value={value}
@@ -62,7 +62,7 @@ export default function ClientMetricsScreen({ onNext, onBack, data }) {
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--kc-5a5a5a)' }}>Height</p>
+          <p className="text-xs font-semibold" style={{ color: 'var(--kc-5a5a5a)' }}>Height</p>
           <input
             type="text"
             value={form.height}

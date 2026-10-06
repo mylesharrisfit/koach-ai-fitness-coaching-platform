@@ -116,7 +116,7 @@ export default function BadgeCard({ badgeKey, earned = false, earnedDate, client
 
       {/* Tier pill */}
       <span
-        className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+        className="text-xs font-semibold px-2 py-0.5 rounded-full"
         style={earned
           ? { background: `${tier.accent}22`, color: tier.accent, border: `1px solid ${tier.accent}55` }
           : light

@@ -57,22 +57,22 @@ function SupplementCard({ item, isPortal }) {
           >
             <div className="px-4 py-4 space-y-3">
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">What it does</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-1">What it does</p>
                 <p className="text-sm text-foreground leading-relaxed">{item.what_it_does}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Best time</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Best time</p>
                   <p className="text-xs text-foreground">{item.timing}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide mb-1">Best for</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Best for</p>
                   <p className="text-xs text-foreground">{item.best_for}</p>
                 </div>
               </div>
               {item.stack_with?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-success uppercase tracking-wide mb-1">✅ Stack well with</p>
+                  <p className="text-xs font-semibold text-success mb-1">✅ Stack well with</p>
                   <div className="flex flex-wrap gap-1">
                     {item.stack_with.map(s => (
                       <span key={s} className="text-[10px] bg-success/10 text-success px-2 py-0.5 rounded-full border border-success">{s}</span>
@@ -82,7 +82,7 @@ function SupplementCard({ item, isPortal }) {
               )}
               {item.avoid_with?.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-bold text-destructive uppercase tracking-wide mb-1">⚠️ Avoid with</p>
+                  <p className="text-xs font-semibold text-destructive mb-1">⚠️ Avoid with</p>
                   <div className="flex flex-wrap gap-1">
                     {item.avoid_with.map(s => (
                       <span key={s} className="text-[10px] bg-destructive/10 text-destructive px-2 py-0.5 rounded-full border border-destructive">{s}</span>

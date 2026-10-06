@@ -32,7 +32,7 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
       <div className="space-y-6">
         {/* Business name */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--kc-7a7a7a)' }}>
+          <label className="text-xs font-semibold" style={{ color: 'var(--kc-7a7a7a)' }}>
             Coaching Business Name
           </label>
           <input
@@ -51,7 +51,7 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
 
         {/* Social handle */}
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--kc-7a7a7a)' }}>
+          <label className="text-xs font-semibold" style={{ color: 'var(--kc-7a7a7a)' }}>
             Instagram / Social Handle <span style={{ color: 'var(--kc-3a3a3a)' }}>(optional)</span>
           </label>
           <div className="relative">
@@ -72,7 +72,7 @@ export default function CoachProfileScreen({ onNext, onBack, data }) {
 
         {/* Niche */}
         <div className="space-y-3">
-          <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--kc-7a7a7a)' }}>
+          <label className="text-xs font-semibold" style={{ color: 'var(--kc-7a7a7a)' }}>
             Your Coaching Niche
           </label>
           <div className="flex flex-wrap gap-2">

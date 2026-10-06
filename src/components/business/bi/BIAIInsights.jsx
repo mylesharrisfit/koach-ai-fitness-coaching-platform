@@ -95,7 +95,7 @@ export default function BIAIInsights({ clients, checkIns, leads, payments }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md" style={{ background: `${color}15`, color }}>
+                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded-md" style={{ background: `${color}15`, color }}>
                         {ins.category}
                       </span>
                       {ins.impact && <span className="text-[9px] text-muted-foreground">{ins.impact}</span>}

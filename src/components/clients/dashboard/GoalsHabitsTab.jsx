@@ -160,7 +160,7 @@ export default function GoalsHabitsTab({ client }) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-0.5 h-3 rounded-full bg-primary" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Active</p>
+                  <p className="text-xs font-semibold text-muted-foreground">Active</p>
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-primary">{active.length}</span>
                 </div>
                 {active.map(g => (
@@ -180,7 +180,7 @@ export default function GoalsHabitsTab({ client }) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-0.5 h-3 rounded-full bg-success" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Completed</p>
+                  <p className="text-xs font-semibold text-muted-foreground">Completed</p>
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-success/10 text-success">{completed.length}</span>
                 </div>
                 {completed.map(g => (

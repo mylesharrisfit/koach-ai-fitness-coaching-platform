@@ -67,7 +67,7 @@ export default function BulkMessagePanel({ clients, onClose, onSent }) {
           <div>
             <div className="flex items-center gap-1.5 mb-2">
               <Users className="w-3.5 h-3.5 text-muted-foreground" />
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Recipients</p>
+              <p className="text-xs font-semibold text-muted-foreground">Recipients</p>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {clients.map(c => (
@@ -81,7 +81,7 @@ export default function BulkMessagePanel({ clients, onClose, onSent }) {
           {/* Message composer */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Message</p>
+              <p className="text-xs font-semibold text-muted-foreground">Message</p>
               <span className="text-[10px] text-muted-foreground">[First Name] will be personalised per client</span>
             </div>
             <textarea

@@ -215,7 +215,7 @@ export default function MealTemplatesSection() {
             if (!items.length) return null;
             return (
               <div key={cat}>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{label}</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-2">{label}</p>
                 <div className="space-y-2">
                   {items.map(t => (
                     <TemplateCard

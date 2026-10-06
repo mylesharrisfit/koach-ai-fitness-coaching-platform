@@ -173,7 +173,7 @@ function RuleResultGroup({ rule, clients }) {
           {/* Message preview */}
           {rule.action_message && (
             <div className="mt-3 bg-primary/5 border border-primary/15 rounded-xl p-2.5">
-              <p className="text-[10px] font-semibold text-primary mb-1 uppercase tracking-wide">Message</p>
+              <p className="text-xs font-semibold text-primary mb-1">Message</p>
               <p className="text-xs text-foreground leading-relaxed line-clamp-2">"{rule.action_message}"</p>
             </div>
           )}

@@ -79,7 +79,7 @@ function QuestionEditor({ question, onChange, onDelete, index }) {
       {expanded && (
         <div className="p-3 space-y-3">
           <div>
-            <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide block mb-1">Question label</label>
+            <label className="text-xs font-semibold text-muted-foreground block mb-1">Question label</label>
             <Input
               value={question.label}
               onChange={e => onChange({ ...question, label: e.target.value })}
@@ -89,7 +89,7 @@ function QuestionEditor({ question, onChange, onDelete, index }) {
           </div>
 
           <div>
-            <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide block mb-1">Question type</label>
+            <label className="text-xs font-semibold text-muted-foreground block mb-1">Question type</label>
             <select
               value={question.type}
               onChange={e => onChange({ ...question, type: e.target.value, options: [] })}
@@ -103,7 +103,7 @@ function QuestionEditor({ question, onChange, onDelete, index }) {
 
           {question.type === 'multiple_choice' && (
             <div>
-              <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide block mb-1">Options (one per line)</label>
+              <label className="text-xs font-semibold text-muted-foreground block mb-1">Options (one per line)</label>
               <textarea
                 rows={3}
                 value={(question.options || []).join('\n')}
@@ -226,18 +226,18 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
           <div className="px-6 py-4 border-b border-border bg-background space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide block mb-1">Form name *</label>
+                <label className="text-xs font-semibold text-muted-foreground block mb-1">Form name *</label>
                 <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Weekly Check-in" className="h-9" />
               </div>
               <div className="col-span-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide block mb-1">Description</label>
+                <label className="text-xs font-semibold text-muted-foreground block mb-1">Description</label>
                 <Input value={description} onChange={e => setDescription(e.target.value)} placeholder="Optional description for clients" className="h-9" />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide block mb-1">Frequency</label>
+                <label className="text-xs font-semibold text-muted-foreground block mb-1">Frequency</label>
                 <select
                   value={frequency}
                   onChange={e => setFrequency(e.target.value)}
@@ -247,7 +247,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide block mb-1">Due day</label>
+                <label className="text-xs font-semibold text-muted-foreground block mb-1">Due day</label>
                 <select
                   value={dueDay}
                   onChange={e => setDueDay(Number(e.target.value))}
@@ -257,7 +257,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide block mb-1">Remind (hrs before)</label>
+                <label className="text-xs font-semibold text-muted-foreground block mb-1">Remind (hrs before)</label>
                 <Input
                   type="number"
                   value={reminderHours}
@@ -379,7 +379,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
             {activeSection === 'settings' && (
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-xs font-bold text-foreground uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                  <h4 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-1.5">
                     <Settings className="w-3.5 h-3.5" /> Form Settings
                   </h4>
                   <div className="space-y-3">
@@ -406,7 +406,7 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-bold text-foreground uppercase tracking-wide mb-3">Assign to</h4>
+                  <h4 className="text-xs font-semibold text-foreground mb-3">Assign to</h4>
                   <div className="flex gap-2">
                     {[
                       { key: 'all', label: 'All clients' },

@@ -22,7 +22,7 @@ export default function BSLeadSales({ s, set }) {
 
   return (
     <BSSection icon={TrendingUp} title="Lead & Sales Settings" onReset={() => Object.entries(DEFAULTS).forEach(([k, v]) => set(k, v))}>
-      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Lead Pipeline</p>
+      <p className="text-xs font-semibold text-muted-foreground">Lead Pipeline</p>
       <BSRow label="Pipeline stages" hint="Drag to reorder (coming soon), click to rename">
         <div className="space-y-2">
           {stages.map((stage, i) => (

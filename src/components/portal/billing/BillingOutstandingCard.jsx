@@ -18,7 +18,7 @@ export default function BillingOutstandingCard({ unpaidInvoices, totalDue, onPay
       <div className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <AlertCircle className="w-4 h-4 text-destructive" />
-          <span className="text-destructive text-xs font-bold uppercase tracking-wide">Outstanding Balance</span>
+          <span className="text-destructive text-xs font-semibold">Outstanding Balance</span>
         </div>
 
         <p className="text-white font-black text-3xl mb-1">{fmt(totalDue)}</p>

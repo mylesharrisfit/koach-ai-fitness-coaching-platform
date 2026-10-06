@@ -42,7 +42,7 @@ export default function SaucesSeasonings() {
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
             className="border-t border-border px-4 pb-4 overflow-hidden">
 
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mt-4 mb-2">🫙 Sauces</p>
+            <p className="text-xs font-semibold text-muted-foreground mt-4 mb-2">🫙 Sauces</p>
             <div className="space-y-2">
               {SAUCES.map(s => (
                 <div key={s.name} className="flex items-center justify-between gap-2 py-1.5 border-b border-border last:border-0">
@@ -55,7 +55,7 @@ export default function SaucesSeasonings() {
               ))}
             </div>
 
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mt-4 mb-2">🌿 Seasonings (0 calories — use freely)</p>
+            <p className="text-xs font-semibold text-muted-foreground mt-4 mb-2">🌿 Seasonings (0 calories — use freely)</p>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {SEASONINGS.map(s => (
                 <div key={s} className="flex items-center gap-1.5">
