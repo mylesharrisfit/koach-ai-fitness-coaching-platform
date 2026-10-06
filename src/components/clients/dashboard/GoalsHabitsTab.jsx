@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { Plus, LayoutTemplate, Target, Sparkles } from 'lucide-react';
+import { Plus, LayoutTemplate, Target, Repeat } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalCard from './goals/GoalCard';
 import GoalFormModal from './goals/GoalFormModal';
@@ -12,7 +12,7 @@ import HabitsSection from './habits/HabitsSection';
 // ── Sub-sections ─────────────────────────────────────────────────────────────
 const SECTIONS = [
   { key: 'goals',  label: 'Goals',  icon: Target },
-  { key: 'habits', label: 'Habits', icon: Sparkles },
+  { key: 'habits', label: 'Habits', icon: Repeat },
 ];
 
 export default function GoalsHabitsTab({ client }) {
@@ -57,7 +57,7 @@ export default function GoalsHabitsTab({ client }) {
   const handleToggleComplete = async (goal) => {
     const newStatus = goal.status === 'completed' ? 'active' : 'completed';
     await db.entities.Goal.update(goal.id, { status: newStatus });
-    toast.success(newStatus === 'completed' ? 'Goal marked complete! 🎉' : 'Goal reactivated');
+    toast.success(newStatus === 'completed' ? 'Goal marked complete! ' : 'Goal reactivated');
     refresh();
   };
 
@@ -130,7 +130,7 @@ export default function GoalsHabitsTab({ client }) {
             {/* Empty state */}
             {!isLoading && goals.length === 0 && (
               <div className="text-center py-20">
-                <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <div className="w-16 h-16 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-4">
                   <Target className="w-7 h-7 text-primary" />
                 </div>
                 <p className="text-sm font-bold text-foreground mb-1">No goals yet</p>
@@ -159,9 +159,8 @@ export default function GoalsHabitsTab({ client }) {
             {active.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-0.5 h-3 rounded-full bg-primary" />
                   <p className="text-xs font-semibold text-muted-foreground">Active</p>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-primary">{active.length}</span>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-primary">{active.length}</span>
                 </div>
                 {active.map(g => (
                   <GoalCard
@@ -179,9 +178,8 @@ export default function GoalsHabitsTab({ client }) {
             {completed.length > 0 && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-0.5 h-3 rounded-full bg-success" />
                   <p className="text-xs font-semibold text-muted-foreground">Completed</p>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-success/10 text-success">{completed.length}</span>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-success/10 text-success">{completed.length}</span>
                 </div>
                 {completed.map(g => (
                   <GoalCard

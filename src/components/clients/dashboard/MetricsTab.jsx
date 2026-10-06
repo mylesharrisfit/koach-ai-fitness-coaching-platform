@@ -12,7 +12,7 @@ import ProgressMeasurementsTab from '@/components/progress/tabs/ProgressMeasurem
 import ProgressPhotosTab from '@/components/progress/tabs/ProgressPhotosTab';
 import ProgressPerformanceTab from '@/components/progress/tabs/ProgressPerformanceTab';
 import {
-  Scale, Activity, Ruler, Camera, Zap, Sparkles, ChevronRight,
+  Scale, Activity, Ruler, Camera, Gauge, ScanText, ChevronRight,
 } from 'lucide-react';
 
 // ── Metric categories — extensible list. Add more here later. ──
@@ -56,13 +56,13 @@ const CATEGORIES = [
   {
     key: 'performance',
     label: 'Performance',
-    icon: Zap,
+    icon: Gauge,
     description: 'Workout performance data',
   },
   {
     key: 'ai',
     label: 'AI Analysis',
-    icon: Sparkles,
+    icon: ScanText,
     description: 'AI-generated progress insights',
   },
 ];
@@ -146,7 +146,7 @@ export default function MetricsTab({ client, onClientUpdated }) {
                   <p className={cn('text-[13px] font-semibold leading-tight', isActive ? 'text-primary' : 'text-foreground')}>
                     {cat.label}
                   </p>
-                  <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 truncate">{cat.description}</p>
+                  <p className="text-[11px] text-muted-foreground leading-tight mt-0.5 truncate">{cat.description}</p>
                 </div>
                 <ChevronRight className={cn('w-3.5 h-3.5 flex-shrink-0', isActive ? 'text-primary' : 'text-border')} />
               </button>

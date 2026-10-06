@@ -42,7 +42,7 @@ function Ring({ pct = 0, label, size = 72, active = false }) {
           </span>
         </div>
       </div>
-      <p className="text-[10px] font-semibold leading-tight" style={{ color: active ? 'var(--tc-foreground)' : 'var(--tc-muted-foreground)' }}>
+      <p className="text-[11px] font-semibold leading-tight" style={{ color: active ? 'var(--tc-foreground)' : 'var(--tc-muted-foreground)' }}>
         {label}
       </p>
     </div>
@@ -91,14 +91,14 @@ function MealSection({ title, meals = [] }) {
               <ul className="text-xs text-muted-foreground space-y-0.5 ml-2">
                 {meal.foods.map((food, j) => (
                   <li key={j} className="flex items-start gap-1.5">
-                    <span className="mt-0.5 text-[10px]">•</span>
+                    <span className="mt-0.5 text-[11px]">•</span>
                     <span>{food.name} {food.quantity && `(${food.quantity}${food.unit || ''})`}</span>
                   </li>
                 ))}
               </ul>
             )}
             {meal.calories && (
-              <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border">
+              <p className="text-[11px] text-muted-foreground mt-2 pt-2 border-t border-border">
                 ≈ {meal.calories} kcal
               </p>
             )}
@@ -159,11 +159,11 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
                   background: nutritionPlan.plan_type === 'pdf' ? 'var(--tc-ai)' : 'var(--tc-accent)',
                   color: nutritionPlan.plan_type === 'pdf' ? 'var(--tc-ai)' : 'var(--tc-primary)',
                 }}>
-                {nutritionPlan.plan_type === 'pdf' ? '📄 PDF Plan' : '🍽️ Structured Plan'}
+                {nutritionPlan.plan_type === 'pdf' ? 'PDF Plan' : 'Structured Plan'}
               </span>
               {nutritionPlan.tracking_mode && (
                 <span className="text-xs text-muted-foreground px-2.5 py-1 rounded-full bg-card border border-border">
-                  {nutritionPlan.tracking_mode === 'macros' ? '📊 Macro Tracking' : '✓ Habit Mode'}
+                  {nutritionPlan.tracking_mode === 'macros' ? 'Macro Tracking' : 'Habit Mode'}
                 </span>
               )}
             </div>
@@ -186,18 +186,18 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Daily Macro Targets */}
       {nutritionPlan.plan_type === 'structured' && (
-        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+        <div className="bg-card rounded-xl border border-border p-4">
           <h3 className="text-xs font-semibold mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
             Daily Targets
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: 'Calories', value: nutritionPlan.calories, unit: 'kcal', icon: '🔥', color: 'var(--kc-ea580c)' },
-              { label: 'Protein', value: nutritionPlan.protein_g, unit: 'g', icon: '💪', color: 'var(--tc-primary)' },
-              { label: 'Carbs', value: nutritionPlan.carbs_g, unit: 'g', icon: '🌾', color: 'var(--tc-warning)' },
-              { label: 'Fats', value: nutritionPlan.fats_g, unit: 'g', icon: '🥑', color: 'var(--tc-destructive)' },
+              { label: 'Calories', value: nutritionPlan.calories, unit: 'kcal', icon: '', color: 'var(--tc-warning)' },
+              { label: 'Protein', value: nutritionPlan.protein_g, unit: 'g', icon: '', color: 'var(--tc-primary)' },
+              { label: 'Carbs', value: nutritionPlan.carbs_g, unit: 'g', icon: '', color: 'var(--tc-warning)' },
+              { label: 'Fats', value: nutritionPlan.fats_g, unit: 'g', icon: '', color: 'var(--tc-destructive)' },
             ].map(({ label, value, unit, icon, color }) => (
-              <div key={label} className="rounded-lg p-3 bg-gradient-to-br from-card to-muted border border-border">
+              <div key={label} className="rounded-lg p-3 bg-card border border-border">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-lg">{icon}</span>
                   <p className="text-xs font-semibold" style={{ color }}>
@@ -205,7 +205,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
                   </p>
                 </div>
                 <p className="text-base font-bold text-foreground">{value || '—'}</p>
-                <p className="text-[10px] text-muted-foreground">{unit}</p>
+                <p className="text-[11px] text-muted-foreground">{unit}</p>
               </div>
             ))}
           </div>
@@ -213,7 +213,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       )}
 
       {/* Compliance Trends */}
-      <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+      <div className="bg-card rounded-xl border border-border p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xs font-semibold" style={{ color: 'var(--tc-muted-foreground)' }}>
             Adherence
@@ -246,7 +246,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Meal Plan Overview (Structured Plans) */}
       {nutritionPlan.plan_type === 'structured' && (
-        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+        <div className="bg-card rounded-xl border border-border p-4">
           <h3 className="text-xs font-semibold mb-4" style={{ color: 'var(--tc-muted-foreground)' }}>
             Meal Plan
           </h3>
@@ -268,9 +268,9 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Hydration */}
           {nutritionPlan.hydration && (
-            <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-primary)' }}>
-                💧 Hydration Protocol
+                Hydration Protocol
               </h3>
               <div className="text-xs text-foreground space-y-1.5">
                 {typeof nutritionPlan.hydration === 'string' ? (
@@ -297,16 +297,16 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
           {/* Supplements */}
           {nutritionPlan.supplements && nutritionPlan.supplements.length > 0 && (
-            <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-ai)' }}>
-                💊 Supplements
+                Supplements
               </h3>
               <ul className="space-y-2">
                 {nutritionPlan.supplements.map((s, i) => (
                   <li key={i} className="text-xs">
                     <p className="font-semibold text-foreground">{s.name}</p>
-                    {s.dosage && <p className="text-muted-foreground text-[10px]">{s.dosage}</p>}
-                    {s.timing && <p className="text-muted-foreground text-[10px]">{s.timing}</p>}
+                    {s.dosage && <p className="text-muted-foreground text-[11px]">{s.dosage}</p>}
+                    {s.timing && <p className="text-muted-foreground text-[11px]">{s.timing}</p>}
                   </li>
                 ))}
               </ul>
@@ -317,14 +317,14 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* Shopping List */}
       {nutritionPlan.shopping_list && nutritionPlan.shopping_list.length > 0 && (
-        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+        <div className="bg-card rounded-xl border border-border p-4">
           <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--tc-muted-foreground)' }}>
-            🛒 Shopping List
+            Shopping List
           </h3>
           <ul className="grid grid-cols-2 gap-2">
             {nutritionPlan.shopping_list.map((item, i) => (
               <li key={i} className="text-xs text-foreground flex items-start gap-1.5">
-                <span className="text-[10px] mt-0.5">✓</span>
+                <span className="text-[11px] mt-0.5"></span>
                 <span>{item}</span>
               </li>
             ))}
@@ -336,7 +336,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {nutritionPlan.coach_notes && (
         <div className="bg-accent border border-accent rounded-xl p-4">
           <h3 className="text-xs font-semibold mb-2" style={{ color: 'var(--tc-primary)' }}>
-            📝 Coach Notes
+            Coach Notes
           </h3>
           {typeof nutritionPlan.coach_notes === 'string' ? (
             <p className="text-xs text-primary">{nutritionPlan.coach_notes}</p>
@@ -352,7 +352,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
 
       {/* PDF Viewer (for PDF plans) */}
       {nutritionPlan.plan_type === 'pdf' && nutritionPlan.pdf_file_url && (
-        <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+        <div className="bg-card rounded-xl border border-border p-4">
           <PDFViewer pdfUrl={nutritionPlan.pdf_file_url} fileName={`${nutritionPlan.title}.pdf`} />
         </div>
       )}
@@ -361,7 +361,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
       {nutritionPlan.plan_type === 'pdf' && nutritionPlan.client_notes && (
         <div className="bg-warning/10 border border-warning rounded-xl p-4">
           <h3 className="text-xs font-semibold mb-2" style={{ color: 'var(--tc-warning)' }}>
-            📋 Plan Summary
+            Plan Summary
           </h3>
           <p className="text-xs text-warning leading-relaxed">{nutritionPlan.client_notes}</p>
         </div>

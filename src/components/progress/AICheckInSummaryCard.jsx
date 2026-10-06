@@ -6,10 +6,10 @@ import { cn } from '@/lib/utils';
 /* Generates a fast post-check-in summary card for the coach review panel */
 
 const SENTIMENT_CONFIG = {
-  great: { border: 'border-success', bg: 'bg-success/10', dot: 'bg-success', label: '🟢 Strong week' },
-  good: { border: 'border-primary', bg: 'bg-accent', dot: 'bg-primary', label: '🔵 Good week' },
-  okay: { border: 'border-warning', bg: 'bg-warning/10', dot: 'bg-warning', label: '🟡 Average week' },
-  concerning: { border: 'border-destructive', bg: 'bg-destructive/10', dot: 'bg-destructive', label: '🔴 Needs attention' },
+  great: { border: 'border-success', bg: 'bg-success/10', dot: 'bg-success', label: 'Strong week' },
+  good: { border: 'border-primary', bg: 'bg-accent', dot: 'bg-primary', label: 'Good week' },
+  okay: { border: 'border-warning', bg: 'bg-warning/10', dot: 'bg-warning', label: 'Average week' },
+  concerning: { border: 'border-destructive', bg: 'bg-destructive/10', dot: 'bg-destructive', label: 'Needs attention' },
 };
 
 const FRESH_WINDOW_MS = 60_000;
@@ -85,7 +85,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
   const cfg = SENTIMENT_CONFIG[summary?.sentiment] || SENTIMENT_CONFIG.okay;
 
   return (
-    <div className={cn('rounded-2xl border p-4 space-y-3', summary ? `${cfg.border} ${cfg.bg}` : 'border-border bg-card')}>
+    <div className={cn('rounded-xl border p-4 space-y-3', summary ? `${cfg.border} ${cfg.bg}` : 'border-border bg-card')}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
@@ -127,7 +127,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
 
           {summary.coaching_focus && (
             <div className="flex items-start gap-2 bg-[var(--kc-w-80)] rounded-xl p-2.5">
-              <span className="text-primary text-xs font-bold flex-shrink-0">🎯 Focus:</span>
+              <span className="text-primary text-xs font-bold flex-shrink-0">Focus:</span>
               <p className="text-xs text-foreground font-semibold">{summary.coaching_focus}</p>
             </div>
           )}
@@ -135,7 +135,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
           {summary.key_wins?.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {summary.key_wins.map((w, i) => (
-                <span key={i} className="text-[11px] font-medium px-2 py-1 bg-success/10 text-success rounded-full">✓ {w}</span>
+                <span key={i} className="text-[11px] font-medium px-2 py-1 bg-success/10 text-success rounded-full">{w}</span>
               ))}
             </div>
           )}
@@ -144,7 +144,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
             <div className="space-y-1">
               {summary.red_flags.filter(Boolean).map((f, i) => (
                 <div key={i} className="flex items-start gap-1.5 text-xs text-destructive">
-                  <span className="flex-shrink-0">⚠️</span> {f}
+                  <span className="flex-shrink-0"></span> {f}
                 </div>
               ))}
             </div>
@@ -154,7 +154,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
 
       {!loading && !summary && !pending && (
         <button onClick={generate} className="w-full text-xs text-primary font-semibold py-2 border border-dashed border-primary/30 rounded-xl hover:bg-primary/5 transition-colors">
-          ✨ Generate AI Summary
+          Generate AI Summary
         </button>
       )}
     </div>

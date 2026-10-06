@@ -15,7 +15,7 @@ const MEASUREMENTS = [
 ];
 
 function Sparkline({ data, lowerIsBetter }) {
-  if (data.length < 2) return <div className="h-8 text-[10px] text-muted-foreground flex items-center">—</div>;
+  if (data.length < 2) return <div className="h-8 text-[11px] text-muted-foreground flex items-center">—</div>;
   const trend = data[data.length - 1].v - data[0].v;
   const improving = lowerIsBetter ? trend < 0 : trend > 0;
   const color = improving ? 'var(--tc-success)' : trend === 0 ? 'var(--tc-muted-foreground)' : 'var(--tc-destructive)';
@@ -89,7 +89,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
                   </div>
                   <Sparkline data={data} lowerIsBetter={m.lowerIsBetter} />
                 </div>
-                <div className="flex gap-3 mt-2 text-[10px]">
+                <div className="flex gap-3 mt-2 text-[11px]">
                   <span className="text-muted-foreground">Start: <span className="font-medium text-foreground">{start ? `${start}"` : '—'}</span></span>
                   {change !== null && (
                     <span style={{ color: changeColor }} className="font-semibold">
@@ -137,7 +137,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
       {/* Log Measurements Modal */}
       {showModal && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-card rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+          <div className="bg-card rounded-xl w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-foreground">Log Measurements</h3>
               <button onClick={() => setShowModal(false)}><X className="w-4 h-4 text-muted-foreground" /></button>

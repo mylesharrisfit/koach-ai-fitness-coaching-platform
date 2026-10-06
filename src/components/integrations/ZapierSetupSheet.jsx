@@ -96,7 +96,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coach-settings'] });
-      toast.success('Zapier webhook saved!');
+      toast.success('Zapier webhook saved');
     },
   });
 
@@ -114,12 +114,12 @@ export default function ZapierSetupSheet({ open, onClose }) {
           app: 'KOACH AI',
           data: {
             client_name: 'Test Client',
-            message: 'KOACH AI is successfully connected to Zapier!',
+            message: 'KOACH is connected to Zapier.',
           },
         }),
       });
       setTestResult('success');
-      toast.success('✓ Test event sent! Check your Zapier dashboard.');
+      toast.success('Test event sent! Check your Zapier dashboard.');
     } catch {
       setTestResult('error');
       toast.error('✗ Failed to reach webhook. Check the URL and try again.');
@@ -143,7 +143,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
             <div className="w-9 h-9 rounded-xl bg-[var(--kc-ff4a00)] flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <SheetTitle className="text-white text-lg font-bold">Connect Zapier to KOACH AI</SheetTitle>
+            <SheetTitle className="text-white text-lg font-bold">Connect Zapier</SheetTitle>
           </div>
           <p className="text-sm text-white/50">Automate workflows when coaching events happen in KOACH AI.</p>
         </div>
@@ -152,7 +152,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Step 1: Webhook URL */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-sidebar text-white text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
+              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center flex-shrink-0">1</span>
               <p className="font-semibold text-foreground text-sm">Paste your Zapier Webhook URL</p>
             </div>
             <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
@@ -184,7 +184,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Step 2: Events */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-sidebar text-white text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
+              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center flex-shrink-0">2</span>
               <p className="font-semibold text-foreground text-sm">Choose trigger events</p>
             </div>
             <div className="space-y-4">
@@ -199,13 +199,13 @@ export default function ZapierSetupSheet({ open, onClose }) {
                           onClick={() => toggleEvent(ev.key)}
                           className={cn(
                             'w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer',
-                            selectedEvents.includes(ev.key) ? 'bg-sidebar border-foreground' : 'border-muted-foreground'
+                            selectedEvents.includes(ev.key) ? 'bg-primary border-primary' : 'border-muted-foreground'
                           )}
                         >
-                          {selectedEvents.includes(ev.key) && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                          {selectedEvents.includes(ev.key) && <CheckCircle2 className="w-2.5 h-2.5 text-primary-foreground" />}
                         </div>
                         <span className="text-sm text-foreground">{ev.label}</span>
-                        <span className="ml-auto text-[10px] font-mono text-muted-foreground">{ev.key}</span>
+                        <span className="ml-auto text-xs font-mono text-muted-foreground">{ev.key}</span>
                       </label>
                     ))}
                   </div>
@@ -217,7 +217,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
           {/* Step 3: Send test */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-sidebar text-white text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
+              <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center flex-shrink-0">3</span>
               <p className="font-semibold text-foreground text-sm">Send a test event</p>
             </div>
             <div className="bg-background border border-border rounded-xl p-3 mb-3">
@@ -225,7 +225,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
                 event: "test",
                 timestamp: new Date().toISOString(),
                 app: "KOACH AI",
-                data: { client_name: "Test Client", message: "KOACH AI is successfully connected to Zapier!" }
+                data: { client_name: "Test Client", message: "KOACH is connected to Zapier." }
               }, null, 2)}</pre>
             </div>
             <Button size="sm" variant="outline" onClick={handleTest} disabled={testing || !webhookUrl} className="gap-2 text-xs">
@@ -244,7 +244,7 @@ export default function ZapierSetupSheet({ open, onClose }) {
                     <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-success' : 'bg-destructive')} />
                     <span className="text-xs font-mono text-foreground flex-1 truncate">{log.event_type}</span>
                     {log.client_name && <span className="text-xs text-muted-foreground truncate max-w-[100px]">{log.client_name}</span>}
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
+                    <span className="text-xs text-muted-foreground flex items-center gap-1 flex-shrink-0">
                       <Clock className="w-3 h-3" />
                       {log.sent_at ? formatDistanceToNow(new Date(log.sent_at), { addSuffix: true }) : ''}
                     </span>

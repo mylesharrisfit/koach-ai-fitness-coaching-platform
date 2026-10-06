@@ -164,7 +164,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
     <>
       <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={onClose}>
         <div className="absolute inset-0 bg-black/40" />
-        <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        <div className="relative bg-card rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
           onClick={e => e.stopPropagation()}>
 
           {/* Header */}
@@ -207,7 +207,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                     }`}
                   >
                     <p className={`text-xs font-bold ${form.goal_type === t.key ? 'text-primary' : 'text-foreground'}`}>{t.label}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{t.desc}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{t.desc}</p>
                   </button>
                 ))}
               </div>

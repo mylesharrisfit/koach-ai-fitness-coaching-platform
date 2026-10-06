@@ -73,9 +73,9 @@ function SessionRow({ session }) {
         {/* Zoom icon or type icon */}
         <div className={cn(
           'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5',
-          hasZoom ? 'bg-[var(--kc-2d8cff)]/10' : 'bg-muted'
+          hasZoom ? 'bg-[var(--tc-brand)]/10' : 'bg-muted'
         )}>
-          <Video className={cn('w-4 h-4', hasZoom ? 'text-[var(--kc-2d8cff)]' : 'text-muted-foreground')} />
+          <Video className={cn('w-4 h-4', hasZoom ? 'text-[var(--tc-brand)]' : 'text-muted-foreground')} />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -98,7 +98,7 @@ function SessionRow({ session }) {
                 href={session.zoom_start_url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-[var(--kc-2d8cff)] text-white rounded-lg hover:bg-[var(--kc-2681f2)] transition-colors"
+                className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-[var(--tc-brand)] text-white rounded-lg hover:bg-[var(--tc-brand)] transition-colors"
               >
                 <Video className="w-3 h-3" /> Start Meeting
               </a>
@@ -111,7 +111,7 @@ function SessionRow({ session }) {
 
           {/* Notes */}
           {session.notes && !showNotes && (
-            <p className="text-xs text-muted-foreground mt-2 italic line-clamp-2">📝 {session.notes}</p>
+            <p className="text-xs text-muted-foreground mt-2 italic line-clamp-2">{session.notes}</p>
           )}
         </div>
 

@@ -73,7 +73,7 @@ function MacroRatioBar({ protein, carbs, fats }) {
         <div className="bg-warning rounded-full transition-all duration-300" style={{ width: `${cPct}%` }} />
         <div className="bg-destructive rounded-full transition-all duration-300"  style={{ width: `${fPct}%` }} />
       </div>
-      <div className="flex justify-between text-[10px] font-semibold">
+      <div className="flex justify-between text-xs font-semibold">
         <span className="text-primary">Protein {pPct}%</span>
         <span className="text-warning">Carbs {cPct}%</span>
         <span className="text-destructive">Fats {fPct}%</span>
@@ -119,7 +119,7 @@ function ClientPicker({ selected, onChange }) {
           <label key={c.id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-secondary cursor-pointer">
             <input type="checkbox" checked={selected.includes(c.id)} onChange={() => toggle(c.id)} className="rounded border-input accent-primary" />
             <span className="text-sm font-medium text-foreground">{c.name}</span>
-            {c.lifecycle_status && <span className="ml-auto text-[10px] text-muted-foreground capitalize">{c.lifecycle_status}</span>}
+            {c.lifecycle_status && <span className="ml-auto text-xs text-muted-foreground capitalize">{c.lifecycle_status}</span>}
           </label>
         ))}
         {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">No clients found</p>}
@@ -208,11 +208,11 @@ function MealCard({ meal, index, total, onUpdate, onRemove, onMoveUp, onMoveDown
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-semibold text-foreground block truncate">{food.name || '—'}</span>
                     {food.amount && (
-                      <span className="text-[10px] text-muted-foreground">{food.amount}</span>
+                      <span className="text-xs text-muted-foreground">{food.amount}</span>
                     )}
                   </div>
-                  <div className="flex gap-1.5 text-[10px] font-semibold shrink-0">
-                    <span className="text-orange-600">{food.calories} kcal</span>
+                  <div className="flex gap-1.5 text-xs font-semibold shrink-0">
+                    <span className="text-foreground">{food.calories} kcal</span>
                     <span className="text-primary">P {food.protein}g</span>
                     <span className="text-warning">C {food.carbs}g</span>
                     <span className="text-destructive">F {food.fats}g</span>
@@ -399,7 +399,7 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-xl p-0 flex flex-col overflow-hidden">
         <SheetHeader className="px-6 py-5 border-b border-border flex-shrink-0">
-          <SheetTitle className="font-heading font-bold text-lg">
+          <SheetTitle className="text-lg">
             {isEdit
               ? plan?.title?.includes('AI Generated') ? '✨ Review AI Plan' : 'Edit Plan'
               : 'New Plan'}
@@ -476,14 +476,14 @@ export default function NutritionForm({ open, onOpenChange, onSubmit, plan, init
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-foreground">Macro Targets</h3>
                 {hasFoodTotals && (
-                  <span className="text-[10px] font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">
+                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">
                     Auto-calculated from meals
                   </span>
                 )}
               </div>
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { field: 'calories', label: 'Calories', unit: 'kcal', val: eff.calories, color: 'text-orange-600' },
+                  { field: 'calories', label: 'Calories', unit: 'kcal', val: eff.calories, color: 'text-foreground' },
                   { field: 'protein',  label: 'Protein',  unit: 'g',    val: eff.protein,  color: 'text-primary' },
                   { field: 'carbs',    label: 'Carbs',    unit: 'g',    val: eff.carbs,    color: 'text-warning' },
                   { field: 'fats',     label: 'Fats',     unit: 'g',    val: eff.fats,     color: 'text-destructive' },

@@ -136,7 +136,7 @@ function TemplateRow({ t, onSelect }) {
           {t._builtin && <Sparkles className="w-3 h-3 text-ai flex-shrink-0" />}
           <p className="text-sm font-semibold text-foreground truncate">{t.name}</p>
         </div>
-        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
           style={{ background: meta.bg, color: meta.color }}>{meta.label}</span>
       </div>
       {preview && <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{preview}</p>}
@@ -162,7 +162,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
     <div className="fixed inset-0 z-[210] flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
       <div
-        className="relative bg-card w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col"
+        className="relative bg-card w-full sm:max-w-md rounded-t-2xl sm:rounded-xl flex flex-col"
         style={{ maxHeight: '82vh' }}
         onClick={e => e.stopPropagation()}
       >

@@ -23,8 +23,8 @@ const RANGES = [
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-border bg-card shadow-lg px-3 py-2">
-      <p className="text-[10px] font-semibold text-muted-foreground mb-0.5">{label}</p>
+    <div className="rounded-xl border border-border bg-card px-3 py-2">
+      <p className="text-[11px] font-semibold text-muted-foreground mb-0.5">{label}</p>
       <p className="text-sm font-bold" style={{ color: BLUE }}>{payload[0].value} lbs</p>
     </div>
   );
@@ -118,7 +118,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
     : ['auto', 'auto'];
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-2">
@@ -129,9 +129,9 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
           {latestEntry && (
             <div className="flex items-baseline gap-1.5">
               <span className="text-base font-bold text-foreground">{latestEntry.weight}</span>
-              <span className="text-[10px] text-muted-foreground font-medium">lbs</span>
+              <span className="text-[11px] text-muted-foreground font-medium">lbs</span>
               {delta !== null && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
                   parseFloat(delta) < 0
                     ? 'bg-success/10 text-success'
                     : parseFloat(delta) > 0
@@ -145,7 +145,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
           )}
           <button
             onClick={() => setAdding(a => !a)}
-            className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors"
+            className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition-colors"
             style={{ background: adding ? 'var(--tc-accent)' : 'var(--tc-muted)', color: adding ? BLUE : 'var(--tc-muted-foreground)' }}
           >
             <Plus className="w-3 h-3" /> Log
@@ -159,7 +159,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
           <button
             key={r.key}
             onClick={() => setRange(r.key)}
-            className="text-[10px] font-semibold px-2 py-0.5 rounded-md transition-colors"
+            className="text-[11px] font-semibold px-2 py-0.5 rounded-md transition-colors"
             style={{
               background: range === r.key ? BLUE : 'var(--tc-muted)',
               color: range === r.key ? 'var(--tc-primary-foreground)' : 'var(--tc-muted-foreground)',
@@ -175,7 +175,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
         <div className="mx-4 mb-3 p-3 rounded-xl bg-accent border border-accent flex flex-col gap-2">
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="text-[10px] font-semibold text-muted-foreground block mb-0.5">Weight (lbs)</label>
+              <label className="text-[11px] font-semibold text-muted-foreground block mb-0.5">Weight (lbs)</label>
               <input
                 type="number"
                 min="50" max="700" step="0.1"
@@ -186,7 +186,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
               />
             </div>
             <div className="flex-1">
-              <label className="text-[10px] font-semibold text-muted-foreground block mb-0.5">Date</label>
+              <label className="text-[11px] font-semibold text-muted-foreground block mb-0.5">Date</label>
               <input
                 type="date"
                 value={draft.date}
@@ -226,7 +226,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
         <div className="flex flex-col items-center justify-center h-28 gap-2 pb-4">
           <Scale className="w-6 h-6 text-border" />
           <p className="text-xs text-muted-foreground">No weigh-ins in this range</p>
-          <button onClick={() => setRange('ALL')} className="text-[10px] font-semibold underline underline-offset-2" style={{ color: BLUE }}>
+          <button onClick={() => setRange('ALL')} className="text-[11px] font-semibold underline underline-offset-2" style={{ color: BLUE }}>
             Show all
           </button>
         </div>
@@ -291,9 +291,9 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
           {[...filteredEntries].reverse().slice(0, 5).map(entry => (
             <div key={entry.id} className="flex items-center justify-between py-0.5 group">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-muted-foreground w-16 flex-shrink-0">{format(parseISO(entry.date), 'MMM d, yyyy')}</span>
+                <span className="text-[11px] text-muted-foreground w-16 flex-shrink-0">{format(parseISO(entry.date), 'MMM d, yyyy')}</span>
                 <span className="text-xs font-bold text-foreground">{entry.weight} lbs</span>
-                {entry.note && <span className="text-[10px] text-muted-foreground truncate max-w-[80px]">{entry.note}</span>}
+                {entry.note && <span className="text-[11px] text-muted-foreground truncate max-w-[80px]">{entry.note}</span>}
               </div>
               <button
                 onClick={() => handleDelete(entry)}

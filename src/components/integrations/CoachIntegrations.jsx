@@ -295,32 +295,32 @@ export default function CoachIntegrations() {
                   <div
                     key={integration.id}
                     className={cn(
-                      'bg-card border rounded-2xl p-4 transition-all',
-                      isConnected ? 'border-success bg-success/20' : 'border-border'
+                      'bg-card border rounded-xl p-4 transition-all',
+                      isConnected ? 'border-success' : 'border-border'
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl border border-border bg-card flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <div className="w-11 h-11 rounded-xl border border-border bg-card flex items-center justify-center flex-shrink-0">
                         {integration.icon}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-semibold text-foreground text-sm">{integration.name}</p>
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-muted border border-border text-foreground">
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted border border-border text-foreground">
                             {integration.category}
                           </span>
                           {(isConnected || (integration.id === 'zapier' && zapierConnected) || (integration.id === 'google_calendar' && gcalConnected) || (integration.id === 'zoom' && zoomConnected) || (integration.id === 'calendly' && calendlyConnected) || (integration.id === 'sendgrid' && sendgridConnected)) && (
-                            <span className="flex items-center gap-1 text-[10px] font-semibold text-success bg-success/10 border border-success px-2 py-0.5 rounded-full">
+                            <span className="flex items-center gap-1 text-xs font-semibold text-success bg-success/10 border border-success px-2 py-0.5 rounded-full">
                               <CheckCircle2 className="w-3 h-3" /> Connected
                             </span>
                           )}
                           {integration.id === 'zapier' && zapierConnected && todayLogs.length > 0 && (
-                            <span className="text-[10px] text-muted-foreground px-2 py-0.5 rounded-full bg-muted border border-border">
+                            <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-muted border border-border">
                               {todayLogs.length} events today
                             </span>
                           )}
                           {integration.id === 'zapier' && zapierConnected && zapierLastTriggered && (
-                            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
                               <Clock className="w-3 h-3" /> Last triggered {formatDistanceToNow(new Date(zapierLastTriggered), { addSuffix: true })}
                             </span>
                           )}
@@ -397,13 +397,13 @@ export default function CoachIntegrations() {
       {zapierConnected && zapierLogs.length > 0 && (
         <div className="mt-6">
           <p className="text-xs font-semibold text-muted-foreground mb-3">Recent Webhook Events</p>
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="bg-card border border-border rounded-xl overflow-hidden">
             {zapierLogs.slice(0, 10).map((log, i) => (
               <div key={log.id} className={cn('flex items-center gap-3 px-4 py-3', i !== 0 && 'border-t border-muted')}>
                 <div className={cn('w-2 h-2 rounded-full flex-shrink-0', log.success !== false ? 'bg-success' : 'bg-destructive')} />
                 <span className="text-xs font-mono text-foreground flex-1 truncate">{log.event_type}</span>
                 {log.client_name && <span className="text-xs text-muted-foreground truncate max-w-[120px]">{log.client_name}</span>}
-                <span className="text-[10px] text-muted-foreground flex items-center gap-1 flex-shrink-0">
+                <span className="text-xs text-muted-foreground flex items-center gap-1 flex-shrink-0">
                   <Clock className="w-3 h-3" />
                   {log.sent_at ? formatDistanceToNow(new Date(log.sent_at), { addSuffix: true }) : ''}
                 </span>

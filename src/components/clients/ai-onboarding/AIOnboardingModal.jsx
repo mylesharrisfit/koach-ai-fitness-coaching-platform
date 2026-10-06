@@ -124,7 +124,7 @@ export default function AIOnboardingModal({ client, onClose, onSaved }) {
       assigned_nutrition_id: nutritionRecord.id,
     });
 
-    toast.success('AI plan approved and saved to client! 🎉');
+    toast.success('AI plan approved and saved to client! ');
     onSaved?.();
     onClose();
   };
@@ -133,7 +133,7 @@ export default function AIOnboardingModal({ client, onClose, onSaved }) {
     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
       <div
-        className="relative bg-card rounded-2xl shadow-2xl w-full flex flex-col overflow-hidden"
+        className="relative bg-card rounded-xl w-full flex flex-col overflow-hidden"
         style={{ maxWidth: 860, height: '90vh' }}
         onClick={e => e.stopPropagation()}
       >
@@ -142,7 +142,7 @@ export default function AIOnboardingModal({ client, onClose, onSaved }) {
           style={{ background: 'var(--tc-sidebar)' }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}>
+              style={{ background: 'var(--tc-primary)' }}>
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -200,12 +200,12 @@ function StepIndicator({ step }) {
     <div className="flex items-center gap-1">
       {steps.map((s, i) => (
         <React.Fragment key={s.key}>
-          <div className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full transition-all ${
+          <div className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full transition-all ${
             i === activeIdx ? 'text-white' : i < activeIdx ? 'text-success' : 'text-muted-foreground'
           }`}>
             {i < activeIdx
               ? <CheckCircle className="w-3 h-3" />
-              : <span className="w-3 h-3 rounded-full flex items-center justify-center text-[9px]"
+              : <span className="w-3 h-3 rounded-full flex items-center justify-center text-[11px]"
                   style={{ background: i === activeIdx ? 'var(--tc-primary)' : 'var(--tc-foreground)' }}>
                   {i + 1}
                 </span>
@@ -222,8 +222,8 @@ function StepIndicator({ step }) {
 function GeneratingScreen({ client }) {
   return (
     <div className="h-full flex flex-col items-center justify-center gap-6 p-8">
-      <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-primary) 13.3333%, transparent), color-mix(in srgb, var(--tc-ai) 13.3333%, transparent))' }}>
+      <div className="w-16 h-16 rounded-xl flex items-center justify-center"
+        style={{ background: 'color-mix(in srgb, var(--tc-primary) 13.3333%, transparent)' }}>
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
       <div className="text-center">

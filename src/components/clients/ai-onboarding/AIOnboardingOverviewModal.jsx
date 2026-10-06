@@ -46,7 +46,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
       <div className="absolute inset-0" style={{ background: 'color-mix(in srgb, black 65%, transparent)', backdropFilter: 'blur(4px)' }} />
 
       <div
-        className="relative w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl flex flex-col"
+        className="relative w-full max-w-lg rounded-xl overflow-hidden flex flex-col"
         style={{ background: 'var(--tc-sidebar)', maxHeight: '85vh' }}
         onClick={e => e.stopPropagation()}
       >
@@ -61,16 +61,16 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
 
         {/* ── HEADER (fixed) ── */}
         <div className="relative px-7 pt-8 pb-6 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, var(--tc-sidebar) 0%, var(--kc-1a2744) 100%)', flexShrink: 0 }}>
+          style={{ background: 'var(--tc-sidebar)', flexShrink: 0 }}>
           {/* Decorative glow */}
           <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, var(--tc-ai), transparent 70%)' }} />
+            style={{ background: 'transparent' }} />
           <div className="absolute -bottom-10 -left-6 w-36 h-36 rounded-full opacity-15"
-            style={{ background: 'radial-gradient(circle, var(--tc-primary), transparent 70%)' }} />
+            style={{ background: 'transparent' }} />
 
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-4"
-            style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--tc-primary) 30%, transparent), color-mix(in srgb, var(--tc-ai) 30%, transparent))', border: '1px solid color-mix(in srgb, var(--tc-ai) 40%, transparent)' }}>
+            style={{ background: 'color-mix(in srgb, var(--tc-primary) 30%, transparent)', border: '1px solid color-mix(in srgb, var(--tc-ai) 40%, transparent)' }}>
             <Sparkles className="w-3 h-3" style={{ color: 'var(--tc-ai)' }} />
             <span className="text-xs font-semibold" style={{ color: 'var(--tc-ai)' }}>Pro &amp; Elite Feature</span>
           </div>
@@ -113,14 +113,14 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
                 <div key={i} className="flex-1 flex flex-col items-center text-center relative">
                   {i < STEPS.length - 1 && (
                     <div className="absolute top-4 left-1/2 right-0 h-px"
-                      style={{ background: 'linear-gradient(90deg, color-mix(in srgb, var(--tc-primary) 50%, transparent), color-mix(in srgb, var(--tc-primary) 10%, transparent))' }} />
+                      style={{ background: 'color-mix(in srgb, var(--tc-primary) 50%, transparent)' }} />
                   )}
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold relative z-10 mb-2"
-                    style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-primary-foreground)' }}>
+                    style={{ background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)' }}>
                     {s.n}
                   </div>
                   <p className="text-[11px] font-semibold text-white leading-tight px-1">{s.label}</p>
-                  <p className="text-[9px] mt-0.5 px-1 leading-tight" style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}>{s.sub}</p>
+                  <p className="text-[11px] mt-0.5 px-1 leading-tight" style={{ color: 'color-mix(in srgb, white 35%, transparent)' }}>{s.sub}</p>
                 </div>
               ))}
             </div>
@@ -133,7 +133,7 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
             <button
               onClick={onGetStarted}
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
+              style={{ background: 'var(--tc-primary)' }}
             >
               <Sparkles className="w-4 h-4" />
               Get Started
@@ -144,19 +144,19 @@ export default function AIOnboardingOverviewModal({ canUse, onGetStarted, onUpgr
               <button
                 onClick={onUpgrade}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
+                style={{ background: 'var(--tc-primary)' }}
               >
                 <Zap className="w-4 h-4" />
                 Upgrade to Pro
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <p className="text-center text-[10px]" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>
+              <p className="text-center text-[11px]" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>
                 Available on Pro and Elite plans
               </p>
             </>
           )}
           {canUse && (
-            <p className="text-center text-[10px]" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>
+            <p className="text-center text-[11px]" style={{ color: 'color-mix(in srgb, white 30%, transparent)' }}>
               Nothing is saved until you review and approve
             </p>
           )}

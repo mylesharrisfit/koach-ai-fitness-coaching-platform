@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const CONFIDENCE_CONFIG = {
   high:     { icon: CheckCircle2, color: 'text-success', bg: 'bg-success/10', label: 'High' },
   medium:   { icon: AlertTriangle, color: 'text-warning',  bg: 'bg-warning/10',   label: 'Medium' },
-  low:      { icon: AlertTriangle, color: 'text-orange-500', bg: 'bg-orange-50',  label: 'Low' },
+  low:      { icon: AlertTriangle, color: 'text-warning', bg: 'bg-warning-soft',  label: 'Low' },
   unmapped: { icon: HelpCircle,    color: 'text-muted-foreground',   bg: 'bg-muted',   label: 'Unmapped' },
 };
 
@@ -44,7 +44,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
         {mappedCount} of {headers.length} columns mapped
         {unmappedCount > 0
           ? ` · ${unmappedCount} will be stored in notes`
-          : ' · all columns mapped ✓'}
+          : ' · all columns mapped '}
       </p>
 
       {/* Mapping table */}
@@ -82,7 +82,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                 {/* KOACH field — sentinel or dropdown */}
                 {mapped === '__last_name__' ? (
                   <div className="h-8 px-3 flex items-center text-xs text-success bg-success/10 border border-success rounded-md whitespace-nowrap overflow-hidden text-ellipsis">
-                    Last Name → merged into Name ✓
+                    Last Name → merged into Name 
                   </div>
                 ) : (
                   <Select
@@ -104,7 +104,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                         >
                           {f.label}
                           {usedFields.has(f.key) && mapped !== f.key && (
-                            <span className="text-muted-foreground ml-1 text-[10px]">(taken)</span>
+                            <span className="text-muted-foreground ml-1 text-[11px]">(taken)</span>
                           )}
                         </SelectItem>
                       ))}
@@ -113,7 +113,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
                 )}
 
                 {/* Confidence badge */}
-                <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${bg} ${color} w-fit`}>
+                <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-semibold ${bg} ${color} w-fit`}>
                   <Icon className="w-3 h-3 shrink-0" />
                   <span>{label}</span>
                 </div>

@@ -66,11 +66,10 @@ export default function MetricsCard({ client, onUpdated }) {
   const age = calcAge(client.date_of_birth);
 
   return (
-    <div className="bg-card rounded-xl border border-border shadow-sm p-4">
+    <div className="bg-card rounded-xl border border-border p-4">
       {/* Section header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-0.5 h-3.5 rounded-full bg-primary" />
           <p className="text-xs font-semibold text-muted-foreground">Body Metrics</p>
         </div>
         {!editing && (
@@ -95,7 +94,7 @@ export default function MetricsCard({ client, onUpdated }) {
             <MetricInput label="Target weight (lbs)" placeholder="e.g. 175"
               value={draft.target_weight} onChange={v => setDraft(d => ({ ...d, target_weight: v }))} type="number" />
             <div>
-              <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Sex</label>
+              <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Sex</label>
               <select
                 value={draft.sex}
                 onChange={e => setDraft(d => ({ ...d, sex: e.target.value }))}

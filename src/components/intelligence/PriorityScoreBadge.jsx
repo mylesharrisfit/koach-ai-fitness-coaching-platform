@@ -1,21 +1,22 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
+/** Coaching priority (0–10): red when the client needs you now. */
 export default function PriorityScoreBadge({ score }) {
   if (!score && score !== 0) return null;
 
-  const color = score >= 7
-    ? { bg: 'var(--tc-destructive)', text: 'var(--tc-destructive)', border: 'var(--tc-destructive)' }
+  const tone = score >= 7
+    ? 'bg-destructive/10 text-destructive'
     : score >= 4
-    ? { bg: 'var(--tc-warning)', text: 'var(--kc-ea580c)', border: 'var(--tc-warning)' }
-    : { bg: 'var(--tc-success)', text: 'var(--tc-success)', border: 'var(--tc-success)' };
+    ? 'bg-warning-soft text-warning'
+    : 'bg-secondary text-muted-foreground';
 
   return (
     <span
-      className="inline-flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full border tabular-nums"
-      style={color}
-      title={`Coaching Priority Score: ${score}/10`}
+      className={cn('inline-flex items-center rounded-md px-1.5 py-0.5 text-[12px] font-semibold tabular-nums', tone)}
+      title={`Coaching priority ${score} of 10`}
     >
-      {score >= 7 ? '🔴' : score >= 4 ? '🟡' : '🟢'} {score}
+      {score}
     </span>
   );
 }

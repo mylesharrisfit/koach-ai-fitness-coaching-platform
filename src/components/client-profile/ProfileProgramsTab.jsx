@@ -10,7 +10,7 @@ import { SignedImg } from '@/components/shared/SignedImage';
 const DIFFICULTY_STYLES = {
   beginner:     'bg-success/10 text-success border-success',
   intermediate: 'bg-accent text-primary border-accent',
-  advanced:     'bg-orange-50 text-orange-700 border-orange-100',
+  advanced:     'bg-warning-soft text-warning border-warning/30',
   elite:        'bg-destructive/10 text-destructive border-destructive',
 };
 
@@ -25,13 +25,13 @@ export default function ProfileProgramsTab({ client }) {
 
   if (isLoading) return (
     <div className="space-y-3">
-      {[1, 2].map(i => <div key={i} className="h-24 bg-card rounded-2xl border border-border animate-pulse" />)}
+      {[1, 2].map(i => <div key={i} className="h-24 bg-card rounded-xl border border-border animate-pulse" />)}
     </div>
   );
 
   if (!assigned) return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-muted border border-border flex items-center justify-center mb-4">
+      <div className="w-16 h-16 rounded-xl bg-muted border border-border flex items-center justify-center mb-4">
         <Dumbbell className="w-7 h-7 text-muted-foreground" />
       </div>
       <p className="text-sm font-semibold text-foreground mb-1">No program assigned</p>
@@ -45,7 +45,7 @@ export default function ProfileProgramsTab({ client }) {
   return (
     <div className="space-y-4">
       {/* Program header card */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-muted">
           <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
             <Dumbbell className="w-3.5 h-3.5 text-primary" />
@@ -98,7 +98,7 @@ export default function ProfileProgramsTab({ client }) {
 
       {/* Workout schedule */}
       {assigned.workouts?.length > 0 && (
-        <div className="bg-card rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-muted">
             <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
               <Calendar className="w-3.5 h-3.5 text-muted-foreground" />

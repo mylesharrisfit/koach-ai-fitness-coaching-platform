@@ -69,7 +69,7 @@ function ClientPicker({ value, onChange }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 left-0 right-0 mt-1.5 bg-popover border border-border rounded-xl shadow-xl overflow-hidden"
+            className="absolute z-50 left-0 right-0 mt-1.5 bg-popover border border-border rounded-xl shadow-md overflow-hidden"
           >
             {/* Search */}
             <div className="p-2 border-b border-border">
@@ -111,7 +111,7 @@ function ClientPicker({ value, onChange }) {
                       <p className="text-xs text-muted-foreground truncate">{c.email || ''}</p>
                     </div>
                     {c.nutrition_plan_id && (
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-warning/10 text-warning shrink-0">Has plan</span>
+                      <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-warning/10 text-warning shrink-0">Has plan</span>
                     )}
                     {value === c.id && <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />}
                   </button>
@@ -135,7 +135,7 @@ function TemplateSaveForm({ onSave, onCancel }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-card border border-border rounded-2xl p-4 space-y-3 shadow-lg"
+      className="bg-card border border-border rounded-xl p-4 space-y-3 shadow-md"
     >
       <p className="text-sm font-bold text-foreground">Save as Template</p>
       <div>
@@ -203,7 +203,7 @@ function SuccessScreen({ clientName, planName, calories, startDate, hasNote, onV
         </p>
       </div>
 
-      <div className="w-full bg-gradient-to-br from-accent to-ai/10 border border-accent rounded-2xl p-4 space-y-2 text-left">
+      <div className="w-full bg-gradient-to-br from-accent to-ai/10 border border-accent rounded-xl p-4 space-y-2 text-left">
         <div className="flex items-center gap-2">
           <span className="text-base">🥗</span>
           <span className="text-sm font-bold text-foreground">{planName}</span>
@@ -461,7 +461,7 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
         />
         {/* Macro badges */}
         <div className="flex flex-wrap gap-2 mt-2">
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-secondary text-foreground border border-border">
             🔥 {result.calories} kcal
           </span>
           <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-destructive/10 text-destructive border border-destructive">
@@ -477,7 +477,7 @@ export default function Step4Assign({ result, onRegenerate, onOpenChange, onRese
       </div>
 
       {/* Assign to client card */}
-      <div className="bg-gradient-to-br from-accent/60 to-ai/60 border border-accent rounded-2xl p-4 space-y-4">
+      <div className="bg-gradient-to-br from-accent/60 to-ai/60 border border-accent rounded-xl p-4 space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
             <UserPlus className="w-3.5 h-3.5 text-primary" />

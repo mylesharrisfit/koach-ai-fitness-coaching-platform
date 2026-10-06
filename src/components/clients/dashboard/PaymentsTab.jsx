@@ -108,7 +108,7 @@ export default function PaymentsTab({ client }) {
             <s.icon className={cn('w-4 h-4 flex-shrink-0', s.color)} />
             <div className="min-w-0">
               <p className="text-xs font-bold text-foreground truncate">{s.value}</p>
-              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+              <p className="text-[11px] text-muted-foreground">{s.label}</p>
             </div>
           </div>
         ))}
@@ -125,13 +125,13 @@ export default function PaymentsTab({ client }) {
               className={cn(
                 'p-3 border rounded-xl text-left transition-all',
                 selectedCharge?.label === item.label
-                  ? 'border-foreground bg-sidebar text-white'
+                  ? 'border-primary bg-primary text-primary-foreground'
                   : 'border-border hover:border-foreground bg-card'
               )}
             >
               <p className="text-sm font-semibold">{item.label}</p>
               {item.amount && (
-                <p className={cn('text-xs mt-0.5', selectedCharge?.label === item.label ? 'text-white/60' : 'text-muted-foreground')}>
+                <p className={cn('text-xs mt-0.5', selectedCharge?.label === item.label ? 'text-primary-foreground/70' : 'text-muted-foreground')}>
                   ${item.amount}
                 </p>
               )}

@@ -8,7 +8,7 @@ function gramsToOz(g) {
 
 function MacroChip({ label, value, unit = 'g', cls }) {
   return (
-    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg ${cls}`}>
+    <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${cls}`}>
       {value}{unit} <span className="font-normal opacity-70">{label}</span>
     </span>
   );
@@ -35,25 +35,25 @@ function FoodSwapButton({ food, mealName }) {
     <div className="relative">
       <button
         onClick={fetchSwaps}
-        className="flex items-center gap-1 text-[10px] text-primary hover:text-primary/70 font-semibold transition-colors px-2 py-0.5 rounded-lg hover:bg-primary/10"
+        className="flex items-center gap-1 text-xs text-foreground underline underline-offset-4 font-semibold transition-colors px-2 py-0.5 rounded-md hover:bg-accent"
       >
         <ArrowLeftRight className="w-2.5 h-2.5" />
         Swap
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-lg p-3 w-64 space-y-2">
+        <div className="absolute right-0 top-full mt-1 z-50 bg-card border border-border rounded-xl shadow-md p-3 w-64 space-y-2">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-[11px] font-bold text-foreground">Alternative Foods</p>
-            <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground text-xs">✕</button>
+            <p className="text-[11px] font-bold text-foreground">Swaps</p>
+            <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground text-xs" aria-label="Close">Close</button>
           </div>
           {loading ? (
             <div className="flex items-center gap-2 py-2">
-              <Loader2 className="w-3 h-3 animate-spin text-primary" />
-              <span className="text-xs text-muted-foreground">Finding swaps…</span>
+              <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Finding swaps</span>
             </div>
           ) : swaps.map((s, i) => (
             <div key={i} className="flex items-start gap-2 text-xs p-2 bg-secondary/40 rounded-lg">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1 flex-shrink-0" />
+              
               <span className="text-foreground leading-snug">{s}</span>
             </div>
           ))}
@@ -82,14 +82,14 @@ function MealRow({ meal }) {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-bold text-foreground">{meal.meal_name}</p>
             {meal.time && (
-              <span className="text-[10px] text-muted-foreground px-1.5 py-0.5 bg-secondary rounded-md">{meal.time}</span>
+              <span className="text-xs text-muted-foreground px-1.5 py-0.5 bg-secondary rounded-md">{meal.time}</span>
             )}
           </div>
           <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-            <MacroChip label="kcal" value={totalCals} unit="" cls="bg-orange-50 text-orange-600" />
-            <MacroChip label="P" value={totalP} cls="bg-destructive/10 text-destructive" />
-            <MacroChip label="C" value={totalC} cls="bg-warning/10 text-warning" />
-            <MacroChip label="F" value={totalF} cls="bg-accent text-primary" />
+            <MacroChip label="kcal" value={totalCals} unit="" cls="bg-secondary text-foreground" />
+            <MacroChip label="P" value={totalP} cls="bg-secondary text-foreground" />
+            <MacroChip label="C" value={totalC} cls="bg-secondary text-foreground" />
+            <MacroChip label="F" value={totalF} cls="bg-secondary text-foreground" />
           </div>
         </div>
         <span className="text-xs text-muted-foreground flex-shrink-0">{foods.length} foods</span>
@@ -98,7 +98,7 @@ function MealRow({ meal }) {
 
       {/* Expanded food list */}
       {expanded && foods.length > 0 && (
-        <div className="border-t border-[var(--kc-f1f4fa)] divide-y divide-muted">
+        <div className="border-t border-border divide-y divide-muted">
           {foods.map((food, i) => (
             <div key={i} className="px-4 py-2.5 flex items-center gap-3">
               <div className="flex-1 min-w-0">
@@ -109,10 +109,10 @@ function MealRow({ meal }) {
                 </p>
               </div>
               <div className="flex items-center gap-1 flex-shrink-0 flex-wrap justify-end">
-                <MacroChip label="kcal" value={food.calories || 0} unit="" cls="bg-orange-50 text-orange-600" />
-                <MacroChip label="P" value={food.protein || 0} cls="bg-destructive/10 text-destructive" />
-                <MacroChip label="C" value={food.carbs || 0} cls="bg-warning/10 text-warning" />
-                <MacroChip label="F" value={food.fats || 0} cls="bg-accent text-primary" />
+                <MacroChip label="kcal" value={food.calories || 0} unit="" cls="bg-secondary text-foreground" />
+                <MacroChip label="P" value={food.protein || 0} cls="bg-secondary text-foreground" />
+                <MacroChip label="C" value={food.carbs || 0} cls="bg-secondary text-foreground" />
+                <MacroChip label="F" value={food.fats || 0} cls="bg-secondary text-foreground" />
                 <FoodSwapButton food={food} mealName={meal.meal_name} />
               </div>
             </div>
@@ -135,12 +135,12 @@ export default function MealPlanViewer({ plan }) {
   return (
     <div className="space-y-3">
       {/* Daily summary */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/5 to-accent rounded-xl border border-primary/10 flex-wrap">
-        <span className="text-xs font-semibold text-muted-foreground">Daily Total</span>
-        <MacroChip label="kcal" value={totalCals} unit="" cls="bg-orange-100 text-orange-700" />
-        <MacroChip label="Protein" value={totalP} cls="bg-destructive/10 text-destructive" />
-        <MacroChip label="Carbs" value={totalC} cls="bg-warning/10 text-warning" />
-        <MacroChip label="Fats" value={totalF} cls="bg-accent text-primary" />
+      <div className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border flex-wrap">
+        <span className="text-xs font-semibold text-muted-foreground">Day total</span>
+        <MacroChip label="kcal" value={totalCals} unit="" cls="bg-secondary text-foreground" />
+        <MacroChip label="Protein" value={totalP} cls="bg-secondary text-foreground" />
+        <MacroChip label="Carbs" value={totalC} cls="bg-secondary text-foreground" />
+        <MacroChip label="Fats" value={totalF} cls="bg-secondary text-foreground" />
       </div>
 
       {/* Meal rows */}

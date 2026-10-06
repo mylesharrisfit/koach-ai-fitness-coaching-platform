@@ -17,7 +17,7 @@ function MacroChip({ label, value, unit = 'g', color }) {
   return (
     <div className={cn('flex flex-col items-center px-3 py-2 rounded-xl text-center', color)}>
       <span className="text-sm font-bold tabular-nums leading-tight">{value ?? '—'}{unit === 'kcal' ? '' : unit}</span>
-      <span className="text-[10px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
+      <span className="text-[11px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
     </div>
   );
 }
@@ -61,7 +61,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="relative bg-card rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+        className="relative bg-card rounded-xl w-full max-w-sm overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
@@ -87,7 +87,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
               <span className="text-xl">{plan.emoji || '🥗'}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{plan.title}</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
                   {plan.calories ? ` · ${plan.calories} kcal` : ''}
                 </p>
@@ -108,7 +108,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
             onClick={assign}
             disabled={!selected || saving}
             className="flex-1 px-3 py-2 rounded-lg text-xs font-semibold text-primary-foreground disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))' }}
+            style={{ background: 'var(--tc-brand)' }}
           >
             {saving ? 'Assigning...' : 'Assign Plan'}
           </button>
@@ -165,7 +165,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
           <button
             onClick={() => setShowDialog(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-primary-foreground"
-            style={{ background: 'linear-gradient(135deg, var(--kc-00d4ff), var(--tc-primary))' }}
+            style={{ background: 'var(--tc-brand)' }}
           >
             <Plus className="w-3.5 h-3.5" /> Assign Existing Plan
           </button>
@@ -206,7 +206,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
           </div>
         </div>
         <span className={cn(
-          'text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
+          'text-[11px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
           isHabits ? 'bg-ai/10 text-ai border-ai' : 'bg-success/10 text-success border-success'
         )}>
           {isHabits ? 'Habit Mode' : 'Macro Tracking'}
@@ -215,7 +215,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
 
       {!isHabits && (assignedPlan.calories ?? assignedPlan.daily_calories ?? 0) > 0 && (
         <div className="flex gap-2">
-          <MacroChip label="Calories" value={assignedPlan.calories ?? assignedPlan.daily_calories} unit="kcal" color="bg-orange-50 text-orange-700" />
+          <MacroChip label="Calories" value={assignedPlan.calories ?? assignedPlan.daily_calories} unit="kcal" color="bg-warning-soft text-warning" />
           {(assignedPlan.protein_g ?? assignedPlan.protein ?? 0) > 0 && <MacroChip label="Protein" value={assignedPlan.protein_g ?? assignedPlan.protein} color="bg-accent text-primary" />}
           {(assignedPlan.carbs_g   ?? assignedPlan.carbs   ?? 0) > 0 && <MacroChip label="Carbs"   value={assignedPlan.carbs_g   ?? assignedPlan.carbs}   color="bg-warning/10 text-warning" />}
           {(assignedPlan.fats_g    ?? assignedPlan.fats    ?? 0) > 0 && <MacroChip label="Fats"    value={assignedPlan.fats_g    ?? assignedPlan.fats}    color="bg-destructive/10 text-destructive" />}
@@ -299,7 +299,7 @@ function TodayFoodLog({ client, assignedPlan }) {
           <Utensils className="w-3.5 h-3.5 text-muted-foreground" />
           <span className="text-xs font-semibold text-foreground">Today's Food Log</span>
         </div>
-        <span className="text-[10px] text-muted-foreground">{format(new Date(), 'MMM d')}</span>
+        <span className="text-[11px] text-muted-foreground">{format(new Date(), 'MMM d')}</span>
       </div>
 
       {/* Totals bar */}
@@ -309,7 +309,7 @@ function TodayFoodLog({ client, assignedPlan }) {
             <span className="text-muted-foreground">Calories</span>
             <span className="font-semibold text-foreground tabular-nums">{totalCals} / {targetCals} kcal</span>
           </div>
-          <Bar value={totalCals} max={targetCals} color="bg-orange-400" />
+          <Bar value={totalCals} max={targetCals} color="bg-partial" />
           {targetProtein > 0 && (
             <>
               <div className="flex justify-between text-xs mt-1">
@@ -335,17 +335,17 @@ function TodayFoodLog({ client, assignedPlan }) {
               <div key={mealName}>
                 <div className="flex items-center justify-between px-4 py-2 bg-muted">
                   <span className="text-xs font-semibold text-muted-foreground">{mealName}</span>
-                  {mealCals > 0 && <span className="text-[10px] font-semibold text-orange-500 tabular-nums">{mealCals} kcal</span>}
+                  {mealCals > 0 && <span className="text-[11px] font-semibold text-warning tabular-nums">{mealCals} kcal</span>}
                 </div>
                 {items.map((item, i) => (
                   <div key={i} className="flex items-center justify-between px-4 py-2">
                     <div className="flex-1 min-w-0">
                       <span className="text-xs text-foreground font-medium">{item.food_name}</span>
                       {item.serving_quantity && (
-                        <span className="text-[10px] text-muted-foreground ml-1.5">{item.serving_quantity}{item.serving_unit || ''}</span>
+                        <span className="text-[11px] text-muted-foreground ml-1.5">{item.serving_quantity}{item.serving_unit || ''}</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-semibold shrink-0 ml-2">
+                    <div className="flex items-center gap-2 text-[11px] font-semibold shrink-0 ml-2">
                       {item.protein > 0  && <span className="text-primary">{item.protein}P</span>}
                       {item.carbs > 0    && <span className="text-warning">{item.carbs}C</span>}
                       {item.fats > 0     && <span className="text-destructive">{item.fats}F</span>}
@@ -429,14 +429,14 @@ function WeeklyAdherenceGrid({ client }) {
                   isToday && 'ring-2 ring-primary ring-offset-1'
                 )}
               />
-              <span className="text-[9px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
+              <span className="text-[11px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
               <span className="text-[8px] text-border">{format(day, 'd')}</span>
             </div>
           );
         })}
       </div>
 
-      <div className="flex gap-3 text-[10px] text-muted-foreground flex-wrap">
+      <div className="flex gap-3 text-[11px] text-muted-foreground flex-wrap">
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-success inline-block" /> Logged</span>
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-warning inline-block" /> Missed target</span>
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-border inline-block" /> Nothing logged</span>

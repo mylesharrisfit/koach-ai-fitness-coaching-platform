@@ -108,9 +108,9 @@ export default function SupplementPanel({ value = [], onChange }) {
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-secondary/30 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-foreground">💊 Supplements & Vitamins</span>
+          <span className="text-sm font-semibold text-foreground">Supplements and vitamins</span>
           {totalCount > 0 && (
-            <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
               {totalCount} assigned
             </span>
           )}
@@ -163,7 +163,7 @@ export default function SupplementPanel({ value = [], onChange }) {
                 const config = CATEGORY_CONFIG[cat];
                 return (
                   <div key={cat}>
-                    <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border inline-block mb-1', config.color)}>
+                    <span className={cn('text-xs font-semibold px-2 py-0.5 rounded-full border inline-block mb-1', config.color)}>
                       {config.label}
                     </span>
                     {items.map(item => (

@@ -44,14 +44,14 @@ function ProgramPicker({ programs, onSelect, onCancel }) {
                 <ChevronRight className="w-4 h-4 text-border group-hover:text-primary transition-colors" />
               </div>
               <div className="flex items-center gap-2 mt-1">
-                <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', diff.bg, diff.text)}>
+                <span className={cn('text-[11px] font-semibold px-2 py-0.5 rounded-full', diff.bg, diff.text)}>
                   {diff.label}
                 </span>
                 {p.duration_weeks && (
-                  <span className="text-[10px] text-muted-foreground">{p.duration_weeks}w</span>
+                  <span className="text-[11px] text-muted-foreground">{p.duration_weeks}w</span>
                 )}
                 {p.days_per_week && (
-                  <span className="text-[10px] text-muted-foreground">{p.days_per_week}x/wk</span>
+                  <span className="text-[11px] text-muted-foreground">{p.days_per_week}x/wk</span>
                 )}
               </div>
             </button>
@@ -88,7 +88,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
 
   if (picking) {
     return (
-      <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
+      <div className="bg-card rounded-xl border border-border p-4">
         <h3 className="text-sm font-bold text-foreground mb-3">Select a Program</h3>
         <ProgramPicker
           programs={allPrograms}
@@ -101,8 +101,8 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
 
   if (!assignedProgram) {
     return (
-      <div className="bg-card rounded-2xl border border-border p-5 shadow-sm text-center space-y-3">
-        <div className="w-14 h-14 rounded-2xl bg-muted border border-border flex items-center justify-center mx-auto">
+      <div className="bg-card rounded-xl border border-border p-5 text-center space-y-3">
+        <div className="w-14 h-14 rounded-xl bg-muted border border-border flex items-center justify-center mx-auto">
           <Dumbbell className="w-6 h-6 text-border" />
         </div>
         <div>
@@ -124,7 +124,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
   const diff = DIFFICULTY_STYLE[assignedProgram.difficulty] || DIFFICULTY_STYLE.intermediate;
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       {assignedProgram.image_url && (
         <SignedImg src={assignedProgram.image_url} alt={assignedProgram.title} className="w-full h-28 object-cover" />
       )}
@@ -136,7 +136,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
               <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{assignedProgram.description}</p>
             )}
           </div>
-          <span className={cn('text-[10px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0', diff.bg, diff.text)}>
+          <span className={cn('text-[11px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0', diff.bg, diff.text)}>
             {diff.label}
           </span>
         </div>
@@ -204,7 +204,7 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
   });
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-sm p-4 space-y-3">
+    <div className="bg-card rounded-xl border border-border p-4 space-y-3">
       <h3 className="text-sm font-bold text-foreground">This Week's Schedule</h3>
       <div className="space-y-1.5">
         {schedule.map(({ date, workout, completed, isToday: todayFlag }) => (
@@ -230,7 +230,7 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-foreground truncate">{workout.day_name || `Day ${workout.day_number || ''}`}</p>
                 {workout.exercises?.length > 0 && (
-                  <p className="text-[10px] text-muted-foreground">{workout.exercises.length} exercises</p>
+                  <p className="text-[11px] text-muted-foreground">{workout.exercises.length} exercises</p>
                 )}
               </div>
             ) : (
@@ -281,23 +281,23 @@ function ProgramProgress({ assignedProgram, workoutSessions, client }) {
   }).length;
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-sm p-4 space-y-4">
+    <div className="bg-card rounded-xl border border-border p-4 space-y-4">
       <h3 className="text-sm font-bold text-foreground">Program Progress</h3>
 
       <div className="grid grid-cols-3 gap-3">
         {currentWeek !== null && totalWeeks > 0 && (
           <div className="text-center p-3 rounded-xl bg-accent">
             <p className="text-2xl font-bold text-primary">{currentWeek}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">of {totalWeeks} weeks</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">of {totalWeeks} weeks</p>
           </div>
         )}
         <div className="text-center p-3 rounded-xl bg-success/10">
           <p className="text-2xl font-bold text-success">{thisWeekDone}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">this week</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">this week</p>
         </div>
         <div className="text-center p-3 rounded-xl bg-muted">
           <p className="text-2xl font-bold text-foreground">{completed}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">total done</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">total done</p>
         </div>
       </div>
 
@@ -309,7 +309,7 @@ function ProgramProgress({ assignedProgram, workoutSessions, client }) {
           </div>
           <div className="h-2.5 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-ai transition-all duration-500"
+              className="h-full rounded-full bg-primary transition-all duration-500"
               style={{ width: `${completionPct}%` }}
             />
           </div>

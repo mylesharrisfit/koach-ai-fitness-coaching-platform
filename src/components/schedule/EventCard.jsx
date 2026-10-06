@@ -3,22 +3,11 @@ import { GripVertical, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SignedImg } from '@/components/shared/SignedImage';
 
-const sessionTypeIcons = {
-  check_in: '📞',
-  program_review: '💪',
-  onboarding: '🎯',
-  progress_review: '📊',
-  consultation: '🆓',
-};
-
+const NEUTRAL = { border: '', bg: 'bg-secondary', text: 'text-foreground' };
 const sessionTypeColors = {
-  check_in: { border: 'border-l-4 border-primary', bg: 'bg-accent', text: 'text-primary' },
-  program_review: { border: 'border-l-4 border-ai', bg: 'bg-ai/10', text: 'text-ai' },
-  onboarding: { border: 'border-l-4 border-success', bg: 'bg-success/10', text: 'text-success' },
-  progress_review: { border: 'border-l-4 border-warning', bg: 'bg-warning/10', text: 'text-warning' },
-  consultation: { border: 'border-l-4 border-border', bg: 'bg-muted', text: 'text-muted-foreground' },
-  video_call: { border: 'border-l-4 border-primary', bg: 'bg-accent', text: 'text-primary' },
-  in_person: { border: 'border-l-4 border-success', bg: 'bg-success/10', text: 'text-success' },
+  check_in: NEUTRAL, program_review: NEUTRAL, onboarding: NEUTRAL, progress_review: NEUTRAL,
+  consultation: { border: '', bg: 'bg-secondary', text: 'text-muted-foreground' },
+  video_call: NEUTRAL, in_person: NEUTRAL,
 };
 
 function getTimeRange(time, durationMinutes) {
@@ -59,7 +48,7 @@ export default function EventCard({
         colors.bg,
         colors.border,
         isCancelled && 'border-l-4 border-destructive bg-destructive/10',
-        isDragging && 'opacity-75 shadow-lg scale-105 z-50',
+        isDragging && 'opacity-75 ring-1 ring-foreground/20 z-50',
         !isDragging && 'hover:shadow-md hover:scale-105 hover:z-40',
         isPast && !isCompleted && 'opacity-60',
         isCompleted && 'opacity-75 bg-muted border-l-4 border-border'
@@ -83,7 +72,7 @@ export default function EventCard({
             <SignedImg src={avatar} alt={client?.name} className="w-6 h-6 rounded-full object-cover flex-shrink-0" />
           ) : (
             <div className={cn(
-              'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0',
+              'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0',
               colors.bg,
               colors.text
             )}>
@@ -99,8 +88,8 @@ export default function EventCard({
             )}>
               {client?.name || 'Unknown'}
             </p>
-            <p className={cn('text-[10px] opacity-70 truncate', colors.text)}>
-              {sessionTypeIcons[session.type.split('_')[0]]} {(session.type || 'Session').replace(/_/g, ' ')}
+            <p className={cn('text-xs opacity-70 truncate', colors.text)}>
+              {(session.type || 'Session').replace(/_/g, ' ')}
             </p>
           </div>
 
@@ -109,7 +98,7 @@ export default function EventCard({
         </div>
 
         {/* Time */}
-        <p className={cn('text-[10px] font-medium mt-0.5', colors.text)}>
+        <p className={cn('text-xs font-medium mt-0.5', colors.text)}>
           {getTimeRange(session.time, session.duration_minutes)}
         </p>
       </div>

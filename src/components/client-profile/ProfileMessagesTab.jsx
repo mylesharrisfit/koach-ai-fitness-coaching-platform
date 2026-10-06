@@ -46,7 +46,7 @@ export default function ProfileMessagesTab({ client, messages }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Compose box */}
-      <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
+      <div className="bg-card rounded-xl border border-border p-4">
         <p className="text-xs font-semibold text-muted-foreground mb-2">New Message</p>
         <Textarea
           placeholder={`Write a message to ${client.name}…`}
@@ -61,7 +61,7 @@ export default function ProfileMessagesTab({ client, messages }) {
           }}
         />
         <div className="flex items-center justify-between">
-          <span className="text-[10px] text-muted-foreground">⌘+Enter to send</span>
+          <span className="text-[11px] text-muted-foreground">⌘+Enter to send</span>
           <Button
             size="sm"
             onClick={() => sendMutation.mutate()}
@@ -76,7 +76,7 @@ export default function ProfileMessagesTab({ client, messages }) {
 
       {/* Messages thread */}
       {messages.length === 0 ? (
-        <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
+        <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
           <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
             <MessageCircle className="w-5 h-5 text-muted-foreground" />
           </div>
@@ -96,25 +96,25 @@ export default function ProfileMessagesTab({ client, messages }) {
                 )}
               >
                 <div className={cn(
-                  'max-w-[85%] rounded-2xl px-4 py-3 border',
+                  'max-w-[85%] rounded-xl px-4 py-3 border',
                   isCoach
                     ? 'bg-primary text-primary-foreground border-transparent rounded-tr-md'
                     : 'bg-card text-foreground border-border rounded-tl-md'
                 )}>
                   <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className={cn('text-[10px] font-bold', isCoach ? 'text-white/70' : 'text-muted-foreground')}>
+                    <span className={cn('text-[11px] font-bold', isCoach ? 'text-white/70' : 'text-muted-foreground')}>
                       {isCoach ? 'You' : client.name}
                     </span>
                     <div className="flex items-center gap-1.5">
                       {msg.tag && (
                         <span className={cn(
-                          'text-[9px] font-bold border rounded px-1 py-0.5',
+                          'text-[11px] font-bold border rounded px-1 py-0.5',
                           isCoach ? 'bg-[var(--kc-w-20)] text-white/80 border-white/30' : (TAG_STYLES[msg.tag] || TAG_STYLES.general)
                         )}>
                           {msg.tag}
                         </span>
                       )}
-                      <span className={cn('text-[10px]', isCoach ? 'text-white/60' : 'text-[var(--tc-muted-foreground)]')}>
+                      <span className={cn('text-[11px]', isCoach ? 'text-white/60' : 'text-[var(--tc-muted-foreground)]')}>
                         {msgDate(msg.created_date)}
                       </span>
                     </div>

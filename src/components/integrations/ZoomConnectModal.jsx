@@ -26,7 +26,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
         : db.entities.CoachSettings.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coach-settings'] });
-      toast.success('Zoom settings saved!');
+      toast.success('Zoom settings saved');
       onClose();
     },
   });
@@ -140,7 +140,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
                 <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Disconnect
               </Button>
               <Button
-                className="flex-1 bg-[var(--kc-2d8cff)] hover:bg-[var(--kc-2681f2)]"
+                className="flex-1"
                 onClick={handleSaveSettings}
                 disabled={saveMutation.isPending}
               >
@@ -152,9 +152,9 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
           <div className="space-y-4 mt-1">
             {/* Setup instructions */}
             <div className="bg-accent/10 border border-accent rounded-xl p-4">
-              <p className="text-xs font-semibold text-primary mb-2">Setup Instructions</p>
+              <p className="text-xs font-semibold text-primary mb-2">How to set it up</p>
               <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
-                <li>Go to <a href="https://marketplace.zoom.us" target="_blank" className="text-[var(--kc-2d8cff)] underline font-medium">marketplace.zoom.us</a></li>
+                <li>Go to <a href="https://marketplace.zoom.us" target="_blank" className="underline underline-offset-2 font-medium">marketplace.zoom.us</a></li>
                 <li>Sign in → click <strong>Develop</strong> → <strong>Build App</strong></li>
                 <li>Choose <strong>OAuth</strong> app type</li>
                 <li>Set redirect URL and authorize your app</li>
@@ -163,7 +163,7 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
               <a
                 href="https://marketplace.zoom.us/develop/create"
                 target="_blank"
-                className="flex items-center gap-1 text-xs text-[var(--kc-2d8cff)] font-semibold mt-2.5 hover:underline"
+                className="flex items-center gap-1 text-sm text-foreground font-semibold mt-3 underline underline-offset-4"
               >
                 Open Zoom Marketplace <ExternalLink className="w-3 h-3" />
               </a>
@@ -178,13 +178,13 @@ export default function ZoomConnectModal({ open, onClose, settings }) {
                 onChange={e => setAccessToken(e.target.value)}
                 type="password"
               />
-              <p className="text-[10px] text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Token is stored securely and used only to create meeting links.
               </p>
             </div>
 
             <Button
-              className="w-full bg-[var(--kc-2d8cff)] hover:bg-[var(--kc-2681f2)]"
+              className="w-full"
               onClick={handleConnect}
               disabled={saveMutation.isPending || !accessToken.trim()}
             >

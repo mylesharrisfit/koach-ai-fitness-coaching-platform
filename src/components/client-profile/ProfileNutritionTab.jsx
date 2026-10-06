@@ -20,7 +20,7 @@ function MacroChip({ label, value, unit = 'g', color }) {
   return (
     <div className={cn('flex flex-col items-center px-3 py-2 rounded-xl text-center flex-1', color)}>
       <span className="text-sm font-bold tabular-nums leading-tight">{value ?? '—'}{unit === 'kcal' ? '' : unit}</span>
-      <span className="text-[10px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
+      <span className="text-[11px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
     </div>
   );
 }
@@ -65,7 +65,7 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 30 }}
-        className="bg-card rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+        className="bg-card rounded-xl w-full max-w-md overflow-hidden"
       >
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-bold text-foreground">Assign Nutrition Plan</h3>
@@ -89,7 +89,7 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
               <span className="text-xl">{plan.emoji || '🥗'}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{plan.title}</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
                   {plan.calories ? ` · ${plan.calories} kcal` : ''}
                 </p>
@@ -126,7 +126,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
   };
 
   if (!assigned) return (
-    <div className="bg-card rounded-2xl border border-border p-6 flex flex-col items-center text-center gap-3">
+    <div className="bg-card rounded-xl border border-border p-6 flex flex-col items-center text-center gap-3">
       <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
         <Apple className="w-5 h-5 text-muted-foreground" />
       </div>
@@ -157,7 +157,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-card rounded-2xl border border-border p-4 space-y-3"
+      className="bg-card rounded-xl border border-border p-4 space-y-3"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
@@ -170,7 +170,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
           </div>
         </div>
         <span className={cn(
-          'text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
+          'text-[11px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
           isHabits
             ? 'bg-ai/10 text-ai border-ai'
             : 'bg-success/10 text-success border-success'
@@ -181,7 +181,7 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
 
       {!isHabits && assigned.calories > 0 && (
         <div className="flex gap-2">
-          <MacroChip label="Calories" value={assigned.calories} unit="kcal" color="bg-warning/10 text-orange-700" />
+          <MacroChip label="Calories" value={assigned.calories} unit="kcal" color="bg-warning/10 text-warning" />
           {assigned.protein_g > 0 && <MacroChip label="Protein" value={assigned.protein_g} color="bg-accent text-primary" />}
           {assigned.carbs_g   > 0 && <MacroChip label="Carbs"   value={assigned.carbs_g}   color="bg-warning/10 text-warning" />}
           {assigned.fats_g    > 0 && <MacroChip label="Fats"    value={assigned.fats_g}     color="bg-destructive/10 text-destructive" />}
@@ -242,10 +242,10 @@ function TodayFoodLog({ client, assignedPlan }) {
   const targetCals = assignedPlan?.calories || 0;
   const targetProtein = assignedPlan?.protein_g || 0;
 
-  if (isLoading) return <div className="h-24 bg-card rounded-2xl animate-pulse border border-border" />;
+  if (isLoading) return <div className="h-24 bg-card rounded-xl animate-pulse border border-border" />;
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden">
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Utensils className="w-3.5 h-3.5 text-muted-foreground" />
@@ -263,7 +263,7 @@ function TodayFoodLog({ client, assignedPlan }) {
               {totalCals}{targetCals > 0 ? ` / ${targetCals}` : ''} kcal
             </span>
           </div>
-          {targetCals > 0 && <ProgressBar value={totalCals} max={targetCals} color="bg-orange-400" />}
+          {targetCals > 0 && <ProgressBar value={totalCals} max={targetCals} color="bg-partial" />}
           {targetProtein > 0 && (
             <>
               <div className="flex items-center justify-between text-xs">
@@ -289,7 +289,7 @@ function TodayFoodLog({ client, assignedPlan }) {
               <div key={mealName}>
                 <div className="flex items-center justify-between px-4 py-2 bg-background">
                   <span className="text-xs font-semibold text-foreground">{mealName}</span>
-                  {mealCals > 0 && <span className="text-[11px] font-semibold text-orange-600 tabular-nums">{mealCals} kcal</span>}
+                  {mealCals > 0 && <span className="text-[11px] font-semibold text-warning tabular-nums">{mealCals} kcal</span>}
                 </div>
                 {items.map((item, i) => (
                   <div key={i} className="flex items-center justify-between px-4 py-2 last:pb-2">
@@ -301,7 +301,7 @@ function TodayFoodLog({ client, assignedPlan }) {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-medium shrink-0 ml-2">
+                    <div className="flex items-center gap-2 text-[11px] font-medium shrink-0 ml-2">
                       {item.protein > 0  && <span className="text-primary">{item.protein}P</span>}
                       {item.carbs > 0    && <span className="text-warning">{item.carbs}C</span>}
                       {item.fats > 0     && <span className="text-destructive">{item.fats}F</span>}
@@ -357,7 +357,7 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-4 space-y-3">
+    <div className="bg-card rounded-xl border border-border p-4 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-3.5 h-3.5 text-muted-foreground" />
@@ -384,13 +384,13 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
                 isToday(day) && 'ring-2 ring-primary ring-offset-1'
               )}
             />
-            <span className="text-[9px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
+            <span className="text-[11px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
             <span className="text-[8px] text-[var(--tc-muted-foreground)]">{format(day, 'd')}</span>
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-3 text-[10px] text-muted-foreground flex-wrap">
+      <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-success inline-block" /> Hit target</span>
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-warning inline-block" /> Logged, missed</span>
         <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-border inline-block" /> Nothing logged</span>
@@ -408,7 +408,7 @@ function PlanHistory({ client, allPlans }) {
   );
 
   if (history.length === 0) return (
-    <div className="bg-card rounded-2xl border border-border p-4">
+    <div className="bg-card rounded-xl border border-border p-4">
       <div className="flex items-center gap-2 mb-3">
         <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
         <span className="text-xs font-semibold text-foreground">Plan History</span>
@@ -418,7 +418,7 @@ function PlanHistory({ client, allPlans }) {
   );
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-4 space-y-3">
+    <div className="bg-card rounded-xl border border-border p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
         <span className="text-xs font-semibold text-foreground">Plan History</span>
@@ -435,7 +435,7 @@ function PlanHistory({ client, allPlans }) {
                 <span className="text-base">{plan.emoji || '🥗'}</span>
                 <div>
                   <p className="text-xs font-semibold text-foreground">{plan.title}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     {plan.tracking_mode === 'habits' ? 'Habit Mode' : 'Macro Tracking'}
                     {plan.calories ? ` · ${plan.calories} kcal` : ''}
                   </p>
@@ -466,7 +466,7 @@ export default function ProfileNutritionTab({ client }) {
   if (isLoading) return (
     <div className="space-y-3">
       {[1, 2, 3].map(i => (
-        <div key={i} className="h-24 bg-card rounded-2xl animate-pulse border border-border" />
+        <div key={i} className="h-24 bg-card rounded-xl animate-pulse border border-border" />
       ))}
     </div>
   );

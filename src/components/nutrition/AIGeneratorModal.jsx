@@ -363,7 +363,7 @@ function AccordionSection({ icon: Icon, title, complete, children, defaultOpen =
           {complete ? <Check className="w-3.5 h-3.5 text-success" /> : <Icon className="w-3.5 h-3.5 text-muted-foreground" />}
         </div>
         <span className="text-sm font-bold flex-1">{title}</span>
-        {complete && <span className="text-[10px] font-semibold text-success bg-success/10 px-2 py-0.5 rounded-full">Done</span>}
+        {complete && <span className="text-xs font-semibold text-success bg-success/10 px-2 py-0.5 rounded-full">Done</span>}
         <ChevronDown className={cn('w-4 h-4 text-muted-foreground transition-transform', open && 'rotate-180')} />
       </button>
       <AnimatePresence initial={false}>
@@ -434,16 +434,16 @@ function WeightLossRateSelector({ value, onChange }) {
               </span>
               {rate.warning && <span className="text-xs">⚠️</span>}
             </div>
-            <span className="text-[10px] text-muted-foreground mt-0.5">{rate.desc}</span>
+            <span className="text-xs text-muted-foreground mt-0.5">{rate.desc}</span>
             {rate.recommended && (
-              <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+              <span className="absolute -top-2 -right-1 text-xs font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
                 Recommended
               </span>
             )}
           </button>
         ))}
       </div>
-      <p className="text-[10px] text-muted-foreground bg-secondary/50 px-2.5 py-1.5 rounded-lg">
+      <p className="text-xs text-muted-foreground bg-secondary/50 px-2.5 py-1.5 rounded-lg">
         1 lb of fat = ~3,500 calories. Higher deficits risk muscle loss.
       </p>
     </div>
@@ -462,7 +462,7 @@ function Step1Goal({ goal, setGoal, details, setDetails }) {
       <div className="grid grid-cols-2 gap-2.5 mb-4">
         {GOALS.map(g => (
           <button key={g.id} onClick={() => { setGoal(g.id); u('goalSubtype', GOAL_SUBTYPES[g.id]?.[0] || ''); }}
-            className={cn('flex flex-col items-start gap-1.5 p-3.5 rounded-2xl border-2 text-left transition-all duration-150 hover:shadow-md',
+            className={cn('flex flex-col items-start gap-1.5 p-3.5 rounded-xl border-2 text-left transition-all duration-150 hover:shadow-md',
               goal === g.id ? 'border-primary bg-accent/60' : 'border-border bg-card hover:border-primary/40')}
           >
             <div className="flex items-center justify-between w-full">
@@ -768,13 +768,13 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                 const borderColor =
                   opt.color === 'blue'   ? (active ? 'border-primary bg-accent'     : 'border-border hover:border-primary') :
                   opt.color === 'amber'  ? (active ? 'border-warning bg-warning/10'   : 'border-border hover:border-warning') :
-                  opt.color === 'purple' ? (active ? 'border-ai bg-ai/10' : 'border-border hover:border-ai') :
+                  opt.color === 'purple' ? (active ? 'border-border bg-secondary' : 'border-border hover:border-ai') :
                                           (active ? 'border-border bg-muted'     : 'border-border hover:border-border');
                 const labelColor =
                   active
                     ? opt.color === 'blue'   ? 'text-primary'
                     : opt.color === 'amber'  ? 'text-warning'
-                    : opt.color === 'purple' ? 'text-ai'
+                    : opt.color === 'purple' ? 'text-foreground'
                     : 'text-foreground'
                     : 'text-foreground';
                 return (
@@ -788,10 +788,10 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                       <span>{opt.emoji}</span>
                       <span className={`font-bold ${labelColor}`}>{opt.label}</span>
                       {opt.popular && (
-                        <span className="absolute -top-2 -right-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">Popular</span>
+                        <span className="absolute -top-2 -right-1 text-xs font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">Popular</span>
                       )}
                     </div>
-                    <span className="text-[10px] text-muted-foreground mt-0.5">{opt.desc}</span>
+                    <span className="text-xs text-muted-foreground mt-0.5">{opt.desc}</span>
                   </button>
                 );
               })}
@@ -801,7 +801,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
           {/* Sauces & Seasonings */}
           <div>
             <Label className="text-xs font-semibold mb-0.5 block">Sauces & Seasonings</Label>
-            <p className="text-[10px] text-muted-foreground mb-2">Low calorie options to keep meals flavorful</p>
+            <p className="text-xs text-muted-foreground mb-2">Low calorie options to keep meals flavorful</p>
             <div className="flex flex-wrap gap-1.5">
               {CONDIMENTS.map(c => {
                 const active = details.condiments.includes(c.id);
@@ -816,12 +816,12 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                   >
                     <span>{c.emoji}</span>
                     <span>{c.label}</span>
-                    <span className={`text-[10px] font-normal ${active ? 'text-primary/70' : 'text-muted-foreground'}`}>{c.kcal}</span>
+                    <span className={`text-xs font-normal ${active ? 'text-primary/70' : 'text-muted-foreground'}`}>{c.kcal}</span>
                   </button>
                 );
               })}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-2 bg-secondary/50 px-2.5 py-1.5 rounded-lg">
+            <p className="text-xs text-muted-foreground mt-2 bg-secondary/50 px-2.5 py-1.5 rounded-lg">
               These add flavor without significantly impacting your macros
             </p>
           </div>
@@ -839,7 +839,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
             </Select>
           </div>
           <div>
-            <Label className="text-xs font-semibold mb-1.5 block">Allergies / Restrictions <span className="text-destructive font-bold text-[10px]">CRITICAL</span></Label>
+            <Label className="text-xs font-semibold mb-1.5 block">Allergies / Restrictions <span className="text-destructive font-bold text-xs">CRITICAL</span></Label>
             <PillToggle options={ALLERGIES} value={details.allergies} onChange={v => u('allergies', v)} multi />
           </div>
           <div>
@@ -874,7 +874,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-xs font-semibold block">Fast Food Options Needed?</Label>
-              <p className="text-[10px] text-muted-foreground">AI adds exact restaurant orders as alternatives</p>
+              <p className="text-xs text-muted-foreground">AI adds exact restaurant orders as alternatives</p>
             </div>
             <YesNoToggle value={details.fastFoodNeeded} onChange={v => u('fastFoodNeeded', v)} />
           </div>
@@ -963,7 +963,7 @@ function Step2Details({ details, setDetails, goal, macroApproach, setMacroApproa
                         <span className="text-base">{def.emoji || '💊'}</span>
                         <span className="text-sm font-bold text-foreground">{s}</span>
                         {def.timing && (
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-ai/10 text-ai">
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-secondary text-foreground">
                             {def.timing}
                           </span>
                         )}
@@ -1102,7 +1102,7 @@ function Step3Generating({ onDone, macroPayload }) {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center">
+        <div className="w-14 h-14 rounded-xl bg-destructive/10 flex items-center justify-center">
           <span className="text-2xl">❌</span>
         </div>
         <div>
@@ -1119,7 +1119,7 @@ function Step3Generating({ onDone, macroPayload }) {
   return (
     <div className="flex flex-col items-center justify-center py-10 gap-6">
       <motion.div animate={{ scale: [1, 1.15, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-ai flex items-center justify-center shadow-lg"
+        className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-ai flex items-center justify-center shadow-md"
       >
         <Sparkles className="w-8 h-8 text-white" />
       </motion.div>
@@ -1156,14 +1156,14 @@ function MealCard({ meal }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-bold text-foreground">{meal.name}</span>
-            {meal.time && <span className="text-[10px] text-muted-foreground font-medium">{meal.time}</span>}
-            {meal.prepTime && <span className="text-[10px] bg-secondary px-1.5 py-0.5 rounded-full text-muted-foreground">⏱ {meal.prepTime}</span>}
+            {meal.time && <span className="text-xs text-muted-foreground font-medium">{meal.time}</span>}
+            {meal.prepTime && <span className="text-xs bg-secondary px-1.5 py-0.5 rounded-full text-muted-foreground">⏱ {meal.prepTime}</span>}
           </div>
           <div className="flex gap-2 mt-1 flex-wrap">
-            <span className="text-[10px] font-bold text-orange-600">{meal.calories} kcal</span>
-            <span className="text-[10px] font-semibold text-destructive">P {meal.protein}g</span>
-            <span className="text-[10px] font-semibold text-warning">C {meal.carbs}g</span>
-            <span className="text-[10px] font-semibold text-primary">F {meal.fats}g</span>
+            <span className="text-xs font-bold text-foreground">{meal.calories} kcal</span>
+            <span className="text-xs font-semibold text-destructive">P {meal.protein}g</span>
+            <span className="text-xs font-semibold text-warning">C {meal.carbs}g</span>
+            <span className="text-xs font-semibold text-primary">F {meal.fats}g</span>
           </div>
         </div>
         <ChevronDown className={cn('w-4 h-4 text-muted-foreground shrink-0 transition-transform', open && 'rotate-180')} />
@@ -1191,20 +1191,20 @@ function MealCard({ meal }) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline justify-between gap-2">
                       <span className="text-xs font-semibold text-foreground">{food.name}</span>
-                      <span className="text-[10px] text-orange-600 font-bold shrink-0">{food.calories} kcal</span>
+                      <span className="text-xs text-foreground font-bold shrink-0">{food.calories} kcal</span>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-0.5">
                       {food.amount_grams ? (
-                        <span className="text-[10px] text-muted-foreground">{food.amount_grams}g {food.amount_household ? `(${food.amount_household})` : ''}</span>
+                        <span className="text-xs text-muted-foreground">{food.amount_grams}g {food.amount_household ? `(${food.amount_household})` : ''}</span>
                       ) : (
-                        <span className="text-[10px] text-muted-foreground">{food.amount_household || food.amount}</span>
+                        <span className="text-xs text-muted-foreground">{food.amount_household || food.amount}</span>
                       )}
-                      {food.prep_method && <span className="text-[10px] text-ai italic">{food.prep_method}</span>}
+                      {food.prep_method && <span className="text-xs text-foreground italic">{food.prep_method}</span>}
                     </div>
                     <div className="flex gap-2 mt-0.5">
-                      <span className="text-[10px] text-destructive">P {food.protein}g</span>
-                      <span className="text-[10px] text-warning">C {food.carbs}g</span>
-                      <span className="text-[10px] text-primary">F {food.fats}g</span>
+                      <span className="text-xs text-destructive">P {food.protein}g</span>
+                      <span className="text-xs text-warning">C {food.carbs}g</span>
+                      <span className="text-xs text-primary">F {food.fats}g</span>
                     </div>
                   </div>
                 </div>
@@ -1221,14 +1221,14 @@ function MealCard({ meal }) {
                 <div className="mt-2 space-y-1">
                   {meal.option_b && (
                     <div className="px-2.5 py-1.5 rounded-lg bg-success/10 border border-success">
-                      <span className="text-[10px] font-bold text-success">Option B (Quick): </span>
-                      <span className="text-[10px] text-foreground">{meal.option_b}</span>
+                      <span className="text-xs font-bold text-success">Option B (Quick): </span>
+                      <span className="text-xs text-foreground">{meal.option_b}</span>
                     </div>
                   )}
                   {meal.option_c && (
-                    <div className="px-2.5 py-1.5 rounded-lg bg-orange-50 border border-orange-100">
-                      <span className="text-[10px] font-bold text-orange-700">Option C (Out/Fast Food): </span>
-                      <span className="text-[10px] text-foreground">{meal.option_c}</span>
+                    <div className="px-2.5 py-1.5 rounded-lg bg-secondary border border-border">
+                      <span className="text-xs font-bold text-foreground">Option C (Out/Fast Food): </span>
+                      <span className="text-xs text-foreground">{meal.option_c}</span>
                     </div>
                   )}
                 </div>
@@ -1283,7 +1283,7 @@ function Step4Result({ result }) {
       </div>
 
       {/* Summary card */}
-      <div className="bg-gradient-to-br from-accent to-ai/10 border border-accent rounded-2xl p-4 space-y-3">
+      <div className="bg-gradient-to-br from-accent to-ai/10 border border-accent rounded-xl p-4 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-xl">{goalMeta?.emoji}</span>
           <span className="text-sm font-bold px-3 py-1 rounded-full bg-card border border-primary/20 text-primary shadow-sm">{goalMeta?.label}</span>
@@ -1369,7 +1369,7 @@ function Step4Result({ result }) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm font-bold text-foreground">{name}</span>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badgeColor}`}>{badge}</span>
                 </div>
                 {dosage && <p className="text-xs text-foreground font-medium mt-0.5">{dosage}</p>}
                 {purpose && <p className="text-[11px] text-muted-foreground mt-0.5 italic">{purpose}</p>}
@@ -1381,7 +1381,7 @@ function Step4Result({ result }) {
         if (morning.length === 0 && night.length === 0 && sups.length === 0) return null;
 
         return (
-          <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
+          <div className="bg-card border border-border rounded-xl p-4 space-y-3">
             <p className="text-xs font-semibold text-muted-foreground">💊 Supplement Protocol</p>
             {morning.length > 0 && (
               <div>
@@ -1396,7 +1396,7 @@ function Step4Result({ result }) {
               </div>
             )}
             {!hasTiming && sups.length > 0 && (
-              <div className="space-y-2">{sups.map(s => renderRow(s, 'Daily', 'bg-ai/10 text-ai'))}</div>
+              <div className="space-y-2">{sups.map(s => renderRow(s, 'Daily', 'bg-secondary text-foreground'))}</div>
             )}
             <p className="text-[11px] text-warning bg-warning/10 rounded-xl px-3 py-2">
               ⚠️ General recommendations. Coach may adjust based on your specific needs.
@@ -1407,7 +1407,7 @@ function Step4Result({ result }) {
 
       {/* Hydration protocol */}
       {result.hydration && (
-        <div className="bg-accent border border-accent rounded-2xl p-4 space-y-2">
+        <div className="bg-accent border border-accent rounded-xl p-4 space-y-2">
           <p className="text-xs font-semibold text-primary">💧 Hydration Protocol</p>
           <p className="text-sm font-bold text-primary">Daily Target: {result.hydration.daily_oz} oz / ~{Math.round(result.hydration.daily_oz * 0.0296)} L</p>
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
@@ -1426,7 +1426,7 @@ function Step4Result({ result }) {
 
       {/* Macro flexibility rules */}
       {result.macro_flexibility?.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-4 space-y-2">
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
           <p className="text-xs font-semibold text-muted-foreground">🔄 Macro Flexibility Rules</p>
           <div className="space-y-1.5">
             {result.macro_flexibility.map((rule, i) => (
@@ -1441,7 +1441,7 @@ function Step4Result({ result }) {
 
       {/* Coach notes */}
       {result.coach_notes && (
-        <div className="bg-warning/10 border border-warning rounded-2xl p-4 space-y-3">
+        <div className="bg-warning/10 border border-warning rounded-xl p-4 space-y-3">
           <p className="text-xs font-semibold text-warning">📋 Coach Notes</p>
           {result.coach_notes.why_these_calories && (
             <div><p className="text-[11px] font-bold text-warning">Why these calories</p><p className="text-xs text-foreground">{result.coach_notes.why_these_calories}</p></div>
@@ -1460,7 +1460,7 @@ function Step4Result({ result }) {
 
       {/* Client notes */}
       {result.client_notes && (
-        <div className="bg-success/10 border border-success rounded-2xl p-4">
+        <div className="bg-success/10 border border-success rounded-xl p-4">
           <p className="text-xs font-semibold text-success mb-2">💬 Client Summary</p>
           <p className="text-xs text-foreground leading-relaxed">{result.client_notes}</p>
         </div>
@@ -1468,7 +1468,7 @@ function Step4Result({ result }) {
 
       {/* Shopping list */}
       {result.shopping_list?.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-4 space-y-2">
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
           <p className="text-xs font-semibold text-muted-foreground">🛒 Shopping List</p>
           <div className="grid grid-cols-2 gap-1">
             {result.shopping_list.map((item, i) => (
@@ -1483,20 +1483,20 @@ function Step4Result({ result }) {
 
       {/* Weekly overview */}
       {result.weekly_overview && (
-        <div className="bg-secondary/40 border border-border rounded-2xl p-4">
+        <div className="bg-secondary/40 border border-border rounded-xl p-4">
           <p className="text-xs font-semibold text-muted-foreground mb-2">📅 Weekly Overview</p>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">{result.weekly_overview.training_days || result.trainingDays || 4}</p>
-              <p className="text-[10px] text-muted-foreground">Training Days</p>
+              <p className="text-xs text-muted-foreground">Training Days</p>
             </div>
             <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">{result.weekly_overview.avg_daily_calories || result.calories}</p>
-              <p className="text-[10px] text-muted-foreground">Avg Daily Cal</p>
+              <p className="text-xs text-muted-foreground">Avg Daily Cal</p>
             </div>
             <div className="bg-card rounded-xl p-2 border border-border">
               <p className="text-sm font-bold text-foreground">${result.weekly_overview.estimated_weekly_cost_usd || '—'}</p>
-              <p className="text-[10px] text-muted-foreground">Est. Weekly Cost</p>
+              <p className="text-xs text-muted-foreground">Est. Weekly Cost</p>
             </div>
           </div>
         </div>

@@ -127,7 +127,7 @@ export default function GoalTemplatesManager({ onClose }) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-lg flex flex-col" style={{ maxHeight: '85vh' }}
+      <div className="relative bg-card rounded-xl w-full max-w-lg flex flex-col" style={{ maxHeight: '85vh' }}
         onClick={e => e.stopPropagation()}>
 
         {/* Header */}
@@ -170,11 +170,11 @@ export default function GoalTemplatesManager({ onClose }) {
               return <TemplateEditForm key={t.id} template={t} onSaved={() => { setEditingId(null); refresh(); }} onCancel={() => setEditingId(null)} />;
             }
             return (
-              <div key={t.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3 shadow-sm">
+              <div key={t.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="text-sm font-semibold text-foreground truncate">{t.name}</p>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
                       style={{ background: meta.bg, color: meta.color }}>{meta.label}</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground">

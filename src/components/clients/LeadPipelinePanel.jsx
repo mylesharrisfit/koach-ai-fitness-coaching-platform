@@ -15,7 +15,7 @@ const PIPELINE_STAGES = [
   { key: 'dmd', label: "DM'd", color: 'bg-accent text-primary border-accent', icon: MessageCircle },
   { key: 'call_booked', label: 'Call Booked', color: 'bg-warning/10 text-warning border-warning', icon: PhoneCall },
   { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-ai/10 text-ai border-ai', icon: Send },
-  { key: 'closed', label: 'Closed 🎉', color: 'bg-success/10 text-success border-success' },
+  { key: 'closed', label: 'Closed ', color: 'bg-success/10 text-success border-success' },
   { key: 'lost', label: 'Lost', color: 'bg-destructive/10 text-destructive border-destructive' },
 ];
 
@@ -76,7 +76,7 @@ export default function LeadPipelinePanel({ client, onUpdate }) {
           className={cn('h-9 text-sm', isOverdue ? 'border-destructive text-destructive focus-visible:ring-destructive' : '')}
         />
         {isOverdue && (
-          <p className="text-xs text-destructive mt-1 flex items-center gap-1">⚠️ Follow-up overdue since {format(new Date(followUp), 'MMM d')}</p>
+          <p className="text-xs text-destructive mt-1 flex items-center gap-1">Follow-up overdue since {format(new Date(followUp), 'MMM d')}</p>
         )}
         {followUp && !isOverdue && (
           <p className="text-xs text-muted-foreground mt-1">Scheduled for {format(new Date(followUp), 'EEEE, MMM d, yyyy')}</p>

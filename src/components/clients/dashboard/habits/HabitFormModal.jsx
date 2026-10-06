@@ -73,7 +73,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
-      <div className="relative bg-card rounded-2xl shadow-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+      <div className="relative bg-card rounded-xl w-full max-w-md" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">

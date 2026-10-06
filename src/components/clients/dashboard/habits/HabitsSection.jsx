@@ -112,7 +112,7 @@ export default function HabitsSection({ client }) {
         {/* Empty state */}
         {!isLoading && habits.length === 0 && (
           <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <div className="w-16 h-16 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-4">
               <Sparkles className="w-7 h-7 text-ai" />
             </div>
             <p className="text-sm font-bold text-foreground mb-1">No habits yet</p>
@@ -133,9 +133,8 @@ export default function HabitsSection({ client }) {
         {active.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-0.5 h-3 rounded-full bg-ai" />
               <p className="text-xs font-semibold text-muted-foreground">Active</p>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-ai/10 text-ai">{active.length}</span>
+              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-ai/10 text-ai">{active.length}</span>
             </div>
             {active.map(h => (
               <HabitCard
@@ -154,7 +153,6 @@ export default function HabitsSection({ client }) {
         {inactive.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-0.5 h-3 rounded-full bg-border" />
               <p className="text-xs font-semibold text-muted-foreground">Inactive</p>
             </div>
             {inactive.map(h => (

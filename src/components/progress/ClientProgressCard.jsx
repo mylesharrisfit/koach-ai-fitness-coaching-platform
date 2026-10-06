@@ -6,7 +6,7 @@ import ClientAnalyticsView from './ClientAnalyticsView';
 import AdherenceScore from '../adherence/AdherenceScore';
 import { averageAdherenceScore } from '@/lib/adherence';
 
-const moodEmojis = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
+const moodEmojis = { great: '', good: '', okay: '', tired: '', stressed: '' };
 
 function getTrend(checkIns, field) {
   const vals = checkIns.filter(ci => ci[field] != null).map(ci => ci[field]);
@@ -44,7 +44,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
   const plateau = detectPlateau(checkIns, 'weight');
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden transition-all hover:border-primary shadow-sm">
+    <div className="bg-card border border-border rounded-xl overflow-hidden transition-all hover:border-primary">
       {/* Header row */}
       <button
         className="w-full flex items-center gap-4 p-5 text-left hover:bg-muted transition-all"

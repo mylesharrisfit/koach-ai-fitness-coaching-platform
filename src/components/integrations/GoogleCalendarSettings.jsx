@@ -50,7 +50,7 @@ export default function GoogleCalendarSettings({ open, onClose }) {
         : db.entities.CoachSettings.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coach-settings'] });
-      toast.success('Calendar settings saved!');
+      toast.success('Calendar settings saved');
       onClose();
     },
   });

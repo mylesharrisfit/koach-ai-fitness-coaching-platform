@@ -21,7 +21,7 @@ const METRICS = [
 
 const MEASUREMENT_KEYS = ['chest', 'waist', 'hips', 'arms', 'thighs'];
 
-const MOOD_EMOJI = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😟' };
+const MOOD_EMOJI = { great: '', good: '', okay: '', tired: '', stressed: '' };
 const MOOD_COLOR = { great: 'var(--tc-success)', good: 'var(--tc-primary)', okay: 'var(--tc-warning)', tired: 'var(--tc-ai)', stressed: 'var(--tc-destructive)' };
 
 function StatPill({ label, value, unit, delta, deltaInvert = false, icon: Icon, color }) {
@@ -29,7 +29,7 @@ function StatPill({ label, value, unit, delta, deltaInvert = false, icon: Icon, 
   const isGood = deltaInvert ? !isPositive : isPositive;
   const deltaColor = delta === 0 ? 'text-muted-foreground' : isGood ? 'text-success' : 'text-destructive';
   return (
-    <div className="bg-card rounded-2xl border border-border p-4 flex flex-col gap-1">
+    <div className="bg-card rounded-xl border border-border p-4 flex flex-col gap-1">
       <div className="flex items-center gap-1.5 mb-1">
         {Icon && <Icon className="w-3.5 h-3.5" style={{ color }} />}
         <span className="text-xs font-semibold text-muted-foreground">{label}</span>
@@ -47,7 +47,7 @@ function StatPill({ label, value, unit, delta, deltaInvert = false, icon: Icon, 
 function MetricChart({ data, dataKey, label, unit, color, domain }) {
   if (!data || data.length < 2) return null;
   return (
-    <div className="bg-card rounded-2xl border border-border p-4">
+    <div className="bg-card rounded-xl border border-border p-4">
       <h3 className="text-xs font-semibold text-muted-foreground mb-4">{label}</h3>
       <ResponsiveContainer width="100%" height={160}>
         <LineChart data={data} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
@@ -65,8 +65,8 @@ function MetricChart({ data, dataKey, label, unit, color, domain }) {
   );
 }
 
-export default function ProfileProgressTab({ client, checkIns }) {
-  const [activeSection, setActiveSection] = useState('ai');
+export default function ProfileProgressTab({ client, checkIns, initialSection = 'ai' }) {
+  const [activeSection, setActiveSection] = useState(initialSection);
 
   const sorted = [...checkIns].filter(ci => ci.date).sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -113,7 +113,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
   const avgNutrition = nutritionData.length ? Math.round(nutritionData.reduce((s, d) => s + d.compliance_nutrition, 0) / nutritionData.length) : null;
 
   const SECTIONS = [
-    { key: 'ai',          label: '✨ AI Analysis' },
+    { key: 'ai',          label: 'AI Analysis' },
     { key: 'body',        label: 'Body' },
     { key: 'wellness',    label: 'Wellness' },
     { key: 'compliance',  label: 'Compliance' },
@@ -124,7 +124,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
   const [aiSection] = useState('ai');
 
   if (checkIns.length === 0) return (
-    <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
+    <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
       <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
         <TrendingUp className="w-5 h-5 text-muted-foreground" />
       </div>
@@ -136,7 +136,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
   return (
     <div className="space-y-4">
       {/* Section tabs */}
-      <div className="bg-card rounded-2xl border border-border overflow-x-auto">
+      <div className="bg-card rounded-xl border border-border overflow-x-auto">
         <div className="flex min-w-max px-2">
           {SECTIONS.map(s => (
             <button
@@ -195,7 +195,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
 
           {/* Mini goal bar if target weight set */}
           {client.current_weight && client.target_weight && (
-            <div className="bg-card rounded-2xl border border-border p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <h3 className="text-xs font-semibold text-muted-foreground mb-3">Goal Progress</h3>
               <div className="flex justify-between text-xs text-muted-foreground mb-1">
                 <span>Start: {client.current_weight} lbs</span>
@@ -237,13 +237,13 @@ export default function ProfileProgressTab({ client, checkIns }) {
 
           {/* Mood Timeline */}
           {moodData.length > 0 && (
-            <div className="bg-card rounded-2xl border border-border p-4">
+            <div className="bg-card rounded-xl border border-border p-4">
               <h3 className="text-xs font-semibold text-muted-foreground mb-3">Mood Timeline</h3>
               <div className="flex flex-wrap gap-2">
                 {moodData.slice(-20).map((d, i) => (
                   <div key={i} className="flex flex-col items-center gap-0.5">
                     <span className="text-xl">{MOOD_EMOJI[d.mood]}</span>
-                    <span className="text-[9px] text-muted-foreground">{d.date}</span>
+                    <span className="text-[11px] text-muted-foreground">{d.date}</span>
                   </div>
                 ))}
               </div>
@@ -280,7 +280,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
             nutritionData.forEach(d => { merged[d.date] = { ...merged[d.date], date: d.date, nutrition: d.compliance_nutrition }; });
             const combined = Object.values(merged).sort((a, b) => new Date(a.date) - new Date(b.date));
             return (
-              <div className="bg-card rounded-2xl border border-border p-4">
+              <div className="bg-card rounded-xl border border-border p-4">
                 <h3 className="text-xs font-semibold text-muted-foreground mb-4">Training & Nutrition Compliance</h3>
                 <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={combined} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
@@ -303,7 +303,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
           })()}
 
           {/* Compliance history table */}
-          <div className="bg-card rounded-2xl border border-border p-4">
+          <div className="bg-card rounded-xl border border-border p-4">
             <h3 className="text-xs font-semibold text-muted-foreground mb-3">Week-by-Week Breakdown</h3>
             <div className="space-y-2">
               {sorted.filter(ci => ci.compliance_training != null || ci.compliance_nutrition != null).slice(-10).reverse().map(ci => (
@@ -343,7 +343,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
             const first = sorted.find(ci => ci.measurements && Object.values(ci.measurements).some(v => v != null));
             if (!latest) return null;
             return (
-              <div className="bg-card rounded-2xl border border-border p-4">
+              <div className="bg-card rounded-xl border border-border p-4">
                 <h3 className="text-xs font-semibold text-muted-foreground mb-3">Latest vs Starting (inches)</h3>
                 {MEASUREMENT_KEYS.map(k => {
                   const latestVal = latest.measurements?.[k];
@@ -372,7 +372,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
           {/* Individual measurement charts */}
           {MEASUREMENT_KEYS.map(k => (
             measurementData[k].length >= 2 ? (
-              <div key={k} className="bg-card rounded-2xl border border-border p-4">
+              <div key={k} className="bg-card rounded-xl border border-border p-4">
                 <h3 className="text-xs font-semibold text-muted-foreground mb-4 capitalize">{k} (inches)</h3>
                 <ResponsiveContainer width="100%" height={130}>
                   <LineChart data={measurementData[k]} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
@@ -388,7 +388,7 @@ export default function ProfileProgressTab({ client, checkIns }) {
           ))}
 
           {MEASUREMENT_KEYS.every(k => measurementData[k].length < 2) && (
-            <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-10 text-center">
+            <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-10 text-center">
               <Ruler className="w-8 h-8 text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No measurement data yet</p>
               <p className="text-xs text-[var(--tc-muted-foreground)] mt-0.5">Add measurements in check-ins to see trends</p>
@@ -401,14 +401,14 @@ export default function ProfileProgressTab({ client, checkIns }) {
       {activeSection === 'photos' && (
         <div className="space-y-4">
           {checkIns.filter(ci => ci.photo_urls?.length).length === 0 ? (
-            <div className="bg-card rounded-2xl border border-border flex flex-col items-center justify-center py-14 text-center">
+            <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-14 text-center">
               <Camera className="w-8 h-8 text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No progress photos yet</p>
               <p className="text-xs text-[var(--tc-muted-foreground)] mt-0.5">Photos submitted with check-ins will appear here</p>
             </div>
           ) : (
             checkIns.filter(ci => ci.photo_urls?.length).map(ci => (
-              <div key={ci.id} className="bg-card rounded-2xl border border-border p-4">
+              <div key={ci.id} className="bg-card rounded-xl border border-border p-4">
                 <p className="text-xs font-semibold text-muted-foreground mb-3">{format(new Date(ci.date), 'MMMM d, yyyy')}</p>
                 <div className="grid grid-cols-3 gap-2">
                   {ci.photo_urls.map((url, i) => (

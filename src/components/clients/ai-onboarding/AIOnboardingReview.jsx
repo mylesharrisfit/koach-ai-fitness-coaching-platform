@@ -100,7 +100,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold text-muted-foreground">{workout.exercises?.length || 0} exercises</span>
+                      <span className="text-[11px] font-semibold text-muted-foreground">{workout.exercises?.length || 0} exercises</span>
                       {expandedDay === di ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
                     </div>
                   </button>
@@ -121,7 +121,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
                           </div>
                           <div className="flex-shrink-0 text-right">
                             <p className="text-xs font-bold text-foreground">{ex.sets} × {ex.reps}</p>
-                            {ex.rpe && <p className="text-[10px] text-muted-foreground">RPE {ex.rpe}</p>}
+                            {ex.rpe && <p className="text-[11px] text-muted-foreground">RPE {ex.rpe}</p>}
                           </div>
                         </div>
                       ))}
@@ -150,7 +150,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
                   ].map((s, i) => (
                     <div key={i} className="text-center p-3 rounded-xl" style={{ background: 'var(--tc-muted)' }}>
                       <p className="text-base font-bold text-foreground">{s.value}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">{s.label}</p>
                     </div>
                   ))}
                 </div>
@@ -172,7 +172,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
                     <div className="flex items-center gap-3 text-right">
                       <div>
                         <p className="text-sm font-bold text-foreground">{meal.calories} kcal</p>
-                        <p className="text-[10px] text-muted-foreground">P:{meal.protein}g · C:{meal.carbs}g · F:{meal.fats}g</p>
+                        <p className="text-[11px] text-muted-foreground">P:{meal.protein}g · C:{meal.carbs}g · F:{meal.fats}g</p>
                       </div>
                     </div>
                   </div>
@@ -212,7 +212,7 @@ export default function AIOnboardingReview({ client, program: initialProgram, me
             onClick={handleApprove}
             disabled={saving}
             className="flex items-center gap-2 text-sm font-bold text-white px-6 py-2.5 rounded-xl transition-all disabled:opacity-50"
-            style={{ background: saving ? 'var(--tc-muted-foreground)' : 'linear-gradient(135deg, var(--tc-success), var(--tc-primary))' }}
+            style={{ background: saving ? 'var(--tc-muted-foreground)' : 'var(--tc-success)' }}
           >
             <CheckCircle className="w-4 h-4" />
             {saving ? 'Saving…' : 'Approve & Save to Client'}

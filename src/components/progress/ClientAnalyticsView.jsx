@@ -101,7 +101,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
             <button
               key={c.key}
               onClick={() => setActiveChart(c.key)}
-              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${activeChart === c.key ? 'bg-sidebar text-white' : 'bg-card border border-border text-muted-foreground hover:border-foreground hover:text-foreground'}`}
+              className={`px-3 py-1 text-xs rounded-lg font-medium transition-all ${activeChart === c.key ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-muted-foreground hover:border-foreground hover:text-foreground'}`}
             >
               {c.label}
             </button>

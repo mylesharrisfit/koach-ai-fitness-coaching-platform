@@ -8,9 +8,9 @@ function WeightArrow({ current, prev }) {
   if (!current || !prev) return null;
   const diff = (current - prev).toFixed(1);
   const n = Number(diff);
-  if (n < 0) return <span className="text-success flex items-center gap-0.5 text-[10px] font-bold"><TrendingDown className="w-3 h-3" />{diff}</span>;
-  if (n > 0) return <span className="text-destructive flex items-center gap-0.5 text-[10px] font-bold"><TrendingUp className="w-3 h-3" />+{diff}</span>;
-  return <span className="text-muted-foreground flex items-center gap-0.5 text-[10px]"><Minus className="w-3 h-3" />0</span>;
+  if (n < 0) return <span className="text-success flex items-center gap-0.5 text-[11px] font-bold"><TrendingDown className="w-3 h-3" />{diff}</span>;
+  if (n > 0) return <span className="text-destructive flex items-center gap-0.5 text-[11px] font-bold"><TrendingUp className="w-3 h-3" />+{diff}</span>;
+  return <span className="text-muted-foreground flex items-center gap-0.5 text-[11px]"><Minus className="w-3 h-3" />0</span>;
 }
 
 function MiniTrendBar({ checkIns }) {
@@ -108,7 +108,7 @@ export default function ClientFeedbackHistory({ checkIns = [] }) {
                         <span className={cn('text-[11px] font-bold', scoreColor(score))}>{score}% adh.</span>
                       )}
                       {ci.compliance_training != null && (
-                        <span className="text-[10px] text-muted-foreground">
+                        <span className="text-[11px] text-muted-foreground">
                           T:{ci.compliance_training}% N:{ci.compliance_nutrition ?? '?'}%
                         </span>
                       )}

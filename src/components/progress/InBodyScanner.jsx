@@ -68,8 +68,8 @@ function SegmentalDiagram({ data }) {
           return (
             <div key={seg.label} className="flex flex-col items-center gap-1 bg-background rounded-lg p-2 text-center">
               <p className="text-xs text-muted-foreground font-semibold">{seg.label}</p>
-              <p className="text-sm font-bold text-foreground">{seg.muscle} <span className="text-[9px] font-normal text-muted-foreground">lbs</span></p>
-              {seg.fat != null && <p className="text-[10px] text-warning">Fat: {seg.fat}</p>}
+              <p className="text-sm font-bold text-foreground">{seg.muscle} <span className="text-[11px] font-normal text-muted-foreground">lbs</span></p>
+              {seg.fat != null && <p className="text-[11px] text-warning">Fat: {seg.fat}</p>}
             </div>
           );
         })}
@@ -98,7 +98,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       {results.raw_text && (
         <div className="bg-muted border border-accent rounded-lg p-3 text-xs text-primary">
-          🤖 {results.raw_text}
+          {results.raw_text}
         </div>
       )}
 
@@ -461,7 +461,7 @@ Please extract all metrics and return ONLY this JSON with no markdown:
             className="flex items-center gap-3 bg-muted border border-accent rounded-xl p-4">
             <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-primary">🤖 AI is reading your scan...</p>
+              <p className="text-sm font-semibold text-primary">AI is reading your scan...</p>
               <p className="text-xs text-muted-foreground mt-0.5">Extracting all metrics automatically</p>
             </div>
           </motion.div>

@@ -1,16 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { format, parse } from 'date-fns';
-import { X, Check, AlertCircle, Phone, Zap, Target, TrendingUp, HelpCircle } from 'lucide-react';
+import { X, Check, AlertCircle, Phone, ClipboardList, Target, TrendingUp, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const SESSION_TYPES = [
-  { id: 'checkin', label: 'Check-in Call', icon: Phone, color: 'var(--tc-primary)', bgColor: 'bg-accent' },
-  { id: 'program', label: 'Program Review', icon: Zap, color: 'var(--tc-ai)', bgColor: 'bg-ai/10' },
-  { id: 'onboarding', label: 'Onboarding Call', icon: Target, color: 'var(--tc-success)', bgColor: 'bg-success/10' },
-  { id: 'progress', label: 'Progress Review', icon: TrendingUp, color: 'var(--tc-warning)', bgColor: 'bg-warning/10' },
-  { id: 'consultation', label: 'Free Consultation', icon: HelpCircle, color: 'var(--tc-muted-foreground)', bgColor: 'bg-muted' },
+  { id: 'checkin', label: 'Check-in call', icon: Phone, color: 'var(--tc-foreground)', bgColor: 'bg-secondary' },
+  { id: 'program', label: 'Program review', icon: ClipboardList, color: 'var(--tc-foreground)', bgColor: 'bg-secondary' },
+  { id: 'onboarding', label: 'Onboarding call', icon: Target, color: 'var(--tc-foreground)', bgColor: 'bg-secondary' },
+  { id: 'progress', label: 'Progress review', icon: TrendingUp, color: 'var(--tc-foreground)', bgColor: 'bg-secondary' },
+  { id: 'consultation', label: 'Free consultation', icon: HelpCircle, color: 'var(--tc-foreground)', bgColor: 'bg-secondary' },
 ];
 
 const TIME_SLOTS = Array.from({ length: (22 - 6) * 4 }, (_, i) => {
@@ -140,7 +140,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
       });
     });
 
-    toast.success(`Session scheduled with ${clientNames} on ${format(parse(date, 'yyyy-MM-dd', new Date()), 'MMM d')} at ${startTime} ✓`);
+    toast.success(`Session scheduled with ${clientNames} on ${format(parse(date, 'yyyy-MM-dd', new Date()), 'MMM d')} at ${startTime}`);
     if (sendConfirmation) {
       toast.success(`Confirmation sent to ${clientNames} 📩`);
     }
@@ -159,17 +159,17 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           onClick={e => e.stopPropagation()}
-          className="bg-card rounded-2xl shadow-2xl max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
+          className="bg-card rounded-xl shadow-[0_0_0_1px_rgb(var(--border))] max-w-[500px] w-full max-h-[90vh] overflow-y-auto"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-primary to-ai px-6 py-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold text-white font-heading">Schedule a Session</h2>
-            <button onClick={onClose} className="p-1 rounded-lg hover:bg-[var(--kc-w-20)] transition-colors">
-              <X className="w-5 h-5 text-white" />
+          <div className="border-b border-border px-6 py-4 flex items-center justify-between">
+            <h2 className="text-[22px] text-foreground">Book a session</h2>
+            <button onClick={onClose} className="p-1 rounded-md hover:bg-accent transition-colors">
+              <X className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
 
@@ -183,7 +183,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                   onChange={e => { setIsGroup(e.target.checked); setSelectedClients([]); }}
                   className="w-4 h-4 rounded border-border"
                 />
-                <span className="text-sm font-medium text-foreground">Group Session</span>
+                <span className="text-sm font-medium text-foreground">Group session</span>
               </label>
             </div>
 
@@ -205,7 +205,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                       initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
-                      className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto"
+                      className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-lg shadow-[0_0_0_1px_rgb(var(--border))] z-10 max-h-64 overflow-y-auto"
                     >
                       <div className="p-2 sticky top-0 bg-card border-b border-border">
                         <input
@@ -227,7 +227,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                               selectedClients.includes(c.id) ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
                             )}
                           >
-                            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+                            <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-[11px] font-bold text-foreground">
                               {c.name[0]}
                             </div>
                             <div className="flex-1">
@@ -246,9 +246,9 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
 
             <div className="h-px bg-border" />
 
-            {/* Session Type */}
+            {/* Type/}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Session Type *</label>
+              <label className="text-sm font-semibold text-foreground">Type</label>
               <div className="grid grid-cols-2 gap-2">
                 {SESSION_TYPES.map(t => {
                   const Icon = t.icon;
@@ -275,7 +275,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold text-foreground">Date *</label>
+                  <label className="text-sm font-semibold text-foreground">Date</label>
                   <input
                     type="date"
                     value={date}
@@ -285,7 +285,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                   {errors.date && <p className="text-xs text-destructive">{errors.date}</p>}
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold text-foreground">Start Time *</label>
+                  <label className="text-sm font-semibold text-foreground">Starts</label>
                   <select
                     value={startTime}
                     onChange={e => setStartTime(e.target.value)}
@@ -297,9 +297,9 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                 </div>
               </div>
 
-              {/* Duration */}
+              {/* Length/}
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Duration *</label>
+                <label className="text-sm font-semibold text-foreground">Length</label>
                 <div className="grid grid-cols-3 gap-2">
                   {DURATIONS.map(d => (
                     <button
@@ -378,7 +378,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                   onChange={e => setSendConfirmation(e.target.checked)}
                   className="w-4 h-4 rounded border-border"
                 />
-                <span className="text-sm font-medium text-foreground">Send confirmation to client</span>
+                <span className="text-sm font-medium text-foreground">Send the client a confirmation</span>
               </label>
 
               <div className="space-y-2">
@@ -415,7 +415,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
 
             {/* Summary */}
             <div className="bg-background rounded-xl p-4 space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground">Session Summary</p>
+              <p className="text-xs font-semibold text-muted-foreground">Summary</p>
               <div className="space-y-1">
                 {selectedClients.map(id => {
                   const c = clients.find(cl => cl.id === id);
@@ -429,7 +429,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
                 {format(parse(date, 'yyyy-MM-dd', new Date()), 'MMM d, yyyy')} • {startTime} - {endTime}
               </p>
               {sendConfirmation && (
-                <p className="text-xs text-muted-foreground">✓ Confirmation will be sent</p>
+                <p className="text-xs text-muted-foreground">A confirmation will be sent.</p>
               )}
             </div>
 
@@ -443,9 +443,9 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
               </button>
               <button
                 onClick={handleSubmit}
-                className="flex-1 px-4 py-2.5 rounded-lg text-white font-semibold bg-gradient-to-r from-primary to-ai hover:opacity-90 transition-opacity"
+                className="flex-1 px-4 py-2.5 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/85 transition-colors"
               >
-                Schedule Session
+                Book session
               </button>
             </div>
           </div>

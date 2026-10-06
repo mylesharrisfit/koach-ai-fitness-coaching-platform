@@ -10,11 +10,11 @@ const FITNESS_LEVELS = [
   { key: 'advanced', label: 'Advanced', desc: '3+ years' },
 ];
 const GOAL_OPTIONS = [
-  { key: 'weight_loss', label: 'Fat Loss', emoji: '🔥' },
-  { key: 'muscle_gain', label: 'Muscle Gain', emoji: '💪' },
-  { key: 'strength', label: 'Strength', emoji: '🏋️' },
-  { key: 'endurance', label: 'Endurance', emoji: '🏃' },
-  { key: 'general_fitness', label: 'General Fitness', emoji: '⚡' },
+  { key: 'weight_loss', label: 'Fat Loss', emoji: '' },
+  { key: 'muscle_gain', label: 'Muscle Gain', emoji: '' },
+  { key: 'strength', label: 'Strength', emoji: '' },
+  { key: 'endurance', label: 'Endurance', emoji: '' },
+  { key: 'general_fitness', label: 'General Fitness', emoji: '' },
 ];
 
 export default function AIOnboardingQuestionnaire({ client, onGenerate, error }) {
@@ -99,7 +99,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
                   form.fitness_level === l.key ? 'border-primary bg-accent' : 'border-border bg-muted hover:border-border'
                 }`}>
                 <p className={`text-xs font-bold ${form.fitness_level === l.key ? 'text-primary' : 'text-foreground'}`}>{l.label}</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{l.desc}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{l.desc}</p>
               </button>
             ))}
           </div>
@@ -243,7 +243,7 @@ export default function AIOnboardingQuestionnaire({ client, onGenerate, error })
             onClick={handleSubmit}
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 text-sm font-bold text-primary-foreground py-3.5 rounded-xl transition-all disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
+            style={{ background: 'var(--tc-primary)' }}
           >
             <Sparkles className="w-4 h-4" />
             Generate AI Plan for {client.name}

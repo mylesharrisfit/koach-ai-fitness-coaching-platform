@@ -99,11 +99,11 @@ export default function ImportStep3Review({ headers, rows, mapping, existingEmai
                     })}
                     <td className="px-3 py-2">
                       {isDuplicate ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning/10 text-warning text-[10px] font-semibold border border-warning whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning/10 text-warning text-[11px] font-semibold border border-warning whitespace-nowrap">
                           Skip (dup)
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-semibold border border-success whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[11px] font-semibold border border-success whitespace-nowrap">
                           Import
                         </span>
                       )}

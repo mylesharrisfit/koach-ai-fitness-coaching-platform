@@ -90,7 +90,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-card border border-border rounded-lg px-3 py-2 shadow-lg text-xs">
+      <div className="bg-card border border-border rounded-lg px-3 py-2 text-xs">
         <p className="font-semibold text-foreground mb-1">{label}</p>
         {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }}>{p.name}: {p.value} lbs</p>
@@ -171,7 +171,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-foreground">Progress Score Breakdown</h3>
-          <div className={cn('text-2xl font-bold', score >= 70 ? 'text-success' : score >= 50 ? 'text-orange-500' : 'text-destructive')}>
+          <div className={cn('text-2xl font-bold', score >= 70 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-destructive')}>
             {score}<span className="text-xs font-normal text-muted-foreground ml-1">/100</span>
           </div>
         </div>
@@ -212,7 +212,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
         </button>
         <button
           onClick={() => {
-            db.functions.invoke('sendEmailNotification', { to: client.email, subject: '🎉 You\'re crushing it!', html: `Hi ${client.name}! Your coach wants to celebrate your progress. Keep up the amazing work! 💪` }).then(() => toast.success('Celebration message sent!')).catch(() => toast.error('Could not send message'));
+            db.functions.invoke('sendEmailNotification', { to: client.email, subject: 'You\'re crushing it!', html: `Hi ${client.name}! Your coach wants to celebrate your progress. Keep up the amazing work! ` }).then(() => toast.success('Celebration message sent!')).catch(() => toast.error('Could not send message'));
           }}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border border-success bg-success/10 text-success hover:bg-success/10 transition-colors">
           <Trophy className="w-3.5 h-3.5" /> Celebrate Win
@@ -235,7 +235,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       {/* Add Note Modal */}
       {showNoteModal && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
-          <div className="bg-card rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+          <div className="bg-card rounded-xl w-full max-w-md p-6 space-y-4">
             <h3 className="font-semibold text-foreground">Add Progress Note</h3>
             <div>
               <label className="block text-xs text-muted-foreground mb-1">Date</label>

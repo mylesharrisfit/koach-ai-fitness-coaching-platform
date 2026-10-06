@@ -65,8 +65,8 @@ export default function ProgressPhotos({ checkIns }) {
               className={`relative rounded-lg overflow-hidden cursor-pointer group ${compareMode ? 'ring-2 ' + (selected ? 'ring-primary' : 'ring-transparent hover:ring-primary') : ''}`}
             >
               <SignedImg src={photo.url} alt="progress" className="w-full aspect-square object-cover" />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5">
-                <p className="text-[9px] text-white font-medium">{format(new Date(photo.date), 'MMM d')}</p>
+              <div className="absolute bottom-0 left-0 right-0 bg-black/55 p-1.5">
+                <p className="text-[11px] text-white font-medium">{format(new Date(photo.date), 'MMM d')}</p>
               </div>
             </div>
           );

@@ -16,12 +16,12 @@ import TemplatePickerSheet from './goals/TemplatePickerSheet';
 
 // ── Event type config ─────────────────────────────────────────────────────────
 const TYPES = {
-  checkin:  { label: 'Check-in',    color: 'var(--tc-primary)', dot: 'var(--tc-primary)', emoji: '📋', icon: ClipboardList },
-  session:  { label: 'Session',     color: 'var(--tc-success)', dot: 'var(--tc-success)', emoji: '📞', icon: Phone },
-  goal:     { label: 'Goal Due',    color: 'var(--tc-warning)', dot: 'var(--tc-warning)', emoji: '🎯', icon: Target },
-  habit:    { label: 'Habit',       color: 'var(--tc-ai)', dot: 'var(--tc-ai)', emoji: '⚡', icon: Zap },
-  weighin:  { label: 'Weigh-in',    color: 'var(--tc-primary)', dot: 'var(--tc-primary)', emoji: '⚖️', icon: Scale },
-  workout:  { label: 'Workout',     color: 'var(--kc-ec4899)', dot: 'var(--kc-f472b6)', emoji: '💪', icon: Dumbbell },
+  checkin:  { label: 'Check-in',    color: 'var(--tc-primary)', dot: 'var(--tc-primary)', emoji: '', icon: ClipboardList },
+  session:  { label: 'Session',     color: 'var(--tc-success)', dot: 'var(--tc-success)', emoji: '', icon: Phone },
+  goal:     { label: 'Goal Due',    color: 'var(--tc-warning)', dot: 'var(--tc-warning)', emoji: '', icon: Target },
+  habit:    { label: 'Habit',       color: 'var(--tc-ai)', dot: 'var(--tc-ai)', emoji: '', icon: Zap },
+  weighin:  { label: 'Weigh-in',    color: 'var(--tc-primary)', dot: 'var(--tc-primary)', emoji: '', icon: Scale },
+  workout:  { label: 'Workout',     color: 'var(--tc-muted-foreground)', dot: 'var(--tc-muted-foreground)', emoji: '', icon: Dumbbell },
 };
 
 function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions, habits, habitCompletions) {
@@ -66,7 +66,7 @@ function buildEvents(checkIns, goals, sessions, weighIns, workoutSessions, habit
 function EventChip({ event }) {
   const cfg = TYPES[event.type] || TYPES.checkin;
   return (
-    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold truncate"
+    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-semibold truncate"
       style={{ background: cfg.color + '18', color: cfg.color, border: `1px solid ${cfg.color}30` }}>
       {event.done
         ? <CheckCircle2 className="w-2.5 h-2.5 flex-shrink-0" />
@@ -109,7 +109,7 @@ function DayCell({ day, events, onDayClick }) {
       <div className="space-y-0.5">
         {shown.map(ev => <EventChip key={ev.id} event={ev} />)}
         {overflow > 0 && (
-          <p className="text-[10px] text-muted-foreground font-semibold pl-1">+{overflow} more</p>
+          <p className="text-[11px] text-muted-foreground font-semibold pl-1">+{overflow} more</p>
         )}
       </div>
     </div>
@@ -144,7 +144,7 @@ function RepeatModal({ repeat, onChange, onClose }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.12 }}
-        className="relative bg-card rounded-2xl shadow-2xl w-full max-w-sm p-6"
+        className="relative bg-card rounded-xl w-full max-w-sm p-6"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
@@ -251,12 +251,12 @@ function generateRepeatDates(startDate, repeat) {
 
 // ── Activity type config for sidebar ─────────────────────────────────────────
 const ACTIVITY_TYPES = [
-  { key: 'workout',  label: 'Workout',      emoji: '💪', color: 'var(--kc-ec4899)' },
-  { key: 'session',  label: 'Session/Call', emoji: '📞', color: 'var(--tc-success)' },
-  { key: 'goal',     label: 'Goal',         emoji: '🎯', color: 'var(--tc-warning)' },
-  { key: 'habit',    label: 'Habit',        emoji: '⚡', color: 'var(--tc-ai)' },
-  { key: 'weighin',  label: 'Weigh-in',     emoji: '⚖️', color: 'var(--tc-primary)' },
-  { key: 'checkin',  label: 'Check-in Form',emoji: '📋', color: 'var(--tc-primary)' },
+  { key: 'workout',  label: 'Workout',      emoji: '', color: 'var(--tc-muted-foreground)' },
+  { key: 'session',  label: 'Session/Call', emoji: '', color: 'var(--tc-success)' },
+  { key: 'goal',     label: 'Goal',         emoji: '', color: 'var(--tc-warning)' },
+  { key: 'habit',    label: 'Habit',        emoji: '', color: 'var(--tc-ai)' },
+  { key: 'weighin',  label: 'Weigh-in',     emoji: '', color: 'var(--tc-primary)' },
+  { key: 'checkin',  label: 'Check-in Form',emoji: '', color: 'var(--tc-primary)' },
 ];
 
 function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, client, onDone }) {
@@ -317,7 +317,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-3xl mb-2">💪</p>
+          <p className="text-3xl mb-2"></p>
           <p className="text-sm font-semibold text-foreground">No program assigned</p>
           <p className="text-xs text-muted-foreground mt-1">Assign a workout program to this client first.</p>
         </div>
@@ -325,7 +325,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
     );
   }
 
-  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-[var(--kc-ec4899)]" /></div>;
+  if (isLoading) return <div className="flex-1 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-[var(--tc-muted-foreground)]" /></div>;
 
   return (
     <div className="flex-1 flex flex-col justify-between">
@@ -348,11 +348,11 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
         </div>
 
         {program && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--kc-fdf2f8)] border border-[var(--kc-ec4899)]/20">
-            <span>💪</span>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--tc-muted)] border border-[var(--tc-muted-foreground)]/20">
+            <span></span>
             <div className="min-w-0">
-              <p className="text-xs font-bold text-[var(--kc-ec4899)] truncate">{program.title}</p>
-              <p className="text-[10px] text-muted-foreground">{workouts.length} workout days</p>
+              <p className="text-xs font-bold text-[var(--tc-muted-foreground)] truncate">{program.title}</p>
+              <p className="text-[11px] text-muted-foreground">{workouts.length} workout days</p>
             </div>
           </div>
         )}
@@ -361,13 +361,13 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
           <label className="text-xs font-semibold text-foreground block mb-2">Select from current training program</label>
           <div className="space-y-1.5 max-h-40 overflow-y-auto">
             {workouts.map((w, i) => (
-              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[var(--kc-ec4899)] bg-[var(--kc-fdf2f8)]' : 'border-border hover:border-[var(--kc-ec4899)]/40'}`}>
+              <label key={i} className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all ${selectedWorkoutIdx === String(i) ? 'border-[var(--tc-muted-foreground)] bg-[var(--tc-muted)]' : 'border-border hover:border-[var(--tc-muted-foreground)]/40'}`}>
                 <input type="radio" name="workout_day" value={i} checked={selectedWorkoutIdx === String(i)}
-                  onChange={() => setSelectedWorkoutIdx(String(i))} className="accent-[var(--kc-ec4899)]" />
+                  onChange={() => setSelectedWorkoutIdx(String(i))} className="accent-[var(--tc-muted-foreground)]" />
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-foreground">{w.day_name || `Day ${w.day_number || i + 1}`}</p>
                   {w.exercises?.length > 0 && (
-                    <p className="text-[10px] text-muted-foreground">{w.exercises.length} exercises</p>
+                    <p className="text-[11px] text-muted-foreground">{w.exercises.length} exercises</p>
                   )}
                 </div>
               </label>
@@ -383,7 +383,7 @@ function WorkoutContent({ date, dateStr, setDateStr, repeat, setShowRepeat, clie
 
       <button onClick={save} disabled={saving || selectedWorkoutIdx === ''}
         className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ background: 'var(--kc-ec4899)' }}>
+        style={{ background: 'var(--tc-muted-foreground)' }}>
         {saving && <Loader2 className="w-4 h-4 animate-spin" />}
         {saving ? 'Adding…' : repeat ? `Add (${generateRepeatDates(parseISO(dateStr), repeat).length} sessions)` : 'Add to Calendar'}
       </button>
@@ -832,7 +832,7 @@ function WeighInContent({ dateStr, setDateStr, repeat, setShowRepeat, client, on
     <div className="flex-1 flex flex-col justify-between">
       <div className="space-y-4">
         <div className="p-3 rounded-xl bg-accent border border-accent">
-          <p className="text-xs font-semibold text-primary">📋 Scheduled by coach</p>
+          <p className="text-xs font-semibold text-primary">Scheduled by coach</p>
           <p className="text-xs text-primary mt-0.5">This will appear in the client's calendar as a pending weigh-in task. The client logs their own weight in their portal.</p>
         </div>
 
@@ -905,7 +905,7 @@ function AddEventModal({ day, client, onClose }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 8 }}
           transition={{ duration: 0.14 }}
-          className="relative bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+          className="relative bg-card rounded-xl w-full max-w-lg overflow-hidden flex flex-col"
           style={{ maxHeight: '90vh' }}
           onClick={e => e.stopPropagation()}
         >
@@ -979,9 +979,9 @@ function AddEventModal({ day, client, onClose }) {
 function Legend() {
   return (
     <div className="flex flex-wrap gap-2 px-4 py-2 border-b border-border bg-background">
-      <span className="text-[10px] font-bold text-muted-foreground mr-1 self-center">LEGEND</span>
+      <span className="text-[11px] font-bold text-muted-foreground mr-1 self-center">LEGEND</span>
       {Object.entries(TYPES).map(([key, cfg]) => (
-        <span key={key} className="flex items-center gap-1 text-[10px] font-semibold" style={{ color: cfg.color }}>
+        <span key={key} className="flex items-center gap-1 text-[11px] font-semibold" style={{ color: cfg.color }}>
           <span className="w-2 h-2 rounded-full inline-block" style={{ background: cfg.dot }} />
           {cfg.label}
         </span>
@@ -1062,11 +1062,11 @@ export default function ClientCalendarTab({ client }) {
   }, [events, viewDate]);
 
   const stats = [
-    { label: 'Workouts',  count: monthEvents.filter(e => e.type === 'workout').length,   color: 'var(--kc-ec4899)', emoji: '💪' },
-    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: 'var(--tc-primary)', emoji: '📋' },
-    { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: 'var(--tc-success)', emoji: '📞' },
-    { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: 'var(--tc-primary)', emoji: '⚖️' },
-    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: 'var(--tc-warning)', emoji: '🎯' },
+    { label: 'Workouts',  count: monthEvents.filter(e => e.type === 'workout').length,   color: 'var(--tc-muted-foreground)', emoji: '' },
+    { label: 'Check-ins', count: monthEvents.filter(e => e.type === 'checkin').length,   color: 'var(--tc-primary)', emoji: '' },
+    { label: 'Sessions',  count: monthEvents.filter(e => e.type === 'session').length,   color: 'var(--tc-success)', emoji: '' },
+    { label: 'Weigh-ins', count: monthEvents.filter(e => e.type === 'weighin').length,   color: 'var(--tc-primary)', emoji: '' },
+    { label: 'Goals',     count: monthEvents.filter(e => e.type === 'goal').length,      color: 'var(--tc-warning)', emoji: '' },
   ];
 
   return (

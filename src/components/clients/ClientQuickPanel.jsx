@@ -27,14 +27,14 @@ const goalLabels = {
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
 };
 
-const moodEmoji = { great: '😄', good: '🙂', okay: '😐', tired: '😴', stressed: '😰' };
+const moodEmoji = { great: '', good: '', okay: '', tired: '', stressed: '' };
 
 function StatBox({ label, value, sub, color = 'text-foreground' }) {
   return (
     <div className="bg-muted rounded-xl p-3 flex flex-col gap-0.5">
       <span className={`text-base font-bold ${color}`}>{value ?? '—'}</span>
       <span className="text-xs font-semibold text-muted-foreground">{label}</span>
-      {sub && <span className="text-[10px] text-muted-foreground">{sub}</span>}
+      {sub && <span className="text-[11px] text-muted-foreground">{sub}</span>}
     </div>
   );
 }
@@ -168,9 +168,9 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/25 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/25-[2px]" />
       <div
-        className="relative w-full max-w-2xl bg-card h-full shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full max-w-2xl bg-card h-full flex flex-col overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* ── Header ── */}
@@ -187,7 +187,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               <div className="flex items-center gap-2 mt-0.5">
                 <LifecycleBadge status={client.lifecycle_status || 'lead'} />
                 {client.goal && (
-                  <span className="text-[10px] text-muted-foreground">{goalLabels[client.goal]}</span>
+                  <span className="text-[11px] text-muted-foreground">{goalLabels[client.goal]}</span>
                 )}
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
           ].map(stat => (
             <div key={stat.label} className="flex-1 flex flex-col items-center py-2.5 border-r border-border last:border-r-0">
               <span className="text-sm font-bold" style={{ color: stat.color }}>{stat.value}</span>
-              <span className="text-[10px] text-muted-foreground">{stat.label}</span>
+              <span className="text-[11px] text-muted-foreground">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -343,7 +343,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                         <p className="font-bold text-foreground text-base">{program.title}</p>
                         {program.description && <p className="text-xs text-muted-foreground mt-0.5">{program.description}</p>}
                       </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-primary border border-accent font-semibold flex-shrink-0 capitalize">{program.difficulty}</span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-accent text-primary border border-accent font-semibold flex-shrink-0 capitalize">{program.difficulty}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       {[
@@ -353,7 +353,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                       ].map(s => (
                         <div key={s.label} className="bg-card rounded-xl p-2.5">
                           <p className="text-sm font-bold text-foreground">{s.value}</p>
-                          <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                          <p className="text-[11px] text-muted-foreground">{s.label}</p>
                         </div>
                       ))}
                     </div>
@@ -403,20 +403,20 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   <div className="p-4 bg-muted rounded-xl space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-bold text-foreground text-base">{nutritionPlan.title}</p>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-success/10 text-success border border-success font-semibold flex-shrink-0 capitalize">{nutritionPlan.tracking_mode || 'macros'}</span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-success/10 text-success border border-success font-semibold flex-shrink-0 capitalize">{nutritionPlan.tracking_mode || 'macros'}</span>
                     </div>
                     {nutritionPlan.description && <p className="text-xs text-muted-foreground">{nutritionPlan.description}</p>}
                     {nutritionPlan.tracking_mode !== 'habits' && (
                       <div className="grid grid-cols-4 gap-2 text-center">
                         {[
-                          { label: 'Calories', value: nutritionPlan.calories ? `${nutritionPlan.calories}` : '—', color: 'text-orange-500' },
+                          { label: 'Calories', value: nutritionPlan.calories ? `${nutritionPlan.calories}` : '—', color: 'text-warning' },
                           { label: 'Protein', value: nutritionPlan.protein_g ? `${nutritionPlan.protein_g}g` : '—', color: 'text-destructive' },
                           { label: 'Carbs', value: nutritionPlan.carbs_g ? `${nutritionPlan.carbs_g}g` : '—', color: 'text-warning' },
                           { label: 'Fats', value: nutritionPlan.fats_g ? `${nutritionPlan.fats_g}g` : '—', color: 'text-primary' },
                         ].map(s => (
                           <div key={s.label} className="bg-card rounded-xl p-2.5">
                             <p className={`text-sm font-bold ${s.color}`}>{s.value}</p>
-                            <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                            <p className="text-[11px] text-muted-foreground">{s.label}</p>
                           </div>
                         ))}
                       </div>
@@ -479,16 +479,16 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                       <p className="text-xs font-bold text-foreground">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
                       {ci.mood && <span className="text-sm">{moodEmoji[ci.mood]}</span>}
                     </div>
-                    <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full', ci.review_status === 'reviewed' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning')}>
+                    <span className={cn('text-[11px] font-bold px-2 py-0.5 rounded-full', ci.review_status === 'reviewed' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning')}>
                       {ci.review_status || 'pending'}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-                    {ci.weight && <span>⚖️ {ci.weight} lbs</span>}
-                    {ci.compliance_training !== undefined && <span>🏋️ Training {ci.compliance_training}%</span>}
-                    {ci.compliance_nutrition !== undefined && <span>🥗 Nutrition {ci.compliance_nutrition}%</span>}
-                    {ci.sleep_hours && <span>😴 {ci.sleep_hours}h sleep</span>}
-                    {ci.energy_level && <span>⚡ Energy {ci.energy_level}/10</span>}
+                    {ci.weight && <span>{ci.weight} lbs</span>}
+                    {ci.compliance_training !== undefined && <span>Training {ci.compliance_training}%</span>}
+                    {ci.compliance_nutrition !== undefined && <span>Nutrition {ci.compliance_nutrition}%</span>}
+                    {ci.sleep_hours && <span>{ci.sleep_hours}h sleep</span>}
+                    {ci.energy_level && <span>Energy {ci.energy_level}/10</span>}
                   </div>
                   {ci.notes && <p className="text-[11px] text-muted-foreground italic line-clamp-2">"{ci.notes}"</p>}
                   {ci.photo_urls?.length > 0 && (
@@ -514,9 +514,9 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   </div>
                 ) : messages.map(msg => (
                   <div key={msg.id} className={cn('flex', msg.sender === 'coach' ? 'justify-end' : 'justify-start')}>
-                    <div className={cn('max-w-[75%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed', msg.sender === 'coach' ? 'bg-primary text-primary-foreground rounded-br-sm' : 'bg-muted text-foreground rounded-bl-sm')}>
+                    <div className={cn('max-w-[75%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed', msg.sender === 'coach' ? 'bg-primary text-primary-foreground rounded-br-sm' : 'bg-muted text-foreground rounded-bl-sm')}>
                       <p>{msg.content}</p>
-                      <p className={cn('text-[10px] mt-1', msg.sender === 'coach' ? 'text-white/60' : 'text-muted-foreground')}>
+                      <p className={cn('text-[11px] mt-1', msg.sender === 'coach' ? 'text-white/60' : 'text-muted-foreground')}>
                         {formatDistanceToNow(new Date(msg.created_date), { addSuffix: true })}
                       </p>
                     </div>
@@ -539,7 +539,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                     <Send className="w-4 h-4" />
                   </Button>
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-1">Enter to send · Shift+Enter for new line</p>
+                <p className="text-[11px] text-muted-foreground mt-1">Enter to send · Shift+Enter for new line</p>
               </div>
             </div>
           )}

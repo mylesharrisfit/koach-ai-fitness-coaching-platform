@@ -30,12 +30,12 @@ function CalorieAdjust({ selectedClients, onDone }) {
     onDone();
   };
   return (
-    <div className="p-3 bg-orange-500/8 border border-orange-500/20 rounded-xl space-y-2">
-      <p className="text-xs font-semibold text-orange-400">Adjust calories for {selectedClients.length} clients</p>
+    <div className="p-3 bg-warning-soft border border-warning/30 rounded-xl space-y-2">
+      <p className="text-xs font-semibold text-warning">Adjust calories for {selectedClients.length} clients</p>
       <div className="grid grid-cols-4 gap-2">
         {[[-250, '−250'], [-150, '−150'], [+150, '+150'], [+250, '+250']].map(([d, l]) => (
           <button key={d} onClick={() => adjust(d)} disabled={saving}
-            className={cn('py-2.5 rounded-lg text-xs font-bold border active:scale-95 transition-all',
+            className={cn('py-2.5 rounded-lg text-xs font-bold border transition-all',
               d < 0 ? 'bg-destructive/10 border-destructive/20 text-destructive hover:bg-destructive/20'
                 : 'bg-success/10 border-success/20 text-success hover:bg-success/20')}>
             {saving ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : l}
@@ -75,7 +75,7 @@ function AssignProgram({ selectedClients, onDone }) {
       <button
         onClick={assign}
         disabled={saving || !programId}
-        className="w-full py-2 rounded-lg text-xs font-bold bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2"
+        className="w-full py-2 rounded-lg text-xs font-bold bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 disabled:opacity-40 transition-all flex items-center justify-center gap-2"
       >
         {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Dumbbell className="w-3 h-3" />}
         {saving ? 'Assigning…' : 'Assign Program'}
@@ -108,7 +108,7 @@ function AddTag({ selectedClients, onDone }) {
       <div className="flex flex-wrap gap-1">
         {QUICK_TAGS.map(t => (
           <button key={t} onClick={() => applyTag(t)} disabled={saving}
-            className="text-[10px] font-bold px-2 py-1 rounded-lg bg-ai/10 border border-ai/20 text-ai hover:bg-ai/20 transition-all">
+            className="text-[11px] font-bold px-2 py-1 rounded-lg bg-ai/10 border border-ai/20 text-ai hover:bg-ai/20 transition-all">
             #{t}
           </button>
         ))}
@@ -174,7 +174,7 @@ export default function BulkActionBar({ selectedIds, clients, allCheckIns, onCle
 
   return (
     <div className="fixed bottom-20 sm:bottom-6 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">
-      <div className="bg-card border border-border rounded-2xl shadow-2xl shadow-black/20 w-full max-w-lg pointer-events-auto">
+      <div className="bg-card border border-border rounded-xl w-full max-w-lg pointer-events-auto">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <span className="text-sm font-bold">{count} client{count !== 1 ? 's' : ''} selected</span>
           <button onClick={onClear} className="w-7 h-7 rounded-lg hover:bg-secondary flex items-center justify-center transition-colors">
@@ -188,14 +188,14 @@ export default function BulkActionBar({ selectedIds, clients, allCheckIns, onCle
               { key: 'message', icon: MessageSquare, label: 'Message', color: 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20' },
               { key: 'program', icon: Dumbbell, label: 'Program', color: 'text-primary bg-primary/10 border-primary/20 hover:bg-primary/20' },
               { key: 'tag', icon: Tag, label: 'Tag', color: 'text-ai bg-ai/10 border-ai/20 hover:bg-ai/20' },
-              { key: 'calories', icon: Flame, label: 'Calories', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20 hover:bg-orange-500/20' },
+              { key: 'calories', icon: Flame, label: 'Calories', color: 'text-warning bg-warning-soft border-warning/30 hover:bg-warning-soft' },
               { key: 'reviewed', icon: ClipboardCheck, label: 'Review', color: 'text-success bg-success/10 border-success/20 hover:bg-success/20' },
             ].map(({ key, icon: Icon, label, color }) => (
               <button
                 key={key}
                 onClick={key === 'reviewed' ? markReviewed : () => toggle(key)}
                 disabled={key === 'reviewed' && marking}
-                className={cn('flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-95', color, panel === key && 'ring-2 ring-primary/30')}
+                className={cn('flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-semibold transition-all', color, panel === key && 'ring-2 ring-primary/30')}
               >
                 {key === 'reviewed' && marking ? <Loader2 className="w-4 h-4 animate-spin" /> : <Icon className="w-4 h-4" />}
                 {key === 'reviewed' && marking ? '…' : label}
@@ -215,7 +215,7 @@ export default function BulkActionBar({ selectedIds, clients, allCheckIns, onCle
               <button
                 onClick={sendMessage}
                 disabled={sending || !message.trim()}
-                className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 active:scale-95 transition-all"
+                className="w-full flex items-center justify-center gap-2 h-10 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50 transition-all"
               >
                 {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
                 {sending ? 'Sending…' : `Send to ${count} Client${count !== 1 ? 's' : ''}`}

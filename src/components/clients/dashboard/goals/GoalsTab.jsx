@@ -96,8 +96,8 @@ export default function GoalsTab({ client }) {
         {/* Empty state */}
         {!isLoading && goals.length === 0 && (
           <div className="text-center py-16">
-            <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center mx-auto mb-4 shadow-sm">
-              <span className="text-2xl">🎯</span>
+            <div className="w-14 h-14 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl"></span>
             </div>
             <p className="text-sm font-semibold text-muted-foreground mb-1">No goals yet</p>
             <p className="text-xs text-muted-foreground mb-4">Create custom goals to track this client's progress.</p>
@@ -137,7 +137,6 @@ export default function GoalsTab({ client }) {
         {completed.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-0.5 h-3 rounded-full bg-success" />
               <p className="text-xs font-semibold text-muted-foreground">Completed</p>
             </div>
             {completed.map(g => (

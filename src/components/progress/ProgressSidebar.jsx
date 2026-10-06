@@ -55,7 +55,7 @@ export default function ProgressSidebar({ activeKey, onSelect }) {
       {METRIC_CATEGORIES.map(cat => (
         <div key={cat.id}>
           <button
-            className="w-full flex items-center justify-between px-4 py-2.5 text-[10px] font-bold tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors"
+            className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-bold tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors"
             onClick={() => toggle(cat.id)}
           >
             {cat.label}

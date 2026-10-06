@@ -36,7 +36,7 @@ function OptionPill({ opt, selected, onToggle }) {
         'w-4 h-4 rounded-full border-2 flex items-center justify-center mt-0.5 shrink-0 transition-colors',
         selected ? 'border-primary bg-primary' : 'border-border'
       )}>
-        {selected && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
+        {selected && <Check className="w-2.5 h-2.5 text-primary-foreground" strokeWidth={3} />}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium leading-tight">{opt.label}</p>
@@ -67,9 +67,9 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
       >
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm font-semibold text-foreground">⚡ Workout Meals</span>
+            <span className="text-sm font-semibold text-foreground">Workout meals</span>
             {hasSelections && (
-              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
                 {[preSelected, postSelected].filter(Boolean).length} set
               </span>
             )}

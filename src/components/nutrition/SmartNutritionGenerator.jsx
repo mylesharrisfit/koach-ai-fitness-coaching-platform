@@ -45,7 +45,7 @@ function OptionFoods({ foods }) {
             <p className="text-[11px] text-muted-foreground">{food.portion}</p>
           </div>
           <div className="flex items-center gap-1 text-[11px] shrink-0">
-            <span className="bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded font-medium">{food.calories}cal</span>
+            <span className="bg-secondary text-foreground px-1.5 py-0.5 rounded font-medium">{food.calories}cal</span>
             <span className="bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-medium">{food.protein}P</span>
             <span className="bg-warning/10 text-warning px-1.5 py-0.5 rounded font-medium">{food.carbs}C</span>
             <span className="bg-accent text-primary px-1.5 py-0.5 rounded font-medium">{food.fats}F</span>
@@ -92,7 +92,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
             {mealTags.map(tk => {
               const t = TAG_MAP[tk];
               return t ? (
-                <span key={tk} className={cn('text-[10px] px-1.5 py-0.5 rounded-full border font-medium', t.color)}>
+                <span key={tk} className={cn('text-xs px-1.5 py-0.5 rounded-full border font-medium', t.color)}>
                   {t.label}
                 </span>
               ) : null;
@@ -176,7 +176,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
                     Option {oIdx + 1}
                   </span>
                   <span className="text-[11px] font-medium text-foreground">{optCals} cal · {optP}g P</span>
-                  <span className="text-[10px] text-muted-foreground truncate w-full">{opt.label || ''}</span>
+                  <span className="text-xs text-muted-foreground truncate w-full">{opt.label || ''}</span>
                 </button>
               );
             })}

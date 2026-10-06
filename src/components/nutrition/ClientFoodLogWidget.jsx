@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { format } from 'date-fns';
-import { motion } from 'framer-motion';
 import { Flame, Plus, Loader2, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -37,21 +36,20 @@ function MacroRing({ label, consumed, target, color }) {
           <circle cx="36" cy="36" r={R} stroke="currentColor" strokeWidth="6"
             className="text-secondary" fill="none" />
           {/* fill */}
-          <motion.circle
+          <circle
             cx="36" cy="36" r={R}
-            stroke={over ? 'var(--tc-destructive)' : color}
+            stroke={over ? 'rgb(var(--destructive))' : color}
             strokeWidth="6"
             fill="none"
             strokeLinecap="round"
             strokeDasharray={circ}
-            initial={{ strokeDashoffset: circ }}
-            animate={{ strokeDashoffset: circ - pct * circ }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            strokeDashoffset={circ - pct * circ}
+            style={{ transition: 'stroke-dashoffset 300ms ease-out' }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[11px] font-bold leading-none text-foreground">{consumed}</span>
-          {target > 0 && <span className="text-[9px] text-muted-foreground leading-none mt-0.5">/ {target}</span>}
+          {target > 0 && <span className="text-xs text-muted-foreground leading-none mt-0.5">/ {target}</span>}
         </div>
       </div>
       <span className="text-xs font-semibold text-muted-foreground">{label}</span>
@@ -70,7 +68,7 @@ function MealRow({ meal, logs, onLog }) {
       <div className="flex items-center justify-between px-4 py-2.5">
         <div>
           <p className="text-sm font-bold text-foreground">{meal.meal_name}</p>
-          {meal.time && <p className="text-[10px] text-muted-foreground">{meal.time}</p>}
+          {meal.time && <p className="text-xs text-muted-foreground">{meal.time}</p>}
         </div>
         <div className="flex items-center gap-2">
           {mealLogs.length > 0 && (
@@ -88,8 +86,8 @@ function MealRow({ meal, logs, onLog }) {
           {mealLogs.map(log => (
             <div key={log.id} className="flex items-center justify-between px-4 py-2">
               <p className="text-xs font-medium text-foreground truncate flex-1 mr-2">{log.food_name}</p>
-              <div className="flex gap-2 text-[10px] font-semibold shrink-0">
-                <span className="text-orange-500">{log.calories} kcal</span>
+              <div className="flex gap-2 text-xs font-semibold shrink-0">
+                <span className="text-foreground">{log.calories} kcal</span>
                 <span className="text-primary">P{log.protein}g</span>
                 <span className="text-warning">C{log.carbs}g</span>
                 <span className="text-destructive">F{log.fats}g</span>
@@ -192,44 +190,33 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-bold text-foreground leading-snug">
-            {greeting()} {client?.name?.split(' ')[0]} 👋
+            {greeting()}, {client?.name?.split(' ')[0]}
           </h2>
           <p className="text-xs text-muted-foreground">{format(new Date(), 'EEEE, MMMM d')}</p>
         </div>
         {streak > 0 && (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="flex items-center gap-1.5 bg-orange-500/10 border border-orange-500/20 text-orange-600 px-3 py-1.5 rounded-full text-xs font-bold"
-          >
+          <div className="flex items-center gap-1.5 bg-secondary text-foreground px-3 py-1.5 rounded-full text-xs font-semibold tabular-nums">
             <Flame className="w-3.5 h-3.5" />
             {streak} day streak
-          </motion.div>
+          </div>
         )}
       </div>
 
       {/* Macro rings */}
       {nutritionPlan && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-card border border-border rounded-2xl p-5"
-        >
+        <div className="bg-card border border-border rounded-xl p-5">
           {/* Calorie headline */}
           <div className="text-center mb-4">
-            <p className="text-xs font-semibold text-muted-foreground mb-0.5">Calories Today</p>
-            <p className="text-3xl font-bold font-heading leading-none">
+            <p className="text-[13px] text-muted-foreground mb-0.5">Calories today</p>
+            <p className="num text-[36px] leading-none">
               {totCal}
               {tCal > 0 && <span className="text-base font-normal text-muted-foreground ml-1">/ {tCal} kcal</span>}
             </p>
             {tCal > 0 && (
               <div className="mt-3 h-2.5 bg-secondary rounded-full overflow-hidden">
-                <motion.div
-                  className={cn('h-full rounded-full', totCal > tCal * 1.05 ? 'bg-destructive' : totCal >= tCal * 0.9 ? 'bg-success' : 'bg-primary')}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.min((totCal / tCal) * 100, 100)}%` }}
-                  transition={{ duration: 0.7, ease: 'easeOut' }}
+                <div
+                  className={cn('h-full rounded-full transition-[width] duration-300', totCal > tCal * 1.05 ? 'bg-destructive' : totCal >= tCal * 0.9 ? 'bg-success' : 'bg-foreground')}
+                  style={{ width: `${Math.min((totCal / tCal) * 100, 100)}%` }}
                 />
               </div>
             )}
@@ -237,28 +224,24 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
 
           {/* Macro rings row */}
           <div className="flex justify-around pt-2">
-            <MacroRing label="Protein"  consumed={totPro}  target={tPro}  color="var(--tc-primary)" />
-            <MacroRing label="Carbs"    consumed={totCarb} target={tCarb} color="var(--tc-warning)" />
-            <MacroRing label="Fats"     consumed={totFat}  target={tFat}  color="var(--tc-destructive)" />
+            <MacroRing label="Protein"  consumed={totPro}  target={tPro}  color="rgb(var(--foreground))" />
+            <MacroRing label="Carbs"    consumed={totCarb} target={tCarb} color="rgb(var(--muted-foreground))" />
+            <MacroRing label="Fats"     consumed={totFat}  target={tFat}  color="rgb(var(--input))" />
           </div>
 
           {/* Macros hit banner */}
           {macrosHit && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-4 flex items-center justify-center gap-2 bg-success/10 border border-success/20 rounded-xl py-2.5 text-sm font-bold text-success"
-            >
+            <div className="mt-4 flex items-center justify-center gap-2 bg-success-soft rounded-lg py-2.5 text-sm font-semibold text-success">
               <CheckCircle2 className="w-4 h-4" />
-              💪 Macros hit today!
-            </motion.div>
+              Macros hit for today
+            </div>
           )}
-        </motion.div>
+        </div>
       )}
 
       {/* Meals list */}
       <div className="space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground px-0.5">Today's Meals</p>
+        <p className="text-[13px] text-muted-foreground px-0.5">Today's meals</p>
         {logsLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -266,18 +249,13 @@ export default function ClientFoodLogWidget({ client, nutritionPlanId }) {
         ) : (
           <div className="space-y-2">
             {meals.map((meal, i) => (
-              <motion.div
-                key={meal.meal_name || i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
-              >
+              <div key={meal.meal_name || i}>
                 <MealRow
                   meal={meal}
                   logs={foodLogs}
                   onLog={() => setLogModal(meal.meal_name)}
                 />
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

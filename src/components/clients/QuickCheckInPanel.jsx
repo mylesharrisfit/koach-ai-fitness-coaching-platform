@@ -9,11 +9,11 @@ import { X, ClipboardList } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const MOODS = [
-  { key: 'great', label: '😄 Great' },
-  { key: 'good', label: '🙂 Good' },
-  { key: 'okay', label: '😐 Okay' },
-  { key: 'tired', label: '😴 Tired' },
-  { key: 'stressed', label: '😰 Stressed' },
+  { key: 'great', label: 'Great' },
+  { key: 'good', label: 'Good' },
+  { key: 'okay', label: 'Okay' },
+  { key: 'tired', label: 'Tired' },
+  { key: 'stressed', label: 'Stressed' },
 ];
 
 export default function QuickCheckInPanel({ client, onClose }) {
@@ -37,16 +37,16 @@ export default function QuickCheckInPanel({ client, onClose }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['checkins-clients'] });
       queryClient.invalidateQueries({ queryKey: ['checkins'] });
-      toast.success(`Check-in logged for ${client.name} ✓`);
+      toast.success(`Check-in logged for ${client.name} `);
       onClose();
     },
   });
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/20-[2px]" />
       <div
-        className="relative w-full max-w-sm bg-card h-full shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full max-w-sm bg-card h-full flex flex-col overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}

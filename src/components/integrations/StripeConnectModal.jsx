@@ -53,10 +53,10 @@ export default function StripeConnectModal({ open, onClose }) {
           ) : null}
 
           {/* Setup instructions */}
-          <div className="bg-ai/10 border border-[var(--kc-635bff)]/20 rounded-xl p-4">
-            <p className="text-xs font-semibold text-[var(--kc-635bff)] mb-2">Setup Instructions</p>
+          <div className="bg-secondary rounded-lg p-4">
+            <p className="text-[13px] font-semibold text-foreground mb-2">How to set it up</p>
             <ol className="text-xs text-foreground space-y-1.5 list-decimal list-inside leading-relaxed">
-              <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="text-[var(--kc-635bff)] underline font-medium">dashboard.stripe.com/apikeys</a></li>
+              <li>Go to <a href="https://dashboard.stripe.com/apikeys" target="_blank" className="underline underline-offset-2 font-medium">dashboard.stripe.com/apikeys</a></li>
               <li>Copy your <strong>Secret key</strong> (sk_live_... or sk_test_...)</li>
               <li>In Supabase → Edge Functions → Secrets, add <strong>STRIPE_SECRET_KEY</strong></li>
               <li>Click "Test Connection" below to verify</li>
@@ -64,7 +64,7 @@ export default function StripeConnectModal({ open, onClose }) {
             <a
               href="https://dashboard.stripe.com/apikeys"
               target="_blank"
-              className="flex items-center gap-1 text-xs text-[var(--kc-635bff)] font-semibold mt-2.5 hover:underline"
+              className="flex items-center gap-1 text-sm text-foreground font-semibold mt-3 underline underline-offset-4"
             >
               Open Stripe Dashboard <ExternalLink className="w-3 h-3" />
             </a>
@@ -73,13 +73,13 @@ export default function StripeConnectModal({ open, onClose }) {
           <div className="p-3 bg-background border border-border rounded-xl">
             <p className="text-xs font-semibold text-foreground mb-1">Secret already set?</p>
             <p className="text-xs text-muted-foreground">
-              If you've already added <code className="font-mono bg-card border border-border px-1 rounded text-[10px]">STRIPE_SECRET_KEY</code> to your secrets, click Test Connection below.
+              If you've already added <code className="font-mono bg-card border border-border px-1 rounded text-xs">STRIPE_SECRET_KEY</code> to your secrets, click Test Connection below.
             </p>
           </div>
 
           <div className="flex gap-2">
             <Button
-              className="flex-1 bg-[var(--kc-635bff)] hover:bg-[var(--kc-5850ea)]"
+              className="flex-1"
               onClick={handleTest}
               disabled={testing}
             >

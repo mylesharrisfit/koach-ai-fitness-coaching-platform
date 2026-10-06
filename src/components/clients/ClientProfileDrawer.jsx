@@ -15,7 +15,7 @@ const goalLabels = {
 const StatPill = ({ label, value }) => (
   <div className="flex flex-col items-center bg-muted rounded-xl px-4 py-3 flex-1 min-w-0">
     <span className="text-base font-bold text-foreground tabular-nums">{value ?? '—'}</span>
-    <span className="text-[10px] text-muted-foreground mt-0.5">{label}</span>
+    <span className="text-[11px] text-muted-foreground mt-0.5">{label}</span>
   </div>
 );
 
@@ -30,11 +30,11 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/20-[2px]" />
 
       {/* Drawer */}
       <div
-        className="relative w-full max-w-sm bg-card h-full shadow-2xl flex flex-col overflow-y-auto"
+        className="relative w-full max-w-sm bg-card h-full flex flex-col overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}

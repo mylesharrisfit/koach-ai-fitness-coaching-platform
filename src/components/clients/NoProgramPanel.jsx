@@ -14,7 +14,7 @@ function ClientAssignRow({ client, programs, onAssigned }) {
     mutationFn: () => db.entities.Client.update(client.id, { assigned_program_id: selected }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      toast.success(`Program assigned to ${client.name} ✓`);
+      toast.success(`Program assigned to ${client.name} `);
       onAssigned(client.id);
     },
   });
@@ -65,9 +65,9 @@ export default function NoProgramPanel({ clients, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/20-[2px]" />
       <div
-        className="relative w-full max-w-md bg-card h-full shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full max-w-md bg-card h-full flex flex-col overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
