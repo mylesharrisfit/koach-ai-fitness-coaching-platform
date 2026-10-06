@@ -17,6 +17,17 @@ import { differenceInDays } from 'date-fns';
 import { getAtRiskClients } from './riskScoring.js';
 import { escapeHtml } from './escapeHtml.js';
 
+/**
+ * Idempotency key for the send ledger (public.weekly_digest_sends): the Monday
+ * (UTC) of the week `now` falls in, as YYYY-MM-DD. Stable for the whole week,
+ * so a retry on any day of the same week maps to the same ledger row.
+ */
+export function digestWeekKey(now = new Date()) {
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+  return d.toISOString().slice(0, 10);
+}
+
 export function buildWeeklyDigest(clients, checkIns, now = new Date()) {
   const ciByClient = new Map();
   for (const ci of checkIns) {
