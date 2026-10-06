@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, RefreshCw, Clock, Timer, UtensilsCrossed } from
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { getFoodImageUrl, getMealImageUrl } from '@/lib/foodImages';
 import { SignedImg } from '@/components/shared/SignedImage';
+import { groupSupplements } from '@/lib/supplements';
 
 const SWAP_SUGGESTIONS = {
   chicken: ['Turkey breast (same macros)', 'Tilapia fillet', 'Egg whites (3 large)'],
@@ -207,6 +208,32 @@ function DailyTotalBar({ meals, targets }) {
   );
 }
 
+// Same grouping the client sees in the portal, so coach and client views match.
+function SupplementSummary({ supplements }) {
+  const groups = groupSupplements(supplements);
+  if (groups.length === 0) return null;
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Supplement protocol</p>
+      <div className="space-y-3">
+        {groups.map((g) => (
+          <div key={g.key}>
+            <p className="text-xs font-semibold text-foreground mb-1">{g.emoji} {g.title}</p>
+            <ul className="space-y-1">
+              {g.items.map((it) => (
+                <li key={`${g.key}-${it.name}`} className="text-sm text-foreground">
+                  <span className="font-medium">{it.name}</span>
+                  {it.dose && <span className="text-muted-foreground"> · {it.dose}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function MealPlanTab({ plan }) {
   const meals = plan.meals || [];
   const targets = { calories: plan.calories, protein: plan.protein_g, carbs: plan.carbs_g, fats: plan.fats_g };
@@ -225,6 +252,7 @@ export default function MealPlanTab({ plan }) {
         meals.map((meal, i) => <MealCard key={i} meal={meal} index={i} />)
       )}
       <DailyTotalBar meals={meals} targets={targets} />
+      <SupplementSummary supplements={plan.supplements} />
     </div>
   );
 }

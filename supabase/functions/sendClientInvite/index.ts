@@ -97,10 +97,12 @@ Deno.serve(async (req) => {
     const setupUrl = `${APP_URL}/client-setup/${token}`; // plaintext only here
     const html = buildInviteEmailHtml({ clientName, coachName, setupUrl, welcomeMessage });
 
-    // Email delivery is re-platformed with the rest of the functions in Step 5;
-    // invoke the (not-yet-ported) mailer and don't fail the invite if it's absent.
+    // supabase-js functions.invoke does NOT throw on a non-2xx reply — it
+    // returns { error }. Ignoring that reported success for every invite while
+    // Resend was rejecting them (smoke test 2026-10-05, item 6a). Check both.
+    let mailError: string | null = null;
     try {
-      await asCaller.functions.invoke('sendEmailNotification', {
+      const { error: invokeErr } = await asCaller.functions.invoke('sendEmailNotification', {
         body: {
           to: clientEmail,
           toName: clientName,
@@ -108,8 +110,22 @@ Deno.serve(async (req) => {
           html,
         },
       });
+      if (invokeErr) {
+        const body = await invokeErr.context?.json?.().catch(() => null);
+        mailError = body?.error || body?.details?.message || invokeErr.message || 'Email send failed';
+      }
     } catch (mailErr) {
-      console.error('sendClientInvite: mailer not available yet (Step 5):', mailErr?.message ?? mailErr);
+      mailError = mailErr?.message ?? String(mailErr);
+    }
+
+    if (mailError) {
+      // The token hash is stored, so a resend reuses the same flow; the coach
+      // just has to know the email never went out.
+      console.error('sendClientInvite: email delivery failed:', mailError);
+      return json({
+        error: 'invite_email_failed',
+        message: `The invite was created but the email could not be sent: ${mailError}`,
+      }, 502);
     }
 
     // SECURITY (S1): do NOT return the plaintext token / setupUrl. The token is
@@ -117,7 +133,7 @@ Deno.serve(async (req) => {
     // only place it may travel is inside the emailed link. Returning it in the
     // HTTP response let any caller read a live token out of the JSON and drive
     // setupPortalAccount directly. Report only whether the email was sent.
-    return json({ success: true });
+    return json({ success: true, emailSent: true });
   } catch (err) {
     console.error('sendClientInvite error:', err?.message ?? err);
     return json({ error: 'Server error' }, 500);

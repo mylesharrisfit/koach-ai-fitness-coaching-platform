@@ -55,6 +55,21 @@ export default function Nutrition() {
     queryFn: () => db.entities.NutritionPlan.list('-created_date'),
   });
 
+  // Assignment lives on clients.assigned_nutrition_id (every assign flow writes
+  // it); plan.assigned_clients is a legacy array that is usually empty, so
+  // counting only that showed "0 clients" on assigned plans.
+  const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: () => db.entities.Client.list('-created_date') });
+  const clientCountByPlan = React.useMemo(() => {
+    const sets = {};
+    for (const c of clients) {
+      if (c.assigned_nutrition_id) (sets[c.assigned_nutrition_id] ||= new Set()).add(c.id);
+    }
+    for (const p of plans) {
+      for (const id of p.assigned_clients || []) (sets[p.id] ||= new Set()).add(id);
+    }
+    return Object.fromEntries(Object.entries(sets).map(([k, v]) => [k, v.size]));
+  }, [clients, plans]);
+
   const createMutation = useMutation({
     mutationFn: (data) => db.entities.NutritionPlan.create(data),
     onSuccess: () => {
@@ -300,6 +315,7 @@ export default function Nutrition() {
                 key={plan.id}
                 plan={plan}
                 index={i}
+                clientCount={clientCountByPlan[plan.id] || 0}
                 onEdit={() => openEdit(plan)}
                 onDuplicate={() => duplicatePlan(plan)}
                 onDelete={() => deleteMutation.mutate(plan.id)}

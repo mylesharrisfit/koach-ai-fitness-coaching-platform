@@ -100,18 +100,30 @@ export default function Clients() {
       if (!res.data.allowed) { setUpgradeOpen(true); throw new Error(res.data.error); }
       const teamId = await getMyTeamId(currentUser?.id);
       const client = await db.entities.Client.create({ ...data, ...(teamId ? { team_id: teamId } : {}) });
+      let inviteFailed = false;
       if (sendInvite && data.email) {
         // clientId is required by the function (it stores the invite token hash
         // on THIS client row under the caller's RLS). Without it the invite 400s.
-        await db.functions.invoke('sendClientInvite', {
-          clientId: client.id, clientName: data.name, clientEmail: data.email,
-        });
+        // The client already exists — an email failure is a warning, not a
+        // failed create (a retry would duplicate the client).
+        try {
+          await db.functions.invoke('sendClientInvite', {
+            clientId: client.id, clientName: data.name, clientEmail: data.email,
+          });
+        } catch (err) {
+          console.error('Invite email failed:', err);
+          inviteFailed = true;
+        }
       }
-      return client;
+      return { ...client, inviteFailed };
     },
     onSuccess: async (result, { sendInvite }) => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      toast.success(sendInvite ? 'Client added & invite sent!' : 'Client added');
+      if (sendInvite && result?.inviteFailed) {
+        toast.warning("Client added, but the invite email didn't send. Resend it from their profile.");
+      } else {
+        toast.success(sendInvite ? 'Client added & invite sent!' : 'Client added');
+      }
       if (result?.id) {
         sendZapierEvent('client.created', {
           client_id: result.id,

@@ -267,6 +267,12 @@ export const FEATURE_INFO = {
     icon: 'LayoutTemplate',
     minTier: 'pro',
   },
+  analytics: {
+    name: 'Business Analytics',
+    description: 'Client, retention and revenue trends across your whole coaching business.',
+    icon: 'BarChart3',
+    minTier: 'pro',
+  },
   analytics_graphs: {
     name: 'Analytics & Charts',
     description: 'Visual trend charts for weight, compliance, body composition, and more.',
