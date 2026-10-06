@@ -220,7 +220,7 @@ export default function AccountSettings() {
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-[15px] font-semibold text-foreground">Password</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">Last changed when you set it. Change it if anyone else has seen it.</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">Change it if anyone else might know it.</p>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => { setShowPasswordForm(s => !s); setShowEmailForm(false); }}>
                   {showPasswordForm ? 'Cancel' : 'Change'}

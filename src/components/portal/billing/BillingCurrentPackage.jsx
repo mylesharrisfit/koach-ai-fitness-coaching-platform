@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { KeyValue } from '@/components/kit';
 import { Pill } from '@/components/portal/PortalUI';
 
-const BILLING_LABEL = { one_time: 'one-time', monthly: '/mo', quarterly: '/quarter', annual: '/year', custom: '' };
+const BILLING_LABEL = { one_time: 'one-time', monthly: 'per month', quarterly: 'per quarter', annual: 'per year', custom: '' };
 
 function InclusionRow({ label }) {
   return (
@@ -55,10 +55,10 @@ export default function BillingCurrentPackage({ client, packages, invoices, onMa
           <Pill tone={statusTone}>{statusLabel}</Pill>
           <h2 className="mt-2 text-[22px] text-foreground">{pkg?.name || 'Coaching plan'}</h2>
         </div>
-        <p className="num text-[32px] text-foreground">
-          ${monthlyRate || pkg?.price || 0}
-          <span className="ml-0.5 text-[15px] text-muted-foreground">{pkg ? BILLING_LABEL[pkg.billing_type] : '/mo'}</span>
-        </p>
+        <div className="flex-shrink-0 text-right">
+          <p className="num text-[32px] text-foreground">${monthlyRate || pkg?.price || 0}</p>
+          <p className="text-[13px] text-muted-foreground">{pkg ? BILLING_LABEL[pkg.billing_type] : 'per month'}</p>
+        </div>
       </div>
 
       <div className="mt-3 border-t border-border">

@@ -47,7 +47,7 @@ export default function TodayHeroCard({
 
   return (
     <section
-      className="rounded-b-[20px] bg-sidebar px-5 pb-6 text-white"
+      className="rounded-b-[20px] bg-sidebar px-5 pb-6 text-white md:mx-4 md:mt-4 md:rounded-[20px]"
       style={{ paddingTop: 'calc(env(safe-area-inset-top) + 18px)' }}
     >
       {/* Top row: logo, date, bell, profile */}
