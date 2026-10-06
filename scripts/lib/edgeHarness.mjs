@@ -99,9 +99,13 @@ realServe({ port: Number(Deno.env.get('HARNESS_PORT')), hostname: '127.0.0.1', o
 
 /**
  * Start PostgREST + gateway + Deno router for the given functions.
+ * `stubFunctions` maps a function name to a Node handler
+ * `({ body, headers }) => ({ status, body })` that answers instead of the real
+ * function — e.g. a recording stub for sendEmailNotification so nothing is
+ * emailed and the test can count sends.
  * Returns { url, callFunction(name, { token, body, method }), rest(path, opts), stop() }.
  */
-export async function startEdgeHarness({ postgresUrl, functions = [], env = {} }) {
+export async function startEdgeHarness({ postgresUrl, functions = [], env = {}, stubFunctions = {} }) {
   const postgrestBin = process.env.POSTGREST_BIN || 'postgrest';
   const denoBin = process.env.DENO_BIN || 'deno';
   const dbUrl = new URL(postgresUrl);
@@ -178,7 +182,20 @@ export async function startEdgeHarness({ postgresUrl, functions = [], env = {} }
   const gateway = http.createServer((req, res) => {
     const u = new URL(req.url, gatewayUrl);
     if (u.pathname.startsWith('/rest/v1')) return proxy(req, res, restPort, req.url.slice('/rest/v1'.length) || '/');
-    if (u.pathname.startsWith('/functions/v1/')) return proxy(req, res, denoPort, req.url.slice('/functions/v1'.length));
+    if (u.pathname.startsWith('/functions/v1/')) {
+      const stub = stubFunctions[u.pathname.slice('/functions/v1/'.length)];
+      if (!stub) return proxy(req, res, denoPort, req.url.slice('/functions/v1'.length));
+      let raw = '';
+      req.on('data', (c) => { raw += c; });
+      req.on('end', async () => {
+        let body = null;
+        try { body = raw ? JSON.parse(raw) : null; } catch { body = raw; }
+        const out = await stub({ body, headers: req.headers });
+        res.writeHead(out?.status ?? 200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify(out?.body ?? {}));
+      });
+      return undefined;
+    }
     if (u.pathname === '/auth/v1/user') {
       const claims = verifyJwt((req.headers.authorization || '').replace(/^Bearer\s+/i, ''));
       if (!claims?.sub) { res.writeHead(401, { 'content-type': 'application/json' }); return res.end('{"msg":"invalid JWT"}'); }
