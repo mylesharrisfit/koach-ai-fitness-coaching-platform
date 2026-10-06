@@ -103,10 +103,9 @@ export default function ClientSetup() {
 
   return (
     <AuthShell title={client ? `Welcome, ${client.name?.split(' ')[0]}` : 'Set your password'}>
-      {client && (
-        <>
+      <>
           <p className="-mt-3 text-[15px] text-white/70">Set a password to open your coaching app.</p>
-          <div className="flex items-center gap-3 rounded-md bg-white/5 px-3.5 py-3 ring-1 ring-white/10">
+          {client && <div className="flex items-center gap-3 rounded-md bg-white/5 px-3.5 py-3 ring-1 ring-white/10">
             <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-semibold text-white">
               {client.name?.[0]?.toUpperCase() || '?'}
             </span>
@@ -114,7 +113,7 @@ export default function ClientSetup() {
               <p className="truncate text-[15px] font-semibold text-white">{client.name}</p>
               <p className="truncate text-[13px] text-white/50">{client.email}</p>
             </div>
-          </div>
+          </div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <AuthField label="Password" type="password" value={password} onChange={setPassword} placeholder="At least 6 characters" autoComplete="new-password" />
@@ -126,8 +125,7 @@ export default function ClientSetup() {
               {submitting ? 'Setting up' : 'Set password and continue'}
             </AuthSubmit>
           </form>
-        </>
-      )}
+      </>
     </AuthShell>
   );
 }

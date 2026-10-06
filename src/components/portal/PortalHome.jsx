@@ -284,9 +284,11 @@ export default function PortalHome({ user }) {
     saveMutation.mutate(updated);
   }, [logId, myClient?.id]);
 
-  const dayOfWeek = new Date().getDay();
+  // Monday-first, matching the Train tab and the coach's program builder.
+  const jsDay = new Date().getDay();
+  const weekDayIdx = jsDay === 0 ? 6 : jsDay - 1;
   const workouts = myProgram?.workouts || [];
-  const todayWorkout = workouts.length > 0 ? workouts[dayOfWeek % workouts.length] : null;
+  const todayWorkout = workouts.length > 0 ? workouts[weekDayIdx % workouts.length] : null;
 
   const streak = (() => { let c = 0; for (const l of recentLogs) { if (l.workout_done || l.meals_logged >= 2) c++; else break; } return c; })();
   const lastCheckIn = checkIns[0];

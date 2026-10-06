@@ -217,10 +217,10 @@ input[type='range']::-moz-range-thumb {
     min-height: 44px;
     min-width: 44px;
   }
+  /* Opt out of the 44px minimum for controls that are sized explicitly. */
   button.touch-compact, a.touch-compact {
     min-height: unset;
     min-width: unset;
-    padding: 10px;
   }
 }
 
