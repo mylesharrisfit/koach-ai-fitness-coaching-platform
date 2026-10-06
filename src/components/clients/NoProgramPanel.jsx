@@ -88,9 +88,6 @@ export default function NoProgramPanel({ clients, onClose }) {
         <div className="flex-1 overflow-y-auto px-5 py-3">
           {remaining.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mb-3">
-                <Check className="w-5 h-5 text-success" />
-              </div>
               <p className="text-sm font-semibold text-foreground">All assigned</p>
               <p className="text-xs text-muted-foreground mt-1">Every client now has a program.</p>
               <Button className="mt-4 text-xs" onClick={onClose}>Close</Button>

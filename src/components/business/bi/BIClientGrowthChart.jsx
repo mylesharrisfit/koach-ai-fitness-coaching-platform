@@ -47,9 +47,9 @@ export default function BIClientGrowthChart({ clients }) {
             <XAxis dataKey="month" tick={CHART.tick} axisLine={false} tickLine={false} />
             <YAxis tick={CHART.tick} axisLine={false} tickLine={false} width={32} allowDecimals={false} />
             <Tooltip cursor={{ fill: 'var(--tc-accent)' }} content={<ChartTooltip format={(v) => Math.abs(v)} />} />
-            <Bar dataKey="new" name="Joined" fill={CHART.ink} radius={[3, 3, 0, 0]} maxBarSize={28} />
-            <Bar dataKey="churned" name="Left" fill={CHART.light} radius={[0, 0, 3, 3]} maxBarSize={28} />
-            <Line type="monotone" dataKey="total" name="Net change" stroke={CHART.brand} strokeWidth={2} dot={false} activeDot={{ r: 4, fill: CHART.brand }} />
+            <Bar isAnimationActive={false} dataKey="new" name="Joined" fill={CHART.ink} radius={[3, 3, 0, 0]} maxBarSize={28} />
+            <Bar isAnimationActive={false} dataKey="churned" name="Left" fill={CHART.light} radius={[0, 0, 3, 3]} maxBarSize={28} />
+            <Line isAnimationActive={false} type="monotone" dataKey="total" name="Net change" stroke={CHART.brand} strokeWidth={2} dot={false} activeDot={{ r: 4, fill: CHART.brand }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>

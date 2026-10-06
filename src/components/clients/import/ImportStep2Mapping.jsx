@@ -32,7 +32,7 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
     // No fixed height or overflow here — the parent modal body owns scrolling
     <div className="flex flex-col gap-4">
       <div>
-        <h3 className="text-sm font-bold text-foreground">Review AI column mapping</h3>
+        <h3 className="text-[18px] text-foreground">Review AI column mapping</h3>
         <p className="text-xs text-muted-foreground mt-0.5">
           The AI has proposed a mapping for each column. Adjust any incorrect mappings using the dropdowns.
           Unmapped columns will be stored in client notes.

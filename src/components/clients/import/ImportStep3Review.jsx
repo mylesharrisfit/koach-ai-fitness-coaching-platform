@@ -40,7 +40,7 @@ export default function ImportStep3Review({ headers, rows, mapping, existingEmai
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-bold text-foreground">Preview import</h3>
+          <h3 className="text-[18px] text-foreground">Preview import</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             Showing first {Math.min(PREVIEW_COUNT, rows.length)} of {rows.length} clients.
             Review before confirming.

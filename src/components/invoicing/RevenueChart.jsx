@@ -33,7 +33,7 @@ export default function RevenueChart({ invoices = [] }) {
               cursor={{ fill: 'var(--tc-accent)' }}
               content={<ChartTooltip format={(v) => money(v)} />}
             />
-            <Bar dataKey="revenue" radius={[3, 3, 0, 0]} maxBarSize={36}>
+            <Bar isAnimationActive={false} dataKey="revenue" radius={[3, 3, 0, 0]} maxBarSize={36}>
               {data.map((d, i) => <Cell key={d.month + i} fill={i === data.length - 1 ? CHART.brand : CHART.ink} />)}
             </Bar>
           </BarChart>

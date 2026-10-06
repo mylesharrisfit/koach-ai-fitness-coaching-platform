@@ -24,7 +24,7 @@ export default function ProgressPhotos({ checkIns }) {
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-        <h3 className="text-sm font-semibold text-foreground">Progress photos</h3>
+        <h3 className="text-[18px] text-foreground">Progress photos</h3>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={() => { setCompareMode(!compareMode); setCompareA(null); setCompareB(null); }}
             className="gap-1.5 h-7 text-xs">

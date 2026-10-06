@@ -31,9 +31,6 @@ export default function ProfileProgramsTab({ client }) {
 
   if (!assigned) return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 rounded-xl bg-muted border border-border flex items-center justify-center mb-4">
-        <Dumbbell className="w-7 h-7 text-muted-foreground" />
-      </div>
       <p className="text-sm font-semibold text-foreground mb-1">No program assigned</p>
       <p className="text-xs text-muted-foreground mb-5">Assign a training program to get started</p>
       <Button size="sm" variant="outline" onClick={() => navigate('/programs')} className="gap-1.5">
@@ -47,10 +44,7 @@ export default function ProfileProgramsTab({ client }) {
       {/* Program header card */}
       <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-muted">
-          <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
-            <Dumbbell className="w-3.5 h-3.5 text-primary" />
-          </div>
-          <h3 className="text-xs font-semibold text-foreground">Assigned program</h3>
+          <h3 className="text-[18px] text-foreground">Assigned program</h3>
         </div>
 
         <div className="p-4">
@@ -100,10 +94,7 @@ export default function ProfileProgramsTab({ client }) {
       {assigned.workouts?.length > 0 && (
         <div className="bg-card rounded-xl border border-border overflow-hidden">
           <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-muted">
-            <div className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-            </div>
-            <h3 className="text-xs font-semibold text-foreground">Weekly split</h3>
+            <h3 className="text-[18px] text-foreground">Weekly split</h3>
           </div>
           <div className="divide-y divide-muted">
             {assigned.workouts.map((w, i) => (

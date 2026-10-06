@@ -130,9 +130,6 @@ export default function GoalsHabitsTab({ client }) {
             {/* Empty state */}
             {!isLoading && goals.length === 0 && (
               <div className="text-center py-20">
-                <div className="w-16 h-16 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-4">
-                  <Target className="w-7 h-7 text-primary" />
-                </div>
                 <p className="text-sm font-bold text-foreground mb-1">No goals yet</p>
                 <p className="text-xs text-muted-foreground mb-5">
                   Set goals for this client to track progress over time.

@@ -45,7 +45,7 @@ export default function SaveTemplateModal({ form, onSaved, onClose }) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <LayoutTemplate className="w-4 h-4 text-primary" />
-            <h3 className="text-sm font-bold text-foreground">Save as template</h3>
+            <h3 className="text-[18px] text-foreground">Save as template</h3>
           </div>
           <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
             <X className="w-4 h-4" />

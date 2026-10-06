@@ -123,7 +123,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Weight progress</h3>
+            <h3 className="text-[18px] text-foreground">Weight progress</h3>
             {goalWeight && <p className="text-xs text-muted-foreground">Goal: {goalWeight} lbs</p>}
           </div>
           <div className="flex gap-1">
@@ -164,7 +164,7 @@ export default function ProgressOverviewTab({ client, checkIns, sessions, score,
       {/* Progress Score Breakdown */}
       <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-foreground">Progress score breakdown</h3>
+          <h3 className="text-[18px] text-foreground">Progress score breakdown</h3>
           <div className={cn('text-2xl font-bold', score >= 70 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-destructive')}>
             {score}<span className="text-xs font-normal text-muted-foreground ml-1">/100</span>
           </div>

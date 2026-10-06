@@ -48,7 +48,7 @@ function MetricChart({ data, dataKey, label, unit, color, domain }) {
   if (!data || data.length < 2) return null;
   return (
     <div className="bg-card rounded-xl border border-border p-4">
-      <h3 className="text-xs font-semibold text-muted-foreground mb-4">{label}</h3>
+      <h3 className="text-[18px] text-foreground mb-4">{label}</h3>
       <ResponsiveContainer width="100%" height={160}>
         <LineChart data={data} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
@@ -125,9 +125,6 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
 
   if (checkIns.length === 0) return (
     <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
-      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
-        <TrendingUp className="w-5 h-5 text-muted-foreground" />
-      </div>
       <p className="text-sm font-semibold text-foreground">No progress data yet</p>
       <p className="text-xs text-muted-foreground mt-1">Charts appear once check-in data is collected</p>
     </div>
@@ -196,7 +193,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
           {/* Mini goal bar if target weight set */}
           {client.current_weight && client.target_weight && (
             <div className="bg-card rounded-xl border border-border p-4">
-              <h3 className="text-xs font-semibold text-muted-foreground mb-3">Goal progress</h3>
+              <h3 className="text-[18px] text-foreground mb-3">Goal progress</h3>
               <div className="flex justify-between text-xs text-muted-foreground mb-1">
                 <span>Start: {client.current_weight} lbs</span>
                 <span>Goal: {client.target_weight} lbs</span>
@@ -238,7 +235,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
           {/* Mood Timeline */}
           {moodData.length > 0 && (
             <div className="bg-card rounded-xl border border-border p-4">
-              <h3 className="text-xs font-semibold text-muted-foreground mb-3">Mood timeline</h3>
+              <h3 className="text-[18px] text-foreground mb-3">Mood timeline</h3>
               <div className="flex flex-wrap gap-2">
                 {moodData.slice(-20).map((d, i) => (
                   <div key={i} className="flex flex-col items-center gap-0.5">
@@ -281,7 +278,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
             const combined = Object.values(merged).sort((a, b) => new Date(a.date) - new Date(b.date));
             return (
               <div className="bg-card rounded-xl border border-border p-4">
-                <h3 className="text-xs font-semibold text-muted-foreground mb-4">Training & nutrition compliance</h3>
+                <h3 className="text-[18px] text-foreground mb-4">Training & nutrition compliance</h3>
                 <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={combined} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
@@ -304,7 +301,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
 
           {/* Compliance history table */}
           <div className="bg-card rounded-xl border border-border p-4">
-            <h3 className="text-xs font-semibold text-muted-foreground mb-3">Week-by-Week Breakdown</h3>
+            <h3 className="text-[18px] text-foreground mb-3">Week-by-Week Breakdown</h3>
             <div className="space-y-2">
               {sorted.filter(ci => ci.compliance_training != null || ci.compliance_nutrition != null).slice(-10).reverse().map(ci => (
                 <div key={ci.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
@@ -344,7 +341,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
             if (!latest) return null;
             return (
               <div className="bg-card rounded-xl border border-border p-4">
-                <h3 className="text-xs font-semibold text-muted-foreground mb-3">Latest vs starting (inches)</h3>
+                <h3 className="text-[18px] text-foreground mb-3">Latest vs starting (inches)</h3>
                 {MEASUREMENT_KEYS.map(k => {
                   const latestVal = latest.measurements?.[k];
                   const firstVal = first?.measurements?.[k];
@@ -373,7 +370,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
           {MEASUREMENT_KEYS.map(k => (
             measurementData[k].length >= 2 ? (
               <div key={k} className="bg-card rounded-xl border border-border p-4">
-                <h3 className="text-xs font-semibold text-muted-foreground mb-4 capitalize">{k} (inches)</h3>
+                <h3 className="text-[18px] text-foreground mb-4 capitalize">{k} (inches)</h3>
                 <ResponsiveContainer width="100%" height={130}>
                   <LineChart data={measurementData[k]} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />

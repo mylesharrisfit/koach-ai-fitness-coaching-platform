@@ -20,6 +20,7 @@ export default function TrendChart({ data, unit, color = CHART.ink, referenceVal
           )}
           <Tooltip cursor={{ stroke: CHART.light }} content={<ChartTooltip format={fmt} />} />
           <Line
+            isAnimationActive={false}
             type="monotone"
             dataKey="value"
             stroke={stroke}

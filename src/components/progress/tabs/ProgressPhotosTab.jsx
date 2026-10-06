@@ -96,7 +96,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
       {compareMode && compareA && compareB && (
         <div className="bg-card border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Before / after comparison</h3>
+            <h3 className="text-[18px] text-foreground">Before / after comparison</h3>
             <button onClick={() => { setCompareA(null); setCompareB(null); }} className="text-muted-foreground hover:text-foreground">
               <X className="w-4 h-4" />
             </button>
@@ -149,7 +149,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
         </div>
       ) : (
         <div className="bg-card border border-border rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-foreground mb-3">Photo timeline</h3>
+          <h3 className="text-[18px] text-foreground mb-3">Photo timeline</h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
             {allPhotos.map((photo, i) => {
               const selA = compareMode && compareA === photo;

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { Apple, Utensils, CheckCircle2, Plus, X } from 'lucide-react';
+import { Utensils, CheckCircle2, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, subDays } from 'date-fns';
 import NutritionPlanDetailModal from '@/components/nutrition/NutritionPlanDetailModal';
@@ -56,7 +56,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-bold text-foreground">Assign nutrition plan</h3>
+          <h3 className="text-[18px] text-foreground">Assign nutrition plan</h3>
           <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground p-1"><X className="w-4 h-4" /></button>
         </div>
 
@@ -144,9 +144,6 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
   if (!assignedPlan) return (
     <>
       <div className="bg-card rounded-xl border border-border p-5 flex flex-col items-center text-center gap-3">
-        <div className="w-11 h-11 rounded-full bg-muted border border-border flex items-center justify-center">
-          <Apple className="w-5 h-5 text-border" />
-        </div>
         <div>
           <p className="text-sm font-semibold text-foreground">No nutrition plan assigned yet</p>
           <p className="text-xs text-muted-foreground mt-0.5">Assign an existing plan or create a new one</p>
@@ -412,7 +409,7 @@ function WeeklyAdherenceGrid({ client }) {
             <div key={i} className="flex flex-col items-center gap-1 flex-1">
               <div
                 className={cn(
-                  'w-full aspect-square rounded-lg',
+                  'w-full h-10 rounded-md',
                   COLOR[dayStatuses[i]],
                   isToday && 'ring-2 ring-primary ring-offset-1'
                 )}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ClipboardCheck, ChevronDown, ChevronUp, CheckCircle2, Flag, Clock } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle2, Flag, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { db } from '@/api/supabaseClient';
@@ -52,7 +52,7 @@ function CheckInCard({ ci, clientId }) {
   return (
     <div className={cn(
       'bg-card rounded-xl border overflow-hidden transition-all',
-      status === 'flagged' ? 'border-destructive' : status === 'reviewed' ? 'border-success' : 'border-border'
+      status === 'flagged' ? 'border-destructive/50' : 'border-border'
     )}>
       {/* Header row */}
       <button
@@ -174,9 +174,6 @@ export default function ProfileCheckInsTab({ client, checkIns }) {
 
   if (checkIns.length === 0) return (
     <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
-      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
-        <ClipboardCheck className="w-5 h-5 text-muted-foreground" />
-      </div>
       <p className="text-sm font-semibold text-foreground">No check-ins yet</p>
       <p className="text-xs text-muted-foreground mt-1">Client check-ins will appear here once submitted</p>
     </div>

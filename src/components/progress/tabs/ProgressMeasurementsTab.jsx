@@ -69,7 +69,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
       {/* Measurements Grid */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h3 className="text-sm font-semibold text-foreground">Body measurements</h3>
+          <h3 className="text-[18px] text-foreground">Body measurements</h3>
           <button onClick={() => setShowModal(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
             <Plus className="w-3 h-3" /> Log Measurements
@@ -107,7 +107,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
       {historyRows.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
-            <h3 className="text-sm font-semibold text-foreground">Measurement history</h3>
+            <h3 className="text-[18px] text-foreground">Measurement history</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">

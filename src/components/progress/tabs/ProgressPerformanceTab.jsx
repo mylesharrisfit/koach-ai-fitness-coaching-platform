@@ -120,7 +120,7 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
       {/* Personal Bests */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-border">
-          <h3 className="text-sm font-semibold text-foreground">Personal bests</h3>
+          <h3 className="text-[18px] text-foreground">Personal bests</h3>
         </div>
         {personalBests.length === 0 ? (
           <div className="px-5 py-10 text-center text-xs text-muted-foreground">No workout data logged yet</div>
@@ -157,7 +157,7 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
       {exercises.length > 0 && (
         <div className="bg-card border border-border rounded-xl p-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h3 className="text-sm font-semibold text-foreground">Strength progress</h3>
+            <h3 className="text-[18px] text-foreground">Strength progress</h3>
             <select
               value={selectedExercise}
               onChange={e => setSelectedExercise(e.target.value)}
@@ -188,7 +188,7 @@ export default function ProgressPerformanceTab({ client, sessions, checkIns }) {
       {/* Workout Consistency Heatmap */}
       <div className="bg-card border border-border rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-foreground">Workout consistency</h3>
+          <h3 className="text-[18px] text-foreground">Workout consistency</h3>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <div className="w-3 h-3 rounded-sm bg-border" />

@@ -19,6 +19,8 @@ const AUDIENCE_TABS = [
 ];
 
 const AUDIENCE_LABEL = { client: 'To clients', coach: 'To you' };
+// Template labels come from lib/emailTemplates in Title Case; show them in sentence case.
+const sentence = (str = '') => str.split(' ').map((w, i) => (i === 0 || /^[A-Z0-9]{2,}$/.test(w) ? w : w.toLowerCase())).join(' ');
 
 function TemplateList({ templates: tpls, selected, onSelect, search }) {
   const filtered = tpls.filter(t =>
@@ -40,7 +42,7 @@ function TemplateList({ templates: tpls, selected, onSelect, search }) {
           >
             {active && <span className="absolute left-0 top-0 bottom-0 w-[3px] bg-brand" />}
             <span className="flex items-baseline justify-between gap-2">
-              <span className="text-[15px] font-semibold text-foreground truncate">{t.label}</span>
+              <span className="text-[15px] font-semibold text-foreground truncate">{sentence(t.label)}</span>
               <span className="text-[12px] text-muted-foreground flex-shrink-0">{AUDIENCE_LABEL[t.audience] || t.audience}</span>
             </span>
             <span className="block text-[13px] text-muted-foreground truncate mt-0.5">{t.desc}</span>
@@ -207,7 +209,7 @@ export default function EmailCenter() {
           <Panel className="p-5 sm:p-6 space-y-5">
             <div>
               <p className="text-[13px] text-muted-foreground">{currentTemplate ? (AUDIENCE_LABEL[currentTemplate.audience] || currentTemplate.audience) : 'Template'}</p>
-              <h2 className="text-[22px] text-foreground mt-0.5">{currentTemplate?.label || 'Choose a template'}</h2>
+              <h2 className="text-[22px] text-foreground mt-0.5">{currentTemplate ? sentence(currentTemplate.label) : 'Choose a template'}</h2>
               {currentTemplate?.desc && <p className="text-sm text-muted-foreground mt-1">{currentTemplate.desc}</p>}
             </div>
 
@@ -256,8 +258,8 @@ export default function EmailCenter() {
 
         {/* Preview */}
         <Panel className="xl:col-span-5 overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border">
-            <div className="min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-border">
+            <div className="min-w-0 flex-1 basis-48">
               <p className="text-[13px] text-muted-foreground">Preview</p>
               <p className="text-[15px] font-semibold text-foreground truncate">{displaySubject || 'No subject'}</p>
             </div>

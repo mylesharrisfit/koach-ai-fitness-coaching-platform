@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -28,12 +29,15 @@ function maskEmail(email) {
   return `${name[0]}***@${domain}`;
 }
 
-export default function ReferralProgram({ user }) {
+export default function ReferralProgram({ user: userProp }) {
+  // The route renders this page without props; fall back to the signed-in user.
+  const { user: authUser } = useAuth();
+  const user = userProp || authUser;
   const [expandedTerms, setExpandedTerms] = useState(false);
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
 
-  const { data: program } = useQuery({
+  const { data: program, isLoading: programLoading } = useQuery({
     queryKey: ['referral-program', user?.email],
     queryFn: () => db.entities.ReferralProgram.filter({ coach_email: user?.email }, '', 1).then(r => r[0]),
     enabled: !!user?.email,
@@ -115,7 +119,7 @@ export default function ReferralProgram({ user }) {
           <p>Share it anywhere. Anyone who signs up through it, or enters your code, is tracked to you.</p>
           <div className="mt-4 flex items-center gap-2">
             <div className="flex-1 min-w-0 h-11 px-4 rounded-md bg-ai-foreground/10 font-mono text-sm flex items-center truncate">
-              {program?.referral_link || 'Loading'}
+              {program?.referral_link || (programLoading ? 'Loading' : 'Your link appears here once your account is set up')}
             </div>
             <Button className="h-11 bg-ai-foreground text-ai hover:bg-ai-foreground/90" onClick={() => handleCopy(program?.referral_link || '')}>
               <Copy /> Copy

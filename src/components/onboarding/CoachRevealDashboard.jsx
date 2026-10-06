@@ -1,184 +1,78 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Users, TrendingUp, BarChart3, Zap, ArrowRight, Link2, CreditCard, Upload, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-const stagger = {
-  container: { animate: { transition: { staggerChildren: 0.07 } } },
-  item: { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.32, 0.72, 0, 1] } } },
-};
-
-function Card({ children, glow = false, className = '' }) {
-  return (
-    <div className={`rounded-2xl p-4 ${className}`} style={{
-      background: 'var(--tc-foreground)',
-      border: glow ? '1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)' : '1px solid color-mix(in srgb, white 6%, transparent)',
-      boxShadow: glow ? '0 0 28px color-mix(in srgb, var(--tc-primary) 7%, transparent)' : 'none',
-    }}>
-      {children}
-    </div>
-  );
-}
-
+// First-run checklist, PDF page 10: numbered step cards, one ink action, the rest outline.
 const CHECKLIST = [
-  { icon: Users,        label: 'Add your first client',        path: '/clients',            done: false },
-  { icon: Zap,          label: 'Build a workout program',      path: '/program-builder',     done: false },
-  { icon: Link2,        label: 'Generate client intake link',  path: '/onboarding-manager',  done: false },
-  { icon: CreditCard,   label: 'Connect payments',             path: '/revenue',             done: false },
-  { icon: Upload,       label: 'Upload your brand logo',       path: '/settings',            done: false },
-  { icon: Settings,     label: 'Create an automation',         path: '/automations',         done: false },
+  { label: 'Add your clients',             detail: 'Import from another app or send invite links.',            action: 'Add clients',      path: '/clients' },
+  { label: 'Send a client intake link',    detail: 'New clients answer 13 short questions before day one.',    action: 'Get the link',     path: '/onboarding-manager' },
+  { label: 'Build a first program',        detail: 'Describe the client and let AI draft it. You edit before it goes out.', action: 'Build a program', path: '/program-builder' },
+  { label: 'Connect Stripe to get paid',   detail: 'Clients pay you directly. KOACH never touches your money.', action: 'Connect Stripe',  path: '/revenue' },
+  { label: 'Add your logo',                detail: 'Shown on your client app and emails.',                      action: 'Add logo',         path: '/settings' },
+  { label: 'Set up a reminder',            detail: 'Nudge clients who miss a check-in, automatically.',         action: 'Set up',           path: '/automations' },
 ];
 
-const INSIGHTS = [
-  { icon: '🚀', text: 'Your AI check-in system is ready to process client submissions.' },
-  { icon: '📊', text: 'Analytics will populate as you add clients and data.' },
-  { icon: '⚡', text: 'Set up your first automation to save 5+ hours per week.' },
+const MOVE_FROM = [
+  { label: 'From Trainerize', path: '/migration' },
+  { label: 'From Everfit', path: '/migration' },
+  { label: 'From a spreadsheet', path: '/migration' },
 ];
 
 export default function CoachRevealDashboard({ data }) {
   const firstName = data?.business_name?.split(' ')[0] || 'Coach';
+  const done = 0;
 
   return (
-    <div className="w-full h-full overflow-y-auto" style={{ background: 'var(--tc-sidebar)' }}>
-      {/* Cinematic header glow */}
-      <div className="absolute top-0 left-0 right-0 h-64 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% -20%, color-mix(in srgb, var(--tc-primary) 12%, transparent) 0%, transparent 70%)' }} />
-
-      {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="relative px-5 pt-14 pb-6">
-        <p className="text-xs font-semibold mb-2" style={{ color: 'var(--tc-primary)' }}>
-          System Live · KOACH AI
-        </p>
-        <h1 className="text-2xl font-bold text-white mb-1" style={{ letterSpacing: '-0.025em' }}>
-          Welcome, {firstName}. 👋
+    <div className="h-full w-full overflow-y-auto bg-background">
+      <div className="mx-auto w-full max-w-2xl px-5 py-8 sm:py-12">
+        <h1 className="text-[34px] leading-[1.02] text-foreground sm:text-[44px]">
+          Welcome, {firstName}. Let's get your first client checking in.
         </h1>
-        <p className="text-sm" style={{ color: 'var(--kc-6b6b6b)' }}>
-          Your coaching OS is ready. Let's get you set up.
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          Six steps, about 20 minutes. Your Today page fills in as soon as your first client logs a workout.
         </p>
-      </motion.div>
 
-      <motion.div
-        variants={stagger.container}
-        initial="initial"
-        animate="animate"
-        className="relative px-5 space-y-3 pb-32"
-      >
-        {/* KPI strip */}
-        <motion.div variants={stagger.item}>
-          <Card glow>
-            <p className="text-xs font-semibold mb-3" style={{ color: 'var(--kc-555555)' }}>Dashboard Overview</p>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: 'Clients', value: '0', color: 'var(--tc-primary)' },
-                { label: 'Adherence', value: '—', color: 'var(--tc-success)' },
-                { label: 'Revenue', value: '$0', color: 'var(--tc-warning)' },
-              ].map(s => (
-                <div key={s.label} className="text-center py-3 rounded-xl"
-                  style={{ background: 'color-mix(in srgb, white 2%, transparent)', border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
-                  <p className="text-xl font-bold" style={{ color: s.color }}>{s.value}</p>
-                  <p className="text-xs mt-0.5 font-semibold" style={{ color: 'var(--kc-555555)' }}>{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* Setup checklist */}
-        <motion.div variants={stagger.item}>
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-sm font-bold text-white">Setup Checklist</p>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--kc-555555)' }}>Complete these to unlock your full system</p>
-              </div>
-              <span className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-                style={{ background: 'color-mix(in srgb, var(--tc-primary) 10%, transparent)', color: 'var(--tc-primary)' }}>
-                0 / {CHECKLIST.length}
-              </span>
-            </div>
-            <div className="space-y-1.5">
-              {CHECKLIST.map((item, i) => {
-                const Icon = item.icon;
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + i * 0.08 }}
-                  >
-                    <Link to={item.path}>
-                      <div className="flex items-center gap-3 px-3 py-3 rounded-xl transition-all hover:bg-card/[0.03]"
-                        style={{ border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' }}>
-                          <Icon className="w-3.5 h-3.5" style={{ color: 'var(--tc-primary)' }} />
-                        </div>
-                        <p className="text-sm flex-1" style={{ color: 'var(--kc-c3c3c3)' }}>{item.label}</p>
-                        <ArrowRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--kc-333333)' }} />
-                      </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* AI Insights */}
-        <motion.div variants={stagger.item}>
-          <Card>
-            <p className="text-sm font-bold text-white mb-3">AI Insights</p>
-            <div className="space-y-2">
-              {INSIGHTS.map((ins, i) => (
-                <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 + i * 0.1 }}
-                  className="flex items-start gap-3 px-3 py-3 rounded-xl"
-                  style={{ background: 'color-mix(in srgb, white 2%, transparent)', border: '1px solid color-mix(in srgb, white 4%, transparent)' }}>
-                  <span className="text-base mt-0.5">{ins.icon}</span>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--kc-9a9a9a)' }}>{ins.text}</p>
-                </motion.div>
-              ))}
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* Quick actions */}
-        <motion.div variants={stagger.item}>
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { icon: Users, label: 'Add Client', path: '/clients' },
-              { icon: BarChart3, label: 'Analytics', path: '/analytics' },
-              { icon: Zap, label: 'Automations', path: '/automations' },
-              { icon: TrendingUp, label: 'Revenue', path: '/revenue' },
-            ].map((a, i) => {
-              const Icon = a.icon;
-              return (
-                <Link key={i} to={a.path}>
-                  <button className="w-full flex items-center gap-2.5 px-4 py-3.5 rounded-xl transition-all hover:bg-card/[0.04]"
-                    style={{ background: 'var(--tc-foreground)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--kc-b3b3b3)' }}>
-                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--tc-primary)' }} />
-                    <span className="text-sm font-medium">{a.label}</span>
-                  </button>
-                </Link>
-              );
-            })}
+        <div className="mt-6 flex items-center gap-4">
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-border">
+            <div className="h-full rounded-full bg-foreground" style={{ width: `${(done / CHECKLIST.length) * 100}%` }} />
           </div>
-        </motion.div>
+          <p className="text-sm font-semibold text-foreground tabular-nums">{done} of {CHECKLIST.length} done</p>
+        </div>
 
-        {/* Enter dashboard CTA */}
-        <motion.div variants={stagger.item}>
-          <Link to="/">
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: '0 0 36px color-mix(in srgb, var(--tc-primary) 40%, transparent)' }}
-              whileTap={{ scale: 0.97 }}
-              className="w-full py-4 rounded-2xl text-primary-foreground font-bold text-base flex items-center justify-center gap-2.5"
-              style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-primary))', boxShadow: '0 0 24px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}
-            >
-              Enter Full Dashboard
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
-          </Link>
-        </motion.div>
-      </motion.div>
+        <ol className="mt-5 space-y-2.5">
+          {CHECKLIST.map((item, i) => (
+            <li key={item.label} className="panel flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4 sm:px-5">
+              <div className="flex min-w-0 flex-1 items-center gap-4">
+                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-foreground text-[15px] font-bold text-foreground">
+                  {i + 1}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[15px] font-semibold text-foreground">{item.label}</span>
+                  <span className="block text-sm text-muted-foreground">{item.detail}</span>
+                </span>
+              </div>
+              <Button asChild variant={i === 0 ? 'default' : 'outline'} className="sm:flex-shrink-0">
+                <Link to={item.path}>{item.action}</Link>
+              </Button>
+            </li>
+          ))}
+        </ol>
+
+        <p className="mt-8 text-[15px] font-semibold text-foreground">Moving from another app? Bring your clients with you.</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          {MOVE_FROM.map(m => (
+            <Button key={m.label} asChild variant="outline" size="lg">
+              <Link to={m.path}>{m.label}</Link>
+            </Button>
+          ))}
+        </div>
+
+        <div className="mt-8 border-t border-border pt-5">
+          <Button asChild variant="link">
+            <Link to="/">Skip for now and open Today</Link>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

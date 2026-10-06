@@ -2,8 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import {
-  Apple, Utensils, CheckCircle2, Plus, ChevronRight, BarChart3, Calendar
+import { Utensils, CheckCircle2, Plus, ChevronRight, BarChart3, Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,9 +16,9 @@ function pct(val, max) {
 
 function MacroChip({ label, value, unit = 'g', color }) {
   return (
-    <div className={cn('flex flex-col items-center px-3 py-2 rounded-xl text-center flex-1', color)}>
-      <span className="text-sm font-bold tabular-nums leading-tight">{value ?? '—'}{unit === 'kcal' ? '' : unit}</span>
-      <span className="text-[11px] opacity-70 mt-0.5">{label}{unit === 'kcal' ? ' kcal' : ''}</span>
+    <div className="flex flex-col px-3 py-2 rounded-lg bg-secondary flex-1 min-w-0">
+      <span className="text-[13px] text-muted-foreground">{label}{unit === 'kcal' ? ', kcal' : ''}</span>
+      <span className="num text-[20px] text-foreground leading-tight mt-0.5">{value ?? '\u2014'}{unit === 'kcal' ? '' : <span className="text-[0.7em] ml-0.5">{unit}</span>}</span>
     </div>
   );
 }
@@ -59,7 +58,7 @@ function AssignPlanModal({ open, onClose, plans, clientId, onAssigned }) {
         className="bg-card rounded-xl w-full max-w-md overflow-hidden"
       >
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-          <h3 className="text-sm font-bold text-foreground">Assign nutrition plan</h3>
+          <h3 className="text-[18px] text-foreground">Assign nutrition plan</h3>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-lg leading-none">×</button>
         </div>
         <div className="max-h-72 overflow-y-auto px-4 py-3 space-y-2">
@@ -118,9 +117,6 @@ function AssignedPlanSection({ client, plans, allPlans, onOpenAssign }) {
 
   if (!assigned) return (
     <div className="bg-card rounded-xl border border-border p-6 flex flex-col items-center text-center gap-3">
-      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-        <Apple className="w-5 h-5 text-muted-foreground" />
-      </div>
       <div>
         <p className="text-sm font-semibold text-foreground">No nutrition plan assigned yet</p>
         <p className="text-xs text-muted-foreground mt-0.5">Assign an existing plan or create a new one</p>
@@ -365,7 +361,7 @@ function WeeklyAdherenceGrid({ client, assignedPlan }) {
           <div key={i} className="flex flex-col items-center gap-1.5 flex-1">
             <div
               className={cn(
-                'w-full aspect-square rounded-lg',
+                'w-full h-10 rounded-md',
                 squareColor[dayStatuses[i]],
                 isToday(day) && 'ring-2 ring-primary ring-offset-1'
               )}

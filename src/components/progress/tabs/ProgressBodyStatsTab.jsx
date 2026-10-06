@@ -63,7 +63,7 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
       {/* Weight Section */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h3 className="text-sm font-semibold text-foreground">Weight history</h3>
+          <h3 className="text-[18px] text-foreground">Weight history</h3>
           <button onClick={() => setShowLog(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
             <Plus className="w-3 h-3" /> Log Weight
@@ -120,7 +120,7 @@ export default function ProgressBodyStatsTab({ client, checkIns }) {
       {bfData.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
-            <h3 className="text-sm font-semibold text-foreground">Body fat % trend</h3>
+            <h3 className="text-[18px] text-foreground">Body fat % trend</h3>
           </div>
           {bfData.length >= 2 && (
             <div className="p-4">

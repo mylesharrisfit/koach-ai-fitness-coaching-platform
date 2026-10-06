@@ -79,7 +79,7 @@ export default function CommunityGroupChat({ user, myClient, allClients }) {
       <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
         <span className="flex -space-x-1.5">
           {allClients.slice(0, 5).map(c => (
-            <Initials key={c.id} name={c.name || 'Member'} size={22} className="ring-2 ring-card text-[9px]" />
+            <Initials key={c.id} name={c.name || 'Member'} size={22} className="ring-2 ring-card" />
           ))}
         </span>
         <p className="text-[13px] text-muted-foreground">{allClients.length} member{allClients.length === 1 ? '' : 's'} in this chat</p>

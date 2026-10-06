@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ExternalLink, Download, AlertCircle } from 'lucide-react';
+import { ExternalLink, Download } from 'lucide-react';
 import { startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { SignedLink, SignedIframe } from '@/components/shared/SignedImage';
@@ -128,9 +128,6 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
     return (
       <div className="h-full flex items-center justify-center p-6">
         <div className="text-center max-w-sm">
-          <div className="w-12 h-12 rounded-xl bg-warning/10 border border-warning flex items-center justify-center mx-auto mb-3">
-            <AlertCircle className="w-6 h-6 text-warning" />
-          </div>
           <p className="font-semibold text-foreground mb-1">No nutrition plan assigned</p>
           <p className="text-xs text-muted-foreground mb-4">This client doesn't have a meal plan yet.</p>
           <button

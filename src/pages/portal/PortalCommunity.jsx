@@ -127,7 +127,7 @@ export default function PortalCommunity({ user }) {
                       <span className="mt-1 flex items-center gap-2">
                         <span className="flex -space-x-1.5">
                           {members.slice(0, 4).map(m => (
-                            <Initials key={m.id} name={m.name} size={20} className="ring-2 ring-card text-[9px]" />
+                            <Initials key={m.id} name={m.name} size={20} className="ring-2 ring-card" />
                           ))}
                         </span>
                         <span className="text-[13px] text-muted-foreground">{members.length} members</span>

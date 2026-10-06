@@ -58,7 +58,7 @@ export default function TodayHeroCard({
           <HeroIconButton onClick={onNotifications} label={unreadNotifications > 0 ? `${unreadNotifications} unread notifications` : 'Notifications'}>
             <Bell className="h-[18px] w-[18px]" />
             {unreadNotifications > 0 && (
-              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold tabular-nums text-brand-foreground">
+              <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand px-1 text-[11px] font-bold tabular-nums text-brand-foreground">
                 {unreadNotifications > 9 ? '9+' : unreadNotifications}
               </span>
             )}

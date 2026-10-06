@@ -71,8 +71,8 @@ export default function BIRevenueChart({ clients, payments }) {
               <ReferenceLine key={m} y={m} stroke={CHART.grey} strokeDasharray="4 4" strokeWidth={1}
                 label={{ value: moneyAxis(m), position: 'insideTopLeft', fontSize: 11, fill: CHART.grey }} />
             ))}
-            <Bar dataKey="existingRevenue" name="Existing clients" stackId="mrr" fill={CHART.ink} maxBarSize={36} />
-            <Bar dataKey="newRevenue" name="New this month" stackId="mrr" fill={CHART.newBar} radius={[3, 3, 0, 0]} maxBarSize={36} />
+            <Bar isAnimationActive={false} dataKey="existingRevenue" name="Existing clients" stackId="mrr" fill={CHART.ink} maxBarSize={36} />
+            <Bar isAnimationActive={false} dataKey="newRevenue" name="New this month" stackId="mrr" fill={CHART.newBar} radius={[3, 3, 0, 0]} maxBarSize={36} />
           </BarChart>
         </ResponsiveContainer>
       </div>

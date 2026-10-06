@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { Send, MessageCircle } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -77,9 +77,6 @@ export default function ProfileMessagesTab({ client, messages }) {
       {/* Messages thread */}
       {messages.length === 0 ? (
         <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center py-14 text-center px-6">
-          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
-            <MessageCircle className="w-5 h-5 text-muted-foreground" />
-          </div>
           <p className="text-sm font-semibold text-foreground">No messages yet</p>
           <p className="text-xs text-muted-foreground mt-1">Start a conversation with {client.name}</p>
         </div>

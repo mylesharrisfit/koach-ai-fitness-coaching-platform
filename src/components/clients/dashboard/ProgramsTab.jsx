@@ -89,7 +89,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
   if (picking) {
     return (
       <div className="bg-card rounded-xl border border-border p-4">
-        <h3 className="text-sm font-bold text-foreground mb-3">Select a program</h3>
+        <h3 className="text-[18px] text-foreground mb-3">Select a program</h3>
         <ProgramPicker
           programs={allPrograms}
           onSelect={p => assignMutation.mutate(p.id)}
@@ -102,9 +102,6 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
   if (!assignedProgram) {
     return (
       <div className="bg-card rounded-xl border border-border p-5 text-center space-y-3">
-        <div className="w-14 h-14 rounded-xl bg-muted border border-border flex items-center justify-center mx-auto">
-          <Dumbbell className="w-6 h-6 text-border" />
-        </div>
         <div>
           <p className="font-semibold text-foreground text-sm">No program assigned yet</p>
           <p className="text-xs text-muted-foreground mt-0.5">Assign a workout program to get started</p>
@@ -205,7 +202,7 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
 
   return (
     <div className="bg-card rounded-xl border border-border p-4 space-y-3">
-      <h3 className="text-sm font-bold text-foreground">This Week's Schedule</h3>
+      <h3 className="text-[18px] text-foreground">This Week's Schedule</h3>
       <div className="space-y-1.5">
         {schedule.map(({ date, workout, completed, isToday: todayFlag }) => (
           <div
@@ -282,7 +279,7 @@ function ProgramProgress({ assignedProgram, workoutSessions, client }) {
 
   return (
     <div className="bg-card rounded-xl border border-border p-4 space-y-4">
-      <h3 className="text-sm font-bold text-foreground">Program progress</h3>
+      <h3 className="text-[18px] text-foreground">Program progress</h3>
 
       <div className="grid grid-cols-3 gap-3">
         {currentWeek !== null && totalWeeks > 0 && (

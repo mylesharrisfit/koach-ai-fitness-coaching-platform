@@ -23,6 +23,7 @@ export default function StripeRevenueChart({ data }) {
             <YAxis tick={CHART.tick} axisLine={false} tickLine={false} width={48} tickFormatter={moneyAxis} />
             <Tooltip cursor={{ stroke: CHART.light }} content={<ChartTooltip format={(v) => money(v)} />} />
             <Line
+              isAnimationActive={false}
               type="monotone"
               dataKey="revenue"
               name="Revenue"
