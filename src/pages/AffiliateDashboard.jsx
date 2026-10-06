@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
-import { Page, PageHeader, Segmented } from '@/components/kit';
+import { Button } from '@/components/ui/button';
+import { Page, PageHeader, Panel, Segmented, EmptyState } from '@/components/kit';
 import AffiliateEarningsOverview from '@/components/affiliate/AffiliateEarningsOverview';
 import AffiliateCommissionStructure from '@/components/affiliate/AffiliateCommissionStructure';
 import AffiliateLinksSection from '@/components/affiliate/AffiliateLinksSection';
@@ -27,7 +28,7 @@ export default function AffiliateDashboard() {
     queryFn: () => me(),
   });
 
-  const { data: affiliateProfile } = useQuery({
+  const { data: affiliateProfile, isLoading: profileLoading } = useQuery({
     queryKey: ['affiliate-profile', user?.email],
     queryFn: () => db.entities.AffiliateProfile.filter({ coach_email: user?.email }, '-created_date', 1),
     enabled: !!user?.email,
@@ -40,7 +41,20 @@ export default function AffiliateDashboard() {
   if (!profile) {
     return (
       <Page>
-        <p className="text-sm text-muted-foreground">Loading your affiliate dashboard</p>
+        {profileLoading || !user ? (
+          <p className="text-sm text-muted-foreground">Loading your affiliate dashboard</p>
+        ) : (
+          <>
+            <PageHeader title="Affiliate" subtitle="You don't have an affiliate account yet." />
+            <Panel>
+              <EmptyState
+                title="Apply to the affiliate program"
+                body="Earn 30% of every coach you refer, every month they stay."
+                action={<Button asChild><a href="/affiliate-application">Apply</a></Button>}
+              />
+            </Panel>
+          </>
+        )}
       </Page>
     );
   }

@@ -48,7 +48,7 @@ const NAV_GROUPS = [
     label: 'Business',
     items: [
       { icon: CalendarDays, label: 'Schedule', path: '/schedule', count: 'sessions' },
-      { icon: CreditCard, label: 'Billing', path: '/invoicing', also: ['/payment-tracking', '/packages'] },
+      { icon: CreditCard, label: 'Billing', path: '/invoicing', also: ['/packages'] },
       { icon: LineChart, label: 'Insights', path: '/business', also: ['/analytics', '/revenue'] },
       { icon: UserPlus, label: 'Leads', path: '/sales', feature: 'sales' },
       { icon: ShoppingBag, label: 'Store', path: '/store', feature: 'store' },

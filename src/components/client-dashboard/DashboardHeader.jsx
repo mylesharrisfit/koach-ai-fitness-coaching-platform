@@ -42,7 +42,7 @@ export default function DashboardHeader({ user, streak, log, onSettings }) {
           const isDone = done(log);
           return (
             <div key={key} className={cn('flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-[13px] font-semibold',
-              isDone ? 'bg-white text-[#111318]' : 'bg-white/10 text-white/70')}>
+              isDone ? 'bg-white text-sidebar' : 'bg-white/10 text-white/70')}>
               {isDone && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
               {label}
             </div>

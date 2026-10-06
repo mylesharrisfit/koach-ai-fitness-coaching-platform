@@ -165,7 +165,7 @@ export default function AffiliateApplication() {
                 <button key={platform} type="button" aria-pressed={selectedPlatforms.includes(platform)}
                   onClick={() => setSelectedPlatforms(p => p.includes(platform) ? p.filter(x => x !== platform) : [...p, platform])}
                   className={chip(selectedPlatforms.includes(platform))}>
-                  {platform}
+                  {platform.charAt(0) + platform.slice(1).toLowerCase()}
                 </button>
               ))}
             </div>

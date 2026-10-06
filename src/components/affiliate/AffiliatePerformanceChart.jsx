@@ -38,7 +38,7 @@ export default function AffiliatePerformanceChart({ profile }) {
             {months.map(m => (
               <div key={m.label} className="flex-1 flex flex-col items-center justify-end h-full gap-2">
                 <span className="num text-base text-foreground">{m.signups}</span>
-                <div className={m.current ? 'w-full rounded-[4px] bg-brand' : 'w-full rounded-[4px] bg-primary'} style={{ height: `${Math.max(m.signups ? 6 : 2, (m.signups / max) * 100)}%`, opacity: m.signups ? 1 : 0.15 }} />
+                <div className={m.current ? 'w-full max-w-[40px] rounded-[4px] bg-brand' : 'w-full max-w-[40px] rounded-[4px] bg-primary'} style={{ height: `${Math.max(m.signups ? 6 : 2, (m.signups / max) * 100)}%`, opacity: m.signups ? 1 : 0.15 }} />
               </div>
             ))}
           </div>

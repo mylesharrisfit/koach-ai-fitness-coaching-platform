@@ -1,7 +1,7 @@
 import React from 'react';
 import { Panel, Stat } from '@/components/kit';
 
-const money = (n) => `$${Number(n || 0).toFixed(2)}`;
+const money = (n) => `$${Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export default function AffiliateEarningsOverview({ profile }) {
   return (
