@@ -60,7 +60,7 @@ function RestTimerBar({ seconds, nextSetNumber, onSkip, onDone }) {
   }, []);
 
   return (
-    <div className="mt-4 flex items-center gap-3 rounded-xl bg-sidebar px-4 py-3 text-white" role="timer" aria-live="polite">
+    <div className="mt-4 flex items-center gap-3 rounded-xl bg-sidebar px-4 py-3 text-white dark:ring-1 dark:ring-inset dark:ring-white/10" role="timer" aria-live="polite">
       <p className="flex-1 text-[15px] text-white/90">Rest before set {nextSetNumber}</p>
       <span className="num text-[30px] text-white">{mmss(rem)}</span>
       <button type="button" onClick={() => { haptic('light'); setRem(r => r + 30); }}

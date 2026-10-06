@@ -37,7 +37,7 @@ function RestTimer({ seconds, onDone }) {
   const secs = remaining % 60;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-sidebar px-4 py-3 text-white">
+    <div className="flex items-center gap-3 rounded-xl bg-sidebar px-4 py-3 text-white dark:ring-1 dark:ring-inset dark:ring-white/10">
       <p className="flex-1 text-[15px] text-white/90">Rest <span className="text-white/60">({seconds} s)</span></p>
       <span className="num text-[28px]">{mins}:{secs.toString().padStart(2, '0')}</span>
       <button type="button" onClick={() => setRunning(r => !r)} aria-label={running ? 'Pause' : 'Start'}

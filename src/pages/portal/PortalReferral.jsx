@@ -71,42 +71,32 @@ export default function PortalReferral({ user }) {
   const pendingRewards = myRewards.filter(r => r.status === 'pending').length;
 
   return (
-    <div className="pb-32 bg-secondary">
+    <div className="min-h-full bg-background pb-32">
 
       {/* Header */}
-      <div className="bg-card px-5 pt-12 pb-4"
-        style={{ boxShadow: 'none' }}>
-        <h1 className="text-foreground font-black text-[28px]">Refer a Friend</h1>
+      <div className="px-5 pb-4" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 20px)' }}>
+        <h1 className="text-[32px] text-foreground">Refer a friend</h1>
       </div>
 
       {!config?.is_enabled ? (
-        <div className="mx-5 mt-6 p-6 rounded-xl text-center bg-muted border border-border">
-          <p className="text-muted-foreground font-semibold">Your coach hasn't enabled the referral program yet.</p>
-          <p className="text-muted-foreground text-sm mt-1">Check back soon or ask your coach to enable it</p>
+        <div className="panel mx-5 mt-2 p-5">
+          <p className="text-[15px] font-semibold text-foreground">Referrals aren't switched on yet</p>
+          <p className="mt-1 text-sm text-muted-foreground">Ask your coach if they'd like to turn them on.</p>
         </div>
       ) : (
         <>
-          {/* Hero */}
-          <div className="mx-5 mt-6 rounded-xl p-6 overflow-hidden"
-            style={{ background: 'rgb(var(--primary))', boxShadow: 'none' }}>
-            <div style={{ background: 'rgb(var(--border))', padding: 20, borderRadius: 20 }}>
-              <h2 className="text-foreground font-black text-3xl mb-2">Share the journey </h2>
-              <p className="text-foreground text-sm mb-6">Refer a friend to our coach and earn rewards</p>
-              
-              <div className="bg-white/95 rounded-xl px-4 py-3 inline-block mb-5">
-                <p className="text-foreground font-black text-lg">
-                  {config.reward_type === 'discount_dollar' && `$${config.reward_amount} off`}
-                  {config.reward_type === 'discount_percent' && `${config.reward_amount}% off`}
-                  {config.reward_type === 'free_days' && `${config.reward_amount} free days`}
-                  {config.reward_type === 'custom' && config.custom_reward_text}
-                </p>
-                <p className="text-muted-foreground text-xs mt-0.5">for every friend who joins</p>
-              </div>
-
-              {config.referral_message && (
-                <p className="text-foreground text-xs italic">{config.referral_message}</p>
-              )}
-            </div>
+          {/* Offer */}
+          <div className="panel mx-5 mt-2 p-5">
+            <p className="text-[13px] text-muted-foreground">For every friend who joins</p>
+            <p className="num mt-1 text-[36px] text-foreground">
+              {config.reward_type === 'discount_dollar' && `$${config.reward_amount} off`}
+              {config.reward_type === 'discount_percent' && `${config.reward_amount}% off`}
+              {config.reward_type === 'free_days' && `${config.reward_amount} free days`}
+              {config.reward_type === 'custom' && config.custom_reward_text}
+            </p>
+            {config.referral_message && (
+              <p className="mt-2 text-[15px] text-muted-foreground">{config.referral_message}</p>
+            )}
           </div>
 
           {/* Referral link */}
@@ -123,7 +113,7 @@ export default function PortalReferral({ user }) {
               />
               <button onClick={handleCopyLink}
                 className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                style={{ background: copied ? 'rgb(var(--success))' : 'rgb(var(--accent))', color: copied ? 'white' : 'rgb(var(--primary))' }}>
+                style={{ background: copied ? 'rgb(var(--success))' : 'rgb(var(--accent))', color: copied ? 'white' : 'rgb(var(--foreground))' }}>
                 <Copy className="w-4 h-4" />
               </button>
             </div>
@@ -131,7 +121,7 @@ export default function PortalReferral({ user }) {
             <div className="flex gap-2 mb-4">
               <button onClick={handleShare}
                 className="flex-1 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
-                style={{ background: 'rgb(var(--primary))', color: 'white' }}>
+                style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--primary-foreground))' }}>
                 <Share2 className="w-4 h-4" />
                 Share
               </button>

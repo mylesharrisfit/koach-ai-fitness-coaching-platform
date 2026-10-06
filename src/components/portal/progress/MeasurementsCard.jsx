@@ -67,7 +67,7 @@ export default function MeasurementsCard({ checkIns, onLogMeasurements }) {
         <p className="text-foreground font-bold text-sm">Body Measurements</p>
         <button onClick={onLogMeasurements}
           className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[12px] font-bold"
-          style={{ background: 'rgb(var(--primary))', color: 'rgb(var(--primary))', border: '1px solid rgb(var(--primary) / 0.25)' }}>
+          style={{ background: 'rgb(var(--card))', color: 'rgb(var(--foreground))', border: '1px solid rgb(var(--input))' }}>
           <Plus className="w-3 h-3" /> Log
         </button>
       </div>
