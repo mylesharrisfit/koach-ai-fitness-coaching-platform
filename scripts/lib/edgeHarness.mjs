@@ -84,6 +84,17 @@ let registering = null;
   handlers.set(registering, h);
   return { finished: Promise.resolve(), shutdown: async () => {}, ref() {}, unref() {} };
 };
+// Outbound calls to intercepted hosts (e.g. api.stripe.com) go to the
+// gateway's /__intercept/<host>/... route instead of the internet.
+const interceptHosts = (Deno.env.get('HARNESS_INTERCEPT_HOSTS') ?? '').split(',').filter(Boolean);
+const gateway = Deno.env.get('SUPABASE_URL')!;
+const realFetch = globalThis.fetch;
+globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const req = new Request(input, init);
+  const u = new URL(req.url);
+  if (!interceptHosts.includes(u.hostname)) return realFetch(req);
+  return realFetch(new Request(gateway + '/__intercept/' + u.hostname + u.pathname + u.search, req));
+};
 const dir = Deno.env.get('HARNESS_FUNCTIONS_DIR')!;
 for (const name of (Deno.env.get('HARNESS_FUNCTIONS') ?? '').split(',').filter(Boolean)) {
   registering = name;
@@ -103,9 +114,12 @@ realServe({ port: Number(Deno.env.get('HARNESS_PORT')), hostname: '127.0.0.1', o
  * `({ body, headers }) => ({ status, body })` that answers instead of the real
  * function — e.g. a recording stub for sendEmailNotification so nothing is
  * emailed and the test can count sends.
+ * `intercept` maps an outbound hostname (e.g. 'api.stripe.com') to a Node
+ * handler `({ method, path, query, body, headers }) => ({ status, body })`;
+ * the functions' fetch() calls to that host are answered by it (a fake API).
  * Returns { url, callFunction(name, { token, body, method }), rest(path, opts), stop() }.
  */
-export async function startEdgeHarness({ postgresUrl, functions = [], env = {}, stubFunctions = {} }) {
+export async function startEdgeHarness({ postgresUrl, functions = [], env = {}, stubFunctions = {}, intercept = {} }) {
   const postgrestBin = process.env.POSTGREST_BIN || 'postgrest';
   const denoBin = process.env.DENO_BIN || 'deno';
   const dbUrl = new URL(postgresUrl);
@@ -166,6 +180,7 @@ export async function startEdgeHarness({ postgresUrl, functions = [], env = {}, 
       HARNESS_FUNCTIONS_DIR: FUNCTIONS_DIR,
       HARNESS_FUNCTIONS: functions.join(','),
       HARNESS_PORT: String(denoPort),
+      HARNESS_INTERCEPT_HOSTS: Object.keys(intercept).join(','),
     },
   });
   procs.push(deno);
@@ -182,6 +197,20 @@ export async function startEdgeHarness({ postgresUrl, functions = [], env = {}, 
   const gateway = http.createServer((req, res) => {
     const u = new URL(req.url, gatewayUrl);
     if (u.pathname.startsWith('/rest/v1')) return proxy(req, res, restPort, req.url.slice('/rest/v1'.length) || '/');
+    if (u.pathname.startsWith('/__intercept/')) {
+      const [host, ...rest] = u.pathname.slice('/__intercept/'.length).split('/');
+      const handler = intercept[host];
+      let raw = '';
+      req.on('data', (c) => { raw += c; });
+      req.on('end', async () => {
+        const out = handler
+          ? await handler({ method: req.method, path: `/${rest.join('/')}`, query: u.searchParams, body: raw, headers: req.headers })
+          : { status: 502, body: { error: `no interceptor for ${host}` } };
+        res.writeHead(out?.status ?? 200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify(out?.body ?? {}));
+      });
+      return undefined;
+    }
     if (u.pathname.startsWith('/functions/v1/')) {
       const stub = stubFunctions[u.pathname.slice('/functions/v1/'.length)];
       if (!stub) return proxy(req, res, denoPort, req.url.slice('/functions/v1'.length));
