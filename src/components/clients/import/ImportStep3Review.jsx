@@ -25,7 +25,7 @@ export default function ImportStep3Review({ headers, rows, mapping, existingEmai
     { key: 'email', label: 'Email' },
     { key: 'phone', label: 'Phone' },
     { key: 'status', label: 'Status' },
-    { key: 'start_date', label: 'Start Date' },
+    { key: 'start_date', label: 'Start date' },
     { key: 'tags', label: 'Tags' },
   ].filter(f => reverseMap[f.key]);
 

@@ -26,7 +26,7 @@ export default function PaymentFeedItem({ payment, onViewInvoice, onRefund }) {
   const method = payment.payment_method ? payment.payment_method.replace(/_/g, ' ') : null;
 
   return (
-    <div className="relative flex flex-wrap items-center gap-x-4 gap-y-1 px-5 sm:px-6 py-3.5 border-b border-border last:border-b-0 hover:bg-accent/60 transition-colors md:grid md:grid-cols-[minmax(0,1fr)_120px_130px_96px]">
+    <div className="relative flex flex-wrap items-center gap-x-4 gap-y-1 pl-5 pr-12 md:pr-6 sm:pl-6 py-3.5 border-b border-border last:border-b-0 hover:bg-accent/60 transition-colors md:grid md:grid-cols-[minmax(0,1fr)_120px_130px_96px]">
       <div className="flex items-center gap-3 min-w-0 flex-1">
         <Initials name={payment.client_name} />
         <div className="min-w-0">

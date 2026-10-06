@@ -60,7 +60,7 @@ export default function ProgramWeeklyScheduleTab({ program }) {
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-flow-col sm:auto-cols-[minmax(200px,1fr)] sm:overflow-x-auto sm:pb-2">
+      <div className="grid gap-4 sm:grid-flow-col sm:auto-cols-[minmax(172px,1fr)] sm:overflow-x-auto sm:pb-2">
         {days.map((day, i) => {
           const exercises = (day.exercises || []).filter(e => !e._type && e.name);
           const mins = estimateMinutes(day.exercises || []);

@@ -75,7 +75,7 @@ export default function NoProgramPanel({ clients, onClose }) {
           <div className="flex items-center gap-2">
             <Dumbbell className="w-4 h-4 text-primary" />
             <div>
-              <p className="font-bold text-foreground text-sm">Clients Without a Program</p>
+              <p className="font-bold text-foreground text-sm">Clients without a program</p>
               <p className="text-xs text-muted-foreground">{remaining.length} remaining</p>
             </div>
           </div>
@@ -91,7 +91,7 @@ export default function NoProgramPanel({ clients, onClose }) {
               <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mb-3">
                 <Check className="w-5 h-5 text-success" />
               </div>
-              <p className="text-sm font-semibold text-foreground">All assigned!</p>
+              <p className="text-sm font-semibold text-foreground">All assigned</p>
               <p className="text-xs text-muted-foreground mt-1">Every client now has a program.</p>
               <Button className="mt-4 text-xs" onClick={onClose}>Close</Button>
             </div>

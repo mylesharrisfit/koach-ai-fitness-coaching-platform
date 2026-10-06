@@ -7,13 +7,13 @@ import { cn } from '@/lib/utils';
 
 const ICON_OPTIONS = [
   { id: 'dumbbell', icon: Dumbbell, label: 'Dumbbell', color: 'bg-accent text-primary' },
-  { id: 'flame', icon: Flame, label: 'Flame', color: 'bg-orange-100 text-orange-600' },
+  { id: 'flame', icon: Flame, label: 'Flame', color: 'bg-secondary text-foreground' },
   { id: 'lightning', icon: Zap, label: 'Lightning', color: 'bg-warning/10 text-warning' },
   { id: 'trophy', icon: Trophy, label: 'Trophy', color: 'bg-ai/10 text-ai' },
-  { id: 'layers', icon: Layers, label: 'Layers', color: 'bg-pink-100 text-pink-600' },
+  { id: 'layers', icon: Layers, label: 'Layers', color: 'bg-secondary text-foreground' },
   { id: 'target', icon: Target, label: 'Target', color: 'bg-destructive/10 text-destructive' },
   { id: 'trending', icon: TrendingUp, label: 'Trending', color: 'bg-success/10 text-success' },
-  { id: 'wind', icon: Wind, label: 'Wind', color: 'bg-cyan-100 text-cyan-600' },
+  { id: 'wind', icon: Wind, label: 'Wind', color: 'bg-secondary text-foreground' },
   { id: 'heart', icon: Heart, label: 'Heart', color: 'bg-destructive/10 text-destructive' },
   { id: 'bolt', icon: Lightning, label: 'Bolt', color: 'bg-accent text-primary' },
 ];

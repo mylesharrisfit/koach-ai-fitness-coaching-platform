@@ -3,10 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { format, differenceInDays, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import {
-  ChevronDown, ChevronUp, AlertTriangle, TrendingDown, TrendingUp,
-  Minus, Clock, ImageIcon, Moon, Zap, ExternalLink
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, AlertTriangle, TrendingDown, TrendingUp, Minus, Clock, ImageIcon, Moon, ArrowRight, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { checkInScore, compositeAdherenceScore, averageAdherenceScore, scoreColor, scoreBreakdown } from '@/lib/adherence';
 import { runAutoAwardForClient } from '@/lib/autoAward';
@@ -136,7 +133,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
               <span className="font-bold text-sm">{client?.name || checkIn.client_name}</span>
               <CheckInStatusBadge checkIn={checkIn} compact />
               {status.label !== 'Good' && (
-                <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', status.color)}>
+                <span className={cn('text-[12px] font-semibold px-2 py-0.5 rounded-full border', status.color)}>
                   {status.label}
                 </span>
               )}
@@ -156,24 +153,24 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             {/* Key metrics row */}
             <div className="grid grid-cols-4 gap-2 bg-background border border-border rounded-xl p-2.5">
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] text-foreground">Weight</span>
+                <span className="text-[12px] text-foreground">Weight</span>
                 <WeightDelta current={checkIn.weight} previous={prevCI?.weight} />
-                <span className="text-[10px] text-muted-foreground">lbs</span>
+                <span className="text-[12px] text-muted-foreground">lbs</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
                 <Moon className="w-3.5 h-3.5 text-foreground" />
                 <span className={cn('text-sm font-bold tabular-nums', sleepColor)}>{checkIn.sleep_hours ?? '–'}</span>
-                <span className="text-[10px] text-foreground">hrs sleep</span>
+                <span className="text-[12px] text-foreground">hrs sleep</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <Zap className="w-3.5 h-3.5 text-foreground" />
-                <span className={cn('text-sm font-bold tabular-nums', energyColor)}>{checkIn.energy_level ?? '–'}<span className="text-[10px] font-normal">/10</span></span>
-                <span className="text-[10px] text-foreground">energy</span>
+                <ArrowRight className="w-3.5 h-3.5 text-foreground" />
+                <span className={cn('text-sm font-bold tabular-nums', energyColor)}>{checkIn.energy_level ?? '–'}<span className="text-[12px] font-normal">/10</span></span>
+                <span className="text-[12px] text-foreground">energy</span>
               </div>
               <div className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] text-foreground">Adherence</span>
-                <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-[10px] font-normal">%</span></span>
-                <span className="text-[10px] text-foreground">avg</span>
+                <span className="text-[12px] text-foreground">Adherence</span>
+                <span className={cn('text-sm font-bold tabular-nums', scoreColor(avgScore))}>{avgScore ?? '–'}<span className="text-[12px] font-normal">%</span></span>
+                <span className="text-[12px] text-foreground">avg</span>
               </div>
             </div>
 
@@ -181,7 +178,7 @@ export default function CheckInClientCard({ checkIn, client, allClientCIs = [], 
             {status.flags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2.5">
                 {status.flags.map((f, i) => (
-                  <span key={i} className="flex items-center gap-1 text-[10px] font-medium text-destructive bg-destructive/8 border border-destructive/20 px-2 py-0.5 rounded-full">
+                  <span key={i} className="flex items-center gap-1 text-[12px] font-medium text-destructive bg-destructive/8 border border-destructive/20 px-2 py-0.5 rounded-full">
                     <AlertTriangle className="w-2.5 h-2.5" />{f}
                   </span>
                 ))}

@@ -2,7 +2,6 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Segmented } from '@/components/kit';
 import { cn } from '@/lib/utils';
 
 const SET_TYPES = [
@@ -96,9 +95,19 @@ export default function ExerciseDetailsPanel({ exercise, onChange, onClose, onVi
           </Field>
         </div>
 
-        <div>
-          <p className="mb-1.5 text-[13px] text-muted-foreground">Set type</p>
-          <Segmented size="sm" className="w-full" options={SET_TYPES} value={exercise.set_type || 'straight'} onChange={v => u('set_type', v)} />
+        <div className="grid grid-cols-2 gap-2">
+          <Field label="Set type">
+            <Select value={exercise.set_type || 'straight'} onValueChange={v => u('set_type', v)}>
+              <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>{SET_TYPES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+            </Select>
+          </Field>
+          <Field label="Section">
+            <Select value={exercise.section || 'main'} onValueChange={v => u('section', v)}>
+              <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>{SECTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+            </Select>
+          </Field>
         </div>
 
         {exercise.set_type === 'superset' && (
@@ -112,11 +121,6 @@ export default function ExerciseDetailsPanel({ exercise, onChange, onClose, onVi
             <Input className="h-9" placeholder="3 drops, 20% each" value={exercise.dropset_scheme || ''} onChange={e => u('dropset_scheme', e.target.value)} />
           </Field>
         )}
-
-        <div>
-          <p className="mb-1.5 text-[13px] text-muted-foreground">Section</p>
-          <Segmented size="sm" className="w-full" options={SECTIONS} value={exercise.section || 'main'} onChange={v => u('section', v)} />
-        </div>
 
         <div className="grid grid-cols-[1fr_88px] gap-2">
           <Field label="Progression each week">

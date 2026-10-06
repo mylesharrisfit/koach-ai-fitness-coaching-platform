@@ -96,7 +96,7 @@ export default function FoodLibrary() {
   const approvedCount = savedFoods.filter(f => f.coach_approved).length;
 
   return (
-    <Page className="max-w-[1100px]">
+    <Page>
       <PageHeader
         title="Food library"
         subtitle={approvedCount > 0

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/api/supabaseClient';
-import { Sparkles, Loader2, RefreshCw } from 'lucide-react';
+import { Loader2, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /* Generates a fast post-check-in summary card for the coach review panel */
@@ -88,12 +88,11 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
     <div className={cn('rounded-xl border p-4 space-y-3', summary ? `${cfg.border} ${cfg.bg}` : 'border-border bg-card')}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <p className="text-xs font-semibold text-muted-foreground">AI Check-in Summary</p>
+          <p className="text-xs font-semibold text-muted-foreground">Check-in summary</p>
         </div>
         <div className="flex items-center gap-2">
           {summary && (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[var(--kc-w-70)] border border-current/20">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-card border border-border">
               {cfg.label}
             </span>
           )}
@@ -126,7 +125,7 @@ export default function AICheckInSummaryCard({ client, checkIn, allClientCIs = [
           )}
 
           {summary.coaching_focus && (
-            <div className="flex items-start gap-2 bg-[var(--kc-w-80)] rounded-xl p-2.5">
+            <div className="flex items-start gap-2 bg-card rounded-lg p-2.5">
               <span className="text-primary text-xs font-bold flex-shrink-0">Focus:</span>
               <p className="text-xs text-foreground font-semibold">{summary.coaching_focus}</p>
             </div>

@@ -8,9 +8,9 @@ const TIMING_OPTIONS = ['Morning', 'Pre-Workout', 'Post-Workout', 'With Meals', 
 const PURPOSE_OPTIONS = ['General Health', 'Fat Loss', 'Muscle / Recovery', 'Energy', 'Sleep', 'Immunity', 'Hormonal'];
 
 const CATEGORY_CONFIG = {
-  supplement: { label: 'Supplements', color: 'bg-accent text-primary border-accent' },
-  vitamin:    { label: 'Vitamins',     color: 'bg-warning/10 text-warning border-warning' },
-  mineral:    { label: 'Minerals',     color: 'bg-success/10 text-success border-success' },
+  supplement: { label: 'Supplements', color: 'bg-secondary text-foreground border-border' },
+  vitamin:    { label: 'Vitamins',     color: 'bg-secondary text-foreground border-border' },
+  mineral:    { label: 'Minerals',     color: 'bg-secondary text-foreground border-border' },
 };
 
 const QUICK_ADDS = [
@@ -110,7 +110,7 @@ export default function SupplementPanel({ value = [], onChange }) {
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-foreground">Supplements and vitamins</span>
           {totalCount > 0 && (
-            <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-secondary text-foreground px-1.5 py-0.5 rounded-full font-medium">
               {totalCount} assigned
             </span>
           )}

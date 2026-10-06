@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  MessageSquare, Flame, Footprints, ClipboardCheck,
-  Sparkles, Check, Loader2, ChevronUp, ChevronDown
-} from 'lucide-react';
+import { MessageSquare, Flame, Footprints, ClipboardCheck, PenLine, Check, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { db } from '@/api/supabaseClient';
 import { toast } from 'sonner';
@@ -63,8 +60,8 @@ function CaloriesPanel({ checkIn, client, onDone }) {
   };
 
   return (
-    <div className="mt-2 p-3 bg-orange-500/8 border border-orange-500/20 rounded-xl space-y-2">
-      <p className="text-xs font-semibold text-orange-400">Adjust daily calories</p>
+    <div className="mt-2 p-3 bg-warning-soft border border-warning/30 rounded-xl space-y-2">
+      <p className="text-xs font-semibold text-warning">Adjust daily calories</p>
       <div className="flex gap-2">
         {[[-250, '−250'], [-150, '−150'], [+150, '+150'], [+250, '+250']].map(([delta, label]) => (
           <button
@@ -163,7 +160,7 @@ export default function CheckInQuickActions({
     // Optimistic: mark done immediately, fire-and-forget saves
     setAiDone(true);
     setAiSaving(false);
-    toast.success('AI feedback sent! ✨', { duration: 2500 });
+    toast.success('AI reply sent', { duration: 2500 });
 
     const existing = checkIn.coach_notes ? checkIn.coach_notes + '\n\n' : '';
     Promise.all([
@@ -204,7 +201,7 @@ export default function CheckInQuickActions({
             ? <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
             : aiDone
               ? <Check className="w-4 h-4 flex-shrink-0" />
-              : <Sparkles className="w-4 h-4 flex-shrink-0" />
+              : <PenLine className="w-4 h-4 flex-shrink-0" />
           }
           <span className="leading-tight">{aiDone ? 'Feedback Sent' : 'Send AI Feedback'}</span>
         </button>
@@ -224,10 +221,10 @@ export default function CheckInQuickActions({
           className={cn(
             'flex items-center gap-2 px-3 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-[0.97]',
             calResult
-              ? 'bg-orange-500/10 border-orange-500/20 text-orange-400 opacity-60 cursor-default'
+              ? 'bg-warning-soft border-warning/30 text-warning opacity-60 cursor-default'
               : openPanel === 'calories'
-                ? 'bg-orange-500/15 border-orange-500/30 text-orange-400'
-                : 'bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20'
+                ? 'bg-warning-soft border-warning/30 text-warning'
+                : 'bg-warning-soft border-warning/30 text-warning hover:bg-warning-soft'
           )}
           disabled={!!calResult}
         >

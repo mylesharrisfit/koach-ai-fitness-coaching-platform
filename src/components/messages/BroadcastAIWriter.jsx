@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Sparkles, Loader2, Check, RotateCw } from 'lucide-react';
+import { PenLine, Loader2, Check, RotateCw } from 'lucide-react';
 import { db } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 const TONE_COLORS = {
-  Motivational: 'border-orange-200 bg-orange-50 text-orange-700',
+  Motivational: 'border-warning/30 bg-warning-soft text-warning',
   Informative: 'border-success bg-success/10 text-success',
   Casual: 'border-ai bg-ai/10 text-ai',
   Reminder: 'border-primary bg-accent text-primary',
@@ -59,26 +59,26 @@ export default function BroadcastAIWriter({ clients, selectedClientIds, filter, 
       <button
         onClick={generate}
         disabled={selectedClientIds.size === 0}
-        className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-gradient-to-r from-primary to-ai text-white hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+        className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
       >
-        <Sparkles className="w-3.5 h-3.5" />
-        ✨ AI Write Message
+        <PenLine className="w-3.5 h-3.5" />
+        AI Write Message
       </button>
     );
   }
 
   return (
-    <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-ai/10 p-3 space-y-3">
+    <div className="rounded-xl border border-primary/20 bg-secondary p-3 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <PenLine className="w-3.5 h-3.5 text-primary" />
           <span className="text-xs font-bold text-primary">AI Broadcast Writer</span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={generate} disabled={loading} className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground hover:text-primary transition-colors">
+          <button onClick={generate} disabled={loading} className="flex items-center gap-1 text-[12px] font-semibold text-muted-foreground hover:text-primary transition-colors">
             <RotateCw className={cn('w-3 h-3', loading && 'animate-spin')} /> Regenerate
           </button>
-          <button onClick={() => setOpen(false)} className="text-[10px] text-muted-foreground hover:text-muted-foreground underline">Close</button>
+          <button onClick={() => setOpen(false)} className="text-[12px] text-muted-foreground hover:text-muted-foreground underline">Close</button>
         </div>
       </div>
 
@@ -92,13 +92,13 @@ export default function BroadcastAIWriter({ clients, selectedClientIds, filter, 
           {/* Preview client selector */}
           {selectedClients.length > 1 && (
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[10px] text-muted-foreground">Preview for:</span>
+              <span className="text-[12px] text-muted-foreground">Preview for:</span>
               {selectedClients.slice(0, 4).map(c => (
                 <button
                   key={c.id}
                   onClick={() => setPreviewClient(c)}
                   className={cn(
-                    'text-[10px] font-semibold px-2 py-0.5 rounded-full border transition-all',
+                    'text-[12px] font-semibold px-2 py-0.5 rounded-full border transition-all',
                     previewClient?.id === c.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border text-muted-foreground hover:border-primary/40'
                   )}
                 >
@@ -111,12 +111,12 @@ export default function BroadcastAIWriter({ clients, selectedClientIds, filter, 
           {/* Versions */}
           <div className="space-y-2">
             {versions.map((v, i) => (
-              <div key={i} className="bg-card rounded-xl border border-white shadow-sm p-3">
+              <div key={i} className="bg-card rounded-xl border border-border shadow-sm p-3">
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className={cn('text-[10px] font-bold px-2 py-0.5 rounded-full border', TONE_COLORS[v.tone] || 'border-border bg-muted text-foreground')}>
+                  <span className={cn('text-[12px] font-bold px-2 py-0.5 rounded-full border', TONE_COLORS[v.tone] || 'border-border bg-muted text-foreground')}>
                     {v.tone}
                   </span>
-                  <span className="text-[10px] text-muted-foreground">Version {i + 1}</span>
+                  <span className="text-[12px] text-muted-foreground">Version {i + 1}</span>
                 </div>
                 <p className="text-xs text-foreground leading-relaxed mb-2.5">
                   {previewMsg(v.message, previewClient)}

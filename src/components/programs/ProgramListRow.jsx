@@ -32,13 +32,13 @@ export function editedAgo(program) {
 
 export function programSubline(program) {
   const mins = estSessionMins(program);
-  const level = program.difficulty ? program.difficulty.charAt(0).toUpperCase() + program.difficulty.slice(1) : null;
-  return [
-    program.is_archived ? 'Archived' : program.is_template ? 'Template' : null,
-    level,
+  const line = [
+    program.is_archived ? 'archived' : program.is_template ? 'template' : null,
+    program.difficulty || null,
     program.days_per_week ? `${program.days_per_week} days a week` : null,
     mins ? `about ${mins} min` : null,
   ].filter(Boolean).join(', ');
+  return line ? line.charAt(0).toUpperCase() + line.slice(1) : '';
 }
 
 export function ClientStack({ clients = [], max = 3 }) {
@@ -48,7 +48,7 @@ export function ClientStack({ clients = [], max = 3 }) {
     <Popover>
       <PopoverTrigger asChild>
         <button onClick={e => e.stopPropagation()} className="flex min-w-0 items-center gap-2 rounded-md text-left hover:opacity-80">
-          <span className="flex -space-x-2">
+          <span className="flex -space-x-1.5">
             {shown.map(c => (
               <Initials key={c.id} name={c.name} size={28} className="ring-2 ring-card" />
             ))}

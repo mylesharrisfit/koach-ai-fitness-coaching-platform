@@ -13,7 +13,7 @@ const STATUS_CONFIG = {
   scheduled:  { label: 'Upcoming',   className: 'bg-accent text-primary border-accent' },
   completed:  { label: 'Completed',  className: 'bg-success/10 text-success border-success' },
   cancelled:  { label: 'Cancelled',  className: 'bg-muted text-muted-foreground border-border' },
-  no_show:    { label: 'No Show',    className: 'bg-destructive/10 text-destructive border-destructive' },
+  no_show:    { label: 'No show',    className: 'bg-destructive/10 text-destructive border-destructive' },
 };
 
 const TYPE_LABELS = {
@@ -31,7 +31,7 @@ function CopyButton({ text, label }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
     setCopied(true);
-    toast.success(`${label} copied!`);
+    toast.success(`${label} copied`);
     setTimeout(() => setCopied(false), 2000);
   };
   return (
@@ -40,7 +40,7 @@ function CopyButton({ text, label }) {
       className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border border-border text-foreground hover:bg-muted transition-colors"
     >
       {copied ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3" />}
-      {copied ? 'Copied!' : label}
+      {copied ? 'Copied' : label}
     </button>
   );
 }
@@ -98,13 +98,13 @@ function SessionRow({ session }) {
                 href={session.zoom_start_url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-[var(--tc-brand)] text-white rounded-lg hover:bg-[var(--tc-brand)] transition-colors"
+                className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 bg-brand text-brand-foreground rounded-lg hover:bg-[var(--tc-brand)] transition-colors"
               >
                 <Video className="w-3 h-3" /> Start Meeting
               </a>
-              <CopyButton text={session.zoom_join_url} label="Copy Client Link" />
+              <CopyButton text={session.zoom_join_url} label="Copy client link" />
               {session.zoom_password && (
-                <CopyButton text={session.zoom_password} label="Copy Password" />
+                <CopyButton text={session.zoom_password} label="Copy password" />
               )}
             </div>
           )}

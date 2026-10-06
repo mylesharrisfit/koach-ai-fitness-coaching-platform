@@ -52,7 +52,7 @@ export default function GroupDetailView({ group, clients, currentUser, isCoach, 
         ) : null}
       >
         {members.length > 0 && (
-          <div className="flex -space-x-2 mt-3">
+          <div className="flex -space-x-1 mt-3">
             {members.slice(0, 8).map(m => <Initials key={m.id} name={m.name || ''} size={30} className="ring-2 ring-background" />)}
             {members.length > 8 && <Initials name={`+ ${members.length - 8}`} size={30} className="ring-2 ring-background" />}
           </div>

@@ -54,7 +54,7 @@ export default function QuickCheckInPanel({ client, onClose }) {
           <div className="flex items-center gap-2">
             <ClipboardList className="w-4 h-4 text-primary" />
             <div>
-              <p className="font-bold text-foreground text-sm">Log Check-in</p>
+              <p className="font-bold text-foreground text-sm">Log check-in</p>
               <p className="text-xs text-muted-foreground">{client.name}</p>
             </div>
           </div>

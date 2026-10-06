@@ -12,6 +12,9 @@ export default function StripeRevenueChart({ data }) {
         title="Stripe revenue"
         subtitle={last ? `${money(last.revenue)} in ${last.month}. Last 6 months.` : 'Last 6 months.'}
       />
+      {rows.length === 0 ? (
+        <p className="px-5 sm:px-6 pb-6 text-sm text-muted-foreground">No Stripe charges in the last 6 months.</p>
+      ) : (
       <div className="px-3 sm:px-4 pb-4">
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={rows} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
@@ -33,6 +36,7 @@ export default function StripeRevenueChart({ data }) {
           </LineChart>
         </ResponsiveContainer>
       </div>
+      )}
     </Panel>
   );
 }

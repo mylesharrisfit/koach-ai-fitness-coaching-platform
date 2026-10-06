@@ -102,7 +102,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
 
           {/* Name + emoji row */}
           <div>
-            <label className="block text-xs font-semibold text-muted-foreground mb-1">Habit Name</label>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">Habit name</label>
             <div className="flex gap-2">
               {/* Emoji picker (just a small input) */}
               <input
@@ -187,7 +187,7 @@ export default function HabitFormModal({ clientId, habit, onSaved, onClose }) {
             Cancel
           </button>
           <button onClick={handleSave} disabled={saving}
-            className="text-sm font-semibold text-white px-5 py-2 rounded-lg bg-ai hover:bg-ai disabled:opacity-50">
+            className="text-sm font-semibold text-primary-foreground px-5 py-2 rounded-lg bg-primary hover:bg-primary/90 disabled:opacity-50">
             {saving ? 'Saving…' : isEdit ? 'Save Changes' : 'Add Habit'}
           </button>
         </div>

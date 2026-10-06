@@ -50,7 +50,7 @@ export default function CheckInStatusBadge({ checkIn, queryKey = 'checkins-revie
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute top-full mt-1 left-0 z-50 bg-card border border-border rounded-xl shadow-lg overflow-hidden min-w-[130px]">
+          <div className="absolute top-full mt-1 left-0 z-50 bg-card border border-border rounded-xl shadow-md overflow-hidden min-w-[130px]">
             {STATUSES.map(s => {
               const c = STATUS_CONFIG[s];
               const SIcon = c.icon;

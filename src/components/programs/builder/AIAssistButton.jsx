@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Sparkles } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -23,9 +22,8 @@ export default function AIAssistButton({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="fixed bottom-6 right-6 flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-primary to-primary text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:scale-105 transition-all z-40"
+          className="fixed bottom-6 right-6 z-40 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/85"
         >
-          <Sparkles className="w-4 h-4" />
           <span className="hidden sm:inline">AI Assist</span>
         </button>
       </PopoverTrigger>

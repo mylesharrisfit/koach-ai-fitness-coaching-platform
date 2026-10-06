@@ -101,7 +101,7 @@ export default function GoalsHabitsTab({ client }) {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-foreground">Client Goals</h3>
+                <h3 className="text-base font-bold text-foreground">Client goals</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {active.length} active · {completed.length} completed
                 </p>

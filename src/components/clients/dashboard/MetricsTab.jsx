@@ -19,25 +19,25 @@ import {
 const CATEGORIES = [
   {
     key: 'body_weight',
-    label: 'Body Weight',
+    label: 'Body weight',
     icon: Scale,
     description: 'Weight log & trend chart',
   },
   {
     key: 'body_metrics',
-    label: 'Body Metrics',
+    label: 'Body metrics',
     icon: Ruler,
     description: 'Height, sex, DOB, weight targets',
   },
   {
     key: 'overview',
-    label: 'Progress Overview',
+    label: 'Progress overview',
     icon: Activity,
     description: 'Goal progress & score summary',
   },
   {
     key: 'body_stats',
-    label: 'Body Stats',
+    label: 'Body stats',
     icon: Scale,
     description: 'Check-in weight history',
   },
@@ -61,7 +61,7 @@ const CATEGORIES = [
   },
   {
     key: 'ai',
-    label: 'AI Analysis',
+    label: 'AI analysis',
     icon: ScanText,
     description: 'AI-generated progress insights',
   },

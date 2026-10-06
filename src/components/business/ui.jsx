@@ -122,6 +122,7 @@ export const CHART = {
   brand: 'var(--tc-brand)',
   grey: 'var(--tc-muted-foreground)',
   light: 'var(--tc-border)',
+  newBar: 'color-mix(in srgb, var(--tc-muted-foreground) 45%, transparent)',
   grid: 'var(--tc-border)',
   success: 'var(--tc-success)',
   danger: 'var(--tc-destructive)',

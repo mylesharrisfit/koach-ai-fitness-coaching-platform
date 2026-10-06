@@ -1,39 +1,32 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Phone, Calendar, MoreHorizontal, Edit, Trash2, ArrowRight, DollarSign } from 'lucide-react';
+import { Initials } from '@/components/kit';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const STAGE_LABELS = { lead: 'Lead', booked: 'Booked', closed: 'Closed', active_client: 'Active' };
-const STAGE_COLORS = {
-  lead: 'bg-ai/10 text-ai border-ai',
-  booked: 'bg-warning/10 text-warning border-warning',
-  closed: 'bg-success/10 text-success border-success',
-  active_client: 'bg-accent/10 text-primary border-accent',
-};
+const STAGE_BADGE = { lead: 'secondary', booked: 'warning', closed: 'success', active_client: 'success' };
 const TIER_LABELS = { one_on_one: '1:1 Coaching', group: 'Group', low_ticket: 'Low Ticket' };
 const SOURCE_LABELS = { instagram: 'Instagram', referral: 'Referral', website: 'Website', tiktok: 'TikTok', youtube: 'YouTube', other: 'Other' };
 
 export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
   const nextStageMap = { lead: 'booked', booked: 'closed', closed: 'active_client' };
   const nextStage = nextStageMap[lead.stage];
-  const nextLabel = { lead: 'Mark Booked', booked: 'Mark Closed', closed: 'Convert to Client' };
+  const nextLabel = { lead: 'Mark booked', booked: 'Mark closed', closed: 'Convert to client' };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all group shadow-sm">
+    <div className="panel p-4 group">
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
-            {lead.name?.[0] || '?'}
-          </div>
+          <Initials name={lead.name || ''} />
           <div>
-            <p className="font-semibold text-sm">{lead.name}</p>
-            {lead.email && <p className="text-xs text-foreground">{lead.email}</p>}
+            <p className="text-[15px] font-semibold text-foreground">{lead.name}</p>
+            {lead.email && <p className="text-[13px] text-muted-foreground">{lead.email}</p>}
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className={cn("text-[10px] border", STAGE_COLORS[lead.stage])}>{STAGE_LABELS[lead.stage]}</Badge>
+          <Badge variant={STAGE_BADGE[lead.stage] || 'secondary'}>{STAGE_LABELS[lead.stage]}</Badge>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100">
@@ -50,13 +43,13 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
 
       <div className="flex flex-wrap gap-1.5 mb-3">
         {lead.offer_tier && (
-          <Badge variant="outline" className="text-[10px]">{TIER_LABELS[lead.offer_tier]}</Badge>
+          <Badge variant="outline" >{TIER_LABELS[lead.offer_tier]}</Badge>
         )}
         {lead.source && (
-          <Badge variant="outline" className="text-[10px] text-foreground">{SOURCE_LABELS[lead.source]}</Badge>
+          <Badge variant="outline" >{SOURCE_LABELS[lead.source]}</Badge>
         )}
         {lead.deal_value > 0 && (
-          <Badge variant="outline" className="text-[10px] text-success border-success/30">
+          <Badge variant="outline" >
             <DollarSign className="w-2.5 h-2.5 mr-0.5" />{lead.deal_value.toLocaleString()}
           </Badge>
         )}
@@ -70,18 +63,18 @@ export default function LeadCard({ lead, onEdit, onDelete, onAdvance }) {
       )}
 
       {lead.notes && (
-        <p className="text-xs text-foreground bg-muted border border-border rounded-lg px-3 py-2 mb-3 line-clamp-2">{lead.notes}</p>
+        <p className="text-sm text-foreground bg-secondary rounded-lg px-3 py-2 mb-3 line-clamp-2">{lead.notes}</p>
       )}
 
       {lead.call_link && lead.stage === 'booked' && (
         <a href={lead.call_link} target="_blank" rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-xs text-primary hover:underline mb-2">
+          className="flex items-center gap-1.5 text-sm font-semibold text-foreground underline underline-offset-4 decoration-1 mb-2">
           <Phone className="w-3 h-3" /> Join call link
         </a>
       )}
 
       {nextStage && (
-        <Button size="sm" variant="outline" className="w-full h-7 text-xs mt-1 border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+        <Button size="sm" variant="outline" className="w-full mt-1"
           onClick={() => onAdvance(lead, nextStage)}>
           {nextLabel[lead.stage]} <ArrowRight className="w-3 h-3 ml-1" />
         </Button>

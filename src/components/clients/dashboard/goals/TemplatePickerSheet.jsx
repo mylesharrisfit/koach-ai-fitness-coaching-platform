@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { X, Search, LayoutTemplate, Sparkles } from 'lucide-react';
+import { X, Search, LayoutTemplate } from 'lucide-react';
 
 const TYPE_META = {
   numeric:   { label: 'Numeric',   color: 'var(--tc-primary)', bg: 'var(--tc-accent)' },
@@ -133,7 +133,7 @@ function TemplateRow({ t, onSelect }) {
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
-          {t._builtin && <Sparkles className="w-3 h-3 text-ai flex-shrink-0" />}
+          {t._builtin && <span className="text-[11px] text-muted-foreground flex-shrink-0">Starter</span>}
           <p className="text-sm font-semibold text-foreground truncate">{t.name}</p>
         </div>
         <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
@@ -170,7 +170,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-2">
             <LayoutTemplate className="w-4 h-4 text-primary" />
-            <h3 className="text-sm font-bold text-foreground">Choose a Template</h3>
+            <h3 className="text-sm font-bold text-foreground">Choose a template</h3>
           </div>
           <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">
             <X className="w-4 h-4" />
@@ -205,10 +205,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
           {/* Built-in starter templates */}
           {!isLoading && filteredBuiltin.length > 0 && (
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-ai" />
-                <p className="text-xs font-semibold text-muted-foreground">Starter Templates</p>
-              </div>
+              <p className="text-[13px] text-muted-foreground">Starter templates</p>
               {filteredBuiltin.map(t => <TemplateRow key={t.id} t={t} onSelect={onSelect} />)}
             </div>
           )}
@@ -218,7 +215,7 @@ export default function TemplatePickerSheet({ onSelect, onClose }) {
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
                 <LayoutTemplate className="w-3 h-3 text-primary" />
-                <p className="text-xs font-semibold text-muted-foreground">My Templates</p>
+                <p className="text-xs font-semibold text-muted-foreground">My templates</p>
               </div>
               {filteredSaved.map(t => <TemplateRow key={t.id} t={t} onSelect={onSelect} />)}
             </div>

@@ -24,7 +24,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => db.entities.CheckIn.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['checkins'] }); toast.success('Photo added!'); setShowUpload(false); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['checkins'] }); toast.success('Photo added'); setShowUpload(false); },
   });
 
   const allPhotos = useMemo(() => {
@@ -51,7 +51,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
       } else {
         await db.entities.CheckIn.create({ client_id: client.id, client_name: client.name, date: format(new Date(), 'yyyy-MM-dd'), photo_urls: [file_url] });
         queryClient.invalidateQueries({ queryKey: ['checkins'] });
-        toast.success('Photo added!');
+        toast.success('Photo added');
         setShowUpload(false);
       }
     } catch (e) {
@@ -96,7 +96,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
       {compareMode && compareA && compareB && (
         <div className="bg-card border border-border rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Before / After Comparison</h3>
+            <h3 className="text-sm font-semibold text-foreground">Before / after comparison</h3>
             <button onClick={() => { setCompareA(null); setCompareB(null); }} className="text-muted-foreground hover:text-foreground">
               <X className="w-4 h-4" />
             </button>
@@ -149,7 +149,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
         </div>
       ) : (
         <div className="bg-card border border-border rounded-xl p-4">
-          <h3 className="text-sm font-semibold text-foreground mb-3">Photo Timeline</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-3">Photo timeline</h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
             {allPhotos.map((photo, i) => {
               const selA = compareMode && compareA === photo;
@@ -172,7 +172,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
                   <SignedImg src={photo.url} alt="progress" className="w-full aspect-square object-cover" />
                   <div className="absolute bottom-0 left-0 right-0 bg-black/55 p-2">
                     <p className="text-[11px] text-white font-semibold">{format(parseISO(photo.date), 'MMM d, yy')}</p>
-                    {photo.weight && <p className="text-[8px] text-white/70">{photo.weight} lbs</p>}
+                    {photo.weight && <p className="text-[11px] text-white/70">{photo.weight} lbs</p>}
                   </div>
                   {!compareMode && (
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
@@ -213,7 +213,7 @@ export default function ProgressPhotosTab({ client, checkIns }) {
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-card rounded-xl w-full max-w-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground">Add Progress Photos</h3>
+              <h3 className="font-semibold text-foreground">Add progress photos</h3>
               <button onClick={() => setShowUpload(false)}><X className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <div

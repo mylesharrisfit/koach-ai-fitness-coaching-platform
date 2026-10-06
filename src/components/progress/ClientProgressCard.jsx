@@ -6,7 +6,7 @@ import ClientAnalyticsView from './ClientAnalyticsView';
 import AdherenceScore from '../adherence/AdherenceScore';
 import { averageAdherenceScore } from '@/lib/adherence';
 
-const moodEmojis = { great: '', good: '', okay: '', tired: '', stressed: '' };
+const moodEmojis = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
 
 function getTrend(checkIns, field) {
   const vals = checkIns.filter(ci => ci[field] != null).map(ci => ci[field]);
@@ -91,7 +91,7 @@ export default function ClientProgressCard({ client, checkIns, showGraphs = true
             </div>
           )}
           {showGraphs && latest?.mood && (
-            <span className="text-lg">{moodEmojis[latest.mood]}</span>
+            <span className="text-[13px] text-muted-foreground">{moodEmojis[latest.mood]}</span>
           )}
         </div>
 

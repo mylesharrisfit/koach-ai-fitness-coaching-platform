@@ -145,15 +145,15 @@ export default function InvoicesWorkspace({ invoices = [], isLoading, showForm, 
         <div className="flex flex-col gap-5 min-w-0">
           {/* Invoice table */}
           <Panel className="overflow-hidden">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between px-5 sm:px-6 pt-5 pb-4 border-b border-border">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 sm:px-6 pt-5 pb-4 border-b border-border">
               <Segmented
                 size="sm"
                 value={activeTab}
                 onChange={setActiveTab}
                 options={TABS.map(t => ({ value: t.key, label: t.label, count: counts[t.key] }))}
               />
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1 lg:w-60 lg:flex-none">
+              <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[260px] justify-end">
+                <div className="relative flex-1 sm:max-w-[260px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     value={search}
@@ -163,7 +163,7 @@ export default function InvoicesWorkspace({ invoices = [], isLoading, showForm, 
                   />
                 </div>
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="h-9 w-[150px] text-[13px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-9 w-[130px] sm:w-[150px] text-[13px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {SORT_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                   </SelectContent>

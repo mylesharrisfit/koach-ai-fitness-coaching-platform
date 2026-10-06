@@ -11,8 +11,8 @@ import {
 const MUSCLE_BORDER_COLORS = {
   chest: 'border-l-red-400',
   back: 'border-l-green-500',
-  legs: 'border-l-orange-500',
-  shoulders: 'border-l-purple-500',
+  legs: 'border-l-foreground/40',
+  shoulders: 'border-l-foreground/40',
   full_body: 'border-l-blue-500',
   rest: 'border-l-gray-300',
 };
@@ -42,9 +42,9 @@ export default function TrainingDayCard({
       className={cn(
         'bg-card border-2 border-l-4 rounded-2xl p-4 transition-all',
         isActive
-          ? 'border-primary shadow-lg'
+          ? 'border-primary'
           : 'border-border hover:border-muted-foreground',
-        isDragging && 'shadow-lg opacity-50',
+        isDragging && 'shadow-sm opacity-50',
         borderColor
       )}
     >

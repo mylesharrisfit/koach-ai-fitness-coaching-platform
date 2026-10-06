@@ -111,7 +111,7 @@ export default function AdherenceTable({ clients, checkIns, rangeWeeks, onSelect
   const SortHead = ({ label, k, className }) => (
     <th className={cn('px-3 py-2.5 text-left text-[13px] font-medium text-muted-foreground', className)}>
       {k ? (
-        <button onClick={() => toggleSort(k)} className={cn('inline-flex items-center gap-1 hover:text-foreground', sortKey === k && 'text-foreground')}>
+        <button onClick={() => toggleSort(k)} className={cn('inline-flex items-center gap-1 text-[13px] font-medium hover:text-foreground', sortKey === k && 'text-foreground')}>
           {label}<SortIcon k={k} />
         </button>
       ) : label}

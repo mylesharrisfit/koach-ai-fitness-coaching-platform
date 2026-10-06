@@ -35,7 +35,7 @@ export default function InvoicePreview({ form, coachUser }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: 'var(--tc-primary-foreground)' }}>K</div>
+                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'var(--tc-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: 'var(--tc-primary-foreground)' }}>K</div>
                 <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--tc-primary-foreground)', letterSpacing: '0.05em' }}>KOACH AI</span>
               </div>
               <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--tc-primary-foreground)', letterSpacing: '-0.02em' }}>INVOICE</div>
@@ -136,7 +136,7 @@ export default function InvoicePreview({ form, coachUser }) {
 
           {/* Payment Button Preview */}
           <div style={{ marginBottom: 16 }}>
-            <button style={{ width: '100%', padding: '13px', borderRadius: 12, fontSize: 14, fontWeight: 700, background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: 'var(--tc-primary-foreground)', border: 'none', cursor: 'default', letterSpacing: '-0.01em' }}>
+            <button style={{ width: '100%', padding: '13px', borderRadius: 12, fontSize: 14, fontWeight: 700, background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)', border: 'none', cursor: 'default', letterSpacing: '-0.01em' }}>
               💳 Pay {fmtMoney(total)} Securely
             </button>
             <div style={{ textAlign: 'center', fontSize: 10, color: 'var(--tc-muted-foreground)', marginTop: 6 }}>

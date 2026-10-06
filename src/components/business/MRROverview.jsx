@@ -34,7 +34,7 @@ export default function MRROverview({ clients, payments }) {
   const growth = prevMRR > 0 ? (((currentMRR - prevMRR) / prevMRR) * 100).toFixed(1) : null;
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+    <div className="bg-card border border-border rounded-xl p-6">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-xs font-semibold text-muted-foreground">MRR Trend</h3>
         <div className="flex items-center gap-1.5 text-xs font-semibold">

@@ -180,7 +180,8 @@ function MealRow({ meal, index }) {
   const t = mealTotals(meal);
   const ingredients = foods.map(foodName).filter(Boolean);
   const instructions = meal.instructions || meal.notes || meal.habit_description || '';
-  const hasDetail = foods.length > 0 || instructions || meal.image_url || meal.why_this_meal;
+  const isHabit = foods.length === 0 && !t.calories;
+  const hasDetail = foods.length > 0 || meal.image_url || meal.why_this_meal || (instructions && !isHabit);
   const macroLine = [
     t.protein ? `${fmtInt(t.protein)} g protein` : null,
     t.carbs ? `${fmtInt(t.carbs)} g carbs` : null,
@@ -202,11 +203,14 @@ function MealRow({ meal, index }) {
           <div className="sm:hidden flex items-baseline gap-2 mb-1.5">
             <span className="num text-[20px] leading-none text-foreground">{displayTime(meal.time) || index + 1}</span>
             <span className="text-[13px] text-muted-foreground truncate">{slot}</span>
-            <span className="num text-[20px] leading-none text-foreground ml-auto">{t.calories ? fmtInt(t.calories) : '—'}</span>
+            {!isHabit && <span className="num text-[20px] leading-none text-foreground ml-auto">{fmtInt(t.calories)}</span>}
           </div>
           <p className="text-[16px] font-semibold text-foreground leading-snug">{title}</p>
           {ingredients.length > 0 && (
             <p className="text-[15px] text-foreground/80 mt-0.5">{ingredients.join(', ')}</p>
+          )}
+          {isHabit && instructions && (
+            <p className="text-[15px] text-foreground/80 mt-0.5">{instructions}</p>
           )}
           {macroLine && <p className="text-[13px] text-muted-foreground mt-0.5 tabular-nums">{macroLine}</p>}
           {meal.prepTime && <p className="text-[13px] text-muted-foreground mt-0.5">Prep {meal.prepTime}</p>}
@@ -221,12 +225,12 @@ function MealRow({ meal, index }) {
                 <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', open && 'rotate-180')} />
               </button>
             )}
-            <span className="sm:hidden ml-auto"><SwapPopover meal={meal} foods={foods} /></span>
+            {!isHabit && <span className="sm:hidden ml-auto"><SwapPopover meal={meal} foods={foods} /></span>}
           </div>
         </div>
 
         {/* kcal + swap (desktop column) */}
-        <div className="hidden sm:flex flex-col items-end gap-2 flex-shrink-0">
+        <div className={cn('hidden flex-col items-end gap-2 flex-shrink-0', !isHabit && 'sm:flex')}>
           <p className="num text-[22px] leading-none text-foreground">{t.calories ? fmtInt(t.calories) : '—'}</p>
           <SwapPopover meal={meal} foods={foods} />
         </div>

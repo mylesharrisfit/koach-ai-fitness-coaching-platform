@@ -70,7 +70,7 @@ export default function MetricsCard({ client, onUpdated }) {
       {/* Section header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <p className="text-xs font-semibold text-muted-foreground">Body Metrics</p>
+          <p className="text-xs font-semibold text-muted-foreground">Body metrics</p>
         </div>
         {!editing && (
           <button

@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { SignedImg, SignedLink } from '@/components/shared/SignedImage';
 
-const moodEmoji = { great: '', good: '', okay: '', tired: '', stressed: '' };
+const moodLabel = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
 
 const STATUS_CONFIG = {
   pending:  { label: 'Pending',  icon: Clock,         class: 'bg-warning/10 border-warning text-warning' },
@@ -59,8 +59,8 @@ function CheckInCard({ ci, clientId }) {
         className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-muted transition-colors text-left"
         onClick={() => setOpen(v => !v)}
       >
-        <div className="w-9 h-9 rounded-xl bg-muted border border-border flex items-center justify-center text-base flex-shrink-0">
-          {moodEmoji[ci.mood] || ''}
+        <div className="w-16 flex-shrink-0 text-[13px] text-muted-foreground">
+          {moodLabel[ci.mood] || 'No mood'}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
@@ -128,14 +128,14 @@ function CheckInCard({ ci, clientId }) {
 
           {ci.notes && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Client Notes</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Client notes</p>
               <p className="text-sm text-foreground leading-relaxed">{ci.notes}</p>
             </div>
           )}
 
           {ci.coach_notes && (
             <div className="bg-accent/10 rounded-xl p-3">
-              <p className="text-xs font-semibold text-primary mb-1">Coach Response</p>
+              <p className="text-xs font-semibold text-primary mb-1">Coach response</p>
               <p className="text-sm text-foreground leading-relaxed">{ci.coach_notes}</p>
             </div>
           )}

@@ -177,8 +177,8 @@ function ThisWeekPanel({ sessions = [], program, onOpenTab }) {
   return (
     <Panel className="p-5 sm:p-6 flex flex-col">
       <h2 className="text-[22px] text-foreground">This week</h2>
-      <div className="mt-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto scrollbar-hide">
-      <div className="grid grid-cols-[repeat(7,minmax(64px,1fr))] gap-2">
+      <div className="mt-4 -mx-5 px-5 sm:mx-0 sm:px-0 overflow-x-auto sm:overflow-visible scrollbar-hide">
+      <div className="grid grid-cols-[repeat(7,minmax(60px,1fr))] sm:grid-cols-7 gap-1.5 lg:gap-2">
         {tiles.map(t => (
           <div key={t.day.toISOString()} className="min-w-0">
             <p className="text-[13px] text-muted-foreground mb-1.5">{format(t.day, 'EEE')}</p>

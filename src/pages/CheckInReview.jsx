@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { checkInScore } from '@/lib/adherence';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Segmented, TextLink, EmptyState, Panel } from '@/components/kit';
+import { TextLink, EmptyState, Panel } from '@/components/kit';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -193,7 +193,7 @@ export default function CheckInReview() {
   /* ── Queue column ── */
   const queue = (
     <aside className={cn(
-      'bg-card flex-col lg:w-[320px] lg:flex-shrink-0 lg:border-r lg:border-border lg:h-full min-h-[calc(100dvh-56px-64px)] lg:min-h-0',
+      'bg-card flex-col lg:w-[320px] xl:w-[340px] lg:flex-shrink-0 lg:border-r lg:border-border lg:h-full min-h-[calc(100dvh-56px-64px)] lg:min-h-0',
       mobileView === 'detail' && mainTab === 'review' ? 'hidden lg:flex' : 'flex'
     )}>
       <div className="px-5 pt-6 pb-4 flex-shrink-0">
@@ -221,17 +221,27 @@ export default function CheckInReview() {
           <div className="h-full bg-primary transition-[width] duration-300" style={{ width: `${pct}%` }} />
         </div>
 
-        <Segmented
-          size="sm"
-          className="mt-4 w-full"
-          value={filter}
-          onChange={setFilter}
-          options={FILTERS.map(f => ({
-            value: f.key,
-            label: f.label,
-            count: f.key === 'all' ? null : counts[f.key] || null,
-          }))}
-        />
+        <div className="mt-4 flex gap-4 overflow-x-auto scrollbar-hide border-b border-border" role="tablist">
+          {FILTERS.map(f => {
+            const n = f.key === 'all' || f.key === 'reviewed' ? null : counts[f.key];
+            const active = filter === f.key;
+            return (
+              <button
+                key={f.key}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setFilter(f.key)}
+                className={cn(
+                  'touch-compact -mb-px whitespace-nowrap border-b-2 pb-2 text-[13px] font-medium transition-colors',
+                  active ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {f.label}
+                {n ? <span className={cn('ml-1 tabular-nums', f.key === 'missed' && 'text-destructive')}>{n}</span> : null}
+              </button>
+            );
+          })}
+        </div>
 
         <div className="relative mt-3">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />

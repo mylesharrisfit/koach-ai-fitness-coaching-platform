@@ -12,9 +12,9 @@ import { SignedImg } from '@/components/shared/SignedImage';
 const MUSCLE_COLORS = {
   chest: 'bg-destructive/10 text-destructive', back: 'bg-success/10 text-success',
   shoulders: 'bg-ai/10 text-ai', biceps: 'bg-accent text-primary',
-  triceps: 'bg-accent text-primary', legs: 'bg-orange-50 text-orange-700',
-  glutes: 'bg-orange-50 text-orange-700', core: 'bg-warning/10 text-warning',
-  full_body: 'bg-accent text-primary', cardio: 'bg-teal-50 text-teal-700',
+  triceps: 'bg-accent text-primary', legs: 'bg-secondary text-foreground',
+  glutes: 'bg-secondary text-foreground', core: 'bg-warning/10 text-warning',
+  full_body: 'bg-accent text-primary', cardio: 'bg-secondary text-foreground',
 };
 
 const MUSCLES = ['all', 'chest', 'back', 'shoulders', 'biceps', 'triceps', 'legs', 'glutes', 'core', 'full_body', 'cardio'];

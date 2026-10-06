@@ -41,9 +41,8 @@ function Line({ w = '70%', c, h = 6 }) {
 
 function PortalMockup({ s, screen, compact }) {
   const p = palette(s);
-  const businessName = s.business_name || 'your coaching';
   const headline = {
-    home: s.onboarding_headline || `Welcome to ${businessName}`,
+    home: s.onboarding_headline || (s.business_name ? `Welcome to ${s.business_name}` : 'Welcome to your app'),
     workout: 'Upper body A',
     nutrition: '1,850 kcal today',
     progress: 'Last 8 weeks',

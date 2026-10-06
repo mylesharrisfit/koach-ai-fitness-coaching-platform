@@ -30,7 +30,7 @@ export default function InvoiceRow({ invoice, onView, onMarkPaid, onDuplicate, o
       onClick={onView}
       onKeyDown={(e) => { if (e.key === 'Enter') onView?.(); }}
       className={cn(
-        'relative flex flex-wrap items-center gap-x-3 gap-y-1 px-5 sm:px-6 py-3.5 border-b border-border last:border-b-0 cursor-pointer hover:bg-accent/60 transition-colors',
+        'relative flex flex-wrap items-center gap-x-3 gap-y-1 pl-5 pr-12 md:pr-6 sm:pl-6 py-3.5 border-b border-border last:border-b-0 cursor-pointer hover:bg-accent/60 transition-colors',
         INVOICE_GRID
       )}
     >

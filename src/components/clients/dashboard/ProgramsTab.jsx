@@ -80,7 +80,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
       queryClient.invalidateQueries({ queryKey: ['programs-tab', client.id] });
-      toast.success('Program assigned!');
+      toast.success('Program assigned');
       onRefetch();
       setPicking(false);
     },
@@ -89,7 +89,7 @@ function AssignedProgramSection({ client, allPrograms, assignedProgram, onRefetc
   if (picking) {
     return (
       <div className="bg-card rounded-xl border border-border p-4">
-        <h3 className="text-sm font-bold text-foreground mb-3">Select a Program</h3>
+        <h3 className="text-sm font-bold text-foreground mb-3">Select a program</h3>
         <ProgramPicker
           programs={allPrograms}
           onSelect={p => assignMutation.mutate(p.id)}
@@ -235,7 +235,7 @@ function WeeklySchedule({ assignedProgram, workoutSessions }) {
               </div>
             ) : (
               <div className="flex-1">
-                <p className="text-xs text-muted-foreground italic">Rest Day</p>
+                <p className="text-xs text-muted-foreground italic">Rest day</p>
               </div>
             )}
 
@@ -282,7 +282,7 @@ function ProgramProgress({ assignedProgram, workoutSessions, client }) {
 
   return (
     <div className="bg-card rounded-xl border border-border p-4 space-y-4">
-      <h3 className="text-sm font-bold text-foreground">Program Progress</h3>
+      <h3 className="text-sm font-bold text-foreground">Program progress</h3>
 
       <div className="grid grid-cols-3 gap-3">
         {currentWeek !== null && totalWeeks > 0 && (

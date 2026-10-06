@@ -3,7 +3,7 @@ import { db } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Sparkles, RefreshCw, Trash2, ChevronDown, ChevronUp, Tag } from 'lucide-react';
+import { Loader2, RefreshCw, Trash2, ChevronDown, ChevronUp, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import WorkoutMealPanel from './WorkoutMealPanel';
@@ -12,9 +12,9 @@ import AiUsageMeter from '@/components/subscription/AiUsageMeter';
 // ── Tag config ─────────────────────────────────────────
 const MEAL_TAGS = [
   { key: 'simple',       label: 'Simple',       color: 'bg-muted text-muted-foreground border-border' },
-  { key: 'high_protein', label: 'High Protein',  color: 'bg-destructive/10 text-destructive border-destructive' },
-  { key: 'high_volume',  label: 'High Volume',   color: 'bg-warning/10 text-warning border-warning' },
-  { key: 'quick_prep',   label: 'Quick Prep',    color: 'bg-success/10 text-success border-success' },
+  { key: 'high_protein', label: 'High Protein',  color: 'bg-secondary text-foreground border-border' },
+  { key: 'high_volume',  label: 'High Volume',   color: 'bg-secondary text-foreground border-border' },
+  { key: 'quick_prep',   label: 'Quick Prep',    color: 'bg-secondary text-foreground border-border' },
 ];
 
 const TAG_MAP = Object.fromEntries(MEAL_TAGS.map(t => [t.key, t]));
@@ -46,9 +46,9 @@ function OptionFoods({ foods }) {
           </div>
           <div className="flex items-center gap-1 text-[11px] shrink-0">
             <span className="bg-secondary text-foreground px-1.5 py-0.5 rounded font-medium">{food.calories}cal</span>
-            <span className="bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-medium">{food.protein}P</span>
-            <span className="bg-warning/10 text-warning px-1.5 py-0.5 rounded font-medium">{food.carbs}C</span>
-            <span className="bg-accent text-primary px-1.5 py-0.5 rounded font-medium">{food.fats}F</span>
+            <span className="bg-secondary text-foreground px-1.5 py-0.5 rounded font-medium">{food.protein}P</span>
+            <span className="bg-secondary text-foreground px-1.5 py-0.5 rounded font-medium">{food.carbs}C</span>
+            <span className="bg-secondary text-foreground px-1.5 py-0.5 rounded font-medium">{food.fats}F</span>
           </div>
         </div>
       ))}
@@ -100,9 +100,9 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
           </div>
           <div className="flex items-center gap-3 text-[11px] mt-0.5">
             <span className="font-medium text-foreground">{totalCals} cal</span>
-            <span className="text-destructive">{totalP}g P</span>
-            <span className="text-warning">{totalC}g C</span>
-            <span className="text-primary">{totalF}g F</span>
+            <span className="text-muted-foreground">{totalP}g P</span>
+            <span className="text-muted-foreground">{totalC}g C</span>
+            <span className="text-muted-foreground">{totalF}g F</span>
           </div>
           <MacroBar p={totalP} c={totalC} f={totalF} />
         </div>
@@ -111,7 +111,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
           <button
             onClick={() => setTagsOpen(o => !o)}
             className={cn('w-7 h-7 flex items-center justify-center rounded-lg transition-colors',
-              tagsOpen ? 'bg-primary/10 text-primary' : 'hover:bg-secondary text-muted-foreground hover:text-foreground')}
+              tagsOpen ? 'bg-secondary text-foreground' : 'hover:bg-secondary text-muted-foreground hover:text-foreground')}
             title="Tag this meal"
           >
             <Tag className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
           <button
             onClick={handleRegen}
             disabled={regenLoading}
-            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
           >
             {regenLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
           </button>
@@ -172,7 +172,7 @@ function MealCard({ meal, mIdx, onRemove, onRegenerateMeal, onTagToggle }) {
                       : 'border-border text-muted-foreground hover:border-primary/20 hover:bg-secondary/50'
                   )}
                 >
-                  <span className={cn('text-[11px] font-semibold', isActive ? 'text-primary' : 'text-muted-foreground')}>
+                  <span className={cn('text-[11px] font-semibold', isActive ? 'text-foreground' : 'text-muted-foreground')}>
                     Option {oIdx + 1}
                   </span>
                   <span className="text-[11px] font-medium text-foreground">{optCals} cal · {optP}g P</span>
@@ -283,7 +283,7 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
 
       const generated = (response.data?.meals || []).map(m => ({ ...m, tags: [] }));
       syncUp(generated);
-      toast.success('Meal plan generated!');
+      toast.success('Meals drafted. Review before saving.');
     } catch (err) {
       toast.error('Failed to generate meal plan. Please try again.');
     } finally {
@@ -337,42 +337,39 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
   return (
     <div className="space-y-4">
       {/* Generator panel */}
-      <div className="bg-secondary/40 rounded-xl p-4 space-y-3">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <p className="text-sm font-semibold text-foreground">Auto-Generate Meal Plan</p>
-        </div>
+      <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+        <p className="text-sm font-semibold text-foreground">Draft meals from targets</p>
 
         <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
           <div>
-            <Label className="text-[11px]">Calories</Label>
+            <Label className="text-[13px]">Calories</Label>
             <Input type="number" placeholder="2000" value={params.calories}
               onChange={e => setParams(p => ({ ...p, calories: e.target.value }))} className="h-8 text-sm" />
           </div>
           <div>
-            <Label className="text-[11px]">Protein (g)</Label>
+            <Label className="text-[13px]">Protein (g)</Label>
             <Input type="number" placeholder="180" value={params.protein_g}
               onChange={e => setParams(p => ({ ...p, protein_g: e.target.value }))} className="h-8 text-sm" />
           </div>
           <div>
-            <Label className="text-[11px]">Carbs (g)</Label>
+            <Label className="text-[13px]">Carbs (g)</Label>
             <Input type="number" placeholder="200" value={params.carbs_g}
               onChange={e => setParams(p => ({ ...p, carbs_g: e.target.value }))} className="h-8 text-sm" />
           </div>
           <div>
-            <Label className="text-[11px]">Fats (g)</Label>
+            <Label className="text-[13px]">Fats (g)</Label>
             <Input type="number" placeholder="60" value={params.fats_g}
               onChange={e => setParams(p => ({ ...p, fats_g: e.target.value }))} className="h-8 text-sm" />
           </div>
           <div>
-            <Label className="text-[11px]">Meals</Label>
+            <Label className="text-[13px]">Meals</Label>
             <select value={params.meal_count} onChange={e => setParams(p => ({ ...p, meal_count: Number(e.target.value) }))}
               className="h-8 w-full rounded-md border border-input bg-card px-2 text-sm">
               {[3, 4, 5, 6].map(n => <option key={n} value={n}>{n}</option>)}
             </select>
           </div>
           <div>
-            <Label className="text-[11px]">Options / meal</Label>
+            <Label className="text-[13px]">Options / meal</Label>
             <select value={params.options_count} onChange={e => setParams(p => ({ ...p, options_count: Number(e.target.value) }))}
               className="h-8 w-full rounded-md border border-input bg-card px-2 text-sm">
               {[2, 3].map(n => <option key={n} value={n}>{n}</option>)}
@@ -381,8 +378,8 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
         </div>
 
         <Button onClick={generateMeals} disabled={generating} className="gap-2 w-full sm:w-auto">
-          {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-          {generating ? 'Generating…' : hasGenerated ? 'Regenerate All' : 'Generate Meal Plan'}
+          {generating && <Loader2 className="w-4 h-4 animate-spin" />}
+          {generating ? 'Drafting meals' : hasGenerated ? 'Redraft all meals' : 'Draft meals'}
         </Button>
         <AiUsageMeter />
       </div>
@@ -399,9 +396,9 @@ export default function SmartNutritionGenerator({ initialMeals, targets, onMeals
                   {totalCals > Number(params.calories) ? '+' : ''}{totalCals - Number(params.calories)} vs target
                 </span>
               )}
-              <span className="text-destructive">{totalP}g P</span>
-              <span className="text-warning">{totalC}g C</span>
-              <span className="text-primary">{totalF}g F</span>
+              <span className="text-muted-foreground">{totalP}g P</span>
+              <span className="text-muted-foreground">{totalC}g C</span>
+              <span className="text-muted-foreground">{totalF}g F</span>
             </div>
 
             {/* Filter toggles */}

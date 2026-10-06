@@ -5,7 +5,6 @@ import { Check } from 'lucide-react';
 import { db } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Page, TextLink } from '@/components/kit';
-import { cn } from '@/lib/utils';
 
 /**
  * Today, before the coach has any clients: five setup steps with real
@@ -138,7 +137,7 @@ export default function FirstRunWelcome({ user, clientCount = 0 }) {
   const nextId = steps.find(s => !s.done)?.id;
 
   return (
-    <Page>
+    <Page className="pb-24 lg:pb-12">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12">
         <div className="min-w-0 max-w-[660px]">
           <h1 className="text-[34px] leading-[1.02] sm:text-[44px]">
@@ -157,19 +156,19 @@ export default function FirstRunWelcome({ user, clientCount = 0 }) {
 
           <ol className="mt-5 space-y-2.5">
             {steps.map((s, i) => (
-              <li key={s.id} className="panel flex items-center gap-4 px-4 py-4 sm:px-5">
+              <li key={s.id} className="panel flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-4 sm:flex-nowrap sm:px-5">
                 <StepMarker n={i + 1} done={s.done} />
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 max-sm:basis-[calc(100%-52px)]">
                   <p className="text-[16px] font-semibold text-foreground">{s.title}</p>
                   <p className="mt-0.5 text-sm text-muted-foreground">{s.body}</p>
                 </div>
                 {s.done ? (
-                  <TextLink onClick={() => navigate(s.href)} className="flex-shrink-0 text-muted-foreground">Edit</TextLink>
+                  <TextLink onClick={() => navigate(s.href)} className="flex-shrink-0 text-muted-foreground max-sm:ml-[52px]">Edit</TextLink>
                 ) : (
                   <Button
                     variant={s.id === nextId ? 'default' : 'outline'}
                     onClick={() => navigate(s.href)}
-                    className={cn('flex-shrink-0 max-sm:h-9 max-sm:px-3')}
+                    className="flex-shrink-0 max-sm:ml-[52px]"
                   >
                     {s.cta}
                   </Button>
@@ -192,7 +191,7 @@ export default function FirstRunWelcome({ user, clientCount = 0 }) {
           </div>
         </div>
 
-        <aside className="lg:pt-1">
+        <aside className="hidden md:block lg:pt-1">
           <PhonePreview brandName={setup.brandName} />
         </aside>
       </div>

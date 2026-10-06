@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Apple, Utensils, CheckCircle2, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, subDays } from 'date-fns';
@@ -26,12 +25,7 @@ function Bar({ value, max, color = 'bg-primary' }) {
   const p = pct(value, max);
   return (
     <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-      <motion.div
-        className={cn('h-full rounded-full', color)}
-        initial={{ width: 0 }}
-        animate={{ width: `${p}%` }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-      />
+      <div className={cn('h-full rounded-full', color)} style={{ width: `${p}%` }} />
     </div>
   );
 }
@@ -57,15 +51,12 @@ function AssignDialog({ clientId, allPlans, onClose }) {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50" />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
+      <div
         className="relative bg-card rounded-xl w-full max-w-sm overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-bold text-foreground">Assign Nutrition Plan</h3>
+          <h3 className="text-sm font-bold text-foreground">Assign nutrition plan</h3>
           <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground p-1"><X className="w-4 h-4" /></button>
         </div>
 
@@ -84,7 +75,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
                   : 'border-border hover:border-primary hover:bg-muted'
               )}
             >
-              <span className="text-xl">{plan.emoji || '🥗'}</span>
+              <span className="text-xl">{plan.emoji || ''}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{plan.title}</p>
                 <p className="text-[11px] text-muted-foreground">
@@ -113,7 +104,7 @@ function AssignDialog({ clientId, allPlans, onClose }) {
             {saving ? 'Assigning...' : 'Assign Plan'}
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -179,7 +170,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
         </div>
       </div>
 
-      <AnimatePresence>
+      <>
         {showDialog && (
           <AssignDialog
             clientId={client.id}
@@ -187,7 +178,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
             onClose={() => setShowDialog(false)}
           />
         )}
-      </AnimatePresence>
+      </>
     </>
   );
 
@@ -197,7 +188,7 @@ function AssignedPlanSection({ client, allPlans, assignedPlan, onRefetch }) {
     <div className="bg-card rounded-xl border border-border p-4 space-y-3">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <span className="text-2xl">{assignedPlan.emoji || '🥗'}</span>
+          <span className="text-2xl">{assignedPlan.emoji || ''}</span>
           <div>
             <p className="text-sm font-bold text-foreground leading-tight">{assignedPlan.title}</p>
             {assignedPlan.description && (
@@ -419,10 +410,7 @@ function WeeklyAdherenceGrid({ client }) {
           const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
           return (
             <div key={i} className="flex flex-col items-center gap-1 flex-1">
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: i * 0.05 }}
+              <div
                 className={cn(
                   'w-full aspect-square rounded-lg',
                   COLOR[dayStatuses[i]],
@@ -430,7 +418,7 @@ function WeeklyAdherenceGrid({ client }) {
                 )}
               />
               <span className="text-[11px] text-muted-foreground font-medium">{format(day, 'EEE')}</span>
-              <span className="text-[8px] text-border">{format(day, 'd')}</span>
+              <span className="text-[11px] text-border">{format(day, 'd')}</span>
             </div>
           );
         })}

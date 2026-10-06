@@ -49,7 +49,7 @@ function ConversationRow({ client, meta, selected, onSelect }) {
       )}
     >
       {selected && <span aria-hidden className="absolute left-0 top-0 bottom-0 w-[3px] bg-brand" />}
-      <Initials name={client.name} src={client.avatar_url} size={40} tone={selected || hasUnread ? 'ink' : 'default'} />
+      <Initials name={client.name} src={client.avatar_url} size={40} tone={selected ? 'ink' : 'default'} />
       <span className="flex-1 min-w-0">
         <span className="flex items-baseline justify-between gap-2">
           <span className={cn('text-[15px] truncate text-foreground', hasUnread ? 'font-bold' : 'font-semibold')}>

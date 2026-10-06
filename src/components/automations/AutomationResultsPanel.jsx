@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Zap, Send, Flag, Flame, Check, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Send, Flag, Bell, SlidersHorizontal, Check, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Initials, EmptyState } from '@/components/kit';
 import { cn } from '@/lib/utils';
-import { ACTION_META, CONDITION_META } from '@/lib/automationEngine';
+import { ACTION_META } from '@/lib/automationEngine';
 import { db } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
@@ -95,8 +96,8 @@ async function executeAction(rule, client, allCheckIns) {
 }
 
 function ActionIcon({ type }) {
-  const icons = { send_message: Send, send_template: Send, notify_coach: Zap, adjust_calories: Flame, flag_client: Flag };
-  const Icon = icons[type] || Zap;
+  const icons = { send_message: Send, send_template: Send, notify_coach: Bell, adjust_calories: SlidersHorizontal, flag_client: Flag };
+  const Icon = icons[type] || Check;
   return <Icon className="w-3.5 h-3.5" />;
 }
 
@@ -120,22 +121,20 @@ function ClientRow({ rule, client, detail }) {
   const aMeta = ACTION_META[rule.action_type] || {};
 
   return (
-    <div className={cn('flex items-center gap-2.5 p-2.5 rounded-xl transition-all', done ? 'bg-success/5 opacity-60' : 'bg-secondary/40')}>
-      <div className="w-7 h-7 rounded-full bg-destructive/20 flex items-center justify-center text-xs font-bold text-destructive flex-shrink-0">
-        {client.name?.[0] || '?'}
-      </div>
+    <div className={cn('flex items-center gap-3 py-2.5', done && 'opacity-60')}>
+      <Initials name={client.name || ''} size={32} tone="alert" />
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold">{client.name}</p>
-        <p className="text-[11px] text-muted-foreground">{detail}</p>
+        <p className="text-[15px] font-semibold text-foreground">{client.name}</p>
+        <p className="text-[13px] text-muted-foreground">{detail}</p>
       </div>
       <button
         onClick={execute}
         disabled={done || executing}
         className={cn(
-          'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition-all active:scale-95 whitespace-nowrap',
+          'inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-[13px] font-semibold border transition-colors whitespace-nowrap',
           done
-            ? 'bg-success/10 border-success/20 text-success cursor-default'
-            : 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20'
+            ? 'border-transparent text-success cursor-default'
+            : 'border-input bg-card text-foreground hover:bg-accent'
         )}
       >
         {executing ? <Loader2 className="w-3 h-3 animate-spin" /> : done ? <Check className="w-3 h-3" /> : <ActionIcon type={rule.action_type} />}
@@ -147,39 +146,37 @@ function ClientRow({ rule, client, detail }) {
 
 function RuleResultGroup({ rule, clients }) {
   const [expanded, setExpanded] = useState(true);
-  const cMeta = CONDITION_META[rule.condition_type] || {};
   const aMeta = ACTION_META[rule.action_type] || {};
 
   return (
-    <div className="bg-card border border-destructive/20 rounded-2xl overflow-hidden">
+    <div className="panel overflow-hidden">
       {/* Header */}
       <button
-        className="w-full flex items-center gap-3 p-4 hover:bg-secondary/20 transition-colors text-left"
+        className="w-full flex items-center gap-3 px-5 py-4 hover:bg-accent/40 transition-colors text-left"
         onClick={() => setExpanded(e => !e)}
       >
-        <span className="text-lg flex-shrink-0">{cMeta.icon || '⚡'}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold">{rule.name}</p>
-          <p className="text-xs text-muted-foreground">THEN {aMeta.label || rule.action_type}</p>
+          <p className="text-[15px] font-semibold text-foreground">{rule.name}</p>
+          <p className="text-[13px] text-muted-foreground">Then {(aMeta.label || rule.action_type || '').toLowerCase()}</p>
         </div>
-        <span className="text-[11px] font-bold bg-destructive/15 text-destructive px-2 py-0.5 rounded-full flex-shrink-0">
+        <span className="text-[13px] font-semibold text-destructive flex-shrink-0">
           {clients.length} client{clients.length > 1 ? 's' : ''}
         </span>
         {expanded ? <ChevronUp className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" /> : <ChevronDown className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />}
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 space-y-2 border-t border-border">
+        <div className="px-5 pb-3 border-t border-border">
           {/* Message preview */}
           {rule.action_message && (
-            <div className="mt-3 bg-primary/5 border border-primary/15 rounded-xl p-2.5">
-              <p className="text-xs font-semibold text-primary mb-1">Message</p>
-              <p className="text-xs text-foreground leading-relaxed line-clamp-2">"{rule.action_message}"</p>
+            <div className="mt-3 bg-secondary rounded-lg px-3 py-2.5">
+              <p className="text-[13px] font-semibold text-foreground mb-0.5">Message</p>
+              <p className="text-sm text-foreground leading-relaxed line-clamp-2">"{rule.action_message}"</p>
             </div>
           )}
 
           {/* Client rows */}
-          <div className="space-y-1.5 mt-2">
+          <div className="divide-y divide-border mt-1">
             {clients.map(({ client, detail }) => (
               <ClientRow key={client.id} rule={rule} client={client} detail={detail} />
             ))}
@@ -193,12 +190,8 @@ function RuleResultGroup({ rule, clients }) {
 export default function AutomationResultsPanel({ results }) {
   if (!results.length) {
     return (
-      <div className="bg-card border border-border rounded-2xl p-8 text-center">
-        <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-3">
-          <Zap className="w-6 h-6 text-accent" />
-        </div>
-        <p className="text-sm font-semibold">No rules triggered</p>
-        <p className="text-xs text-muted-foreground mt-1">All clients are within their thresholds</p>
+      <div className="panel">
+        <EmptyState title="Nothing caught" body="Every client is inside your rule thresholds." />
       </div>
     );
   }

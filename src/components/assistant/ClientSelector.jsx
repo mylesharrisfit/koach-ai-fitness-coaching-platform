@@ -1,11 +1,10 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users } from 'lucide-react';
+import { Initials } from '@/components/kit';
 
 export default function ClientSelector({ clients, selectedClient, onSelect }) {
   return (
     <div className="flex items-center gap-3 p-4 border-b border-border">
-      <Users className="w-4 h-4 text-foreground flex-shrink-0" />
       <div className="flex-1">
         <Select
           value={selectedClient?.id || 'all'}
@@ -19,7 +18,7 @@ export default function ClientSelector({ clients, selectedClient, onSelect }) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">
-              <span className="text-muted-foreground">All clients (general)</span>
+              <span className="text-muted-foreground">General, no client</span>
             </SelectItem>
             {clients.filter(c => c.status === 'active').map(c => (
               <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
@@ -28,9 +27,7 @@ export default function ClientSelector({ clients, selectedClient, onSelect }) {
         </Select>
       </div>
       {selectedClient && (
-        <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold flex-shrink-0">
-          {selectedClient.name?.[0]?.toUpperCase()}
-        </div>
+        <Initials name={selectedClient.name || ''} size={28} />
       )}
     </div>
   );

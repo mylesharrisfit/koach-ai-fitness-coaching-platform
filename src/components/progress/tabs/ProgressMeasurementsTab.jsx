@@ -35,7 +35,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
 
   const logMutation = useMutation({
     mutationFn: (data) => db.entities.CheckIn.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['checkins'] }); setShowModal(false); toast.success('Measurements saved!'); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['checkins'] }); setShowModal(false); toast.success('Measurements saved'); },
   });
 
   const sorted = useMemo(() =>
@@ -69,7 +69,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
       {/* Measurements Grid */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h3 className="text-sm font-semibold text-foreground">Body Measurements</h3>
+          <h3 className="text-sm font-semibold text-foreground">Body measurements</h3>
           <button onClick={() => setShowModal(true)}
             className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
             <Plus className="w-3 h-3" /> Log Measurements
@@ -107,7 +107,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
       {historyRows.length > 0 && (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
-            <h3 className="text-sm font-semibold text-foreground">Measurement History</h3>
+            <h3 className="text-sm font-semibold text-foreground">Measurement history</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -139,7 +139,7 @@ export default function ProgressMeasurementsTab({ client, checkIns }) {
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-card rounded-xl w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground">Log Measurements</h3>
+              <h3 className="font-semibold text-foreground">Log measurements</h3>
               <button onClick={() => setShowModal(false)}><X className="w-4 h-4 text-muted-foreground" /></button>
             </div>
             <div>

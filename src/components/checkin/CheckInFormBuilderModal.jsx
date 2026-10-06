@@ -63,7 +63,7 @@ function QuestionEditor({ question, onChange, onDelete, index }) {
     <div className="border border-border rounded-xl overflow-hidden bg-card">
       <div className="flex items-center gap-2 px-3 py-2.5 bg-background border-b border-border">
         <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
-        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold flex-shrink-0">
+        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[12px] font-bold flex-shrink-0">
           {index + 1}
         </div>
         {TypeIcon && <TypeIcon className="w-3.5 h-3.5 text-muted-foreground" />}
@@ -361,10 +361,10 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground">{preset.label}</p>
-                          <p className="text-[10px] text-muted-foreground">{typeInfo?.label}</p>
+                          <p className="text-[12px] text-muted-foreground">{typeInfo?.label}</p>
                         </div>
                         {added ? (
-                          <span className="text-[10px] text-success font-semibold">Added ✓</span>
+                          <span className="text-[12px] text-success font-semibold">Added</span>
                         ) : (
                           <Plus className="w-3.5 h-3.5 text-muted-foreground" />
                         )}
@@ -441,7 +441,6 @@ export default function CheckInFormBuilderModal({ open, onOpenChange, editingFor
             onClick={handleSave}
             disabled={saveMutation.isPending || !name.trim()}
             className="flex-1"
-            style={{ background: 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))' }}
           >
             {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingForm ? 'Save Changes' : 'Create Form'}
           </Button>

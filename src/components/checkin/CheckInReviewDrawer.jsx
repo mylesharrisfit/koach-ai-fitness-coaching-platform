@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { format, parseISO } from 'date-fns';
-import {
-  ChevronLeft, ChevronRight, X, CheckCircle2, AlertTriangle, Flag,
-  Moon, Zap, Heart, Scale, Dumbbell, Salad, Mic, MicOff,
-  MessageSquare, Lock, Loader2, Sparkles, ImageIcon
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, CheckCircle2, AlertTriangle, Flag, Moon, Activity, Heart, Scale, Dumbbell, Salad, Mic, MicOff, MessageSquare, Lock, Loader2, PenLine, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { scoreColor, checkInScore } from '@/lib/adherence';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -67,9 +63,9 @@ function AIAnalysisBlock({ checkIn, client }) {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-ai/10 to-accent border border-ai rounded-xl p-4">
+      <div className="bg-secondary border border-ai rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-4 h-4 text-ai" />
+          <PenLine className="w-4 h-4 text-ai" />
           <span className="text-xs font-semibold text-ai">AI Analysis</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-ai">
@@ -82,9 +78,9 @@ function AIAnalysisBlock({ checkIn, client }) {
   if (!summary) return null;
 
   return (
-    <div className="bg-gradient-to-br from-ai/10 to-accent border border-ai rounded-xl p-4 space-y-3">
+    <div className="bg-secondary border border-ai rounded-xl p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-ai" />
+        <PenLine className="w-4 h-4 text-ai" />
         <span className="text-xs font-semibold text-ai">AI Analysis</span>
       </div>
 
@@ -93,7 +89,7 @@ function AIAnalysisBlock({ checkIn, client }) {
       {summary.flags?.length > 0 && (
         <div className="space-y-1">
           {summary.flags.map((flag, i) => (
-            <div key={i} className="flex items-start gap-1.5 text-xs text-orange-700 bg-orange-50 rounded-lg px-2.5 py-1.5 border border-orange-200">
+            <div key={i} className="flex items-start gap-1.5 text-xs text-warning bg-warning-soft rounded-lg px-2.5 py-1.5 border border-warning/30">
               <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
               {flag}
             </div>
@@ -102,7 +98,7 @@ function AIAnalysisBlock({ checkIn, client }) {
       )}
 
       {summary.suggested_response && (
-        <div className="bg-[var(--kc-w-70)] rounded-lg p-3 border border-ai">
+        <div className="bg-card rounded-lg p-3 border border-ai">
           <p className="text-xs font-semibold text-ai mb-1">Suggested Response</p>
           <p className="text-xs text-foreground leading-relaxed italic">"{summary.suggested_response}"</p>
         </div>
@@ -203,7 +199,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
             </p>
           </div>
           {isReviewed && (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-success/10 text-success border border-success">
+            <span className="text-[12px] font-semibold px-2 py-0.5 rounded-full bg-success/10 text-success border border-success">
               Reviewed
             </span>
           )}
@@ -256,7 +252,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
               <MetricTile icon={Scale} label="Weight" value={checkIn.weight} unit="lbs" color="text-primary" />
               <MetricTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} unit="hrs"
                 color={checkIn.sleep_hours >= 7 ? 'text-primary' : 'text-warning'} />
-              <MetricTile icon={Zap} label="Energy" value={checkIn.energy_level} unit="/10"
+              <MetricTile icon={Activity} label="Energy" value={checkIn.energy_level} unit="/10"
                 color={checkIn.energy_level >= 7 ? 'text-success' : 'text-warning'} />
               <MetricTile icon={Heart} label="Stress" value={checkIn.stress_level} unit="/10"
                 color={checkIn.stress_level <= 4 ? 'text-success' : 'text-destructive'} />
@@ -284,7 +280,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                       <p className="text-muted-foreground mb-1">{label}</p>
                       <p className="font-bold text-foreground">{curr ?? '–'}{curr != null && unit}</p>
                       {diff !== null && (
-                        <p className={cn('text-[10px] font-medium', improved ? 'text-success' : diff == 0 ? 'text-muted-foreground' : 'text-destructive')}>
+                        <p className={cn('text-[12px] font-medium', improved ? 'text-success' : diff == 0 ? 'text-muted-foreground' : 'text-destructive')}>
                           {diff > 0 ? '+' : ''}{diff}
                         </p>
                       )}
@@ -361,7 +357,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
                 <div className="space-y-3">
                   {/* Reaction quick-sends */}
                   <div>
-                    <p className="text-[10px] font-semibold text-muted-foreground mb-2">Quick reaction</p>
+                    <p className="text-[12px] font-semibold text-muted-foreground mb-2">Quick reaction</p>
                     <div className="flex gap-2 flex-wrap">
                       {REACTIONS.map((r) => (
                         <button
@@ -377,7 +373,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
                   {/* Voice note placeholder */}
                   <div>
-                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Voice note</p>
+                    <p className="text-[12px] font-semibold text-muted-foreground mb-1.5">Voice note</p>
                     <button
                       onMouseDown={() => setRecording(true)}
                       onMouseUp={() => { setRecording(false); toast.info('Voice notes coming soon'); }}
@@ -410,7 +406,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
 
                   {/* Text response */}
                   <div>
-                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Text response</p>
+                   <p className="text-[12px] font-semibold text-muted-foreground mb-1.5">Text response</p>
                    <textarea
                      rows={4}
                      value={coachResponse}
@@ -464,7 +460,7 @@ export default function CheckInReviewDrawer({ checkIn, client, allCheckIns, curr
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 border-orange-200 text-orange-600 hover:bg-orange-50"
+            className="gap-1.5 border-warning/30 text-warning hover:bg-warning-soft"
             onClick={handleFlag}
             disabled={updateMutation.isPending}
           >

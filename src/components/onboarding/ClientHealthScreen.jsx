@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import OnboardingLayout from './OnboardingLayout';
-import { ChipSelect } from './SelectionCard';
+import { ChipSelect, QuestionLabel, onboardingFieldCls } from './SelectionCard';
 
 const CONDITIONS = [
-  { id: 'blood_pressure', label: '❤️ High Blood Pressure' },
-  { id: 'diabetes', label: '🩸 Diabetes' },
-  { id: 'hormonal', label: '⚡ Hormonal Issues' },
-  { id: 'digestive', label: '🫁 Digestive Issues' },
-  { id: 'asthma', label: '🫧 Asthma' },
-  { id: 'heart', label: '💔 Heart Concerns' },
-  { id: 'anxiety', label: '🧠 Anxiety / Stress' },
-  { id: 'none', label: '✅ None' },
+  { id: 'blood_pressure', label: 'High blood pressure' },
+  { id: 'diabetes', label: 'Diabetes' },
+  { id: 'hormonal', label: 'Hormonal issues' },
+  { id: 'digestive', label: 'Digestive issues' },
+  { id: 'asthma', label: 'Asthma' },
+  { id: 'heart', label: 'Heart concerns' },
+  { id: 'anxiety', label: 'Anxiety or stress' },
+  { id: 'none', label: 'None' },
 ];
 
 export default function ClientHealthScreen({ onNext, onBack, data }) {
@@ -28,31 +28,28 @@ export default function ClientHealthScreen({ onNext, onBack, data }) {
   return (
     <OnboardingLayout
       eyebrow="Health"
-      headline="Any medical conditions or concerns?"
-      subtext="Everything shared is private. This helps us keep your coaching safe and effective."
+      headline="Any medical conditions?"
+      subtext="Only your coach sees this. It keeps your plan safe."
       onBack={onBack}
       onNext={() => onNext({ health_conditions: selected, health_notes: notes })}
       nextDisabled={selected.length === 0}
     >
-      <div className="space-y-8">
-        <div className="flex flex-wrap gap-2.5">
+      <div className="space-y-6">
+        <div className="flex flex-wrap gap-2">
           {CONDITIONS.map(c => (
             <ChipSelect key={c.id} label={c.label} selected={selected.includes(c.id)} onClick={() => toggle(c.id)} />
           ))}
         </div>
-        <div className="space-y-2">
-          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Anything else your coach should know?</p>
+        <label className="block space-y-2">
+          <QuestionLabel>Anything else your coach should know? (optional)</QuestionLabel>
           <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
-            placeholder="Add any relevant medical history, medications, or concerns..."
+            placeholder="Medical history, medications, concerns"
             rows={4}
-            className="w-full px-4 py-4 rounded-2xl text-white text-sm leading-relaxed resize-none focus:outline-none transition-all"
-            style={{ background: 'var(--kc-161616)', border: '1px solid color-mix(in srgb, white 6%, transparent)', color: 'var(--tc-sidebar-accent-foreground)' }}
-            onFocus={e => { e.target.style.border = '1px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)'; }}
-            onBlur={e => { e.target.style.border = '1px solid color-mix(in srgb, white 6%, transparent)'; }}
+            className={`${onboardingFieldCls} resize-none py-3 leading-relaxed`}
           />
-        </div>
+        </label>
       </div>
     </OnboardingLayout>
   );

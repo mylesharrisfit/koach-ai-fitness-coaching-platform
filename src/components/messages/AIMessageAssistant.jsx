@@ -1,8 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { db } from '@/api/supabaseClient';
-import {
-  Sparkles, Loader2, RefreshCw, Check, Edit3, X, ChevronDown
-} from 'lucide-react';
+import { PenLine, Loader2, RefreshCw, Check, Edit3, X, ChevronDown } from 'lucide-react';
 
 const TONE_OPTIONS = [
   { key: 'motivational', label: '🔥 More Motivational' },
@@ -57,23 +55,23 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
     return (
       <button
         onClick={() => generate(null)}
-        className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-ai/10 border border-primary/20 text-primary hover:from-primary/15 hover:to-ai/15 transition-all"
+        className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-secondary border border-primary/20 text-primary hover:from-primary/15 hover:to-ai/15 transition-all"
       >
-        <Sparkles className="w-3 h-3" />
+        <PenLine className="w-3 h-3" />
         AI Suggest Reply
       </button>
     );
   }
 
   return (
-    <div className="mx-1 mb-2 rounded-xl border border-primary/20 bg-gradient-to-br from-accent/10 to-ai/10 p-3 shadow-sm">
+    <div className="mx-1 mb-2 rounded-xl border border-primary/20 bg-secondary p-3 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <PenLine className="w-3.5 h-3.5 text-primary" />
           <span className="text-[11px] font-semibold text-primary">AI Suggested Reply</span>
           {!loading && toneLabel !== 'Auto' && (
-            <span className="text-[10px] text-muted-foreground bg-[var(--kc-w-70)] px-1.5 py-0.5 rounded-full">{toneLabel}</span>
+            <span className="text-[12px] text-muted-foreground bg-card px-1.5 py-0.5 rounded-full">{toneLabel}</span>
           )}
         </div>
         <button onClick={() => { setVisible(false); setSuggestion(null); }} className="text-muted-foreground hover:text-muted-foreground transition-colors">
@@ -92,7 +90,7 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
       {/* Suggestion */}
       {suggestion && !loading && (
         <>
-          <p className="text-xs text-foreground leading-relaxed bg-[var(--kc-w-70)] rounded-lg p-2.5 mb-2.5 border border-white">
+          <p className="text-xs text-foreground leading-relaxed bg-card rounded-lg p-2.5 mb-2.5 border border-border">
             {suggestion}
           </p>
           <div className="flex items-center gap-2 flex-wrap">
@@ -116,7 +114,7 @@ export default function AIMessageAssistant({ client, allMessages = [], checkIns 
                 Change Tone <ChevronDown className="w-3 h-3" />
               </button>
               {showTonePicker && (
-                <div className="absolute bottom-full mb-1 right-0 bg-card border border-border rounded-xl shadow-xl p-1.5 w-48 z-30">
+                <div className="absolute bottom-full mb-1 right-0 bg-card border border-border rounded-xl shadow-md p-1.5 w-48 z-30">
                   {TONE_OPTIONS.map(t => (
                     <button key={t.key} onClick={() => handleToneChange(t.key)}
                       className="w-full text-left text-[11px] px-3 py-1.5 rounded-lg hover:bg-primary/5 text-foreground transition-colors">

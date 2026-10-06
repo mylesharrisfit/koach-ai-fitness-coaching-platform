@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, CheckCircle2, ArrowLeftRight, ScanLine, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -61,7 +60,7 @@ function SegmentalDiagram({ data }) {
 
   return (
     <div>
-      <p className="text-xs font-semibold text-muted-foreground mb-3">Segmental Analysis</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-3">Segmental analysis</p>
       <div className="grid grid-cols-5 gap-2">
         {segments.map(seg => {
           if (seg.muscle == null) return null;
@@ -95,7 +94,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+    <div className="space-y-4">
       {results.raw_text && (
         <div className="bg-muted border border-accent rounded-lg p-3 text-xs text-primary">
           {results.raw_text}
@@ -104,7 +103,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
 
       {/* Body Composition */}
       <div className="bg-card border border-border rounded-xl p-4">
-        <p className="text-xs font-semibold text-muted-foreground mb-3">Body Composition</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-3">Body composition</p>
         {metricRow('Weight', results.weight_lbs, ' lbs')}
         {metricRow('Body Fat %', results.body_fat_percent, '%',
           results.body_fat_percent > 25 ? 'var(--tc-destructive)' : results.body_fat_percent > 20 ? 'var(--tc-warning)' : 'var(--tc-success)')}
@@ -123,12 +122,12 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
 
       {/* Health Indicators */}
       <div className="bg-card border border-border rounded-xl p-4 space-y-4">
-        <p className="text-xs font-semibold text-muted-foreground">Health Indicators</p>
+        <p className="text-xs font-semibold text-muted-foreground">Health indicators</p>
         <div className="grid grid-cols-2 gap-4">
           {results.inbody_score != null && (
             <div className="flex flex-col items-center gap-1">
               <ScoreRing score={results.inbody_score} />
-              <p className="text-xs text-muted-foreground">InBody Score</p>
+              <p className="text-xs text-muted-foreground">InBody score</p>
             </div>
           )}
           {results.bmr != null && (
@@ -143,7 +142,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
                 style={{ color: results.visceral_fat_level < 10 ? 'var(--tc-success)' : results.visceral_fat_level < 15 ? 'var(--tc-warning)' : 'var(--tc-destructive)' }}>
                 {results.visceral_fat_level}
               </p>
-              <p className="text-xs text-muted-foreground">Visceral Fat</p>
+              <p className="text-xs text-muted-foreground">Visceral fat</p>
             </div>
           )}
         </div>
@@ -173,7 +172,7 @@ function ScanResults({ results, onSave, clients, preselectedClientId, saving, sa
           </Button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -455,18 +454,18 @@ Please extract all metrics and return ONLY this JSON with no markdown:
       </div>
 
       {/* Parsing state */}
-      <AnimatePresence>
+      <>
         {parsing && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          <div
             className="flex items-center gap-3 bg-muted border border-accent rounded-xl p-4">
             <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />
             <div>
               <p className="text-sm font-semibold text-primary">AI is reading your scan...</p>
               <p className="text-xs text-muted-foreground mt-0.5">Extracting all metrics automatically</p>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </>
 
       {/* Error */}
       {parseError && (
@@ -477,7 +476,7 @@ Please extract all metrics and return ONLY this JSON with no markdown:
       )}
 
       {/* Results */}
-      <AnimatePresence>
+      <>
         {results && !parsing && (
           <ScanResults
             results={results}
@@ -488,7 +487,7 @@ Please extract all metrics and return ONLY this JSON with no markdown:
             saved={saved}
           />
         )}
-      </AnimatePresence>
+      </>
 
       {/* Scan history */}
       {scanHistory.length > 0 && (

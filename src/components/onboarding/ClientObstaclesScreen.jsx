@@ -3,16 +3,16 @@ import OnboardingLayout from './OnboardingLayout';
 import { ChipSelect } from './SelectionCard';
 
 const OBSTACLES = [
-  { id: 'consistency', label: '🔄 Consistency' },
-  { id: 'motivation', label: '🔋 Motivation' },
-  { id: 'time', label: '⏱️ Time' },
-  { id: 'nutrition', label: '🍽️ Nutrition' },
-  { id: 'gym_anxiety', label: '😰 Gym Anxiety' },
-  { id: 'recovery', label: '😴 Recovery' },
-  { id: 'stress', label: '🧠 Stress' },
-  { id: 'travel', label: '✈️ Travel' },
-  { id: 'discipline', label: '💪 Discipline' },
-  { id: 'structure', label: '📋 Lack of Structure' },
+  { id: 'consistency', label: 'Consistency' },
+  { id: 'motivation', label: 'Motivation' },
+  { id: 'time', label: 'Time' },
+  { id: 'nutrition', label: 'Nutrition' },
+  { id: 'gym_anxiety', label: 'Gym anxiety' },
+  { id: 'recovery', label: 'Recovery' },
+  { id: 'stress', label: 'Stress' },
+  { id: 'travel', label: 'Travel' },
+  { id: 'discipline', label: 'Discipline' },
+  { id: 'structure', label: 'No structure' },
 ];
 
 export default function ClientObstaclesScreen({ onNext, onBack, data }) {
@@ -22,13 +22,13 @@ export default function ClientObstaclesScreen({ onNext, onBack, data }) {
   return (
     <OnboardingLayout
       eyebrow="Mindset"
-      headline="What usually holds you back?"
-      subtext="Knowing your obstacles helps us build a system that anticipates them."
+      headline="What usually gets in the way?"
+      subtext="Your coach plans around these from week one."
       onBack={onBack}
       onNext={() => onNext({ obstacles: selected })}
       nextDisabled={selected.length === 0}
     >
-      <div className="flex flex-wrap gap-2.5">
+      <div className="flex flex-wrap gap-2">
         {OBSTACLES.map(o => (
           <ChipSelect key={o.id} label={o.label} selected={selected.includes(o.id)} onClick={() => toggle(o.id)} />
         ))}

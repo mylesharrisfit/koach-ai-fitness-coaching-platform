@@ -171,7 +171,7 @@ export default function CheckInEnhancedDrawer({
   const menu = (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="More actions" className="h-10 w-10 flex-shrink-0">
+        <Button variant="ghost" size="icon" aria-label="More actions" className="h-8 w-8 flex-shrink-0">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -218,38 +218,35 @@ export default function CheckInEnhancedDrawer({
 
       {/* Header */}
       <header className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-        <div className="min-w-0 flex items-start gap-3">
-          <div className="min-w-0">
-            <h1 className="text-[32px] lg:text-[38px] leading-[1.05] text-foreground">
-              {clientName}<span className="hidden lg:inline">{week ? `, week ${week}` : ''}</span>
-            </h1>
-            <p className="text-[15px] text-muted-foreground mt-1">
+        <div className="min-w-0">
+          <h1 className="text-[32px] lg:text-[38px] leading-[1.05] text-foreground">
+            {clientName}<span className="hidden lg:inline">{week ? `, week ${week}` : ''}</span>
+          </h1>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-[15px] text-muted-foreground min-w-0">
               <span className="lg:hidden">{week ? `Week ${week}, ` : ''}{sentLabel(checkIn)}</span>
               <span className="hidden lg:inline">{submittedLabel(checkIn)}</span>
               {isReviewed && <span className="text-success font-medium"> · Reviewed</span>}
               {isFlagged && <span className="text-destructive font-medium"> · Flagged for follow-up</span>}
             </p>
-          </div>
-          <div className="ml-auto flex items-center gap-2 xl:hidden">{menu}</div>
-        </div>
-        <div className="hidden lg:flex items-start gap-5 flex-shrink-0">
-          <ReviewStats checkIn={checkIn} prev={prevCI} />
-          <div className="hidden xl:flex items-center gap-1.5">
-            {total > 1 && (
-              <>
-                <Button variant="outline" size="icon" className="h-10 w-10" aria-label="Previous check-in"
-                  disabled={currentIndex <= 0} onClick={() => onNavigate?.(currentIndex - 1)}>
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="h-10 w-10" aria-label="Next check-in"
-                  disabled={currentIndex >= total - 1} onClick={() => onNavigate?.(currentIndex + 1)}>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </>
-            )}
-            {menu}
+            <div className="ml-auto xl:ml-2 flex items-center gap-0.5 flex-shrink-0">
+              {total > 1 && (
+                <span className="hidden lg:flex items-center gap-0.5">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Previous check-in"
+                    disabled={currentIndex <= 0} onClick={() => onNavigate?.(currentIndex - 1)}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Next check-in"
+                    disabled={currentIndex >= total - 1} onClick={() => onNavigate?.(currentIndex + 1)}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </span>
+              )}
+              {menu}
+            </div>
           </div>
         </div>
+        <ReviewStats checkIn={checkIn} prev={prevCI} className="hidden lg:flex flex-shrink-0 pt-1" />
       </header>
 
       {/* Mobile stat tiles */}
@@ -373,9 +370,6 @@ export default function CheckInEnhancedDrawer({
             )}
           </p>
           <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-            <Button variant="outline" {...voiceHandlers} className={cn('h-11 hidden md:inline-flex', isRecording && 'border-destructive text-destructive')}>
-              {isRecording ? 'Recording…' : 'Hold for voice note'}
-            </Button>
             <Button variant="outline" className="h-11 px-5" onClick={() => onDone?.({ sent: false })}>Skip for now</Button>
             <Button className="h-11 px-5" onClick={handleSendResponse} disabled={!coachResponse.trim() || busy}>
               {busy && <Loader2 className="h-4 w-4 animate-spin" />}

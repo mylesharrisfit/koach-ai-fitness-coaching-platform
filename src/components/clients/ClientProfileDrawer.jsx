@@ -39,7 +39,7 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="font-heading font-bold text-foreground text-base">Client Profile</h2>
+          <h2 className="font-heading font-bold text-foreground text-base">Client profile</h2>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
               <Edit className="w-4 h-4 text-foreground" />
@@ -115,7 +115,7 @@ export default function ClientProfileDrawer({ client, checkIns = [], onClose, on
         {/* Notes */}
         {client.notes && (
           <div className="px-5 py-4 border-b border-border">
-            <p className="text-xs font-semibold text-muted-foreground mb-1.5">Coach Notes</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-1.5">Coach notes</p>
             <p className="text-sm text-foreground leading-relaxed">{client.notes}</p>
           </div>
         )}

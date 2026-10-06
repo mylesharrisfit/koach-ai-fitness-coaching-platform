@@ -57,8 +57,9 @@ export default function BIRevenueChart({ clients, payments }) {
       <PanelHeader
         title="Recurring revenue"
         subtitle={`${money(latest)} a month now, ${change === 0 ? 'flat' : `${change > 0 ? 'up' : 'down'} ${money(Math.abs(change))}`} over ${range} months.`}
-        right={<Segmented size="sm" value={range} onChange={setRange} options={RANGES.map(r => ({ value: r.months, label: r.label }))} />}
+        right={<Segmented className="hidden sm:inline-flex" size="sm" value={range} onChange={setRange} options={RANGES.map(r => ({ value: r.months, label: r.label }))} />}
       />
+      <Segmented className="sm:hidden mx-5 mb-2" size="sm" value={range} onChange={setRange} options={RANGES.map(r => ({ value: r.months, label: r.label }))} />
       <div className="px-3 sm:px-4">
         <ResponsiveContainer width="100%" height={230}>
           <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barCategoryGap="30%">
@@ -68,10 +69,10 @@ export default function BIRevenueChart({ clients, payments }) {
             <Tooltip cursor={{ fill: 'var(--tc-accent)' }} content={<ChartTooltip format={(v) => money(v)} />} />
             {milestones.map(m => (
               <ReferenceLine key={m} y={m} stroke={CHART.grey} strokeDasharray="4 4" strokeWidth={1}
-                label={{ value: moneyAxis(m), position: 'insideTopRight', fontSize: 11, fill: CHART.grey }} />
+                label={{ value: moneyAxis(m), position: 'insideTopLeft', fontSize: 11, fill: CHART.grey }} />
             ))}
             <Bar dataKey="existingRevenue" name="Existing clients" stackId="mrr" fill={CHART.ink} maxBarSize={36} />
-            <Bar dataKey="newRevenue" name="New this month" stackId="mrr" fill={CHART.brand} radius={[3, 3, 0, 0]} maxBarSize={36} />
+            <Bar dataKey="newRevenue" name="New this month" stackId="mrr" fill={CHART.newBar} radius={[3, 3, 0, 0]} maxBarSize={36} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -79,7 +80,7 @@ export default function BIRevenueChart({ clients, payments }) {
         className="px-5 sm:px-6 pt-2 pb-5"
         items={[
           { color: CHART.ink, label: 'Existing clients' },
-          { color: CHART.brand, label: 'New clients that month' },
+          { color: CHART.newBar, label: 'New clients that month' },
         ]}
       />
     </Panel>

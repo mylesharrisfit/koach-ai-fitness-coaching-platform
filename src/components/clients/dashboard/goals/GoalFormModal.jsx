@@ -179,7 +179,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
 
             {/* Inline template dropdown */}
             {!isEdit && templates.length > 0 && (
-              <Field label="Use a Template">
+              <Field label="Use a template">
                 <select
                   className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-card outline-none focus:ring-2 focus:ring-primary"
                   value={selectedTemplate}
@@ -194,7 +194,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             )}
 
             {/* Goal type selector */}
-            <Field label="Goal Type">
+            <Field label="Goal type">
               <div className="grid grid-cols-3 gap-2">
                 {GOAL_TYPES.map(t => (
                   <button
@@ -214,7 +214,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             </Field>
 
             {/* Name */}
-            <Field label="Goal Name">
+            <Field label="Goal name">
               <TextInput value={form.name} onChange={v => set('name', v)} placeholder="e.g. Reach 175 lbs" />
             </Field>
 
@@ -222,10 +222,10 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             {form.goal_type === 'numeric' && (
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Target Value">
+                  <Field label="Target value">
                     <TextInput type="number" value={form.target_value} onChange={v => set('target_value', v)} placeholder="e.g. 175" />
                   </Field>
-                  <Field label="Current Value">
+                  <Field label="Current value">
                     <TextInput type="number" value={form.current_value} onChange={v => set('current_value', v)} placeholder="e.g. 190" />
                   </Field>
                 </div>
@@ -238,7 +238,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
             {/* ── Nutrition fields ── */}
             {form.goal_type === 'nutrition' && (
               <div className="space-y-4">
-                <p className="text-xs font-semibold text-muted-foreground">Daily Targets</p>
+                <p className="text-xs font-semibold text-muted-foreground">Daily targets</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Calories (kcal)">
                     <TextInput type="number" value={form.calories_target} onChange={v => set('calories_target', v)} placeholder="e.g. 2200" />
@@ -253,7 +253,7 @@ export default function GoalFormModal({ clientId, goal, prefilledTemplate, onSav
                     <TextInput type="number" value={form.fat_target} onChange={v => set('fat_target', v)} placeholder="e.g. 70" />
                   </Field>
                 </div>
-                <p className="text-xs font-semibold text-muted-foreground">Current Actuals (today)</p>
+                <p className="text-xs font-semibold text-muted-foreground">Current actuals (today)</p>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Calories (kcal)">
                     <TextInput type="number" value={form.calories_current} onChange={v => set('calories_current', v)} placeholder="e.g. 1800" />

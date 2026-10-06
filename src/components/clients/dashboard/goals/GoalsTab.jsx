@@ -48,7 +48,7 @@ export default function GoalsTab({ client }) {
   const handleToggleComplete = async (goal) => {
     const newStatus = goal.status === 'completed' ? 'active' : 'completed';
     await db.entities.Goal.update(goal.id, { status: newStatus });
-    toast.success(newStatus === 'completed' ? 'Goal marked complete!' : 'Goal reactivated');
+    toast.success(newStatus === 'completed' ? 'Goal marked complete' : 'Goal reactivated');
     refresh();
   };
 
@@ -69,7 +69,7 @@ export default function GoalsTab({ client }) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-foreground">Client Goals</h3>
+            <h3 className="text-base font-bold text-foreground">Client goals</h3>
             <p className="text-xs text-muted-foreground mt-0.5">{active.length} active · {completed.length} completed</p>
           </div>
           <div className="flex items-center gap-2">

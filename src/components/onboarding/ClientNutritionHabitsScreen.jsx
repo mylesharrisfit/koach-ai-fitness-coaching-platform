@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import OnboardingLayout from './OnboardingLayout';
+import { ChipSelect, QuestionLabel, SegmentRow } from './SelectionCard';
 
 const FOODS = ['Chicken', 'Salmon', 'Steak', 'Eggs', 'Rice', 'Potatoes', 'Oats', 'Greek Yogurt', 'Broccoli', 'Avocado', 'Pasta', 'Bread', 'Beans', 'Tuna'];
 
@@ -14,9 +14,9 @@ const DIETS = [
 ];
 
 const MEALS = [
-  { id: '2', label: '2 meals' },
-  { id: '3', label: '3 meals' },
-  { id: '4', label: '4 meals' },
+  { id: '2', label: '2' },
+  { id: '3', label: '3' },
+  { id: '4', label: '4' },
   { id: 'flexible', label: 'Flexible' },
 ];
 
@@ -30,69 +30,31 @@ export default function ClientNutritionHabitsScreen({ onNext, onBack, data }) {
   return (
     <OnboardingLayout
       eyebrow="Nutrition"
-      headline="What foods do you enjoy?"
-      subtext="We'll build your plan around foods you actually like to eat."
+      headline="What do you like to eat?"
+      subtext="Your meal plan is built around food you already enjoy."
       onBack={onBack}
       onNext={() => onNext({ fav_foods: favFoods, diet, meals_per_day: meals, nutrition_habits: favFoods })}
       nextDisabled={false}
     >
-      <div className="space-y-8">
-        {/* Favorite foods */}
-        <div className="flex flex-wrap gap-2.5">
-          {FOODS.map((f, i) => (
-            <motion.button
-              key={f}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.03 * i }}
-              whileTap={{ scale: 0.93 }}
-              onClick={() => toggleFood(f)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
-              style={{
-                background: favFoods.includes(f) ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
-                border: favFoods.includes(f) ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                color: favFoods.includes(f) ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
-                boxShadow: favFoods.includes(f) ? '0 0 16px color-mix(in srgb, var(--tc-primary) 15%, transparent)' : 'none',
-              }}
-            >
-              {f}
-            </motion.button>
+      <div className="space-y-6">
+        <div className="flex flex-wrap gap-2">
+          {FOODS.map(f => (
+            <ChipSelect key={f} label={f} selected={favFoods.includes(f)} onClick={() => toggleFood(f)} />
           ))}
         </div>
 
-        {/* Dietary restrictions */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>Any dietary restrictions?</p>
-          <div className="flex flex-wrap gap-2.5">
+          <QuestionLabel>Any dietary restrictions?</QuestionLabel>
+          <div className="flex flex-wrap gap-2">
             {DIETS.map(d => (
-              <motion.button key={d.id} whileTap={{ scale: 0.95 }}
-                onClick={() => setDiet(diet === d.id ? null : d.id)}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
-                style={{
-                  background: diet === d.id ? 'color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
-                  border: diet === d.id ? '1px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1px solid color-mix(in srgb, white 7%, transparent)',
-                  color: diet === d.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
-                }}>{d.label}</motion.button>
+              <ChipSelect key={d.id} label={d.label} selected={diet === d.id} onClick={() => setDiet(diet === d.id ? null : d.id)} />
             ))}
           </div>
         </div>
 
-        {/* Meals per day */}
         <div className="space-y-3">
-          <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>How many meals per day do you prefer?</p>
-          <div className="grid grid-cols-2 gap-2.5">
-            {MEALS.map(m => (
-              <motion.button key={m.id} whileTap={{ scale: 0.95 }}
-                onClick={() => setMeals(m.id)}
-                className="py-4 rounded-2xl text-sm font-semibold transition-all"
-                style={{
-                  background: meals === m.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
-                  border: meals === m.id ? '1.5px solid color-mix(in srgb, var(--tc-primary) 45%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-                  color: meals === m.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
-                  boxShadow: meals === m.id ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
-                }}>{m.label}</motion.button>
-            ))}
-          </div>
+          <QuestionLabel>Meals a day</QuestionLabel>
+          <SegmentRow options={MEALS} value={meals} onChange={setMeals} />
         </div>
       </div>
     </OnboardingLayout>

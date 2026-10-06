@@ -69,7 +69,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-semibold text-foreground">Workout meals</span>
             {hasSelections && (
-              <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
+              <span className="text-xs bg-secondary text-foreground px-1.5 py-0.5 rounded-full font-medium">
                 {[preSelected, postSelected].filter(Boolean).length} set
               </span>
             )}
@@ -85,7 +85,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
             {/* Pre-workout */}
             <div className="p-4 space-y-2">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-semibold text-warning bg-warning/10 border border-warning px-2 py-0.5 rounded-full">Pre-Workout</span>
+                <span className="text-xs font-semibold text-foreground bg-secondary px-2 py-0.5 rounded-full">Pre-Workout</span>
                 <span className="text-[11px] text-muted-foreground">Light carbs · 30–60 min before</span>
               </div>
               <div className="space-y-1.5">
@@ -116,7 +116,7 @@ export default function WorkoutMealPanel({ value = {}, onChange }) {
                 const o = PRE_WORKOUT_OPTIONS.find(x => x.id === preSelected);
                 return o ? (
                   <span className="flex items-center gap-1.5">
-                    <span className="text-warning font-medium">Pre:</span>
+                    <span className="text-muted-foreground">Pre:</span>
                     <span className="text-foreground font-medium">{o.label}</span>
                     <span className="text-muted-foreground">{o.cal} cal · {o.c}g C</span>
                   </span>

@@ -94,7 +94,7 @@ export default function ImportCleanupModal({ open, onOpenChange, clients = [], o
               These are the <strong>{importedClients.length}</strong> client records created by the CSV import feature
               (they have an <code className="bg-muted px-1 rounded text-[11px]">external_id</code> set).
               Check the ones you want to delete, then confirm. Nothing is removed until you click&nbsp;
-              <strong>Delete Selected</strong>.
+              <strong>Delete selected</strong>.
             </p>
           </div>
 

@@ -23,7 +23,7 @@ export default function ChurnRiskTable({ clients, mrr }) {
   const pctAtRisk = mrr > 0 ? ((mrrAtRisk / mrr) * 100).toFixed(1) : 0;
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+    <div className="bg-card border border-border rounded-xl p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h3 className="text-xs font-semibold text-muted-foreground mb-1">Churn Risk Analysis</h3>
@@ -63,7 +63,7 @@ export default function ChurnRiskTable({ clients, mrr }) {
                       </div>
                       <div>
                         <p className="font-medium text-foreground leading-tight">{client.name}</p>
-                        {client.isAtRisk && <p className="text-[10px] text-destructive">Flagged at-risk</p>}
+                        {client.isAtRisk && <p className="text-xs text-destructive">Flagged at-risk</p>}
                       </div>
                     </div>
                   </td>

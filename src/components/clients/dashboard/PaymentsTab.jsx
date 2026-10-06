@@ -13,9 +13,9 @@ import { cn } from '@/lib/utils';
 
 const QUICK_CHARGES = [
   { label: '1:1 Session', amount: 150 },
-  { label: 'Monthly Coaching', amount: 299 },
-  { label: 'Program Package', amount: 197 },
-  { label: 'Custom Amount', amount: null },
+  { label: 'Monthly coaching', amount: 299 },
+  { label: 'Program package', amount: 197 },
+  { label: 'Custom amount', amount: null },
 ];
 
 const STATUS_STYLES = {
@@ -100,7 +100,7 @@ export default function PaymentsTab({ client }) {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Total Paid', value: `$${totalPaid.toFixed(2)}`, icon: CheckCircle2, color: 'text-success' },
+          { label: 'Total paid', value: `$${totalPaid.toFixed(2)}`, icon: CheckCircle2, color: 'text-success' },
           { label: 'Outstanding', value: `$${outstanding.toFixed(2)}`, icon: AlertTriangle, color: 'text-warning' },
           { label: 'Billing', value: client?.billing_status || 'none', icon: DollarSign, color: 'text-primary' },
         ].map(s => (
@@ -116,7 +116,7 @@ export default function PaymentsTab({ client }) {
 
       {/* Quick Charge */}
       <div>
-        <p className="text-xs font-semibold text-muted-foreground mb-2">Quick Charge</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Quick charge</p>
         <div className="grid grid-cols-2 gap-2">
           {QUICK_CHARGES.map(item => (
             <button
@@ -185,7 +185,7 @@ export default function PaymentsTab({ client }) {
 
       {/* Invoice History */}
       <div>
-        <p className="text-xs font-semibold text-muted-foreground mb-2">Invoice History</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">Invoice history</p>
         {!client?.stripe_customer_id ? (
           <div className="bg-background border border-border rounded-xl p-4 text-center">
             <p className="text-xs text-muted-foreground">No Stripe customer yet. Send an invoice to create one.</p>

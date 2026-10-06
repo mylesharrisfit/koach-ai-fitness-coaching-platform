@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '@/api/supabaseClient';
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ReactMarkdown from 'react-markdown';
@@ -34,7 +34,7 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
       });
       setMessages(prev => [...prev, { role: 'assistant', content: res.data?.response || '' }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry — I hit a problem. Please try again.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'That didn’t work. Try again in a moment.' }]);
     }
     setIsLoading(false);
   };
@@ -58,12 +58,9 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
         {visibleMessages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center gap-3 py-12">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <Sparkles className="w-7 h-7 text-primary" />
-            </div>
-            <p className="font-heading font-semibold">AI Coach Assistant</p>
+            <h3 className="text-[26px] text-foreground">What do you need?</h3>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Use quick actions above or ask anything about your clients — calorie adjustments, workout progressions, compliance issues, and more.
+              Pick a quick action above, or ask about a client: calories, progressions, compliance.
             </p>
           </div>
         ) : visibleMessages.map((msg, i) => (
@@ -71,17 +68,8 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
         ))}
 
         {isLoading && (
-          <div className="flex gap-3">
-            <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-primary" />
-            </div>
-            <div className="bg-card border border-border rounded-2xl px-4 py-3">
-              <div className="flex gap-1 items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
-              </div>
-            </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" /> Working on it
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -94,7 +82,7 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Ask about a client, request an analysis..."
+            placeholder="Ask about a client"
             className="flex-1"
             disabled={isLoading }
           />
@@ -110,29 +98,23 @@ export default function AssistantChat({ initialPrompt, onPromptConsumed }) {
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
   return (
-    <div className={cn('flex gap-3', isUser && 'flex-row-reverse')}>
+    <div className={cn('flex', isUser && 'justify-end')}>
       <div className={cn(
-        'w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5',
-        isUser ? 'bg-primary/20' : 'bg-primary/10'
-      )}>
-        {isUser ? <User className="w-4 h-4 text-primary" /> : <Bot className="w-4 h-4 text-primary" />}
-      </div>
-      <div className={cn(
-        'max-w-[85%] rounded-2xl px-4 py-3 text-sm',
-        isUser ? 'bg-primary text-primary-foreground' : 'bg-card border border-border text-foreground'
+        'max-w-[85%] rounded-xl px-4 py-3 text-[15px]',
+        isUser ? 'bg-primary text-primary-foreground' : 'bg-card ring-1 ring-border/60 text-foreground'
       )}>
         {isUser ? (
           <p className="leading-relaxed">{message.content}</p>
         ) : (
           <ReactMarkdown
-            className="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 prose-headings:font-heading prose-headings:font-semibold"
+            className="max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
             components={{
               p: ({ children }) => <p className="my-1 leading-relaxed">{children}</p>,
               ul: ({ children }) => <ul className="my-1 ml-4 list-disc space-y-0.5">{children}</ul>,
               ol: ({ children }) => <ol className="my-1 ml-4 list-decimal space-y-0.5">{children}</ol>,
               li: ({ children }) => <li className="my-0">{children}</li>,
               strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-              h3: ({ children }) => <h3 className="text-sm font-semibold mt-3 mb-1">{children}</h3>,
+              h3: ({ children }) => <p className="text-[15px] font-semibold mt-3 mb-1">{children}</p>,
               code: ({ children }) => <code className="px-1 py-0.5 rounded bg-muted text-xs">{children}</code>,
             }}
           >

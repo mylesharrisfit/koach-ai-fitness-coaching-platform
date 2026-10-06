@@ -20,9 +20,9 @@ function FoodResult({ food, onSave, saved }) {
           {food.brand && <p className="text-xs text-muted-foreground">{food.brand}</p>}
           <div className="flex flex-wrap gap-1 mt-1.5">
             {food.calories > 0 && <MacroPill label="Cal" value={food.calories} color="bg-secondary text-foreground" />}
-            <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-accent text-primary" />
-            <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-warning/10 text-warning" />
-            <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-destructive/10 text-destructive" />
+            <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-secondary text-foreground" />
+            <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-secondary text-foreground" />
+            <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-secondary text-foreground" />
             {food.serving_size && <span className="text-xs text-muted-foreground">per {food.serving_size}</span>}
           </div>
         </div>
@@ -135,9 +135,9 @@ export default function FoodSearchResults({ onSave, isSaved, onSelect, selectMod
               {food.brand && <p className="text-xs text-muted-foreground">{food.brand}</p>}
               <div className="flex flex-wrap gap-1 mt-1">
                 {food.calories > 0 && <MacroPill label="Cal" value={food.calories} color="bg-secondary text-foreground" />}
-                <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-accent text-primary" />
-                <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-warning/10 text-warning" />
-                <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-destructive/10 text-destructive" />
+                <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-secondary text-foreground" />
+                <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-secondary text-foreground" />
+                <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-secondary text-foreground" />
                 {food.serving_size && <span className="text-xs text-muted-foreground">per {food.serving_size}</span>}
               </div>
             </button>

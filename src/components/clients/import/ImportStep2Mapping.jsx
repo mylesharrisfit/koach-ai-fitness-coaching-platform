@@ -52,9 +52,9 @@ export default function ImportStep2Mapping({ headers, mapping, confidence, koach
         {/* Table header */}
         <div className="grid gap-3 px-4 py-2 bg-muted border-b border-border text-xs font-semibold text-muted-foreground"
           style={{ gridTemplateColumns: '1fr 20px minmax(180px,1.4fr) 90px' }}>
-          <div>CSV Column</div>
+          <div>CSV column</div>
           <div />
-          <div>KOACH Field</div>
+          <div>KOACH field</div>
           <div>Confidence</div>
         </div>
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { format, subDays, isAfter } from 'date-fns';
-import { Sparkles, Loader2, RefreshCw, ChevronLeft, ChevronRight, BarChart2 } from 'lucide-react';
+import { Loader2, RefreshCw, ChevronLeft, ChevronRight, BarChart2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { db } from '@/api/supabaseClient';
 import { SignedImg } from '@/components/shared/SignedImage';
@@ -46,7 +46,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
   const avgField = (arr, f) => arr.filter(ci => ci[f] != null).reduce((s, ci, _, a) => s + ci[f] / a.length, 0);
 
   const compData = [
-    { label: 'Avg Weight', thisWeek: avgField(last7, 'weight').toFixed(1), lastWeek: avgField(prev7, 'weight').toFixed(1) },
+    { label: 'Avg weight', thisWeek: avgField(last7, 'weight').toFixed(1), lastWeek: avgField(prev7, 'weight').toFixed(1) },
     { label: 'Training %', thisWeek: avgField(last7, 'compliance_training').toFixed(0), lastWeek: avgField(prev7, 'compliance_training').toFixed(0) },
     { label: 'Sleep hrs', thisWeek: avgField(last7, 'sleep_hours').toFixed(1), lastWeek: avgField(prev7, 'sleep_hours').toFixed(1) },
   ].filter(d => d.thisWeek > 0);
@@ -76,7 +76,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
 
   const CHARTS = [
     { key: 'weight', label: 'Weight', color: 'hsl(var(--primary))', dataKey: 'weight' },
-    { key: 'bodyFat', label: 'Body Fat %', color: 'hsl(var(--accent))', dataKey: 'bodyFat' },
+    { key: 'bodyFat', label: 'Body fat %', color: 'hsl(var(--accent))', dataKey: 'bodyFat' },
     { key: 'sleep', label: 'Sleep', color: 'hsl(var(--chart-3))', dataKey: 'sleep' },
     { key: 'compliance', label: 'Compliance', color: 'hsl(var(--chart-4))', dataKey: null },
   ];
@@ -152,7 +152,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
       {/* Week vs Week */}
       {compData.length > 0 && (
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-xs font-semibold text-muted-foreground mb-3">Week vs. Previous Week</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">This week vs. last week</p>
           <div className="grid grid-cols-3 gap-3">
             {compData.map(d => {
               const diff = (Number(d.thisWeek) - Number(d.lastWeek)).toFixed(1);
@@ -176,7 +176,7 @@ export default function ClientAnalyticsView({ client, checkIns }) {
       {/* Photo Timeline */}
       {allPhotos.length > 0 && (
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-xs font-semibold text-muted-foreground mb-3">Progress Photos</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-3">Progress photos</p>
           <div className="relative flex items-center gap-3">
             <button
               onClick={() => setPhotoIndex(Math.max(0, photoIndex - 1))}
@@ -203,29 +203,26 @@ export default function ClientAnalyticsView({ client, checkIns }) {
       )}
 
       {/* AI Summary */}
-      <div className="bg-muted border border-accent rounded-xl p-4">
+      <div className="rounded-xl bg-ai text-ai-foreground p-4">
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <p className="text-xs font-semibold text-primary">AI Coach Summary</p>
-          </div>
-          <button onClick={fetchAiSummary} disabled={aiLoading} className="text-primary hover:text-primary disabled:opacity-50">
+          <p className="text-[17px] font-semibold">What the AI sees</p>
+          <button onClick={fetchAiSummary} disabled={aiLoading} aria-label="Refresh" className="text-ai-foreground/60 hover:text-ai-foreground disabled:opacity-50">
             <RefreshCw className={`w-3.5 h-3.5 ${aiLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
         {aiSummary ? (
-          <p className="text-sm text-foreground leading-relaxed">{aiSummary}</p>
+          <p className="text-sm text-ai-foreground/90 leading-relaxed">{aiSummary}</p>
         ) : aiLoading ? (
           <div className="flex items-center gap-2 py-3">
-            <Loader2 className="w-4 h-4 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Analyzing {client.name}'s progress...</p>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <p className="text-sm text-ai-foreground/70">Reading {client.name}&apos;s progress</p>
           </div>
         ) : (
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Generate an AI-powered progress summary for this client.</p>
-            <Button size="sm" onClick={fetchAiSummary} className="bg-primary text-primary-foreground hover:bg-primary ml-4 flex-shrink-0">
-              Generate
+            <p className="text-sm text-ai-foreground/70">A short summary of how {client.name} is trending.</p>
+            <Button size="sm" variant="outline" onClick={fetchAiSummary} className="bg-card text-foreground border-transparent hover:bg-card/90 ml-4 flex-shrink-0">
+              Summarize
             </Button>
           </div>
         )}

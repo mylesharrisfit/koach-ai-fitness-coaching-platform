@@ -3,12 +3,12 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 const CATEGORY_ICON = {
-  strength: '💪',
-  hypertrophy: '🔨',
-  fat_loss: '🔥',
-  athletic: '⚡',
-  mobility: '🧘',
-  custom: '⚙️',
+  strength: '',
+  hypertrophy: '',
+  fat_loss: '',
+  athletic: '',
+  mobility: '',
+  custom: '',
 };
 
 const DIFFICULTY_BADGE = {

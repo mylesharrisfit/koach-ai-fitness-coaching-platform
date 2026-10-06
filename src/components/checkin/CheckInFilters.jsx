@@ -64,7 +64,7 @@ export default function CheckInFilters({ timeFilter, setTimeFilter, sort, setSor
               {s.label}
               {counts?.[s.key] > 0 && (
                 <span className={cn(
-                  'text-[10px] font-bold px-1.5 py-0.5 rounded-full',
+                  'text-[12px] font-bold px-1.5 py-0.5 rounded-full',
                   s.key === 'flagged' ? 'bg-destructive/20 text-destructive' :
                   s.key === 'overdue' ? 'bg-chart-4/20 text-chart-4' :
                   'bg-primary/15 text-primary'

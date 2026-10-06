@@ -80,7 +80,7 @@ export default function AtRiskClients({ embedded = false }) {
         <Stat className="border-b border-r border-border px-5 py-4 sm:px-6 lg:border-b-0" label="At risk" value={stats.total} tone={stats.total ? 'danger' : undefined} sub="Active clients with a flag" />
         <Stat className="border-b border-border px-5 py-4 sm:px-6 lg:border-b-0 lg:border-r" label="Checked in this week" value={stats.newlyFlagged} sub="Flagged, but still talking" />
         <Stat className="border-r border-border px-5 py-4 sm:px-6" label="On track" value={`${stats.successRate}%`} sub="Share of your roster" />
-        <Stat className="px-5 py-4 sm:px-6" label="Days since first check-in" value={`${stats.avgDaysAtRisk}`} unit="avg" sub="Across flagged clients" />
+        <Stat className="px-5 py-4 sm:px-6" label="Days on record" value={`${stats.avgDaysAtRisk}`} unit="avg" sub="Across flagged clients" />
       </Panel>
 
       {/* ── Filters + search ── */}

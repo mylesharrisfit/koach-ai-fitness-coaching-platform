@@ -64,7 +64,7 @@ function InvoicePreview({ form, lineItems, coachName }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <div style={{ fontSize: 18, fontWeight: 900, background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>KOACH AI</div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: 'var(--tc-foreground)' }}>KOACH AI</div>
           <div style={{ fontSize: 11, color: 'var(--tc-muted-foreground)', marginTop: 2 }}>{coachName || 'Your Coaching Business'}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
@@ -122,7 +122,7 @@ function InvoicePreview({ form, lineItems, coachName }) {
 
       {/* Pay button preview */}
       <div style={{ marginTop: 20, textAlign: 'center' }}>
-        <div style={{ display: 'inline-block', padding: '10px 28px', borderRadius: 10, background: 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: 'var(--tc-primary-foreground)', fontSize: 13, fontWeight: 700 }}>
+        <div style={{ display: 'inline-block', padding: '10px 28px', borderRadius: 10, background: 'var(--tc-primary)', color: 'var(--tc-primary-foreground)', fontSize: 13, fontWeight: 700 }}>
           Pay ${total.toFixed(2)} →
         </div>
       </div>
@@ -247,7 +247,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
     if (!form.client_id) { toast.error('Please select a client'); return; }
     setSaving(true);
     await onSave(buildPayload('sent'));
-    toast.success(`Invoice sent to ${form.client_name} ✓`);
+    toast.success(`Invoice sent to ${form.client_name}`);
     setSaving(false);
   };
 
@@ -398,7 +398,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             {/* PAYMENT OPTIONS */}
             <SectionTitle>Payment Options</SectionTitle>
             <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-              {[['stripe', '⚡ Stripe'], ['manual', '💸 Manual'], ['both', '🔀 Both']].map(([v, label]) => (
+              {[['stripe', 'Stripe'], ['manual', 'Manual'], ['both', 'Both']].map(([v, label]) => (
                 <button key={v} onClick={() => set('payment_method', v)}
                   style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${form.payment_method === v ? 'var(--tc-primary)' : 'var(--tc-border)'}`, background: form.payment_method === v ? 'var(--tc-accent)' : 'var(--tc-card)', fontSize: 12, fontWeight: 600, color: form.payment_method === v ? 'var(--tc-primary)' : 'var(--tc-foreground)', cursor: 'pointer' }}>
                   {label}
@@ -483,7 +483,7 @@ export default function InvoiceCreationModal({ invoice, onClose, onSave, existin
             Save as Draft
           </button>
           <button onClick={handleSend} disabled={saving || !form.client_id}
-            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'var(--tc-border)' : 'linear-gradient(135deg,var(--tc-primary),var(--tc-ai))', color: (!form.client_id || saving) ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: (!form.client_id || saving) ? 'none' : '0 0 16px color-mix(in srgb, var(--tc-primary) 25%, transparent)' }}>
+            style={{ padding: '10px 22px', borderRadius: 10, fontSize: 13, fontWeight: 700, background: (!form.client_id || saving) ? 'var(--tc-border)' : 'var(--tc-primary)', color: (!form.client_id || saving) ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: (!form.client_id || saving) ? 'not-allowed' : 'pointer', boxShadow: 'none' }}>
             {saving ? 'Saving…' : 'Send Invoice →'}
           </button>
         </div>

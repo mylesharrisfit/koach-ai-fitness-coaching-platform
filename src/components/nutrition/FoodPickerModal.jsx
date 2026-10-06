@@ -59,9 +59,9 @@ export default function FoodPickerModal({ open, onOpenChange, onSelect }) {
       <p className="text-sm font-semibold text-foreground">{food.name}</p>
       <div className="flex gap-1 mt-1 flex-wrap">
         <MacroPill label="Cal" value={food.calories} color="bg-secondary text-foreground" />
-        <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-accent text-primary" />
-        <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-warning/10 text-warning" />
-        <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-destructive/10 text-destructive" />
+        <MacroPill label="P" value={food.protein_g ? `${food.protein_g}g` : null} color="bg-secondary text-foreground" />
+        <MacroPill label="C" value={food.carbs_g ? `${food.carbs_g}g` : null} color="bg-secondary text-foreground" />
+        <MacroPill label="F" value={food.fats_g ? `${food.fats_g}g` : null} color="bg-secondary text-foreground" />
         {food.serving_size && <span className="text-xs text-muted-foreground">per {food.serving_size}</span>}
       </div>
     </button>

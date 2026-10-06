@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
-import { Plus, Sparkles } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import HabitCard from './HabitCard';
 import HabitFormModal from './HabitFormModal';
@@ -113,7 +113,7 @@ export default function HabitsSection({ client }) {
         {!isLoading && habits.length === 0 && (
           <div className="text-center py-20">
             <div className="w-16 h-16 rounded-xl bg-card border border-border flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-7 h-7 text-ai" />
+              
             </div>
             <p className="text-sm font-bold text-foreground mb-1">No habits yet</p>
             <p className="text-xs text-muted-foreground mb-5">

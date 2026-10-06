@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Zap } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CONDITION_META, ACTION_META } from '@/lib/automationEngine';
 import { format, parseISO } from 'date-fns';
@@ -12,28 +12,24 @@ export default function RuleCard({ rule, matchCount, onToggle, onEdit, onDelete 
 
   return (
     <div className={cn(
-      'bg-card border rounded-2xl p-4 transition-all',
-      rule.is_active ? 'border-border' : 'border-border opacity-60'
+      'panel p-4',
+      !rule.is_active && 'opacity-60'
     )}>
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">
-          {cMeta.icon || '⚡'}
-        </div>
-
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="font-semibold text-sm">{rule.name}</p>
+            <p className="text-[15px] font-semibold text-foreground">{rule.name}</p>
             {matchCount > 0 && rule.is_active && (
-              <span className="flex items-center gap-1 text-[10px] font-bold bg-destructive/15 text-destructive px-1.5 py-0.5 rounded border border-destructive/20">
-                <Zap className="w-2.5 h-2.5" /> {matchCount} client{matchCount > 1 ? 's' : ''} triggered
+              <span className="text-[13px] font-semibold text-destructive">
+                {matchCount} client{matchCount > 1 ? 's' : ''} caught
               </span>
             )}
           </div>
 
           {/* IF → THEN */}
-          <div className="flex items-center gap-1.5 mt-2 flex-wrap text-xs">
-            <span className="bg-secondary px-2 py-1 rounded-lg font-medium text-foreground">
-              IF {cMeta.label || rule.condition_type?.replace(/_/g, ' ')}
+          <div className="flex items-center gap-1.5 mt-1 flex-wrap text-sm">
+            <span className="text-foreground/80">
+              When {cMeta.label || rule.condition_type?.replace(/_/g, ' ')}
               {rule.condition_threshold != null && (
                 <span className="text-muted-foreground ml-1">
                   {rule.condition_threshold}{cMeta.thresholdType === 'percent' ? '%' : cMeta.thresholdType === 'days' ? 'd' : '×'}
@@ -41,8 +37,8 @@ export default function RuleCard({ rule, matchCount, onToggle, onEdit, onDelete 
               )}
             </span>
             <span className="text-muted-foreground">→</span>
-            <span className="bg-secondary px-2 py-1 rounded-lg font-medium text-foreground">
-              THEN {aMeta.label || rule.action_type?.replace(/_/g, ' ')}
+            <span className="text-foreground/80">
+              {aMeta.label || rule.action_type?.replace(/_/g, ' ')}
             </span>
           </div>
 
@@ -51,16 +47,16 @@ export default function RuleCard({ rule, matchCount, onToggle, onEdit, onDelete 
           )}
           {rule.action_calorie_delta != null && rule.action_type === 'adjust_calories' && (
             <p className="text-xs text-muted-foreground mt-1">
-              Adjustment: <span className={rule.action_calorie_delta < 0 ? 'text-destructive' : 'text-accent'}>
+              Adjustment: <span className={rule.action_calorie_delta < 0 ? 'text-destructive' : 'text-success'}>
                 {rule.action_calorie_delta > 0 ? '+' : ''}{rule.action_calorie_delta} kcal
               </span>
             </p>
           )}
 
           <div className="flex items-center justify-between mt-3">
-            <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-              {rule.trigger_count > 0 && <span>Fired {rule.trigger_count}× total</span>}
-              {rule.last_triggered && <span>Last: {format(parseISO(rule.last_triggered), 'MMM d')}</span>}
+            <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
+              {rule.trigger_count > 0 && <span>Ran {rule.trigger_count} times</span>}
+              {rule.last_triggered && <span>last {format(parseISO(rule.last_triggered), 'MMM d')}</span>}
             </div>
             <div className="flex items-center gap-1.5">
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => onEdit(rule)}>

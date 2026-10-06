@@ -56,7 +56,7 @@ export default function BIKPIRow({ clients, payments, checkIns }) {
           value: money(mrr),
           sub: projectedMrr > mrr ? `${trendText(mrrTrend)}, ${money(projectedMrr)} next` : trendText(mrrTrend),
         },
-        { label: 'Active clients', value: activeClients.length, sub: `${newThisMonth} new this month, ${trendText(clientTrend).toLowerCase()}` },
+        { label: 'Active clients', value: activeClients.length, sub: `${newThisMonth} new this month` },
         { label: 'Average lifetime value', value: avgLTV > 0 ? money(avgLTV) : '—', sub: 'Rate times months coached' },
         { label: 'Finished or left', value: `${churnRate.toFixed(1)}%`, sub: `${completedClients} of ${clients.length} clients`, tone: churnRate > 25 ? 'danger' : undefined },
       ]}

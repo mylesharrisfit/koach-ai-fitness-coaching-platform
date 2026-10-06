@@ -276,8 +276,12 @@ export default function ClientDashboardModal({ client, checkIns = [], onClose, o
         <div className="flex-1 overflow-hidden">
 
           {activeTab === 'pipeline' && (
-            <div className="h-full overflow-y-auto p-6 max-w-lg">
-              <LeadPipelinePanel client={localClient} onUpdate={handleClientUpdated} />
+            <div className="h-full overflow-y-auto p-4 sm:p-6">
+              <div className="panel p-5 sm:p-6 max-w-xl">
+                <h3 className="text-[22px] text-foreground mb-1">Lead pipeline</h3>
+                <p className="text-sm text-muted-foreground mb-5">Where this lead stands and when to follow up.</p>
+                <LeadPipelinePanel client={localClient} onUpdate={handleClientUpdated} />
+              </div>
             </div>
           )}
 

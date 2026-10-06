@@ -47,7 +47,7 @@ export default function ProfileMessagesTab({ client, messages }) {
     <div className="flex flex-col gap-4">
       {/* Compose box */}
       <div className="bg-card rounded-xl border border-border p-4">
-        <p className="text-xs font-semibold text-muted-foreground mb-2">New Message</p>
+        <p className="text-xs font-semibold text-muted-foreground mb-2">New message</p>
         <Textarea
           placeholder={`Write a message to ${client.name}…`}
           value={text}
@@ -102,24 +102,24 @@ export default function ProfileMessagesTab({ client, messages }) {
                     : 'bg-card text-foreground border-border rounded-tl-md'
                 )}>
                   <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className={cn('text-[11px] font-bold', isCoach ? 'text-white/70' : 'text-muted-foreground')}>
+                    <span className={cn('text-[11px] font-bold', isCoach ? 'text-primary-foreground/70' : 'text-muted-foreground')}>
                       {isCoach ? 'You' : client.name}
                     </span>
                     <div className="flex items-center gap-1.5">
                       {msg.tag && (
                         <span className={cn(
                           'text-[11px] font-bold border rounded px-1 py-0.5',
-                          isCoach ? 'bg-[var(--kc-w-20)] text-white/80 border-white/30' : (TAG_STYLES[msg.tag] || TAG_STYLES.general)
+                          isCoach ? 'bg-primary-foreground/15 text-primary-foreground/80 border-primary-foreground/30' : (TAG_STYLES[msg.tag] || TAG_STYLES.general)
                         )}>
                           {msg.tag}
                         </span>
                       )}
-                      <span className={cn('text-[11px]', isCoach ? 'text-white/60' : 'text-[var(--tc-muted-foreground)]')}>
+                      <span className={cn('text-[11px]', isCoach ? 'text-primary-foreground/60' : 'text-muted-foreground')}>
                         {msgDate(msg.created_date)}
                       </span>
                     </div>
                   </div>
-                  <p className={cn('text-sm leading-relaxed', isCoach ? 'text-white' : 'text-foreground')}>
+                  <p className={cn('text-sm leading-relaxed', isCoach ? 'text-primary-foreground' : 'text-foreground')}>
                     {msg.content}
                   </p>
                 </div>

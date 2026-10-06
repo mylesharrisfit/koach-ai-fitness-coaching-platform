@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { Loader2, Check, Zap, AlertCircle, X } from 'lucide-react';
+import { Loader2, Check, ArrowRight, AlertCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PRIORITY_STYLES, CATEGORY_ICONS } from '@/lib/decisionEngine';
 import { applyRecommendation, getConfirmText } from '@/lib/applyRecommendation';
@@ -51,7 +51,7 @@ export default function RecommendationCard({ recommendation: rec, checkIn, clien
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5 flex-wrap">
               <span className="text-xs font-bold">{rec.title}</span>
-              <span className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded-full border capitalize', styles.badge)}>
+              <span className={cn('text-[12px] font-semibold px-1.5 py-0.5 rounded-full border capitalize', styles.badge)}>
                 {rec.priority}
               </span>
             </div>
@@ -64,7 +64,7 @@ export default function RecommendationCard({ recommendation: rec, checkIn, clien
               onClick={handleApplyClick}
               className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold border bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 active:scale-[0.95] transition-all whitespace-nowrap"
             >
-              <Zap className="w-3.5 h-3.5" /> {rec.actionLabel}
+              <ArrowRight className="w-3.5 h-3.5" /> {rec.actionLabel}
             </button>
           )}
 

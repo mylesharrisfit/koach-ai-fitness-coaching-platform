@@ -48,19 +48,19 @@ export default function RuleFormModal({ open, onClose, onSave, initial }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-heading">{initial ? 'Edit Automation Rule' : 'New Automation Rule'}</DialogTitle>
+          <DialogTitle>{initial ? 'Edit rule' : 'New rule'}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-5 mt-2">
           {/* Name */}
           <div>
             <Label>Rule Name</Label>
-            <Input value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g., Missed check-in alert" className="mt-1" />
+            <Input value={form.name} onChange={e => set('name', e.target.value)} placeholder="Missed check-in alert" className="mt-1" />
           </div>
 
           {/* IF Block */}
-          <div className="rounded-xl border border-border bg-secondary/30 p-4 space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground">IF Condition</p>
+          <div className="rounded-lg border border-border p-4 space-y-3">
+            <p className="text-sm font-semibold text-foreground">When</p>
             <div>
               <Label>Trigger</Label>
               <Select value={form.condition_type} onValueChange={v => {
@@ -103,8 +103,8 @@ export default function RuleFormModal({ open, onClose, onSave, initial }) {
           </div>
 
           {/* THEN Block */}
-          <div className="rounded-xl border border-border bg-secondary/30 p-4 space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground">THEN Action</p>
+          <div className="rounded-lg border border-border p-4 space-y-3">
+            <p className="text-sm font-semibold text-foreground">Then</p>
             <div>
               <Label>Action</Label>
               <Select value={form.action_type} onValueChange={v => set('action_type', v)}>
@@ -154,7 +154,7 @@ export default function RuleFormModal({ open, onClose, onSave, initial }) {
           {/* Description */}
           <div>
             <Label>Notes <span className="text-muted-foreground font-normal">(optional)</span></Label>
-            <Input value={form.description} onChange={e => set('description', e.target.value)} placeholder="Why this rule exists..." className="mt-1" />
+            <Input value={form.description} onChange={e => set('description', e.target.value)} placeholder="Why this rule exists" className="mt-1" />
           </div>
 
           <div className="flex justify-end gap-2 pt-1">

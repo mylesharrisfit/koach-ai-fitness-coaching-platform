@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import StatusRow from './StatusRow';
 
 const ITEMS = [
-  { label: 'AI Client Management',  icon: '👥', activateAt: 0.6 },
-  { label: 'Workout Engine',        icon: '🏋️', activateAt: 1.2 },
-  { label: 'Nutrition System',      icon: '🥗', activateAt: 1.8 },
-  { label: 'Automation Hub',        icon: '⚡', activateAt: 2.4 },
-  { label: 'Check-in AI',           icon: '📋', activateAt: 3.0 },
-  { label: 'Analytics Dashboard',   icon: '📊', activateAt: 3.6 },
-  { label: 'Client Portal',         icon: '🚪', activateAt: 4.2 },
+  { label: 'Client list',          activateAt: 0.6 },
+  { label: 'Program templates',    activateAt: 1.2 },
+  { label: 'Meal plan templates',  activateAt: 1.8 },
+  { label: 'Reminders',            activateAt: 2.4 },
+  { label: 'Weekly check-in form', activateAt: 3.0 },
+  { label: 'Business numbers',     activateAt: 3.6 },
+  { label: 'Client app',           activateAt: 4.2 },
 ];
 
 // Last item finishes at 4.2s. We wait ~1s then redirect = ~5.5s total.
@@ -72,141 +72,27 @@ export default function CoachGenerationScreen({ onNext }) {
   const progress  = doneCount / ITEMS.length;
 
   return (
-    <motion.div
-      className="w-full h-full flex flex-col items-center justify-center px-6 relative overflow-hidden"
-      style={{ background: 'var(--tc-sidebar)' }}
-      animate={exiting ? { opacity: 0, filter: 'blur(12px)', scale: 1.04 } : { opacity: 1, filter: 'blur(0px)', scale: 1 }}
-      transition={{ duration: 0.75, ease: [0.32, 0.72, 0, 1] }}
-    >
-      {/* Cinematic ambient glow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <motion.div
-          className="w-[700px] h-[700px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, color-mix(in srgb, var(--tc-primary) 10%, transparent) 0%, transparent 65%)',
-            filter: 'blur(80px)',
-          }}
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full max-w-sm space-y-7">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center space-y-2"
-        >
-          <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
-            KOACH AI Engine
+    <div className={`flex h-full w-full flex-col items-center justify-center bg-background px-5 transition-opacity duration-700 ${exiting ? 'opacity-0' : 'opacity-100'}`}>
+      <div className="w-full max-w-md space-y-6">
+        <div>
+          <h1 className="text-[32px] leading-[1.04] text-foreground">
+            {allDone ? 'Your workspace is ready.' : 'Setting up your workspace.'}
+          </h1>
+          <p className="mt-2 text-[15px] text-muted-foreground">
+            {allDone ? 'Opening Today.' : 'About five seconds.'}
           </p>
-          <AnimatePresence mode="wait">
-            {allDone ? (
-              <motion.h2
-                key="done"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-3xl font-bold"
-                style={{ color: 'var(--tc-success)', letterSpacing: '-0.025em' }}
-              >
-                Your coaching OS is live.
-              </motion.h2>
-            ) : (
-              <motion.h2
-                key="building"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-3xl font-bold text-white"
-                style={{ letterSpacing: '-0.025em' }}
-              >
-                Building your coaching<br />system…
-              </motion.h2>
-            )}
-          </AnimatePresence>
-          <p className="text-sm" style={{ color: 'var(--kc-5a5a5a)' }}>
-            {allDone ? 'Entering your platform…' : 'Personalizing your AI infrastructure'}
-          </p>
-        </motion.div>
-
-        {/* Progress bar */}
-        <div className="w-full h-[2px] rounded-full overflow-hidden" style={{ background: 'color-mix(in srgb, white 5%, transparent)' }}>
-          <motion.div
-            className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
-            animate={{ width: `${allDone ? 100 : progress * 100}%` }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          />
         </div>
 
-        {/* Module cards */}
-        <div className="space-y-2">
-          {ITEMS.map((item, i) => {
-            const status = statuses[i];
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{
-                  opacity: status === 'waiting' ? 0.2 : 1,
-                  x: 0,
-                }}
-                transition={{ delay: i * 0.06, duration: 0.4 }}
-                className="flex items-center gap-4 px-5 py-3.5 rounded-2xl"
-                style={{
-                  background: status === 'done'
-                    ? 'color-mix(in srgb, var(--tc-success) 6%, transparent)'
-                    : status === 'loading'
-                    ? 'color-mix(in srgb, var(--tc-primary) 8%, transparent)'
-                    : 'color-mix(in srgb, white 2%, transparent)',
-                  border: status === 'done'
-                    ? '1px solid color-mix(in srgb, var(--tc-success) 22%, transparent)'
-                    : status === 'loading'
-                    ? '1px solid color-mix(in srgb, var(--tc-primary) 28%, transparent)'
-                    : '1px solid color-mix(in srgb, white 4%, transparent)',
-                  transition: 'background 0.4s, border 0.4s',
-                }}
-              >
-                <span className="text-xl w-7 flex-shrink-0 text-center">{item.icon}</span>
-                <div className="flex-1">
-                  <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-333333)' : 'var(--tc-primary-foreground)' }}>
-                    {item.label}
-                  </p>
-                  <p className="text-[11px] mt-0.5" style={{
-                    color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 75%, transparent)' : status === 'loading' ? 'color-mix(in srgb, var(--tc-primary) 75%, transparent)' : 'var(--kc-3a3a3a)',
-                  }}>
-                    {status === 'done' ? 'Activated' : status === 'loading' ? 'Initializing…' : 'Queued'}
-                  </p>
-                </div>
-                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                  {status === 'loading' && (
-                    <motion.div
-                      className="w-4 h-4 rounded-full border-2"
-                      style={{ borderColor: 'var(--tc-primary)', borderTopColor: 'transparent' }}
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 0.65, repeat: Infinity, ease: 'linear' }}
-                    />
-                  )}
-                  {status === 'done' && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: 'spring', stiffness: 350, damping: 18 }}
-                      className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ background: 'var(--tc-success)' }}
-                    >
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                        <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </motion.div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+          <div className="h-full rounded-full bg-foreground transition-[width] duration-500" style={{ width: `${allDone ? 100 : progress * 100}%` }} />
+        </div>
+
+        <div className="divide-y divide-border rounded-xl bg-card px-4 shadow-[inset_0_0_0_1px_rgb(var(--border))]">
+          {ITEMS.map((item, i) => (
+            <StatusRow key={i} label={item.label} status={statuses[i]} doneLabel="Ready" loadingLabel="Setting up" />
+          ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

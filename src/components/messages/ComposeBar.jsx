@@ -104,7 +104,7 @@ function getContextualChips(client, messages, checkIns = []) {
   ];
 }
 
-const LINK_BTN = 'touch-compact flex items-center gap-1.5 h-8 px-2 rounded-md text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors';
+const LINK_BTN = 'touch-compact flex flex-shrink-0 whitespace-nowrap items-center gap-1.5 h-8 px-2 rounded-md text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors';
 
 function TemplatesDrawer({ onSelect, onClose }) {
   const [activeCategory, setActiveCategory] = useState(TEMPLATE_CATEGORIES[0].key);

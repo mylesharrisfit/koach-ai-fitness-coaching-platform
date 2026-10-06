@@ -87,7 +87,7 @@ function WeightChart({ checkIns, client }) {
               />
               {goalW && <ReferenceLine y={goalW} stroke="rgb(var(--muted-foreground))" strokeDasharray="4 4" label={{ value: 'Goal', position: 'insideTopRight', fill: 'rgb(var(--muted-foreground))', fontSize: 11 }} />}
               <Line type="monotone" dataKey="weight" stroke="rgb(var(--foreground))" strokeWidth={2}
-                dot={(props) => <LastDot key={props.index} {...props} dataLength={data.length} />}
+                dot={({ key, ...props }) => <LastDot key={key ?? props.index} {...props} dataLength={data.length} />}
                 activeDot={{ r: 4, fill: 'rgb(var(--foreground))' }} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>

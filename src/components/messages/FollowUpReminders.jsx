@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Bell, Sparkles, Loader2, X } from 'lucide-react';
+import { Bell, PenLine, Loader2, X } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { db } from '@/api/supabaseClient';
 
@@ -56,7 +56,7 @@ export default function FollowUpReminders({ clients, allMessages, checkIns, onSe
                 You haven't messaged {r.client.name?.split(' ')[0]} in {r.daysSince} days
               </p>
               {r.lastCI && (
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   Last check-in: mood {r.lastCI.mood}, {r.lastCI.compliance_training}% training
                 </p>
               )}
@@ -64,11 +64,11 @@ export default function FollowUpReminders({ clients, allMessages, checkIns, onSe
             <button
               onClick={() => generateFollowUp(r)}
               disabled={generating === r.client.id}
-              className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-warning text-white hover:bg-warning transition-colors disabled:opacity-60 flex-shrink-0"
+              className="flex items-center gap-1 text-[12px] font-bold px-2 py-1 rounded-full bg-warning text-white hover:bg-warning transition-colors disabled:opacity-60 flex-shrink-0"
             >
               {generating === r.client.id
                 ? <Loader2 className="w-3 h-3 animate-spin" />
-                : <Sparkles className="w-3 h-3" />
+                : <PenLine className="w-3 h-3" />
               }
               Message
             </button>

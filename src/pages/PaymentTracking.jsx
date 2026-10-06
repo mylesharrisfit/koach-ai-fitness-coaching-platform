@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { Search, Download, ExternalLink } from 'lucide-react';
-import { Panel, PanelHeader, Segmented, EmptyState } from '@/components/kit';
+import { Panel, Segmented, EmptyState } from '@/components/kit';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
@@ -120,15 +120,15 @@ export default function PaymentTracking() {
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-5 items-start">
         <div className="flex flex-col gap-5 min-w-0">
           <Panel className="overflow-hidden">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between px-5 sm:px-6 pt-5 pb-4 border-b border-border">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 sm:px-6 pt-5 pb-4 border-b border-border">
               <Segmented
                 size="sm"
                 value={statusFilter}
                 onChange={setStatusFilter}
                 options={STATUS_OPTS.map(s => ({ value: s, label: s === 'all' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1), count: statusCount(s) }))}
               />
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1 lg:w-56 lg:flex-none">
+              <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[260px] justify-end">
+                <div className="relative flex-1 sm:max-w-[240px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     value={search}
@@ -138,7 +138,7 @@ export default function PaymentTracking() {
                   />
                 </div>
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="h-9 w-[150px] text-[13px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-9 w-[130px] sm:w-[150px] text-[13px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {SORT_OPTS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
                   </SelectContent>

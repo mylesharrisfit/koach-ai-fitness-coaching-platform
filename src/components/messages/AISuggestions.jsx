@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { db } from '@/api/supabaseClient';
-import { Sparkles, Loader2, X } from 'lucide-react';
+import { PenLine, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function AISuggestions({ clientName, recentMessages, onSelect, onClose }) {
@@ -22,17 +22,17 @@ export default function AISuggestions({ clientName, recentMessages, onSelect, on
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-xl p-4 w-80">
+    <div className="bg-card border border-border rounded-xl shadow-md p-4 w-80">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
+          <PenLine className="w-4 h-4 text-primary" />
           <p className="text-sm font-semibold">AI Reply Suggestions</p>
         </div>
         <button onClick={onClose}><X className="w-4 h-4 text-foreground hover:text-foreground" /></button>
       </div>
       {!fetched ? (
         <Button size="sm" className="w-full" onClick={generate} disabled={loading}>
-          {loading ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />Generating...</> : <><Sparkles className="w-3.5 h-3.5 mr-2" />Generate Suggestions</>}
+          {loading ? <><Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />Generating...</> : <><PenLine className="w-3.5 h-3.5 mr-2" />Generate Suggestions</>}
         </Button>
       ) : (
         <div className="space-y-2">

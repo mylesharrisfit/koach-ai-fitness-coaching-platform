@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Trash2, GripVertical, Play, BookOpen, ChevronDown, ChevronUp, Link, Timer, Zap, Layers, Tag } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Play, BookOpen, ChevronDown, ChevronUp, Link, Timer, Layers, Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ExerciseDetailModal from '@/components/exercises/ExerciseDetailModal';
 import ExercisePickerModal from '@/components/exercises/ExercisePickerModal';
@@ -22,10 +22,10 @@ const SET_TYPES = [
 ];
 
 const SECTIONS = [
-  { value: 'warmup', label: '🔥 Warm-Up' },
-  { value: 'main', label: '💪 Main Work' },
-  { value: 'finisher', label: '⚡ Finisher' },
-  { value: 'cooldown', label: '🧘 Cooldown' },
+  { value: 'warmup', label: 'Warm-up' },
+  { value: 'main', label: 'Main' },
+  { value: 'finisher', label: 'Finisher' },
+  { value: 'cooldown', label: 'Cool-down' },
 ];
 
 const defaultForm = {
@@ -41,7 +41,7 @@ const newExercise = (section = 'main') => ({
 
 function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibrary, onWatchDemo }) {
   const [expanded, setExpanded] = useState(false);
-  const setTypeColor = ex.set_type === 'superset' ? 'border-l-purple-400' : ex.set_type === 'dropset' ? 'border-l-orange-400' : ex.set_type === 'amrap' ? 'border-l-red-400' : 'border-l-transparent';
+  const setTypeColor = ex.set_type && ex.set_type !== 'straight' ? 'border-l-foreground/40' : 'border-l-transparent';
 
   return (
     <div ref={drag.innerRef} {...drag.draggableProps}
@@ -104,7 +104,7 @@ function ExerciseFormRow({ ex, drag, isDragging, onUpdate, onRemove, onPickLibra
                 value={ex.tempo || ''} onChange={e => onUpdate('tempo', e.target.value)} />
             </div>
             <div>
-              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1"><Zap className="w-3 h-3" />RPE (1–10)</Label>
+              <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1">RPE (1 to 10)</Label>
               <Input type="number" min="1" max="10" className="h-8 text-sm mt-1 border-border text-center" placeholder="8"
                 value={ex.rpe || ''} onChange={e => onUpdate('rpe', e.target.value)} />
             </div>

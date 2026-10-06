@@ -279,8 +279,8 @@ export function Disclosure({ title, meta, defaultOpen = false, children, classNa
         aria-expanded={open}
         className="w-full flex items-center gap-3 px-5 sm:px-6 py-4 text-left hover:bg-accent/50 transition-colors"
       >
-        <span className="text-[15px] font-semibold text-foreground">{title}</span>
-        {meta && <span className="text-sm text-muted-foreground truncate">{meta}</span>}
+        <span className="text-[15px] font-semibold text-foreground whitespace-nowrap">{title}</span>
+        {meta && <span className="hidden sm:block min-w-0 text-sm text-muted-foreground truncate">{meta}</span>}
         <ChevronDown className={cn('ml-auto h-4 w-4 text-muted-foreground transition-transform flex-shrink-0', open && 'rotate-180')} />
       </button>
       {open && <div className="px-5 sm:px-6 pb-5">{children}</div>}

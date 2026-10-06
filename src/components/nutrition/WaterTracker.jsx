@@ -89,7 +89,7 @@ export default function WaterTracker({ target = 2500, onTargetChange, readOnly =
             <button
               key={ml}
               onClick={() => add(ml)}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-accent text-primary hover:bg-primary transition-colors"
+              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-secondary text-foreground hover:bg-primary transition-colors"
             >
               +{ml}ml
             </button>

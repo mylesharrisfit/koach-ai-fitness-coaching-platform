@@ -10,18 +10,18 @@ import { cn } from '@/lib/utils';
 import { SignedImg, SignedLink } from '@/components/shared/SignedImage';
 
 const METRICS = [
-  { key: 'weight',        label: 'Scale Weight',    unit: 'lbs',  color: 'var(--tc-primary)', icon: Scale },
-  { key: 'body_fat_pct',  label: 'Body Fat %',      unit: '%',    color: 'var(--tc-ai)', icon: BarChart2 },
+  { key: 'weight',        label: 'Scale weight',    unit: 'lbs',  color: 'var(--tc-primary)', icon: Scale },
+  { key: 'body_fat_pct',  label: 'Body fat %',      unit: '%',    color: 'var(--tc-ai)', icon: BarChart2 },
   { key: 'sleep_hours',   label: 'Sleep',           unit: 'hrs',  color: 'var(--tc-primary)', icon: Moon },
-  { key: 'energy_level',  label: 'Energy Level',    unit: '/5',   color: 'var(--tc-warning)', icon: Zap },
-  { key: 'stress_level',  label: 'Stress Level',    unit: '/5',   color: 'var(--tc-destructive)', icon: Brain },
-  { key: 'compliance_training',  label: 'Training Compliance', unit: '%', color: 'var(--tc-primary)', icon: TrendingUp },
-  { key: 'compliance_nutrition', label: 'Nutrition Compliance', unit: '%', color: 'var(--tc-success)', icon: Heart },
+  { key: 'energy_level',  label: 'Energy level',    unit: '/5',   color: 'var(--tc-warning)', icon: Zap },
+  { key: 'stress_level',  label: 'Stress level',    unit: '/5',   color: 'var(--tc-destructive)', icon: Brain },
+  { key: 'compliance_training',  label: 'Training compliance', unit: '%', color: 'var(--tc-primary)', icon: TrendingUp },
+  { key: 'compliance_nutrition', label: 'Nutrition compliance', unit: '%', color: 'var(--tc-success)', icon: Heart },
 ];
 
 const MEASUREMENT_KEYS = ['chest', 'waist', 'hips', 'arms', 'thighs'];
 
-const MOOD_EMOJI = { great: '', good: '', okay: '', tired: '', stressed: '' };
+const MOOD_LABEL = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
 const MOOD_COLOR = { great: 'var(--tc-success)', good: 'var(--tc-primary)', okay: 'var(--tc-warning)', tired: 'var(--tc-ai)', stressed: 'var(--tc-destructive)' };
 
 function StatPill({ label, value, unit, delta, deltaInvert = false, icon: Icon, color }) {
@@ -113,7 +113,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
   const avgNutrition = nutritionData.length ? Math.round(nutritionData.reduce((s, d) => s + d.compliance_nutrition, 0) / nutritionData.length) : null;
 
   const SECTIONS = [
-    { key: 'ai',          label: 'AI Analysis' },
+    { key: 'ai',          label: 'AI read' },
     { key: 'body',        label: 'Body' },
     { key: 'wellness',    label: 'Wellness' },
     { key: 'compliance',  label: 'Compliance' },
@@ -172,11 +172,11 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
         <div className="space-y-4">
           {/* Summary pills */}
           <div className="grid grid-cols-2 gap-3">
-            <StatPill label="Starting Weight" value={first(weightData, 'weight')} unit=" lbs" icon={Scale} color="var(--tc-primary)" />
-            <StatPill label="Current Weight" value={latest(weightData, 'weight')} unit=" lbs" icon={Scale} color="var(--tc-primary)" />
+            <StatPill label="Starting weight" value={first(weightData, 'weight')} unit=" lbs" icon={Scale} color="var(--tc-primary)" />
+            <StatPill label="Current weight" value={latest(weightData, 'weight')} unit=" lbs" icon={Scale} color="var(--tc-primary)" />
             {delta(weightData, 'weight') !== null && (
               <StatPill
-                label="Total Change"
+                label="Total change"
                 value={delta(weightData, 'weight') > 0 ? `+${delta(weightData, 'weight')}` : delta(weightData, 'weight')}
                 unit=" lbs"
                 delta={null}
@@ -184,19 +184,19 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
                 color={delta(weightData, 'weight') < 0 ? 'var(--tc-success)' : 'var(--tc-destructive)'}
               />
             )}
-            <StatPill label="Body Fat %" value={latest(bodyFatData, 'body_fat_pct')} unit="%" icon={BarChart2} color="var(--tc-ai)" />
+            <StatPill label="Body fat %" value={latest(bodyFatData, 'body_fat_pct')} unit="%" icon={BarChart2} color="var(--tc-ai)" />
           </div>
 
           {/* Weight trend */}
-          <MetricChart data={weightData} dataKey="weight" label="Scale Weight Trend" unit=" lbs" color="var(--tc-primary)" />
+          <MetricChart data={weightData} dataKey="weight" label="Scale weight trend" unit=" lbs" color="var(--tc-primary)" />
 
           {/* Body fat trend */}
-          <MetricChart data={bodyFatData} dataKey="body_fat_pct" label="Body Fat % Trend" unit="%" color="var(--tc-ai)" domain={[0, 50]} />
+          <MetricChart data={bodyFatData} dataKey="body_fat_pct" label="Body fat % trend" unit="%" color="var(--tc-ai)" domain={[0, 50]} />
 
           {/* Mini goal bar if target weight set */}
           {client.current_weight && client.target_weight && (
             <div className="bg-card rounded-xl border border-border p-4">
-              <h3 className="text-xs font-semibold text-muted-foreground mb-3">Goal Progress</h3>
+              <h3 className="text-xs font-semibold text-muted-foreground mb-3">Goal progress</h3>
               <div className="flex justify-between text-xs text-muted-foreground mb-1">
                 <span>Start: {client.current_weight} lbs</span>
                 <span>Goal: {client.target_weight} lbs</span>
@@ -226,23 +226,23 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
       {activeSection === 'wellness' && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
-            <StatPill label="Avg Sleep" value={avgSleep} unit="h" icon={Moon} color="var(--tc-primary)" />
-            <StatPill label="Avg Energy" value={avgEnergy} unit="/5" icon={Zap} color="var(--tc-warning)" />
-            <StatPill label="Avg Stress" value={avgStress} unit="/5" icon={Brain} color="var(--tc-destructive)" />
+            <StatPill label="Avg sleep" value={avgSleep} unit="h" icon={Moon} color="var(--tc-primary)" />
+            <StatPill label="Avg energy" value={avgEnergy} unit="/5" icon={Zap} color="var(--tc-warning)" />
+            <StatPill label="Avg stress" value={avgStress} unit="/5" icon={Brain} color="var(--tc-destructive)" />
           </div>
 
-          <MetricChart data={sleepData} dataKey="sleep_hours" label="Sleep Hours" unit="h" color="var(--tc-primary)" domain={[0, 12]} />
+          <MetricChart data={sleepData} dataKey="sleep_hours" label="Sleep hours" unit="h" color="var(--tc-primary)" domain={[0, 12]} />
           <MetricChart data={energyData} dataKey="energy_level" label="Energy Level (1–5)" unit="/5" color="var(--tc-warning)" domain={[1, 5]} />
           <MetricChart data={stressData} dataKey="stress_level" label="Stress Level (1–5)" unit="/5" color="var(--tc-destructive)" domain={[1, 5]} />
 
           {/* Mood Timeline */}
           {moodData.length > 0 && (
             <div className="bg-card rounded-xl border border-border p-4">
-              <h3 className="text-xs font-semibold text-muted-foreground mb-3">Mood Timeline</h3>
+              <h3 className="text-xs font-semibold text-muted-foreground mb-3">Mood timeline</h3>
               <div className="flex flex-wrap gap-2">
                 {moodData.slice(-20).map((d, i) => (
                   <div key={i} className="flex flex-col items-center gap-0.5">
-                    <span className="text-xl">{MOOD_EMOJI[d.mood]}</span>
+                    <span className="text-[13px] font-semibold text-foreground">{MOOD_LABEL[d.mood] || d.mood}</span>
                     <span className="text-[11px] text-muted-foreground">{d.date}</span>
                   </div>
                 ))}
@@ -254,7 +254,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
                     <BarChart data={moodData.slice(-14)} margin={{ top: 0, right: 8, left: -28, bottom: 0 }}>
                       <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--tc-muted-foreground)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
                       <YAxis domain={[0, 5]} hide />
-                      <Tooltip contentStyle={{ border: '1px solid var(--tc-border)', borderRadius: 12, fontSize: 11 }} formatter={(v, n, p) => [MOOD_EMOJI[p.payload.mood] + ' ' + p.payload.mood, 'Mood']} />
+                      <Tooltip contentStyle={{ border: '1px solid var(--tc-border)', borderRadius: 12, fontSize: 11 }} formatter={(v, n, p) => [MOOD_LABEL[p.payload.mood] || p.payload.mood, 'Mood']} />
                       <Bar dataKey="moodScore" radius={[4, 4, 0, 0]} fill="var(--tc-primary)" />
                     </BarChart>
                   </ResponsiveContainer>
@@ -269,8 +269,8 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
       {activeSection === 'compliance' && (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <StatPill label="Avg Training" value={avgTraining} unit="%" icon={TrendingUp} color="var(--tc-primary)" />
-            <StatPill label="Avg Nutrition" value={avgNutrition} unit="%" icon={Heart} color="var(--tc-success)" />
+            <StatPill label="Avg training" value={avgTraining} unit="%" icon={TrendingUp} color="var(--tc-primary)" />
+            <StatPill label="Avg nutrition" value={avgNutrition} unit="%" icon={Heart} color="var(--tc-success)" />
           </div>
 
           {/* Combined chart */}
@@ -281,7 +281,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
             const combined = Object.values(merged).sort((a, b) => new Date(a.date) - new Date(b.date));
             return (
               <div className="bg-card rounded-xl border border-border p-4">
-                <h3 className="text-xs font-semibold text-muted-foreground mb-4">Training & Nutrition Compliance</h3>
+                <h3 className="text-xs font-semibold text-muted-foreground mb-4">Training & nutrition compliance</h3>
                 <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={combined} margin={{ top: 4, right: 8, left: -22, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-border)" />
@@ -344,7 +344,7 @@ export default function ProfileProgressTab({ client, checkIns, initialSection = 
             if (!latest) return null;
             return (
               <div className="bg-card rounded-xl border border-border p-4">
-                <h3 className="text-xs font-semibold text-muted-foreground mb-3">Latest vs Starting (inches)</h3>
+                <h3 className="text-xs font-semibold text-muted-foreground mb-3">Latest vs starting (inches)</h3>
                 {MEASUREMENT_KEYS.map(k => {
                   const latestVal = latest.measurements?.[k];
                   const firstVal = first?.measurements?.[k];

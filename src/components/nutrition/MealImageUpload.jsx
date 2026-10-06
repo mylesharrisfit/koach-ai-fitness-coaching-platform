@@ -84,7 +84,7 @@ export default function MealImageUpload({ imageUrl, onChange, className }) {
       onClick={() => inputRef.current?.click()}
       disabled={uploading}
       className={cn(
-        'flex items-center justify-center gap-2 rounded-xl border border-dashed border-muted-foreground bg-background text-muted-foreground hover:border-primary hover:text-primary hover:bg-accent/10 transition-all text-xs font-medium',
+        'flex items-center justify-center gap-2 rounded-xl border border-dashed border-muted-foreground bg-background text-muted-foreground hover:border-primary hover:text-foreground hover:bg-accent/10 transition-all text-xs font-medium',
         className
       )}
       style={{ height: 48 }}

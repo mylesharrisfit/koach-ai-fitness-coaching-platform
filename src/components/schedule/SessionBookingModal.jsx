@@ -142,7 +142,7 @@ export default function SessionBookingModal({ open, onClose, clients = [], selec
 
     toast.success(`Session scheduled with ${clientNames} on ${format(parse(date, 'yyyy-MM-dd', new Date()), 'MMM d')} at ${startTime}`);
     if (sendConfirmation) {
-      toast.success(`Confirmation sent to ${clientNames} 📩`);
+      toast.success(`Confirmation sent to ${clientNames}`);
     }
     onClose();
   };

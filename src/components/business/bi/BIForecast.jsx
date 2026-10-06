@@ -58,8 +58,9 @@ export default function BIForecast({ clients, leads }) {
       <PanelHeader
         title="Forecast"
         subtitle={`Recurring revenue in 30, 60 and 90 days. ${money(mrr)} today.`}
-        right={<Segmented size="sm" value={activeScenario} onChange={setActiveScenario} options={SCENARIOS.map(s => ({ value: s.key, label: s.label }))} />}
+        right={<Segmented className="hidden sm:inline-flex" size="sm" value={activeScenario} onChange={setActiveScenario} options={SCENARIOS.map(s => ({ value: s.key, label: s.label }))} />}
       />
+      <Segmented className="sm:hidden mx-5 mb-3" size="sm" value={activeScenario} onChange={setActiveScenario} options={SCENARIOS.map(s => ({ value: s.key, label: s.label }))} />
 
       <div className="grid grid-cols-3 mx-5 sm:mx-6 border-y border-border divide-x divide-border">
         {forecast.map(f => (

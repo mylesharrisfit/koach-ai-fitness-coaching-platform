@@ -59,7 +59,7 @@ export default function GroupListView({ groups, clients, isCoach, onSelect, onEd
               </button>
 
               <div className="flex items-center gap-2 mt-3 md:mt-0">
-                <div className="flex -space-x-2">
+                <div className="flex -space-x-1">
                   {members.slice(0, 4).map(m => (
                     <Initials key={m.id} name={m.name || ''} size={28} className="ring-2 ring-card" />
                   ))}

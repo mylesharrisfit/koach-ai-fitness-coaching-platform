@@ -3,7 +3,7 @@
  * Shown in CheckInReviewDrawer / CheckInDetailDrawer
  */
 import React, { useState } from 'react';
-import { Sparkles, Loader2, Check, Edit3, RotateCw, ChevronDown, ChevronUp, Target, Star } from 'lucide-react';
+import { PenLine, Loader2, Check, Edit3, RotateCw, ChevronDown, ChevronUp, Target, Star } from 'lucide-react';
 import { generateCheckInResponse } from '@/lib/aiMessageAssistant';
 
 export default function CheckInResponseGenerator({ client, checkIn, previousCheckIns = [], onInsert }) {
@@ -29,19 +29,18 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
   if (!client || !checkIn) return null;
 
   return (
-    <div className="rounded-xl border border-primary/20 overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, var(--tc-accent), var(--tc-ai))' }}>
+    <div className="rounded-xl border border-primary/20 overflow-hidden">
       {/* Trigger / header */}
       <button
         onClick={result ? () => setExpanded(v => !v) : generate}
         className="w-full flex items-center gap-2.5 px-4 py-3 text-left hover:opacity-90 transition-opacity"
       >
         <div className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          <PenLine className="w-3.5 h-3.5 text-primary" />
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-primary">
-            {loading ? 'Generating response…' : result ? 'AI Response Ready' : '✨ Generate AI Response'}
+            {loading ? 'Generating response…' : result ? 'AI Response Ready' : 'Generate AI Response'}
           </p>
           <p className="text-[11px] text-muted-foreground">
             {loading ? 'Analyzing check-in data…' : result ? 'Tap to expand, edit & send' : 'Personalized based on all check-in data'}
@@ -56,7 +55,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
 
       {/* Result panel */}
       {expanded && (loading || result) && (
-        <div className="border-t border-primary/10 px-4 py-3 space-y-3 bg-[var(--kc-w-50)]">
+        <div className="border-t border-primary/10 px-4 py-3 space-y-3 bg-card">
           {loading ? (
             <div className="flex items-center gap-2 py-1">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -65,7 +64,7 @@ export default function CheckInResponseGenerator({ client, checkIn, previousChec
           ) : result ? (
             <>
               {/* AI response text */}
-              <div className="bg-card rounded-xl border border-white shadow-sm px-3.5 py-3">
+              <div className="bg-card rounded-xl border border-border shadow-sm px-3.5 py-3">
                 <p className="text-xs text-foreground leading-relaxed whitespace-pre-wrap">{result.response}</p>
               </div>
 

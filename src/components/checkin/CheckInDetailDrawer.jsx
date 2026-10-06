@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { db } from '@/api/supabaseClient';
 import { format, parseISO } from 'date-fns';
-import { ChevronLeft, ChevronRight, Moon, Zap, Heart, Smile, Dumbbell, Salad, Scale, CheckCircle2, AlertTriangle, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Moon, Activity, Heart, Smile, Dumbbell, Salad, Scale, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { scoreColor, checkInScore } from '@/lib/adherence';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -118,7 +118,7 @@ export default function CheckInDetailDrawer({ checkIn, client, allCheckIns, curr
             <div className="grid grid-cols-2 gap-2">
               <MetricTile icon={Moon} label="Sleep" value={checkIn.sleep_hours} unit="hrs"
                 color={checkIn.sleep_hours >= 7 ? 'text-primary' : checkIn.sleep_hours >= 6 ? 'text-warning' : 'text-destructive'} />
-              <MetricTile icon={Zap} label="Energy" value={checkIn.energy_level} unit="/10"
+              <MetricTile icon={Activity} label="Energy" value={checkIn.energy_level} unit="/10"
                 color={checkIn.energy_level >= 7 ? 'text-success' : checkIn.energy_level >= 4 ? 'text-warning' : 'text-destructive'} />
               <MetricTile icon={Heart} label="Stress" value={checkIn.stress_level} unit="/10"
                 color={checkIn.stress_level <= 3 ? 'text-success' : checkIn.stress_level <= 6 ? 'text-warning' : 'text-destructive'} />

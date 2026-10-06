@@ -167,7 +167,7 @@ function LiveChallengeCard({ challenge, isCoach, clients, groups, onToggle, onDe
       <div className="mt-3 md:mt-0">
         {participantClients.length > 0 ? (
           <>
-            <div className="flex -space-x-2">
+            <div className="flex -space-x-1">
               {participantClients.slice(0, 6).map(c => <Initials key={c.id} name={c.name || ''} size={28} className="ring-2 ring-card" />)}
             </div>
             <p className="text-[13px] text-muted-foreground mt-1">

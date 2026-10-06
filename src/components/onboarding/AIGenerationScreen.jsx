@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import StatusRow from './StatusRow';
 
 const CLIENT_ITEMS = [
-  { label: 'Analyzing your profile',   icon: '🧠', delay: 0 },
-  { label: 'Building training plan',   icon: '🏋️', delay: 0.7 },
-  { label: 'Designing nutrition plan', icon: '🥗', delay: 1.4 },
-  { label: 'Setting recovery targets', icon: '⚡', delay: 2.1 },
-  { label: 'Calibrating habit system', icon: '🔄', delay: 2.8 },
+  { label: 'Reading your answers',     delay: 0 },
+  { label: 'Training plan',            delay: 0.7 },
+  { label: 'Nutrition plan',           delay: 1.4 },
+  { label: 'Recovery targets',         delay: 2.1 },
+  { label: 'Daily habits',             delay: 2.8 },
 ];
 
 const COACH_ITEMS = [
-  { label: 'Setting up client dashboard',  icon: '👥', delay: 0 },
-  { label: 'Building check-in system',     icon: '📋', delay: 0.7 },
-  { label: 'Configuring automations',      icon: '⚡', delay: 1.4 },
-  { label: 'Creating nutrition templates', icon: '🥗', delay: 2.1 },
-  { label: 'Activating AI coaching tools', icon: '🤖', delay: 2.8 },
+  { label: 'Client list',              delay: 0 },
+  { label: 'Weekly check-in form',     delay: 0.7 },
+  { label: 'Reminders and follow-ups', delay: 1.4 },
+  { label: 'Nutrition templates',      delay: 2.1 },
+  { label: 'Draft replies',            delay: 2.8 },
 ];
 
 function GenerationCard({ item }) {
@@ -26,65 +26,12 @@ function GenerationCard({ item }) {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: status === 'waiting' ? 0.22 : 1, y: 0 }}
-      transition={{ delay: item.delay * 0.6, duration: 0.4 }}
-      className="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500"
-      style={{
-        background: status === 'done'
-          ? 'color-mix(in srgb, var(--tc-success) 6%, transparent)'
-          : status === 'loading'
-          ? 'color-mix(in srgb, var(--tc-primary) 7%, transparent)'
-          : 'color-mix(in srgb, white 3%, transparent)',
-        border: status === 'done'
-          ? '1.5px solid color-mix(in srgb, var(--tc-success) 25%, transparent)'
-          : status === 'loading'
-          ? '1.5px solid color-mix(in srgb, var(--tc-primary) 25%, transparent)'
-          : '1.5px solid color-mix(in srgb, white 6%, transparent)',
-      }}
-    >
-      <span className="text-xl">{item.icon}</span>
-      <div className="flex-1">
-        <p className="text-sm font-semibold" style={{ color: status === 'waiting' ? 'var(--kc-3a3a3a)' : 'var(--tc-primary-foreground)' }}>
-          {item.label}
-        </p>
-        <p className="text-xs mt-0.5" style={{ color: status === 'done' ? 'color-mix(in srgb, var(--tc-success) 80%, transparent)' : 'var(--kc-5a5a5a)' }}>
-          {status === 'done' ? 'Complete' : status === 'loading' ? 'Processing...' : 'Queued'}
-        </p>
-      </div>
-      <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-        {status === 'loading' && (
-          <motion.div
-            className="w-4 h-4 rounded-full border-2"
-            style={{ borderColor: 'var(--tc-primary)', borderTopColor: 'transparent' }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
-          />
-        )}
-        {status === 'done' && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-            className="w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ background: 'var(--tc-success)' }}
-          >
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </motion.div>
-        )}
-      </div>
-    </motion.div>
-  );
+  return <StatusRow label={item.label} status={status} doneLabel="Ready" loadingLabel="Setting up" />;
 }
 
 export default function AIGenerationScreen({ onNext, role = 'client' }) {
   const items = role === 'coach' ? COACH_ITEMS : CLIENT_ITEMS;
   const [doneCount, setDoneCount] = useState(0);
-  const totalDuration = (items[items.length - 1].delay + 0.8) * 1000;
 
   useEffect(() => {
     items.forEach((item) => {
@@ -103,65 +50,22 @@ export default function AIGenerationScreen({ onNext, role = 'client' }) {
   }, [allDone]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-6" style={{ background: 'var(--tc-sidebar)' }}>
-      {/* Pulsing glow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <motion.div
-          className="w-[700px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(circle, color-mix(in srgb, var(--tc-primary) 9%, transparent) 0%, transparent 65%)', filter: 'blur(60px)' }}
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full max-w-md space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-3"
-        >
-          <p className="text-xs font-semibold" style={{ color: 'var(--tc-primary)' }}>
-            KOACH AI Engine
+    <div className="flex h-full w-full flex-col items-center justify-center bg-background px-5">
+      <div className="w-full max-w-md space-y-6">
+        <div>
+          <h1 className="text-[32px] leading-[1.04] text-foreground">{allDone ? 'All set.' : 'Setting things up.'}</h1>
+          <p className="mt-2 text-[15px] text-muted-foreground">
+            {role === 'coach' ? 'Your workspace is built from your answers.' : 'Your plan is built from your answers.'}
           </p>
-          <h2 className="text-3xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>
-            Building your system…
-          </h2>
-          <p className="text-sm" style={{ color: 'var(--kc-7a7a7a)' }}>
-            Personalizing everything based on your profile
-          </p>
-        </motion.div>
-
-        {/* Progress bar */}
-        <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'color-mix(in srgb, white 6%, transparent)' }}>
-          <motion.div
-            className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, var(--tc-primary), var(--tc-primary))' }}
-            initial={{ width: '0%' }}
-            animate={{ width: allDone ? '100%' : `${(doneCount / items.length) * 92}%` }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          />
         </div>
 
-        {/* Cards */}
-        <div className="space-y-2.5">
-          {items.map((item, i) => (
-            <GenerationCard key={i} item={item} />
-          ))}
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+          <div className="h-full rounded-full bg-foreground transition-[width] duration-500" style={{ width: allDone ? '100%' : `${(doneCount / items.length) * 92}%` }} />
         </div>
 
-        <AnimatePresence>
-          {allDone && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              className="text-center py-2"
-            >
-              <p className="text-sm font-semibold" style={{ color: 'var(--tc-success)' }}>
-                ✓ Your system is ready
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="divide-y divide-border rounded-xl bg-card px-4 shadow-[inset_0_0_0_1px_rgb(var(--border))]">
+          {items.map((item, i) => <GenerationCard key={i} item={item} />)}
+        </div>
       </div>
     </div>
   );

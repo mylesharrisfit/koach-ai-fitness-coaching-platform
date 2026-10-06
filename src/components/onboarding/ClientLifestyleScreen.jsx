@@ -1,27 +1,12 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import OnboardingLayout from './OnboardingLayout';
+import { QuestionLabel, SegmentRow } from './SelectionCard';
 
 function PickRow({ label, options, value, onChange }) {
   return (
     <div className="space-y-2.5">
-      <p className="text-sm font-semibold" style={{ color: 'var(--kc-b3b3b3)' }}>{label}</p>
-      <div className="flex gap-2.5">
-        {options.map(o => (
-          <motion.button
-            key={o.id}
-            onClick={() => onChange(o.id)}
-            whileTap={{ scale: 0.95 }}
-            className="flex-1 py-3.5 rounded-2xl text-sm font-medium transition-all"
-            style={{
-              background: value === o.id ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'color-mix(in srgb, white 4%, transparent)',
-              border: value === o.id ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 7%, transparent)',
-              color: value === o.id ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)',
-              boxShadow: value === o.id ? '0 0 20px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
-            }}
-          >{o.label}</motion.button>
-        ))}
-      </div>
+      <QuestionLabel>{label}</QuestionLabel>
+      <SegmentRow options={options} value={value} onChange={onChange} />
     </div>
   );
 }
@@ -38,35 +23,35 @@ export default function ClientLifestyleScreen({ onNext, onBack, data }) {
 
   return (
     <OnboardingLayout
-      eyebrow="Lifestyle & Recovery"
-      headline="How's your lifestyle?"
-      subtext="Recovery is half the equation. Help us understand your baseline."
+      eyebrow="Lifestyle"
+      headline="What does a normal week look like?"
+      subtext="Sleep and stress change how much training you can recover from."
       onBack={onBack}
       onNext={() => onNext(form)}
       nextDisabled={!isValid}
     >
-      <div className="space-y-7">
+      <div className="space-y-6">
         <PickRow
-          label="Sleep quality"
-          options={[{ id: 'poor', label: '😴 Poor' }, { id: 'average', label: '😐 Average' }, { id: 'good', label: '😊 Good' }]}
+          label="Sleep"
+          options={[{ id: 'poor', label: 'Poor' }, { id: 'average', label: 'Average' }, { id: 'good', label: 'Good' }]}
           value={form.sleep_quality}
           onChange={v => set('sleep_quality', v)}
         />
         <PickRow
-          label="Stress level"
-          options={[{ id: 'low', label: '😌 Low' }, { id: 'moderate', label: '😤 Moderate' }, { id: 'high', label: '🔥 High' }]}
+          label="Stress"
+          options={[{ id: 'low', label: 'Low' }, { id: 'moderate', label: 'Moderate' }, { id: 'high', label: 'High' }]}
           value={form.stress_level}
           onChange={v => set('stress_level', v)}
         />
         <PickRow
-          label="Daily activity outside gym"
-          options={[{ id: 'low', label: '🪑 Sedentary' }, { id: 'moderate', label: '🚶 Active' }, { id: 'high', label: '⚡ Very Active' }]}
+          label="Activity outside the gym"
+          options={[{ id: 'low', label: 'Mostly sitting' }, { id: 'moderate', label: 'Active' }, { id: 'high', label: 'Very active' }]}
           value={form.activity_outside_gym}
           onChange={v => set('activity_outside_gym', v)}
         />
         <PickRow
-          label="Water intake"
-          options={[{ id: 'poor', label: '💧 Poor' }, { id: 'average', label: '💦 Average' }, { id: 'good', label: '🌊 Good' }]}
+          label="Water"
+          options={[{ id: 'poor', label: 'Too little' }, { id: 'average', label: 'Some' }, { id: 'good', label: 'Plenty' }]}
           value={form.water_intake}
           onChange={v => set('water_intake', v)}
         />

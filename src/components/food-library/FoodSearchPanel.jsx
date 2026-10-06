@@ -4,7 +4,6 @@ import { Search, Loader2, Plus, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Segmented } from '@/components/kit';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 
 const CATEGORY_FILTERS = ['All', 'Proteins', 'Carbs', 'Vegetables', 'Dairy', 'Fruits', 'Snacks', 'Grains'];
 

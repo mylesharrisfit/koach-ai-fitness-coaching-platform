@@ -57,18 +57,12 @@ export default function ProgressChart({ data, metric, timeRange, onTimeRangeChan
     // area (default)
     return (
       <AreaChart {...commonProps}>
-        <defs>
-          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--tc-primary)" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="var(--tc-primary)" stopOpacity={0} />
-          </linearGradient>
-        </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
         <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
         <YAxis tick={{ fontSize: 11, fill: 'var(--tc-muted-foreground)' }} axisLine={false} tickLine={false} />
         <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [`${v}${metric.unit}`, metric.label]} />
         <Area type="monotone" dataKey="value" stroke="var(--tc-primary)" strokeWidth={2.5}
-          fill="url(#areaGrad)" dot={{ r: 4, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
+          fill="none" dot={{ r: 4, fill: 'var(--tc-primary)', strokeWidth: 0 }} activeDot={{ r: 6 }} connectNulls />
       </AreaChart>
     );
   };

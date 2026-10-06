@@ -30,7 +30,7 @@ export default function LeadForm({ open, onOpenChange, onSubmit, lead }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-heading">{lead ? 'Edit Lead' : 'Add New Lead'}</DialogTitle>
+          <DialogTitle>{lead ? 'Edit lead' : 'Add a lead'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
@@ -98,7 +98,7 @@ export default function LeadForm({ open, onOpenChange, onSubmit, lead }) {
             <div><Label>Lost Reason (if applicable)</Label><Input value={form.lost_reason} onChange={e => set('lost_reason', e.target.value)} placeholder="e.g. price, timing..." /></div>
           )}
 
-          <div className="flex justify-end gap-3 pt-2 border-t border-border">
+          <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button type="submit">{lead ? 'Update' : 'Add Lead'}</Button>
           </div>

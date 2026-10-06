@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import OnboardingLayout from './OnboardingLayout';
+import { SelectionCard } from './SelectionCard';
 
 const BOTTLENECKS = [
-  { id: 'checkins',    label: 'Check-ins',         emoji: '📋' },
-  { id: 'programming', label: 'Programming',        emoji: '📝' },
-  { id: 'nutrition',   label: 'Nutrition Plans',    emoji: '🥗' },
-  { id: 'client_mgmt', label: 'Client Management',  emoji: '🗂️' },
-  { id: 'leads',       label: 'Lead Generation',    emoji: '🎯' },
-  { id: 'accountability', label: 'Accountability',  emoji: '🔒' },
-  { id: 'retention',   label: 'Retention',          emoji: '💎' },
-  { id: 'scaling',     label: 'Scaling',            emoji: '📈' },
-  { id: 'time',        label: 'Time Management',    emoji: '⏱️' },
+  { id: 'checkins',    label: 'Check-ins' },
+  { id: 'programming', label: 'Writing programs' },
+  { id: 'nutrition',   label: 'Nutrition plans' },
+  { id: 'client_mgmt', label: 'Keeping track of clients' },
+  { id: 'leads',       label: 'Finding new clients' },
+  { id: 'accountability', label: 'Keeping clients accountable' },
+  { id: 'retention',   label: 'Keeping clients longer' },
+  { id: 'scaling',     label: 'Taking on more clients' },
+  { id: 'time',        label: 'Not enough hours' },
 ];
 
 export default function CoachBottleneckScreen({ onNext, onBack, data }) {
@@ -20,50 +20,17 @@ export default function CoachBottleneckScreen({ onNext, onBack, data }) {
 
   return (
     <OnboardingLayout
-      eyebrow="Pain Points"
-      headline="What slows your coaching business down most?"
-      subtext="Select all that apply — KOACH AI will prioritize automating these first."
+      eyebrow="Where time goes"
+      headline="What takes up most of your week?"
+      subtext="Pick everything that applies. We set these up first."
       onBack={onBack}
       onNext={() => onNext({ bottlenecks: selected })}
       nextDisabled={selected.length === 0}
     >
-      <div className="grid grid-cols-3 gap-2.5">
-        {BOTTLENECKS.map((b, i) => {
-          const isSelected = selected.includes(b.id);
-          return (
-            <motion.button
-              key={b.id}
-              onClick={() => toggle(b.id)}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              whileTap={{ scale: 0.93 }}
-              className="flex flex-col items-center gap-2 py-4 px-2 rounded-2xl text-center transition-all"
-              style={{
-                background: isSelected ? 'color-mix(in srgb, var(--tc-primary) 10%, transparent)' : 'var(--tc-foreground)',
-                border: isSelected ? '1.5px solid color-mix(in srgb, var(--tc-primary) 50%, transparent)' : '1.5px solid color-mix(in srgb, white 6%, transparent)',
-                boxShadow: isSelected ? '0 0 18px color-mix(in srgb, var(--tc-primary) 12%, transparent)' : 'none',
-              }}
-            >
-              <span className="text-xl">{b.emoji}</span>
-              <span className="text-[11px] font-semibold leading-tight" style={{ color: isSelected ? 'var(--tc-primary-foreground)' : 'var(--kc-7a7a7a)' }}>
-                {b.label}
-              </span>
-              {isSelected && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-4 h-4 rounded-full flex items-center justify-center"
-                  style={{ background: 'var(--tc-primary)' }}
-                >
-                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                    <path d="M1.5 4L3 5.5L6.5 2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </motion.div>
-              )}
-            </motion.button>
-          );
-        })}
+      <div className="space-y-2">
+        {BOTTLENECKS.map(b => (
+          <SelectionCard key={b.id} size="sm" label={b.label} selected={selected.includes(b.id)} onClick={() => toggle(b.id)} />
+        ))}
       </div>
     </OnboardingLayout>
   );

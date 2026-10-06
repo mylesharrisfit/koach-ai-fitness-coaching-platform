@@ -27,7 +27,7 @@ const goalLabels = {
   endurance: 'Endurance', flexibility: 'Flexibility', general_fitness: 'General Fitness'
 };
 
-const moodEmoji = { great: '', good: '', okay: '', tired: '', stressed: '' };
+const moodEmoji = { great: 'Great', good: 'Good', okay: 'Okay', tired: 'Tired', stressed: 'Stressed' };
 
 function StatBox({ label, value, sub, color = 'text-foreground' }) {
   return (
@@ -210,7 +210,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
           {[
             { label: 'Adherence', value: score !== null ? `${score}%` : '—', color: scoreColor },
             { label: 'Check-ins', value: checkIns.length, color: 'var(--tc-foreground)' },
-            { label: 'Days Active', value: daysAsClient !== null ? daysAsClient : '—', color: 'var(--tc-foreground)' },
+            { label: 'Days active', value: daysAsClient !== null ? daysAsClient : '—', color: 'var(--tc-foreground)' },
             { label: 'Rate', value: client.monthly_rate ? `$${client.monthly_rate}` : '—', color: 'var(--tc-foreground)' },
           ].map(stat => (
             <div key={stat.label} className="flex-1 flex flex-col items-center py-2.5 border-r border-border last:border-r-0">
@@ -286,13 +286,13 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               {/* Activity */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-muted rounded-xl p-3">
-                  <p className="text-xs font-semibold text-muted-foreground mb-1">Last Check-in</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Last check-in</p>
                   <p className="text-sm font-bold text-foreground">
                     {lastCheckIn ? formatDistanceToNow(new Date(lastCheckIn.date), { addSuffix: true }) : 'Never'}
                   </p>
                 </div>
                 <div className="bg-muted rounded-xl p-3">
-                  <p className="text-xs font-semibold text-muted-foreground mb-1">Last Message</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Last message</p>
                   <p className="text-sm font-bold text-foreground">
                     {lastMsg ? formatDistanceToNow(new Date(lastMsg.created_date), { addSuffix: true }) : 'Never'}
                   </p>
@@ -304,7 +304,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                 <div className="bg-accent border border-accent rounded-xl p-3 flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-bold text-primary">Next Session</p>
+                    <p className="text-xs font-bold text-primary">Next session</p>
                     <p className="text-sm text-foreground">{nextSession.title} · {format(new Date(nextSession.date), 'EEE, MMM d')} {nextSession.time && `at ${nextSession.time}`}</p>
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               {/* Notes */}
               {client.notes && (
                 <div className="p-3 bg-muted rounded-xl">
-                  <p className="text-xs font-semibold text-muted-foreground mb-1">Coach Notes</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-1">Coach notes</p>
                   <p className="text-sm text-foreground leading-relaxed">{client.notes}</p>
                 </div>
               )}
@@ -362,7 +362,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   {/* Weekly schedule */}
                   {(program.workouts || []).length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-muted-foreground mb-2">Weekly Schedule</p>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">Weekly schedule</p>
                       <div className="space-y-2">
                         {program.workouts.map((w, i) => (
                           <div key={i} className="flex items-center gap-3 p-3 bg-muted rounded-xl">
@@ -389,7 +389,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   <Dumbbell className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-sm font-semibold text-foreground">No program assigned yet</p>
                   <p className="text-xs text-muted-foreground mt-1 mb-4">Assign a workout program to get started</p>
-                  <Button variant="outline" size="sm" onClick={onEdit}>Assign Program</Button>
+                  <Button variant="outline" size="sm" onClick={onEdit}>Assign program</Button>
                 </div>
               )}
             </div>
@@ -426,7 +426,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   {/* Meals */}
                   {(nutritionPlan.meals || []).length > 0 && (
                     <div>
-                      <p className="text-xs font-semibold text-muted-foreground mb-2">Meal Plan</p>
+                      <p className="text-xs font-semibold text-muted-foreground mb-2">Meal plan</p>
                       <div className="space-y-2">
                         {nutritionPlan.meals.map((m, i) => (
                           <div key={i} className="flex items-center gap-3 p-3 bg-muted rounded-xl">
@@ -452,7 +452,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   <Salad className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-sm font-semibold text-foreground">No nutrition plan assigned yet</p>
                   <p className="text-xs text-muted-foreground mt-1 mb-4">Assign a meal plan or set macro targets</p>
-                  <Button variant="outline" size="sm" onClick={onEdit}>Assign Plan</Button>
+                  <Button variant="outline" size="sm" onClick={onEdit}>Assign plan</Button>
                 </div>
               )}
             </div>
@@ -477,7 +477,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <p className="text-xs font-bold text-foreground">{format(new Date(ci.date), 'MMM d, yyyy')}</p>
-                      {ci.mood && <span className="text-sm">{moodEmoji[ci.mood]}</span>}
+                      {ci.mood && <span className="text-[13px] text-muted-foreground">{moodEmoji[ci.mood]}</span>}
                     </div>
                     <span className={cn('text-[11px] font-bold px-2 py-0.5 rounded-full', ci.review_status === 'reviewed' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning')}>
                       {ci.review_status || 'pending'}
@@ -516,7 +516,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
                   <div key={msg.id} className={cn('flex', msg.sender === 'coach' ? 'justify-end' : 'justify-start')}>
                     <div className={cn('max-w-[75%] px-3.5 py-2.5 rounded-xl text-sm leading-relaxed', msg.sender === 'coach' ? 'bg-primary text-primary-foreground rounded-br-sm' : 'bg-muted text-foreground rounded-bl-sm')}>
                       <p>{msg.content}</p>
-                      <p className={cn('text-[11px] mt-1', msg.sender === 'coach' ? 'text-white/60' : 'text-muted-foreground')}>
+                      <p className={cn('text-[11px] mt-1', msg.sender === 'coach' ? 'text-primary-foreground/60' : 'text-muted-foreground')}>
                         {formatDistanceToNow(new Date(msg.created_date), { addSuffix: true })}
                       </p>
                     </div>
@@ -549,7 +549,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
             <div className="p-5 space-y-6">
               {/* Weight chart */}
               <div>
-                <p className="text-xs font-semibold text-muted-foreground mb-3">Weight Over Time</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-3">Weight over time</p>
                 {weightData.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={180}>
                     <LineChart data={weightData} margin={{ top: 4, right: 8, bottom: 4, left: 0 }}>
@@ -569,7 +569,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
 
               {/* Adherence chart */}
               <div>
-                <p className="text-xs font-semibold text-muted-foreground mb-3">Adherence Over Time</p>
+                <p className="text-xs font-semibold text-muted-foreground mb-3">Adherence over time</p>
                 {adherenceData.length >= 2 ? (
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={adherenceData} margin={{ top: 4, right: 8, bottom: 4, left: 0 }}>
@@ -591,7 +591,7 @@ export default function ClientQuickPanel({ client, checkIns = [], onClose, onEdi
               {/* Progress photos */}
               {checkIns.some(ci => ci.photo_urls?.length > 0) && (
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground mb-3">Progress Photos</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-3">Progress photos</p>
                   <div className="space-y-4">
                     {checkIns.filter(ci => ci.photo_urls?.length > 0).map(ci => (
                       <div key={ci.id}>

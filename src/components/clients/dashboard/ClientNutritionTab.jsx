@@ -53,7 +53,7 @@ function PDFViewer({ pdfUrl, fileName }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-sm text-foreground">Plan Document</h3>
+        <h3 className="font-semibold text-sm text-foreground">Plan document</h3>
         <SignedLink
           href={pdfUrl}
           download={fileName || 'nutrition-plan.pdf'}
@@ -66,7 +66,7 @@ function PDFViewer({ pdfUrl, fileName }) {
       <div className="rounded-xl border border-border overflow-hidden bg-card" style={{ height: '600px' }}>
         <SignedIframe
           src={pdfUrl}
-          title="Nutrition Plan PDF"
+          title="Nutrition plan PDF"
           className="w-full h-full"
           style={{ border: 'none' }}
         />
@@ -116,7 +116,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
   const weeks = useMemo(() => [
     { label: '2 Wks Ago', start: startOfWeek(subWeeks(now, 2)), end: endOfWeek(subWeeks(now, 2)) },
     { label: '1 Wk Ago', start: startOfWeek(subWeeks(now, 1)), end: endOfWeek(subWeeks(now, 1)) },
-    { label: 'This Week', start: startOfWeek(now), end: endOfWeek(now), active: true },
+    { label: 'This week', start: startOfWeek(now), end: endOfWeek(now), active: true },
   ], []);
 
   const recentCompliance = useMemo(() => {
@@ -131,7 +131,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
           <div className="w-12 h-12 rounded-xl bg-warning/10 border border-warning flex items-center justify-center mx-auto mb-3">
             <AlertCircle className="w-6 h-6 text-warning" />
           </div>
-          <p className="font-semibold text-foreground mb-1">No Nutrition Plan Assigned</p>
+          <p className="font-semibold text-foreground mb-1">No nutrition plan assigned</p>
           <p className="text-xs text-muted-foreground mb-4">This client doesn't have a meal plan yet.</p>
           <button
             onClick={() => navigate('/nutrition')}
@@ -252,9 +252,9 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
           </h3>
           {nutritionPlan.meals && nutritionPlan.meals.length > 0 ? (
             <div className="space-y-4">
-              <MealSection title="Training Days" meals={nutritionPlan.meals} />
+              <MealSection title="Training days" meals={nutritionPlan.meals} />
               {nutritionPlan.rest_day_meals && nutritionPlan.rest_day_meals.length > 0 && (
-                <MealSection title="Rest Days" meals={nutritionPlan.rest_day_meals} />
+                <MealSection title="Rest days" meals={nutritionPlan.rest_day_meals} />
               )}
             </div>
           ) : (
@@ -284,7 +284,7 @@ export default function ClientNutritionTab({ client, nutritionPlan, checkIns = [
                       <p><span className="font-semibold">Pre-Workout:</span> {nutritionPlan.hydration.pre_workout}</p>
                     )}
                     {nutritionPlan.hydration.intra_workout && (
-                      <p><span className="font-semibold">During Workout:</span> {nutritionPlan.hydration.intra_workout}</p>
+                      <p><span className="font-semibold">During workout:</span> {nutritionPlan.hydration.intra_workout}</p>
                     )}
                     {nutritionPlan.hydration.post_workout && (
                       <p><span className="font-semibold">Post-Workout:</span> {nutritionPlan.hydration.post_workout}</p>

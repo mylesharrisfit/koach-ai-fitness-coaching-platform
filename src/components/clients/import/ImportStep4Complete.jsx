@@ -1,21 +1,17 @@
 import React from 'react';
 import { CheckCircle2, AlertTriangle, SkipForward, Flag } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export default function ImportStep4Complete({ imported, skipped, flagged, errorLog = [], onDone }) {
   return (
     <div className="text-center space-y-6 py-4">
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+      <div
         className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto"
       >
         <CheckCircle2 className="w-8 h-8 text-success" />
-      </motion.div>
+      </div>
 
       <div>
-        <h3 className="text-lg font-bold text-foreground">Import complete!</h3>
+        <h3 className="text-lg font-bold text-foreground">Import complete</h3>
         <p className="text-sm text-muted-foreground mt-1">Your clients have been added to KOACH AI.</p>
       </div>
 

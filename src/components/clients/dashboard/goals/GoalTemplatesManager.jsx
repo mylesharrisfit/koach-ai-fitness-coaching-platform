@@ -76,10 +76,10 @@ function TemplateEditForm({ template, onSaved, onCancel }) {
           </button>
         ))}
       </div>
-      <Field label="Template Name"><TInput value={form.name} onChange={v => set('name', v)} placeholder="e.g. Weight Loss Target" /></Field>
+      <Field label="Template name"><TInput value={form.name} onChange={v => set('name', v)} placeholder="e.g. Weight Loss Target" /></Field>
       {form.goal_type === 'numeric' && (
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Target Value"><TInput type="number" value={form.target_value} onChange={v => set('target_value', v)} placeholder="e.g. 175" /></Field>
+          <Field label="Target value"><TInput type="number" value={form.target_value} onChange={v => set('target_value', v)} placeholder="e.g. 175" /></Field>
           <Field label="Unit"><TInput value={form.unit} onChange={v => set('unit', v)} placeholder="e.g. lbs" /></Field>
         </div>
       )}
@@ -134,7 +134,7 @@ export default function GoalTemplatesManager({ onClose }) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
           <div className="flex items-center gap-2">
             <LayoutTemplate className="w-4 h-4 text-primary" />
-            <h3 className="text-base font-bold text-foreground">Goal Templates</h3>
+            <h3 className="text-base font-bold text-foreground">Goal templates</h3>
             <span className="text-[11px] font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">{templates.length}</span>
           </div>
           <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-muted text-muted-foreground">

@@ -6,7 +6,7 @@ export default function AcquisitionTrends({ data, totalActive }) {
   const totalNew = data.reduce((s, d) => s + d.count, 0);
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+    <div className="bg-card border border-border rounded-xl p-6">
       <div className="flex items-center justify-between mb-1">
         <h3 className="text-xs font-semibold text-muted-foreground">Client Acquisition</h3>
         <span className="text-xs text-muted-foreground">{totalNew} new in 6 months</span>

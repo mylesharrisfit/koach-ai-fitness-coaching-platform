@@ -342,7 +342,7 @@ export default function InvoiceBuilder({ form, setForm, clients, existingInvoice
             {['stripe', 'manual', 'both'].map(opt => (
               <button key={opt} type="button" onClick={() => set('payment_method', opt)}
                 style={{ flex: 1, padding: '9px', border: `1.5px solid ${form.payment_method === opt ? 'var(--tc-primary)' : 'var(--tc-border)'}`, borderRadius: 10, fontSize: 12, fontWeight: 600, background: form.payment_method === opt ? 'var(--tc-accent)' : 'var(--tc-card)', color: form.payment_method === opt ? 'var(--tc-primary)' : 'var(--tc-muted-foreground)', cursor: 'pointer', textTransform: 'capitalize' }}>
-                {opt === 'stripe' ? '⚡ Stripe' : opt === 'manual' ? '💸 Manual' : '✓ Both'}
+                {opt === 'stripe' ? 'Stripe' : opt === 'manual' ? 'Manual' : 'Both'}
               </button>
             ))}
           </div>

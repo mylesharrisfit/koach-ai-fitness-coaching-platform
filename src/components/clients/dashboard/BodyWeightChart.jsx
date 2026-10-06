@@ -123,7 +123,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-2">
           <Scale className="w-4 h-4 text-primary" />
-          <p className="text-xs font-semibold text-muted-foreground">Body Weight</p>
+          <p className="text-xs font-semibold text-muted-foreground">Body weight</p>
         </div>
         <div className="flex items-center gap-3">
           {latestEntry && (
@@ -206,7 +206,7 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
             <button
               onClick={handleAdd}
               disabled={saving || !draft.weight}
-              className="flex-1 text-xs font-semibold text-white py-1.5 rounded-lg transition-colors disabled:opacity-50"
+              className="flex-1 text-xs font-semibold text-primary-foreground py-1.5 rounded-lg transition-colors disabled:opacity-50"
               style={{ background: BLUE }}
             >
               {saving ? 'Saving…' : 'Save Entry'}
@@ -234,12 +234,6 @@ export default function BodyWeightChart({ client, onCurrentWeightUpdated }) {
         <div className="px-1 pb-4">
           <ResponsiveContainer width="100%" height={170}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
-              <defs>
-                <linearGradient id="weightGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={BLUE} stopOpacity={0.15} />
-                  <stop offset="95%" stopColor={BLUE} stopOpacity={0} />
-                </linearGradient>
-              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--tc-muted)" vertical={false} />
               <XAxis
                 dataKey="date"

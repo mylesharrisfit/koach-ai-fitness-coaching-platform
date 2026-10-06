@@ -1,7 +1,7 @@
 import React from 'react';
 
 /** Shared column template for the invoice table (header + rows). */
-export const INVOICE_GRID = 'md:grid md:grid-cols-[minmax(0,1.5fr)_minmax(0,1.6fr)_110px_110px_120px_40px] md:items-center md:gap-4';
+export const INVOICE_GRID = 'md:grid md:grid-cols-[minmax(0,1.7fr)_minmax(0,1.5fr)_96px_72px_112px_32px] md:items-center md:gap-4';
 
 export default function InvoiceListHeader() {
   return (

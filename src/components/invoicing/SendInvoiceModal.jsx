@@ -36,14 +36,14 @@ export default function SendInvoiceModal({ invoice, coachUser, onClose, onSent }
           client_id: invoice.client_id,
           client_name: invoice.client_name,
           sender: 'coach',
-          content: `📄 Invoice ${invoice.invoice_number} — $${Number(invoice.amount).toFixed(2)} due ${invoice.due_date || 'soon'}. ${message}`,
+          content: `Invoice ${invoice.invoice_number} — $${Number(invoice.amount).toFixed(2)} due ${invoice.due_date || 'soon'}. ${message}`,
           tag: 'general',
         });
       }
 
       setSent(true);
       setTimeout(() => {
-        toast.success(`Invoice sent to ${invoice.client_name} ✓`);
+        toast.success(`Invoice sent to ${invoice.client_name}`);
         onSent();
       }, 1200);
     } catch (err) {
@@ -65,7 +65,7 @@ export default function SendInvoiceModal({ invoice, coachUser, onClose, onSent }
             </div>
             <div>
               <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--tc-foreground)', marginBottom: 6 }}>Invoice Sent!</div>
-              <div style={{ fontSize: 14, color: 'var(--tc-muted-foreground)' }}>Invoice sent to {invoice.client_name} ✓</div>
+              <div style={{ fontSize: 14, color: 'var(--tc-muted-foreground)' }}>Invoice sent to {invoice.client_name}</div>
             </div>
           </div>
         ) : (
@@ -136,7 +136,7 @@ export default function SendInvoiceModal({ invoice, coachUser, onClose, onSent }
 
               {/* Send button */}
               <button onClick={handleSend} disabled={sending}
-                style={{ width: '100%', padding: '14px', borderRadius: 12, fontSize: 15, fontWeight: 700, background: sending ? 'var(--tc-border)' : 'linear-gradient(135deg, var(--tc-primary), var(--tc-ai))', color: sending ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: sending ? 'not-allowed' : 'pointer', boxShadow: sending ? 'none' : '0 0 20px color-mix(in srgb, var(--tc-primary) 30%, transparent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                style={{ width: '100%', padding: '14px', borderRadius: 12, fontSize: 15, fontWeight: 700, background: sending ? 'var(--tc-border)' : 'var(--tc-primary)', color: sending ? 'var(--tc-muted-foreground)' : 'var(--tc-primary-foreground)', border: 'none', cursor: sending ? 'not-allowed' : 'pointer', boxShadow: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                 <Send size={16} />
                 {sending ? 'Sending…' : 'Send Now'}
               </button>
