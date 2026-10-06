@@ -18,6 +18,7 @@
     "verify:billing": "node scripts/verify-billing-access.mjs",
     "verify:stripe-sync": "node scripts/verify-stripe-sync.mjs",
     "verify:digest": "node scripts/verify-digest.mjs",
+    "verify:digest-idempotency": "node scripts/verify-digest-idempotency.mjs",
     "verify:events": "node scripts/verify-entity-events.mjs",
     "verify:rbac": "node scripts/verify-rbac.mjs",
     "audit:darkmode": "node darkmode-audit/run-audit.mjs",

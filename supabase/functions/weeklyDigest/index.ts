@@ -14,10 +14,14 @@
 //   - the service-role key (pg_cron) → a sweep that sends every coach who owns
 //     clients their own digest. Body { dry_run: true } builds the digests but
 //     sends nothing (used to verify the schedule without emailing anyone).
+// Each email is claimed in public.weekly_digest_sends (coach_id, week_of)
+// first (migration 20261006230000), so a retried or overlapping sweep — or a
+// coach calling this repeatedly — never emails the same coach twice in a week.
+// A failed send is recorded and retried by the next run.
 // verify_jwt is off for this function (config.toml): the service key is not a
 // JWT, so both paths authenticate in-function.
 import { getCaller, serviceClient, jsonResponse, cors } from '../_shared/edgeClients.js';
-import { buildWeeklyDigest, renderDigestEmail } from '../_shared/weeklyDigest.js';
+import { buildWeeklyDigest, renderDigestEmail, digestWeekKey } from '../_shared/weeklyDigest.js';
 
 const COACH_TIPS = [
   'Send a voice message instead of text this week — clients love the personal touch.',
@@ -52,9 +56,15 @@ async function sendDigestFor(svc, coach: { id: string; email?: string | null }, 
   const emailHtml = renderDigestEmail(digest, { tip, appUrl });
 
   let sent = false;
+  let alreadySent = false;
   if (coach.email && !dryRun) {
+    const weekOf = digestWeekKey(now);
+    const { data: claimed, error: claimErr } = await svc.rpc('claim_weekly_digest', { p_coach: uid, p_week_of: weekOf });
+    if (claimErr) throw new Error(`claim_weekly_digest: ${claimErr.message}`);
+    if (!claimed) return { digest, sent: false, alreadySent: true };
     // functions.invoke resolves to { data, error } and does NOT throw on a
     // non-2xx — only count the digest as sent when there is no error.
+    let failure: string | null = null;
     try {
       const { error } = await svc.functions.invoke('sendEmailNotification', {
         body: {
@@ -63,13 +73,16 @@ async function sendDigestFor(svc, coach: { id: string; email?: string | null }, 
           html: emailHtml,
         },
       });
-      if (error) console.error('[weeklyDigest] send failed for coach', uid, error?.message ?? error);
+      if (error) failure = String(error?.message ?? error);
       else sent = true;
     } catch (e) {
-      console.error('[weeklyDigest] send threw for coach', uid, (e as Error)?.message ?? e);
+      failure = String((e as Error)?.message ?? e);
     }
+    if (failure) console.error('[weeklyDigest] send failed for coach', uid, failure);
+    const { error: finishErr } = await svc.rpc('finish_weekly_digest', { p_coach: uid, p_week_of: weekOf, p_sent: sent, p_error: failure });
+    if (finishErr) console.error('[weeklyDigest] finish_weekly_digest failed for coach', uid, finishErr.message);
   }
-  return { digest, sent };
+  return { digest, sent, alreadySent };
 }
 
 Deno.serve(async (req) => {
@@ -91,11 +104,16 @@ Deno.serve(async (req) => {
         : { data: [] };
 
       let sent = 0;
+      let alreadySent = 0;
       for (const coach of coaches ?? []) {
         const r = await sendDigestFor(svc, coach, now, dryRun);
         if (r.sent) sent++;
+        if (r.alreadySent) alreadySent++;
       }
-      return jsonResponse({ success: true, mode: 'sweep', dry_run: dryRun, coaches: (coaches ?? []).length, sent });
+      return jsonResponse({
+        success: true, mode: 'sweep', dry_run: dryRun, week_of: digestWeekKey(now),
+        coaches: (coaches ?? []).length, sent, already_sent: alreadySent,
+      });
     }
 
     // ── Coach-initiated (own digest) ──────────────────────────────────────────
@@ -108,8 +126,8 @@ Deno.serve(async (req) => {
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
 
-    const { digest } = await sendDigestFor(svc, { id: caller.profile.id, email: caller.profile.email }, now, false);
-    return jsonResponse({ success: true, digest });
+    const { digest, sent, alreadySent } = await sendDigestFor(svc, { id: caller.profile.id, email: caller.profile.email }, now, false);
+    return jsonResponse({ success: true, digest, emailed: sent, already_sent_this_week: alreadySent });
   } catch (error) {
     return jsonResponse({ error: (error && error.message) || 'Server error' }, 500);
   }
