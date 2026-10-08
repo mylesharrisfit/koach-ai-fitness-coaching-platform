@@ -54,3 +54,9 @@ verify_jwt = false
 # googleCalendarConnect (verified in-function).
 [functions.googleCalendarCallback]
 verify_jwt = false
+
+# Email opt-out endpoint: called by mailbox providers' one-click unsubscribe
+# (RFC 8058) and the public /unsubscribe page, neither of which has a session.
+# The signed per-address token is the authorization.
+[functions.unsubscribe]
+verify_jwt = false

@@ -103,5 +103,6 @@ export function renderDigestEmail(digest, { tip, appUrl }) {
         <p style="margin:0 0 8px;color:#6b7280;font-size:12px;">${escapeHtml(active_clients)} active clients · $${escapeHtml(Number(mrr).toLocaleString())}/mo MRR</p>
         <a href="${appUrl}/ai-insights" style="display:inline-block;background:#111827;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700;">View Full Digest →</a>
       </div>
+      <p style="margin:16px 0 0;text-align:center;color:#9ca3af;font-size:11px;">KOACH AI weekly digest · <a href="%%UNSUBSCRIBE_URL%%" style="color:#9ca3af;">Unsubscribe</a></p>
     </div>`;
 }

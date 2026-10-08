@@ -70,7 +70,7 @@ export function buildReminderEmail({ clientName, missedCheckin, missedWorkout },
     </p>
   </td></tr>
   <tr><td style="padding:16px 36px 20px;background:#F8FAFC;border-top:1px solid #F1F5F9;">
-    <p style="margin:0;font-size:12px;color:#94A3B8;">© KOACH AI · <a href="${appUrl}" style="color:#94A3B8;text-decoration:none;">koachai.net</a> · You're receiving this as part of your coaching program.</p>
+    <p style="margin:0;font-size:12px;color:#94A3B8;">© KOACH AI · <a href="${appUrl}" style="color:#94A3B8;text-decoration:none;">koachai.net</a> · You're receiving this as part of your coaching program. <a href="%%UNSUBSCRIBE_URL%%" style="color:#94A3B8;">Unsubscribe from reminders</a></p>
   </td></tr>
 </table></td></tr></table>
 </body></html>`;
@@ -121,6 +121,7 @@ export async function runCheckinReminders(admin, { sendEmail, appUrl, now = new 
 
     const sendResult = await sendEmail({
       to: client.email, toName: client.name,
+      category: 'reminder',
       subject,
       html: buildReminderEmail({ clientName: client.name, missedCheckin, missedWorkout }, appUrl),
     });
