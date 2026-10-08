@@ -354,7 +354,7 @@ export default function ProfileOverviewTab({ client, checkIns = [], score, progr
     <div className="space-y-4 lg:space-y-5">
       <BodyweightPanel client={client} checkIns={checkIns} />
 
-      <div className="grid gap-4 lg:gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)]">
+      <div className="grid grid-cols-1 gap-4 lg:gap-5 xl:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)]">
         <ThisWeekPanel sessions={sessions} program={program} onOpenTab={onOpenTab} />
         <AiSeesPanel client={client} checkIns={checkIns} onOpenTab={onOpenTab} />
       </div>

@@ -629,7 +629,7 @@ export default function Clients() {
 
       {/* ── Roster insights (program gaps, quiet clients, progression) ── */}
       {!isLoading && clients.length > 0 && (
-        <div className="mt-8 -mx-5 [&_.text-xs.font-medium.text-muted-foreground]:text-[13px]">
+        <div className="mt-8 -mx-4 sm:-mx-5 [&_.text-xs.font-medium.text-muted-foreground]:text-[13px]">
           <IntelligenceBar clients={clients} checkIns={allCheckIns} />
         </div>
       )}
