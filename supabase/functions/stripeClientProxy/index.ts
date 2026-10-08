@@ -45,18 +45,21 @@ Deno.serve(async (req) => {
     const action = body?.action;
     const payload = body?.payload || {};
 
-    // Reject portal clients: only coaches (own >= 1 client) or admins.
+    // Reject portal clients (an account linked as someone's client that owns
+    // no clients itself). A coach with zero clients is still a coach: they
+    // must be able to create generic payment links and products (e.g. to
+    // charge a prospect before adding them). Every client-touching action
+    // below is ownsClient-scoped anyway.
     if (!isAdmin) {
-      const { data: owned, error: ownErr } = await svc
-        .from('clients')
-        .select('id')
-        .or(`user_id.eq.${userId},created_by.eq.${userId}`)
-        .limit(1);
-      if (ownErr) {
-        console.error('stripeClientProxy: owned-clients lookup failed', ownErr.message);
+      const [{ data: owned, error: ownErr }, { data: linked, error: linkErr }] = await Promise.all([
+        svc.from('clients').select('id').or(`user_id.eq.${userId},created_by.eq.${userId}`).limit(1),
+        svc.from('clients').select('id').eq('portal_user_id', userId).limit(1),
+      ]);
+      if (ownErr || linkErr) {
+        console.error('stripeClientProxy: role lookup failed', (ownErr ?? linkErr)?.message);
         return jsonResponse({ error: 'Server error' }, 500);
       }
-      if (!owned?.length) return jsonResponse({ error: 'Forbidden' }, 403);
+      if (!owned?.length && linked?.length) return jsonResponse({ error: 'Forbidden' }, 403);
     }
 
     // Mutating actions require an active coach subscription (or trial/comp/admin).
