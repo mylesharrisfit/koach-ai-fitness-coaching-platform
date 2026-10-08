@@ -150,10 +150,17 @@ function LogWeightModal({ weighInId, date, coachNote, onClose, onSaved }) {
   const save = async () => {
     if (!weight || parseFloat(weight) <= 0) return;
     setSaving(true);
-    await portalDb.entities.WeighIn.update(weighInId, { weight: parseFloat(weight) });
-    toast.success('Weight logged');
-    onSaved();
-    onClose();
+    try {
+      // Portal clients may only fill in the weight on their coach's pending
+      // weigh-in (portal_log_weigh_in, migration 20261008000200).
+      await portalDb.rpc('portal_log_weigh_in', { p_weigh_in: weighInId, p_weight: parseFloat(weight) });
+      toast.success('Weight logged');
+      onSaved();
+      onClose();
+    } catch (err) {
+      toast.error(err?.message || "Couldn't log your weight");
+      setSaving(false);
+    }
   };
 
   return (

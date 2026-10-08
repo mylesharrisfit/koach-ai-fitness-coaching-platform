@@ -1171,6 +1171,8 @@ export function buildSeed(now = new Date()) {
     team_members: [],
     teams: [],
     white_label_settings: [],
+    // migration 20261008000200: the portal client's coach (display fields only)
+    portal_coach_view: [{ client_id: C.jordan, coach_name: 'Myles Harris', business_name: 'Harris Fitness', avatar_url: null, logo_url: null }],
   };
 
   // Auth users (supabase-js `User` shape)
@@ -1258,5 +1260,16 @@ export function buildFunctionHandlers(seed) {
     createPortalSession: () => ({ url: '/subscription' }),
     savePushSubscription: () => ({ ok: true }),
     storePushSubscription: () => ({ ok: true }),
+    // Portal RPCs (migration 20261008000200)
+    'rpc:portal_update_my_avatar': ({ p_avatar_url }, ctx) => {
+      const row = store.clients.find((c) => c.id === ctx?.persona?.clientId);
+      if (row) row.avatar_url = p_avatar_url;
+      return null;
+    },
+    'rpc:portal_log_weigh_in': ({ p_weigh_in, p_weight }) => {
+      const row = (store.weigh_ins || []).find((w) => w.id === p_weigh_in);
+      if (row && !row.weight) row.weight = p_weight;
+      return null;
+    },
   };
 }
