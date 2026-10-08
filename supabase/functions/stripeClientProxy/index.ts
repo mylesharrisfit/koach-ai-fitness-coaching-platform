@@ -66,6 +66,18 @@ Deno.serve(async (req) => {
 
     const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
+    // clients.stripe_customer_id is coach-editable, so a stored id is only
+    // trusted when Stripe says the customer is tagged to THIS client (the same
+    // rule resolveClientCustomer applies). Otherwise a coach could point their
+    // own client at another tenant's customer and read or bill it.
+    const verifiedCustomer = async (client: { id: string; stripe_customer_id?: string | null }) => {
+      if (!client.stripe_customer_id) return null;
+      try {
+        const c = await stripe.customers.retrieve(client.stripe_customer_id);
+        return c && !c.deleted && c.metadata?.client_id === client.id ? c.id : null;
+      } catch { return null; }
+    };
+
     if (action === 'testConnection') {
       // Coaches only learn whether payments are available; the PLATFORM
       // account identity (email) is admin-only.
@@ -82,12 +94,12 @@ Deno.serve(async (req) => {
       if (!client_id) return jsonResponse({ error: 'client_id is required' }, 400);
       const client = await ownsClient(svc, userId, client_id);
       if (!client) return jsonResponse({ error: 'Forbidden: client not owned by you' }, 403);
-      // The customer queried must be THIS client's stored customer.
-      const targetCustomer = client.stripe_customer_id;
-      if (!targetCustomer) return jsonResponse({ invoices: [] });
-      if (customer_id && customer_id !== targetCustomer) {
+      // The customer queried must be THIS client's stored, tag-verified customer.
+      if (customer_id && customer_id !== client.stripe_customer_id) {
         return jsonResponse({ error: 'Forbidden: customer ID mismatch' }, 403);
       }
+      const targetCustomer = await verifiedCustomer(client);
+      if (!targetCustomer) return jsonResponse({ invoices: [] });
       const invoices = await stripe.invoices.list({ customer: targetCustomer, limit: 20 });
       return jsonResponse({ invoices: invoices.data });
     }
@@ -110,7 +122,7 @@ Deno.serve(async (req) => {
       if (!client_id) return jsonResponse({ error: 'client_id is required' }, 400);
       const client = await ownsClient(svc, userId, client_id);
       if (!client) return jsonResponse({ error: 'Forbidden: client not owned by you' }, 403);
-      const customerId = client.stripe_customer_id;
+      const customerId = await verifiedCustomer(client);
       if (!customerId) return jsonResponse({ error: 'Client has no Stripe customer yet' }, 400);
       const amt = validAmount(amount);
       if (!amt) return jsonResponse({ error: 'Invalid amount' }, 400);
@@ -186,10 +198,10 @@ Deno.serve(async (req) => {
       // REMEDIATION_PLAN Phase 8.)
       const { data: myClients } = await svc
         .from('clients')
-        .select('stripe_customer_id')
+        .select('id, stripe_customer_id')
         .or(`user_id.eq.${userId},created_by.eq.${userId}`);
       const ownedCustomers = new Set(
-        (myClients ?? []).map((c) => c.stripe_customer_id).filter(Boolean),
+        (await Promise.all((myClients ?? []).map((c) => verifiedCustomer(c)))).filter((c): c is string => Boolean(c)),
       );
       if (ownedCustomers.size === 0) return jsonResponse({ charges: [] });
       // Fetch per owned customer so we never read another tenant's charges.

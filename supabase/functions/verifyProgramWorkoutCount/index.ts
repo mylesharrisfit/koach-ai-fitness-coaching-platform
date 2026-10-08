@@ -1,7 +1,7 @@
 // Supabase Edge Function: verifyProgramWorkoutCount  (Migration Step 5e)
 //
 // Faithful port of base44/functions/verifyProgramWorkoutCount — an integrity
-// probe: resolves the CLIENT whose email matches the caller, their assigned
+// probe: resolves the CLIENT linked to the caller (portal_user_id), their assigned
 // program, and the completed-vs-remaining workout math (same formula as the
 // fixed component).
 import { getCaller, serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
@@ -13,9 +13,11 @@ Deno.serve(async (req) => {
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
     const svc = serviceClient();
 
-    // Client row matching the caller's email (verbatim resolution)
+    // The caller's own client row, by the durable portal link. (Matching on
+    // email let any account read another tenant's client + program by
+    // setting its profile email to that client's address.)
     const { data: clients } = await svc.from('clients').select('*')
-      .eq('email', caller.profile.email ?? caller.auth.email)
+      .eq('portal_user_id', caller.auth.id)
       .order('created_at', { ascending: false }).limit(1);
     const client = clients?.[0];
     if (!client) return jsonResponse({ error: 'No client found for user' }, 404);

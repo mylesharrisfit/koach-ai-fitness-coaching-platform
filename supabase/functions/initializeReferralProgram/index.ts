@@ -18,11 +18,13 @@ Deno.serve(async (req) => {
     const caller = await getCaller(req);
     if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
     const svc = serviceClient();
-    const email = caller.profile.email ?? caller.auth.email;
+    const email = caller.auth.email ?? caller.profile.email ?? '';
 
-    // Idempotent per coach
+    // Idempotent per coach, keyed by id only. (Matching coach_email too let a
+    // caller read another coach's program — code, earnings, balance — by using
+    // that coach's email, and the interpolated or() filter was injectable.)
     const { data: existing } = await svc.from('referral_programs')
-      .select('*').or(`coach_id.eq.${caller.auth.id},coach_email.eq.${email}`).limit(1);
+      .select('*').eq('coach_id', caller.auth.id).limit(1);
     if (existing?.length) {
       return jsonResponse({
         success: false,
