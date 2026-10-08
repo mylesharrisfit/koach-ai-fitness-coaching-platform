@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Initials, KeyValue } from '@/components/kit';
 import { PortalScreen, PortalHeader, Pill } from '@/components/portal/PortalUI';
+import { usePortalCoach } from '@/lib/usePortalCoach';
 
 const MOOD_LABEL = { stressed: 'Stressed', tired: 'Tired', okay: 'Okay', good: 'Good', great: 'Great' };
 
@@ -17,6 +18,7 @@ export const REVIEW_STATUS = {
 };
 
 export default function CheckInDetailView({ checkIn, client, onBack, onMessage }) {
+  const coach = usePortalCoach();
   const [reply, setReply] = useState('');
   const [sending, setSending] = useState(false);
 
@@ -67,10 +69,10 @@ export default function CheckInDetailView({ checkIn, client, onBack, onMessage }
         {checkIn.coach_notes && (
           <section className="panel p-4">
             <div className="flex items-start gap-3">
-              <Initials name="Coach" tone="ink" size={40} />
+              <Initials name={coach.hasName ? coach.name : 'Coach'} src={coach.avatarUrl} tone="ink" size={40} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2">
-                  <p className="text-[15px] font-semibold text-foreground">Your coach replied</p>
+                  <p className="min-w-0 truncate text-[15px] font-semibold text-foreground">{coach.name} replied</p>
                   {checkIn.updated_date && (
                     <p className="text-[13px] text-muted-foreground">{format(new Date(checkIn.updated_date), 'MMM d, h:mm a')}</p>
                   )}

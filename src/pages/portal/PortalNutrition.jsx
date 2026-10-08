@@ -45,7 +45,6 @@ export default function PortalNutrition({ user }) {
   const [copyingYesterday, setCopyingYesterday] = useState(false);
   const [waterIntake, setWaterIntake]     = useState(5);
   const [nutritionPlan, setNutritionPlan] = useState(null);
-  const [coachName, setCoachName]         = useState(null);
   const [pdfView, setPdfView]             = useState('plan'); // 'plan' or 'log'
   const [myClient, setMyClient]           = useState(null);
 
@@ -62,10 +61,12 @@ export default function PortalNutrition({ user }) {
         portalDb.entities.NutritionPlan.filter({ id: client.assigned_nutrition_id }).then(plans => {
           if (plans[0]) setNutritionPlan(plans[0]);
         }).catch(() => {});
-        // Fetch coach name
-        portalDb.entities.User.list().then(users => {
-          const coach = users.find(u => u.role === 'admin');
-          if (coach) setCoachName(coach.full_name);
+      } else if (client?.id) {
+        // No explicit assignment: the latest plan the coach made for this
+        // client (drafts are the coach's work in progress, not shown).
+        portalDb.entities.NutritionPlan.filter({ client_id: client.id }, '-created_date', 10).then(plans => {
+          const plan = plans.find(p => p.status !== 'draft' && !p.is_draft);
+          if (plan) setNutritionPlan(plan);
         }).catch(() => {});
       }
     }).catch(() => {});
@@ -219,7 +220,12 @@ export default function PortalNutrition({ user }) {
         />
 
         {/* Reference tabs */}
-        {portalTab === 'supplements' && <SupplementsTab isPortal />}
+        {portalTab === 'supplements' && (
+          <>
+            <SupplementStack customSupplements={nutritionPlan?.supplements} defaultOpen />
+            <SupplementsTab isPortal />
+          </>
+        )}
         {portalTab === 'vitamins'    && <VitaminsTab isPortal />}
         {portalTab === 'sauces'      && <SaucesTab isPortal />}
         {portalTab === 'seasonings'  && <SeasoningsTab isPortal />}
@@ -244,6 +250,9 @@ export default function PortalNutrition({ user }) {
               />
             </div>
           </section>
+        )}
+        {portalTab === 'log' && isPdfPlan && pdfView === 'plan' && (
+          <SupplementStack customSupplements={nutritionPlan?.supplements} />
         )}
 
         {portalTab !== 'log' || (isPdfPlan && pdfView === 'plan') ? null : <>
@@ -290,7 +299,7 @@ export default function PortalNutrition({ user }) {
 
         {/* Coach note */}
         {nutritionPlan?.notes && (
-          <CoachNote note={nutritionPlan.notes} coachName={coachName} />
+          <CoachNote note={nutritionPlan.notes} />
         )}
 
         {/* Supplement stack */}

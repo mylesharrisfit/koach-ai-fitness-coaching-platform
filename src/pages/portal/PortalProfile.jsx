@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { PortalScreen, PortalHeader, Sheet, Bar } from '@/components/portal/PortalUI';
 import { format, parseISO } from 'date-fns';
 import { SignedImg } from '@/components/shared/SignedImage';
+import { toast } from 'sonner';
 
 /* ── Sign out confirmation ── */
 function SignOutModal({ onCancel }) {
@@ -148,9 +149,15 @@ export default function PortalProfile({ user }) {
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !myClient?.id) return;
-    const { file_url } = await portalDb.uploadFile({ file });
-    await portalDb.entities.Client.update(myClient.id, { avatar_url: file_url });
-    queryClient.invalidateQueries({ queryKey: ['portal-client-profile'] });
+    try {
+      const { file_url } = await portalDb.uploadFile({ file });
+      // clients_portal_view is read-only; the photo is set through a narrow RPC
+      // that only touches avatar_url on the caller's own row.
+      await portalDb.rpc('portal_update_my_avatar', { p_avatar_url: file_url });
+      queryClient.invalidateQueries({ queryKey: ['portal-client-profile'] });
+    } catch (err) {
+      toast.error(err?.message || "Couldn't update your photo");
+    }
   };
 
   const name = user?.full_name || myClient?.name || 'Your profile';

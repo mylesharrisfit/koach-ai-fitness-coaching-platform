@@ -11,6 +11,7 @@ import { getCaller, serviceClient, cors, jsonResponse } from '../_shared/edgeCli
 import { guardAiUse } from '../_shared/aiMetering.js';
 import { invokeClaude } from '../_shared/anthropic.js';
 import { TOOL_SYSTEM, REVIEW_CHECKIN, PROGRAM_SUGGESTIONS } from '../_shared/aiTools.js';
+import { toneInstruction } from '../_shared/aiTone.js';
 
 function num(n: unknown): number | null {
   return typeof n === 'number' && !Number.isNaN(n) ? n : null;
@@ -39,7 +40,7 @@ Deno.serve(async (req) => {
         tool: REVIEW_CHECKIN, system: TOOL_SYSTEM,
         prompt: `You are a professional fitness coach AI assistant. Analyze this weekly check-in data and provide:
 1. A 2-3 sentence summary for the coach (what went well, what needs attention)
-2. A suggested coach response (2-3 sentences, encouraging and actionable)
+2. A suggested coach response (2-3 sentences unless the tone below asks for more), written in this tone: ${toneInstruction(body.tone, 'encouraging and actionable.')}
 3. Any flags or concerns (1 short sentence each, max 2)
 
 Client: ${clientName}

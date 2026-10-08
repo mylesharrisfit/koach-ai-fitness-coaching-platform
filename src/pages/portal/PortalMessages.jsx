@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Initials, CountBadge } from '@/components/kit';
 import { cn } from '@/lib/utils';
 import { PortalScreen, PortalHeader, IconButton, Sheet } from '@/components/portal/PortalUI';
+import { usePortalCoach } from '@/lib/usePortalCoach';
 
 /* ── helpers ── */
 function groupByDate(messages) {
@@ -40,7 +41,7 @@ const SUGGESTED_OPENERS = [
 ];
 
 /* ── Message bubble: ink for you, white for your coach ── */
-function MessageBubble({ msg, coachInitial }) {
+function MessageBubble({ msg, coachInitial, coachAvatar }) {
   const isClient = msg.sender === 'client';
   const time = msg.created_date ? format(new Date(msg.created_date), 'h:mm a') : '';
 
@@ -49,7 +50,7 @@ function MessageBubble({ msg, coachInitial }) {
 
   return (
     <div className={cn('flex gap-2', isClient ? 'justify-end' : 'justify-start')}>
-      {!isClient && <Initials name={coachInitial} tone="ink" size={30} className="mt-auto" />}
+      {!isClient && <Initials name={coachInitial} src={coachAvatar} tone="ink" size={30} className="mt-auto" />}
       <div className="max-w-[78%]">
         <div className={cn(
           'rounded-xl px-3.5 py-2.5',
@@ -168,7 +169,7 @@ function ConversationView({ myClient, onBack }) {
     }
   };
 
-  const coachInitial = 'Coach';
+  const coach = usePortalCoach();
   const hasText = input.trim().length > 0;
 
   return (
@@ -177,10 +178,10 @@ function ConversationView({ myClient, onBack }) {
       <div className="flex flex-shrink-0 items-center gap-3 border-b border-border bg-card px-4 pb-3"
         style={{ paddingTop: 'calc(env(safe-area-inset-top) + 14px)' }}>
         <IconButton onClick={onBack} label="All messages"><ChevronLeft className="h-5 w-5" /></IconButton>
-        <Initials name={coachInitial} tone="ink" size={40} />
+        <Initials name={coach.hasName ? coach.name : 'Coach'} src={coach.avatarUrl} tone="ink" size={40} />
         <div className="min-w-0 flex-1">
-          <p className="text-[17px] font-bold text-foreground">Your coach</p>
-          <p className="text-[13px] text-muted-foreground">Only you and your coach can see this</p>
+          <p className="truncate text-[17px] font-bold text-foreground">{coach.name}</p>
+          <p className="text-[13px] text-muted-foreground">Only you and {coach.hasName ? coach.name.split(' ')[0] : 'your coach'} can see this</p>
         </div>
       </div>
 
@@ -204,7 +205,7 @@ function ConversationView({ myClient, onBack }) {
         {grouped.map((item, i) => (
           item.type === 'separator'
             ? <p key={i} className="py-2 text-center text-[13px] font-semibold text-muted-foreground">{item.label}</p>
-            : <MessageBubble key={item.data.id} msg={item.data} coachInitial={coachInitial} />
+            : <MessageBubble key={item.data.id} msg={item.data} coachInitial={coach.hasName ? coach.name : 'Coach'} coachAvatar={coach.avatarUrl} />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -294,6 +295,8 @@ export default function PortalMessages({ user }) {
   const unread = messages.filter(m => m.sender === 'coach' && !m.is_read).length;
   const broadcasts = messages.filter(m => m.is_broadcast);
 
+  const coach = usePortalCoach();
+
   if (view === 'conversation' && myClient) {
     return <ConversationView myClient={myClient} onBack={() => setView('home')} />;
   }
@@ -305,10 +308,10 @@ export default function PortalMessages({ user }) {
       <div className="space-y-3">
         <button type="button" onClick={() => setView('conversation')}
           className="panel flex w-full items-start gap-3 p-4 text-left hover:bg-accent/50">
-          <Initials name="Coach" tone="ink" size={44} />
+          <Initials name={coach.hasName ? coach.name : 'Coach'} src={coach.avatarUrl} tone="ink" size={44} />
           <span className="min-w-0 flex-1">
             <span className="flex items-center justify-between gap-2">
-              <span className="text-[15px] font-semibold text-foreground">Your coach</span>
+              <span className="truncate text-[15px] font-semibold text-foreground">{coach.name}</span>
               <CountBadge count={unread} />
             </span>
             {lastMsg ? (

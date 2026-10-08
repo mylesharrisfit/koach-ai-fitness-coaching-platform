@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import { ChevronRight } from 'lucide-react';
 import { Initials } from '@/components/kit';
 import { Sheet } from '@/components/portal/PortalUI';
+import { usePortalCoach } from '@/lib/usePortalCoach';
 
 const GOAL_LABELS = {
   weight_loss: 'Weight loss',
@@ -59,13 +60,14 @@ function MemberCard({ client, isCoach, onClick }) {
 
 export default function CommunityMembersTab({ user, myClient, allClients, posts }) {
   const [selectedMember, setSelectedMember] = useState(null);
+  const coach = usePortalCoach();
 
   return (
     <div className="space-y-3">
       <section className="panel flex items-center gap-3 p-4">
-        <Initials name="Coach" size={40} tone="ink" />
-        <div className="flex-1">
-          <p className="text-[15px] font-semibold text-foreground">Your coach</p>
+        <Initials name={coach.hasName ? coach.name : 'Coach'} src={coach.avatarUrl} size={40} tone="ink" />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[15px] font-semibold text-foreground">{coach.name}</p>
           <p className="text-[13px] text-muted-foreground">Runs this group and reviews posts</p>
         </div>
       </section>

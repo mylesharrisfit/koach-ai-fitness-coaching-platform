@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import BillingCurrentPackage from '@/components/portal/billing/BillingCurrentPackage';
 import BillingOutstandingCard from '@/components/portal/billing/BillingOutstandingCard';
 import BillingInvoiceList from '@/components/portal/billing/BillingInvoiceList';
-import BillingPaymentMethods from '@/components/portal/billing/BillingPaymentMethods';
 import BillingHistory from '@/components/portal/billing/BillingHistory';
 import InvoiceDetailModal from '@/components/portal/billing/InvoiceDetailModal';
 import PaymentFlowModal from '@/components/portal/billing/PaymentFlowModal';
@@ -18,7 +17,6 @@ import ManageSubscriptionModal from '@/components/portal/billing/ManageSubscript
 const TABS = [
   { key: 'overview', label: 'Overview' },
   { key: 'history', label: 'History' },
-  { key: 'methods', label: 'Cards' },
 ];
 
 export default function PortalBilling({ user }) {
@@ -35,13 +33,13 @@ export default function PortalBilling({ user }) {
   });
   const myClient = clients[0];
 
-  const { data: invoices = [], refetch: refetchInvoices } = useQuery({
+  const { data: invoices = [] } = useQuery({
     queryKey: ['portal-invoices', myClient?.id],
     queryFn: () => portalDb.entities.Invoice.filter({ client_id: myClient.id }, '-issue_date', 100),
     enabled: !!myClient?.id,
   });
 
-  const { data: payments = [], refetch: refetchPayments } = useQuery({
+  const { data: payments = [] } = useQuery({
     queryKey: ['portal-payments', myClient?.id],
     queryFn: () => portalDb.entities.Payment.filter({ client_id: myClient.id }, '-created_date', 100),
     enabled: !!myClient?.id,
@@ -60,11 +58,6 @@ export default function PortalBilling({ user }) {
     setPayingInvoice(invoice);
   };
 
-  const handlePaymentComplete = () => {
-    setPayingInvoice(null);
-    refetchInvoices();
-    refetchPayments();
-  };
 
   return (
     <PortalScreen>
@@ -126,9 +119,6 @@ export default function PortalBilling({ user }) {
           <BillingHistory payments={payments} invoices={invoices} />
         )}
 
-        {activeTab === 'methods' && (
-          <BillingPaymentMethods client={myClient} />
-        )}
       </div>
 
       {/* Modals */}
@@ -142,10 +132,7 @@ export default function PortalBilling({ user }) {
       {payingInvoice && (
         <PaymentFlowModal
           invoice={payingInvoice}
-          client={myClient}
-          user={user}
           onClose={() => setPayingInvoice(null)}
-          onComplete={handlePaymentComplete}
         />
       )}
       {showManageSub && (

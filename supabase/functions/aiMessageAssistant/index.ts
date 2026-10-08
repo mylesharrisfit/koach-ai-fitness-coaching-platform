@@ -8,6 +8,7 @@
 import { getCaller, serviceClient, cors, jsonResponse } from '../_shared/edgeClients.js';
 import { guardAiUse } from '../_shared/aiMetering.js';
 import { invokeClaude } from '../_shared/anthropic.js';
+import { toneInstruction } from '../_shared/aiTone.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
@@ -23,13 +24,7 @@ Deno.serve(async (req) => {
 
     // ── ACTION: generateReply ──
     if (action === 'generateReply') {
-      const toneInstruction = {
-        motivational: 'Be highly energetic, celebratory, use fire/muscle emojis, pump the client up.',
-        empathetic: 'Be gentle, understanding, validate feelings, show genuine care and warmth.',
-        direct: 'Be concise and actionable, skip fluff, get straight to the point.',
-        casual: 'Be relaxed and friendly, like texting a friend, use natural language.',
-        professional: 'Be polished and structured, minimal emojis, clear coaching language.',
-      }[tone as string] || 'Be warm, motivational, and human.';
+      const toneText = toneInstruction(tone, 'Be warm, motivational, and human.');
 
       const convo = (conversationMessages || [])
         .slice(-6)
@@ -56,7 +51,7 @@ CLIENT CONTEXT:
 RECENT CONVERSATION (most recent last):
 ${convo || 'No previous messages.'}
 
-TONE INSTRUCTION: ${toneInstruction}
+TONE INSTRUCTION: ${toneText}
 
 RULES:
 - Under 70 words

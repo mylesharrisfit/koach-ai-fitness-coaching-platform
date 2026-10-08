@@ -10,6 +10,7 @@ import CheckInQuestionYesNo from './questions/CheckInQuestionYesNo';
 import CheckInQuestionText from './questions/CheckInQuestionText';
 import CheckInQuestionPhoto from './questions/CheckInQuestionPhoto';
 import CheckInQuestionMeasurements from './questions/CheckInQuestionMeasurements';
+import { usePortalCoach } from '@/lib/usePortalCoach';
 
 const isWeight = (q) => q.type === 'number' && /weight/i.test(q.label || '');
 const unitFromLabel = (label = '') => (label.match(/\(([^)]+)\)/)?.[1] || '').replace(/^%$/, '%');
@@ -43,6 +44,7 @@ function QuestionBody({ q, value, onChange, lastCheckIn }) {
 
 /* Main form screen: one question per step, sticky Back / Next footer. */
 export default function CheckInFormScreen({ form, responses, onResponseChange, onExit, onReview, onStep, currentQ = 0, lastCheckIn, coachName }) {
+  const coach = usePortalCoach();
   const questions = form?.questions || [];
   const q = questions[currentQ];
   const totalQ = questions.length;
@@ -64,7 +66,7 @@ export default function CheckInFormScreen({ form, responses, onResponseChange, o
   if (!q) return null;
 
   const steps = [...questions.map(shortLabel), 'Send'];
-  const helper = helperFor(q, coachName);
+  const helper = helperFor(q, coachName || (coach.hasName ? coach.name.split(' ')[0] : null));
   const nextLabel = currentQ < totalQ - 1 ? `Next: ${shortLabel(questions[currentQ + 1]).toLowerCase()}` : 'Review and send';
 
   return (

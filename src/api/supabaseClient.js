@@ -70,6 +70,7 @@ const ENTITY_TABLES = {
   Notification: 'notifications',
   NotificationSettings: 'notification_settings',
   NutritionPlan: 'nutrition_plans',
+  PortalCoach: 'portal_coach_view', // portal clients: their coach's display info (empty for coaches)
   OnboardingResponse: 'onboarding_responses',
   Payment: 'payments',
   PlanListing: 'plan_listings',
@@ -103,6 +104,9 @@ const PORTAL_OVERRIDES = {
   // base `clients` table no longer grants portal SELECT (migration
   // 20260823000400). Read-only: portal clients don't create/update client rows.
   Client: { table: 'clients_portal_view', readOnly: true },
+  // The caller's coach: display name, business name, avatar, logo only
+  // (migration 20261008000200). Portal-only; read-only.
+  PortalCoach: { table: 'portal_coach_view', readOnly: true },
 };
 
 const FIELD_RENAMES = {
@@ -506,11 +510,19 @@ async function uploadFile({ file, bucket = UPLOADS_BUCKET, scope = undefined }) 
   return { file_url: `${STORAGE_REF_PREFIX}${data.path}` };
 }
 
+/** rpc(name, args) -> a Postgres function (PostgREST /rpc). Throws on error. */
+async function rpc(name, args = {}) {
+  const { data, error } = await getSupabase().rpc(name, args);
+  throwIf(error);
+  return data;
+}
+
 export const supabase = {
   entities: buildEntities(),
   auth,
   functions,
   uploadFile,
+  rpc,
 };
 
 // Client-portal variant — see header. Portal pages ONLY.
@@ -519,6 +531,7 @@ export const supabasePortal = {
   auth,
   functions,
   uploadFile,
+  rpc,
 };
 
 // Short aliases used by call sites.
