@@ -58,6 +58,22 @@ Deno.serve(async (req) => {
 
     const avoid = avoidLine(allergies, disliked_foods, diet);
 
+    // Ownership of client-supplied ids FIRST: a request for someone else's
+    // client or plan is refused before it costs a Claude call or one of the
+    // caller's monthly generations.
+    if (client_id && !(await ownsClient(svc, userId, client_id))) {
+      return jsonResponse({ error: 'Forbidden: client not owned by you' }, 403);
+    }
+    let ownedPlan: { id: string } | null = null;
+    if (nutrition_plan_id) {
+      const { data: plan } = await svc.from('nutrition_plans')
+        .select('id, created_by, client_id').eq('id', nutrition_plan_id).maybeSingle();
+      const owned = plan && (plan.created_by === userId
+        || (plan.client_id && await ownsClient(svc, userId, plan.client_id)));
+      if (!owned) return jsonResponse({ error: 'Forbidden: plan not owned by you' }, 403);
+      ownedPlan = plan;
+    }
+
     // 1 AI generation per call, including single-meal regeneration.
     const blocked = await guardAiUse(svc, caller, 'generateSmartMeals');
     if (blocked) return jsonResponse(blocked.body, blocked.status);
@@ -117,19 +133,10 @@ Return ONLY a single meal JSON object: {"meal_name":"...","time":"...","options"
 
     // ── Persist to nutrition_plans (draft) before returning ─────────────────
     if (meals.length > 0) {
-      // ownership checks on client-supplied ids
-      if (client_id && !(await ownsClient(svc, userId, client_id))) {
-        return jsonResponse({ error: 'Forbidden: client not owned by you' }, 403);
-      }
-
-      if (nutrition_plan_id) {
-        const { data: plan } = await svc.from('nutrition_plans')
-          .select('id, created_by, client_id').eq('id', nutrition_plan_id).maybeSingle();
-        const owned = plan && (plan.created_by === userId
-          || (plan.client_id && await ownsClient(svc, userId, plan.client_id)));
-        if (!owned) return jsonResponse({ error: 'Forbidden: plan not owned by you' }, 403);
-        await svc.from('nutrition_plans').update({ meals, status: 'draft' }).eq('id', plan.id);
-        return jsonResponse({ meals, draft_plan_id: plan.id });
+      // client_id / nutrition_plan_id ownership was verified before the AI call.
+      if (ownedPlan) {
+        await svc.from('nutrition_plans').update({ meals, status: 'draft' }).eq('id', ownedPlan.id);
+        return jsonResponse({ meals, draft_plan_id: ownedPlan.id });
       }
 
       const planData: Record<string, unknown> = {
