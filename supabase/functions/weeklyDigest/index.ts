@@ -61,6 +61,7 @@ async function sendDigestFor(svc, coach: { id: string; email?: string | null }, 
           to: coach.email,
           subject: `🧠 Your Weekly AI Coaching Digest — ${digest.week_of}`,
           html: emailHtml,
+          category: 'digest', // honors email_suppressions + List-Unsubscribe
         },
       });
       if (error) console.error('[weeklyDigest] send failed for coach', uid, error?.message ?? error);

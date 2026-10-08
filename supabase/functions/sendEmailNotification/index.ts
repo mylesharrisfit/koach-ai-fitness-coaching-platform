@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
       if (!caller) return jsonResponse({ error: 'Unauthorized' }, 401);
     }
 
-    const { to, toName: _toName, subject, html, replyTo, templateKey } = await req.json();
+    const { to, toName: _toName, subject, html, replyTo, templateKey, category } = await req.json();
 
     if (!to || !subject || !html) {
       return jsonResponse({ error: 'Missing required fields: to, subject, html' }, 400);
@@ -140,12 +140,15 @@ Deno.serve(async (req) => {
       subject,
       html: serviceCall ? html : sanitizeCoachHtml(html),
       replyTo: safeReplyTo,
+      // Only trusted server callers (weeklyDigest) choose a mail category.
+      category: serviceCall ? category : undefined,
     });
     if (!result.ok) {
       console.error('[sendEmailNotification] send failed:', result.error, result.details);
       return jsonResponse({ error: 'Email could not be sent' }, 500);
     }
 
+    if (result.suppressed) return jsonResponse({ success: true, suppressed: true, templateKey });
     return jsonResponse({ success: true, id: result.id, templateKey });
   } catch (error) {
     console.error('[sendEmailNotification] error:', error);

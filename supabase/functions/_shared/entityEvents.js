@@ -200,6 +200,7 @@ async function onClientCreated(admin, client, { sendEmail, appUrl }) {
     const coachName = coach?.full_name || 'Your Coach';
     await sendEmail({
       to: client.email, toName: client.name,
+      category: 'welcome',
       subject: safeSubject(`Welcome to ${coachName}'s coaching! Your journey starts now 💪`),
       html: buildWelcomeEmail(client, coachName, appUrl),
       replyTo: coach?.email,

@@ -38,7 +38,7 @@ export function buildCheckInEmail(client, checkIn, coachName, appUrl) {
   </td></tr></table>
 </td></tr>
 <tr><td style="padding:16px 36px 20px;background:#F8FAFC;border-top:1px solid #F1F5F9;">
-  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="${appUrl}/unsubscribe" style="color:#94A3B8;">Unsubscribe</a></p>
+  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="%%UNSUBSCRIBE_URL%%" style="color:#94A3B8;">Unsubscribe</a></p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 }
@@ -64,7 +64,7 @@ export function buildReviewedEmail(client, checkIn, coachName, appUrl) {
   </td></tr></table>
 </td></tr>
 <tr><td style="padding:16px 36px 20px;background:#F8FAFC;border-top:1px solid #F1F5F9;">
-  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="${appUrl}/unsubscribe" style="color:#94A3B8;">Unsubscribe</a></p>
+  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="%%UNSUBSCRIBE_URL%%" style="color:#94A3B8;">Unsubscribe</a></p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 }
@@ -97,7 +97,7 @@ export function buildWelcomeEmail(client, coachName, appUrl) {
   </td></tr></table>
 </td></tr>
 <tr><td style="padding:16px 36px 20px;background:#F8FAFC;border-top:1px solid #F1F5F9;">
-  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="${appUrl}/unsubscribe" style="color:#94A3B8;">Unsubscribe</a></p>
+  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="%%UNSUBSCRIBE_URL%%" style="color:#94A3B8;">Unsubscribe</a></p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 }
@@ -125,7 +125,7 @@ export function buildNewClientCoachEmail(client, coachName, appUrl) {
   </td></tr></table>
 </td></tr>
 <tr><td style="padding:16px 36px 20px;background:#F8FAFC;border-top:1px solid #F1F5F9;">
-  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="${appUrl}/unsubscribe" style="color:#94A3B8;">Unsubscribe</a></p>
+  <p style="margin:0;font-size:12px;color:#94A3B8;">${escapeHtml(coachName)} · KOACH AI · <a href="%%UNSUBSCRIBE_URL%%" style="color:#94A3B8;">Unsubscribe</a></p>
 </td></tr>
 </table></td></tr></table></body></html>`;
 }

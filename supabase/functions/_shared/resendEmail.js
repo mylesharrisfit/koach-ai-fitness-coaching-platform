@@ -7,16 +7,27 @@
  * Base44-era VITE_FROM_NAME / VITE_FROM_EMAIL still honored as fallbacks.
  */
 import { escapeHtml, safeSubject } from './escapeHtml.js';
+import {
+  UNSUBSCRIBE_PLACEHOLDER, SUPPRESSIBLE_CATEGORIES, unsubscribeLinks, isSuppressed,
+} from './unsubscribe.js';
 
 export function resendConfigured() {
   return Boolean(Deno.env.get('RESEND_API_KEY'));
 }
 
 /**
- * Send one email. Returns { ok, id?, error?, details? } — never throws, so
- * fire-and-forget callers can't crash a trigger path on mailer trouble.
+ * Send one email. Returns { ok, id?, error?, details?, suppressed? } — never
+ * throws, so fire-and-forget callers can't crash a trigger path on mailer
+ * trouble.
+ *
+ * `category`: 'reminder' | 'digest' | 'welcome' mark NON-transactional mail.
+ * Those are skipped for addresses in public.email_suppressions (returned as
+ * { ok: true, suppressed: true }, i.e. handled — not a failure to retry) and
+ * carry List-Unsubscribe + one-click headers. Anything else (default) is
+ * transactional and always sent. Every email's %%UNSUBSCRIBE_URL%% footer
+ * placeholder becomes the recipient's signed unsubscribe link.
  */
-export async function sendResendEmail({ to, toName, subject, html, text, replyTo }) {
+export async function sendResendEmail({ to, toName, subject, html, text, replyTo, category }) {
   const apiKey = Deno.env.get('RESEND_API_KEY');
   if (!apiKey) return { ok: false, error: 'RESEND_API_KEY not configured' };
   const cleanSubject = safeSubject(subject);
@@ -32,6 +43,18 @@ export async function sendResendEmail({ to, toName, subject, html, text, replyTo
   }
   const fromEmail = configuredFrom || 'onboarding@resend.dev';
 
+  const suppressible = SUPPRESSIBLE_CATEGORIES.has(category);
+  if (suppressible) {
+    try {
+      if (await isSuppressed(to)) return { ok: true, suppressed: true };
+    } catch (e) {
+      // Fail closed: never mail an address we can't confirm hasn't opted out.
+      return { ok: false, error: e.message };
+    }
+  }
+  const plainPage = `${Deno.env.get('APP_URL') || 'https://app.koachai.net'}/unsubscribe`;
+  const links = await unsubscribeLinks(to).catch(() => ({ pageUrl: plainPage, oneClickUrl: null }));
+
   // Display name is user/coach-controlled: strip quote, backslash, CR/LF and
   // angle brackets (header/address injection), then quote it.
   const cleanName = String(toName ?? '').replace(/["\\\r\n<>]/g, '').trim();
@@ -43,14 +66,20 @@ export async function sendResendEmail({ to, toName, subject, html, text, replyTo
     subject: cleanSubject,
     // Base44's Core.SendEmail took plain-text `body`; preserve those callers by
     // accepting `text` and wrapping it, while html callers pass through as-is.
-    html: html || `<pre style="font-family:inherit;white-space:pre-wrap;margin:0">${escapeHtml(text)}</pre>`,
+    html: (html || `<pre style="font-family:inherit;white-space:pre-wrap;margin:0">${escapeHtml(text)}</pre>`)
+      .split(UNSUBSCRIBE_PLACEHOLDER).join(links.pageUrl),
   };
   if (replyTo) payload.reply_to = replyTo;
 
-  // TODO(deliverability): re-add List-Unsubscribe (+ List-Unsubscribe-Post
-  // for RFC 8058 one-click) once a real /unsubscribe endpoint exists that
-  // accepts POST and records the opt-out. Advertising a non-existent
-  // one-click endpoint is worse than advertising none.
+  // RFC 2369 / RFC 8058: mailbox providers show an "Unsubscribe" button and
+  // POST to the one-click URL (supabase/functions/unsubscribe), which records
+  // the opt-out without the recipient signing in.
+  if (suppressible && links.oneClickUrl) {
+    payload.headers = {
+      'List-Unsubscribe': `<${links.oneClickUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    };
+  }
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
