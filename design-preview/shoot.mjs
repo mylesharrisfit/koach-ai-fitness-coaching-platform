@@ -7,12 +7,13 @@
  *   node design-preview/shoot.mjs --desktop-only clients=/clients
  *   node design-preview/shoot.mjs --mobile-only --dark today=/
  *
- * Flags: --desktop-only | --mobile-only | --dark (prefers-color-scheme: dark)
+ * Flags: --desktop-only | --mobile-only | --viewports=mobile,tablet (any of
+ *        desktop 1440, tablet 768, mobile 390) | --dark (prefers-color-scheme: dark)
  *        --wait=<ms> extra settle time after network idle (default 800)
  * Env:   PREVIEW_PORT (default 5288), PREVIEW_OUT (default design-preview/out),
  *        PLAYWRIGHT_CHROMIUM (explicit chrome binary)
  *
- * Output: <out>/<name>-<desktop|mobile>.png (full page). Per-route page errors and
+ * Output: <out>/<name>-<desktop|tablet|mobile>.png (full page). Per-route page errors and
  * console errors are printed; exit code is 0 even when a page logs errors.
  */
 import { createServer } from 'vite';
@@ -50,6 +51,7 @@ const DEFAULT_ROUTES = [
 
 const VIEWPORTS = {
   desktop: { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 },
+  tablet: { viewport: { width: 768, height: 1024 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
   mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
 };
 
@@ -67,6 +69,8 @@ const routes = specs.length ? specs : DEFAULT_ROUTES;
 let viewports = ['desktop', 'mobile'];
 if (flags.has('--desktop-only')) viewports = ['desktop'];
 if (flags.has('--mobile-only')) viewports = ['mobile'];
+const vpArg = args.find((a) => a.startsWith('--viewports='));
+if (vpArg) viewports = vpArg.split('=')[1].split(',').filter((v) => VIEWPORTS[v]);
 const colorScheme = flags.has('--dark') ? 'dark' : 'light';
 
 // ---- server --------------------------------------------------------------------
